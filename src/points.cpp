@@ -8,8 +8,21 @@ float calculatePointDistance(LED_Point p1, LED_Point p2) {
     return sqrt(dx*dx + dy*dy + dz*dz);
 };
 
+float LED_Point::distanceFrom(float x, float y, float z) {
+    return sqrt((this->x - x)*(this->x - x) + (this->y - y)*(this->y - y) + (this->z - z)*(this->z - z) );
+}
+
+float LED_Point::distance_to(LED_Point *p){
+    return distanceFrom(p->x, p->y, p->z);
+}
+
+float LED_Point::distance_to(float x, float y, float z){
+    return distanceFrom(x, y, z);
+}
+
 bool compare_distance(distance_map a, distance_map b) {
-    return a.distance < b.distance;
+    // return a.distance < b.distance;
+    return ((a.direction.norm() < b.direction.norm()) ? true : false);
 }
 
 void LED_Point::find_nearest_leds() {
@@ -18,15 +31,21 @@ void LED_Point::find_nearest_leds() {
         distance_map d;
         d.led_number = i;
         d.distance = calculatePointDistance(points[this->index], points[i]);
+        d.direction = Vector3d(
+            points[i].x - points[this->index].x,
+            points[i].y - points[this->index].y,
+            points[i].z - points[this->index].z
+        );
+        // only add points that closer than 100 units
+        if (d.distance > 100) continue;
         candidate_points.push_back(d);
     }
     // sort the candidate points by distance
     std::sort(candidate_points.begin(), candidate_points.end(), compare_distance);
     candidate_points.resize(MAX_LED_NEIGHBORS);
     
-    for (int i=0; i<candidate_points.size(); i++) {
-        this->neighbors[i] = candidate_points[i];
-    } 
+    this->neighbors = candidate_points;
+    this->pos = Vector3d(this->x, this->y, this->z);
     
 }
 

@@ -149,11 +149,11 @@ void flash_fade_points(){
 }
 
 
-float calculateBlobDistance(LED_Point p1, Blob *b) {
-  float dx = p1.x - b->x();
-  float dy = p1.y - b->y();
-  float dz = p1.z - b->z();
-  return sqrt(dx*dx + dy*dy + dz*dz);  
+int calculateBlobDistance(LED_Point p1, Blob *b) {
+  int dx = p1.x - b->x();
+  int dy = p1.y - b->y();
+  int dz = p1.z - b->z();
+  return (dx*dx + dy*dy + dz*dz);  
 }
 
 #define NUM_BLOBS 4
@@ -166,25 +166,31 @@ void orbiting_blobs(){
   // float y1 = r * sin(c)*sin(a);
   // float z1 = r * cos(c);
   
-  for (int i = 0; i<NUM_LEDS; i++){ 
-    for (int b=0; b<NUM_BLOBS; b++){
-      float dist = calculateBlobDistance(points[i], blobs[b]);
-      if (abs(dist) < blobs[b]->radius){
+  for (int b=0; b<NUM_BLOBS; b++){
+    auto rad_sq = blobs[b]->radius*blobs[b]->radius;
+    for (int i = 0; i<NUM_LEDS; i++){ 
+      int dist = calculateBlobDistance(points[i], blobs[b]);
+      if (dist < rad_sq){
         CRGB c = blobs[b]->color;
         if (blobs[b]->age < 255){
           c.fadeToBlackBy(255 - blobs[b]->age);
         }
-        nblend(leds[i], c, map(abs(dist), 0, blobs[b]->radius, 0, 60));
+        // leds[i] += c;
+        nblend(leds[i], c, map(dist, 0, rad_sq, 180, 30));
         // leds[i] = CHSV(blobs[b]->color, 255, 255-dist);
       }
     }
-    leds[i].fadeToBlackBy(6);
   }
+
+  for (int i=0; i<NUM_LEDS; i++){
+    leds[i].fadeToBlackBy(25);
+  }
+
   FastLED.show();
+
   for (int b=0; b<NUM_BLOBS; b++){
     blobs[b]->tick();
   }
-  //Serial.println(blobs[0]->a);
 }
 
 void fade_test(){
@@ -240,21 +246,41 @@ void fade_test(){
   counter++;
 }
 
+
+#define NUM_PARTICLES 15
+Particle *particles[NUM_PARTICLES];
+
 void timerStatusMessage(){
   Serial.printf("FPS: %d\n", FastLED.getFPS());
   if (mode==0){
     Serial.printf("Blob age: %d/%d\n", blobs[0]->age, blobs[0]->lifespan);
-    Serial.printf("Blob av/cv: %0.4f %0.4f\n", blobs[0]->av, blobs[0]->cv);
+    Serial.printf("Blob av/cv: %d %d\n", blobs[0]->av, blobs[0]->cv);
+    Serial.printf("Blob a/c: %d %d\n", blobs[0]->a, blobs[0]->c);
+    Serial.printf("Blob x/y/z: %d %d %d\n", blobs[0]->x(), blobs[0]->y(), blobs[0]->z());
   }
   if (mode==2){
     Serial.printf("Fade level: %d\n", fade_level);  
+  }
+  if (mode==4){
+    // wandering particles
+    Serial.printf("pos: %f,%f,%f\n", particles[0]->x(), particles[0]->y(), particles[0]->z());
+    Serial.printf("a/c: %f,%f\n", particles[0]->a, particles[0]->c);
+    Serial.printf("av/cv: %f,%f\n", particles[0]->av, particles[0]->cv);
   }
 }
 Ticker timer1;
 
 
-#define NUM_PARTICLES 12
-Particle *particles[NUM_PARTICLES];
+void reset_particle(Particle *p){
+  p->reset();
+  p->led_number = (NUM_SIDES-1)*LEDS_PER_SIDE + random(11);
+  uint8_t lev = random(10,50);
+  p->color = (uint32_t)CRGB(lev, random(100,230), lev);
+  p->a = random(TWO_PI*1000)/1000.0;
+  p->c = PI;
+  p->cv = -random(60,200)/1000.0;
+  p->av = 0;
+}
 
 void wandering_particles(){
   for (int p=0; p<NUM_PARTICLES; p++){
@@ -262,10 +288,13 @@ void wandering_particles(){
     // loop through path and light up LEDs a little bit with nblend
     int led = particles[p]->led_number;
     nblend(leds[led], particles[p]->color, 300/particles[p]->hold_time);
+    if (particles[p]->z() > 260){
+      reset_particle(particles[p]);
+    }
   }
   for (int i=0; i<NUM_LEDS; i++){
     if (random(100)<10) continue;
-    leds[i].fadeToBlackBy(3);
+    leds[i].fadeToBlackBy(8);
   }
   FastLED.show();
   delay(2);
@@ -280,6 +309,7 @@ void drip_particles(){
 void setup() {
   // set up fastled
   Serial.begin(115200);
+
   FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.setDither(0);
@@ -290,8 +320,9 @@ void setup() {
     leds[side*LEDS_PER_SIDE] = my_colors[side];
   }
   FastLED.show();
-  delay(300);
 
+  delay(500);
+  Serial.println("Start");
 
   // init Points
   for (int p=0; p < NUM_LEDS; p++){
@@ -307,11 +338,12 @@ void setup() {
   int p_step = 280/NUM_PARTICLES;
   for (int p=0; p<NUM_PARTICLES; p++){
     particles[p] = new Particle();
-    particles[p]->color = CHSV(p*p_step, 220, 200);
+    reset_particle(particles[p]);
   }
 
   pinMode(0, INPUT_PULLUP);
 
+  Serial.println("Init done");
 
   for (int i=1; i<11; i++){    
     for (int side=0; side<NUM_SIDES; side++){
@@ -333,17 +365,19 @@ void setup() {
       FastLED.show();
       delayMicroseconds(500);
     }
+  } else {
+    Serial.println("Wifi disabled.");
   }
 
   FastLED.setDither(0);
   FastLED.clear();
   FastLED.show();
 
-  delay(500);
-  Serial.println("Start");
+  delay(300);
+
   timer1.attach(3, timerStatusMessage);
 
-  mode = 4;
+  mode = 0;
 
 }
 

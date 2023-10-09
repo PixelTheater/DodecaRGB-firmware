@@ -5,23 +5,20 @@
 #include <Arduino.h>
 #include <vector>
 #include <algorithm>
+#include <ArduinoEigen.h>
 #include "points.h"
+
+using namespace Eigen;
 
 #define LEDS_PER_SIDE 26
 #define NUM_SIDES 12
 #define NUM_LEDS NUM_SIDES*LEDS_PER_SIDE  // 6x4 LEDs side, 6 sides for now
 #define MAX_LED_NEIGHBORS 6
 
-struct Vector3D {
-    float x;
-    float y;
-    float z;
-};
-
 struct distance_map {
     int led_number;
     float distance;
-    Vector3D direction;
+    Vector3d direction;
 };
 
 // define X,Y,Z struct
@@ -31,11 +28,15 @@ class LED_Point {
     float x;
     float y;
     float z;
+    Vector3d pos;
     int side;       // which of the 12 sides it's on
     int label_num;  // which LED on the side (they are labelled)
   
-    distance_map neighbors[MAX_LED_NEIGHBORS];
+    std::vector<distance_map> neighbors;
     void find_nearest_leds();
+    float distance_to(float x, float y, float z);
+    float distance_to(LED_Point *p);
+    float distanceFrom(float x, float y, float z);
 
     // default constructor
     LED_Point(

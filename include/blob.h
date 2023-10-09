@@ -5,10 +5,10 @@ class Blob {
   public:
     int sphere_r = 290; // radius of sphere the blob orbits
     int radius; // radius of blob
-    float a,c = 0;  // polar angles
-    float av;  // velocity of angles in radians
-    float cv;  // velocity of angles in radians
-    const float max_accel = 0.04;
+    int16_t a,c = 0;  // polar angles
+    int16_t av;  // velocity of angles in radians
+    int16_t cv;  // velocity of angles in radians
+    int16_t max_accel = 25500;
     long age;
     long lifespan;
 
