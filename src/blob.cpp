@@ -17,11 +17,11 @@ void Blob::reset(){
   this->cv = 0;
   this->a = random(UINT16_MAX) - UINT16_MAX/2;  // rotation angle of blob, using FastLED fast trif functions
   this->c = random(UINT16_MAX) - UINT16_MAX/2;  // rotation angle of blob, using FastLED fast trif functions
-  this->applyForce(random(300,800), random(300, 800));
-  this->color = CHSV((millis()/1000)%255, 250, 200+random(50));
-  this->radius = random(60,130);
+  this->applyForce(random(50,400), random(50, 400));
+  this->color = CHSV((millis()/500)%255, 240, 150+random(50));
+  this->radius = random(70,140);
   this->age = 0;
-  this->lifespan = random(3000)+3000;
+  this->lifespan = random(max_age)+500;
 }
 
 const float FTRIG = 65535.0 / (TWO_PI);
@@ -42,12 +42,12 @@ void Blob::tick(){
   this->a = this->a + av;
   this->c = this->c + cv;
   if (random(500)==1){
-    float af = random(80,180) * (random(2)==1 ? 1 : -1);
-    float cf = random(80,180) * (random(2)==1 ? 1 : -1);
+    float af = random(30,120) * (random(2)==1 ? 1 : -1);
+    float cf = random(30,150) * (random(2)==1 ? 1 : -1);
     this->applyForce(af, cf);
   }
-  if (this->lifespan - this->age < 100){
-    this->radius *= 0.95;
+  if (this->lifespan - this->age < max_age/10){
+    this->radius *= 0.97;
   }
   if (this->age > this->lifespan){
     this->reset();

@@ -3,13 +3,14 @@
 
 class Blob {
   public:
-    int sphere_r = 290; // radius of sphere the blob orbits
+    int sphere_r = 320; // radius of sphere the blob orbits
     int radius; // radius of blob
     int16_t a,c = 0;  // polar angles
     int16_t av;  // velocity of angles in radians
     int16_t cv;  // velocity of angles in radians
-    int16_t max_accel = 25500;
+    int16_t max_accel = 1000;
     long age;
+    long max_age = 3000;
     long lifespan;
 
     CRGB color;

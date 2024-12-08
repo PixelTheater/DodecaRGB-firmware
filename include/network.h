@@ -1,7 +1,9 @@
 #pragma once
 
 #include <Arduino.h>
+#ifndef UNIT_TEST
 #include <WiFiManager.h>
+#endif
 
 extern const char* NTP_SERVER;    // defined in network.cpp
 extern const char* TZ_INFO;       // defined in network.cpp

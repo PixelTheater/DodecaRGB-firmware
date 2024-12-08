@@ -10,9 +10,9 @@
 
 using namespace Eigen;
 
-#define LEDS_PER_SIDE 26
-#define NUM_SIDES 12
-#define NUM_LEDS NUM_SIDES*LEDS_PER_SIDE  // 6x4 LEDs side, 6 sides for now
+#define LEDS_PER_SIDE 104
+#define NUM_SIDES 6
+#define NUM_LEDS NUM_SIDES*LEDS_PER_SIDE 
 #define MAX_LED_NEIGHBORS 6
 
 struct distance_map {

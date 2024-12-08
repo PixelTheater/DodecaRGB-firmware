@@ -1,5 +1,12 @@
 # DodecaRGB
 
+### NOTE (Dec 8 2024):
+- refactoring in progress
+- new V2 hardware in development with micro LEDs and 104 per side, overall smaller PCBs
+- currently working, but only tested with 6 sides active (624) and frame rates of 50fps are achievable so far
+
+---
+
 This is the firmware for DodecaRGB, a colorful DIY IoT model 12-sided shape made from PCB circuit boards adorned with bright LEDs. It can be assembled as a desktop light, or built with a battery pack and motion sensors for reactive animations and games. 
 
 **Hackaday page**: https://hackaday.io/project/192557-dodecargb

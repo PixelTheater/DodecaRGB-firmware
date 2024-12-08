@@ -9,8 +9,8 @@
 
 extern LED_Point points[];
 
-#define MAX_PATH_LENGTH 11
-#define PARTICLE_HOLD_TIME 10
+#define MAX_PATH_LENGTH 3
+#define PARTICLE_HOLD_TIME 2
 
 class Particle {
     enum LedStatus {free, held};

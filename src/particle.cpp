@@ -10,13 +10,13 @@ float Particle::z(){ return sphere_r * cos(this->c); }
 
 void Particle::reset() {
     this->led_number = 1;
-    this->color = 255*255;
+    this->color = 255*255 + random(200);
     this->age = 0;
     this->a = 0;
     this->c = random(TWO_PI*1000)/1000.0;
     this->av = random(30, 90)/5000.0;
     this->cv = random(30, 90)/500.0;
-    this->hold_time = PARTICLE_HOLD_TIME;
+    this->hold_time = random(PARTICLE_HOLD_TIME,PARTICLE_HOLD_TIME+10);
     this->status = free;
 }
 
@@ -27,8 +27,7 @@ void Particle::tick() {
         this->a += av;
         this->c += cv;
 
-        this->status = held;
-        int next_led = -1;
+        this->status = held;        
         LED_Point *p = &points[this->led_number];
         
         int best_pick = -1;

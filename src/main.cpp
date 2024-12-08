@@ -1,28 +1,28 @@
 #include <Arduino.h>
 #include <cmath>
 #include "FastLED.h"
-#include "Ticker.h"
+// #include "Ticker.h"
 #include "points.h"
-#include "network.h"
+//#include "network.h"
 #include "blob.h"
 #include "particle.h"
 
 /*
 
+DodecaRBG V2
+
+NOTE (Dec 8 2024):
+- refactoring in progress
+- working, but only tested with 6 sides active (624) and frame rates of 50fps are achievable so far
+
 We have a dodecahedron model with 12 sides. 
 Each side is a pentgon-shaped PCB circuit board with RGB LEDs arranged on them, spaced evenly. 
 
-An ESP32 is used to control the LEDs, using the Arduino environment and FastLED library.
+A Teensy 3.6+ microcontroller is used to control the LEDs, using the Arduino environment and FastLED library.
 
-Each pentagon side contains 26 RGB leds on a circuit board, arranged in the following way:
-- 1 central LED in the exact middle of each side
-- a ring of 10 LEDs in a circle around the central LED
-- 15 LEDs around the edges, in groups of 3, spaced evenly around the edge of the pentagon
+Each pentagon side contains 104 RGB leds on a circuit board, arranged in rings from the center.
 
-The LEDs on each face of the dodecahedron are wired in series so that the central LED is first, 
-the ring LEDs come next, and the edge LEDs after that. 
-
-Each side connects to the next, in series, for a grand total of 312 LEDs. 
+Each side connects to the next, in series, for a grand total of 1247 LEDs. 
 
 As the PCB circuit boards are wired together to form the dodecahedron, the arrangement of the sides must be 
 defined, as there are many possible configurations. 
@@ -35,7 +35,7 @@ renders an interactive 3D model of the dodecahedron.
 */
 
 // LED configs
-#define BRIGHTNESS  40
+#define BRIGHTNESS  50
 #define LED_PIN 5
 #define WIFI_ENABLED false
 
@@ -56,7 +56,7 @@ CRGB my_colors[] = {
 };
 
 CRGB leds[NUM_LEDS];
-#define USER_BUTTON 0
+#define USER_BUTTON 46
 
 // Constants
 const int LEDS_PER_RING = 10;
@@ -65,52 +65,54 @@ const int LEDS_PER_EDGE = 15;
 int mode = 0;
 
 void color_show(){
+  // turn off all LEDs in a dissolving pattern
+  for (int x=0; x<100; x++) {
+    for (int i = 0; i < NUM_LEDS; i++) {
+      leds[i].fadeToBlackBy(1+random(3));
+    }
+    if (digitalRead(USER_BUTTON) == LOW){
+      return;
+    } else {
+      FastLED.show();
+      delay(10);
+    }
+  }
+  
   // light up all LEDs in sequence
   CRGB color = CRGB::White;
-  int c = random(1,255-NUM_LEDS);
+  int c = random(1,255);
   for (int i = 0; i < NUM_LEDS; i++) {
-    color.setHSV(c+i, 255, 128);
+    color.setHSV((c+i/2)%255, 255, 128);
     leds[i] = color;
-    if (digitalRead(0) == LOW){
+    if (digitalRead(USER_BUTTON) == LOW){
       return;
     } else {
-      delay(20);
+      delay(10);
       FastLED.show();
     }
   }
-  delay(100);
-  // turn off all LEDs in a dissolving pattern
-  for (int x=0; x<50; x++) {
-    for (int i = 0; i < NUM_LEDS; i++) {
-      leds[i].fadeToBlackBy(3+random(5));
-    }
-    if (digitalRead(0) == LOW){
-      return;
-    } else {
-      FastLED.show();
-      delay(50);
-    }
-  }
+  delay(1000);
+
 }
 
 void solid_sides(){
   static int s=0;
   if (random(12)==0) { s = random(NUM_SIDES); };
-  CRGB c = CHSV(millis()/random(100,110) % 255, 250, 220);
+  CRGB c = CHSV(millis()/random(100,1000) % 255, random(150)+100, random(120)+10);
   for (int level=0; level<50; level+=1){
     for (int i=s*LEDS_PER_SIDE; i<(s+1)*LEDS_PER_SIDE; i++){
-      nblend(leds[i], c, 6);
+      nblend(leds[i], c, 3);
     }
     FastLED.show();
-    if (digitalRead(0) == LOW) return;
+    if (digitalRead(USER_BUTTON) == LOW) return;
     delayMicroseconds(100);
   } 
   for (int level=100; level>0; level--){
     for (int i=(s)*LEDS_PER_SIDE; i<(s+1)*LEDS_PER_SIDE; i++){
-      nblend(leds[i], CHSV(millis()/random(100,110) % 255, 250, random(50)+150), 1);
+      nblend(leds[i], CHSV(millis()/random(100,1000) % 255, random(150)+100, random(120)+10), 3);
     }
     FastLED.show();
-    if (digitalRead(0) == LOW) return;
+    if (digitalRead(USER_BUTTON) == LOW) return;
     delayMicroseconds(100);
   }
   FastLED.show();
@@ -118,36 +120,129 @@ void solid_sides(){
 }
 
 // randomly light up LEDs and fade them out individually, like raindrops
-int fade_level = 0;
+uint8_t fade_level = 20;
+uint8_t fade_level2 = 10;
+int chance1=30;
+int chance2=50;
 void flash_fade_points(){
   // cycle color over time
   CRGB c = CRGB(
-    sin8_C((millis()/500)%255),
-    sin8_C((millis()/400)%255),
-    sin8_C((millis()/300)%255)
+    sin8_C((millis()/330)%255),
+    sin8_C((millis()/220)%100+150),
+    sin8_C((millis()/150)%155+50)
+  ); 
+  CRGB c2 = CRGB(
+    sin8_C((millis()/420)%255),
+    sin8_C((millis()/130)%50+200),
+    sin8_C((millis()/350)%150+50)
   ); 
   fade_level = sin8_C((millis()/600)%255);
-  for (int n=0; n<12; n++){
-    // central LED
-    if (random(35) == 0) nblend(leds[n*LEDS_PER_SIDE], c, map(fade_level, 0, 255, 8, 30));
-    // ring LEDs
-    if (random(4) == 0) {
-      int r1 = random(n*LEDS_PER_SIDE+1, (n+1)*LEDS_PER_SIDE+10);        
-      nblend(leds[r1], c, map(fade_level, 0, 255, 30, 60));
+  fade_level2 = sin8_C((millis()/810)%255);
+  for (int n=0; n<NUM_SIDES; n++){
+    if (random(sin8_C((millis()/340)%255)) < chance1) {
+      int r1 = random(n*LEDS_PER_SIDE, (n+1)*LEDS_PER_SIDE);        
+      nblend(leds[r1], c, map(fade_level, 0, 255, 20, 50));
     }
-    // edge LEDs
-    if (random(2) == 0) {
-      int r2 = random(n*LEDS_PER_SIDE+11, (n+1)*LEDS_PER_SIDE+26);
-      nblend(leds[r2], c,map(fade_level, 0, 255, 30, 60));  
+    if (random(sin8_C((millis()/570)%255)) < chance2) {
+      int r2 = random(n*LEDS_PER_SIDE, (n+1)*LEDS_PER_SIDE);
+      nblend(leds[r2], c2, map(fade_level2, 0, 255, 20, 50));        
     }
   }
-  for (int i = 0; i < NUM_LEDS; i++){
-    if (random(350) < fade_level+2) leds[i].fadeToBlackBy(map(fade_level, 0, 255, 50, 30));
-  }
+  // for (int i = 0; i < NUM_LEDS; i++){
+  //   if (random(255) < fade_level/2) leds[i].fadeToBlackBy(map(fade_level, 0, 255, 50, 15));
+  // }
+
+  chance1 = map(sin(millis()/7000.0), -1.0, 1.0, 0, 130);
+  chance2 = map(cos(millis()/19000.0), -1.0, 1.0, 0, 140);
+  fadeToBlackBy(leds, NUM_LEDS, map((fade_level+fade_level2)/2, 0, 265, 6, 0));
   FastLED.show();   
-  delay(1);  
+  //delay(1);  
 }
 
+// Constants
+#define ANALOG_PIN A0
+#define SMOOTHING_FACTOR 0.005
+
+// Variables for dynamic range calibration
+int noiseMin = 120;
+int noiseMax = 230;
+
+// Smoothed value
+float smoothedValue = 0.0;
+
+float getSmoothNoise() {
+    // Step 1: Read the analog signal
+    int rawValue = analogRead(ANALOG_PIN);
+
+    // Step 2: Update noise range dynamically
+    if (rawValue < noiseMin) noiseMin = rawValue;
+    if (rawValue > noiseMax) noiseMax = rawValue;
+
+    // Prevent divide by zero
+    int range = noiseMax - noiseMin;
+    if (range == 0) range = 1;
+
+    // Step 3: Map the raw value to the range [-1.0, 1.0]
+    float mappedValue = (float)(rawValue - noiseMin) / range * 2.0 - 1.0;
+
+    // Step 4: Apply smoothing
+    smoothedValue += SMOOTHING_FACTOR * (mappedValue - smoothedValue);
+
+    return smoothedValue;
+}
+
+void tv_static(){
+  for (int i = 0; i<NUM_LEDS; i++){
+    leds[i] = CHSV(analogRead(A0), 255, analogRead(A1)/2);
+  }
+  FastLED.show();
+}
+
+float spin_angle = 0;
+float shift = 0;
+void geography_show(){
+  static int sphere_r = 310; // radius of sphere
+
+  // Lorenz parameters
+  static float sigma = 8.0+random(400)/100.0;  // Prandtl number
+  static float rho = 24.0+random(400)/100.0;    // Rayleigh number
+  static float beta = 8.0 / 3+random(100)/100.0;
+
+  // Time step
+  static float dt = 0.001;
+
+  // State variables
+  static float x = 0.1, y = 0.0, z = 0.0;  // Initial conditions
+  // Calculate the derivatives
+  float dx = sigma * (y - x);
+  float dy = x * (rho - z) - y;
+  float dz = x * y - beta * z;
+
+  // Update the state variables using Euler's method
+  x += dx * dt;
+  y += dy * dt;
+  z += dz * dt;
+
+  // Normalize x to the range [-1.0, 1.0]
+  // You may also choose y or z for variation
+  float normalized_x = (x + 20.0) / 40.0 * 2.0 - 0.8;  // Assuming x typically stays within [-20, 20]
+  float normalized_y = (y + 30.0) / 40.0 * 2.0 - 0.4;  // Assuming x typically stays within [-20, 20]
+  float normalized_z = (z + 10.0) / 20.0 * 2.0 - 0.9;  // Assuming x typically stays within [-20, 20]
+
+  for (int i = 0; i<NUM_LEDS; i++){
+    float a = acos(points[i].y / sphere_r)+sin(normalized_y);
+    float c = atan2(points[i].z, points[i].x)+cos(spin_angle)+sin(normalized_x);
+    int c_start = map(normalized_y+a, -2.5, 3.0, 0, 255);
+    int c_end = map(normalized_x+c, -2.5, 3.0, 0, 255);
+    int hue = map(fmod(normalized_x/10.0+normalized_y/10.0+c, PI), 0, PI, c_start, c_end);
+    int brightness = map(sin(a*shift+cos(spin_angle)), -3.3, 3.0, 5, 130);
+    leds[i] = CHSV(hue, 255, brightness);
+  }
+  FastLED.show();
+  spin_angle += 0.01+normalized_z/100.0;
+  //shift=getSmoothNoise()*5;
+  shift = (normalized_z-2.0)*5.5;
+}
 
 int calculateBlobDistance(LED_Point p1, Blob *b) {
   int dx = p1.x - b->x();
@@ -156,7 +251,7 @@ int calculateBlobDistance(LED_Point p1, Blob *b) {
   return (dx*dx + dy*dy + dz*dz);  
 }
 
-#define NUM_BLOBS 4
+#define NUM_BLOBS 7
 Blob *blobs[NUM_BLOBS];
 
 void orbiting_blobs(){
@@ -172,19 +267,19 @@ void orbiting_blobs(){
       int dist = calculateBlobDistance(points[i], blobs[b]);
       if (dist < rad_sq){
         CRGB c = blobs[b]->color;
-        if (blobs[b]->age < 255){
-          c.fadeToBlackBy(255 - blobs[b]->age);
+        // slow fade in
+        if (blobs[b]->age < 150){
+          c.fadeToBlackBy(map(blobs[b]->age, 0, 150, 230, 2));
         }
-        // leds[i] += c;
-        nblend(leds[i], c, map(dist, 0, rad_sq, 180, 30));
-        // leds[i] = CHSV(blobs[b]->color, 255, 255-dist);
+        nblend(leds[i], c, map(dist, 0, rad_sq, 30, 5));
       }
     }
   }
 
-  for (int i=0; i<NUM_LEDS; i++){
-    leds[i].fadeToBlackBy(25);
-  }
+  fadeToBlackBy(leds, NUM_LEDS, 5);  
+  // for (int i=0; i<NUM_LEDS; i++){
+  //   leds[i].fadeToBlackBy(10);
+  // }
 
   FastLED.show();
 
@@ -200,7 +295,7 @@ void fade_test(){
   static float xi = -max_range;
   static float target = 140;
   static int counter = 0;
-  float speed = 0.02;
+  float speed = 0.01;
   CRGB c = CRGB(0,0,0);
   int blend = 128;
 
@@ -247,7 +342,7 @@ void fade_test(){
 }
 
 
-#define NUM_PARTICLES 15
+#define NUM_PARTICLES 25
 Particle *particles[NUM_PARTICLES];
 
 void timerStatusMessage(){
@@ -259,7 +354,9 @@ void timerStatusMessage(){
     Serial.printf("Blob x/y/z: %d %d %d\n", blobs[0]->x(), blobs[0]->y(), blobs[0]->z());
   }
   if (mode==2){
-    Serial.printf("Fade level: %d\n", fade_level);  
+    Serial.printf("fade_level: %d\n", fade_level);
+    Serial.printf("fade_level2: %d\n", fade_level2);
+    Serial.printf("chance1: %d chance2: %d\n", chance1, chance2);
   }
   if (mode==4){
     // wandering particles
@@ -267,8 +364,13 @@ void timerStatusMessage(){
     Serial.printf("a/c: %f,%f\n", particles[0]->a, particles[0]->c);
     Serial.printf("av/cv: %f,%f\n", particles[0]->av, particles[0]->cv);
   }
+  if (mode==5){
+    Serial.printf("spin_angle: %f\n", spin_angle);
+    Serial.printf("shift: %f\n", shift);  
+    Serial.printf("Analog noise pin: %d\n", analogRead(ANALOG_PIN));
+  }
 }
-Ticker timer1;
+//Ticker timer1;
 
 
 void reset_particle(Particle *p){
@@ -288,16 +390,15 @@ void wandering_particles(){
     // loop through path and light up LEDs a little bit with nblend
     int led = particles[p]->led_number;
     nblend(leds[led], particles[p]->color, 300/particles[p]->hold_time);
-    if (particles[p]->z() > 260){
+    if (random(2000) < 2){
       reset_particle(particles[p]);
     }
   }
   for (int i=0; i<NUM_LEDS; i++){
-    if (random(100)<10) continue;
-    leds[i].fadeToBlackBy(8);
+    leds[i].fadeToBlackBy(5+random(10));
   }
   FastLED.show();
-  delay(2);
+  //delay(2);
 }
 
 
@@ -326,68 +427,81 @@ void setup() {
 
   // init Points
   for (int p=0; p < NUM_LEDS; p++){
+    int side = p/LEDS_PER_SIDE;
     points[p].find_nearest_leds();
+    int side_led = p%LEDS_PER_SIDE;
+    if (side_led > 5 && side_led < 16 ){
+      leds[p] = my_colors[side];
+      FastLED.show();
+    }
+    if (side_led == 0){
+      Serial.printf("Calculating points, side %d\n",side);
+    }
   }
 
   // init Blobs
   for (int b=0; b<NUM_BLOBS; b++){
     blobs[b] = new Blob();
-    blobs[b]->color = CRGB(random(255), random(255), random(255));
+    blobs[b]->color = CHSV(random(255), random(150)+100, random(120)+100);
   }
   // init Particles
-  int p_step = 280/NUM_PARTICLES;
   for (int p=0; p<NUM_PARTICLES; p++){
     particles[p] = new Particle();
     reset_particle(particles[p]);
   }
 
-  pinMode(0, INPUT_PULLUP);
+  pinMode(USER_BUTTON, INPUT_PULLUP);
 
   Serial.println("Init done");
 
-  for (int i=1; i<11; i++){    
-    for (int side=0; side<NUM_SIDES; side++){
-      leds[side*LEDS_PER_SIDE+i] = my_colors[side];
-    }
-    FastLED.show();
-    delay(50);
-  }
+  // for (int i=1; i<LEDS_PER_SIDE; i+=(1+random(4))){    
+  //   for (int side=0; side<NUM_SIDES; side++){
+  //     leds[side*LEDS_PER_SIDE+i] = my_colors[side];
+  //   }
+  //   FastLED.show();
+  //   delay(50);
+  // }
 
   if (WIFI_ENABLED == true){
-    bool config_wifi = (digitalRead(USER_BUTTON) == LOW);
-    bool connected = ConnectToWifi(config_wifi);
+    // bool config_wifi = (digitalRead(USER_BUTTON) == LOW);
+    // bool connected = ConnectToWifi(config_wifi);
 
-    // flash green if connected, or red if not
-    for (int x=0; x<40; x++){
-      int level = 150 - abs(map(x, 0,  40, -150, 150));
-      CRGB c =  (connected ? CRGB(0,level,0) : CRGB(level,0,0));
-      FastLED.showColor(c);
-      FastLED.show();
-      delayMicroseconds(500);
-    }
+    // // flash green if connected, or red if not
+    // for (int x=0; x<40; x++){
+    //   int level = 150 - abs(map(x, 0,  40, -150, 150));
+    //   CRGB c =  (connected ? CRGB(0,level,0) : CRGB(level,0,0));
+    //   FastLED.showColor(c);
+    //   FastLED.show();
+    //   delayMicroseconds(500);
+    // }
   } else {
     Serial.println("Wifi disabled.");
   }
 
-  FastLED.setDither(0);
+  FastLED.setDither(1);
   FastLED.clear();
   FastLED.show();
 
   delay(300);
 
-  timer1.attach(3, timerStatusMessage);
+//  timer1.attach(3, timerStatusMessage);
 
-  mode = 0;
+  mode = 2;
 
 }
 
 
-
+long interval, last_interval = 0;
 void loop() {
+  interval = millis()/3000;
+  if (interval != last_interval){
+    timerStatusMessage();
+    last_interval = interval;
+  }
   // handle button press for mode change
   if (digitalRead(USER_BUTTON) == LOW){
     Serial.print("Button pressed, changing mode to ");
-    mode = (mode + 1) % 5;
+    mode = (mode + 1) % 7;
     Serial.println(mode);
  
     while (digitalRead(USER_BUTTON) == LOW){
@@ -410,10 +524,17 @@ void loop() {
     flash_fade_points();
   }
   if (mode==3){
-    solid_sides();
+    //solid_sides();
+    color_show();
   }
   if (mode==4){
     wandering_particles();
     // drip_particles();
+  }
+  if (mode==5){
+    geography_show();
+  }
+  if (mode==6){
+    tv_static();
   }
 }
