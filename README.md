@@ -3,9 +3,21 @@
 ### NOTE (Dec 8 2024):
 - refactoring in progress
 - new V2 hardware in development with micro LEDs and 104 per side, overall smaller PCBs
-- currently working, but only tested with 6 sides active (624) and frame rates of 50fps are achievable so far
+- currently working, using two channels for top+bottom hemispheres, 624 pixels each segment
+- frame rates of 50fps are achievable so far, with 1248 pixels
+
+![wiring diagram](<images/Screenshot 2024-12-12 at 18.23.51.png>)
+
+Photos:
+
+- [v2 - level shifters](images/IMG_5514.jpeg)
+- [v2 - teensy](images/IMG_5515.jpeg)
+- [v2 - prototype internal wiring](images/IMG_5516.jpeg)
+
 
 ---
+
+## Version 1 info (CCC camp 2023)
 
 This is the firmware for DodecaRGB, a colorful DIY IoT model 12-sided shape made from PCB circuit boards adorned with bright LEDs. It can be assembled as a desktop light, or built with a battery pack and motion sensors for reactive animations and games. 
 

@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <cmath>
-#include "FastLED.h"
+#include <FastLED.h>
 // #include "Ticker.h"
 #include "points.h"
 //#include "network.h"
@@ -35,10 +35,18 @@ renders an interactive 3D model of the dodecahedron.
 */
 
 // LED configs
-#define BRIGHTNESS  50
-#define LED_PIN 5
+#define USER_BUTTON 2
+// https://github.com/FastLED/FastLED/wiki/Parallel-Output#parallel-output-on-the-teensy-4
+// pins 19+18 are used to control two strips of 624 LEDs, for a total of 1248 LEDs
+#define WS2812_LED_PIN 19  // Teensy 4.1/fastled pin order: .. ,19,18,14,15,17, ..
+#define ANALOG_PIN_A 24
+#define ANALOG_PIN_B 25
+#define ON_BOARD_LED 13
+
+#define BRIGHTNESS  40
 #define WIFI_ENABLED false
 
+// base color palette
 #define NUM_COLORS 11
 CRGB my_colors[] = {
   CHSV(60, 255, 128),    // Bright yellow
@@ -55,8 +63,9 @@ CRGB my_colors[] = {
   CRGB::DarkBlue
 };
 
+bool led_toggle = false;
+
 CRGB leds[NUM_LEDS];
-#define USER_BUTTON 46
 
 // Constants
 const int LEDS_PER_RING = 10;
@@ -74,7 +83,7 @@ void color_show(){
       return;
     } else {
       FastLED.show();
-      delay(10);
+      delay(3);
     }
   }
   
@@ -87,11 +96,11 @@ void color_show(){
     if (digitalRead(USER_BUTTON) == LOW){
       return;
     } else {
-      delay(10);
+      delay(3);
       FastLED.show();
     }
   }
-  delay(1000);
+  delay(500);
 
 }
 
@@ -160,7 +169,6 @@ void flash_fade_points(){
 }
 
 // Constants
-#define ANALOG_PIN A0
 #define SMOOTHING_FACTOR 0.005
 
 // Variables for dynamic range calibration
@@ -172,7 +180,7 @@ float smoothedValue = 0.0;
 
 float getSmoothNoise() {
     // Step 1: Read the analog signal
-    int rawValue = analogRead(ANALOG_PIN);
+    int rawValue = analogRead(ANALOG_PIN_A);
 
     // Step 2: Update noise range dynamically
     if (rawValue < noiseMin) noiseMin = rawValue;
@@ -193,7 +201,7 @@ float getSmoothNoise() {
 
 void tv_static(){
   for (int i = 0; i<NUM_LEDS; i++){
-    leds[i] = CHSV(analogRead(A0), 255, analogRead(A1)/2);
+    leds[i] = CHSV(analogRead(ANALOG_PIN_A), 255, analogRead(ANALOG_PIN_B)/2);
   }
   FastLED.show();
 }
@@ -367,8 +375,11 @@ void timerStatusMessage(){
   if (mode==5){
     Serial.printf("spin_angle: %f\n", spin_angle);
     Serial.printf("shift: %f\n", shift);  
-    Serial.printf("Analog noise pin: %d\n", analogRead(ANALOG_PIN));
+    Serial.printf("Analog noise pins: %d/%d\n", analogRead(ANALOG_PIN_A), analogRead(ANALOG_PIN_B));
   }
+  // toggle on-board LED
+  // digitalWrite(ON_BOARD_LED, led_toggle);
+  led_toggle = !led_toggle;
 }
 //Ticker timer1;
 
@@ -406,14 +417,39 @@ void drip_particles(){
   // todo
 }
 
+uint32_t FreeMem(){ // for Teensy 3.0
+    uint32_t stackTop;
+    uint32_t heapTop;
+
+    // current position of the stack.
+    stackTop = (uint32_t) &stackTop;
+
+    // current position of heap.
+    void* hTop = malloc(1);
+    heapTop = (uint32_t) hTop;
+    free(hTop);
+
+    // The difference is (approximately) the free, available ram.
+    return stackTop - heapTop;
+}
+
 
 void setup() {
-  // set up fastled
   Serial.begin(115200);
+  delay(300);
+  Serial.println("Start");
 
-  FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
+  pinMode(ON_BOARD_LED, OUTPUT);
+  pinMode(ANALOG_PIN_A, INPUT);
+  pinMode(ANALOG_PIN_B, INPUT);
+  pinMode(USER_BUTTON, INPUT_PULLUP);
+
+  // set up fastled - two strips on two pins
+  // see https://github.com/FastLED/FastLED/wiki/Parallel-Output#parallel-output-on-the-teensy-4
+  FastLED.addLeds<2, WS2812, WS2812_LED_PIN, GRB>(leds, NUM_LEDS/2);
   FastLED.setBrightness(BRIGHTNESS);
-  FastLED.setDither(0);
+  FastLED.setDither(1);
+  FastLED.setMaxRefreshRate(60);
   FastLED.clear();
   FastLED.show();
 
@@ -422,20 +458,24 @@ void setup() {
   }
   FastLED.show();
 
-  delay(500);
-  Serial.println("Start");
-
   // init Points
   for (int p=0; p < NUM_LEDS; p++){
     int side = p/LEDS_PER_SIDE;
-    points[p].find_nearest_leds();
     int side_led = p%LEDS_PER_SIDE;
+
+    if (side_led == 0){
+      Serial.printf("Calculating points, side %d\n",side);
+      // GC.Collect();
+      // GC.WaitForPendingFinalizers();
+    }
+
+    points[p].find_nearest_leds();
+
+    Serial.printf(" led %d, side %d, free mem=%u kb\n", p, side, FreeMem()/1024);
+
     if (side_led > 5 && side_led < 16 ){
       leds[p] = my_colors[side];
       FastLED.show();
-    }
-    if (side_led == 0){
-      Serial.printf("Calculating points, side %d\n",side);
     }
   }
 
@@ -449,8 +489,6 @@ void setup() {
     particles[p] = new Particle();
     reset_particle(particles[p]);
   }
-
-  pinMode(USER_BUTTON, INPUT_PULLUP);
 
   Serial.println("Init done");
 
@@ -478,7 +516,6 @@ void setup() {
     Serial.println("Wifi disabled.");
   }
 
-  FastLED.setDither(1);
   FastLED.clear();
   FastLED.show();
 
@@ -486,14 +523,17 @@ void setup() {
 
 //  timer1.attach(3, timerStatusMessage);
 
-  mode = 2;
+  mode = 0;
 
 }
 
 
 long interval, last_interval = 0;
+const long max_interval = 3000;
 void loop() {
-  interval = millis()/3000;
+  interval = millis()/max_interval;
+  int led_fade_level = map((millis() % max_interval), 0, max_interval, -256, 256);
+  analogWrite(ON_BOARD_LED, abs(led_fade_level));
   if (interval != last_interval){
     timerStatusMessage();
     last_interval = interval;
@@ -516,12 +556,15 @@ void loop() {
   }
   if (mode == 0){
     orbiting_blobs();
+    //delay(1);
   }
   if (mode == 1){
     fade_test();
+    delay(2);
   }
   if (mode == 2){
     flash_fade_points();
+    delay(2);
   }
   if (mode==3){
     //solid_sides();
@@ -529,12 +572,15 @@ void loop() {
   }
   if (mode==4){
     wandering_particles();
+    // delay(1);
     // drip_particles();
   }
   if (mode==5){
     geography_show();
+    // delay(1);
   }
   if (mode==6){
     tv_static();
+    // delay(1);
   }
 }

@@ -11,9 +11,9 @@
 using namespace Eigen;
 
 #define LEDS_PER_SIDE 104
-#define NUM_SIDES 6
+#define NUM_SIDES 12
 #define NUM_LEDS NUM_SIDES*LEDS_PER_SIDE 
-#define MAX_LED_NEIGHBORS 6
+#define MAX_LED_NEIGHBORS 5
 
 struct distance_map {
     int led_number;
@@ -28,7 +28,7 @@ class LED_Point {
     float x;
     float y;
     float z;
-    Vector3d pos;
+    //Vector3d pos;
     int side;       // which of the 12 sides it's on
     int label_num;  // which LED on the side (they are labelled)
   
