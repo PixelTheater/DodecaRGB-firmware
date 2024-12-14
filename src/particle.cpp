@@ -10,12 +10,12 @@ float Particle::z(){ return sphere_r * cos(this->c); }
 
 void Particle::reset() {
     this->led_number = 1;
-    this->color = 255*255 + random(200);
+    this->color = 255*255 + random(2000);
     this->age = 0;
-    this->a = 0;
-    this->c = random(TWO_PI*1000)/1000.0;
-    this->av = random(30, 90)/5000.0;
-    this->cv = random(30, 90)/500.0;
+    this->a = random(20, 40)/15000.0;
+    this->c = random(TWO_PI*1000)/15000.0;
+    this->av = random(20, 60)/15000.0;
+    this->cv = random(20, 60)/14000.0;
     this->hold_time = random(PARTICLE_HOLD_TIME,PARTICLE_HOLD_TIME+10);
     this->status = free;
 }

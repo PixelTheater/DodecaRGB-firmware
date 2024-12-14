@@ -96,35 +96,35 @@ void color_show(){
     if (digitalRead(USER_BUTTON) == LOW){
       return;
     } else {
-      delay(3);
+      //delay(3);
       FastLED.show();
     }
   }
-  delay(500);
+  //delay(500);
 
 }
 
 void solid_sides(){
   static int s=0;
   if (random(12)==0) { s = random(NUM_SIDES); };
-  CRGB c = CHSV(millis()/random(100,1000) % 255, random(150)+100, random(120)+10);
+  CRGB c = CHSV(random(255), random(100)+150, random(255));
   for (int level=0; level<50; level+=1){
     for (int i=s*LEDS_PER_SIDE; i<(s+1)*LEDS_PER_SIDE; i++){
-      nblend(leds[i], c, 3);
+      nblend(leds[i], c, 30);
     }
     FastLED.show();
     if (digitalRead(USER_BUTTON) == LOW) return;
-    delayMicroseconds(100);
+    delayMicroseconds(50);
   } 
-  for (int level=100; level>0; level--){
-    for (int i=(s)*LEDS_PER_SIDE; i<(s+1)*LEDS_PER_SIDE; i++){
-      nblend(leds[i], CHSV(millis()/random(100,1000) % 255, random(150)+100, random(120)+10), 3);
-    }
-    FastLED.show();
-    if (digitalRead(USER_BUTTON) == LOW) return;
-    delayMicroseconds(100);
-  }
-  FastLED.show();
+  // for (int level=100; level>0; level--){
+  //   for (int i=(s)*LEDS_PER_SIDE; i<(s+1)*LEDS_PER_SIDE; i++){
+  //     nblend(leds[i], CHSV(millis()/random(100,1000) % 255, random(150)+100, random(120)+10), 3);
+  //   }
+  //   FastLED.show();
+  //   if (digitalRead(USER_BUTTON) == LOW) return;
+  //   //delayMicroseconds(100);
+  // }
+  // FastLED.show();
   s = (s+1) % NUM_SIDES;
 }
 
@@ -163,7 +163,7 @@ void flash_fade_points(){
 
   chance1 = map(sin(millis()/7000.0), -1.0, 1.0, 0, 130);
   chance2 = map(cos(millis()/19000.0), -1.0, 1.0, 0, 140);
-  fadeToBlackBy(leds, NUM_LEDS, map((fade_level+fade_level2)/2, 0, 265, 6, 0));
+  fadeToBlackBy(leds, NUM_LEDS, map((fade_level+fade_level2)/2, 0, 267, 5, 0));
   FastLED.show();   
   //delay(1);  
 }
@@ -201,13 +201,14 @@ float getSmoothNoise() {
 
 void tv_static(){
   for (int i = 0; i<NUM_LEDS; i++){
-    leds[i] = CHSV(analogRead(ANALOG_PIN_A), 255, analogRead(ANALOG_PIN_B)/2);
+    leds[i] = CHSV(analogRead(ANALOG_PIN_A)/2, 255, analogRead(ANALOG_PIN_B)/5);
   }
   FastLED.show();
 }
 
-float spin_angle = 0;
+float spin_angle = 16.0;
 float shift = 0;
+float spin_dir = 0.0;
 void geography_show(){
   static int sphere_r = 310; // radius of sphere
 
@@ -217,10 +218,10 @@ void geography_show(){
   static float beta = 8.0 / 3+random(100)/100.0;
 
   // Time step
-  static float dt = 0.001;
+  static float dt = 0.002;
 
   // State variables
-  static float x = 0.1, y = 0.0, z = 0.0;  // Initial conditions
+  static float x = 0.1, y = 0.3, z = -0.2;  // Initial conditions
   // Calculate the derivatives
   float dx = sigma * (y - x);
   float dy = x * (rho - z) - y;
@@ -233,21 +234,22 @@ void geography_show(){
 
   // Normalize x to the range [-1.0, 1.0]
   // You may also choose y or z for variation
-  float normalized_x = (x + 20.0) / 40.0 * 2.0 - 0.8;  // Assuming x typically stays within [-20, 20]
+  float normalized_x = (x + 20.0) / 40.0 * 2.5 - 0.8;  // Assuming x typically stays within [-20, 20]
   float normalized_y = (y + 30.0) / 40.0 * 2.0 - 0.4;  // Assuming x typically stays within [-20, 20]
-  float normalized_z = (z + 10.0) / 20.0 * 2.0 - 0.9;  // Assuming x typically stays within [-20, 20]
+  float normalized_z = (z + 20.0) / 30.0 * 3.0 - 0.9;  // Assuming x typically stays within [-20, 20]
 
   for (int i = 0; i<NUM_LEDS; i++){
-    float a = acos(points[i].y / sphere_r)+sin(normalized_y);
-    float c = atan2(points[i].z, points[i].x)+cos(spin_angle)+sin(normalized_x);
-    int c_start = map(normalized_y+a, -2.5, 3.0, 0, 255);
-    int c_end = map(normalized_x+c, -2.5, 3.0, 0, 255);
-    int hue = map(fmod(normalized_x/10.0+normalized_y/10.0+c, PI), 0, PI, c_start, c_end);
-    int brightness = map(sin(a*shift+cos(spin_angle)), -3.3, 3.0, 5, 130);
+    float a = acos(points[i].y / sphere_r);
+    float c = atan2(points[i].z, points[i].x)+(16.0-spin_angle)*10;
+    int c_start = map(a, 0, TWO_PI, 50, 200);
+    int c_end = map(c, 0, PI, 80, 255);
+    int hue = map(fmod(normalized_y/25.0+a+c+shift/15-cos(millis()/2000.0), 50), 0, 40, c_start, c_end);
+    int brightness = map(sin(a*shift/6.0+c*cos(normalized_x/5.0)), -3.6, 5.3, 1, 210);
     leds[i] = CHSV(hue, 255, brightness);
   }
   FastLED.show();
-  spin_angle += 0.01+normalized_z/100.0;
+  spin_angle += spin_dir*0.005+normalized_z/250.0;
+  spin_dir = -spin_angle/8.0;
   //shift=getSmoothNoise()*5;
   shift = (normalized_z-2.0)*5.5;
 }
@@ -277,7 +279,7 @@ void orbiting_blobs(){
         CRGB c = blobs[b]->color;
         // slow fade in
         if (blobs[b]->age < 150){
-          c.fadeToBlackBy(map(blobs[b]->age, 0, 150, 230, 2));
+          c.fadeToBlackBy(map(blobs[b]->age, 0, 150, 180, 1));
         }
         nblend(leds[i], c, map(dist, 0, rad_sq, 30, 5));
       }
@@ -303,21 +305,23 @@ void fade_test(){
   static float xi = -max_range;
   static float target = 140;
   static int counter = 0;
+  static int min_off = 0;
   float speed = 0.01;
   CRGB c = CRGB(0,0,0);
-  int blend = 128;
+  int blend = 80;
 
   FastLED.clear();
   
   for (int i = 0; i<NUM_LEDS; i++){    
     // z anim  
-    float dz = (zi - points[i].z);
     target = 140+sin(counter/700.0)*130;
     target = constrain(target, 20, 260);
+    float dz = (zi - points[i].z);
     if (abs(dz) < target) {
-        float off = target - abs(dz);
-        c = CRGB(0, 0, map(off, 0, target, 0, 255));
+        float off = constrain(target - abs(dz), 0, 500);
+        c = CRGB(0, 0, map(off-10, min_off, target, 0, 200));
         nblend(leds[i], c, blend);
+        //leds[i] = c;
     }
     zi = (zi+speed*cos(counter/2000.0)*2);
     zi = constrain(zi, -max_range, max_range);
@@ -326,9 +330,10 @@ void fade_test(){
     // y anim
     float dy = (yi - points[i].y);
     if (abs(dy) < target) {
-        float off = target - abs(dy);
-        c = CRGB(map(off, 0, target, 0, 255), 0, 0);
+        float off = constrain(target - abs(dy), 0, 500);
+        c = CRGB(map(off, min_off, target, 0, 200), 0, 0);
         nblend(leds[i], c, blend);
+        //leds[i] = c;
     }
     yi = (yi+speed*constrain(tan(counter/1600.0)/4, -3, 3));
     yi = constrain(yi, -max_range, max_range);
@@ -337,9 +342,10 @@ void fade_test(){
     // x anim
     float dx = (xi - points[i].x);
     if (abs(dx) < target) {
-        float off = target - abs(dx);
-        c = CRGB(0, map(off, 0, target, 0, 255), 0);
+        float off = constrain(target - abs(dx), 0, 500);
+        c = CRGB(0, map(off, min_off, target, 0, 200), 0);
         nblend(leds[i], c, blend);
+        //leds[i] = c;
     } 
     xi = (xi+speed*sin(counter/4000.0)*2);
     xi = constrain(xi, -max_range, max_range);
@@ -347,41 +353,14 @@ void fade_test(){
   }
   FastLED.show();
   counter++;
+  delayMicroseconds(100);
 }
 
 
-#define NUM_PARTICLES 25
+#define NUM_PARTICLES 80
 Particle *particles[NUM_PARTICLES];
 
-void timerStatusMessage(){
-  Serial.printf("FPS: %d\n", FastLED.getFPS());
-  if (mode==0){
-    Serial.printf("Blob age: %d/%d\n", blobs[0]->age, blobs[0]->lifespan);
-    Serial.printf("Blob av/cv: %d %d\n", blobs[0]->av, blobs[0]->cv);
-    Serial.printf("Blob a/c: %d %d\n", blobs[0]->a, blobs[0]->c);
-    Serial.printf("Blob x/y/z: %d %d %d\n", blobs[0]->x(), blobs[0]->y(), blobs[0]->z());
-  }
-  if (mode==2){
-    Serial.printf("fade_level: %d\n", fade_level);
-    Serial.printf("fade_level2: %d\n", fade_level2);
-    Serial.printf("chance1: %d chance2: %d\n", chance1, chance2);
-  }
-  if (mode==4){
-    // wandering particles
-    Serial.printf("pos: %f,%f,%f\n", particles[0]->x(), particles[0]->y(), particles[0]->z());
-    Serial.printf("a/c: %f,%f\n", particles[0]->a, particles[0]->c);
-    Serial.printf("av/cv: %f,%f\n", particles[0]->av, particles[0]->cv);
-  }
-  if (mode==5){
-    Serial.printf("spin_angle: %f\n", spin_angle);
-    Serial.printf("shift: %f\n", shift);  
-    Serial.printf("Analog noise pins: %d/%d\n", analogRead(ANALOG_PIN_A), analogRead(ANALOG_PIN_B));
-  }
-  // toggle on-board LED
-  // digitalWrite(ON_BOARD_LED, led_toggle);
-  led_toggle = !led_toggle;
-}
-//Ticker timer1;
+
 
 
 void reset_particle(Particle *p){
@@ -406,7 +385,7 @@ void wandering_particles(){
     }
   }
   for (int i=0; i<NUM_LEDS; i++){
-    leds[i].fadeToBlackBy(5+random(10));
+    leds[i].fadeToBlackBy(10+random(5));
   }
   FastLED.show();
   //delay(2);
@@ -433,6 +412,40 @@ uint32_t FreeMem(){ // for Teensy 3.0
     return stackTop - heapTop;
 }
 
+void timerStatusMessage(){
+  Serial.printf("FPS: %d\n", FastLED.getFPS());
+  if (mode==0){
+    Serial.printf("Blob age: %d/%d\n", blobs[0]->age, blobs[0]->lifespan);
+    Serial.printf("Blob av/cv: %d %d\n", blobs[0]->av, blobs[0]->cv);
+    Serial.printf("Blob a/c: %d %d\n", blobs[0]->a, blobs[0]->c);
+    Serial.printf("Blob x/y/z: %d %d %d\n", blobs[0]->x(), blobs[0]->y(), blobs[0]->z());
+  }
+  if (mode==2){
+    Serial.printf("fade_level: %d\n", fade_level);
+    Serial.printf("fade_level2: %d\n", fade_level2);
+    Serial.printf("chance1: %d chance2: %d\n", chance1, chance2);
+  }
+  if (mode==4){
+    // wandering particles
+    Serial.printf("active particles: %d\n", NUM_PARTICLES);
+
+    //Serial.printf("pos: %f,%f,%f\n", particles[0]->x(), particles[0]->y(), particles[0]->z());
+    //Serial.printf("a/c: %f,%f\n", particles[0]->a, particles[0]->c);
+    //Serial.printf("av/cv: %f,%f\n", particles[0]->av, particles[0]->cv);
+  }
+  if (mode==5){
+    Serial.printf("spin_angle: %f\n", spin_angle);
+    Serial.printf("shift: %f\n", shift);  
+  }
+
+  if (mode==6){
+    Serial.printf("Analog noise pins: %d/%d\n", analogRead(ANALOG_PIN_A), analogRead(ANALOG_PIN_B));
+  }
+  // toggle on-board LED
+  // digitalWrite(ON_BOARD_LED, led_toggle);
+  led_toggle = !led_toggle;
+}
+//Ticker timer1;
 
 void setup() {
   Serial.begin(115200);
@@ -471,12 +484,15 @@ void setup() {
 
     points[p].find_nearest_leds();
 
-    Serial.printf(" led %d, side %d, free mem=%u kb\n", p, side, FreeMem()/1024);
-
     if (side_led > 5 && side_led < 16 ){
       leds[p] = my_colors[side];
       FastLED.show();
     }
+
+    if (side_led%LEDS_PER_SIDE == 0){
+      Serial.printf(" led %d, side %d, free mem=%u kb\n", p, side, FreeMem()/1024);
+    }
+
   }
 
   // init Blobs
@@ -523,11 +539,11 @@ void setup() {
 
 //  timer1.attach(3, timerStatusMessage);
 
+  // inital mode at startup
   mode = 0;
-
 }
 
-
+#define NUM_MODES 7
 long interval, last_interval = 0;
 const long max_interval = 3000;
 void loop() {
@@ -541,7 +557,8 @@ void loop() {
   // handle button press for mode change
   if (digitalRead(USER_BUTTON) == LOW){
     Serial.print("Button pressed, changing mode to ");
-    mode = (mode + 1) % 7;
+    mode++;
+    mode %= NUM_MODES;
     Serial.println(mode);
  
     while (digitalRead(USER_BUTTON) == LOW){
@@ -573,7 +590,7 @@ void loop() {
   if (mode==4){
     wandering_particles();
     // delay(1);
-    // drip_particles();
+    //drip_particles();
   }
   if (mode==5){
     geography_show();
