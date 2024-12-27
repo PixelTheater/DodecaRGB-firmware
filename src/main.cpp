@@ -1,12 +1,15 @@
 #include <Arduino.h>
-#include <cmath>
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BNO055.h>
 #include <FastLED.h>
-// #include "Ticker.h"
-#include "points.h"
+#include <cmath>
 //#include "network.h"
+// #include "Ticker.h"
 #include "blob.h"
+#include "points.h"
 #include "particle.h"
-
+#include <InternalTemperature.h>
 /*
 
 DodecaRBG V2
@@ -43,27 +46,49 @@ renders an interactive 3D model of the dodecahedron.
 #define ANALOG_PIN_B 25
 #define ON_BOARD_LED 13
 
+// Teensy I2C on pins 17/16 (SDA,SCL) is mapped to Wire1 in Arduinio framework
+// https://www.pjrc.com/teensy/td_libs_Wire.html
+double xPos = 0, yPos = 0, headingVel = 0;
+uint16_t BNO055_SAMPLERATE_DELAY_MS = 10; //how often to read data from the board
+uint16_t PRINT_DELAY_MS = 500; // how often to print the data
+uint16_t printCount = 0; //counter to avoid printing every 10MS sample
+
+//velocity = accel*dt (dt in seconds)
+//position = 0.5*accel*dt^2
+double ACCEL_VEL_TRANSITION =  (double)(BNO055_SAMPLERATE_DELAY_MS) / 1000.0;
+double ACCEL_POS_TRANSITION = 0.5 * ACCEL_VEL_TRANSITION * ACCEL_VEL_TRANSITION;
+double DEG_2_RAD = 0.01745329251; //trig functions require radians, BNO055 outputs degrees
+
+// Check I2C device address and correct line below (by default address is 0x29 or 0x28)
+//                                   id, address
+Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x29, &Wire1);
+
+
 #define BRIGHTNESS  40
 #define WIFI_ENABLED false
 
 // base color palette
-#define NUM_COLORS 11
-CRGB my_colors[] = {
-  CHSV(60, 255, 128),    // Bright yellow
-  CHSV(32, 200, 110),    // Radiant orange
-  CHSV(160, 179, 100),   // Sky blue
-  CHSV(96, 160, 70),     // Forest green
-  CHSV(213, 250, 80),    // Rich purple
-  CHSV(240, 80, 90),    // Soft pink
-  CHSV(125, 190, 90),    // Deep aqua
-  CHSV(64, 50, 90),     // Creamy white
-  CHSV(31, 140, 90),    // Warm brown
-  CHSV(180, 10, 65),       // Cool gray
-  CRGB::DarkMagenta,
-  CRGB::DarkBlue
+#define NUM_COLORS 16
+DEFINE_GRADIENT_PALETTE(my_colors_gp) {
+  0,   255, 255, 0,    // Bright yellow
+  16,  255, 165, 0,    // Radiant orange
+  32,  0,   255, 255,  // Sky blue
+  48,  0,   128, 0,    // Forest green
+  64,  128, 0,   128,  // Rich purple
+  80,  255, 192, 203,  // Soft pink
+  96,  0,   255, 255,  // Deep aqua
+  112, 255, 255, 224,  // Creamy white
+  128, 139, 69,  19,   // Warm brown
+  144, 169, 169, 169,  // Cool gray
+  160, 139, 0,   139,  // DarkMagenta
+  176, 0,   0,   139,  // DarkBlue
+  192, 255, 0,   0,    // Red
+  208, 0,   255, 0,    // Green
+  224, 0,   0,   255,  // Blue
+  240, 255, 255, 255   // White
 };
 
-bool led_toggle = false;
+CRGBPalette16 my_colors = my_colors_gp;
 
 CRGB leds[NUM_LEDS];
 
@@ -71,37 +96,32 @@ CRGB leds[NUM_LEDS];
 const int LEDS_PER_RING = 10;
 const int LEDS_PER_EDGE = 15;
 
+long random_seed = 0;
 int mode = 0;
 
+int show_pos = 0;
+int show_color = random(255);
 void color_show(){
+  static int led_limit = 54;
   // turn off all LEDs in a dissolving pattern
-  for (int x=0; x<100; x++) {
-    for (int i = 0; i < NUM_LEDS; i++) {
-      leds[i].fadeToBlackBy(1+random(3));
-    }
-    if (digitalRead(USER_BUTTON) == LOW){
-      return;
-    } else {
-      FastLED.show();
-      delay(3);
-    }
-  }
+  fadeToBlackBy(leds, NUM_LEDS, 2);
   
   // light up all LEDs in sequence
-  CRGB color = CRGB::White;
-  int c = random(1,255);
-  for (int i = 0; i < NUM_LEDS; i++) {
-    color.setHSV((c+i/2)%255, 255, 128);
-    leds[i] = color;
-    if (digitalRead(USER_BUTTON) == LOW){
-      return;
-    } else {
-      //delay(3);
-      FastLED.show();
+  for (int n=0; n<NUM_SIDES; n++){
+    for (int i=0; i<led_limit; i++){
+      int offset = sin8(millis()/((n+1)*400)) + cos8(n*(millis()/1000));
+      int dist = abs(i - (show_pos+offset/10)) % led_limit;
+      CRGB c = CHSV((show_color+i+offset)%255, 255, constrain(128-dist*4,0,128));
+      nblend(leds[n*104+i], c, 50);
     }
   }
-  //delay(500);
-
+  FastLED.show();
+  delay(1);
+  show_pos++;
+  if (show_pos > NUM_LEDS){
+    show_pos = 0;
+    show_color = random(255);
+  }
 }
 
 void solid_sides(){
@@ -110,7 +130,7 @@ void solid_sides(){
   CRGB c = CHSV(random(255), random(100)+150, random(255));
   for (int level=0; level<50; level+=1){
     for (int i=s*LEDS_PER_SIDE; i<(s+1)*LEDS_PER_SIDE; i++){
-      nblend(leds[i], c, 30);
+      nblend(leds[i], c, 10);
     }
     FastLED.show();
     if (digitalRead(USER_BUTTON) == LOW) return;
@@ -128,42 +148,43 @@ void solid_sides(){
   s = (s+1) % NUM_SIDES;
 }
 
+CRGB c,c2;
 // randomly light up LEDs and fade them out individually, like raindrops
-uint8_t fade_level = 20;
-uint8_t fade_level2 = 10;
-int chance1=30;
-int chance2=50;
+uint8_t color_mix = 0;
+static int period = 520;
+int seed1,seed2;
+uint8_t blend1;
+uint8_t blend2;
+int power_fade=1;
 void flash_fade_points(){
+  color_mix = (int)(64 + sin8_C(millis()/(period*3.2)+seed1) / 2);
   // cycle color over time
-  CRGB c = CRGB(
-    sin8_C((millis()/330)%255),
-    sin8_C((millis()/220)%100+150),
-    sin8_C((millis()/150)%155+50)
-  ); 
-  CRGB c2 = CRGB(
-    sin8_C((millis()/420)%255),
-    sin8_C((millis()/130)%50+200),
-    sin8_C((millis()/350)%150+50)
-  ); 
-  fade_level = sin8_C((millis()/600)%255);
-  fade_level2 = sin8_C((millis()/810)%255);
+  c = ColorFromPalette( PartyColors_p, sin8_C(millis()/(period*4.3)+seed1));
+  c2 = ColorFromPalette( RainbowStripeColors_p, sin8_C(millis()/(period*5.1)+seed2));
+  blend1=sin8_C(millis()/(period*4.2)+seed1);
+  blend2=sin8_C(millis()/(period*3.5)+seed2);
   for (int n=0; n<NUM_SIDES; n++){
-    if (random(sin8_C((millis()/340)%255)) < chance1) {
-      int r1 = random(n*LEDS_PER_SIDE, (n+1)*LEDS_PER_SIDE);        
-      nblend(leds[r1], c, map(fade_level, 0, 255, 20, 50));
-    }
-    if (random(sin8_C((millis()/570)%255)) < chance2) {
-      int r2 = random(n*LEDS_PER_SIDE, (n+1)*LEDS_PER_SIDE);
-      nblend(leds[r2], c2, map(fade_level2, 0, 255, 20, 50));        
+    int num_picks = (350-(blend1+blend2)/2)/10;  // as the blend decreases, the number of LEDs increases
+    for (int m=0; m<num_picks; m++){
+      if (random8(128) < color_mix) {
+        int r1 = random(n*LEDS_PER_SIDE, (n+1)*LEDS_PER_SIDE);        
+        nblend(leds[r1], c, map(blend1, 0, 255, 3, 30));
+      }
+      if (random8(128) < (256-color_mix)) {
+        int r2 = random(n*LEDS_PER_SIDE, (n+1)*LEDS_PER_SIDE);
+        nblend(leds[r2], c2, map(blend2, 0, 255, 3, 30));        
+      }
     }
   }
-  // for (int i = 0; i < NUM_LEDS; i++){
-  //   if (random(255) < fade_level/2) leds[i].fadeToBlackBy(map(fade_level, 0, 255, 50, 15));
-  // }
-
-  chance1 = map(sin(millis()/7000.0), -1.0, 1.0, 0, 130);
-  chance2 = map(cos(millis()/19000.0), -1.0, 1.0, 0, 140);
-  fadeToBlackBy(leds, NUM_LEDS, map((fade_level+fade_level2)/2, 0, 267, 5, 0));
+  // fades
+  int power = calculate_unscaled_power_mW(leds, NUM_LEDS);
+  power_fade = (power_fade * 19 + max(map(power,6000,25000,3,50),1))/20;  
+  for (int i = 0; i < NUM_LEDS; i++){
+    //int v = leds[i].getAverageLight();
+    leds[i].fadeToBlackBy(power_fade);
+  }
+  //blur1d(leds, NUM_LEDS, map(sin8_C(millis()/300),0,256,0,128));
+  //fadeToBlackBy(leds, NUM_LEDS, map(power, 6500, 18000, 1, 15));
   FastLED.show();   
   //delay(1);  
 }
@@ -261,7 +282,7 @@ int calculateBlobDistance(LED_Point p1, Blob *b) {
   return (dx*dx + dy*dy + dz*dz);  
 }
 
-#define NUM_BLOBS 7
+#define NUM_BLOBS 8
 Blob *blobs[NUM_BLOBS];
 
 void orbiting_blobs(){
@@ -306,20 +327,20 @@ void fade_test(){
   static float target = 140;
   static int counter = 0;
   static int min_off = 0;
-  float speed = 0.01;
+  float speed = 0.005;
   CRGB c = CRGB(0,0,0);
-  int blend = 80;
+  int blend = 160;
 
   FastLED.clear();
   
   for (int i = 0; i<NUM_LEDS; i++){    
     // z anim  
-    target = 140+sin(counter/700.0)*130;
-    target = constrain(target, 20, 260);
+    target = 140+cos(counter/700.0)*130;
+    target = constrain(target, 0, 255);
     float dz = (zi - points[i].z);
     if (abs(dz) < target) {
-        float off = constrain(target - abs(dz), 0, 500);
-        c = CRGB(0, 0, map(off-10, min_off, target, 0, 200));
+        float off = constrain(target - abs(dz), 0, max_range);
+        c = CRGB(0, 0, map(off, min_off, target, 0, 200));
         nblend(leds[i], c, blend);
         //leds[i] = c;
     }
@@ -330,7 +351,7 @@ void fade_test(){
     // y anim
     float dy = (yi - points[i].y);
     if (abs(dy) < target) {
-        float off = constrain(target - abs(dy), 0, 500);
+        float off = constrain(target - abs(dy), 0, max_range);
         c = CRGB(map(off, min_off, target, 0, 200), 0, 0);
         nblend(leds[i], c, blend);
         //leds[i] = c;
@@ -342,7 +363,7 @@ void fade_test(){
     // x anim
     float dx = (xi - points[i].x);
     if (abs(dx) < target) {
-        float off = constrain(target - abs(dx), 0, 500);
+        float off = constrain(target - abs(dx), 0, max_range);
         c = CRGB(0, map(off, min_off, target, 0, 200), 0);
         nblend(leds[i], c, blend);
         //leds[i] = c;
@@ -351,9 +372,10 @@ void fade_test(){
     xi = constrain(xi, -max_range, max_range);
     if (abs(xi)==max_range) xi=-xi;
   }
+  fadeToBlackBy(leds, NUM_LEDS, 35);  
   FastLED.show();
   counter++;
-  delayMicroseconds(100);
+  delayMicroseconds(50);
 }
 
 
@@ -396,6 +418,25 @@ void drip_particles(){
   // todo
 }
 
+void orientation_demo(){
+  static int sphere_r = 310; // radius of sphere
+  // static int last_sensor_read = 0; // tracks sensor readings as to not overload it
+  sensors_event_t event;
+
+  bno.getEvent(&event);
+  
+  float a2 = acos((float)event.orientation.y / sphere_r);
+  float c2 = atan2((float)event.orientation.z, (float)event.orientation.x);
+  for (int i=0; i<NUM_LEDS; i++){
+    float a = acos(points[i].y / sphere_r);
+    float c = atan2(points[i].z, points[i].x);
+    float dist = sqrt((a - a2) * (a - a2) + (c - c2) * (c - c2)); // Corrected distance calculation
+    CRGB color = CHSV(180, 255, map(dist, 0, PI, 150, 0)); // Adjusted brightness mapping
+    leds[i] = color;
+  }
+  FastLED.show();
+}
+
 uint32_t FreeMem(){ // for Teensy 3.0
     uint32_t stackTop;
     uint32_t heapTop;
@@ -412,42 +453,70 @@ uint32_t FreeMem(){ // for Teensy 3.0
     return stackTop - heapTop;
 }
 
+void displaySensorDetails(void){
+  sensor_t sensor;
+  bno.getSensor(&sensor);
+  Serial.println("------------------------------------");
+  Serial.print  ("Sensor:       "); Serial.println(sensor.name);
+  Serial.print  ("Driver Ver:   "); Serial.println(sensor.version);
+  Serial.print  ("Unique ID:    "); Serial.println(sensor.sensor_id);
+  Serial.print  ("Max Value:    "); Serial.print(sensor.max_value); Serial.println(" xxx");
+  Serial.print  ("Min Value:    "); Serial.print(sensor.min_value); Serial.println(" xxx");
+  Serial.print  ("Resolution:   "); Serial.print(sensor.resolution); Serial.println(" xxx");
+  Serial.println("------------------------------------");
+  Serial.println("");
+  delay(500);
+}
+
 void timerStatusMessage(){
-  Serial.printf("FPS: %d\n", FastLED.getFPS());
-  if (mode==0){
+  Serial.printf("--> %d FPS @ mode:%d <--\n", FastLED.getFPS(), mode);
+  Serial.printf("Power: %d mw\n", calculate_unscaled_power_mW(leds, NUM_LEDS));
+  if (mode==0){   // wandering blobs
     Serial.printf("Blob age: %d/%d\n", blobs[0]->age, blobs[0]->lifespan);
     Serial.printf("Blob av/cv: %d %d\n", blobs[0]->av, blobs[0]->cv);
     Serial.printf("Blob a/c: %d %d\n", blobs[0]->a, blobs[0]->c);
     Serial.printf("Blob x/y/z: %d %d %d\n", blobs[0]->x(), blobs[0]->y(), blobs[0]->z());
   }
-  if (mode==2){
-    Serial.printf("fade_level: %d\n", fade_level);
-    Serial.printf("fade_level2: %d\n", fade_level2);
-    Serial.printf("chance1: %d chance2: %d\n", chance1, chance2);
+  if (mode==2){  // fade cycle
+    Serial.printf("color_mix: %d  power fade: %d\n", color_mix, power_fade);
+    CHSV hsv1, hsv2;
+    hsv1 = rgb2hsv_approximate(c);
+    hsv2 = rgb2hsv_approximate(c2);
+    Serial.printf("color1: %d color2: %d\n", hsv1.hue, hsv2.hue);
+    Serial.printf("blend1: %d blend2: %d\n", blend1, blend2);
   }
-  if (mode==4){
-    // wandering particles
+  if (mode==3){   // color_show
+    Serial.printf("show_pos: %d\n", show_pos);
+    Serial.printf("show_color: %d\n", show_color);
+  }
+  if (mode==4){   // wandering_particles
     Serial.printf("active particles: %d\n", NUM_PARTICLES);
 
     //Serial.printf("pos: %f,%f,%f\n", particles[0]->x(), particles[0]->y(), particles[0]->z());
     //Serial.printf("a/c: %f,%f\n", particles[0]->a, particles[0]->c);
     //Serial.printf("av/cv: %f,%f\n", particles[0]->av, particles[0]->cv);
   }
-  if (mode==5){
+  if (mode==5){   // geography show
     Serial.printf("spin_angle: %f\n", spin_angle);
     Serial.printf("shift: %f\n", shift);  
   }
 
-  if (mode==6){
+  if (mode==6){   // noise
     Serial.printf("Analog noise pins: %d/%d\n", analogRead(ANALOG_PIN_A), analogRead(ANALOG_PIN_B));
   }
-  // toggle on-board LED
-  // digitalWrite(ON_BOARD_LED, led_toggle);
-  led_toggle = !led_toggle;
+
+  if (mode==7){   // orientation demo
+    displaySensorDetails();
+  }
 }
 //Ticker timer1;
 
 void setup() {
+  float temp = InternalTemperature.readTemperatureC();
+  random_seed = (temp - int(temp)) * 100000; 
+  random_seed += (analogRead(ANALOG_PIN_A) * analogRead(ANALOG_PIN_B));
+  seed1 = random(random_seed) * 2 % 4000;
+  seed2 = random(random_seed) * 3 % 5000;
   Serial.begin(115200);
   delay(300);
   Serial.println("Start");
@@ -457,17 +526,35 @@ void setup() {
   pinMode(ANALOG_PIN_B, INPUT);
   pinMode(USER_BUTTON, INPUT_PULLUP);
 
+  Serial.printf("Temp: %f c\n", temp);
+  Serial.printf("Random seed: %d\n", random_seed);
+  randomSeed(random_seed);
+    /* Initialise the sensor */
+  if(!bno.begin())
+  {
+    /* There was a problem detecting the BNO055 ... check your connections */
+    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+    while(1);
+  }
+   
+  /* Use external crystal for better accuracy */
+  bno.setExtCrystalUse(true);
+   
+  /* Display some basic information on this sensor */
+  displaySensorDetails();
+
+
   // set up fastled - two strips on two pins
   // see https://github.com/FastLED/FastLED/wiki/Parallel-Output#parallel-output-on-the-teensy-4
   FastLED.addLeds<2, WS2812, WS2812_LED_PIN, GRB>(leds, NUM_LEDS/2);
   FastLED.setBrightness(BRIGHTNESS);
-  FastLED.setDither(1);
+  FastLED.setDither(0);
   FastLED.setMaxRefreshRate(60);
   FastLED.clear();
   FastLED.show();
 
   for (int side=0; side<NUM_SIDES; side++){
-    leds[side*LEDS_PER_SIDE] = my_colors[side];
+    leds[side*LEDS_PER_SIDE] = ColorFromPalette(RainbowColors_p, side * 255 / NUM_SIDES);
   }
   FastLED.show();
 
@@ -485,7 +572,8 @@ void setup() {
     points[p].find_nearest_leds();
 
     if (side_led > 5 && side_led < 16 ){
-      leds[p] = my_colors[side];
+      CRGB side_color =  ColorFromPalette(RainbowColors_p, side * 255 / NUM_SIDES);
+      leds[p] = side_color;
       FastLED.show();
     }
 
@@ -540,10 +628,10 @@ void setup() {
 //  timer1.attach(3, timerStatusMessage);
 
   // inital mode at startup
-  mode = 0;
+  mode = 2;
 }
 
-#define NUM_MODES 7
+#define NUM_MODES 8
 long interval, last_interval = 0;
 const long max_interval = 3000;
 void loop() {
@@ -599,5 +687,8 @@ void loop() {
   if (mode==6){
     tv_static();
     // delay(1);
+  }
+  if (mode==7){
+    orientation_demo();
   }
 }

@@ -18,8 +18,8 @@ void Blob::reset(){
   this->a = random(UINT16_MAX) - UINT16_MAX/2;  // rotation angle of blob, using FastLED fast trif functions
   this->c = random(UINT16_MAX) - UINT16_MAX/2;  // rotation angle of blob, using FastLED fast trif functions
   this->applyForce(random(50,300), random(50, 300));
-  this->color = CHSV((millis()/500)%255, 240, 150+random(50));
-  this->radius = random(80,130);
+  this->color = CHSV((millis()/400)%255, 240, 150+random(50));
+  this->radius = random(80,110);
   this->age = 0;
   this->lifespan = random(max_age)+500;
 }

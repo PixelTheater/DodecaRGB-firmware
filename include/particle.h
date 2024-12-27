@@ -1,5 +1,4 @@
 #pragma once
-
 #ifndef PARTICLE_H
 #define PARTICLE_H
 
@@ -35,7 +34,6 @@ class Particle {
         void tick();
 
         Particle();
-
 };
 
-#endif
+#endif  // PARTICLE_H

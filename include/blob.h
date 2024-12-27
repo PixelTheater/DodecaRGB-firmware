@@ -1,9 +1,11 @@
 #pragma once
+#ifndef BLOB_H
+#define BLOB_H
 #include <FastLED.h>
 
 class Blob {
   public:
-    int sphere_r = 310; // radius of sphere the blob orbits
+    int sphere_r = 330; // radius of sphere the blob orbits
     int radius; // radius of blob
     int16_t a,c = 0;  // polar angles
     int16_t av;  // velocity of angles in radians
@@ -27,3 +29,4 @@ class Blob {
 
 };
 
+#endif /* BLOB_H_ */

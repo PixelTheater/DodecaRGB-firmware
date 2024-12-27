@@ -25,6 +25,7 @@ struct distance_map {
 class LED_Point {
   public:
     int index;
+    
     float x;
     float y;
     float z;
@@ -51,4 +52,4 @@ extern LED_Point points[];
 extern bool compare_distance(distance_map a, distance_map b);
 extern float calculatePointDistance(LED_Point p1, LED_Point p2);
 
-#endif /* LED_POINTS_H_ */
+#endif /* POINTS_H_ */
