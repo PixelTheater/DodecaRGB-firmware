@@ -1,19 +1,58 @@
 # DodecaRGB
 
-### NOTE (Dec 8 2024):
-- refactoring in progress
-- new V2 hardware in development with micro LEDs and 104 per side, overall smaller PCBs
-- currently working, using two channels for top+bottom hemispheres, 624 pixels each segment
-- frame rates of 50fps are achievable so far, with 1248 pixels
 
-![wiring diagram](<images/Screenshot 2024-12-12 at 18.23.51.png>)
+Dec 2024: *V2 in development!* Version two introduces higher density micro-pixels (1248 in total!) and a slightly smaller size overall. 
 
-Photos:
+![DodecaRGBv2 hero image](<images/IMG_5557.jpeg>)
+
+## The Concept:
+
+A fun toy made for the hacker community, especially for programmers that want to do spherical animations. Today, this is quite hard - you either need to make a spinning POV globe, or wire up custom strips, not to mention power and performance issues. 
+
+This project aims to create a standard platform for resolution-indpendent animations based on spherical models. 
+
+The firmware, 3d models and tooling are open source and free to use and modify. The hardware PCBs will are planned as a kit for 2025, which will include most of the parts needed to 3d print and assemble your own. 
+
+- We have a dodecahedron model with 12 sides.
+- Each side is a pentgon-shaped PCB circuit board that contains 104 RGB leds.
+- Each side connects to the next, in series, for a grand total of 1248 LEDs. 
+- The whole thing runs at >50fps, and can be battery powered
+- It will support features like wireless charging, orientation sensor, magnetic closing, 3d printed interior.
+- Other ideas may extend the model (touch sensitivity, sound reactive, etc)
+
+The combination of a hand-held ball of LEDs with motion sensing opens a lot of interesting user interaction experiments: motion light performances, visualizing data, interactive games, puzzles, etc. 
+
+![fits in the hand](<images/v2-juggle.gif>)
+
+## The Hardware
+
+- 2-layer PCBs WS2812 LEDs (SMD 1615 package)
+- A Teensy 4.1 microcontroller is used to control everything
+- Level shifters (for LEDs), power regulation, battery, etc.
+- FastLED parallel support is being used (see https://github.com/FastLED/FastLED/releases/tag/3.9.8)
+- The two hemispheres of the model are wired on separate channels, using pins 19 and 18 of the Teensy, so 624 LEDs per channel. This allows for higher frame rates.
 
 - [v2 - level shifters](images/IMG_5514.jpeg)
 - [v2 - teensy](images/IMG_5515.jpeg)
 - [v2 - prototype internal wiring](images/IMG_5516.jpeg)
 
+![wiring diagram](<images/Screenshot 2024-12-12 at 18.23.51.png>)
+
+## The Software
+- C language, Arduino environment and FastLED library
+- 3D Points are calculated in a [separate project](https://github.com/somebox/dodeca-rgb-simulator) build in Processing. This will later move to build scripts here.
+- On boot, the LED neighbors are pre-calculated. This will later be moved to a build process here.
+
+## TODOs
+
+- image loading support (per-side images, or mapping projections for globes and spherical photos)
+- motion-reactive support, currently evaluating different IMU choices. Investigating options for orientation and sensitivity, ideally with guestures like tap, shake, spin, etc.
+- refactoring animations into modules, to help isolate and standardize the interfaces. Goal is to make it easy to add new animations, or design simple playlists.
+- Wireless charging (Qi) - testing larger coils and ideal PCB thickness
+- 3d modelling of interior structure
+- Motherboard PCB to mount the Teensy 4.1 and 2x 18650 batteries, together with support electronics for power, charging, level shifting, sensors, etc.
+- Optimize wiring and arrangement of connector pads
+- Step-by-step instructions, updated with pictures (or a video)
 
 ---
 
