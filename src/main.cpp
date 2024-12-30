@@ -1,94 +1,93 @@
 #include <Arduino.h>
 #include <Wire.h>
-#include <Adafruit_Sensor.h>
-#include <Adafruit_BNO055.h>
-#include <FastLED.h>
+#include <InternalTemperature.h>
 #include <cmath>
-//#include "network.h"
-// #include "Ticker.h"
+#define FASTLED_USES_OBJECTFLED
+#include <FastLED.h>
+#include "fl/warn.h"
+
+#include "color_lookup.h"
 #include "blob.h"
 #include "points.h"
 #include "particle.h"
-#include <InternalTemperature.h>
-/*
 
-DodecaRBG V2
+using namespace fl;
 
-NOTE (Dec 8 2024):
-- refactoring in progress
-- working, but only tested with 6 sides active (624) and frame rates of 50fps are achievable so far
+/* 
 
-We have a dodecahedron model with 12 sides. 
-Each side is a pentgon-shaped PCB circuit board with RGB LEDs arranged on them, spaced evenly. 
+# DodecaRBG V2
+- We have a dodecahedron model with 12 sides. 
+- Each side is a pentgon-shaped PCB circuit board with RGB LEDs arranged on them, spaced evenly. 
+- A Teensy 4.1 microcontroller is used to control the LEDs, using the Arduino environment and FastLED library.
+- Each pentagon side contains 104 RGB leds on a circuit board, arranged in rings from the center.
+- Each side connects to the next, in series, for a grand total of 1247 LEDs. 
+- Two halfs of the model are on separate channels, using pins 19 and 18 of the Teensy.
+- FastLED parallel support is being used (see https://github.com/FastLED/FastLED/releases/tag/3.9.8)
 
-A Teensy 3.6+ microcontroller is used to control the LEDs, using the Arduino environment and FastLED library.
-
-Each pentagon side contains 104 RGB leds on a circuit board, arranged in rings from the center.
-
-Each side connects to the next, in series, for a grand total of 1247 LEDs. 
+## Configuration
 
 As the PCB circuit boards are wired together to form the dodecahedron, the arrangement of the sides must be 
-defined, as there are many possible configurations. 
-In addition, the rotation of each side must be defined, as it can have five possible rotations.
+defined, as there are many possible configurations. In addition, the rotation of each side must be defined, 
+as it can have five possible rotations.
 
 There's a processing sketch at https://github.com/somebox/dodeca-rgb-simulator that generates the list
 of points, the X,Y,Z coordinates, and defines the order of the sides and their rotations. It also
-renders an interactive 3D model of the dodecahedron.
+renders an interactive 3D model of the dodecahedron. To change your dodecahedron's configuration,
+you will need to re-generate the point mapping using this tool.
+
+## Change Log
+
+v2.1 Jan 2025:
+- added support for orientation sensor
+- improved random seeding based on CPU temp and analog noise
+- new animations: ...
+
+v2.0 Dec 8 2024:
+- new hardware, micro-leds (1615 package), 104 per side
+- overall size is smaller, around 80% compared to v1
+- switched to Teensy microcontroller, code refactoring in progress
+- working, but only tested with 6 sides active (624) and frame rates of 50fps are achievable so far
+
+v1.0 Aug 2023:
+- version 1 with only 26 LEDs per side, 312 in total
+- initial animations, including blobs, 3d lines, particles, and color show
+- released at CCC Camp 2023 https://hackaday.io/project/192557-dodecargb
 
 */
 
 // LED configs
+#define VERSION "2.0.2"
 #define USER_BUTTON 2
 // https://github.com/FastLED/FastLED/wiki/Parallel-Output#parallel-output-on-the-teensy-4
 // pins 19+18 are used to control two strips of 624 LEDs, for a total of 1248 LEDs
-#define WS2812_LED_PIN 19  // Teensy 4.1/fastled pin order: .. ,19,18,14,15,17, ..
+#define LED_CHANNEL_1_PIN 19  // Teensy 4.1/fastled pin order: .. ,19,18,14,15,17, ..
+#define LED_CHANNEL_2_PIN 18  // Teensy 4.1/fastled pin order: .. ,19,18,14,15,17, ..
 #define ANALOG_PIN_A 24
 #define ANALOG_PIN_B 25
 #define ON_BOARD_LED 13
 
 // Teensy I2C on pins 17/16 (SDA,SCL) is mapped to Wire1 in Arduinio framework
 // https://www.pjrc.com/teensy/td_libs_Wire.html
-double xPos = 0, yPos = 0, headingVel = 0;
-uint16_t BNO055_SAMPLERATE_DELAY_MS = 10; //how often to read data from the board
-uint16_t PRINT_DELAY_MS = 500; // how often to print the data
-uint16_t printCount = 0; //counter to avoid printing every 10MS sample
-
-//velocity = accel*dt (dt in seconds)
-//position = 0.5*accel*dt^2
-double ACCEL_VEL_TRANSITION =  (double)(BNO055_SAMPLERATE_DELAY_MS) / 1000.0;
-double ACCEL_POS_TRANSITION = 0.5 * ACCEL_VEL_TRANSITION * ACCEL_VEL_TRANSITION;
-double DEG_2_RAD = 0.01745329251; //trig functions require radians, BNO055 outputs degrees
-
-// Check I2C device address and correct line below (by default address is 0x29 or 0x28)
-//                                   id, address
-Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x29, &Wire1);
-
+// ex: Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x29, &Wire1);
 
 #define BRIGHTNESS  40
 #define WIFI_ENABLED false
 
 // base color palette
 #define NUM_COLORS 16
-DEFINE_GRADIENT_PALETTE(my_colors_gp) {
-  0,   255, 255, 0,    // Bright yellow
-  16,  255, 165, 0,    // Radiant orange
-  32,  0,   255, 255,  // Sky blue
-  48,  0,   128, 0,    // Forest green
-  64,  128, 0,   128,  // Rich purple
-  80,  255, 192, 203,  // Soft pink
-  96,  0,   255, 255,  // Deep aqua
-  112, 255, 255, 224,  // Creamy white
-  128, 139, 69,  19,   // Warm brown
-  144, 169, 169, 169,  // Cool gray
-  160, 139, 0,   139,  // DarkMagenta
-  176, 0,   0,   139,  // DarkBlue
-  192, 255, 0,   0,    // Red
-  208, 0,   255, 0,    // Green
-  224, 0,   0,   255,  // Blue
-  240, 255, 255, 255   // White
-};
 
-CRGBPalette16 my_colors = my_colors_gp;
+CRGBPalette16 basePalette = CRGBPalette16( 
+  CRGB::Red, CRGB::DarkRed, CRGB::IndianRed, CRGB::OrangeRed,
+  CRGB::Green, CRGB::DarkGreen, CRGB::LawnGreen, CRGB::ForestGreen,
+  CRGB::Blue, CRGB::DarkBlue, CRGB::SkyBlue, CRGB::Indigo,
+  CRGB::Purple, CRGB::Indigo, CRGB::CadetBlue, CRGB::AliceBlue
+); 
+CRGBPalette16 highlightPalette = CRGBPalette16(
+  CRGB::Yellow, CRGB::LightSlateGray, CRGB::LightYellow, CRGB::LightCoral, 
+  CRGB::GhostWhite, CRGB::LightPink, CRGB::AntiqueWhite, CRGB::LightSkyBlue, 
+  CRGB::Gold, CRGB::PeachPuff, CRGB::FloralWhite, CRGB::PaleTurquoise, 
+  CRGB::Orange, CRGB::MintCream, CRGB::FairyLightNCC, CRGB::LavenderBlush
+);
 
 CRGB leds[NUM_LEDS];
 
@@ -148,40 +147,46 @@ void solid_sides(){
   s = (s+1) % NUM_SIDES;
 }
 
+
 CRGB c,c2;
 // randomly light up LEDs and fade them out individually, like raindrops
 uint8_t color_mix = 0;
-static int period = 520;
+static int period = 580;
 int seed1,seed2;
 uint8_t blend1;
 uint8_t blend2;
 int power_fade=1;
+u_int8_t num_picks=1;
+
 void flash_fade_points(){
-  color_mix = (int)(64 + sin8_C(millis()/(period*3.2)+seed1) / 2);
+  uint8_t color_warble = (int)(sin8_C(millis()/(period/11)) / 16);
+  color_mix = (int)(64 + sin8_C(millis()/(period)+seed1+color_warble) / 1.5);
   // cycle color over time
-  c = ColorFromPalette( PartyColors_p, sin8_C(millis()/(period*4.3)+seed1));
-  c2 = ColorFromPalette( RainbowStripeColors_p, sin8_C(millis()/(period*5.1)+seed2));
-  blend1=sin8_C(millis()/(period*4.2)+seed1);
-  blend2=sin8_C(millis()/(period*3.5)+seed2);
+  c = ColorFromPaletteExtended( basePalette, sin16_C(millis()/16+seed1*10), 255, LINEARBLEND);
+  c2 = ColorFromPaletteExtended( highlightPalette, sin16_C((millis()/8+seed2*50)), 255, LINEARBLEND);
+  blend1=sin8_C(millis()/(period*4.2)+seed1)/1.5+32;
+  blend2=sin8_C(millis()/(period*3.5)+seed2)/2+32;
   for (int n=0; n<NUM_SIDES; n++){
-    int num_picks = (350-(blend1+blend2)/2)/10;  // as the blend decreases, the number of LEDs increases
+    num_picks = map(power_fade,1,40,30,5);  // as the power level decreases, LEDs lit increases
     for (int m=0; m<num_picks; m++){
       if (random8(128) < color_mix) {
         int r1 = random(n*LEDS_PER_SIDE, (n+1)*LEDS_PER_SIDE);        
-        nblend(leds[r1], c, map(blend1, 0, 255, 3, 30));
+        nblend(leds[r1], c, map(blend1, 0, 255, 1, 7));
       }
       if (random8(128) < (256-color_mix)) {
         int r2 = random(n*LEDS_PER_SIDE, (n+1)*LEDS_PER_SIDE);
-        nblend(leds[r2], c2, map(blend2, 0, 255, 3, 30));        
+        nblend(leds[r2], c2, map(blend2, 0, 255, 1, 10));        
       }
     }
   }
   // fades
   int power = calculate_unscaled_power_mW(leds, NUM_LEDS);
-  power_fade = (power_fade * 19 + max(map(power,6000,25000,3,50),1))/20;  
+  power_fade = (power_fade * 19 + max(map(power,8000,20000,1,40),1))/20;  
   for (int i = 0; i < NUM_LEDS; i++){
-    //int v = leds[i].getAverageLight();
-    leds[i].fadeToBlackBy(power_fade);
+    int v = leds[i].getAverageLight();
+    if (v > random8(power_fade/2)) {
+      leds[i].fadeToBlackBy(random8(power_fade));
+    }
   }
   //blur1d(leds, NUM_LEDS, map(sin8_C(millis()/300),0,256,0,128));
   //fadeToBlackBy(leds, NUM_LEDS, map(power, 6500, 18000, 1, 15));
@@ -222,7 +227,31 @@ float getSmoothNoise() {
 
 void tv_static(){
   for (int i = 0; i<NUM_LEDS; i++){
-    leds[i] = CHSV(analogRead(ANALOG_PIN_A)/2, 255, analogRead(ANALOG_PIN_B)/5);
+    // Read the analog values
+    int rawValueA = analogRead(ANALOG_PIN_A);
+    int rawValueB = analogRead(ANALOG_PIN_B);
+
+    // Update noise range dynamically for both analog pins
+    static int noiseMinA = 1023, noiseMaxA = 0;
+    static int noiseMinB = 1023, noiseMaxB = 0;
+
+    if (rawValueA < noiseMinA) noiseMinA = rawValueA;
+    if (rawValueA > noiseMaxA) noiseMaxA = rawValueA;
+    if (rawValueB < noiseMinB) noiseMinB = rawValueB;
+    if (rawValueB > noiseMaxB) noiseMaxB = rawValueB;
+
+    // Prevent divide by zero
+    int rangeA = noiseMaxA - noiseMinA;
+    int rangeB = noiseMaxB - noiseMinB;
+    if (rangeA == 0) rangeA = 1;
+    if (rangeB == 0) rangeB = 1;
+
+    // Map the raw values to the range [0, 255]
+    int mappedValueA = (rawValueA - noiseMinA) * 255 / rangeA;
+    int mappedValueB = (rawValueB - noiseMinB) * 255 / rangeB;
+
+    // Set the LED color based on the mapped values
+    leds[i] = CHSV(mappedValueA, 255, mappedValueB);
   }
   FastLED.show();
 }
@@ -419,21 +448,20 @@ void drip_particles(){
 }
 
 void orientation_demo(){
-  static int sphere_r = 310; // radius of sphere
-  // static int last_sensor_read = 0; // tracks sensor readings as to not overload it
-  sensors_event_t event;
-
-  bno.getEvent(&event);
-  
-  float a2 = acos((float)event.orientation.y / sphere_r);
-  float c2 = atan2((float)event.orientation.z, (float)event.orientation.x);
-  for (int i=0; i<NUM_LEDS; i++){
-    float a = acos(points[i].y / sphere_r);
-    float c = atan2(points[i].z, points[i].x);
-    float dist = sqrt((a - a2) * (a - a2) + (c - c2) * (c - c2)); // Corrected distance calculation
-    CRGB color = CHSV(180, 255, map(dist, 0, PI, 150, 0)); // Adjusted brightness mapping
-    leds[i] = color;
+  // identify each side uniquely
+  for (int s=0; s<NUM_SIDES; s++){
+    CRGB side_color = CHSV(s*255/NUM_SIDES, 255, 255); // new color for each side
+    // light N leds in the center, where N=side number
+    for (int i=0; i<=s; i++){
+      leds[s*LEDS_PER_SIDE+i] = side_color;
+    }
+    // light up the top row of LEDs
+    for (int i=62; i<71; i++){
+      if (i==63 or i==69) continue;  // skip corners due to ordering
+      leds[s*LEDS_PER_SIDE+i] = side_color;
+    }
   }
+  leds->fadeToBlackBy(20);
   FastLED.show();
 }
 
@@ -453,19 +481,25 @@ uint32_t FreeMem(){ // for Teensy 3.0
     return stackTop - heapTop;
 }
 
-void displaySensorDetails(void){
-  sensor_t sensor;
-  bno.getSensor(&sensor);
-  Serial.println("------------------------------------");
-  Serial.print  ("Sensor:       "); Serial.println(sensor.name);
-  Serial.print  ("Driver Ver:   "); Serial.println(sensor.version);
-  Serial.print  ("Unique ID:    "); Serial.println(sensor.sensor_id);
-  Serial.print  ("Max Value:    "); Serial.print(sensor.max_value); Serial.println(" xxx");
-  Serial.print  ("Min Value:    "); Serial.print(sensor.min_value); Serial.println(" xxx");
-  Serial.print  ("Resolution:   "); Serial.print(sensor.resolution); Serial.println(" xxx");
-  Serial.println("------------------------------------");
-  Serial.println("");
-  delay(500);
+
+// Function to convert RGB to ANSI 24-bit color codes
+void printAnsiColor(const CRGB& color) {
+    // ANSI escape sequence for setting foreground and background to 24-bit color
+    Serial.print("\033[38;2;"); // Start foreground color
+    Serial.print(color.r); Serial.print(";");
+    Serial.print(color.g); Serial.print(";");
+    Serial.print(color.b); Serial.print("m");
+
+    Serial.print("\033[48;2;"); // Start background color
+    Serial.print(color.r); Serial.print(";");
+    Serial.print(color.g); Serial.print(";");
+    Serial.print(color.b); Serial.print("m");
+
+    // Print a space to display the color
+    Serial.print("  ");
+
+    // Reset colors
+    Serial.print("\033[0m");
 }
 
 void timerStatusMessage(){
@@ -478,12 +512,14 @@ void timerStatusMessage(){
     Serial.printf("Blob x/y/z: %d %d %d\n", blobs[0]->x(), blobs[0]->y(), blobs[0]->z());
   }
   if (mode==2){  // fade cycle
-    Serial.printf("color_mix: %d  power fade: %d\n", color_mix, power_fade);
-    CHSV hsv1, hsv2;
-    hsv1 = rgb2hsv_approximate(c);
-    hsv2 = rgb2hsv_approximate(c2);
-    Serial.printf("color1: %d color2: %d\n", hsv1.hue, hsv2.hue);
-    Serial.printf("blend1: %d blend2: %d\n", blend1, blend2);
+    Serial.printf("color_mix: %d/%d ", color_mix * 100 / 256, (256 - color_mix) * 100 / 256);
+    Serial.printf("power_fade: %d ", power_fade);
+    Serial.printf("num_picks: %d\n", num_picks);
+    printAnsiColor(c);
+    Serial.printf(" color1: %02hhX%02hhX%02hhX (%s) blend1: %d%%\n", c.r, c.g, c.b, getClosestColorName(c), blend1 * 100 / 256);
+    printAnsiColor(c2);
+    Serial.printf(" color2: %02hhX%02hhX%02hhX (%s) blend2: %d%%\n", c2.r, c2.g, c2.b, getClosestColorName(c2), blend2 * 100 / 256);
+//    Serial.printf("blend1: %d blend2: %d\n", blend1, blend2);
   }
   if (mode==3){   // color_show
     Serial.printf("show_pos: %d\n", show_pos);
@@ -506,7 +542,7 @@ void timerStatusMessage(){
   }
 
   if (mode==7){   // orientation demo
-    displaySensorDetails();
+    //  
   }
 }
 //Ticker timer1;
@@ -515,38 +551,28 @@ void setup() {
   float temp = InternalTemperature.readTemperatureC();
   random_seed = (temp - int(temp)) * 100000; 
   random_seed += (analogRead(ANALOG_PIN_A) * analogRead(ANALOG_PIN_B));
+  randomSeed(random_seed);
+
   seed1 = random(random_seed) * 2 % 4000;
   seed2 = random(random_seed) * 3 % 5000;
   Serial.begin(115200);
   delay(300);
-  Serial.println("Start");
+  Serial.printf("Start: DodecaRGBv2 firmware v%s\n", VERSION);
+  Serial.printf("Compiled: %s %s\n", __DATE__, __TIME__);
+  Serial.printf("CPU Temp: %f c\n", temp);
+  Serial.printf("Num LEDs: %d\n", NUM_LEDS);
+  Serial.printf("Random seed: %d\n", random_seed);
+  Serial.println();
 
   pinMode(ON_BOARD_LED, OUTPUT);
   pinMode(ANALOG_PIN_A, INPUT);
   pinMode(ANALOG_PIN_B, INPUT);
   pinMode(USER_BUTTON, INPUT_PULLUP);
 
-  Serial.printf("Temp: %f c\n", temp);
-  Serial.printf("Random seed: %d\n", random_seed);
-  randomSeed(random_seed);
-    /* Initialise the sensor */
-  if(!bno.begin())
-  {
-    /* There was a problem detecting the BNO055 ... check your connections */
-    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
-    while(1);
-  }
-   
-  /* Use external crystal for better accuracy */
-  bno.setExtCrystalUse(true);
-   
-  /* Display some basic information on this sensor */
-  displaySensorDetails();
-
-
   // set up fastled - two strips on two pins
   // see https://github.com/FastLED/FastLED/wiki/Parallel-Output#parallel-output-on-the-teensy-4
-  FastLED.addLeds<2, WS2812, WS2812_LED_PIN, GRB>(leds, NUM_LEDS/2);
+  FastLED.addLeds<WS2812, LED_CHANNEL_1_PIN, GRB>(leds, NUM_LEDS/2);
+  FastLED.addLeds<WS2812, LED_CHANNEL_2_PIN, GRB>(leds, NUM_LEDS/2, NUM_LEDS/2);
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.setDither(0);
   FastLED.setMaxRefreshRate(60);
@@ -628,7 +654,7 @@ void setup() {
 //  timer1.attach(3, timerStatusMessage);
 
   // inital mode at startup
-  mode = 2;
+  mode = 7;
 }
 
 #define NUM_MODES 8
@@ -636,8 +662,10 @@ long interval, last_interval = 0;
 const long max_interval = 3000;
 void loop() {
   interval = millis()/max_interval;
-  int led_fade_level = map((millis() % max_interval), 0, max_interval, -256, 256);
-  analogWrite(ON_BOARD_LED, abs(led_fade_level));
+  if (random8(100)==0){
+    int led_fade_level = map((millis() % max_interval), 0, max_interval, -256, 256);    
+    analogWrite(ON_BOARD_LED, abs(led_fade_level));
+  }
   if (interval != last_interval){
     timerStatusMessage();
     last_interval = interval;
