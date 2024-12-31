@@ -5,26 +5,30 @@
 
 class Blob {
   public:
-    int sphere_r = 330; // radius of sphere the blob orbits
+    int16_t blob_id = 0;
+    const int sphere_r = 317; // radius of sphere the blob orbits
+
     int radius; // radius of blob
-    int16_t a,c = 0;  // polar angles
-    int16_t av;  // velocity of angles in radians
-    int16_t cv;  // velocity of angles in radians
-    int16_t max_accel = 500;
+    float a,c = 0;  // polar angles
+    float av;  // velocity of angles in radians
+    float cv;  // velocity of angles in radians
+    float max_accel = 0.017;
+
+    long max_age = 6000;
     long age;
-    long max_age = 3000;
     long lifespan;
 
-    CRGB color;
+    CRGB color = CRGB::White;
 
     // constructor
-    Blob();
+    Blob(uint16_t unique_id);
 
     void reset();
     int x();
     int y();
     int z();
     void applyForce(float a, float c);
+    void applyForce(float x, float y, float z);
     void tick();
 
 };

@@ -21,7 +21,7 @@ using namespace fl;
 - A Teensy 4.1 microcontroller is used to control the LEDs, using the Arduino environment and FastLED library.
 - Each pentagon side contains 104 RGB leds on a circuit board, arranged in rings from the center.
 - Each side connects to the next, in series, for a grand total of 1247 LEDs. 
-- Two halfs of the model are on separate channels, using pins 19 and 18 of the Teensy.
+- Two hemispheres of the model are on separate channels, using pins 19 and 18 of the Teensy.
 - FastLED parallel support is being used (see https://github.com/FastLED/FastLED/releases/tag/3.9.8)
 
 ## Configuration
@@ -87,6 +87,12 @@ CRGBPalette16 highlightPalette = CRGBPalette16(
   CRGB::GhostWhite, CRGB::LightPink, CRGB::AntiqueWhite, CRGB::LightSkyBlue, 
   CRGB::Gold, CRGB::PeachPuff, CRGB::FloralWhite, CRGB::PaleTurquoise, 
   CRGB::Orange, CRGB::MintCream, CRGB::FairyLightNCC, CRGB::LavenderBlush
+);
+CRGBPalette16 uniquePalette = CRGBPalette16(
+  CRGB::Red, CRGB::Green, CRGB::Blue, CRGB::Yellow, 
+  CRGB::Purple, CRGB::Orange, CRGB::Cyan, CRGB::Magenta, 
+  CRGB::Lime, CRGB::Pink, CRGB::Turquoise, CRGB::Sienna,
+  CRGB::Gold, CRGB::Salmon, CRGB::Silver, CRGB::Violet
 );
 
 CRGB leds[NUM_LEDS];
@@ -311,11 +317,10 @@ int calculateBlobDistance(LED_Point p1, Blob *b) {
   return (dx*dx + dy*dy + dz*dz);  
 }
 
-#define NUM_BLOBS 8
+#define NUM_BLOBS 7
 Blob *blobs[NUM_BLOBS];
 
 void orbiting_blobs(){
-  
   // // the point on the sphhere
   // float x1 = r * sin(c)*cos(a);
   // float y1 = r * sin(c)*sin(a);
@@ -331,12 +336,42 @@ void orbiting_blobs(){
         if (blobs[b]->age < 150){
           c.fadeToBlackBy(map(blobs[b]->age, 0, 150, 180, 1));
         }
-        nblend(leds[i], c, map(dist, 0, rad_sq, 30, 5));
+        nblend(leds[i], c, map(dist, 0, rad_sq, 8, 2));
       }
     }
   }
 
-  fadeToBlackBy(leds, NUM_LEDS, 5);  
+  // Tuning variable for repelling force strength
+  static float forceStrength = 0.002;
+
+  // Apply repelling force between blobs
+  for (int b1 = 0; b1 < NUM_BLOBS; b1++) {
+    for (int b2 = b1 + 1; b2 < NUM_BLOBS; b2++) {
+      float min_dist = (blobs[b1]->radius + blobs[b2]->radius)/2;
+      float min_dist_sq = min_dist * min_dist;
+
+      float dx = blobs[b1]->x() - blobs[b2]->x();
+      float dy = blobs[b1]->y() - blobs[b2]->y();
+      float dz = blobs[b1]->z() - blobs[b2]->z();
+      float dist_sq = dx*dx + dy*dy + dz*dz;
+
+      if (dist_sq < min_dist_sq and dist_sq > 20) {
+        float dist = sqrt(dist_sq);
+        float force = (min_dist - dist) / min_dist * forceStrength; // Repelling force based on distance
+        force += random(100)/100000.0; // Add a little randomness to the force
+
+        // Normalize the direction vector
+        float nx = dx / dist;
+        float ny = dy / dist;
+        float nz = dz / dist;
+
+        // Apply the repelling force to each blob
+        blobs[b1]->applyForce(nx * force, ny * force, nz * force);
+        blobs[b2]->applyForce(-nx * force, -ny * force, -nz * force);
+      }
+    }
+  }
+  fadeToBlackBy(leds, NUM_LEDS, 7);  
   // for (int i=0; i<NUM_LEDS; i++){
   //   leds[i].fadeToBlackBy(10);
   // }
@@ -461,7 +496,7 @@ void orientation_demo(){
       leds[s*LEDS_PER_SIDE+i] = side_color;
     }
   }
-  leds->fadeToBlackBy(20);
+  fadeToBlackBy(leds, NUM_LEDS, 2);
   FastLED.show();
 }
 
@@ -506,10 +541,13 @@ void timerStatusMessage(){
   Serial.printf("--> %d FPS @ mode:%d <--\n", FastLED.getFPS(), mode);
   Serial.printf("Power: %d mw\n", calculate_unscaled_power_mW(leds, NUM_LEDS));
   if (mode==0){   // wandering blobs
-    Serial.printf("Blob age: %d/%d\n", blobs[0]->age, blobs[0]->lifespan);
-    Serial.printf("Blob av/cv: %d %d\n", blobs[0]->av, blobs[0]->cv);
-    Serial.printf("Blob a/c: %d %d\n", blobs[0]->a, blobs[0]->c);
-    Serial.printf("Blob x/y/z: %d %d %d\n", blobs[0]->x(), blobs[0]->y(), blobs[0]->z());
+    int blob_id = 1;
+    printAnsiColor(blobs[blob_id]->color);
+    Serial.printf(" (%s) id=%d\n", getClosestColorName(blobs[blob_id]->color), blobs[blob_id]->blob_id);
+    Serial.printf("Blob age: %d/%d\n", blobs[blob_id]->age, blobs[blob_id]->lifespan);
+    Serial.printf("Blob av/cv: %0.3f %0.3f\n", blobs[blob_id]->av, blobs[blob_id]->cv);
+    Serial.printf("Blob a/c: %0.2f %0.2f\n", blobs[blob_id]->a, blobs[blob_id]->c);
+    Serial.printf("Blob x/y/z: %d %d %d\n", blobs[blob_id]->x(), blobs[blob_id]->y(), blobs[blob_id]->z());
   }
   if (mode==2){  // fade cycle
     Serial.printf("color_mix: %d/%d ", color_mix * 100 / 256, (256 - color_mix) * 100 / 256);
@@ -611,8 +649,9 @@ void setup() {
 
   // init Blobs
   for (int b=0; b<NUM_BLOBS; b++){
-    blobs[b] = new Blob();
-    blobs[b]->color = CHSV(random(255), random(150)+100, random(120)+100);
+    blobs[b] = new Blob(b);
+    // use unique ID to assign colors from uniquePalette
+    blobs[b]->color = ColorFromPalette(uniquePalette, b * 16);
   }
   // init Particles
   for (int p=0; p<NUM_PARTICLES; p++){
@@ -654,7 +693,7 @@ void setup() {
 //  timer1.attach(3, timerStatusMessage);
 
   // inital mode at startup
-  mode = 7;
+  mode = 0;
 }
 
 #define NUM_MODES 8
@@ -680,10 +719,10 @@ void loop() {
     while (digitalRead(USER_BUTTON) == LOW){
       CRGB c = CRGB::White;
       FastLED.setBrightness(BRIGHTNESS);
-      c.setHSV(millis()/20 % 255, 255, 128);
+      c.setHSV(millis()/20 % 255, 255, 64);
       FastLED.showColor(c);
       FastLED.show(); 
-      delay(10); 
+      delay(20); 
     }
     Serial.println("Button released");
   }
@@ -693,11 +732,11 @@ void loop() {
   }
   if (mode == 1){
     fade_test();
-    delay(2);
+    // delay(2);
   }
   if (mode == 2){
     flash_fade_points();
-    delay(2);
+    // delay(2);
   }
   if (mode==3){
     //solid_sides();
