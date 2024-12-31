@@ -4,14 +4,12 @@
 #include <cmath>
 #define FASTLED_USES_OBJECTFLED
 #include <FastLED.h>
-#include "fl/warn.h"
 
 #include "color_lookup.h"
 #include "blob.h"
 #include "points.h"
 #include "particle.h"
 
-using namespace fl;
 
 /* 
 
@@ -342,7 +340,7 @@ void orbiting_blobs(){
   }
 
   // Tuning variable for repelling force strength
-  static float forceStrength = 0.002;
+  static float forceStrength = 0.001;
 
   // Apply repelling force between blobs
   for (int b1 = 0; b1 < NUM_BLOBS; b1++) {
@@ -596,6 +594,12 @@ void setup() {
   Serial.begin(115200);
   delay(300);
   Serial.printf("Start: DodecaRGBv2 firmware v%s\n", VERSION);
+  Serial.printf("Teensy version: %d\n", TEENSYDUINO);
+  // Parse FastLED version
+  int major = FASTLED_VERSION / 1000000;
+  int minor = (FASTLED_VERSION / 1000) % 1000;
+  int patch = FASTLED_VERSION % 1000;
+  Serial.printf("FastLED version: %d.%d.%d\n", major, minor, patch);
   Serial.printf("Compiled: %s %s\n", __DATE__, __TIME__);
   Serial.printf("CPU Temp: %f c\n", temp);
   Serial.printf("Num LEDs: %d\n", NUM_LEDS);

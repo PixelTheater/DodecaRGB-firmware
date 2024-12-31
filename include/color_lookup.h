@@ -13,7 +13,7 @@ struct ColorName {
 
 // Array of colors from XKCD color survey
 // Array of 64 evenly distributed colors
-constexpr ColorName colorLookup[] = {
+ColorName colorLookup[] = {
     {"Black", CRGB::Black},
     {"Red", CRGB::Red},
     {"Green", CRGB::Green},
