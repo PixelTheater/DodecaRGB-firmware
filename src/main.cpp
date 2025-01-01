@@ -54,7 +54,7 @@ v1.0 Aug 2023:
 */
 
 // LED configs
-#define VERSION "2.0.2"
+#define VERSION "2.0.3"
 #define USER_BUTTON 2
 // https://github.com/FastLED/FastLED/wiki/Parallel-Output#parallel-output-on-the-teensy-4
 // pins 19+18 are used to control two strips of 624 LEDs, for a total of 1248 LEDs
@@ -334,13 +334,13 @@ void orbiting_blobs(){
         if (blobs[b]->age < 150){
           c.fadeToBlackBy(map(blobs[b]->age, 0, 150, 180, 1));
         }
-        nblend(leds[i], c, map(dist, 0, rad_sq, 8, 2));
+        nblend(leds[i], c, map(dist, 0, rad_sq, 7, 3));
       }
     }
   }
 
   // Tuning variable for repelling force strength
-  static float forceStrength = 0.001;
+  static float forceStrength = 0.000005;
 
   // Apply repelling force between blobs
   for (int b1 = 0; b1 < NUM_BLOBS; b1++) {
@@ -355,8 +355,8 @@ void orbiting_blobs(){
 
       if (dist_sq < min_dist_sq and dist_sq > 20) {
         float dist = sqrt(dist_sq);
-        float force = (min_dist - dist) / min_dist * forceStrength; // Repelling force based on distance
-        force += random(100)/100000.0; // Add a little randomness to the force
+        float force = ((min_dist - dist) / min_dist) * forceStrength; // Repelling force based on distance
+        //force += random(100)/100000.0; // Add a little randomness to the force
 
         // Normalize the direction vector
         float nx = dx / dist;
@@ -369,7 +369,7 @@ void orbiting_blobs(){
       }
     }
   }
-  fadeToBlackBy(leds, NUM_LEDS, 7);  
+  fadeToBlackBy(leds, NUM_LEDS, 3);  
   // for (int i=0; i<NUM_LEDS; i++){
   //   leds[i].fadeToBlackBy(10);
   // }

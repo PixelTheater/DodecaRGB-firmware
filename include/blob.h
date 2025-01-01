@@ -7,6 +7,8 @@ class Blob {
   public:
     int16_t blob_id = 0;
     const int sphere_r = 317; // radius of sphere the blob orbits
+    const int min_radius = 100;
+    const int max_radius = 130;
 
     int radius; // radius of blob
     float a,c = 0;  // polar angles

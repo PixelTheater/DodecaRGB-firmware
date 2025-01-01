@@ -15,14 +15,11 @@ Blob::Blob(uint16_t unique_id){
 void Blob::reset(){
   this->age = 0;
   this->lifespan = random(this->max_age/2)+this->max_age/2;
-  this->radius = random(90,130);
+  this->radius = random(this->min_radius,this->max_radius);
   this->av = random(-this->max_accel * 1000, this->max_accel * 1000) / 1000.0;
   this->cv = random(-this->max_accel * 1000, this->max_accel * 1000) / 1000.0;
   this->a = random(TWO_PI*1000)/1000.0 - PI;  // rotation angle of blob
   this->c = random(TWO_PI*10000)/10000.0 - PI;  // rotation angle of blob
-  float force_av = random(80, 100)/1000.0 * (random(2) == 0 ? -1.0 : 1.0);
-  float force_cv = random(80, 100)/1000.0 * (random(2) == 0 ? -1.0 : 1.0);
-  this->applyForce(force_av, force_cv);
 }
 
 int Blob::x(){ return sphere_r * sin(this->c) * cos(this->a); }
@@ -50,9 +47,9 @@ void Blob::tick(){
   // to the angles to keep them from going too far north or south
   float force_av = this->av * 1.001;
   this->c = fmod(this->c + PI, TWO_PI) - PI; // Normalize c to be within [-PI, PI]
-  float force_cv = 0.0005 * (this->c - PI/2);
+  float force_cv = 0.00035 * (this->c - PI/2);
   if (this->c < -PI/2){
-    force_cv = -0.0005 * (this->c + PI/2);
+    force_cv = -0.0003 * (this->c + PI/2);
   }
   this->applyForce(force_av, force_cv);
 
@@ -61,7 +58,7 @@ void Blob::tick(){
   this->a += this->av; 
   this->c += this->cv;
   //this->av *= 0.9995; 
-  if (abs(this->cv) < 0.005){
+  if (abs(this->cv) < 0.001){
     float af = random(-max_accel*1000,max_accel*1000);
     float cf = random(-max_accel*1000,max_accel*1000);
     this->applyForce(af/2000.0, cf/1000.0);
