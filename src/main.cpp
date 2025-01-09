@@ -613,15 +613,15 @@ float angle_diff(float a1, float a2) {
 
 void orientation_demo() {
   static uint16_t transition_counter = 0;
-  static const uint16_t TRANSITION_START = 500;    
-  static const uint16_t TRANSITION_DURATION = 250;
+  static const uint16_t TRANSITION_START = 1000;    
+  static const uint16_t TRANSITION_DURATION = 200;
   static float anim_time = 1000.0;
   static float base_angle = 0.0;
   
   // Grid configuration
-  static const int lat_lines = 6;
-  static const int lon_lines = 6;
-  static const float line_width = 0.11;
+  static const int lat_lines = 5;
+  static const int lon_lines = 4;
+  static const float line_width = 0.13;
   
   // Check if it's time to start a new transition
   if (++transition_counter >= TRANSITION_START) {
@@ -634,21 +634,21 @@ void orientation_demo() {
   
   // Calculate blend amount during transition
   float blend_amount = 0;
-  float rotation_speed = 1.0;
+  float rotation_speed = 1.3;
   if (in_transition) {
     blend_amount = (float)transition_counter / TRANSITION_DURATION;
     if (blend_amount >= 1.0) {
       in_transition = false;
       blend_amount = 1.0;
     }
-    rotation_speed = 0.3 + (0.7 * blend_amount * blend_amount);
+    rotation_speed = 0.5 + (0.7 * blend_amount * blend_amount);
     blend_to_target(blend_amount);
   }
 
   // Update rotation angles
   base_angle += 0.025 * rotation_speed;
   float spin = base_angle;
-  float tilt = sin(anim_time * 0.002) * 0.3;
+  float tilt = sin(anim_time * 0.002) * 0.5;
   float tumble = base_angle * 0.25;
   
   Matrix3d rot_z = AngleAxisd(spin, Vector3d::UnitZ()).matrix();
