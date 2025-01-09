@@ -10,6 +10,12 @@
 #include "points.h"
 #include "particle.h"
 
+#include <Adafruit_LSM6DSOX.h>
+
+// Function declarations
+float get_perceived_brightness(const CRGB& color);
+float get_contrast_ratio(const CRGB& color1, const CRGB& color2);
+float get_hue_distance(const CRGB& color1, const CRGB& color2);
 
 /* 
 
@@ -70,6 +76,8 @@ v1.0 Aug 2023:
 
 #define BRIGHTNESS  40
 #define WIFI_ENABLED false
+#define USE_IMU true
+
 
 // base color palette
 #define NUM_COLORS 16
@@ -95,6 +103,8 @@ CRGBPalette16 uniquePalette = CRGBPalette16(
 
 CRGB leds[NUM_LEDS];
 
+Adafruit_LSM6DSOX sox;
+
 // Constants
 const int LEDS_PER_RING = 10;
 const int LEDS_PER_EDGE = 15;
@@ -104,6 +114,7 @@ int mode = 0;
 
 int show_pos = 0;
 int show_color = random(255);
+
 void color_show(){
   static int led_limit = 54;
   // turn off all LEDs in a dissolving pattern
@@ -319,10 +330,10 @@ int calculateBlobDistance(LED_Point p1, Blob *b) {
 Blob *blobs[NUM_BLOBS];
 
 void orbiting_blobs(){
-  // // the point on the sphhere
-  // float x1 = r * sin(c)*cos(a);
-  // float y1 = r * sin(c)*sin(a);
-  // float z1 = r * cos(c);
+  sensors_event_t accel;
+  sensors_event_t gyro;
+  sensors_event_t temp;
+  sox.getEvent(&accel, &gyro, &temp);
   
   for (int b=0; b<NUM_BLOBS; b++){
     auto rad_sq = blobs[b]->radius*blobs[b]->radius;
@@ -369,10 +380,10 @@ void orbiting_blobs(){
       }
     }
   }
-  fadeToBlackBy(leds, NUM_LEDS, 3);  
-  // for (int i=0; i<NUM_LEDS; i++){
-  //   leds[i].fadeToBlackBy(10);
-  // }
+  //fadeToBlackBy(leds, NUM_LEDS, 3);  
+  for (int i=0; i<NUM_LEDS; i++){
+    leds[i].fadeToBlackBy(10);
+  }
 
   FastLED.show();
 
@@ -480,7 +491,225 @@ void drip_particles(){
   // todo
 }
 
-void orientation_demo(){
+
+CRGB bg_color;           // Current background color
+CRGB line_color;         // Current line color
+CRGB target_bg_color;    // Target background color
+CRGB target_line_color;  // Target line color
+bool dark_lines = true;  // Whether lines should be darker than background
+bool in_transition = false;  // Add this line
+
+// Function implementations (place these before pick_new_colors)
+float get_perceived_brightness(const CRGB& color) {
+    return (0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b) / 255.0;
+}
+
+float get_contrast_ratio(const CRGB& color1, const CRGB& color2) {
+    float l1 = get_perceived_brightness(color1);
+    float l2 = get_perceived_brightness(color2);
+    float lighter = max(l1, l2);
+    float darker = min(l1, l2);
+    return (lighter + 0.05) / (darker + 0.05);
+}
+
+float get_hue_distance(const CRGB& color1, const CRGB& color2) {
+    CHSV hsv1 = rgb2hsv_approximate(color1);
+    CHSV hsv2 = rgb2hsv_approximate(color2);
+    
+    float diff = fabs(hsv1.h - hsv2.h);
+    return min(diff, 255.0f - diff) * (180.0f/255.0f);  // convert to degrees (0-180)
+}
+
+void pick_new_colors() {
+    // Store previous target as current
+  bg_color = target_bg_color;
+  line_color = target_line_color;
+
+  uint8_t best_bg_index = 0;
+  uint8_t best_line_index = 0;
+  float best_score = 0;
+
+  dark_lines = random8() > 128;
+  // Serial.printf("\nPicking new colors (want dark lines: %d)\n", dark_lines);
+
+  for (int i = 0; i < 4; i++) {
+    uint8_t test_bg = random8();
+    uint8_t test_line = random8();
+    
+    CRGB test_bg_color = ColorFromPalette(highlightPalette, test_bg);
+    CRGB test_line_color = ColorFromPalette(basePalette, test_line);
+    
+    float contrast = get_contrast_ratio(test_bg_color, test_line_color);
+    float hue_dist = get_hue_distance(test_bg_color, test_line_color);
+    float bg_brightness = get_perceived_brightness(test_bg_color);
+    float line_brightness = get_perceived_brightness(test_line_color);
+    
+    bool valid = dark_lines ? 
+      (line_brightness < bg_brightness) : 
+      (line_brightness > bg_brightness);
+        
+    float score = contrast * (hue_dist / 90.0f);
+    
+    // Serial.printf("Try %d: BG(%d,%d,%d) Line(%d,%d,%d) - ", i,
+    //     test_bg_color.r, test_bg_color.g, test_bg_color.b,
+    //     test_line_color.r, test_line_color.g, test_line_color.b);
+    // Serial.printf("Contrast: %.2f HueDist: %.1f Score: %.2f Valid: %d\n",
+    //     contrast, hue_dist, score, valid);
+        
+    if (valid && contrast >= 1.5 && hue_dist >= 30.0 && score > best_score) {
+        best_score = score;
+        best_bg_index = test_bg;
+        best_line_index = test_line;
+        // Serial.println("  ^ New best!");
+    }
+}
+
+    target_bg_color = ColorFromPalette(highlightPalette, best_bg_index);
+    target_line_color = ColorFromPalette(basePalette, best_line_index);
+    
+    // Convert to HSV for adjustments
+    CHSV bg_hsv = rgb2hsv_approximate(target_bg_color);
+    CHSV line_hsv = rgb2hsv_approximate(target_line_color);
+    
+    // Randomly adjust hue by up to +/- 16 steps (about 15 degrees)
+    bg_hsv.h = bg_hsv.h + random8(33) - 16;
+    line_hsv.h = line_hsv.h + random8(33) - 16;
+    
+    // Randomly adjust brightness
+    if (dark_lines) {
+        // Brighten background, darken lines
+        bg_hsv.v = qadd8(bg_hsv.v, random8(64));
+        line_hsv.v = qsub8(line_hsv.v, random8(64));
+    } else {
+        // Darken background, brighten lines
+        bg_hsv.v = qsub8(bg_hsv.v, random8(64));
+        line_hsv.v = qadd8(line_hsv.v, random8(64));
+    }
+    
+    // Randomly adjust saturation a bit too
+    bg_hsv.s = qadd8(qsub8(bg_hsv.s, random8(32)), random8(32));
+    line_hsv.s = qadd8(qsub8(line_hsv.s, random8(32)), random8(32));
+    
+    target_bg_color = CHSV(bg_hsv.h, bg_hsv.s, bg_hsv.v);
+    target_line_color = CHSV(line_hsv.h, line_hsv.s, line_hsv.v);
+    
+    Serial.printf("Final colors - BG: %d,%d,%d Line: %d,%d,%d Score: %.2f\n", 
+        target_bg_color.r, target_bg_color.g, target_bg_color.b,
+        target_line_color.r, target_line_color.g, target_line_color.b,
+        best_score);
+}
+
+void blend_to_target(float blend_amount) {
+  // Blend current colors toward target colors
+  nblend(bg_color, target_bg_color, blend_amount * 255);
+  nblend(line_color, target_line_color, blend_amount * 255);
+}
+
+// Helper function to find the smallest angle difference
+float angle_diff(float a1, float a2) {
+  float diff = fmod(abs(a1 - a2), TWO_PI);
+  return min(diff, TWO_PI - diff);
+}
+
+void orientation_demo() {
+  static uint16_t transition_counter = 0;
+  static const uint16_t TRANSITION_START = 500;    
+  static const uint16_t TRANSITION_DURATION = 250;
+  static float anim_time = 1000.0;
+  static float base_angle = 0.0;
+  
+  // Grid configuration
+  static const int lat_lines = 6;
+  static const int lon_lines = 6;
+  static const float line_width = 0.11;
+  
+  // Check if it's time to start a new transition
+  if (++transition_counter >= TRANSITION_START) {
+    if (!in_transition) {
+      pick_new_colors();
+      in_transition = true;
+      transition_counter = 0;
+    }
+  }
+  
+  // Calculate blend amount during transition
+  float blend_amount = 0;
+  float rotation_speed = 1.0;
+  if (in_transition) {
+    blend_amount = (float)transition_counter / TRANSITION_DURATION;
+    if (blend_amount >= 1.0) {
+      in_transition = false;
+      blend_amount = 1.0;
+    }
+    rotation_speed = 0.3 + (0.7 * blend_amount * blend_amount);
+    blend_to_target(blend_amount);
+  }
+
+  // Update rotation angles
+  base_angle += 0.025 * rotation_speed;
+  float spin = base_angle;
+  float tilt = sin(anim_time * 0.002) * 0.3;
+  float tumble = base_angle * 0.25;
+  
+  Matrix3d rot_z = AngleAxisd(spin, Vector3d::UnitZ()).matrix();
+  Matrix3d rot_x = AngleAxisd(tilt, Vector3d::UnitX()).matrix();
+  Matrix3d rot_y = AngleAxisd(tumble, Vector3d::UnitY()).matrix();
+  Matrix3d rotation = rot_z * rot_x * rot_y;
+
+  // Draw the grid
+  for (int i = 0; i < NUM_LEDS; i++) {
+    LED_Point p = points[i];
+    Vector3d point(p.x, p.y, p.z);
+    Vector3d rotated_point = rotation * point;
+    Vector3d ray_dir = rotated_point.normalized();
+    
+    float a = atan2(ray_dir.y(), ray_dir.x());
+    float c = acos(ray_dir.z());
+    
+    float a_norm = fmod(a + TWO_PI, TWO_PI);
+    float c_norm = c;
+    
+    float lat_spacing = TWO_PI / lat_lines;
+    float lon_spacing = PI / lon_lines;
+    
+    float nearest_lat = round(a_norm / lat_spacing) * lat_spacing;
+    float nearest_lon = round(c_norm / lon_spacing) * lon_spacing;
+    
+    float lat_angle = min(
+      abs(angle_diff(a_norm, nearest_lat)),
+      abs(angle_diff(a_norm, nearest_lat + lat_spacing))
+    );
+    
+    float lon_angle = min(
+      abs(angle_diff(c_norm, nearest_lon)),
+      abs(angle_diff(c_norm, nearest_lon + lon_spacing))
+    );
+    
+    float point_dist = point.norm();
+    float lat_dist = point_dist * lat_angle;
+    float lon_dist = point_dist * lon_angle;
+    
+    float dist = min(lat_dist, lon_dist);
+    float scaled_width = line_width * point_dist;
+    
+    if (dist < scaled_width) {
+      uint8_t line_intensity = 255 * (1.0 - dist/scaled_width);
+      CRGB line = line_color;
+      line.nscale8(scale8(line_intensity, BRIGHTNESS));
+      nblend(leds[i], line, line_intensity/2);
+    } else {
+      leds[i] = bg_color;
+      leds[i].nscale8(scale8(180, BRIGHTNESS));  // Increased from 40 to 180 for more visible background
+    }
+  }
+  
+  anim_time += 1.0;
+  FastLED.show();
+}
+
+
+
+void identify_sides(){
   // identify each side uniquely
   for (int s=0; s<NUM_SIDES; s++){
     CRGB side_color = CHSV(s*255/NUM_SIDES, 255, 255); // new color for each side
@@ -578,10 +807,39 @@ void timerStatusMessage(){
   }
 
   if (mode==7){   // orientation demo
-    //  
+    sensors_event_t accel;
+    sensors_event_t gyro;
+    sensors_event_t temp;
+    sox.getEvent(&accel, &gyro, &temp);
+    
+    // Display current colors
+    Serial.printf("dark lines? %s\n", dark_lines ? "true" : "false");
+    printAnsiColor(bg_color);
+    Serial.printf(" Background (%s)\n", getClosestColorName(bg_color));
+    printAnsiColor(line_color); 
+    Serial.printf(" Lines (%s)\n", getClosestColorName(line_color));
+    Serial.printf("Brightness: %d%%\n", (BRIGHTNESS * 100) / 255);
+    
+    if (in_transition) {
+      Serial.printf("Transitioning to:\n");
+      printAnsiColor(target_bg_color);
+      Serial.printf(" Target bg (%s)\n", getClosestColorName(target_bg_color));
+      printAnsiColor(target_line_color);
+      Serial.printf(" Target lines (%s)\n", getClosestColorName(target_line_color));
+    }
+
+#ifdef USE_IMU
+    // Display sensor data
+    Serial.printf("LSM6DSOX:\n");
+    Serial.printf("\tTemperature: %.2f deg C\n", temp.temperature);
+    Serial.printf("\tAccel X: %.2f \tY: %.2f \tZ: %.2f m/s^2\n", 
+      accel.acceleration.x, accel.acceleration.y, accel.acceleration.z);
+    Serial.printf("\tGyro X: %.2f \tY: %.2f \tZ: %.2f radians/s\n", 
+      gyro.gyro.x, gyro.gyro.y, gyro.gyro.z);
   }
+#endif
+
 }
-//Ticker timer1;
 
 void setup() {
   float temp = InternalTemperature.readTemperatureC();
@@ -604,6 +862,16 @@ void setup() {
   Serial.printf("CPU Temp: %f c\n", temp);
   Serial.printf("Num LEDs: %d\n", NUM_LEDS);
   Serial.printf("Random seed: %d\n", random_seed);
+
+#ifdef USE_IMU
+  Serial.println("Adafruit LSM6DSOX check");
+  if (!sox.begin_I2C(LSM6DS_I2CADDR_DEFAULT, &Wire1)) {
+    Serial.println("LSM6DSOX not found!");
+  } else {
+    Serial.println("LSM6DSOX found");
+  }
+#endif
+
   Serial.println();
 
   pinMode(ON_BOARD_LED, OUTPUT);
@@ -665,39 +933,20 @@ void setup() {
 
   Serial.println("Init done");
 
-  // for (int i=1; i<LEDS_PER_SIDE; i+=(1+random(4))){    
-  //   for (int side=0; side<NUM_SIDES; side++){
-  //     leds[side*LEDS_PER_SIDE+i] = my_colors[side];
-  //   }
-  //   FastLED.show();
-  //   delay(50);
-  // }
-
-  if (WIFI_ENABLED == true){
-    // bool config_wifi = (digitalRead(USER_BUTTON) == LOW);
-    // bool connected = ConnectToWifi(config_wifi);
-
-    // // flash green if connected, or red if not
-    // for (int x=0; x<40; x++){
-    //   int level = 150 - abs(map(x, 0,  40, -150, 150));
-    //   CRGB c =  (connected ? CRGB(0,level,0) : CRGB(level,0,0));
-    //   FastLED.showColor(c);
-    //   FastLED.show();
-    //   delayMicroseconds(500);
-    // }
-  } else {
-    Serial.println("Wifi disabled.");
-  }
-
   FastLED.clear();
   FastLED.show();
 
   delay(300);
 
-//  timer1.attach(3, timerStatusMessage);
-
   // inital mode at startup
   mode = 0;
+
+  // Add to setup() after FastLED initialization
+  // Initialize orientation demo colors
+  target_bg_color = ColorFromPalette(highlightPalette, random8());
+  target_line_color = ColorFromPalette(basePalette, random8());
+  bg_color = target_bg_color;
+  line_color = target_line_color;
 }
 
 #define NUM_MODES 8

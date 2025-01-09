@@ -14,9 +14,9 @@ class Blob {
     float a,c = 0;  // polar angles
     float av;  // velocity of angles in radians
     float cv;  // velocity of angles in radians
-    float max_accel = 0.017;
+    float max_accel = 0.0; // 0.17
 
-    long max_age = 6000;
+    long max_age = 4000;
     long age;
     long lifespan;
 

@@ -20,6 +20,7 @@ void Blob::reset(){
   this->cv = random(-this->max_accel * 1000, this->max_accel * 1000) / 1000.0;
   this->a = random(TWO_PI*1000)/1000.0 - PI;  // rotation angle of blob
   this->c = random(TWO_PI*10000)/10000.0 - PI;  // rotation angle of blob
+  this->max_accel = random(5,27)/1000.0;
 }
 
 int Blob::x(){ return sphere_r * sin(this->c) * cos(this->a); }
@@ -55,9 +56,10 @@ void Blob::tick(){
 
   // animate angles with velocity
   this->age++;
+  this->av *= 0.99; 
+  this->cv *= 0.99; 
   this->a += this->av; 
   this->c += this->cv;
-  //this->av *= 0.9995; 
   if (abs(this->cv) < 0.001){
     float af = random(-max_accel*1000,max_accel*1000);
     float cf = random(-max_accel*1000,max_accel*1000);
