@@ -489,10 +489,12 @@ CRGB bg_color;           // Current background color
 CRGB line_color;         // Current line color
 CRGB target_bg_color;    // Target background color
 CRGB target_line_color;  // Target line color
+CRGB bg_color_prev = CRGB::Black ;
+CRGB line_color_prev = CRGB::Black;
 bool dark_lines = true;  // Whether lines should be darker than background
-bool in_transition = false;  // Add this line
-const uint16_t cycle_time = 1000;    
-const uint16_t transition_duration = 250;  
+bool in_transition = true;  // active animation between colors and lines
+const uint16_t cycle_time = 1000;    // time between color changes
+const uint16_t transition_duration = 200;   // time to transition between colors
 
 // Helper functions
 float get_perceived_brightness(const CHSV& color) {
@@ -514,29 +516,31 @@ float get_hue_distance(const CHSV& color1, const CHSV& color2) {
     return min(diff, 255.0f - diff) * (180.0f/255.0f);  // convert to degrees (0-180)
 }
 
-// Color selection code
+// Color selection, happens every transition
 void pick_new_colors() {
     // Store previous target as current
+    bg_color_prev = bg_color;
+    line_color_prev = line_color;
     bg_color = target_bg_color;
     line_color = target_line_color;
     
     CHSV best_hsv1, best_hsv2;
     float best_score = 0;
     
-    // Try several random color pairs
-    for (int i = 0; i < 10; i++) {
+    // find an acceptable random color pair
+    for (int i = 0; i < 16; i++) {
         // Pick random colors from palettes and convert to HSV immediately
         CHSV hsv1 = rgb2hsv_approximate(ColorFromPalette(uniquePalette, random8()));
-        CHSV hsv2 = rgb2hsv_approximate(ColorFromPalette(highlightPalette, random8()));
+        CHSV hsv2 = rgb2hsv_approximate(ColorFromPalette(RainbowStripesColors_p, random8()));
         
         // Determine which color is brighter,         
         // apply random adjustments to relative brightness
         if (get_perceived_brightness(hsv1) > get_perceived_brightness(hsv2)) {
-            hsv1.v = qadd8(hsv1.v, 32+random8(32));  // Make brighter color more bright
-            hsv2.v = qsub8(hsv2.v, 32+random8(32));  // Make darker color more dark
+            hsv1.v = qadd8(hsv1.v, 16+random8(32));  // Make brighter color more bright
+            hsv2.v = qsub8(hsv2.v, 16+random8(32));  // Make darker color more dark
         } else {
-            hsv2.v = qadd8(hsv2.v, 32+random8(32));  // Make brighter color more bright
-            hsv1.v = qsub8(hsv1.v, 32+random8(32));  // Make darker color more dark
+            hsv2.v = qadd8(hsv2.v, 16+random8(32));  // Make brighter color more bright
+            hsv1.v = qsub8(hsv1.v, 16+random8(32));  // Make darker color more dark
         }
         
         float contrast = get_contrast_ratio(hsv1, hsv2);
@@ -546,7 +550,7 @@ void pick_new_colors() {
         float score = contrast * (hue_dist / 180.0f);
         
         // Check if colors meet our criteria and have better score
-        if (contrast >= 2.0 && hue_dist >= 30.0 && score > best_score) {
+        if (contrast >= 1.5 && hue_dist >= 20.0 && score > best_score) {
             best_score = score;
             best_hsv1 = hsv1;
             best_hsv2 = hsv2;
@@ -563,6 +567,8 @@ void pick_new_colors() {
     // Convert to RGB for final colors
     CRGB bright_color = CHSV(best_hsv1.h, best_hsv1.s, best_hsv1.v);
     CRGB dark_color = CHSV(best_hsv2.h, best_hsv2.s, best_hsv2.v);
+    bright_color.fadeLightBy(20);
+    dark_color.fadeToBlackBy(50);
 
     // Randomly decide if lines should be darker than background
     dark_lines = !dark_lines;
@@ -582,8 +588,8 @@ void pick_new_colors() {
 
 void blend_to_target(float blend_amount) {
   // Blend current colors toward target colors
-  nblend(bg_color, target_bg_color, blend_amount * 5);
-  nblend(line_color, target_line_color, blend_amount * 5);
+  bg_color = blend(bg_color_prev, target_bg_color, blend_amount * 255);
+  line_color = blend(line_color_prev, target_line_color, blend_amount * 255);
 }
 
 // Helper function to find the smallest angle difference
@@ -617,7 +623,7 @@ void orientation_demo() {
   if (in_transition) {
     if (transition_counter == 0) {
       // Pick new target width at start of transition
-      target_line_width = random(10, 80)/100.0;
+      target_line_width = random(10, 40)/100.0;
     }
     // Smoothly blend between current and target width
     float blend_amount = map(transition_counter, 0, transition_duration, 0, 1000)/1000.0;
