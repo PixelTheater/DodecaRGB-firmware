@@ -69,13 +69,11 @@ v1.0 Aug 2023:
 // https://www.pjrc.com/teensy/td_libs_Wire.html
 // ex: Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x29, &Wire1);
 
-#define BRIGHTNESS  40
-#define WIFI_ENABLED false
-#define USE_IMU true
+#define BRIGHTNESS  50      // global brightness, should be used by all animations
+#define USE_IMU true        // enable orientation sensor (currently: LSM6DSOX)
 
 
-// base color palette
-#define NUM_COLORS 16
+// standard color palettes, hand picked for good contrast
 
 CRGBPalette16 basePalette = CRGBPalette16( 
   CRGB::Red, CRGB::DarkRed, CRGB::IndianRed, CRGB::OrangeRed,
@@ -493,6 +491,8 @@ CRGB target_bg_color;    // Target background color
 CRGB target_line_color;  // Target line color
 bool dark_lines = true;  // Whether lines should be darker than background
 bool in_transition = false;  // Add this line
+const uint16_t cycle_time = 1000;    
+const uint16_t transition_duration = 250;  
 
 // Helper functions
 float get_perceived_brightness(const CHSV& color) {
@@ -524,7 +524,7 @@ void pick_new_colors() {
     float best_score = 0;
     
     // Try several random color pairs
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 10; i++) {
         // Pick random colors from palettes and convert to HSV immediately
         CHSV hsv1 = rgb2hsv_approximate(ColorFromPalette(uniquePalette, random8()));
         CHSV hsv2 = rgb2hsv_approximate(ColorFromPalette(highlightPalette, random8()));
@@ -532,11 +532,11 @@ void pick_new_colors() {
         // Determine which color is brighter,         
         // apply random adjustments to relative brightness
         if (get_perceived_brightness(hsv1) > get_perceived_brightness(hsv2)) {
-            hsv1.v = qadd8(hsv1.v, 10+random8(32));  // Make brighter color more bright
-            hsv2.v = qsub8(hsv2.v, 10+random8(32));  // Make darker color more dark
+            hsv1.v = qadd8(hsv1.v, 32+random8(32));  // Make brighter color more bright
+            hsv2.v = qsub8(hsv2.v, 32+random8(32));  // Make darker color more dark
         } else {
-            hsv2.v = qadd8(hsv2.v, 10+random8(32));  // Make brighter color more bright
-            hsv1.v = qsub8(hsv1.v, 10+random8(32));  // Make darker color more dark
+            hsv2.v = qadd8(hsv2.v, 32+random8(32));  // Make brighter color more bright
+            hsv1.v = qsub8(hsv1.v, 32+random8(32));  // Make darker color more dark
         }
         
         float contrast = get_contrast_ratio(hsv1, hsv2);
@@ -565,7 +565,7 @@ void pick_new_colors() {
     CRGB dark_color = CHSV(best_hsv2.h, best_hsv2.s, best_hsv2.v);
 
     // Randomly decide if lines should be darker than background
-    dark_lines = random8() > 128;
+    dark_lines = !dark_lines;
     
     // Assign colors based on dark_lines setting
     if (dark_lines) {
@@ -582,8 +582,8 @@ void pick_new_colors() {
 
 void blend_to_target(float blend_amount) {
   // Blend current colors toward target colors
-  nblend(bg_color, target_bg_color, blend_amount * 128);
-  nblend(line_color, target_line_color, blend_amount * 128);
+  nblend(bg_color, target_bg_color, blend_amount * 5);
+  nblend(line_color, target_line_color, blend_amount * 5);
 }
 
 // Helper function to find the smallest angle difference
@@ -593,16 +593,15 @@ float angle_diff(float a1, float a2) {
 }
 
 void orientation_demo() {
-  static uint16_t transition_counter = 0;
-  static const uint16_t cycle_time = 1000;    
-  static const uint16_t transition_duration = 250;
-  static float anim_time = 0.0;
-  static float base_angle = 0.0;
+  static uint16_t transition_counter = 700;
+  static float tilt_speed = 0.0;
+  static float rotation_angle = 0.0;
   
   // Grid configuration
   static const int lat_lines = 5;
   static const int lon_lines = 4;
-  static const float line_width = 0.13;
+  static float current_line_width = 0.14;
+  static float target_line_width = 0.14;
   
   // Check if it's time to start a new transition
   if (++transition_counter >= cycle_time) {
@@ -614,23 +613,30 @@ void orientation_demo() {
   }
   
   // Calculate blend amount during transition
-  float blend_amount = 0;
   float rotation_speed = 1.3;
   if (in_transition) {
-    blend_amount = (float)transition_counter / transition_duration;
-    if (blend_amount >= 1.0) {
-      in_transition = false;
-      blend_amount = 1.0;
+    if (transition_counter == 0) {
+      // Pick new target width at start of transition
+      target_line_width = random(10, 80)/100.0;
     }
-    rotation_speed = 0.5 + (0.7 * blend_amount * blend_amount);
+    // Smoothly blend between current and target width
+    float blend_amount = map(transition_counter, 0, transition_duration, 0, 1000)/1000.0;
+    current_line_width += (target_line_width - current_line_width) * blend_amount;
+    // Smoothly blend colors
     blend_to_target(blend_amount);
+    rotation_speed = 1.3 + sin(blend_amount*PI)*1.1;
+    
+    // End transition when complete
+    if (transition_counter >= transition_duration) {
+      in_transition = false;
+    }
   }
 
   // Update rotation angles
-  base_angle += 0.025 * rotation_speed;
-  float spin = base_angle;
-  float tilt = sin(anim_time * 0.002) * 0.5;
-  float tumble = base_angle * 0.25;
+  rotation_angle += 0.025 * rotation_speed;
+  float spin = rotation_angle;
+  float tilt = sin(tilt_speed * 0.002) * 0.5;
+  float tumble = rotation_angle * 0.25;
   
   Matrix3d rot_z = AngleAxisd(spin, Vector3d::UnitZ()).matrix();
   Matrix3d rot_x = AngleAxisd(tilt, Vector3d::UnitX()).matrix();
@@ -671,24 +677,27 @@ void orientation_demo() {
     float lon_dist = point_dist * lon_angle;
     
     float dist = min(lat_dist, lon_dist);
-    float scaled_width = line_width * point_dist;
-    
+    float scaled_width = current_line_width * point_dist;
+
+    // set background color
+    leds[i] = bg_color;
+    leds[i].nscale8(scale8(160, BRIGHTNESS));  // scale down the brightness      
+
+    // handle the transition between background and line
     if (dist < scaled_width) {
       // Create smoother falloff using cubic or quadratic easing
       float blend_factor = 1.0 - (dist/scaled_width);
       blend_factor = blend_factor * blend_factor * (3 - 2 * blend_factor); // Smoothstep function
-      
+
+      // set line color
       uint8_t line_intensity = 255 * blend_factor;
       CRGB line = line_color;
       line.nscale8(scale8(line_intensity, BRIGHTNESS));
-      nblend(leds[i], line, map(line_intensity, 0, 255, 128, 40));  // More subtle blending for high contrast
-    } else {
-      leds[i] = bg_color;
-      leds[i].nscale8(scale8(128, BRIGHTNESS));  // Increased from 40 to 180 for more visible background
+      leds[i] = blend(leds[i], line, line_intensity);  // More subtle blending for high contrast
     }
   }
   
-  anim_time += 1.0;
+  tilt_speed += 1.0;
   FastLED.show();
 }
 
@@ -831,9 +840,13 @@ void setup() {
   random_seed = (temp - int(temp)) * 100000; 
   random_seed += (analogRead(ANALOG_PIN_A) * analogRead(ANALOG_PIN_B));
   randomSeed(random_seed);
-
+  random16_set_seed(random_seed);
+  
   seed1 = random(random_seed) * 2 % 4000;
   seed2 = random(random_seed) * 3 % 5000;
+  random16_add_entropy(seed1);
+  random16_add_entropy(seed2);
+
   Serial.begin(115200);
   delay(300);
   Serial.printf("Start: DodecaRGBv2 firmware v%s\n", VERSION);
@@ -870,7 +883,7 @@ void setup() {
   FastLED.addLeds<WS2812, LED_CHANNEL_2_PIN, GRB>(leds, NUM_LEDS/2, NUM_LEDS/2);
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.setDither(0);
-  FastLED.setMaxRefreshRate(60);
+  FastLED.setMaxRefreshRate(90);
   FastLED.clear();
   FastLED.show();
 
