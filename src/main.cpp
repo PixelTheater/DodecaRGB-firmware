@@ -55,7 +55,7 @@ v1.0 Aug 2023:
 */
 
 // LED configs
-#define VERSION "2.0.3"
+#define VERSION "2.0.5"
 #define USER_BUTTON 2
 // https://github.com/FastLED/FastLED/wiki/Parallel-Output#parallel-output-on-the-teensy-4
 // pins 19+18 are used to control two strips of 624 LEDs, for a total of 1248 LEDs
@@ -493,7 +493,7 @@ CRGB bg_color_prev = CRGB::Black ;
 CRGB line_color_prev = CRGB::Black;
 bool dark_lines = true;  // Whether lines should be darker than background
 bool in_transition = true;  // active animation between colors and lines
-const uint16_t cycle_time = 1000;    // time between color changes
+const uint16_t cycle_time = 1500;    // time between color changes
 const uint16_t transition_duration = 200;   // time to transition between colors
 
 // Helper functions
@@ -599,7 +599,7 @@ float angle_diff(float a1, float a2) {
 }
 
 void orientation_demo() {
-  static uint16_t transition_counter = 700;
+  static uint16_t transition_counter = 900;
   static float tilt_speed = 0.0;
   static float rotation_angle = 0.0;
   
@@ -619,7 +619,7 @@ void orientation_demo() {
   }
   
   // Calculate blend amount during transition
-  float rotation_speed = 1.3;
+  float rotation_speed = 0.7;
   if (in_transition) {
     if (transition_counter == 0) {
       // Pick new target width at start of transition
@@ -630,7 +630,7 @@ void orientation_demo() {
     current_line_width += (target_line_width - current_line_width) * blend_amount;
     // Smoothly blend colors
     blend_to_target(blend_amount);
-    rotation_speed = 1.3 + sin(blend_amount*PI)*1.1;
+    rotation_speed = 0.7 + sin(blend_amount*PI)*1.4;
     
     // End transition when complete
     if (transition_counter >= transition_duration) {
@@ -905,8 +905,6 @@ void setup() {
 
     if (side_led == 0){
       Serial.printf("Calculating points, side %d\n",side);
-      // GC.Collect();
-      // GC.WaitForPendingFinalizers();
     }
 
     points[p].find_nearest_leds();
@@ -916,11 +914,6 @@ void setup() {
       leds[p] = side_color;
       FastLED.show();
     }
-
-    if (side_led%LEDS_PER_SIDE == 0){
-      Serial.printf(" led %d, side %d, free mem=%u kb\n", p, side, FreeMem()/1024);
-    }
-
   }
 
   // init Blobs
@@ -934,6 +927,8 @@ void setup() {
     particles[p] = new Particle();
     reset_particle(particles[p]);
   }
+  // init colors
+  pick_new_colors();
 
   Serial.println("Init done");
 
