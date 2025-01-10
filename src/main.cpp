@@ -12,11 +12,6 @@
 
 #include <Adafruit_LSM6DSOX.h>
 
-// Function declarations
-float get_perceived_brightness(const CRGB& color);
-float get_contrast_ratio(const CRGB& color1, const CRGB& color2);
-float get_hue_distance(const CRGB& color1, const CRGB& color2);
-
 /* 
 
 # DodecaRBG V2
@@ -499,12 +494,14 @@ CRGB target_line_color;  // Target line color
 bool dark_lines = true;  // Whether lines should be darker than background
 bool in_transition = false;  // Add this line
 
-// Function implementations (place these before pick_new_colors)
-float get_perceived_brightness(const CRGB& color) {
-    return (0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b) / 255.0;
+// Helper functions
+float get_perceived_brightness(const CHSV& color) {
+    // Convert to RGB temporarily for luminance calculation
+    CRGB rgb = CHSV(color.h, color.s, color.v);
+    return (0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b) / 255.0;
 }
 
-float get_contrast_ratio(const CRGB& color1, const CRGB& color2) {
+float get_contrast_ratio(const CHSV& color1, const CHSV& color2) {
     float l1 = get_perceived_brightness(color1);
     float l2 = get_perceived_brightness(color2);
     float lighter = max(l1, l2);
@@ -512,97 +509,81 @@ float get_contrast_ratio(const CRGB& color1, const CRGB& color2) {
     return (lighter + 0.05) / (darker + 0.05);
 }
 
-float get_hue_distance(const CRGB& color1, const CRGB& color2) {
-    CHSV hsv1 = rgb2hsv_approximate(color1);
-    CHSV hsv2 = rgb2hsv_approximate(color2);
-    
-    float diff = fabs(hsv1.h - hsv2.h);
+float get_hue_distance(const CHSV& color1, const CHSV& color2) {
+    float diff = fabs(color1.h - color2.h);
     return min(diff, 255.0f - diff) * (180.0f/255.0f);  // convert to degrees (0-180)
 }
 
+// Color selection code
 void pick_new_colors() {
     // Store previous target as current
-  bg_color = target_bg_color;
-  line_color = target_line_color;
-
-  uint8_t best_bg_index = 0;
-  uint8_t best_line_index = 0;
-  float best_score = 0;
-
-  dark_lines = random8() > 128;
-  // Serial.printf("\nPicking new colors (want dark lines: %d)\n", dark_lines);
-
-  for (int i = 0; i < 4; i++) {
-    uint8_t test_bg = random8();
-    uint8_t test_line = random8();
+    bg_color = target_bg_color;
+    line_color = target_line_color;
     
-    CRGB test_bg_color = ColorFromPalette(highlightPalette, test_bg);
-    CRGB test_line_color = ColorFromPalette(basePalette, test_line);
+    CHSV best_hsv1, best_hsv2;
+    float best_score = 0;
     
-    float contrast = get_contrast_ratio(test_bg_color, test_line_color);
-    float hue_dist = get_hue_distance(test_bg_color, test_line_color);
-    float bg_brightness = get_perceived_brightness(test_bg_color);
-    float line_brightness = get_perceived_brightness(test_line_color);
-    
-    bool valid = dark_lines ? 
-      (line_brightness < bg_brightness) : 
-      (line_brightness > bg_brightness);
+    // Try several random color pairs
+    for (int i = 0; i < 5; i++) {
+        // Pick random colors from palettes and convert to HSV immediately
+        CHSV hsv1 = rgb2hsv_approximate(ColorFromPalette(uniquePalette, random8()));
+        CHSV hsv2 = rgb2hsv_approximate(ColorFromPalette(highlightPalette, random8()));
         
-    float score = contrast * (hue_dist / 90.0f);
-    
-    // Serial.printf("Try %d: BG(%d,%d,%d) Line(%d,%d,%d) - ", i,
-    //     test_bg_color.r, test_bg_color.g, test_bg_color.b,
-    //     test_line_color.r, test_line_color.g, test_line_color.b);
-    // Serial.printf("Contrast: %.2f HueDist: %.1f Score: %.2f Valid: %d\n",
-    //     contrast, hue_dist, score, valid);
+        // Determine which color is brighter,         
+        // apply random adjustments to relative brightness
+        if (get_perceived_brightness(hsv1) > get_perceived_brightness(hsv2)) {
+            hsv1.v = qadd8(hsv1.v, 10+random8(32));  // Make brighter color more bright
+            hsv2.v = qsub8(hsv2.v, 10+random8(32));  // Make darker color more dark
+        } else {
+            hsv2.v = qadd8(hsv2.v, 10+random8(32));  // Make brighter color more bright
+            hsv1.v = qsub8(hsv1.v, 10+random8(32));  // Make darker color more dark
+        }
         
-    if (valid && contrast >= 1.5 && hue_dist >= 30.0 && score > best_score) {
-        best_score = score;
-        best_bg_index = test_bg;
-        best_line_index = test_line;
-        // Serial.println("  ^ New best!");
+        float contrast = get_contrast_ratio(hsv1, hsv2);
+        float hue_dist = get_hue_distance(hsv1, hsv2);
+        
+        // Score based on contrast and hue distance
+        float score = contrast * (hue_dist / 180.0f);
+        
+        // Check if colors meet our criteria and have better score
+        if (contrast >= 2.0 && hue_dist >= 30.0 && score > best_score) {
+            best_score = score;
+            best_hsv1 = hsv1;
+            best_hsv2 = hsv2;
+        }
     }
-}
 
-    target_bg_color = ColorFromPalette(highlightPalette, best_bg_index);
-    target_line_color = ColorFromPalette(basePalette, best_line_index);
+    // Fallback if no good pairs were found
+    if (get_contrast_ratio(best_hsv1, best_hsv2) < 1.5) {
+        Serial.println("Warning: No good color pairs found, using fallback colors");
+        best_hsv1 = CHSV(random8(), 0, 200);
+        best_hsv2 = CHSV(0, 0, 0);
+    }
+
+    // Convert to RGB for final colors
+    CRGB bright_color = CHSV(best_hsv1.h, best_hsv1.s, best_hsv1.v);
+    CRGB dark_color = CHSV(best_hsv2.h, best_hsv2.s, best_hsv2.v);
+
+    // Randomly decide if lines should be darker than background
+    dark_lines = random8() > 128;
     
-    // Convert to HSV for adjustments
-    CHSV bg_hsv = rgb2hsv_approximate(target_bg_color);
-    CHSV line_hsv = rgb2hsv_approximate(target_line_color);
-    
-    // Randomly adjust hue by up to +/- 16 steps (about 15 degrees)
-    bg_hsv.h = bg_hsv.h + random8(33) - 16;
-    line_hsv.h = line_hsv.h + random8(33) - 16;
-    
-    // Randomly adjust brightness
+    // Assign colors based on dark_lines setting
     if (dark_lines) {
-        // Brighten background, darken lines
-        bg_hsv.v = qadd8(bg_hsv.v, random8(64));
-        line_hsv.v = qsub8(line_hsv.v, random8(64));
+        target_bg_color = bright_color;
+        target_line_color = dark_color;
     } else {
-        // Darken background, brighten lines
-        bg_hsv.v = qsub8(bg_hsv.v, random8(64));
-        line_hsv.v = qadd8(line_hsv.v, random8(64));
+        target_bg_color = dark_color;
+        target_line_color = bright_color;
     }
     
-    // Randomly adjust saturation a bit too
-    bg_hsv.s = qadd8(qsub8(bg_hsv.s, random8(32)), random8(32));
-    line_hsv.s = qadd8(qsub8(line_hsv.s, random8(32)), random8(32));
-    
-    target_bg_color = CHSV(bg_hsv.h, bg_hsv.s, bg_hsv.v);
-    target_line_color = CHSV(line_hsv.h, line_hsv.s, line_hsv.v);
-    
-    Serial.printf("Final colors - BG: %d,%d,%d Line: %d,%d,%d Score: %.2f\n", 
-        target_bg_color.r, target_bg_color.g, target_bg_color.b,
-        target_line_color.r, target_line_color.g, target_line_color.b,
-        best_score);
+    Serial.printf("New colors picked (dark_lines: %d) - Score: %.2f\n", 
+        dark_lines, best_score);
 }
 
 void blend_to_target(float blend_amount) {
   // Blend current colors toward target colors
-  nblend(bg_color, target_bg_color, blend_amount * 255);
-  nblend(line_color, target_line_color, blend_amount * 255);
+  nblend(bg_color, target_bg_color, blend_amount * 128);
+  nblend(line_color, target_line_color, blend_amount * 128);
 }
 
 // Helper function to find the smallest angle difference
@@ -613,9 +594,9 @@ float angle_diff(float a1, float a2) {
 
 void orientation_demo() {
   static uint16_t transition_counter = 0;
-  static const uint16_t TRANSITION_START = 1000;    
-  static const uint16_t TRANSITION_DURATION = 200;
-  static float anim_time = 1000.0;
+  static const uint16_t cycle_time = 1000;    
+  static const uint16_t transition_duration = 250;
+  static float anim_time = 0.0;
   static float base_angle = 0.0;
   
   // Grid configuration
@@ -624,7 +605,7 @@ void orientation_demo() {
   static const float line_width = 0.13;
   
   // Check if it's time to start a new transition
-  if (++transition_counter >= TRANSITION_START) {
+  if (++transition_counter >= cycle_time) {
     if (!in_transition) {
       pick_new_colors();
       in_transition = true;
@@ -636,7 +617,7 @@ void orientation_demo() {
   float blend_amount = 0;
   float rotation_speed = 1.3;
   if (in_transition) {
-    blend_amount = (float)transition_counter / TRANSITION_DURATION;
+    blend_amount = (float)transition_counter / transition_duration;
     if (blend_amount >= 1.0) {
       in_transition = false;
       blend_amount = 1.0;
@@ -693,13 +674,17 @@ void orientation_demo() {
     float scaled_width = line_width * point_dist;
     
     if (dist < scaled_width) {
-      uint8_t line_intensity = 255 * (1.0 - dist/scaled_width);
+      // Create smoother falloff using cubic or quadratic easing
+      float blend_factor = 1.0 - (dist/scaled_width);
+      blend_factor = blend_factor * blend_factor * (3 - 2 * blend_factor); // Smoothstep function
+      
+      uint8_t line_intensity = 255 * blend_factor;
       CRGB line = line_color;
       line.nscale8(scale8(line_intensity, BRIGHTNESS));
-      nblend(leds[i], line, line_intensity/2);
+      nblend(leds[i], line, map(line_intensity, 0, 255, 128, 40));  // More subtle blending for high contrast
     } else {
       leds[i] = bg_color;
-      leds[i].nscale8(scale8(180, BRIGHTNESS));  // Increased from 40 to 180 for more visible background
+      leds[i].nscale8(scale8(128, BRIGHTNESS));  // Increased from 40 to 180 for more visible background
     }
   }
   
@@ -939,7 +924,7 @@ void setup() {
   delay(300);
 
   // inital mode at startup
-  mode = 0;
+  mode = 7;
 
   // Add to setup() after FastLED initialization
   // Initialize orientation demo colors
@@ -972,7 +957,7 @@ void loop() {
     while (digitalRead(USER_BUTTON) == LOW){
       CRGB c = CRGB::White;
       FastLED.setBrightness(BRIGHTNESS);
-      c.setHSV(millis()/20 % 255, 255, 64);
+      c.setHSV(millis()/100 % 255, 255, 64);
       FastLED.showColor(c);
       FastLED.show(); 
       delay(20); 
@@ -981,15 +966,12 @@ void loop() {
   }
   if (mode == 0){
     orbiting_blobs();
-    //delay(1);
   }
   if (mode == 1){
     fade_test();
-    // delay(2);
   }
   if (mode == 2){
     flash_fade_points();
-    // delay(2);
   }
   if (mode==3){
     //solid_sides();
@@ -997,16 +979,13 @@ void loop() {
   }
   if (mode==4){
     wandering_particles();
-    // delay(1);
     //drip_particles();
   }
   if (mode==5){
     geography_show();
-    // delay(1);
   }
   if (mode==6){
     tv_static();
-    // delay(1);
   }
   if (mode==7){
     orientation_demo();
