@@ -14,9 +14,9 @@ void Particle::reset() {
     this->age = 0;
     this->a = random(20, 40)/15000.0;
     this->c = random(TWO_PI*1000)/15000.0;
-    this->av = random(20, 60)/15000.0;
-    this->cv = random(20, 60)/14000.0;
-    this->hold_time = random(PARTICLE_HOLD_TIME,PARTICLE_HOLD_TIME+10);
+    this->av = random(20, 60)/25000.0;
+    this->cv = random(20, 60)/24000.0;
+    this->hold_time = random(6,12);
     this->status = free;
 }
 

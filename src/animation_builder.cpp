@@ -2,6 +2,7 @@
 #include "animations/blob.h"
 #include "animations/sparkles.h"
 #include "animations/xyz_scanner.h"
+#include "animations/wandering_particles.h"
 
 // Static registry implementation
 std::map<String, AnimationBuilder::CreatorFunc>& AnimationBuilder::registry() {
@@ -47,4 +48,5 @@ std::unique_ptr<Animation> AnimationBuilder::create(const String& name) {
 // Register all animations here
 REGISTER_ANIMATION("blobs", BlobAnimation)
 REGISTER_ANIMATION("sparkles", Sparkles)
-REGISTER_ANIMATION("xyz_scanner", XYZScanner) 
+REGISTER_ANIMATION("xyz_scanner", XYZScanner)
+REGISTER_ANIMATION("wandering_particles", WanderingParticles) 

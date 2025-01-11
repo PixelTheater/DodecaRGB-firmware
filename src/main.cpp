@@ -36,6 +36,10 @@ you will need to re-generate the point mapping using this tool.
 
 ## Change Log
 
+v2.5 Jan 12 2025:
+- added wandering particles animation
+- added xyz-scanner animation
+
 v2.4 Jan 11 2025:
 - refactoring: as the main file is getting too big, I'm moving the animation code to separate files
 - add animation manager to handle animations, and animation params to handle parameters
@@ -70,7 +74,7 @@ v1.0 Aug 2023:
 */
 
 // LED configs
-#define VERSION "2.0.5"
+#define VERSION "2.5.1"
 #define USER_BUTTON 2
 // https://github.com/FastLED/FastLED/wiki/Parallel-Output#parallel-output-on-the-teensy-4
 // pins 19+18 are used to control two strips of 624 LEDs, for a total of 1248 LEDs
@@ -567,7 +571,8 @@ void timerStatusMessage(){
     Serial.printf("show_color: %d\n", show_color);
   }
   if (mode==4){   // wandering_particles
-    Serial.printf("active particles: %d\n", NUM_PARTICLES);
+    String status = animation_manager.getCurrentAnimation()->getStatus();
+    Serial.printf("Animation status: %s\n", status.c_str());
 
     //Serial.printf("pos: %f,%f,%f\n", particles[0]->x(), particles[0]->y(), particles[0]->z());
     //Serial.printf("a/c: %f,%f\n", particles[0]->a, particles[0]->c);
@@ -720,6 +725,7 @@ void setup() {
   animation_manager.add("blobs");
   animation_manager.add("xyz_scanner");  
   animation_manager.add("sparkles");
+  animation_manager.add("wandering_particles");
   
   // Configure with presets
   animation_manager.preset("sparkles", "default");
@@ -727,7 +733,7 @@ void setup() {
   animation_manager.preset("blobs", "fast");
 
   // inital mode at startup
-  mode = 0;
+  mode = 4; animation_manager.setCurrentAnimation(3);
 }
 
 #define NUM_MODES 8
@@ -754,6 +760,7 @@ void loop() {
       case 0: animation_manager.setCurrentAnimation(0); break;  // blobs
       case 1: animation_manager.setCurrentAnimation(1); break;  // xyz_scanner
       case 2: animation_manager.setCurrentAnimation(2); break;  // sparkles
+      case 4: animation_manager.setCurrentAnimation(3); break;  // wandering_particles
     }
 
     while (digitalRead(USER_BUTTON) == LOW){
@@ -783,8 +790,8 @@ void loop() {
     color_show();
   }
   if (mode==4){
-    wandering_particles();
-    //drip_particles();
+    animation_manager.update();
+    FastLED.show();
   }
   if (mode==5){
     geography_show();

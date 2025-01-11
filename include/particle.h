@@ -8,7 +8,7 @@
 
 extern LED_Point points[];
 
-#define MAX_PATH_LENGTH 5
+#define MAX_PATH_LENGTH 10
 #define PARTICLE_HOLD_TIME 2
 
 class Particle {
