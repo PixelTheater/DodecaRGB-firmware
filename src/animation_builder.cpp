@@ -1,6 +1,7 @@
 #include "animation_builder.h"
 #include "animations/blob.h"
 #include "animations/sparkles.h"
+#include "animations/xyz_scanner.h"
 
 // Static registry implementation
 std::map<String, AnimationBuilder::CreatorFunc>& AnimationBuilder::registry() {
@@ -10,7 +11,19 @@ std::map<String, AnimationBuilder::CreatorFunc>& AnimationBuilder::registry() {
 
 // Registration method
 void AnimationBuilder::registerAnimation(const String& name, CreatorFunc creator) {
+    if (name.length() == 0) {
+        Serial.println("Error: Cannot register animation with empty name");
+        return;
+    }
+    
+    auto it = registry().find(name);
+    if (it != registry().end()) {
+        Serial.printf("Error: Animation '%s' already registered\n", name.c_str());
+        return;
+    }
+    
     registry()[name] = creator;
+    Serial.printf("Registered animation: %s\n", name.c_str());
 }
 
 // Creation method
@@ -33,4 +46,5 @@ std::unique_ptr<Animation> AnimationBuilder::create(const String& name) {
 
 // Register all animations here
 REGISTER_ANIMATION("blobs", BlobAnimation)
-REGISTER_ANIMATION("sparkles", Sparkles) 
+REGISTER_ANIMATION("sparkles", Sparkles)
+REGISTER_ANIMATION("xyz_scanner", XYZScanner) 

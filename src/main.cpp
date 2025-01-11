@@ -264,7 +264,7 @@ void geography_show(){
   shift = (normalized_z-2.0)*5.5;
 }
 
-void fade_test(){
+void xyz_scanner(){
   static float max_range = 500;
   static float zi = -max_range;
   static float yi = -max_range;
@@ -611,7 +611,7 @@ void timerStatusMessage(){
     Serial.printf("Animation status: %s\n", status.c_str());
   }
   if (mode==1){  // fade test(): xyz intersection planes with fading lines
-    Serial.println("fade_test");
+    Serial.println("xyz_scanner");
   }
   if (mode==2){  // Sparkles
     String status = animation_manager.getCurrentAnimation()->getStatus();
@@ -776,6 +776,7 @@ void setup() {
 
   // Add animations with default settings
   animation_manager.add("blobs");
+  animation_manager.add("xyz_scanner");  
   animation_manager.add("sparkles");
   
   // Configure with presets
@@ -826,7 +827,7 @@ void loop() {
     FastLED.show();
   }
   if (mode == 1){
-    fade_test();
+    xyz_scanner();
   }
   if (mode == 2){
     animation_manager.update();
