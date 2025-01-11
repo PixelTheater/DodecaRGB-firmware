@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include "animation_params.h"
+#include "points.h"
 
 struct StatusBuffer {
     String buffer;
@@ -31,20 +32,14 @@ struct StatusBuffer {
 };
 
 class Animation {
-protected:
-    CRGB* leds = nullptr;
-    uint8_t num_sides = 0;
-    uint16_t leds_per_side = 0;
-    AnimParams params;
-    mutable StatusBuffer output;
-
 public:
     Animation() = default;
     virtual ~Animation() = default;
     
     // First phase: Configure the LED setup (called by AnimationManager)
-    void configure(CRGB* leds_, uint8_t num_sides_, uint16_t leds_per_side_) {
+    virtual void configure(CRGB* leds_, const LED_Point* points_, uint8_t num_sides_, uint16_t leds_per_side_) {
         leds = leds_;
+        points = points_;
         num_sides = num_sides_;
         leds_per_side = leds_per_side_;
     }
@@ -58,5 +53,17 @@ public:
     virtual String getStatus() const { return output.get(); }
     
     uint16_t numLeds() const { return num_sides * leds_per_side; }
+    
+    virtual const char* getName() const = 0;  // Pure virtual
+    virtual AnimParams getDefaultParams() const { return AnimParams(); }
+    virtual AnimParams getPreset(const String& preset_name) const { return getDefaultParams(); }
+
+protected:
+    CRGB* leds = nullptr;
+    const LED_Point* points = nullptr;
+    uint8_t num_sides = 0;
+    uint16_t leds_per_side = 0;
+    AnimParams params;
+    mutable StatusBuffer output;
 };
 

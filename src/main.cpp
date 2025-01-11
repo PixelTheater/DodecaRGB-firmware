@@ -8,12 +8,7 @@
 #include "points.h"
 #include "particle.h"
 #include "palettes.h"
-#include "animation.h"
-#include "animation_params.h"
 #include "animation_manager.h"
-#include "animations/blob.h"
-#include "animations/sparkles.h"
-
 
 #include <Adafruit_LSM6DSOX.h>
 
@@ -267,79 +262,6 @@ void geography_show(){
   spin_dir = -spin_angle/8.0;
   //shift=getSmoothNoise()*5;
   shift = (normalized_z-2.0)*5.5;
-}
-
-int calculateBlobDistance(LED_Point p1, Blob *b) {
-  int dx = p1.x - b->x();
-  int dy = p1.y - b->y();
-  int dz = p1.z - b->z();
-  return (dx*dx + dy*dy + dz*dz);  
-}
-
-#define NUM_BLOBS 7
-Blob *blobs[NUM_BLOBS];
-
-void orbiting_blobs(){
-  sensors_event_t accel;
-  sensors_event_t gyro;
-  sensors_event_t temp;
-  sox.getEvent(&accel, &gyro, &temp);
-  
-  for (int b=0; b<NUM_BLOBS; b++){
-    auto rad_sq = blobs[b]->radius*blobs[b]->radius;
-    for (int i = 0; i<NUM_LEDS; i++){ 
-      int dist = calculateBlobDistance(points[i], blobs[b]);
-      if (dist < rad_sq){
-        CRGB c = blobs[b]->color;
-        // slow fade in
-        if (blobs[b]->age < 150){
-          c.fadeToBlackBy(map(blobs[b]->age, 0, 150, 180, 1));
-        }
-        nblend(leds[i], c, map(dist, 0, rad_sq, 7, 3));
-      }
-    }
-  }
-
-  // Tuning variable for repelling force strength
-  static float forceStrength = 0.000005;
-
-  // Apply repelling force between blobs
-  for (int b1 = 0; b1 < NUM_BLOBS; b1++) {
-    for (int b2 = b1 + 1; b2 < NUM_BLOBS; b2++) {
-      float min_dist = (blobs[b1]->radius + blobs[b2]->radius)/2;
-      float min_dist_sq = min_dist * min_dist;
-
-      float dx = blobs[b1]->x() - blobs[b2]->x();
-      float dy = blobs[b1]->y() - blobs[b2]->y();
-      float dz = blobs[b1]->z() - blobs[b2]->z();
-      float dist_sq = dx*dx + dy*dy + dz*dz;
-
-      if (dist_sq < min_dist_sq and dist_sq > 20) {
-        float dist = sqrt(dist_sq);
-        float force = ((min_dist - dist) / min_dist) * forceStrength; // Repelling force based on distance
-        //force += random(100)/100000.0; // Add a little randomness to the force
-
-        // Normalize the direction vector
-        float nx = dx / dist;
-        float ny = dy / dist;
-        float nz = dz / dist;
-
-        // Apply the repelling force to each blob
-        blobs[b1]->applyForce(nx * force, ny * force, nz * force);
-        blobs[b2]->applyForce(-nx * force, -ny * force, -nz * force);
-      }
-    }
-  }
-  //fadeToBlackBy(leds, NUM_LEDS, 3);  
-  for (int i=0; i<NUM_LEDS; i++){
-    leds[i].fadeToBlackBy(10);
-  }
-
-  FastLED.show();
-
-  for (int b=0; b<NUM_BLOBS; b++){
-    blobs[b]->tick();
-  }
 }
 
 void fade_test(){
@@ -852,25 +774,13 @@ void setup() {
 
   // Set up animations
 
-  // Add blob animation with parameters
-  AnimParams blob_params;
-  blob_params.setPalette("palette", uniquePalette);
-  blob_params.setInt("num_blobs", 7);
-  blob_params.setInt("min_radius", 100);
-  blob_params.setInt("max_radius", 130);
-  blob_params.setInt("max_age", 4000);
-  blob_params.setFloat("speed", 0.7);
-  blob_params.setInt("fade", 10);
-  animation_manager.add(std::make_unique<BlobAnimation>(), blob_params);
-
-  // Add sparkles animation
-  AnimParams sparkle_params;
-  sparkle_params.setInt("period", 580);
-  sparkle_params.setPalette("base_palette", basePalette);
-  sparkle_params.setPalette("highlight_palette", highlightPalette);
-  animation_manager.add(std::make_unique<Sparkles>(), sparkle_params);
-
-
+  // Add animations with default settings
+  animation_manager.add("blobs");
+  animation_manager.add("sparkles");
+  
+  // Configure with presets
+  animation_manager.preset("sparkles", "default");
+  animation_manager.preset("blobs", "fast");
 
   // inital mode at startup
   mode = 0;
@@ -912,14 +822,14 @@ void loop() {
     Serial.println("Button released");
   }
   if (mode == 0){
-    animation_manager.getCurrentAnimation()->tick();
+    animation_manager.update();
     FastLED.show();
   }
   if (mode == 1){
     fade_test();
   }
   if (mode == 2){
-    animation_manager.getCurrentAnimation()->tick();
+    animation_manager.update();
     FastLED.show();
   }
   if (mode==3){

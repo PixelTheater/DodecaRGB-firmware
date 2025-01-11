@@ -23,4 +23,15 @@ public:
     void init(const AnimParams& params) override;
     void tick() override;
     String getStatus() const override;
+    const char* getName() const override { return "sparkles"; }
+    AnimParams getPreset(const String& preset_name) const override {
+        if (preset_name == "default") {
+            AnimParams p;
+            p.setInt("period", 580);
+            p.setPalette("base_palette", basePalette);
+            p.setPalette("highlight_palette", highlightPalette);
+            return p;
+        }
+        return getDefaultParams();  // Fallback to defaults if preset not found
+    }
 };

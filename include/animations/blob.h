@@ -1,5 +1,6 @@
 #pragma once
 #include "animation.h"
+#include "animation_builder.h"
 #include "palettes.h"
 
 class Blob {
@@ -54,4 +55,24 @@ public:
     void init(const AnimParams& params) override;
     void tick() override;
     String getStatus() const override;
+
+    const char* getName() const override { return "blobs"; }
+    
+    AnimParams getPreset(const String& preset_name) const override {
+        if (preset_name == "fast") {
+            AnimParams p;
+            p.setInt("num_blobs", 5);
+            p.setFloat("speed", 1.2);
+            p.setInt("fade", 15);
+            return p;
+        }
+        if (preset_name == "slow") {
+            AnimParams p;
+            p.setInt("num_blobs", 3);
+            p.setFloat("speed", 0.5);
+            p.setInt("fade", 5);
+            return p;
+        }
+        return getDefaultParams();
+    }
 };

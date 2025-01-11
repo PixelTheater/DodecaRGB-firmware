@@ -88,13 +88,14 @@ void BlobAnimation::init(const AnimParams& params) {
     speed = params.getFloat("speed", DEFAULT_SPEED);
     fade_amount = params.getInt("fade", DEFAULT_FADE);
     
-    // Create blobs with unique colors from palette
-    const CRGBPalette16 palette = params.getPalette("palette");
-    blobs.clear();
+    // Get palette for colors
+    const CRGBPalette16 palette = params.getPalette("palette", RainbowColors_p);  // Default to rainbow if no palette specified
     
+    // Create blobs with unique colors from palette
+    blobs.clear();
     for (int i = 0; i < num_blobs; i++) {
         auto blob = std::make_unique<Blob>(i, min_radius, max_radius, max_age, speed);
-        blob->color = ColorFromPalette(palette, i * (256 / num_blobs));
+        blob->color = ColorFromPalette(palette, i * (256 / num_blobs));  // Evenly space colors
         blobs.push_back(std::move(blob));
     }
 }

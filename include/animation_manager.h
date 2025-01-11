@@ -3,6 +3,7 @@
 #include <vector>
 #include <FastLED.h>
 #include "animation.h"
+#include "animation_builder.h"
 
 
 // Macro to make registration easier
@@ -24,10 +25,14 @@ public:
         leds_per_side = num_leds / num_sides;
     }
 
-  void add(std::unique_ptr<Animation> animation, const AnimParams& params = AnimParams()) {
-    animation->configure(leds, num_sides, leds_per_side);
-    animation->init(params);
-    animations.push_back(std::move(animation));
+  void add(const String& name) {
+    auto anim = AnimationBuilder::create(name);
+    if (anim) {
+      auto params = anim->getDefaultParams();
+      anim->init(params);
+      anim->configure(leds, points, num_sides, leds_per_side);
+      animations.push_back(std::move(anim));
+    }
   }
 
   Animation* getCurrentAnimation() {
@@ -46,5 +51,21 @@ public:
     }
   }
 
-  // ... rest of AnimationManager methods ...
+  bool preset(const String& anim_name, const String& preset_name) {
+    for (auto& anim : animations) {
+      if (String(anim->getName()) == anim_name) {
+        auto params = anim->getPreset(preset_name);
+        anim->init(params);
+        return true;
+      }
+    }
+    Serial.printf("Warning: Animation '%s' not found\n", anim_name.c_str());
+    return false;
+  }
+
+  void update() {
+    if (auto current = getCurrentAnimation()) {
+      current->tick();
+    }
+  }
 };
