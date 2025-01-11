@@ -264,65 +264,6 @@ void geography_show(){
   shift = (normalized_z-2.0)*5.5;
 }
 
-void xyz_scanner(){
-  static float max_range = 500;
-  static float zi = -max_range;
-  static float yi = -max_range;
-  static float xi = -max_range;
-  static float target = 140;
-  static int counter = 0;
-  static int min_off = 0;
-  float speed = 0.005;
-  CRGB c = CRGB(0,0,0);
-  int blend = 160;
-
-  FastLED.clear();
-  
-  for (int i = 0; i<NUM_LEDS; i++){    
-    // z anim  
-    target = 140+cos(counter/700.0)*130;
-    target = constrain(target, 0, 255);
-    float dz = (zi - points[i].z);
-    if (abs(dz) < target) {
-        float off = constrain(target - abs(dz), 0, max_range);
-        c = CRGB(0, 0, map(off, min_off, target, 0, 200));
-        nblend(leds[i], c, blend);
-        //leds[i] = c;
-    }
-    zi = (zi+speed*cos(counter/2000.0)*2);
-    zi = constrain(zi, -max_range, max_range);
-    if (abs(zi)==max_range) zi=-zi;
-
-    // y anim
-    float dy = (yi - points[i].y);
-    if (abs(dy) < target) {
-        float off = constrain(target - abs(dy), 0, max_range);
-        c = CRGB(map(off, min_off, target, 0, 200), 0, 0);
-        nblend(leds[i], c, blend);
-        //leds[i] = c;
-    }
-    yi = (yi+speed*constrain(tan(counter/1600.0)/4, -3, 3));
-    yi = constrain(yi, -max_range, max_range);
-    if (abs(yi)==max_range) yi=-yi;
-  
-    // x anim
-    float dx = (xi - points[i].x);
-    if (abs(dx) < target) {
-        float off = constrain(target - abs(dx), 0, max_range);
-        c = CRGB(0, map(off, min_off, target, 0, 200), 0);
-        nblend(leds[i], c, blend);
-        //leds[i] = c;
-    } 
-    xi = (xi+speed*sin(counter/4000.0)*2);
-    xi = constrain(xi, -max_range, max_range);
-    if (abs(xi)==max_range) xi=-xi;
-  }
-  fadeToBlackBy(leds, NUM_LEDS, 35);  
-  FastLED.show();
-  counter++;
-  delayMicroseconds(50);
-}
-
 
 #define NUM_PARTICLES 80
 Particle *particles[NUM_PARTICLES];
@@ -611,7 +552,8 @@ void timerStatusMessage(){
     Serial.printf("Animation status: %s\n", status.c_str());
   }
   if (mode==1){  // fade test(): xyz intersection planes with fading lines
-    Serial.println("xyz_scanner");
+    String status = animation_manager.getCurrentAnimation()->getStatus();
+    Serial.printf("Animation status: %s\n", status.c_str());
   }
   if (mode==2){  // Sparkles
     String status = animation_manager.getCurrentAnimation()->getStatus();
@@ -781,6 +723,7 @@ void setup() {
   
   // Configure with presets
   animation_manager.preset("sparkles", "default");
+  animation_manager.preset("xyz_scanner", "fast");  // Try different speeds
   animation_manager.preset("blobs", "fast");
 
   // inital mode at startup
@@ -809,7 +752,8 @@ void loop() {
  
     switch(mode) {
       case 0: animation_manager.setCurrentAnimation(0); break;  // blobs
-      case 2: animation_manager.setCurrentAnimation(1); break;  // sparkles
+      case 1: animation_manager.setCurrentAnimation(1); break;  // xyz_scanner
+      case 2: animation_manager.setCurrentAnimation(2); break;  // sparkles
     }
 
     while (digitalRead(USER_BUTTON) == LOW){
@@ -827,7 +771,8 @@ void loop() {
     FastLED.show();
   }
   if (mode == 1){
-    xyz_scanner();
+    animation_manager.update();
+    FastLED.show();
   }
   if (mode == 2){
     animation_manager.update();

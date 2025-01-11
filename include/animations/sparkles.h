@@ -27,7 +27,7 @@ public:
     AnimParams getPreset(const String& preset_name) const override {
         if (preset_name == "default") {
             AnimParams p;
-            p.setInt("period", 580);
+            p.setInt("period", 1580);
             p.setPalette("base_palette", basePalette);
             p.setPalette("highlight_palette", highlightPalette);
             return p;

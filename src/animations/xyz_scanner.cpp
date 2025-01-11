@@ -11,7 +11,7 @@ void XYZScanner::tick() {
     FastLED.clear();
     CRGB c = CRGB(0,0,0);
     
-    target = 140 + cos(counter/700.0)*130;
+    target = 100 + cos(counter/700.0)*90;
     target = constrain(target, 0, 255);
     
     for (int i = 0; i < numLeds(); i++) {    
