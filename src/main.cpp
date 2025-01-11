@@ -5,10 +5,15 @@
 #define FASTLED_USES_OBJECTFLED
 #include <FastLED.h>
 
-#include "color_lookup.h"
-#include "blob.h"
 #include "points.h"
 #include "particle.h"
+#include "palettes.h"
+#include "animation.h"
+#include "animation_params.h"
+#include "animation_manager.h"
+#include "animations/blob.h"
+#include "animations/sparkles.h"
+
 
 #include <Adafruit_LSM6DSOX.h>
 
@@ -35,6 +40,21 @@ renders an interactive 3D model of the dodecahedron. To change your dodecahedron
 you will need to re-generate the point mapping using this tool.
 
 ## Change Log
+
+v2.4 Jan 11 2025:
+- refactoring: as the main file is getting too big, I'm moving the animation code to separate files
+- add animation manager to handle animations, and animation params to handle parameters
+- refactored palettes and color lookup to be included in the header file
+- new logging system for animations
+- add sparkles animation
+- TODO: migrate more animations to new structure
+
+v2.3 Jan 10 2025:
+- update FastLED to 3.9.10
+- improved orientation demo, colors and transitions
+
+v2.2 Jan 1 2025:
+- added orientation demo, with rotating sphere animations
 
 v2.1 Jan 2025:
 - added support for orientation sensor
@@ -73,29 +93,10 @@ v1.0 Aug 2023:
 #define USE_IMU true        // enable orientation sensor (currently: LSM6DSOX)
 
 
-// standard color palettes, hand picked for good contrast
 
-CRGBPalette16 basePalette = CRGBPalette16( 
-  CRGB::Red, CRGB::DarkRed, CRGB::IndianRed, CRGB::OrangeRed,
-  CRGB::Green, CRGB::DarkGreen, CRGB::LawnGreen, CRGB::ForestGreen,
-  CRGB::Blue, CRGB::DarkBlue, CRGB::SkyBlue, CRGB::Indigo,
-  CRGB::Purple, CRGB::Indigo, CRGB::CadetBlue, CRGB::AliceBlue
-); 
-CRGBPalette16 highlightPalette = CRGBPalette16(
-  CRGB::Yellow, CRGB::LightSlateGray, CRGB::LightYellow, CRGB::LightCoral, 
-  CRGB::GhostWhite, CRGB::LightPink, CRGB::AntiqueWhite, CRGB::LightSkyBlue, 
-  CRGB::Gold, CRGB::PeachPuff, CRGB::FloralWhite, CRGB::PaleTurquoise, 
-  CRGB::Orange, CRGB::MintCream, CRGB::FairyLightNCC, CRGB::LavenderBlush
-);
-CRGBPalette16 uniquePalette = CRGBPalette16(
-  CRGB::Red, CRGB::Green, CRGB::Blue, CRGB::Yellow, 
-  CRGB::Purple, CRGB::Orange, CRGB::Cyan, CRGB::Magenta, 
-  CRGB::Lime, CRGB::Pink, CRGB::Turquoise, CRGB::Sienna,
-  CRGB::Gold, CRGB::Salmon, CRGB::Silver, CRGB::Violet
-);
 
 CRGB leds[NUM_LEDS];
-
+AnimationManager animation_manager(leds, NUM_LEDS, NUM_SIDES);
 Adafruit_LSM6DSOX sox;
 
 // Constants
@@ -103,10 +104,13 @@ const int LEDS_PER_RING = 10;
 const int LEDS_PER_EDGE = 15;
 
 long random_seed = 0;
+int seed1,seed2 = 0;
 int mode = 0;
 
 int show_pos = 0;
 int show_color = random(255);
+
+
 
 void color_show(){
   static int led_limit = 54;
@@ -153,53 +157,6 @@ void solid_sides(){
   // }
   // FastLED.show();
   s = (s+1) % NUM_SIDES;
-}
-
-
-CRGB c,c2;
-// randomly light up LEDs and fade them out individually, like raindrops
-uint8_t color_mix = 0;
-static int period = 580;
-int seed1,seed2;
-uint8_t blend1;
-uint8_t blend2;
-int power_fade=1;
-u_int8_t num_picks=1;
-
-void flash_fade_points(){
-  uint8_t color_warble = (int)(sin8_C(millis()/(period/11)) / 16);
-  color_mix = (int)(64 + sin8_C(millis()/(period)+seed1+color_warble) / 1.5);
-  // cycle color over time
-  c = ColorFromPaletteExtended( basePalette, sin16_C(millis()/16+seed1*10), 255, LINEARBLEND);
-  c2 = ColorFromPaletteExtended( highlightPalette, sin16_C((millis()/8+seed2*50)), 255, LINEARBLEND);
-  blend1=sin8_C(millis()/(period*4.2)+seed1)/1.5+32;
-  blend2=sin8_C(millis()/(period*3.5)+seed2)/2+32;
-  for (int n=0; n<NUM_SIDES; n++){
-    num_picks = map(power_fade,1,40,30,5);  // as the power level decreases, LEDs lit increases
-    for (int m=0; m<num_picks; m++){
-      if (random8(128) < color_mix) {
-        int r1 = random(n*LEDS_PER_SIDE, (n+1)*LEDS_PER_SIDE);        
-        nblend(leds[r1], c, map(blend1, 0, 255, 1, 7));
-      }
-      if (random8(128) < (256-color_mix)) {
-        int r2 = random(n*LEDS_PER_SIDE, (n+1)*LEDS_PER_SIDE);
-        nblend(leds[r2], c2, map(blend2, 0, 255, 1, 10));        
-      }
-    }
-  }
-  // fades
-  int power = calculate_unscaled_power_mW(leds, NUM_LEDS);
-  power_fade = (power_fade * 19 + max(map(power,8000,20000,1,40),1))/20;  
-  for (int i = 0; i < NUM_LEDS; i++){
-    int v = leds[i].getAverageLight();
-    if (v > random8(power_fade/2)) {
-      leds[i].fadeToBlackBy(random8(power_fade));
-    }
-  }
-  //blur1d(leds, NUM_LEDS, map(sin8_C(millis()/300),0,256,0,128));
-  //fadeToBlackBy(leds, NUM_LEDS, map(power, 6500, 18000, 1, 15));
-  FastLED.show();   
-  //delay(1);  
 }
 
 // Constants
@@ -496,26 +453,6 @@ bool in_transition = true;  // active animation between colors and lines
 const uint16_t cycle_time = 1500;    // time between color changes
 const uint16_t transition_duration = 200;   // time to transition between colors
 
-// Helper functions
-float get_perceived_brightness(const CHSV& color) {
-    // Convert to RGB temporarily for luminance calculation
-    CRGB rgb = CHSV(color.h, color.s, color.v);
-    return (0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b) / 255.0;
-}
-
-float get_contrast_ratio(const CHSV& color1, const CHSV& color2) {
-    float l1 = get_perceived_brightness(color1);
-    float l2 = get_perceived_brightness(color2);
-    float lighter = max(l1, l2);
-    float darker = min(l1, l2);
-    return (lighter + 0.05) / (darker + 0.05);
-}
-
-float get_hue_distance(const CHSV& color1, const CHSV& color2) {
-    float diff = fabs(color1.h - color2.h);
-    return min(diff, 255.0f - diff) * (180.0f/255.0f);  // convert to degrees (0-180)
-}
-
 // Color selection, happens every transition
 void pick_new_colors() {
     // Store previous target as current
@@ -744,47 +681,22 @@ uint32_t FreeMem(){ // for Teensy 3.0
 }
 
 
-// Function to convert RGB to ANSI 24-bit color codes
-void printAnsiColor(const CRGB& color) {
-    // ANSI escape sequence for setting foreground and background to 24-bit color
-    Serial.print("\033[38;2;"); // Start foreground color
-    Serial.print(color.r); Serial.print(";");
-    Serial.print(color.g); Serial.print(";");
-    Serial.print(color.b); Serial.print("m");
-
-    Serial.print("\033[48;2;"); // Start background color
-    Serial.print(color.r); Serial.print(";");
-    Serial.print(color.g); Serial.print(";");
-    Serial.print(color.b); Serial.print("m");
-
-    // Print a space to display the color
-    Serial.print("  ");
-
-    // Reset colors
-    Serial.print("\033[0m");
-}
-
 void timerStatusMessage(){
   Serial.printf("--> %d FPS @ mode:%d <--\n", FastLED.getFPS(), mode);
   Serial.printf("Power: %d mw\n", calculate_unscaled_power_mW(leds, NUM_LEDS));
   if (mode==0){   // wandering blobs
-    int blob_id = 1;
-    printAnsiColor(blobs[blob_id]->color);
-    Serial.printf(" (%s) id=%d\n", getClosestColorName(blobs[blob_id]->color), blobs[blob_id]->blob_id);
-    Serial.printf("Blob age: %d/%d\n", blobs[blob_id]->age, blobs[blob_id]->lifespan);
-    Serial.printf("Blob av/cv: %0.3f %0.3f\n", blobs[blob_id]->av, blobs[blob_id]->cv);
-    Serial.printf("Blob a/c: %0.2f %0.2f\n", blobs[blob_id]->a, blobs[blob_id]->c);
-    Serial.printf("Blob x/y/z: %d %d %d\n", blobs[blob_id]->x(), blobs[blob_id]->y(), blobs[blob_id]->z());
+    String status = animation_manager.getCurrentAnimation()->getStatus();
+    Serial.printf("Animation status: %s\n", status.c_str());
   }
-  if (mode==2){  // fade cycle
-    Serial.printf("color_mix: %d/%d ", color_mix * 100 / 256, (256 - color_mix) * 100 / 256);
-    Serial.printf("power_fade: %d ", power_fade);
-    Serial.printf("num_picks: %d\n", num_picks);
-    printAnsiColor(c);
-    Serial.printf(" color1: %02hhX%02hhX%02hhX (%s) blend1: %d%%\n", c.r, c.g, c.b, getClosestColorName(c), blend1 * 100 / 256);
-    printAnsiColor(c2);
-    Serial.printf(" color2: %02hhX%02hhX%02hhX (%s) blend2: %d%%\n", c2.r, c2.g, c2.b, getClosestColorName(c2), blend2 * 100 / 256);
-//    Serial.printf("blend1: %d blend2: %d\n", blend1, blend2);
+  if (mode==1){  // fade test(): xyz intersection planes with fading lines
+    Serial.println("fade_test");
+  }
+  if (mode==2){  // Sparkles
+    String status = animation_manager.getCurrentAnimation()->getStatus();
+    Serial.printf("Animation status: %s\n", status.c_str());
+    // Serial.printf("color_mix: %d/%d ", color_mix * 100 / 256, (256 - color_mix) * 100 / 256);
+    // Serial.printf("power_fade: %d ", power_fade);
+    // Serial.printf("num_picks: %d\n", num_picks);
   }
   if (mode==3){   // color_show
     Serial.printf("show_pos: %d\n", show_pos);
@@ -814,17 +726,17 @@ void timerStatusMessage(){
     
     // Display current colors
     Serial.printf("dark lines? %s\n", dark_lines ? "true" : "false");
-    printAnsiColor(bg_color);
+    Serial.print(getAnsiColorString(bg_color));
     Serial.printf(" Background (%s)\n", getClosestColorName(bg_color));
-    printAnsiColor(line_color); 
+    Serial.print(getAnsiColorString(line_color)); 
     Serial.printf(" Lines (%s)\n", getClosestColorName(line_color));
     Serial.printf("Brightness: %d%%\n", (BRIGHTNESS * 100) / 255);
     
     if (in_transition) {
       Serial.printf("Transitioning to:\n");
-      printAnsiColor(target_bg_color);
+      Serial.print(getAnsiColorString(target_bg_color));
       Serial.printf(" Target bg (%s)\n", getClosestColorName(target_bg_color));
-      printAnsiColor(target_line_color);
+      Serial.print(getAnsiColorString(target_line_color));
       Serial.printf(" Target lines (%s)\n", getClosestColorName(target_line_color));
     }
 
@@ -916,12 +828,6 @@ void setup() {
     }
   }
 
-  // init Blobs
-  for (int b=0; b<NUM_BLOBS; b++){
-    blobs[b] = new Blob(b);
-    // use unique ID to assign colors from uniquePalette
-    blobs[b]->color = ColorFromPalette(uniquePalette, b * 16);
-  }
   // init Particles
   for (int p=0; p<NUM_PARTICLES; p++){
     particles[p] = new Particle();
@@ -937,15 +843,37 @@ void setup() {
 
   delay(300);
 
-  // inital mode at startup
-  mode = 7;
-
   // Add to setup() after FastLED initialization
   // Initialize orientation demo colors
   target_bg_color = ColorFromPalette(highlightPalette, random8());
   target_line_color = ColorFromPalette(basePalette, random8());
   bg_color = target_bg_color;
   line_color = target_line_color;
+
+  // Set up animations
+
+  // Add blob animation with parameters
+  AnimParams blob_params;
+  blob_params.setPalette("palette", uniquePalette);
+  blob_params.setInt("num_blobs", 7);
+  blob_params.setInt("min_radius", 100);
+  blob_params.setInt("max_radius", 130);
+  blob_params.setInt("max_age", 4000);
+  blob_params.setFloat("speed", 0.7);
+  blob_params.setInt("fade", 10);
+  animation_manager.add(std::make_unique<BlobAnimation>(), blob_params);
+
+  // Add sparkles animation
+  AnimParams sparkle_params;
+  sparkle_params.setInt("period", 580);
+  sparkle_params.setPalette("base_palette", basePalette);
+  sparkle_params.setPalette("highlight_palette", highlightPalette);
+  animation_manager.add(std::make_unique<Sparkles>(), sparkle_params);
+
+
+
+  // inital mode at startup
+  mode = 0;
 }
 
 #define NUM_MODES 8
@@ -968,6 +896,11 @@ void loop() {
     mode %= NUM_MODES;
     Serial.println(mode);
  
+    switch(mode) {
+      case 0: animation_manager.setCurrentAnimation(0); break;  // blobs
+      case 2: animation_manager.setCurrentAnimation(1); break;  // sparkles
+    }
+
     while (digitalRead(USER_BUTTON) == LOW){
       CRGB c = CRGB::White;
       FastLED.setBrightness(BRIGHTNESS);
@@ -979,13 +912,15 @@ void loop() {
     Serial.println("Button released");
   }
   if (mode == 0){
-    orbiting_blobs();
+    animation_manager.getCurrentAnimation()->tick();
+    FastLED.show();
   }
   if (mode == 1){
     fade_test();
   }
   if (mode == 2){
-    flash_fade_points();
+    animation_manager.getCurrentAnimation()->tick();
+    FastLED.show();
   }
   if (mode==3){
     //solid_sides();

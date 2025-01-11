@@ -21,7 +21,7 @@ struct AnimParams {
         return it != custom_ints.end() ? it->second : default_value;
     }
     
-    CRGBPalette16 getPalette(const String& key, const CRGBPalette16& default_value = CRGBPalette16(CRGB::Black)) {
+    CRGBPalette16 getPalette(const String& key, const CRGBPalette16& default_value = CRGBPalette16(CRGB::Black)) const {
         auto it = custom_palettes.find(key);
         return it != custom_palettes.end() ? it->second : default_value;
     }

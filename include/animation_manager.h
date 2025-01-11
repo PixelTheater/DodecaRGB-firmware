@@ -40,5 +40,11 @@ public:
     return animations[current_index]->getStatus();
   }
 
+  void setCurrentAnimation(size_t index) {
+    if (index < animations.size()) {
+      current_index = index;
+    }
+  }
+
   // ... rest of AnimationManager methods ...
 };
