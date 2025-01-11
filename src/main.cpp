@@ -269,45 +269,6 @@ void geography_show(){
 }
 
 
-#define NUM_PARTICLES 80
-Particle *particles[NUM_PARTICLES];
-
-
-
-
-void reset_particle(Particle *p){
-  p->reset();
-  p->led_number = (NUM_SIDES-1)*LEDS_PER_SIDE + random(11);
-  uint8_t lev = random(10,50);
-  p->color = (uint32_t)CRGB(lev, random(100,230), lev);
-  p->a = random(TWO_PI*1000)/1000.0;
-  p->c = PI;
-  p->cv = -random(60,200)/1000.0;
-  p->av = 0;
-}
-
-void wandering_particles(){
-  for (int p=0; p<NUM_PARTICLES; p++){
-    particles[p]->tick();
-    // loop through path and light up LEDs a little bit with nblend
-    int led = particles[p]->led_number;
-    nblend(leds[led], particles[p]->color, 300/particles[p]->hold_time);
-    if (random(2000) < 2){
-      reset_particle(particles[p]);
-    }
-  }
-  for (int i=0; i<NUM_LEDS; i++){
-    leds[i].fadeToBlackBy(10+random(5));
-  }
-  FastLED.show();
-  //delay(2);
-}
-
-
-void drip_particles(){
-  // todo
-}
-
 
 CRGB bg_color;           // Current background color
 CRGB line_color;         // Current line color
@@ -697,11 +658,6 @@ void setup() {
     }
   }
 
-  // init Particles
-  for (int p=0; p<NUM_PARTICLES; p++){
-    particles[p] = new Particle();
-    reset_particle(particles[p]);
-  }
   // init colors
   pick_new_colors();
 
