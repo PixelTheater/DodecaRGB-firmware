@@ -220,55 +220,6 @@ void tv_static(){
   FastLED.show();
 }
 
-float spin_angle = 16.0;
-float shift = 0;
-float spin_dir = 0.0;
-void geography_show(){
-  static int sphere_r = 310; // radius of sphere
-
-  // Lorenz parameters
-  static float sigma = 8.0+random(400)/100.0;  // Prandtl number
-  static float rho = 24.0+random(400)/100.0;    // Rayleigh number
-  static float beta = 8.0 / 3+random(100)/100.0;
-
-  // Time step
-  static float dt = 0.002;
-
-  // State variables
-  static float x = 0.1, y = 0.3, z = -0.2;  // Initial conditions
-  // Calculate the derivatives
-  float dx = sigma * (y - x);
-  float dy = x * (rho - z) - y;
-  float dz = x * y - beta * z;
-
-  // Update the state variables using Euler's method
-  x += dx * dt;
-  y += dy * dt;
-  z += dz * dt;
-
-  // Normalize x to the range [-1.0, 1.0]
-  // You may also choose y or z for variation
-  float normalized_x = (x + 20.0) / 40.0 * 2.5 - 0.8;  // Assuming x typically stays within [-20, 20]
-  float normalized_y = (y + 30.0) / 40.0 * 2.0 - 0.4;  // Assuming x typically stays within [-20, 20]
-  float normalized_z = (z + 20.0) / 30.0 * 3.0 - 0.9;  // Assuming x typically stays within [-20, 20]
-
-  for (int i = 0; i<NUM_LEDS; i++){
-    float a = acos(points[i].y / sphere_r);
-    float c = atan2(points[i].z, points[i].x)+(16.0-spin_angle)*10;
-    int c_start = map(a, 0, TWO_PI, 50, 200);
-    int c_end = map(c, 0, PI, 80, 255);
-    int hue = map(fmod(normalized_y/25.0+a+c+shift/15-cos(millis()/2000.0), 50), 0, 40, c_start, c_end);
-    int brightness = map(sin(a*shift/6.0+c*cos(normalized_x/5.0)), -3.6, 5.3, 1, 210);
-    leds[i] = CHSV(hue, 255, brightness);
-  }
-  FastLED.show();
-  spin_angle += spin_dir*0.005+normalized_z/250.0;
-  spin_dir = -spin_angle/8.0;
-  //shift=getSmoothNoise()*5;
-  shift = (normalized_z-2.0)*5.5;
-}
-
-
 
 CRGB bg_color;           // Current background color
 CRGB line_color;         // Current line color
@@ -523,9 +474,6 @@ void timerStatusMessage(){
   if (mode==2){  // Sparkles
     String status = animation_manager.getCurrentAnimation()->getStatus();
     Serial.printf("Animation status: %s\n", status.c_str());
-    // Serial.printf("color_mix: %d/%d ", color_mix * 100 / 256, (256 - color_mix) * 100 / 256);
-    // Serial.printf("power_fade: %d ", power_fade);
-    // Serial.printf("num_picks: %d\n", num_picks);
   }
   if (mode==3){   // color_show
     Serial.printf("show_pos: %d\n", show_pos);
@@ -535,13 +483,10 @@ void timerStatusMessage(){
     String status = animation_manager.getCurrentAnimation()->getStatus();
     Serial.printf("Animation status: %s\n", status.c_str());
 
-    //Serial.printf("pos: %f,%f,%f\n", particles[0]->x(), particles[0]->y(), particles[0]->z());
-    //Serial.printf("a/c: %f,%f\n", particles[0]->a, particles[0]->c);
-    //Serial.printf("av/cv: %f,%f\n", particles[0]->av, particles[0]->cv);
   }
   if (mode==5){   // geography show
-    Serial.printf("spin_angle: %f\n", spin_angle);
-    Serial.printf("shift: %f\n", shift);  
+    String status = animation_manager.getCurrentAnimation()->getStatus();
+    Serial.printf("Animation status: %s\n", status.c_str());
   }
 
   if (mode==6){   // noise
@@ -682,14 +627,15 @@ void setup() {
   animation_manager.add("xyz_scanner");  
   animation_manager.add("sparkles");
   animation_manager.add("wandering_particles");
-  
+  animation_manager.add("geography");
+
   // Configure with presets
   animation_manager.preset("sparkles", "default");
   animation_manager.preset("xyz_scanner", "fast");  // Try different speeds
   animation_manager.preset("blobs", "fast");
 
   // inital mode at startup
-  mode = 4; animation_manager.setCurrentAnimation(3);
+  mode = 5; animation_manager.setCurrentAnimation(4);
 }
 
 #define NUM_MODES 8
@@ -717,6 +663,7 @@ void loop() {
       case 1: animation_manager.setCurrentAnimation(1); break;  // xyz_scanner
       case 2: animation_manager.setCurrentAnimation(2); break;  // sparkles
       case 4: animation_manager.setCurrentAnimation(3); break;  // wandering_particles
+      case 5: animation_manager.setCurrentAnimation(3); break;  // wandering_particles
     }
 
     while (digitalRead(USER_BUTTON) == LOW){
@@ -733,29 +680,30 @@ void loop() {
     animation_manager.update();
     FastLED.show();
   }
-  if (mode == 1){
+  if (mode == 1){  // xyz_scanner
     animation_manager.update();
     FastLED.show();
   }
-  if (mode == 2){
+  if (mode == 2){  // sparkles
     animation_manager.update();
     FastLED.show();
   }
-  if (mode==3){
+  if (mode==3){  // color_show
     //solid_sides();
     color_show();
   }
-  if (mode==4){
+  if (mode==4){  // wandering_particles
     animation_manager.update();
     FastLED.show();
   }
-  if (mode==5){
-    geography_show();
+  if (mode==5){  // geography
+    animation_manager.update();
+    FastLED.show();
   }
-  if (mode==6){
+  if (mode==6){  // tv_static
     tv_static();
   }
-  if (mode==7){
+  if (mode==7){  // orientation_demo
     orientation_demo();
   }
 }
