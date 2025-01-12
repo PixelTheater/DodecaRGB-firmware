@@ -43,15 +43,18 @@ The combination of a hand-held ball of LEDs with motion sensing opens a lot of i
 - 3D Points are calculated in a [separate project](https://github.com/somebox/dodeca-rgb-simulator) build in Processing. This will later move to build scripts here.
 - On boot, the LED neighbors are pre-calculated. This will later be moved to a build process here.
 
+There is some documentation on[creating animations](creating_animations.md)
+
 ## TODOs
 
-- image loading support (per-side images, or mapping projections for globes and spherical photos)
-- motion-reactive support, currently evaluating different IMU choices. Investigating options for orientation and sensitivity, ideally with guestures like tap, shake, spin, etc.
-- refactoring animations into modules, to help isolate and standardize the interfaces. Goal is to make it easy to add new animations, or design simple playlists.
+[in progress] motion-reactive support, currently evaluating different IMU choices. Investigating options for orientation and sensitivity, ideally with guestures like tap, shake, spin, etc.
+[done] refactoring animations into modules, to help isolate and standardize the interfaces. Goal is to make it easy to add new animations, or design simple playlists.
 - Wireless charging (Qi) - testing larger coils and ideal PCB thickness
-- 3d modelling of interior structure
-- Motherboard PCB to mount the Teensy 4.1 and 2x 18650 batteries, together with support electronics for power, charging, level shifting, sensors, etc.
-- Optimize wiring and arrangement of connector pads
+[in progress] 3d modelling of interior structure
+[in progress] Motherboard PCB to mount the Teensy 4.1 and 2x 18650 batteries, together with support electronics for power, charging, level shifting, sensors, etc.
+- image loading support (per-side images, or mapping projections for globes and spherical photos)
+- optimize wiring and arrangement of connector pads
+- move Processing-based coordinate calculations to build scripts
 - Step-by-step instructions, updated with pictures (or a video)
 
 ---
