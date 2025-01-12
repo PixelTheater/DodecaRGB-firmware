@@ -29,8 +29,8 @@ void OrientationDemo::pick_new_colors() {
     
     // find an acceptable random color pair
     for (int i = 0; i < 16; i++) {
-        CHSV hsv1 = rgb2hsv_approximate(ColorFromPalette(uniquePalette, random8()));
-        CHSV hsv2 = rgb2hsv_approximate(ColorFromPalette(RainbowStripesColors_p, random8()));
+        CHSV hsv1 = rgb2hsv_approximate(ColorFromPalette(RainbowStripesColors_p, random8()));
+        CHSV hsv2 = rgb2hsv_approximate(ColorFromPalette(uniquePalette, random8()));
         
         if (get_perceived_brightness(hsv1) > get_perceived_brightness(hsv2)) {
             hsv1.v = qadd8(hsv1.v, 16+random8(32));
@@ -54,8 +54,8 @@ void OrientationDemo::pick_new_colors() {
     // Convert to RGB for final colors
     CRGB bright_color = CHSV(best_hsv1.h, best_hsv1.s, best_hsv1.v);
     CRGB dark_color = CHSV(best_hsv2.h, best_hsv2.s, best_hsv2.v);
-    bright_color.fadeLightBy(20);
-    dark_color.fadeToBlackBy(50);
+    bright_color.fadeLightBy(5);
+    dark_color.fadeToBlackBy(40);
 
     dark_lines = !dark_lines;
     

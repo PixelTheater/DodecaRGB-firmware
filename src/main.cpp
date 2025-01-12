@@ -36,6 +36,12 @@ you will need to re-generate the point mapping using this tool.
 
 ## Change Log
 
+v2.6.0 Jan 12 2025:
+- moved rest of animations to new framework
+- cleaned up setup, loop, and status message
+- improved power estimation
+- added playlist functions to animation manager (next, getCurrentAnimationName, etc)
+
 v2.5 Jan 12 2025:
 - added wandering particles animation
 - added xyz-scanner animation
@@ -74,7 +80,7 @@ v1.0 Aug 2023:
 */
 
 // LED configs
-#define VERSION "2.5.1"
+#define VERSION "2.6.0"
 #define USER_BUTTON 2
 // https://github.com/FastLED/FastLED/wiki/Parallel-Output#parallel-output-on-the-teensy-4
 // pins 19+18 are used to control two strips of 624 LEDs, for a total of 1248 LEDs
@@ -91,136 +97,17 @@ v1.0 Aug 2023:
 #define BRIGHTNESS  50      // global brightness, should be used by all animations
 #define USE_IMU true        // enable orientation sensor (currently: LSM6DSOX)
 
-
-
-
 CRGB leds[NUM_LEDS];
 AnimationManager animation_manager(leds, NUM_LEDS, NUM_SIDES);
 Adafruit_LSM6DSOX sox;
-
-// Constants
-const int LEDS_PER_RING = 10;
-const int LEDS_PER_EDGE = 15;
 
 long random_seed = 0;
 int seed1,seed2 = 0;
 int mode = 0;
 
-int show_pos = 0;
-int show_color = random(255);
 
-
-
-void color_show(){
-  static int led_limit = 54;
-  // turn off all LEDs in a dissolving pattern
-  fadeToBlackBy(leds, NUM_LEDS, 2);
-  
-  // light up all LEDs in sequence
-  for (int n=0; n<NUM_SIDES; n++){
-    for (int i=0; i<led_limit; i++){
-      int offset = sin8(millis()/((n+1)*400)) + cos8(n*(millis()/1000));
-      int dist = abs(i - (show_pos+offset/10)) % led_limit;
-      CRGB c = CHSV((show_color+i+offset)%255, 255, constrain(128-dist*4,0,128));
-      nblend(leds[n*104+i], c, 50);
-    }
-  }
-  FastLED.show();
-  delay(1);
-  show_pos++;
-  if (show_pos > NUM_LEDS){
-    show_pos = 0;
-    show_color = random(255);
-  }
-}
-
-void solid_sides(){
-  static int s=0;
-  if (random(12)==0) { s = random(NUM_SIDES); };
-  CRGB c = CHSV(random(255), random(100)+150, random(255));
-  for (int level=0; level<50; level+=1){
-    for (int i=s*LEDS_PER_SIDE; i<(s+1)*LEDS_PER_SIDE; i++){
-      nblend(leds[i], c, 10);
-    }
-    FastLED.show();
-    if (digitalRead(USER_BUTTON) == LOW) return;
-    delayMicroseconds(50);
-  } 
-  // for (int level=100; level>0; level--){
-  //   for (int i=(s)*LEDS_PER_SIDE; i<(s+1)*LEDS_PER_SIDE; i++){
-  //     nblend(leds[i], CHSV(millis()/random(100,1000) % 255, random(150)+100, random(120)+10), 3);
-  //   }
-  //   FastLED.show();
-  //   if (digitalRead(USER_BUTTON) == LOW) return;
-  //   //delayMicroseconds(100);
-  // }
-  // FastLED.show();
-  s = (s+1) % NUM_SIDES;
-}
-
-// Constants
-#define SMOOTHING_FACTOR 0.005
-
-// Variables for dynamic range calibration
-int noiseMin = 120;
-int noiseMax = 230;
-
-// Smoothed value
-float smoothedValue = 0.0;
-
-float getSmoothNoise() {
-    // Step 1: Read the analog signal
-    int rawValue = analogRead(ANALOG_PIN_A);
-
-    // Step 2: Update noise range dynamically
-    if (rawValue < noiseMin) noiseMin = rawValue;
-    if (rawValue > noiseMax) noiseMax = rawValue;
-
-    // Prevent divide by zero
-    int range = noiseMax - noiseMin;
-    if (range == 0) range = 1;
-
-    // Step 3: Map the raw value to the range [-1.0, 1.0]
-    float mappedValue = (float)(rawValue - noiseMin) / range * 2.0 - 1.0;
-
-    // Step 4: Apply smoothing
-    smoothedValue += SMOOTHING_FACTOR * (mappedValue - smoothedValue);
-
-    return smoothedValue;
-}
-
-void tv_static(){
-  for (int i = 0; i<NUM_LEDS; i++){
-    // Read the analog values
-    int rawValueA = analogRead(ANALOG_PIN_A);
-    int rawValueB = analogRead(ANALOG_PIN_B);
-
-    // Update noise range dynamically for both analog pins
-    static int noiseMinA = 1023, noiseMaxA = 0;
-    static int noiseMinB = 1023, noiseMaxB = 0;
-
-    if (rawValueA < noiseMinA) noiseMinA = rawValueA;
-    if (rawValueA > noiseMaxA) noiseMaxA = rawValueA;
-    if (rawValueB < noiseMinB) noiseMinB = rawValueB;
-    if (rawValueB > noiseMaxB) noiseMaxB = rawValueB;
-
-    // Prevent divide by zero
-    int rangeA = noiseMaxA - noiseMinA;
-    int rangeB = noiseMaxB - noiseMinB;
-    if (rangeA == 0) rangeA = 1;
-    if (rangeB == 0) rangeB = 1;
-
-    // Map the raw values to the range [0, 255]
-    int mappedValueA = (rawValueA - noiseMinA) * 255 / rangeA;
-    int mappedValueB = (rawValueB - noiseMinB) * 255 / rangeB;
-
-    // Set the LED color based on the mapped values
-    leds[i] = CHSV(mappedValueA, 255, mappedValueB);
-  }
-  FastLED.show();
-}
-
-
+// debugging routine to help with assembly: it lights up each side with a unique color, with the top row highlighted,
+// and the number of LEDs lit equals the side number. 
 void identify_sides(){
   // identify each side uniquely
   for (int s=0; s<NUM_SIDES; s++){
@@ -239,55 +126,25 @@ void identify_sides(){
   FastLED.show();
 }
 
-uint32_t FreeMem(){ // for Teensy 3.0
-    uint32_t stackTop;
-    uint32_t heapTop;
-
-    // current position of the stack.
-    stackTop = (uint32_t) &stackTop;
-
-    // current position of heap.
-    void* hTop = malloc(1);
-    heapTop = (uint32_t) hTop;
-    free(hTop);
-
-    // The difference is (approximately) the free, available ram.
-    return stackTop - heapTop;
+float calculate_power_usage() {
+    float unscaled_power = calculate_unscaled_power_mW(leds, NUM_LEDS);
+    float brightness_scale = Animation::getBrightness() / 370.0f;
+    float base_power = 40.0f;  // Base power consumption in mW
+    
+    return base_power + (unscaled_power - base_power) * brightness_scale;
 }
 
-
 void timerStatusMessage(){
-  Serial.printf("--> %d FPS @ mode:%d <--\n", FastLED.getFPS(), mode);
-  Serial.printf("Power: %d mw\n", calculate_unscaled_power_mW(leds, NUM_LEDS));
-  if (mode==0){   // wandering blobs
-    String status = animation_manager.getCurrentAnimation()->getStatus();
-    Serial.printf("Animation status: %s\n", status.c_str());
-  }
-  if (mode==1){  // fade test(): xyz intersection planes with fading lines
-    String status = animation_manager.getCurrentAnimation()->getStatus();
-    Serial.printf("Animation status: %s\n", status.c_str());
-  }
-  if (mode==2){  // Sparkles
-    String status = animation_manager.getCurrentAnimation()->getStatus();
-    Serial.printf("Animation status: %s\n", status.c_str());
-  }
-  if (mode==3){   // color_show
-    String status = animation_manager.getCurrentAnimation()->getStatus();
-    Serial.printf("Animation status: %s\n", status.c_str());
-  }
-  if (mode==4){   // wandering_particles
-    String status = animation_manager.getCurrentAnimation()->getStatus();
-    Serial.printf("Animation status: %s\n", status.c_str());
-  }
-  if (mode==5){   // geography show
-    String status = animation_manager.getCurrentAnimation()->getStatus();
-    Serial.printf("Animation status: %s\n", status.c_str());
-  }
+  // print global info
+  Serial.printf("--> mode:%d (%s) @ %d FPS <--\n", 
+    mode,
+    animation_manager.getCurrentAnimationName().c_str(),
+    FastLED.getFPS() 
+  );
 
-  if (mode==6){   // orientation demo
-    String status = animation_manager.getCurrentAnimation()->getStatus();
-    Serial.printf("Animation status: %s\n", status.c_str());
-   
+  String status = animation_manager.getCurrentAnimation()->getStatus();
+  Serial.printf("%s\n", status.c_str());
+
 // #ifdef USE_IMU
 //     // Display sensor data
 //     Serial.printf("LSM6DSOX:\n");
@@ -298,7 +155,9 @@ void timerStatusMessage(){
 //       gyro.gyro.x, gyro.gyro.y, gyro.gyro.z);
 // #endif
 
-   }
+  Serial.printf("Est Power: %0.1f W (%.1f%% brightness)\n", 
+    calculate_power_usage()/1000.0,
+    (Animation::getBrightness() / 255.0f) * 100);
 }
 
 void setup() {
@@ -398,77 +257,51 @@ void setup() {
   animation_manager.preset("xyz_scanner", "fast");  // Try different speeds
   animation_manager.preset("blobs", "fast");
 
-  // inital mode at startup
-  mode = 6; animation_manager.setCurrentAnimation(6);
+  animation_manager.setCurrentAnimation("blobs");
 
 }
 
 #define NUM_MODES 7
 long interval, last_interval = 0;
 const long max_interval = 3000;
-void loop() {
-  interval = millis()/max_interval;
-  if (random8(100)==0){
-    int led_fade_level = map((millis() % max_interval), 0, max_interval, -256, 256);    
-    analogWrite(ON_BOARD_LED, abs(led_fade_level));
-  }
+
+void updateOnboardLED() {
+    static uint8_t led_brightness = 0;
+    static uint32_t last_update = 0;
+    const uint32_t update_interval = 16;  // ~60Hz updates
+    
+    interval = millis()/max_interval;
+    if (millis() - last_update >= update_interval) {
+        // Create smooth sine wave breathing (4 second cycle)
+        float breath = (sin(millis() * PI / 2000.0) + 1.0) / 2.0;
+        led_brightness = breath * 255;
+        analogWrite(ON_BOARD_LED, led_brightness);
+        last_update = millis();
+    }
+}
+
+void loop() {  
+  updateOnboardLED();  // Replace old LED code with this
+  
   if (interval != last_interval){
     timerStatusMessage();
     last_interval = interval;
   }
   // handle button press for mode change
   if (digitalRead(USER_BUTTON) == LOW){
-    Serial.print("Button pressed, changing mode to ");
-    mode++;
-    mode %= NUM_MODES;
-    Serial.println(mode);
- 
-    switch(mode) {
-      case 0: animation_manager.setCurrentAnimation(0); break;  // blobs
-      case 1: animation_manager.setCurrentAnimation(1); break;  // xyz_scanner
-      case 2: animation_manager.setCurrentAnimation(2); break;  // sparkles
-      case 3: animation_manager.setCurrentAnimation(3); break;  // colorshow
-      case 4: animation_manager.setCurrentAnimation(4); break;  // wandering_particles
-      case 5: animation_manager.setCurrentAnimation(5); break;  // geography
-      case 6: animation_manager.setCurrentAnimation(6); break;  // orientation_demo
-    }
-
+    // flash while button is still down
     while (digitalRead(USER_BUTTON) == LOW){
       CRGB c = CRGB::White;
-      FastLED.setBrightness(BRIGHTNESS);
-      c.setHSV(millis()/100 % 255, 255, 64);
+      c.setHSV(millis()/500 % 255, 255, 64);
       FastLED.showColor(c);
       FastLED.show(); 
       delay(20); 
     }
     Serial.println("Button released");
+    mode = (mode + 1) % animation_manager.getPlaylistLength();
+    Serial.printf("Button pressed, changed mode to %d\n", animation_manager.getCurrentAnimationIndex());
+    animation_manager.nextAnimation();
   }
-  if (mode == 0){
-    animation_manager.update();
-    FastLED.show();
-  }
-  if (mode == 1){  // xyz_scanner
-    animation_manager.update();
-    FastLED.show();
-  }
-  if (mode == 2){  // sparkles
-    animation_manager.update();
-    FastLED.show();
-  }
-  if (mode==3){  // color_show
-    animation_manager.update();
-    FastLED.show();
-  }
-  if (mode==4){  // wandering_particles
-    animation_manager.update();
-    FastLED.show();
-  }
-  if (mode==5){  // geography
-    animation_manager.update();
-    FastLED.show();
-  }
-  if (mode==6){  // orientation_demo
-    animation_manager.update();
-    FastLED.show();
-  }
+  animation_manager.update();
+  FastLED.show();
 }

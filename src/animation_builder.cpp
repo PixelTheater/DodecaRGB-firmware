@@ -9,7 +9,7 @@
 #include "animations/orientation_demo.h"
 
 // Define the static member with default value
-uint8_t Animation::global_brightness = 128;  // Start at 50% brightness
+uint8_t Animation::global_brightness = 100;  // Start at 50% brightness
 
 // Static registry implementation
 std::map<String, AnimationBuilder::CreatorFunc>& AnimationBuilder::registry() {

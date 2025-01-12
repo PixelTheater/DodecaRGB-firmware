@@ -45,11 +45,17 @@ public:
     return animations[current_index]->getStatus();
   }
 
-  void setCurrentAnimation(size_t index) {
-    if (index < animations.size()) {
-      current_index = index;
-    }
+  String getCurrentAnimationName() const {
+    if (animations.empty()) return "No animations";
+    return animations[current_index]->getName();
   }
+
+  size_t getCurrentAnimationIndex() const { return current_index; }
+
+  size_t getPlaylistLength() const { return animations.size(); }
+
+  void setCurrentAnimation(const std::string& name);
+  void setCurrentAnimation(size_t index);
 
   bool preset(const String& anim_name, const String& preset_name) {
     for (auto& anim : animations) {
@@ -68,4 +74,24 @@ public:
       current->tick();
     }
   }
+
+  void nextAnimation() {
+    current_index = (current_index + 1) % animations.size();
+  }
+
 };
+
+void AnimationManager::setCurrentAnimation(const std::string& name) {
+    for (size_t i = 0; i < animations.size(); i++) {
+        if (animations[i]->getName() == name) {
+            current_index = i;
+            return;
+        }
+    }
+}
+
+void AnimationManager::setCurrentAnimation(size_t index) {
+    if (index < animations.size()) {
+        current_index = index;
+    }
+}
