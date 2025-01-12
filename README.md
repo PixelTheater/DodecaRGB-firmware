@@ -1,26 +1,25 @@
 # DodecaRGB
 
-
-Dec 2024: *V2 in development!* Version two introduces higher density micro-pixels (1248 in total!) and a slightly smaller size overall. 
+Dec 2024: *V2 in development!* Version two introduces higher density micro-pixels (1248 in total!) and a slightly smaller size overall.
 
 ![DodecaRGBv2 hero image](<images/IMG_5557.jpeg>)
 
-## The Concept:
+## The Concept
 
-A fun toy made for the hacker community, especially for programmers that want to do spherical animations. Today, this is quite hard - you either need to make a spinning POV globe, or wire up custom strips, not to mention power and performance issues. 
+A fun toy made for the hacker community, especially for programmers that want to do spherical animations. Today, this is quite hard - you either need to make a spinning POV globe, or wire up custom strips, not to mention power and performance issues.
 
-This project aims to create a standard platform for resolution-indpendent animations based on spherical models. 
+This project aims to create a standard platform for resolution-indpendent animations based on spherical models.
 
-The firmware, 3d models and tooling are open source and free to use and modify. The hardware PCBs will are planned as a kit for 2025, which will include most of the parts needed to 3d print and assemble your own. 
+The firmware, 3d models and tooling are open source and free to use and modify. The hardware PCBs will are planned as a kit for 2025, which will include most of the parts needed to 3d print and assemble your own.
 
 - We have a dodecahedron model with 12 sides.
 - Each side is a pentgon-shaped PCB circuit board that contains 104 RGB leds.
-- Each side connects to the next, in series, for a grand total of 1248 LEDs. 
+- Each side connects to the next, in series, for a grand total of 1248 LEDs.
 - The whole thing runs at >50fps, and can be battery powered
 - It will support features like wireless charging, orientation sensor, magnetic closing, 3d printed interior.
 - Other ideas may extend the model (touch sensitivity, sound reactive, etc)
 
-The combination of a hand-held ball of LEDs with motion sensing opens a lot of interesting user interaction experiments: motion light performances, visualizing data, interactive games, puzzles, etc. 
+The combination of a hand-held ball of LEDs with motion sensing opens a lot of interesting user interaction experiments: motion light performances, visualizing data, interactive games, puzzles, etc.
 
 ![fits in the hand](<images/v2-juggle.gif>)
 
@@ -29,7 +28,7 @@ The combination of a hand-held ball of LEDs with motion sensing opens a lot of i
 - 2-layer PCBs WS2812 LEDs (SMD 1615 package)
 - A Teensy 4.1 microcontroller is used to control everything
 - Level shifters (for LEDs), power regulation, battery, etc.
-- FastLED parallel support is being used (see https://github.com/FastLED/FastLED/releases/tag/3.9.8)
+- FastLED parallel support is being used (see <https://github.com/FastLED/FastLED/releases/tag/3.9.8>)
 - The two hemispheres of the model are wired on separate channels, using pins 19 and 18 of the Teensy, so 624 LEDs per channel. This allows for higher frame rates.
 
 - [v2 - level shifters](images/IMG_5514.jpeg)
@@ -39,6 +38,7 @@ The combination of a hand-held ball of LEDs with motion sensing opens a lot of i
 ![wiring diagram](<images/Screenshot 2024-12-12 at 18.23.51.png>)
 
 ## The Software
+
 - C language, Arduino environment and FastLED library
 - 3D Points are calculated in a [separate project](https://github.com/somebox/dodeca-rgb-simulator) build in Processing. This will later move to build scripts here.
 - On boot, the LED neighbors are pre-calculated. This will later be moved to a build process here.
@@ -49,6 +49,7 @@ There is some documentation on[creating animations](creating_animations.md)
 
 [in progress] motion-reactive support, currently evaluating different IMU choices. Investigating options for orientation and sensitivity, ideally with guestures like tap, shake, spin, etc.
 [done] refactoring animations into modules, to help isolate and standardize the interfaces. Goal is to make it easy to add new animations, or design simple playlists.
+
 - Wireless charging (Qi) - testing larger coils and ideal PCB thickness
 [in progress] 3d modelling of interior structure
 [in progress] Motherboard PCB to mount the Teensy 4.1 and 2x 18650 batteries, together with support electronics for power, charging, level shifting, sensors, etc.
@@ -61,27 +62,28 @@ There is some documentation on[creating animations](creating_animations.md)
 
 ## Version 1 info (CCC camp 2023)
 
-This is the firmware for DodecaRGB, a colorful DIY IoT model 12-sided shape made from PCB circuit boards adorned with bright LEDs. It can be assembled as a desktop light, or built with a battery pack and motion sensors for reactive animations and games. 
+This is the firmware for DodecaRGB, a colorful DIY IoT model 12-sided shape made from PCB circuit boards adorned with bright LEDs. It can be assembled as a desktop light, or built with a battery pack and motion sensors for reactive animations and games.
 
-**Hackaday page**: https://hackaday.io/project/192557-dodecargb
+**Hackaday page**: <https://hackaday.io/project/192557-dodecargb>
 
 ![DodecaRGB](images/hero.jpeg)
 
-## Hardware 
+## Hardware
 
-We have a dodecahedron model with 12 sides. Each side is a pentgon-shaped PCB circuit board with RGB LEDs arranged on them, spaced evenly. 
+We have a dodecahedron model with 12 sides. Each side is a pentgon-shaped PCB circuit board with RGB LEDs arranged on them, spaced evenly.
 
 An ESP32 microcontroller is used to run the device, built in C++ with the Arduino environment and FastLED library.
 
 Each pentagon side contains 26 RGB leds on a circuit board, arranged in the following way:
+
 - 1 central LED in the exact middle of each side
 - a ring of 10 LEDs in a circle around the central LED
 - 15 LEDs around the edges, in groups of 3, spaced evenly around the edge of the pentagon
 
-The LEDs on each face of the dodecahedron are wired in series so that the central LED is first, 
-the ring LEDs come next, and the edge LEDs after that. 
+The LEDs on each face of the dodecahedron are wired in series so that the central LED is first,
+the ring LEDs come next, and the edge LEDs after that.
 
-Each side connects to the next, in series, for a grand total of 312 LEDs. There are connectors on each side of of the PCB, two inputs and three outputs. Each connection is 3 pins: 5v power, ground and data. 
+Each side connects to the next, in series, for a grand total of 312 LEDs. There are connectors on each side of of the PCB, two inputs and three outputs. Each connection is 3 pins: 5v power, ground and data.
 
 Keep in mind the power requirements, which can exceed 10-15 watts at full brightness, and might exceed laptop USB or low-performance powerbanks, leading to brownouts and reboots. To combat this, you can set the global brightness with the BRIGHTNESS constant in the code. In testing, a lower setting of 40 (0-255) is perfectly usable in normal room lighting. At full brighness you will need to inject 5v power to a couple of boards (and probably wear sunglasses as well).
 
@@ -97,6 +99,7 @@ Note that in all software and docs, side 0 is the bottom, and side 11 is the top
 ![closeup of 3-pin header connection near a corner](images/header-closeup.jpeg)
 
 ### Parts and Tools required for assembly
+
 - 12 DodecaRGB PCBs
 - 20 3d-printed [corner pieces](3d-models/d12-corner.stl)
 - 60 M3 screws (~6mm long) and the appropriate screwdriver
@@ -110,6 +113,7 @@ Note that in all software and docs, side 0 is the bottom, and side 11 is the top
 **Tools required:** A soldering iron, solder, flux, tweezers or pliers, blue tape or blue-tack to hold stuff
 
 ## General approach to assembly
+
 1. Start by snapping off the edges of each PCB. Any rough spots can be filed smooth with an emory board.
 1. Label each of the 12 boards board on the inside (where the logo is visible) with the numbers 0-11. This helps you keep track of where you are during the build.
 1. Using a 3d-printed corner piece, connect sides 0, 1 and 2 together using M3 screws.
@@ -123,8 +127,7 @@ Note that in all software and docs, side 0 is the bottom, and side 11 is the top
 
 ![the two halves](images/two-halves.jpeg)
 
-
-### PCB connection points:
+### PCB connection points
 
 - side 0 (bottom) OUT B (LEDs 12,13,14) to side 1 IN E (LEDs 21,22,23)
 - side 1 out 24,25,26 (A) to side 2 IN 21,23,23 (E)
@@ -175,7 +178,7 @@ There are currently a number of animations. To switch between them, press the "u
 
 The [simulator](https://github.com/somebox/dodeca-rgb-simulator) calculates where each of the 312 LEDs are in 3D space, and outputs the data as JSON and a C data structure. The current version is already part of this repo, so you don't have to do anything. Using these points, we can calculate and display 3D lighting effects.
 
-There's a processing sketch at https://github.com/somebox/dodeca-rgb-simulator that generates the list
+There's a processing sketch at <https://github.com/somebox/dodeca-rgb-simulator> that generates the list
 of points, the X,Y,Z coordinates, and defines the order of the sides and their rotations. It also
 renders an interactive 3D model of the dodecahedron with different views, and makes it easier to visualize how the boards are lined up inside.
 

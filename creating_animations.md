@@ -101,11 +101,13 @@ animation_manager.add("myanimation", {
 ## Color Palettes
 
 Three default palettes are available:
+
 - `basePalette`: Rich, saturated colors
 - `highlightPalette`: Bright, light colors
 - `uniquePalette`: Distinct, high-contrast colors
 
 Helper functions for color management:
+
 ```cpp
 String colorName = getClosestColorName(CRGB(255, 0, 0));  // Returns "Red"
 String ansiColor = getAnsiColorString(CRGB::Red);         // Terminal color
@@ -115,23 +117,27 @@ float brightness = get_perceived_brightness(color);
 ## Best Practices
 
 ### LED Management
+
 - Access LEDs directly through `leds[]` array
 - Framework handles `FastLED.show()` calls
 - Use `fadeToBlackBy()` or `nscale8()` to manage brightness
 - `nblend()` for safe color mixing
 
 ### Animation Flow
+
 - Track time with counters or `millis()`
 - Make speed adjustable via parameters
 - No `delay()` calls in `tick()`
 - Pre-calculate values in `init()`
 
 ### Layout Constants
+
 - `numLeds()`: Total LEDs
 - `leds_per_side`: LEDs per face
 - `num_sides`: Number of faces (12)
 
 Common face-based pattern:
+
 ```cpp
 void updateFace(int face, CRGB color) {
     int start = face * leds_per_side;
@@ -140,7 +146,9 @@ void updateFace(int face, CRGB color) {
 ```
 
 ### Status Reporting
+
 Use `getStatus()` instead of Serial prints:
+
 ```cpp
 String getStatus() const override {
     output.printf("Speed: %.2f\n", speed);
@@ -154,6 +162,7 @@ See the `Sparkles` and `XYZScanner` animations for more advanced examples.
 ## Animation Strategies
 
 ### Time and Motion
+
 ```cpp
 class WaveAnimation : public Animation {
 private:
@@ -195,6 +204,7 @@ void renderByFace() {
 ```
 
 ### Palette-Based Colors
+
 ```cpp
 class PaletteWave : public Animation {
 private:
@@ -311,4 +321,3 @@ for(int i = 0; i < numLeds(); i++) {
 ```
 
 See the `Blob` animation for an example of complex orbital movement using spherical coordinates, and `XYZScanner` for cartesian coordinate scanning effects.
-
