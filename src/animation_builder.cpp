@@ -4,6 +4,7 @@
 #include "animations/xyz_scanner.h"
 #include "animations/wandering_particles.h"
 #include "animations/geography.h"
+#include "animations/color_show.h"
 
 // Static registry implementation
 std::map<String, AnimationBuilder::CreatorFunc>& AnimationBuilder::registry() {
@@ -52,3 +53,4 @@ REGISTER_ANIMATION("sparkles", Sparkles)
 REGISTER_ANIMATION("xyz_scanner", XYZScanner)
 REGISTER_ANIMATION("wandering_particles", WanderingParticles) 
 REGISTER_ANIMATION("geography", Geography)
+REGISTER_ANIMATION("colorshow", ColorShow)

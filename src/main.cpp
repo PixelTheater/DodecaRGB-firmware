@@ -476,13 +476,12 @@ void timerStatusMessage(){
     Serial.printf("Animation status: %s\n", status.c_str());
   }
   if (mode==3){   // color_show
-    Serial.printf("show_pos: %d\n", show_pos);
-    Serial.printf("show_color: %d\n", show_color);
+    String status = animation_manager.getCurrentAnimation()->getStatus();
+    Serial.printf("Animation status: %s\n", status.c_str());
   }
   if (mode==4){   // wandering_particles
     String status = animation_manager.getCurrentAnimation()->getStatus();
     Serial.printf("Animation status: %s\n", status.c_str());
-
   }
   if (mode==5){   // geography show
     String status = animation_manager.getCurrentAnimation()->getStatus();
@@ -626,6 +625,7 @@ void setup() {
   animation_manager.add("blobs");
   animation_manager.add("xyz_scanner");  
   animation_manager.add("sparkles");
+  animation_manager.add("colorshow");
   animation_manager.add("wandering_particles");
   animation_manager.add("geography");
 
@@ -635,7 +635,7 @@ void setup() {
   animation_manager.preset("blobs", "fast");
 
   // inital mode at startup
-  mode = 5; animation_manager.setCurrentAnimation(4);
+  mode = 3; animation_manager.setCurrentAnimation(3);
 }
 
 #define NUM_MODES 8
@@ -662,8 +662,9 @@ void loop() {
       case 0: animation_manager.setCurrentAnimation(0); break;  // blobs
       case 1: animation_manager.setCurrentAnimation(1); break;  // xyz_scanner
       case 2: animation_manager.setCurrentAnimation(2); break;  // sparkles
-      case 4: animation_manager.setCurrentAnimation(3); break;  // wandering_particles
-      case 5: animation_manager.setCurrentAnimation(3); break;  // wandering_particles
+      case 3: animation_manager.setCurrentAnimation(3); break;  // colorshow
+      case 4: animation_manager.setCurrentAnimation(4); break;  // wandering_particles
+      case 5: animation_manager.setCurrentAnimation(5); break;  // geography
     }
 
     while (digitalRead(USER_BUTTON) == LOW){
@@ -689,8 +690,8 @@ void loop() {
     FastLED.show();
   }
   if (mode==3){  // color_show
-    //solid_sides();
-    color_show();
+    animation_manager.update();
+    FastLED.show();
   }
   if (mode==4){  // wandering_particles
     animation_manager.update();
