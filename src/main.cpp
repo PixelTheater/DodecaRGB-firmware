@@ -221,210 +221,6 @@ void tv_static(){
 }
 
 
-CRGB bg_color;           // Current background color
-CRGB line_color;         // Current line color
-CRGB target_bg_color;    // Target background color
-CRGB target_line_color;  // Target line color
-CRGB bg_color_prev = CRGB::Black ;
-CRGB line_color_prev = CRGB::Black;
-bool dark_lines = true;  // Whether lines should be darker than background
-bool in_transition = true;  // active animation between colors and lines
-const uint16_t cycle_time = 1500;    // time between color changes
-const uint16_t transition_duration = 200;   // time to transition between colors
-
-// Color selection, happens every transition
-void pick_new_colors() {
-    // Store previous target as current
-    bg_color_prev = bg_color;
-    line_color_prev = line_color;
-    bg_color = target_bg_color;
-    line_color = target_line_color;
-    
-    CHSV best_hsv1, best_hsv2;
-    float best_score = 0;
-    
-    // find an acceptable random color pair
-    for (int i = 0; i < 16; i++) {
-        // Pick random colors from palettes and convert to HSV immediately
-        CHSV hsv1 = rgb2hsv_approximate(ColorFromPalette(uniquePalette, random8()));
-        CHSV hsv2 = rgb2hsv_approximate(ColorFromPalette(RainbowStripesColors_p, random8()));
-        
-        // Determine which color is brighter,         
-        // apply random adjustments to relative brightness
-        if (get_perceived_brightness(hsv1) > get_perceived_brightness(hsv2)) {
-            hsv1.v = qadd8(hsv1.v, 16+random8(32));  // Make brighter color more bright
-            hsv2.v = qsub8(hsv2.v, 16+random8(32));  // Make darker color more dark
-        } else {
-            hsv2.v = qadd8(hsv2.v, 16+random8(32));  // Make brighter color more bright
-            hsv1.v = qsub8(hsv1.v, 16+random8(32));  // Make darker color more dark
-        }
-        
-        float contrast = get_contrast_ratio(hsv1, hsv2);
-        float hue_dist = get_hue_distance(hsv1, hsv2);
-        
-        // Score based on contrast and hue distance
-        float score = contrast * (hue_dist / 180.0f);
-        
-        // Check if colors meet our criteria and have better score
-        if (contrast >= 1.5 && hue_dist >= 20.0 && score > best_score) {
-            best_score = score;
-            best_hsv1 = hsv1;
-            best_hsv2 = hsv2;
-        }
-    }
-
-    // Fallback if no good pairs were found
-    if (get_contrast_ratio(best_hsv1, best_hsv2) < 1.5) {
-        Serial.println("Warning: No good color pairs found, using fallback colors");
-        best_hsv1 = CHSV(random8(), 0, 200);
-        best_hsv2 = CHSV(0, 0, 0);
-    }
-
-    // Convert to RGB for final colors
-    CRGB bright_color = CHSV(best_hsv1.h, best_hsv1.s, best_hsv1.v);
-    CRGB dark_color = CHSV(best_hsv2.h, best_hsv2.s, best_hsv2.v);
-    bright_color.fadeLightBy(20);
-    dark_color.fadeToBlackBy(50);
-
-    // Randomly decide if lines should be darker than background
-    dark_lines = !dark_lines;
-    
-    // Assign colors based on dark_lines setting
-    if (dark_lines) {
-        target_bg_color = bright_color;
-        target_line_color = dark_color;
-    } else {
-        target_bg_color = dark_color;
-        target_line_color = bright_color;
-    }
-    
-    Serial.printf("New colors picked (dark_lines: %d) - Score: %.2f\n", 
-        dark_lines, best_score);
-}
-
-void blend_to_target(float blend_amount) {
-  // Blend current colors toward target colors
-  bg_color = blend(bg_color_prev, target_bg_color, blend_amount * 255);
-  line_color = blend(line_color_prev, target_line_color, blend_amount * 255);
-}
-
-// Helper function to find the smallest angle difference
-float angle_diff(float a1, float a2) {
-  float diff = fmod(abs(a1 - a2), TWO_PI);
-  return min(diff, TWO_PI - diff);
-}
-
-void orientation_demo() {
-  static uint16_t transition_counter = 900;
-  static float tilt_speed = 0.0;
-  static float rotation_angle = 0.0;
-  
-  // Grid configuration
-  static const int lat_lines = 5;
-  static const int lon_lines = 4;
-  static float current_line_width = 0.14;
-  static float target_line_width = 0.14;
-  
-  // Check if it's time to start a new transition
-  if (++transition_counter >= cycle_time) {
-    if (!in_transition) {
-      pick_new_colors();
-      in_transition = true;
-      transition_counter = 0;
-    }
-  }
-  
-  // Calculate blend amount during transition
-  float rotation_speed = 0.7;
-  if (in_transition) {
-    if (transition_counter == 0) {
-      // Pick new target width at start of transition
-      target_line_width = random(10, 40)/100.0;
-    }
-    // Smoothly blend between current and target width
-    float blend_amount = map(transition_counter, 0, transition_duration, 0, 1000)/1000.0;
-    current_line_width += (target_line_width - current_line_width) * blend_amount;
-    // Smoothly blend colors
-    blend_to_target(blend_amount);
-    rotation_speed = 0.7 + sin(blend_amount*PI)*1.4;
-    
-    // End transition when complete
-    if (transition_counter >= transition_duration) {
-      in_transition = false;
-    }
-  }
-
-  // Update rotation angles
-  rotation_angle += 0.025 * rotation_speed;
-  float spin = rotation_angle;
-  float tilt = sin(tilt_speed * 0.002) * 0.5;
-  float tumble = rotation_angle * 0.25;
-  
-  Matrix3d rot_z = AngleAxisd(spin, Vector3d::UnitZ()).matrix();
-  Matrix3d rot_x = AngleAxisd(tilt, Vector3d::UnitX()).matrix();
-  Matrix3d rot_y = AngleAxisd(tumble, Vector3d::UnitY()).matrix();
-  Matrix3d rotation = rot_z * rot_x * rot_y;
-
-  // Draw the grid
-  for (int i = 0; i < NUM_LEDS; i++) {
-    LED_Point p = points[i];
-    Vector3d point(p.x, p.y, p.z);
-    Vector3d rotated_point = rotation * point;
-    Vector3d ray_dir = rotated_point.normalized();
-    
-    float a = atan2(ray_dir.y(), ray_dir.x());
-    float c = acos(ray_dir.z());
-    
-    float a_norm = fmod(a + TWO_PI, TWO_PI);
-    float c_norm = c;
-    
-    float lat_spacing = TWO_PI / lat_lines;
-    float lon_spacing = PI / lon_lines;
-    
-    float nearest_lat = round(a_norm / lat_spacing) * lat_spacing;
-    float nearest_lon = round(c_norm / lon_spacing) * lon_spacing;
-    
-    float lat_angle = min(
-      abs(angle_diff(a_norm, nearest_lat)),
-      abs(angle_diff(a_norm, nearest_lat + lat_spacing))
-    );
-    
-    float lon_angle = min(
-      abs(angle_diff(c_norm, nearest_lon)),
-      abs(angle_diff(c_norm, nearest_lon + lon_spacing))
-    );
-    
-    float point_dist = point.norm();
-    float lat_dist = point_dist * lat_angle;
-    float lon_dist = point_dist * lon_angle;
-    
-    float dist = min(lat_dist, lon_dist);
-    float scaled_width = current_line_width * point_dist;
-
-    // set background color
-    leds[i] = bg_color;
-    leds[i].nscale8(scale8(160, BRIGHTNESS));  // scale down the brightness      
-
-    // handle the transition between background and line
-    if (dist < scaled_width) {
-      // Create smoother falloff using cubic or quadratic easing
-      float blend_factor = 1.0 - (dist/scaled_width);
-      blend_factor = blend_factor * blend_factor * (3 - 2 * blend_factor); // Smoothstep function
-
-      // set line color
-      uint8_t line_intensity = 255 * blend_factor;
-      CRGB line = line_color;
-      line.nscale8(scale8(line_intensity, BRIGHTNESS));
-      leds[i] = blend(leds[i], line, line_intensity);  // More subtle blending for high contrast
-    }
-  }
-  
-  tilt_speed += 1.0;
-  FastLED.show();
-}
-
-
-
 void identify_sides(){
   // identify each side uniquely
   for (int s=0; s<NUM_SIDES; s++){
@@ -488,43 +284,21 @@ void timerStatusMessage(){
     Serial.printf("Animation status: %s\n", status.c_str());
   }
 
-  if (mode==6){   // noise
-    Serial.printf("Analog noise pins: %d/%d\n", analogRead(ANALOG_PIN_A), analogRead(ANALOG_PIN_B));
-  }
+  if (mode==6){   // orientation demo
+    String status = animation_manager.getCurrentAnimation()->getStatus();
+    Serial.printf("Animation status: %s\n", status.c_str());
+   
+// #ifdef USE_IMU
+//     // Display sensor data
+//     Serial.printf("LSM6DSOX:\n");
+//     Serial.printf("\tTemperature: %.2f deg C\n", temp.temperature);
+//     Serial.printf("\tAccel X: %.2f \tY: %.2f \tZ: %.2f m/s^2\n", 
+//       accel.acceleration.x, accel.acceleration.y, accel.acceleration.z);
+//     Serial.printf("\tGyro X: %.2f \tY: %.2f \tZ: %.2f radians/s\n", 
+//       gyro.gyro.x, gyro.gyro.y, gyro.gyro.z);
+// #endif
 
-  if (mode==7){   // orientation demo
-    sensors_event_t accel;
-    sensors_event_t gyro;
-    sensors_event_t temp;
-    sox.getEvent(&accel, &gyro, &temp);
-    
-    // Display current colors
-    Serial.printf("dark lines? %s\n", dark_lines ? "true" : "false");
-    Serial.print(getAnsiColorString(bg_color));
-    Serial.printf(" Background (%s)\n", getClosestColorName(bg_color));
-    Serial.print(getAnsiColorString(line_color)); 
-    Serial.printf(" Lines (%s)\n", getClosestColorName(line_color));
-    Serial.printf("Brightness: %d%%\n", (BRIGHTNESS * 100) / 255);
-    
-    if (in_transition) {
-      Serial.printf("Transitioning to:\n");
-      Serial.print(getAnsiColorString(target_bg_color));
-      Serial.printf(" Target bg (%s)\n", getClosestColorName(target_bg_color));
-      Serial.print(getAnsiColorString(target_line_color));
-      Serial.printf(" Target lines (%s)\n", getClosestColorName(target_line_color));
-    }
-
-#ifdef USE_IMU
-    // Display sensor data
-    Serial.printf("LSM6DSOX:\n");
-    Serial.printf("\tTemperature: %.2f deg C\n", temp.temperature);
-    Serial.printf("\tAccel X: %.2f \tY: %.2f \tZ: %.2f m/s^2\n", 
-      accel.acceleration.x, accel.acceleration.y, accel.acceleration.z);
-    Serial.printf("\tGyro X: %.2f \tY: %.2f \tZ: %.2f radians/s\n", 
-      gyro.gyro.x, gyro.gyro.y, gyro.gyro.z);
-  }
-#endif
-
+   }
 }
 
 void setup() {
@@ -579,12 +353,13 @@ void setup() {
   FastLED.clear();
   FastLED.show();
 
+  // light up the center led on each sid at boot, so we know everything is working
   for (int side=0; side<NUM_SIDES; side++){
     leds[side*LEDS_PER_SIDE] = ColorFromPalette(RainbowColors_p, side * 255 / NUM_SIDES);
   }
   FastLED.show();
 
-  // init Points
+  // init Points, pre-calculate nearest leds for each point
   for (int p=0; p < NUM_LEDS; p++){
     int side = p/LEDS_PER_SIDE;
     int side_led = p%LEDS_PER_SIDE;
@@ -602,24 +377,12 @@ void setup() {
     }
   }
 
-  // init colors
-  pick_new_colors();
-
   Serial.println("Init done");
 
   FastLED.clear();
   FastLED.show();
 
-  delay(300);
-
-  // Add to setup() after FastLED initialization
-  // Initialize orientation demo colors
-  target_bg_color = ColorFromPalette(highlightPalette, random8());
-  target_line_color = ColorFromPalette(basePalette, random8());
-  bg_color = target_bg_color;
-  line_color = target_line_color;
-
-  // Set up animations
+  delay(100);
 
   // Add animations with default settings
   animation_manager.add("blobs");
@@ -628,17 +391,19 @@ void setup() {
   animation_manager.add("colorshow");
   animation_manager.add("wandering_particles");
   animation_manager.add("geography");
+  animation_manager.add("orientation_demo");
 
-  // Configure with presets
+  // Configure animation presets
   animation_manager.preset("sparkles", "default");
   animation_manager.preset("xyz_scanner", "fast");  // Try different speeds
   animation_manager.preset("blobs", "fast");
 
   // inital mode at startup
-  mode = 3; animation_manager.setCurrentAnimation(3);
+  mode = 6; animation_manager.setCurrentAnimation(6);
+
 }
 
-#define NUM_MODES 8
+#define NUM_MODES 7
 long interval, last_interval = 0;
 const long max_interval = 3000;
 void loop() {
@@ -665,6 +430,7 @@ void loop() {
       case 3: animation_manager.setCurrentAnimation(3); break;  // colorshow
       case 4: animation_manager.setCurrentAnimation(4); break;  // wandering_particles
       case 5: animation_manager.setCurrentAnimation(5); break;  // geography
+      case 6: animation_manager.setCurrentAnimation(6); break;  // orientation_demo
     }
 
     while (digitalRead(USER_BUTTON) == LOW){
@@ -701,10 +467,8 @@ void loop() {
     animation_manager.update();
     FastLED.show();
   }
-  if (mode==6){  // tv_static
-    tv_static();
-  }
-  if (mode==7){  // orientation_demo
-    orientation_demo();
+  if (mode==6){  // orientation_demo
+    animation_manager.update();
+    FastLED.show();
   }
 }

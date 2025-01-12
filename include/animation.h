@@ -58,6 +58,9 @@ public:
     virtual AnimParams getDefaultParams() const { return AnimParams(); }
     virtual AnimParams getPreset(const String& preset_name) const { return getDefaultParams(); }
 
+    static void setBrightness(uint8_t b) { global_brightness = b; }
+    static uint8_t getBrightness() { return global_brightness; }
+
 protected:
     CRGB* leds = nullptr;
     const LED_Point* points = nullptr;
@@ -65,5 +68,6 @@ protected:
     uint16_t leds_per_side = 0;
     AnimParams params;
     mutable StatusBuffer output;
+    static uint8_t global_brightness;  // 0-255 brightness for all animations
 };
 
