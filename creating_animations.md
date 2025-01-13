@@ -1,5 +1,9 @@
 # Creating Animations
 
+This short guide was made to help you create your own animations for the DodecaRGB. 
+
+The project is built in C++ and uses the Arduino framework, FastLED, and several other libraries. In general, common patterns around the stdlib are use, such as std::string, std::vector, std::map, std::unique_ptr, etc. In addition the Eigen library is used for linear algebra. PlatformIO or Cursor IDE are assumed for development.
+
 The DodecaRGB firmware can load multiple animations and switch between them. Each animation is like a small shader program - it runs every frame and updates the LED colors based where it is on the display. This happens 50+ times per second, and the addressable LEDs are updated in parallel. The animation framework provides common functionality and patterns for defining animations, handling settings, presets, playlists, color palettes, status messages, and more.
 
 The framework follows a simple pattern: `Animation` (base class) ← `YourAnimation` (implementation) ← `AnimationManager` (controls flow) with `AnimationParams` for configuration.
@@ -141,21 +145,27 @@ Common face-based pattern:
 ```cpp
 void updateFace(int face, CRGB color) {
     int start = face * leds_per_side;
-    fill_solid(&leds[start], leds_per_side, color);
+    fill_solid(leds[start], leds_per_side, color);
 }
 ```
 
 ### Status Reporting
 
-Use `getStatus()` instead of Serial prints:
+The `getStatus()` method of your animation class should return a string instead of Serial prints. Use the `output` object (see [animation.h](include/animation.h)) to build the string - it supports `printf()`, `println()`, and `print()` methods.
 
 ```cpp
 String getStatus() const override {
+    // ...
+    output.print(getAnsiColorString(bg_color));  // print the 256-color ANSI code and two spaces
+    output.printf(" Background Color: (%s)\n", getClosestColorName(bg_color).c_str());
     output.printf("Speed: %.2f\n", speed);
-    output.print(getAnsiColorString(leds[0]));
     return output.get();
 }
 ```
+
+Several animations already use this approach for helpful debugging in the terminal:
+
+![DodecaRGB Status Message](images/terminal-output.png)
 
 See the `Sparkles` and `XYZScanner` animations for more advanced examples.
 
@@ -187,21 +197,7 @@ public:
 };
 ```
 
-### Face-Based Rendering
 
-```cpp
-void renderByFace() {
-    for(int face = 0; face < num_sides; face++) {
-        // Calculate LED range for this face
-        int start = face * leds_per_side;
-        int end = start + leds_per_side;
-        
-        // Example: alternate faces between two colors
-        CRGB faceColor = (face % 2 == 0) ? CRGB::Red : CRGB::Blue;
-        fill_solid(&leds[start], leds_per_side, faceColor);
-    }
-}
-```
 
 ### Palette-Based Colors
 
@@ -267,14 +263,21 @@ for(int i = 0; i < numLeds(); i++) {
 }
 ```
 
-### Face-Based
+![DodecaRGB Linear Addressing](images/pcb-leds.png)
 
-To help navigate the geometry of the DodecaRGB, there are constants for the number of sides and the number of LEDs per side:
+### Face-Based Rendering
 
 ```cpp
-for(int face = 0; face < num_sides; face++) {
-    int start = face * leds_per_side;
-    fill_solid(&leds[start], leds_per_side, ColorFromPalette(uniquePalette, face * 16, 255));
+void renderByFace() {
+    for(int face = 0; face < num_sides; face++) {
+        // Calculate LED range for this face
+        int start = face * leds_per_side;
+        int end = start + leds_per_side;
+        
+        // Example: alternate faces between two colors
+        CRGB faceColor = (face % 2 == 0) ? CRGB::Red : CRGB::Blue;
+        fill_solid(leds[start], leds_per_side, faceColor);
+    }
 }
 ```
 
@@ -296,6 +299,8 @@ for(int i = 0; i < numLeds(); i++) {
     }
 }
 ```
+
+![DodecaRGB 3D Coordinates](images/leds-3d-space.png)
 
 ### Spherical Coordinates
 
@@ -320,4 +325,8 @@ for(int i = 0; i < numLeds(); i++) {
 }
 ```
 
-See the `Blob` animation for an example of complex orbital movement using spherical coordinates, and `XYZScanner` for cartesian coordinate scanning effects.
+It helps to imagine a sphere inscribed in the DodecaRGB, with the center of the sphere at the center of the DodecaRGB. The `points[]` array contains the 3D coordinates of each LED in this sphere.
+
+![DodecaRGB Sphere](images/dodeca-sphere.png)
+
+See the `Blob` animation for an example of orbital movement using spherical coordinates, and `XYZScanner` for cartesian coordinate scanning effects.
