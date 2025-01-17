@@ -5,7 +5,11 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 # Constants from Processing
-zv = 2 * math.pi / 20  # Processing: float zv = TWO_PI/20;
+TWO_PI = 2 * math.pi
+zv = TWO_PI/20  # Rotation between faces
+ro = TWO_PI/5   # Rotation for pentagon points
+xv = 1.1071     # angle between faces
+radius = 200    # Base radius for pentagon faces
 
 class Matrix3D:
     def __init__(self):
@@ -487,6 +491,161 @@ def test_processing_led_sequence():
     p4 = m.apply([x, y, 0])
     print(f"After hemisphere rotation: {p4}")
 
+def test_side11_sequence():
+    """Compare Side 11 (top) transformations with Processing"""
+    m = Matrix3D()
+    
+    # Test points from PCB
+    test_points = [
+        {'x': 1.49, 'y': -0.02, 'label': 1},   # LED 1
+        {'x': -26.5, 'y': 108.3, 'label': 52}, # LED 52 (showing large diff)
+        {'x': -143.6, 'y': 57.1, 'label': 104} # LED 104
+    ]
+    
+    print("\nTesting Side 11 (top) transformation sequence:")
+    print("Reference points from points.cpp:")
+    print("  LED 1:   [1.4, -0.4, -268.0]")
+    print("  LED 52:  [-26.5, 108.3, -268.0]")
+    print("  LED 104: [-143.6, 57.1, -268.0]")
+    
+    print("\nTesting each transformation step:")
+    
+    # Initial state
+    print("\nInitial points:")
+    for p in test_points:
+        print(f"  LED {p['label']}: [{p['x']}, {p['y']}, 0]")
+    
+    # After rotate_x(PI)
+    m.rotate_x(math.pi)
+    print("\nAfter rotate_x(PI):")
+    for p in test_points:
+        result = m.apply([p['x'], p['y'], 0])
+        print(f"  LED {p['label']}: {result}")
+    
+    # After rotate_z(zv)
+    m.rotate_z(TWO_PI/20)  # zv
+    print("\nAfter rotate_z(zv):")
+    for p in test_points:
+        result = m.apply([p['x'], p['y'], 0])
+        print(f"  LED {p['label']}: {result}")
+    
+    # After translate(0, 0, radius*1.34)
+    m.translate(0, 0, 200*1.34)  # radius = 200
+    print("\nAfter translate:")
+    for p in test_points:
+        result = m.apply([p['x'], p['y'], 0])
+        print(f"  LED {p['label']}: {result}")
+
+def test_middle_face_rotations():
+    """Test rotation sequence for middle faces (1-10)"""
+    m = Matrix3D()
+    test_point = [0, 100, 0]  # Point on face
+    
+    print("\nTesting middle face rotations:")
+    
+    # Test bottom half face (1-5)
+    m.rotate_x(math.pi)
+    m.rotate_z(ro*1 + zv - ro)  # Side 1
+    m.rotate_x(xv)
+    p1 = m.apply(test_point)
+    print(f"Side 1 point: {p1}")
+    
+    # Test top half face (6-10)
+    m = Matrix3D()  # Reset
+    m.rotate_x(math.pi)
+    m.rotate_z(ro*6 - zv + ro*3)  # Side 6
+    m.rotate_x(math.pi - xv)
+    p2 = m.apply(test_point)
+    print(f"Side 6 point: {p2}")
+
+def test_led_space_rotation():
+    """Test LED space rotation matches Processing"""
+    m = Matrix3D()
+    test_point = [100, 0, 0]  # Point on X axis
+    
+    print("\nTesting LED space rotation:")
+    
+    # Test PI/10 rotation
+    m.rotate_z(math.pi/10)
+    p1 = m.apply(test_point)
+    print(f"After PI/10 rotation: {p1}")
+    
+    # Test -PI/10 rotation
+    m = Matrix3D()
+    m.rotate_z(-math.pi/10)
+    p2 = m.apply(test_point)
+    print(f"After -PI/10 rotation: {p2}")
+    
+    # Test PI/5 rotation
+    m = Matrix3D()
+    m.rotate_z(math.pi/5)
+    p3 = m.apply(test_point)
+    print(f"After PI/5 rotation: {p3}")
+
+def test_complete_middle_face_sequence():
+    """Test complete transformation sequence for middle face LED"""
+    m = Matrix3D()
+    test_point = [1.49, -0.02, 0]  # First LED position
+    
+    print("\nTesting complete middle face sequence:")
+    print(f"Initial point: {test_point}")
+    
+    # Initial LED space rotation (72°)
+    m.rotate_z(-math.pi/5)
+    p1 = m.apply(test_point)
+    print(f"After LED space rotation: {p1}")
+    
+    # Initial transform for all faces
+    m.rotate_x(math.pi)
+    m.rotate_z(ro)
+    p2 = m.apply(test_point)
+    print(f"After initial transform: {p2}")
+    
+    # Side 1 positioning
+    m.rotate_z(ro*1 + zv - ro)
+    m.rotate_x(xv)
+    p3 = m.apply(test_point)
+    print(f"After side positioning: {p3}")
+    
+    # Move face out
+    m.translate(0, 0, radius*1.34)
+    p4 = m.apply(test_point)
+    print(f"Final position: {p4}")
+
+def test_side_rotation_pattern():
+    """Test how key LEDs move with different side rotations"""
+    print("\nTesting side rotation patterns:")
+    
+    # Side rotation configuration from Processing
+    side_rotation = [0, 3, 4, 4, 4, 4, 2, 2, 2, 2, 2, 0]
+    
+    # Expected LED1 positions for each rotation
+    expected_led1 = {
+        0: [1.49, -0.02],      # Original position (sides 0, 11)
+        2: [-1.193, 0.891],    # ~144° rotation (sides 6-10)
+        3: [-1.217, -0.859],   # ~216° rotation (side 1)
+        4: [0.441, -1.423]     # ~288° rotation (sides 2-5)
+    }
+    
+    # Test each side's rotation
+    for side in range(12):
+        rotation = side_rotation[side]
+        print(f"\nSide {side} (rotation {rotation}):")
+        
+        m = Matrix3D()
+        m.rotate_z(ro * rotation)
+        
+        # Transform LED1 and verify position
+        led1 = m.apply([1.49, -0.02, 0])
+        expected = expected_led1[rotation]
+        assert abs(led1[0] - expected[0]) < 0.01, f"Side {side} LED1 X mismatch"
+        assert abs(led1[1] - expected[1]) < 0.01, f"Side {side} LED1 Y mismatch"
+        
+        # Print all positions for reference
+        print(f"  LED1 (near center): {led1}")
+        print(f"  LED50 (bottom): {m.apply([0, -150, 0])}")
+        print(f"  LED63 (top): {m.apply([0, 150, 0])}")
+
 if __name__ == "__main__":
     test_basic_rotations()
     test_translations()
@@ -502,4 +661,8 @@ if __name__ == "__main__":
     test_hemisphere_transforms()
     test_side_rotations()
     test_processing_led_sequence()
+    test_middle_face_rotations()
+    test_led_space_rotation()
+    test_complete_middle_face_sequence()
+    test_side_rotation_pattern()
     print("\nAll tests passed!") 

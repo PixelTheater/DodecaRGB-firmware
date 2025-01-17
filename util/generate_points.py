@@ -1,3 +1,4 @@
+# --- Imports ---
 import math
 from test_matrix3d import Matrix3D
 import os
@@ -5,7 +6,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
-# Constants from Processing
+# --- Constants from Processing ---
 TWO_PI = 2 * math.pi
 zv = TWO_PI/20  # Rotation between faces
 ro = TWO_PI/5   # Rotation for pentagon points
@@ -42,7 +43,6 @@ class LEDPoint:
     
     def __str__(self):
         return f"Point {self.index}: [{self.x:.1f}, {self.y:.1f}, {self.z:.1f}] side={self.side} label={self.label_num}"
-
 def generate_face_points(radius: float, matrix: Matrix3D, side: int, start_index: int, rotation: int = 0):
     """Generate points for one face with given rotation (0-4)"""
     points = []
@@ -205,40 +205,34 @@ def transform_led_point(x: float, y: float, num: int, sideNumber: int):
     """Transform LED point exactly like Processing's buildLedsFromComponentPlacementCSV()"""
     m = Matrix3D()
     
-    # Initial transform
-    m.rotate_x(math.pi)
-    
-    # Side positioning from drawPentagon()
-    if sideNumber == 0:  # bottom
-        m.rotate_z(-zv - ro*2)
-    elif sideNumber > 0 and sideNumber < 6:  # bottom half
-        m.rotate_z(ro*sideNumber + zv - ro)
-        m.rotate_x(xv)
-    elif sideNumber >= 6 and sideNumber < 11:  # top half
-        m.rotate_z(ro*sideNumber - zv + ro*3)
-        m.rotate_x(math.pi - xv)
-    else:  # sideNumber == 11, top
+    if sideNumber == 0:  # TOP face
+        # Skip initial LED space rotation for Side 0
+        m.rotate_x(math.pi)  # Flip upside down
+        m.rotate_z(ro)      # Global rotation
+        m.rotate_z(-zv - ro*2)  # Side 0 positioning
+    else:
+        # Keep original sequence for other sides
+        m.rotate_z(-math.pi/5)  # Initial LED space rotation
         m.rotate_x(math.pi)
-        m.rotate_z(zv)
+        m.rotate_z(ro)
+        # ... rest of transformations
     
     # Move face out to radius
-    m.translate(0, 0, radius*1.31)
+    m.translate(0, 0, radius*1.34)
     
-    # Additional hemisphere rotation
-    if sideNumber >= 6 and sideNumber < 11:
+    # Additional hemisphere rotation BEFORE side rotation
+    if sideNumber >= 6 and sideNumber < 11:  # lower hemisphere
         m.rotate_z(zv)
-    else:
+    elif sideNumber > 0:  # upper hemisphere except Side 0
         m.rotate_z(-zv)
+    # No hemisphere rotation for Side 0
     
-    # Side rotation
+    # Apply side rotation last
     m.rotate_z(ro * side_rotation[sideNumber])
     
-    # LED-specific transforms
-    m.rotate_z(math.pi/10)
-    
-    # Final transform - negate Y and Z to match Processing's coordinate system
     result = m.apply([x, y, 0])
-    return [result[0], -result[1], -result[2]]
+    # Swap X,Y and negate Z to match points.cpp
+    return [result[1], result[0], -result[2]]
 
 def test_led_positions():
     """Test key LED positions against known-good values from points.cpp"""
@@ -476,6 +470,22 @@ def visualize_model():
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(111, projection='3d')
     
+    # Define colors for each side
+    side_colors = [
+        'red',      # Side 0 (top)
+        'orange',   # Side 1
+        'yellow',   # Side 2
+        'green',    # Side 3
+        'blue',     # Side 4
+        'purple',   # Side 5
+        'pink',     # Side 6
+        'cyan',     # Side 7
+        'magenta',  # Side 8
+        'brown',    # Side 9
+        'gray',     # Side 10
+        'black'     # Side 11 (bottom)
+    ]
+    
     # Load PCB LED positions
     pcb_points = load_pcb_points('PickAndPlace_PCB_DodecaRGB_v2_2024-11-22.csv')
     
@@ -487,21 +497,21 @@ def visualize_model():
     # Collect vertices by side for validation
     vertices_by_side = {}
     
-    # Draw all sides
-    for sideNumber in range(12):
-        # Generate pentagon vertices at origin
+    # Draw only Side 0 for now
+    for sideNumber in range(1):  # Changed from range(12)
+        # Generate pentagon vertices
         vertices = []
+        angle = ro
         for i in range(5):
-            angle = i * ro
-            x = radius * math.cos(angle)
-            y = radius * math.sin(angle)
+            x = radius * math.cos(angle * i)
+            y = radius * math.sin(angle * i)
             vertices.append([x, y, 0])
         
-        # First position the face - match Processing exactly
+        # Use exact same transformation sequence as LEDs
         m = Matrix3D()
-        
-        # Initial transform - just flip
-        m.rotate_x(math.pi)
+        m.rotate_z(-math.pi/5)  # Initial LED space rotation
+        m.rotate_x(math.pi)     # Flip upside down
+        m.rotate_z(ro)          # Global rotation
         
         # Side positioning - match drawPentagon() exactly
         if sideNumber == 0:
@@ -543,11 +553,19 @@ def visualize_model():
         # Store vertices for validation
         vertices_by_side[sideNumber] = transformed
         
-        # Draw LEDs using same transform function as point generation
+        # Draw LEDs using same transform function
         for led in pcb_points:
             world_pos = transform_led_point(led['x'], led['y'], led['num'], sideNumber)
-            ax.scatter(world_pos[0], world_pos[1], world_pos[2], 
-                      c='white', edgecolor='black', s=30, alpha=1.0)
+            
+            # Special marker for LED50 (bottom edge) for orientation
+            if led['num'] == 49:  # LED50 (0-based index)
+                ax.scatter(world_pos[0], world_pos[1], world_pos[2], 
+                          c=side_colors[sideNumber], s=100, alpha=1.0,
+                          marker='o', edgecolor='black')
+            else:
+                ax.scatter(world_pos[0], world_pos[1], world_pos[2], 
+                          c=side_colors[sideNumber], s=30, alpha=0.7,
+                          marker='o', edgecolor='black', facecolor='none')
     
     # Validate geometry
     validate_geometry(vertices_by_side)
@@ -583,5 +601,66 @@ def analyze_reference_points():
     print(f"Y: {y_min:.1f} to {y_max:.1f} (range: {y_max-y_min:.1f})")
     print(f"Z: {z_min:.1f} to {z_max:.1f} (range: {z_max-z_min:.1f})")
 
+def test_pentagon_alignment():
+    """Verify pentagon vertices align with outermost LED positions"""
+    m = Matrix3D()
+    
+    # Generate pentagon for side 0
+    vertices = []
+    for i in range(5):
+        angle = i * ro
+        x = radius * math.cos(angle)
+        y = radius * math.sin(angle)
+        vertices.append([x, y, 0])
+    
+    # Transform pentagon using same sequence as LEDs
+    m.rotate_x(math.pi)
+    m.rotate_z(-zv - ro*2)  # Side 0 positioning
+    m.translate(0, 0, radius*1.34)
+    m.rotate_z(-zv)
+    m.rotate_z(ro * side_rotation[0])
+    
+    # Load PCB points for comparison
+    pcb_points = load_pcb_points('PickAndPlace_PCB_DodecaRGB_v2_2024-11-22.csv')
+    
+    # Get outermost LED positions for side 0
+    side0_leds = []
+    for led in pcb_points:
+        pos = transform_led_point(led['x'], led['y'], led['num'], 0)
+        side0_leds.append(pos)
+    
+    print("\nTesting pentagon alignment:")
+    print("Pentagon vertices:")
+    for v in vertices:
+        transformed = m.apply(v)
+        print(f"  {transformed}")
+    
+    print("\nOutermost LED positions:")
+    # Print 5 most distant LEDs from center
+    # ... calculate and print
+
 if __name__ == "__main__":
+    print("\nRunning all tests:")
+    print("=================")
+    
+    print("\n1. Testing LED positions...")
     test_led_positions()
+    
+    print("\n2. Loading reference points...")
+    reference_points = load_reference_points()
+    
+    print("\n3. Loading PCB points...")
+    pcb_points = load_pcb_points('PickAndPlace_PCB_DodecaRGB_v2_2024-11-22.csv')
+    
+    print("\n4. Validating geometry...")
+    vertices_by_side = {}  # Will be populated during visualization
+    validate_geometry(vertices_by_side)
+    
+    print("\n5. Validating LED positions...")
+    validate_led_positions(pcb_points, reference_points)
+    
+    print("\n6. Generating visualization...")
+    visualize_model()
+    
+    print("\nAll tests completed!")
+
