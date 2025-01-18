@@ -106,25 +106,6 @@ int seed1,seed2 = 0;
 int mode = 0;
 
 
-// debugging routine to help with assembly: it lights up each side with a unique color, with the top row highlighted,
-// and the number of LEDs lit equals the side number. 
-void identify_sides(){
-  // identify each side uniquely
-  for (int s=0; s<NUM_SIDES; s++){
-    CRGB side_color = CHSV(s*255/NUM_SIDES, 255, 255); // new color for each side
-    // light N leds in the center, where N=side number
-    for (int i=0; i<=s; i++){
-      leds[s*LEDS_PER_SIDE+i] = side_color;
-    }
-    // light up the top row of LEDs
-    for (int i=62; i<71; i++){
-      if (i==63 or i==69) continue;  // skip corners due to ordering
-      leds[s*LEDS_PER_SIDE+i] = side_color;
-    }
-  }
-  fadeToBlackBy(leds, NUM_LEDS, 2);
-  FastLED.show();
-}
 
 float calculate_power_usage() {
     float unscaled_power = calculate_unscaled_power_mW(leds, NUM_LEDS);
@@ -243,7 +224,8 @@ void setup() {
 
   delay(100);
 
-  // Add animations with default settings
+  // Add animations with default settings (order defines sequence)
+  animation_manager.add("identify_sides");
   animation_manager.add("blobs");
   animation_manager.add("xyz_scanner");  
   animation_manager.add("sparkles");
@@ -257,7 +239,8 @@ void setup() {
   animation_manager.preset("xyz_scanner", "fast");  // Try different speeds
   animation_manager.preset("blobs", "fast");
 
-  animation_manager.setCurrentAnimation("blobs");
+  // set initial animation
+  animation_manager.setCurrentAnimation("identify_sides");
 
 }
 
