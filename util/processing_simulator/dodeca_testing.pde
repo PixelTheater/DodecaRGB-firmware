@@ -142,10 +142,10 @@ void drawLED(int led_num, int sideNumber) {
   translate(0, 0, 6);
   box(10, 10, 5);
   // label the led number
-  //textSize(10);
-  //textAlign(CENTER, CENTER);
-  //fill(xray ? 255 : label_color, xray ? 150 : 255);
-  //text(led_num, 0, -25, 2);  // Specify a z-axis value
+  textSize(10);
+  textAlign(CENTER, CENTER);
+  fill(xray ? 255 : label_color, xray ? 150 : 255);
+  text(led_num, 0, -25, 2);  // Specify a z-axis value
 
   // during first pass, record the calculated X,Y,Z coordinates of the model 
   // for saving later as JSON and C header files.
@@ -275,7 +275,7 @@ Table table;
 // This ensures each operation happens in the right coordinate space.
 void buildLedsFromComponentPlacementCSV(int sideNumber){
   println("load csv");
-  table = loadTable("util/PickAndPlace_PCB_DodecaRGB_v2_2024-11-22.csv", "header,tsv");
+  table = loadTable("../../data/PickAndPlace_PCB_DodecaRGB_v2_2024-11-22.csv", "header,tsv");
   println(table.getRowCount() + " total rows in table");
   float scale = 5.15;
   int led_count = 0;

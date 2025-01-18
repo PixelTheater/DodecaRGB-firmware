@@ -9,3 +9,4 @@
 **/__pycache__/
 **/.pytest_cache/
 */venv
+**/sketch.properties
