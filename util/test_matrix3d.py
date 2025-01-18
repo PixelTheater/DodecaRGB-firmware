@@ -1,385 +1,82 @@
 import math
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+from matrix3d import Matrix3D
 
-
-# Constants from Processing
+# Constants used in tests
 TWO_PI = 2 * math.pi
 zv = TWO_PI/20  # Rotation between faces
 ro = TWO_PI/5   # Rotation for pentagon points
 xv = 1.1071     # angle between faces
-radius = 200    # Base radius for pentagon faces
-
-class Matrix3D:
-    def __init__(self):
-        """Initialize matrix to identity"""
-        self.m = [[1.0, 0.0, 0.0, 0.0],
-                 [0.0, 1.0, 0.0, 0.0],
-                 [0.0, 0.0, 1.0, 0.0],
-                 [0.0, 0.0, 0.0, 1.0]]
-        self.stack = []  # Initialize matrix stack
-    
-    def apply(self, point):
-        """Apply transformation to point [x,y,z]"""
-        x, y, z = point
-        w = 1.0  # Homogeneous coordinate
-        
-        # Full matrix multiplication including translation
-        new_x = x*self.m[0][0] + y*self.m[0][1] + z*self.m[0][2] + w*self.m[0][3]
-        new_y = x*self.m[1][0] + y*self.m[1][1] + z*self.m[1][2] + w*self.m[1][3]
-        new_z = x*self.m[2][0] + y*self.m[2][1] + z*self.m[2][2] + w*self.m[2][3]
-        # w = x*self.m[3][0] + y*self.m[3][1] + z*self.m[3][2] + w*self.m[3][3]  # Should stay 1
-        
-        return [new_x, new_y, new_z]
-
-    def rotate_x(self, angle: float):
-        """Rotate around X axis by angle (radians)"""
-        c = math.cos(angle)
-        s = math.sin(angle)
-        rot = [[1,  0,   0, 0],
-               [0,  c,  -s, 0],
-               [0,  s,   c, 0],
-               [0,  0,   0, 1]]
-        self.m = self._multiply_matrices(self.m, rot)
-
-    def rotate_z(self, angle: float):
-        """Rotate around Z axis by angle (radians)"""
-        c = math.cos(angle)
-        s = math.sin(angle)
-        rot = [[ c, -s, 0, 0],
-               [ s,  c, 0, 0],
-               [ 0,  0, 1, 0],
-               [ 0,  0, 0, 1]]
-        # New transformations multiply the previous ones (Processing style)
-        self.m = self._multiply_matrices(self.m, rot)
-
-    def _multiply_matrices(self, a, b):
-        """Multiply two 4x4 matrices"""
-        result = [[0 for _ in range(4)] for _ in range(4)]
-        for i in range(4):
-            for j in range(4):
-                for k in range(4):
-                    result[i][j] += a[i][k] * b[k][j]
-        return result
-
-    def translate(self, x: float, y: float, z: float):
-        """Translate by (x,y,z)"""
-        trans = [[1, 0, 0, x],
-                 [0, 1, 0, y],
-                 [0, 0, 1, z],
-                 [0, 0, 0, 1]]
-        # New transformations multiply the previous ones (Processing style)
-        self.m = self._multiply_matrices(self.m, trans)
-
-    def push_matrix(self):
-        """Save current matrix state"""
-        # Deep copy current matrix
-        self.stack.append([row[:] for row in self.m])
-
-    def pop_matrix(self):
-        """Restore previous matrix state"""
-        if not self.stack:
-            raise Exception("Matrix stack is empty")
-        self.m = self.stack.pop()
-
-def test_basic_rotations():
-    """Test basic rotation matrices"""
-    print("\nTesting basic rotations...")
-    
-    # Test rotateX(PI/2)
-    m = Matrix3D()
-    m.rotate_x(math.pi/2)  # 90 degrees
-    print("\nTesting rotateX(PI/2)...")
-    
-    # Test basis vectors
-    result = m.apply([1, 0, 0])  # X basis
-    print(f"X basis: {result}")
-    assert np.allclose(result, [1,0,0]), "X basis wrong after rotateX(PI/2)"
-    
-    result = m.apply([0, 1, 0])  # Y basis
-    print(f"Y basis: {result}")
-    assert np.allclose(result, [0,0,1]), "Y basis wrong after rotateX(PI/2)"
-    
-    result = m.apply([0, 0, 1])  # Z basis
-    print(f"Z basis: {result}")
-    assert np.allclose(result, [0,-1,0]), "Z basis wrong after rotateX(PI/2)"
-
-def test_translations():
-    """Test that translations match Processing's behavior"""
-    print("\nTesting translations...")
-    m = Matrix3D()
-    
-    # Test single axis translations
-    print("\nTesting single axis translations...")
-    m.translate(1, 0, 0)
-    result = m.apply([0,0,0])
-    print(f"After translate(1,0,0): {result}")
-    assert np.allclose(result, [1,0,0]), "X translation wrong"
-    
-    m.m = [[1.0, 0.0, 0.0, 0.0],  # Reset to identity
-           [0.0, 1.0, 0.0, 0.0],
-           [0.0, 0.0, 1.0, 0.0],
-           [0.0, 0.0, 0.0, 1.0]]
-    m.translate(0, 1, 0)
-    result = m.apply([0,0,0])
-    print(f"After translate(0,1,0): {result}")
-    assert np.allclose(result, [0,1,0]), "Y translation wrong"
-    
-    m.m = [[1.0, 0.0, 0.0, 0.0],  # Reset to identity
-           [0.0, 1.0, 0.0, 0.0],
-           [0.0, 0.0, 1.0, 0.0],
-           [0.0, 0.0, 0.0, 1.0]]
-    m.translate(0, 0, 1)
-    result = m.apply([0,0,0])
-    print(f"After translate(0,0,1): {result}")
-    assert np.allclose(result, [0,0,1]), "Z translation wrong"
-    
-    # Test compound translation
-    print("\nTesting compound translation...")
-    m.m = [[1.0, 0.0, 0.0, 0.0],  # Reset to identity
-           [0.0, 1.0, 0.0, 0.0],
-           [0.0, 0.0, 1.0, 0.0],
-           [0.0, 0.0, 0.0, 1.0]]
-    m.translate(1, 2, 3)
-    result = m.apply([0,0,0])
-    print(f"After translate(1,2,3): {result}")
-    assert np.allclose(result, [1,2,3]), "Compound translation wrong"
-    
-    print("All translation tests passed!")
-
-def test_matrix_stack():
-    """Test matrix stack operations"""
-    print("\nTesting matrix stack...")
-    m = Matrix3D()
-    
-    # Test basic push/pop
-    m.translate(1, 2, 3)
-    result = m.apply([0, 0, 0])
-    print(f"After translate: {result}")
-    assert np.allclose(result, [1,2,3]), "Translation wrong"
-    
-    m.push_matrix()
-    m.m = [[1,0,0,0], [0,1,0,0], [0,0,1,0], [0,0,0,1]]  # Reset to identity
-    result = m.apply([0, 0, 0])
-    print(f"After pop: {result}")
-    assert np.allclose(result, [0,0,0]), "Matrix reset wrong"
-    
-    # Testing nested push/pop
-    m = Matrix3D()  # Start fresh
-    m.translate(1, 0, 0)
-    m.push_matrix()
-    m.rotate_x(math.pi/2)
-    result = m.apply([0, 0, 1])
-    print(f"After translate + rotate: {result}")
-    assert np.allclose(result, [1,-1,0]), "Nested transformation wrong"
-    
-    print("All matrix stack tests passed!")
-
-def test_dodeca_transforms():
-    """Test the dodecahedron transformation sequence"""
-    m = Matrix3D()
-    
-    # Test initial transform - Processing style
-    m.translate(400, 400, 0)  # First move to center
-    m.rotate_x(math.pi)       # Then flip upside down
-    result = m.apply([0, 0, 0])
-    print("\nTesting initial transform...")
-    print(f"Center point after initial: {result}")
-    assert np.allclose(result, [400,400,0]), "Center translation wrong"
-    
-    # Test first face rotation
-    print("\nTesting first face rotation...")
-    m.rotate_z(zv)  # zv = TWO_PI/20
-    result = m.apply([100,0,0])  # Point on +X axis
-    print(f"Point after first rotation: {result}")
-    
-    # Test multiple face rotations
-    print("\nTesting multiple face rotations...")
-    for i in range(5):  # Test 5 faces
-        m.push_matrix()
-        m.rotate_z(i * zv)
-        result = m.apply([100,0,0])
-        print(f"Face {i} point: {result}")
-        m.pop_matrix()
-    
-    print("All dodecahedron transforms passed!")
-
-def test_translate_after_rotate():
-    """Test that translation after rotation works correctly"""
-    print("\nTesting translation after rotation...")
-    m = Matrix3D()
-    
-    # Test 1: Rotate then translate
-    m.rotate_z(math.pi/2)  # 90 degrees
-    m.translate(0, 0, 100)
-    result = m.apply([10, 0, 0])
-    print(f"Point after rotate(90°) then translate(z=100): {result}")
-    # Should be: [0, 10, 100] - the point is rotated THEN moved up
-    assert np.allclose(result, [0, 10, 100]), "Translation after rotation wrong"
-    
-    # Test 2: Translate then rotate (different order)
-    m = Matrix3D()
-    m.translate(0, 0, 100)
-    m.rotate_z(math.pi/2)
-    result = m.apply([10, 0, 0])
-    print(f"Point after translate(z=100) then rotate(90°): {result}")
-    # Should be different from Test 1
-    assert np.allclose(result, [0, 10, 100]), "Translation before rotation wrong"
-    
-    print("Translation after rotation tests passed!")
-
-def test_matrix_multiplication():
-    """Test matrix multiplication order"""
-    print("\nTesting matrix multiplication...")
-    m = Matrix3D()
-    
-    # Print the initial matrix
-    print("\nInitial matrix:")
-    for row in m.m:
-        print(row)
-    
-    # Apply translation
-    m.translate(0, 0, 100)
-    print("\nAfter translate(0,0,100):")
-    for row in m.m:
-        print(row)
-    
-    # Apply rotation
-    m.rotate_z(math.pi/2)
-    print("\nAfter rotateZ(90°):")
-    for row in m.m:
-        print(row)
-    
-    # Test a point
-    result = m.apply([10, 0, 0])
-    print(f"\nTransformed point [10,0,0]: {result}")
-
-def test_push_pop():
-    """Test matrix stack operations"""
-    print("\nTesting push/pop matrix...")
-    m = Matrix3D()
-    
-    # Save initial state
-    m.push_matrix()
-    initial = m.apply([10, 0, 0])
-    
-    # Do some transforms
-    m.translate(0, 0, 100)
-    m.rotate_z(math.pi/2)
-    transformed = m.apply([10, 0, 0])
-    
-    # Restore and verify
-    m.pop_matrix()
-    restored = m.apply([10, 0, 0])
-    
-    print(f"Initial point: {initial}")
-    print(f"Transformed point: {transformed}")
-    print(f"Restored point: {restored}")
-    assert np.allclose(initial, restored), "Matrix not properly restored"
-
-def test_translation():
-    """Test that translation works correctly"""
-    print("\nTesting translation...")
-    m = Matrix3D()
-    
-    # Test 1: Basic translations along each axis
-    m.translate(10, 0, 0)
-    result = m.apply([0, 0, 0])
-    assert result == [10, 0, 0], f"X translation wrong: got {result}"
-    
-    m = Matrix3D()
-    m.translate(0, 20, 0)
-    result = m.apply([0, 0, 0])
-    assert result == [0, 20, 0], f"Y translation wrong: got {result}"
-    
-    m = Matrix3D()
-    m.translate(0, 0, 30)
-    result = m.apply([0, 0, 0])
-    assert result == [0, 0, 30], f"Z translation wrong: got {result}"
-    
-    # Test 2: Combined translation
-    m = Matrix3D()
-    m.translate(10, 20, 30)
-    result = m.apply([0, 0, 0])
-    assert result == [10, 20, 30], f"Combined translation wrong: got {result}"
-    
-    # Test 3: Translation of non-origin point
-    result = m.apply([5, 5, 5])
-    assert result == [15, 25, 35], f"Point translation wrong: got {result}"
-    
-    # Test 4: Translation after rotation
-    m = Matrix3D()
-    m.rotate_z(math.pi/2)  # 90 degrees around Z
-    m.translate(10, 0, 0)  # Translate along rotated X axis
-    result = m.apply([1, 0, 0])
-    assert abs(result[0] - 0) < 0.001, f"X coord wrong after rotate+translate: {result}"
-    assert abs(result[1] - 11) < 0.001, f"Y coord wrong after rotate+translate: {result}"
-    assert abs(result[2] - 0) < 0.001, f"Z coord wrong after rotate+translate: {result}"
-    
-    # Test 5: Translation along rotated axes
-    m = Matrix3D()
-    m.rotate_x(math.pi/4)  # 45° around X
-    m.translate(0, 0, 10)  # Along rotated Z
-    result = m.apply([0, 0, 0])
-    expected = [0, -10/math.sqrt(2), 10/math.sqrt(2)]  # Changed: Y component should be negative
-    for i in range(3):
-        assert abs(result[i] - expected[i]) < 0.001, \
-            f"Translation along rotated Z wrong: got {result}, expected {expected}"
-    
-    # Test 6: Multiple rotations then translate
-    print("\nTesting multiple rotations then translate...")
-    m = Matrix3D()
-    
-    print("Initial matrix:")
-    print_matrix(m.m)
-    
-    m.rotate_z(math.pi/2)  # 90° around Z
-    print("\nAfter rotateZ(PI/2):")
-    print_matrix(m.m)
-    
-    m.rotate_x(math.pi/2)  # 90° around X
-    print("\nAfter rotateX(PI/2):")
-    print_matrix(m.m)
-    
-    m.translate(0, 0, 10)  # Along transformed Z (which is now X)
-    print("\nAfter translate(0,0,10):")
-    print_matrix(m.m)
-    
-    # Test points from Processing output
-    test_points = [
-        [0, 0, 0],  # Origin
-        [1, 0, 0],  # Unit X
-        [0, 1, 0],  # Unit Y
-        [0, 0, 1]   # Unit Z
-    ]
-    
-    print("\nTransformed points:")
-    for p in test_points:
-        result = m.apply(p)
-        print(f"Point ({p[0]:.1f},{p[1]:.1f},{p[2]:.1f}) -> ({result[0]:.1f},{result[1]:.1f},{result[2]:.1f})")
-        
-    # Test specific point (origin)
-    result = m.apply([0, 0, 0])
-    assert abs(result[0] - 10) < 0.001, "X should be 10"
-    assert abs(result[1] - 0) < 0.001, "Y should be 0"
-    assert abs(result[2] - 0) < 0.001, "Z should be 0"
+radius = 100    # Base radius for pentagon faces (matches Processing)
 
 def print_matrix(m):
     """Print matrix in same format as Processing"""
     for i in range(4):
         print(f"[ {' '.join(f'{m[i][j]:.2f}' for j in range(4))} ]")
 
-def test_rotate_x_matches_processing():
-    """Verify rotate_x(PI) matches Processing's behavior"""
-    m = Matrix3D()
-    m.rotate_x(math.pi)
+def print_test_section(name):
+    """Print a consistently formatted test section header"""
+    print(f"\n=== {name} ===")
+
+def format_vector(v, precision=3):
+    """Format a vector with consistent precision"""
+    return f"[{', '.join(f'{x:.{precision}f}' for x in v)}]"
+
+def test_basic_rotations():
+    """Test basic rotation matrices"""
+    print("Testing basic rotations...")
     
-    # Test point at y=1, z=1
-    result = m.apply([0, 1, 1])
-    print("\nTesting rotate_x(PI):")
-    print(f"Point [0,1,1] becomes: {result}")
-    # Should flip both Y and Z coordinates
+    m = Matrix3D()
+    m.rotate_x(math.pi/2)  # 90 degrees
+    
+    # Test basis vectors
+    result = m.apply([1, 0, 0])
+    print(f"  X basis: {format_vector(result)}")
+    assert np.allclose(result, [1,0,0]), "X basis wrong after rotateX(PI/2)"
+    
+    result = m.apply([0, 1, 0])
+    print(f"  Y basis: {format_vector(result)}")
+    assert np.allclose(result, [0,0,1]), "Y basis wrong after rotateX(PI/2)"
+    
+    result = m.apply([0, 0, 1])
+    print(f"  Z basis: {format_vector(result)}")
+    assert np.allclose(result, [0,-1,0]), "Z basis wrong after rotateX(PI/2)"
+
+def test_translations():
+    """Test that translations match Processing's behavior"""
+    print_test_section("Testing translations...")
+    m = Matrix3D()
+    
+    # Test single axis translations
+    m.translate(1, 0, 0)
+    result = m.apply([0,0,0])
+    assert np.allclose(result, [1,0,0]), "X translation wrong"
+    
+    m = Matrix3D()
+    m.translate(0, 1, 0)
+    result = m.apply([0,0,0])
+    assert np.allclose(result, [0,1,0]), "Y translation wrong"
+    
+    m = Matrix3D()
+    m.translate(0, 0, 1)
+    result = m.apply([0,0,0])
+    assert np.allclose(result, [0,0,1]), "Z translation wrong"
+
+def test_matrix_stack():
+    """Test matrix stack operations"""
+    print_test_section("Testing matrix stack...")
+    m = Matrix3D()
+    
+    # Test basic push/pop
+    m.translate(1, 2, 3)
+    m.push_matrix()
+    original = m.apply([0, 0, 0])
+    
+    m.m = [[1,0,0,0], [0,1,0,0], [0,0,1,0], [0,0,0,1]]  # Reset
+    m.pop_matrix()
+    restored = m.apply([0, 0, 0])
+    
+    assert np.allclose(original, restored), "Matrix stack restore failed"
 
 def test_processing_coordinate_system():
     """Verify our coordinate system matches Processing's"""
@@ -396,7 +93,7 @@ def test_processing_coordinate_system():
     for p in points:
         result = m.apply(p['input'])
         print(f"Point {p['input']} -> {result}")
-        print(f"Expected:  {p['expected']}")
+        assert np.allclose(result, p['expected']), f"Expected {p['expected']}, got {result}"
 
 def test_processing_transforms():
     """Match Processing's test_transforms.pde behavior exactly"""
@@ -417,17 +114,97 @@ def test_processing_transforms():
     m.rotate_x(math.pi/4)  # 45° around X
     m.translate(0, 0, 10)  # Translate along rotated Z
     
-    print("\nAfter rotateX(PI/4) and translate(0,0,10):")
-    x = m.apply([1, 0, 0])
-    y = m.apply([0, 1, 0])
-    z = m.apply([0, 0, 1])
-    print(f"X: {x}")
-    print(f"Y: {y}")
-    print(f"Z: {z}")
-    
-    # Test origin
     result = m.apply([0, 0, 0])
-    print(f"\nPoint (0,0,0) transformed to: {result}")
+    expected = [0, -10/math.sqrt(2), 10/math.sqrt(2)]
+    assert np.allclose(result, expected), f"Expected {expected}, got {result}"
+
+def test_led_coordinate_adjustment():
+    """Test the initial LED coordinate adjustments"""
+    print_test_section("Testing LED coordinate adjustments...")
+    x, y = 1.49, -0.02
+    
+    # Apply adjustments
+    x += 0.2
+    y -= 55.884
+    
+    print(f"Original: [{1.49}, {-0.02}]")
+    print(f"Adjusted: [{x}, {y}]")
+    
+    assert np.isclose(x, 1.69)
+    assert np.isclose(y, -55.904)
+
+def test_led_rotation():
+    """Test the LED rotation by PI/10"""
+    print_test_section("Testing LED rotation...")
+    m = Matrix3D()
+    
+    # Initial point
+    x, y = 1.69, -55.904
+    print(f"Before rotation: [{x}, {y}]")
+    
+    # Apply rotation
+    m.rotate_z(math.pi/10)
+    result = m.apply([x, y, 0])
+    print(f"After rotation: [{result[0]:.1f}, {result[1]:.1f}, {result[2]:.1f}]")
+
+def test_dodeca_transforms():
+    """Test the dodecahedron transformation sequence"""
+    m = Matrix3D()
+    
+    # Test initial transform - Processing style
+    m.translate(400, 400, 0)  # First move to center
+    m.rotate_x(math.pi)       # Then flip upside down
+    result = m.apply([0, 0, 0])
+    assert np.allclose(result, [400,400,0]), "Center translation wrong"
+    
+    # Test first face rotation
+    m.rotate_z(zv)  # zv = TWO_PI/20
+    result = m.apply([100,0,0])  # Point on +X axis
+    print(f"Point after first rotation: {result}")
+
+def test_translate_after_rotate():
+    """Test that translation after rotation works correctly"""
+    print_test_section("Testing translation after rotation...")
+    m = Matrix3D()
+    
+    # Test 1: Rotate then translate
+    m.rotate_z(math.pi/2)  # 90 degrees
+    m.translate(0, 0, 100)
+    result = m.apply([10, 0, 0])
+    print(f"Point after rotate(90°) then translate(z=100): {result}")
+    assert np.allclose(result, [0, 10, 100]), "Translation after rotation wrong"
+    
+    # Test 2: Translate then rotate (different order)
+    m = Matrix3D()
+    m.translate(0, 0, 100)
+    m.rotate_z(math.pi/2)
+    result = m.apply([10, 0, 0])
+    print(f"Point after translate(z=100) then rotate(90°): {result}")
+    assert np.allclose(result, [0, 10, 100]), "Translation before rotation wrong"
+
+def test_matrix_multiplication():
+    """Test matrix multiplication order"""
+    print_test_section("Testing matrix multiplication...")
+    m = Matrix3D()
+    
+    # Print the initial matrix
+    print("\nInitial matrix:")
+    print_matrix(m.m)
+    
+    # Apply translation
+    m.translate(0, 0, 100)
+    print("\nAfter translate(0,0,100):")
+    print_matrix(m.m)
+    
+    # Apply rotation
+    m.rotate_z(math.pi/2)
+    print("\nAfter rotateZ(90°):")
+    print_matrix(m.m)
+    
+    # Test a point
+    result = m.apply([10, 0, 0])
+    print(f"\nTransformed point [10,0,0]: {result}")
+    assert np.allclose(result, [0, 10, 100]), "Matrix multiplication order wrong"
 
 def test_hemisphere_transforms():
     """Test how transforms affect points in top vs bottom hemispheres"""
@@ -439,8 +216,13 @@ def test_hemisphere_transforms():
     top_point = [0, 0, -200]    # Point on top hemisphere
     
     print("\nTesting hemisphere transforms:")
-    print(f"Bottom point {bottom_point} -> {m.apply(bottom_point)}")
-    print(f"Top point    {top_point} -> {m.apply(top_point)}")
+    bottom_result = m.apply(bottom_point)
+    top_result = m.apply(top_point)
+    print(f"Bottom point {bottom_point} -> {bottom_result}")
+    print(f"Top point    {top_point} -> {top_result}")
+    
+    assert np.allclose(bottom_result[2], -200), "Bottom hemisphere Z wrong"
+    assert np.allclose(top_result[2], 200), "Top hemisphere Z wrong"
 
 def test_side_rotations():
     """Test how side rotations affect Y coordinates"""
@@ -448,173 +230,21 @@ def test_side_rotations():
     m.rotate_x(math.pi)
     
     # Test points at different Y positions
-    points = [
-        [0, 100, 0],   # Positive Y
-        [0, -100, 0],  # Negative Y
+    test_points = [
+        {'input': [0, 100, 0], 'expected': [0, -100, 0]},   # Positive Y should flip
+        {'input': [0, -100, 0], 'expected': [0, 100, 0]},   # Negative Y should flip
     ]
     
     print("\nTesting side rotations:")
-    for p in points:
-        result = m.apply(p)
-        print(f"Point {p} -> {result}")
-
-def test_processing_led_sequence():
-    """Test exact sequence from buildLedsFromComponentPlacementCSV()"""
-    m = Matrix3D()
-    
-    # Constants from Processing
-    TWO_PI = 2 * math.pi
-    zv = TWO_PI/20  # Rotation between faces
-    ro = TWO_PI/5   # Rotation for pentagon points
-    radius = 200    # Base radius for pentagon faces
-    
-    # Initial state
-    x, y = 1.49, -0.02  # First LED coordinates
-    
-    print("\nTesting Processing LED sequence:")
-    print(f"Initial point: [{x}, {y}, 0]")
-    
-    # Test sequence from drawPentagon() for side 0 (bottom)
-    m.rotate_x(math.pi)  # Initial flip
-    p1 = m.apply([x, y, 0])
-    print(f"After rotate_x(PI): {p1}")
-    
-    m.rotate_z(-zv - ro*2)  # Side 0 positioning
-    p2 = m.apply([x, y, 0])
-    print(f"After side rotation: {p2}")
-    
-    m.translate(0, 0, radius*1.31)  # Move face out
-    p3 = m.apply([x, y, 0])
-    print(f"After translate: {p3}")
-    
-    m.rotate_z(-zv)  # Additional hemisphere rotation
-    p4 = m.apply([x, y, 0])
-    print(f"After hemisphere rotation: {p4}")
-
-def test_side11_sequence():
-    """Compare Side 11 (top) transformations with Processing"""
-    m = Matrix3D()
-    
-    # Test points from PCB
-    test_points = [
-        {'x': 1.49, 'y': -0.02, 'label': 1},   # LED 1
-        {'x': -26.5, 'y': 108.3, 'label': 52}, # LED 52 (showing large diff)
-        {'x': -143.6, 'y': 57.1, 'label': 104} # LED 104
-    ]
-    
-    print("\nTesting Side 11 (top) transformation sequence:")
-    print("Reference points from points.cpp:")
-    print("  LED 1:   [1.4, -0.4, -268.0]")
-    print("  LED 52:  [-26.5, 108.3, -268.0]")
-    print("  LED 104: [-143.6, 57.1, -268.0]")
-    
-    print("\nTesting each transformation step:")
-    
-    # Initial state
-    print("\nInitial points:")
     for p in test_points:
-        print(f"  LED {p['label']}: [{p['x']}, {p['y']}, 0]")
-    
-    # After rotate_x(PI)
-    m.rotate_x(math.pi)
-    print("\nAfter rotate_x(PI):")
-    for p in test_points:
-        result = m.apply([p['x'], p['y'], 0])
-        print(f"  LED {p['label']}: {result}")
-    
-    # After rotate_z(zv)
-    m.rotate_z(TWO_PI/20)  # zv
-    print("\nAfter rotate_z(zv):")
-    for p in test_points:
-        result = m.apply([p['x'], p['y'], 0])
-        print(f"  LED {p['label']}: {result}")
-    
-    # After translate(0, 0, radius*1.34)
-    m.translate(0, 0, 200*1.34)  # radius = 200
-    print("\nAfter translate:")
-    for p in test_points:
-        result = m.apply([p['x'], p['y'], 0])
-        print(f"  LED {p['label']}: {result}")
-
-def test_middle_face_rotations():
-    """Test rotation sequence for middle faces (1-10)"""
-    m = Matrix3D()
-    test_point = [0, 100, 0]  # Point on face
-    
-    print("\nTesting middle face rotations:")
-    
-    # Test bottom half face (1-5)
-    m.rotate_x(math.pi)
-    m.rotate_z(ro*1 + zv - ro)  # Side 1
-    m.rotate_x(xv)
-    p1 = m.apply(test_point)
-    print(f"Side 1 point: {p1}")
-    
-    # Test top half face (6-10)
-    m = Matrix3D()  # Reset
-    m.rotate_x(math.pi)
-    m.rotate_z(ro*6 - zv + ro*3)  # Side 6
-    m.rotate_x(math.pi - xv)
-    p2 = m.apply(test_point)
-    print(f"Side 6 point: {p2}")
-
-def test_led_space_rotation():
-    """Test LED space rotation matches Processing"""
-    m = Matrix3D()
-    test_point = [100, 0, 0]  # Point on X axis
-    
-    print("\nTesting LED space rotation:")
-    
-    # Test PI/10 rotation
-    m.rotate_z(math.pi/10)
-    p1 = m.apply(test_point)
-    print(f"After PI/10 rotation: {p1}")
-    
-    # Test -PI/10 rotation
-    m = Matrix3D()
-    m.rotate_z(-math.pi/10)
-    p2 = m.apply(test_point)
-    print(f"After -PI/10 rotation: {p2}")
-    
-    # Test PI/5 rotation
-    m = Matrix3D()
-    m.rotate_z(math.pi/5)
-    p3 = m.apply(test_point)
-    print(f"After PI/5 rotation: {p3}")
-
-def test_complete_middle_face_sequence():
-    """Test complete transformation sequence for middle face LED"""
-    m = Matrix3D()
-    test_point = [1.49, -0.02, 0]  # First LED position
-    
-    print("\nTesting complete middle face sequence:")
-    print(f"Initial point: {test_point}")
-    
-    # Initial LED space rotation (72°)
-    m.rotate_z(-math.pi/5)
-    p1 = m.apply(test_point)
-    print(f"After LED space rotation: {p1}")
-    
-    # Initial transform for all faces
-    m.rotate_x(math.pi)
-    m.rotate_z(ro)
-    p2 = m.apply(test_point)
-    print(f"After initial transform: {p2}")
-    
-    # Side 1 positioning
-    m.rotate_z(ro*1 + zv - ro)
-    m.rotate_x(xv)
-    p3 = m.apply(test_point)
-    print(f"After side positioning: {p3}")
-    
-    # Move face out
-    m.translate(0, 0, radius*1.34)
-    p4 = m.apply(test_point)
-    print(f"Final position: {p4}")
+        result = m.apply(p['input'])
+        print(f"Point {p['input']} -> {result}")
+        assert np.allclose(result, p['expected'], atol=1e-10), \
+            f"Expected {p['expected']}, got {result}"
 
 def test_side_rotation_pattern():
     """Test how key LEDs move with different side rotations"""
-    print("\nTesting side rotation patterns:")
+    print_test_section("Testing side rotation patterns:")
     
     # Side rotation configuration from Processing
     side_rotation = [0, 3, 4, 4, 4, 4, 2, 2, 2, 2, 2, 0]
@@ -627,7 +257,6 @@ def test_side_rotation_pattern():
         4: [0.441, -1.423]     # ~288° rotation (sides 2-5)
     }
     
-    # Test each side's rotation
     for side in range(12):
         rotation = side_rotation[side]
         print(f"\nSide {side} (rotation {rotation}):")
@@ -640,29 +269,226 @@ def test_side_rotation_pattern():
         expected = expected_led1[rotation]
         assert abs(led1[0] - expected[0]) < 0.01, f"Side {side} LED1 X mismatch"
         assert abs(led1[1] - expected[1]) < 0.01, f"Side {side} LED1 Y mismatch"
-        
-        # Print all positions for reference
-        print(f"  LED1 (near center): {led1}")
-        print(f"  LED50 (bottom): {m.apply([0, -150, 0])}")
-        print(f"  LED63 (top): {m.apply([0, 150, 0])}")
+
+
+def test_middle_face_rotations():
+    """Test rotation sequence for middle faces (1-10)"""
+    m = Matrix3D()
+    test_point = [0, 100, 0]  # Point on face
+    
+    print("\nTesting middle face rotations:")
+    
+    # Test bottom half face (1-5)
+    m.rotate_x(math.pi)
+    m.rotate_z(ro*1 + zv - ro)  # Side 1
+    m.rotate_x(xv)
+    result = m.apply(test_point)
+    expected = [-13.821, -42.537, -89.441]  # Values from Processing
+    assert np.allclose(result, expected, atol=0.001), \
+        f"Bottom half face wrong. Expected {expected}, got {result}"
+    
+    # Test top half face (6-10)
+    m = Matrix3D()
+    m.rotate_x(math.pi)
+    m.rotate_z(ro*6 - zv + ro*3)  # Side 6
+    m.rotate_x(math.pi - xv)
+    result = m.apply(test_point)
+    expected = [-44.726, 0.000, -89.441]  # From Processing
+    assert np.allclose(result, expected, atol=0.001), \
+        f"Top half face wrong. Expected {expected}, got {result}"
+
+def test_led_space_rotation():
+    """Test LED space rotation matches Processing"""
+    m = Matrix3D()
+    test_point = [100, 0, 0]  # Point on X axis
+    
+    print("\nTesting LED space rotation:")
+    
+    # Test PI/10 rotation
+    m.rotate_z(math.pi/10)
+    result = m.apply(test_point)
+    expected = [95.11, 30.90, 0]  # From Processing
+    assert np.allclose(result, expected, atol=0.1), \
+        f"PI/10 rotation wrong. Expected {expected}, got {result}"
+
+def test_complete_middle_face_sequence():
+    """Test complete transformation sequence for middle face LED"""
+    m = Matrix3D()
+    test_point = [1.49, -0.02, 0]  # First LED position
+    
+    print("\nTesting complete middle face sequence:")
+    
+    # Initial LED space rotation (-72°)
+    m.rotate_z(-math.pi/5)  # -72° = -PI/2.5 = -PI/5
+    result = m.apply(test_point)
+    result = format_point(result)
+    print(f"After LED space rotation: {result}")
+    expected = [1.194, -0.892, 0.000]  # From Processing
+    assert np.allclose(result, expected, atol=0.001), \
+        f"LED space rotation wrong. Expected {expected}, got {result}"
+    
+    # Complete sequence
+    m = Matrix3D()
+    m.rotate_x(math.pi)
+    m.rotate_z(ro)
+    m.rotate_z(ro*1 + zv - ro)
+    m.rotate_x(xv)
+    m.translate(0, 0, radius*1.34)
+    
+    result = m.apply(test_point)
+    result = format_point(result)
+    print(f"After complete sequence: {result}")
+    expected = [119.859, -1.490, -59.915]  # From Processing
+    assert np.allclose(result, expected, atol=0.001), \
+        f"Complete sequence wrong. Expected {expected}, got {result}"
+
+def test_led_translation():
+    """Test the LED translation with scale"""
+    print_test_section("Testing LED translation...")
+    m = Matrix3D()
+    scale = 5.15
+    x, y = 1.69, -55.904
+    
+    print(f"Before translation: [{x}, {y}]")
+    m.translate(x*scale, y*scale, 0)
+    result = m.apply([0, 0, 0])
+    print(f"After translation: [{result[0]:.1f}, {result[1]:.1f}, {result[2]:.1f}]")
+    
+    expected = [x*scale, y*scale, 0]
+    assert np.allclose(result, expected, atol=0.1), \
+        f"LED translation wrong. Expected {expected}, got {result}"
+
+def test_side1_led_sequence():
+    """Test the complete transformation sequence for Side 1"""
+    print_test_section("Testing Side 1 LED sequence...")
+    
+    # Initial LED position
+    x, y = 1.49, -0.02
+    point = [x, y, 0]
+    print(f"Initial point: {point}")
+    
+    # 1. LED space rotation (PI/10)
+    m = Matrix3D()
+    m.rotate_z(math.pi/10)
+    result = m.apply(point)
+    result = format_point(result)
+    print(f"After LED space rotation: {result}")
+    expected = [1.423, 0.441, 0.000]  # From Processing
+    assert np.allclose(result, expected, atol=0.001), \
+        f"LED space rotation wrong. Expected {expected}, got {result}"
+    
+    # 2. Initial transform
+    m = Matrix3D()
+    m.rotate_x(math.pi)  # Flip upside down
+    m.rotate_z(-3 * ro)  # Side 1 rotation
+    result = m.apply(point)
+    result = format_point(result)
+    print(f"After initial transform: {result}")
+    expected = [-1.194, -0.892, 0.000]  # From Processing
+    assert np.allclose(result, expected, atol=0.001), \
+        f"Initial transform wrong. Expected {expected}, got {result}"
+    
+    # 3. Side positioning
+    m = Matrix3D()
+    m.rotate_x(math.pi)  # Flip upside down
+    m.rotate_z(zv)      # Side 1 positioning (zv = TWO_PI/20)
+    m.rotate_x(xv)      # Side tilt
+    result = m.apply(point)
+    result = format_point(result)
+    print(f"After side positioning: {result}")
+    expected = [1.420, -0.452, 0.018]  # From Processing
+    assert np.allclose(result, expected, atol=0.001), \
+        f"Side positioning wrong. Expected {expected}, got {result}"
+
+def is_close_to_zero(value, atol=1e-10):
+    """Helper to check if a value is effectively zero"""
+    return abs(value) < atol
+
+def format_point(point):
+    """Format a point with consistent precision, treating near-zero values as 0"""
+    return [0.0 if is_close_to_zero(x) else round(x, 3) for x in point]
+
+def test_all_side_transforms():
+    """Test transformation sequences for all side types (top, middle, bottom)"""
+    print_test_section("Testing all side transforms")
+    test_point = [1.49, -0.02, 0]  # LED 1 position
+    
+    # Test top face (side 0)
+    m = Matrix3D()
+    m.rotate_x(math.pi)
+    m.rotate_z(ro*0)  # No extra rotation
+    result = m.apply(test_point)
+    result = format_point(result)
+    print(f"Side 0 (top): {result}")
+    expected = [1.490, 0.020, 0.000]  # From Processing
+    assert np.allclose(result, expected, atol=0.001), \
+        f"Top face wrong. Expected {expected}, got {result}"
+    
+    # Test middle face (side 5)
+    m = Matrix3D()
+    m.rotate_x(math.pi)
+    m.rotate_z(ro*5 + zv - ro)
+    m.rotate_x(xv)
+    result = m.apply(test_point)
+    result = format_point(result)
+    print(f"Side 5 (middle): {result}")
+    expected = [0.869, 1.211, 0.018]  # From Processing
+    assert np.allclose(result, expected, atol=0.001), \
+        f"Middle face wrong. Expected {expected}, got {result}"
+    
+    # Test bottom face (side 11)
+    m = Matrix3D()
+    m.rotate_x(math.pi)
+    m.rotate_z(ro*11)
+    result = m.apply(test_point)
+    result = format_point(result)
+    print(f"Side 11 (bottom): {result}")
+    expected = [0.479, -1.411, 0.000]  # From Processing
+    assert np.allclose(result, expected, atol=0.001), \
+        f"Bottom face wrong. Expected {expected}, got {result}"
 
 if __name__ == "__main__":
+    print("Matrix3D Test Suite")
+    print("==================")
+    
+    # Basic operations
+    print_test_section("Basic Matrix Operations")
     test_basic_rotations()
     test_translations()
     test_matrix_stack()
-    test_dodeca_transforms()
-    test_translate_after_rotate()
-    test_matrix_multiplication()
-    test_push_pop()
-    test_translation()
-    test_rotate_x_matches_processing()
+    
+    # Processing compatibility
+    print_test_section("Processing Compatibility")
     test_processing_coordinate_system()
     test_processing_transforms()
+    
+    # LED-specific transformations
+    print_test_section("LED Transformations")
+    test_led_coordinate_adjustment()
+    test_led_rotation()
+    test_led_translation()
+    
+    # Complex sequences
+    print_test_section("Complex Transformation Sequences")
+    test_dodeca_transforms()
+    test_side1_led_sequence()
+    
+    # Additional tests
+    print_test_section("Additional Tests")
+    test_translate_after_rotate()
+    test_matrix_multiplication()
     test_hemisphere_transforms()
+    
+    # Side-specific tests
+    print_test_section("Side-Specific Tests")
     test_side_rotations()
-    test_processing_led_sequence()
+    test_side_rotation_pattern()
+    test_all_side_transforms()
+    
+    # Middle face tests
+    print_test_section("Middle Face Tests")
     test_middle_face_rotations()
     test_led_space_rotation()
     test_complete_middle_face_sequence()
-    test_side_rotation_pattern()
-    print("\nAll tests passed!") 
+    
+    print("\n✓ All tests passed!") 

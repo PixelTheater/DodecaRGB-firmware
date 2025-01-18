@@ -8,6 +8,10 @@ void setup() {
   
   // Run tests
   testRotatedTranslation();
+  testSide1Sequence();
+  testMiddleFaceRotations();
+  testCompleteMiddleFaceSequence();
+  testAllSideTransforms();
   
   // Exit after tests
   exit();
@@ -140,5 +144,147 @@ void testRotatedTranslation() {
   
   printMatrix(getMatrix().get(null));
   
+  popMatrix();
+}
+
+void testSide1Sequence() {
+  pushMatrix();
+  
+  println("\nTesting Side 1 sequence...");
+  
+  // Initial point
+  float x = 1.49;
+  float y = -0.02;
+  float[] point = {x, y, 0};
+  println(String.format("Initial point: (%.3f, %.3f, %.0f)", point[0], point[1], point[2]));
+  
+  // 1. LED space rotation (PI/10)
+  rotateZ(PI/10);
+  println("\nAfter LED space rotation:");
+  println(String.format("Point: (%.3f, %.3f, %.3f)", 
+          modelX(point[0], point[1], point[2]),
+          modelY(point[0], point[1], point[2]),
+          modelZ(point[0], point[1], point[2])));
+  
+  // 2. Initial transform
+  resetMatrix();
+  rotateX(PI);  // Flip upside down
+  rotateZ(-3 * TWO_PI/5);  // Side 1 rotation
+  println("\nAfter initial transform:");
+  println(String.format("Point: (%.3f, %.3f, %.3f)", 
+          modelX(point[0], point[1], point[2]),
+          modelY(point[0], point[1], point[2]),
+          modelZ(point[0], point[1], point[2])));
+  
+  // 3. Side positioning
+  resetMatrix();
+  rotateX(PI);  // Flip upside down
+  rotateZ(TWO_PI/20);  // Side 1 positioning (zv)
+  rotateX(1.1071);  // Side tilt (xv)
+  println("\nAfter side positioning:");
+  println(String.format("Point: (%.3f, %.3f, %.3f)", 
+          modelX(point[0], point[1], point[2]),
+          modelY(point[0], point[1], point[2]),
+          modelZ(point[0], point[1], point[2])));
+  
+  popMatrix();
+}
+
+void testMiddleFaceRotations() {
+  pushMatrix();
+  
+  println("\nTesting middle face rotations...");
+  float[] point = {0, 100, 0};  // Point on face
+  
+  // Test bottom half face (1-5)
+  println("\nBottom half face (1-5):");
+  rotateX(PI);
+  rotateZ(ro*1 + zv - ro);  // Side 1
+  rotateX(1.1071);  // xv
+  println(String.format("Point: (%.3f, %.3f, %.3f)", 
+          modelX(point[0], point[1], point[2]),
+          modelY(point[0], point[1], point[2]),
+          modelZ(point[0], point[1], point[2])));
+  
+  // Test top half face (6-10)
+  resetMatrix();
+  println("\nTop half face (6-10):");
+  rotateX(PI);
+  rotateZ(ro*6 - zv + ro*3);  // Side 6
+  rotateX(PI - 1.1071);  // PI - xv
+  println(String.format("Point: (%.3f, %.3f, %.3f)", 
+          modelX(point[0], point[1], point[2]),
+          modelY(point[0], point[1], point[2]),
+          modelZ(point[0], point[1], point[2])));
+          
+  popMatrix();
+}
+
+void testCompleteMiddleFaceSequence() {
+  pushMatrix();
+  
+  println("\nTesting complete middle face sequence...");
+  float[] point = {1.49, -0.02, 0};  // First LED position
+  
+  // Initial LED space rotation (72°)
+  println("\nAfter LED space rotation (-72°):");
+  rotateZ(-PI/5);  // -72° = -PI/2.5 = -PI/5
+  println(String.format("Point: (%.3f, %.3f, %.3f)", 
+          modelX(point[0], point[1], point[2]),
+          modelY(point[0], point[1], point[2]),
+          modelZ(point[0], point[1], point[2])));
+  
+  // Complete sequence
+  resetMatrix();
+  rotateX(PI);
+  rotateZ(ro);
+  rotateZ(ro*1 + zv - ro);
+  rotateX(1.1071);  // xv
+  translate(0, 0, radius*1.34);
+  println("\nAfter complete sequence:");
+  println(String.format("Point: (%.3f, %.3f, %.3f)", 
+          modelX(point[0], point[1], point[2]),
+          modelY(point[0], point[1], point[2]),
+          modelZ(point[0], point[1], point[2])));
+          
+  popMatrix();
+}
+
+void testAllSideTransforms() {
+  pushMatrix();
+  
+  println("\nTesting all side transforms...");
+  float[] point = {1.49, -0.02, 0};  // LED 1 position
+  
+  // Test top face (side 0)
+  println("\nSide 0 (top):");
+  rotateX(PI);
+  rotateZ(ro*0);  // No extra rotation
+  println(String.format("Point: (%.3f, %.3f, %.3f)", 
+          modelX(point[0], point[1], point[2]),
+          modelY(point[0], point[1], point[2]),
+          modelZ(point[0], point[1], point[2])));
+  
+  // Test middle face (side 5)
+  resetMatrix();
+  println("\nSide 5 (middle):");
+  rotateX(PI);
+  rotateZ(ro*5 + zv - ro);
+  rotateX(1.1071);  // xv
+  println(String.format("Point: (%.3f, %.3f, %.3f)", 
+          modelX(point[0], point[1], point[2]),
+          modelY(point[0], point[1], point[2]),
+          modelZ(point[0], point[1], point[2])));
+  
+  // Test bottom face (side 11)
+  resetMatrix();
+  println("\nSide 11 (bottom):");
+  rotateX(PI);
+  rotateZ(ro*11);
+  println(String.format("Point: (%.3f, %.3f, %.3f)", 
+          modelX(point[0], point[1], point[2]),
+          modelY(point[0], point[1], point[2]),
+          modelZ(point[0], point[1], point[2])));
+          
   popMatrix();
 } 

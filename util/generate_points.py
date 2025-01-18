@@ -1,5 +1,5 @@
 import math
-from test_matrix3d import Matrix3D
+from matrix3d import Matrix3D
 import os
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
