@@ -285,6 +285,17 @@ void testAllSideTransforms() {
           modelX(point[0], point[1], point[2]),
           modelY(point[0], point[1], point[2]),
           modelZ(point[0], point[1], point[2])));
+  
+  // Test side 6 (upper middle face)
+  resetMatrix();
+  println("\nSide 6 (upper middle):");
+  rotateX(PI);
+  rotateZ(ro*6 - zv + ro*3);  // Side 6 rotation
+  rotateX(PI - 1.1071);  // Upper face tilt
+  println(String.format("Point: (%.3f, %.3f, %.3f)", 
+          modelX(point[0], point[1], point[2]),
+          modelY(point[0], point[1], point[2]),
+          modelZ(point[0], point[1], point[2])));
           
   popMatrix();
 } 
