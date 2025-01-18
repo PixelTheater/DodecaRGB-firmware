@@ -50,150 +50,6 @@ class LEDPoint:
     def __str__(self):
         return f"Point {self.index}: [{self.x:.1f}, {self.y:.1f}, {self.z:.1f}] side={self.side} label={self.label_num}"
 
-def generate_face_points(radius: float, matrix: Matrix3D, side: int, start_index: int, rotation: int = 0):
-    """Generate points for one face with given rotation (0-4)"""
-    points = []
-    
-    # Save face position
-    matrix.push_matrix()
-    
-    # Apply face rotation (0-4 positions)
-    matrix.rotate_z(rotation * ro)  # ro = TWO_PI/5
-    
-    # Generate each LED position relative to face center
-    for i in range(5):
-        matrix.push_matrix()  # Save position for this LED
-        
-        # Calculate LED position (relative to face center)
-        angle = i * ro
-        x = radius * math.cos(angle)
-        y = radius * math.sin(angle)
-        z = 0
-        
-        transformed = matrix.apply([x, y, z])
-        point = LEDPoint(start_index + i, transformed[0], transformed[1], 
-                        transformed[2], side, i)
-        points.append(point)
-        
-        matrix.pop_matrix()  # Restore face position
-    
-    matrix.pop_matrix()  # Restore global position
-    return points
-
-def generate_all_points():
-    """Generate all points for the dodecahedron"""
-    m = Matrix3D()
-    points = []
-    
-    # Initial transform to match Processing
-    m.translate(400, 400, 0)  # Center
-    m.rotate_x(math.pi)       # Flip upside down
-    
-    # Generate points for each face
-    radius = 100  # From Processing
-    for side in range(10):  # 10 faces
-        m.push_matrix()
-        m.rotate_z(side * zv)
-        face_points = generate_face_points(radius, m, side, side * 5)
-        points.extend(face_points)
-        m.pop_matrix()
-    
-    return points
-
-def load_cpp_points():
-    """Load points from points.cpp for comparison"""
-    cpp_points = []
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(script_dir)
-    points_path = os.path.join(project_root, 'src', 'points.cpp')
-    
-    print(f"Loading reference points from: {points_path}")
-    if not os.path.exists(points_path):
-        raise FileNotFoundError(f"points.cpp not found at: {points_path}")
-        
-    with open(points_path, 'r') as f:
-        contents = f.read()
-        if 'LED_Point points[] = {' not in contents:
-            raise ValueError(f"Could not find LED_Point array in {points_path}")
-            
-        in_array = False
-        for line in contents.split('\n'):
-            if 'LED_Point points[] = {' in line:
-                in_array = True
-                continue
-            if in_array and line.strip() == '};':
-                break
-            if in_array and 'LED_Point(' in line:
-                try:
-                    # Parse line like: LED_Point(0, -1.43, -0.44, 268.0, 1, 0),
-                    point_str = line.split('LED_Point(')[1].split(')')[0]
-                    nums = point_str.split(',')
-                    # Format: index, x, y, z, side, label
-                    x = float(nums[1].strip())
-                    y = float(nums[2].strip())
-                    z = float(nums[3].strip())
-                    cpp_points.append([x, y, z])
-                except (IndexError, ValueError) as e:
-                    print(f"Error parsing line: {line}")
-                    raise ValueError(f"Failed to parse point data: {e}")
-    
-    if len(cpp_points) == 0:
-        raise ValueError(f"No points loaded from {points_path}")
-        
-    print(f"Loaded {len(cpp_points)} points from points.cpp")
-    return cpp_points
-
-def compare_points(generated, cpp_points):
-    """Compare generated points with C++ points"""
-    print("\nComparing with points.cpp:")
-    for i, (gen, cpp) in enumerate(zip(generated, cpp_points)):
-        diff = [abs(g - c) for g, c in zip(gen, cpp)]
-        max_diff = max(diff)
-        if max_diff > 0.5:  # Allow small floating point differences
-            print(f"Point {i} mismatch:")
-            print(f"  Generated: [{gen[0]:.1f}, {gen[1]:.1f}, {gen[2]:.1f}]")
-            print(f"  C++:       [{cpp[0]:.1f}, {cpp[1]:.1f}, {cpp[2]:.1f}]")
-            print(f"  Diff:      [{diff[0]:.1f}, {diff[1]:.1f}, {diff[2]:.1f}]")
-
-def test_single_pentagon():
-    """Test generation of a single pentagon's points"""
-    m = Matrix3D()
-    m.translate(400, 400, 0)  # Center
-    
-    # Generate one pentagon's points
-    points = generate_face_points(100, m, side=0, start_index=0)
-    
-    # Test point properties
-    assert len(points) == 5, "Pentagon should have 5 points"
-    assert points[0].index == 0, "First point should have index 0"
-    assert points[0].side == 0, "Points should be on side 0"
-    assert points[0].label_num == 0, "First point should have label 0"
-    
-    # Test first point position (should be at (500,400,0))
-    assert abs(points[0].x - 500.0) < 0.1, "X coordinate wrong"
-    assert abs(points[0].y - 400.0) < 0.1, "Y coordinate wrong"
-    assert abs(points[0].z - 0.0) < 0.1, "Z coordinate wrong"
-    
-    print("✓ Single pentagon test")
-
-def test_pentagon_orientations():
-    """Test pentagon point order in different orientations"""
-    # Test 1: Basic pentagon (no flip)
-    m = Matrix3D()
-    m.translate(400, 400, 0)
-    points_no_flip = generate_face_points(100, m, side=0, start_index=0)
-    
-    # Test 2: Flipped pentagon (like in dodecahedron)
-    m = Matrix3D()
-    m.translate(400, 400, 0)
-    m.rotate_x(math.pi)
-    points_flipped = generate_face_points(100, m, side=0, start_index=0)
-    
-    # Verify point order is mirrored
-    assert abs(points_no_flip[1].y - 495.1) < 0.1, "Top point wrong before flip"
-    assert abs(points_flipped[1].y - 304.9) < 0.1, "Bottom point wrong after flip"
-    
-    print("✓ Pentagon orientation test")
 
 def transform_led_point(x: float, y: float, num: int, sideNumber: int):
     """Transform LED point exactly like Processing's buildLedsFromComponentPlacementCSV()"""
@@ -565,8 +421,11 @@ def draw_dodecahedron(ax, collections=None):
     """Draw a dodecahedron with filled faces that match LED orientation."""
     m = Matrix3D()
     
-    # Initial transform to match LED orientation
-    m.rotate_x(math.pi)
+    # Try without the initial flip
+    # m.rotate_x(math.pi)  # Comment this out
+    
+    # Or try flipping the other way
+    # m.rotate_x(-math.pi)
     
     # Generate base pentagon vertices (at origin, in XY plane)
     pentagon = []
@@ -667,14 +526,15 @@ def visualize_model(pcb_points=None):
     # Draw coordinate axes for reference
     ax.plot([0, 200], [0, 0], [0, 0], 'r-', label='X')
     ax.plot([0, 0], [0, 200], [0, 0], 'g-', label='Y')
-    ax.plot([0, 0], [0, 0], [200], 'b-', label='Z')
+    ax.plot([0, 0], [0, 0], [0, 200], 'b-', label='Z')  # Fixed Z axis line
     
     # Store collections for interactive access
     collections = {
         'faces': None,
         'leds': None,
-        'face_colors': [f'C{i}' for i in range(12)],  # Store original colors
-        'text': None  # For hover info
+        'face_colors': [f'C{i}' for i in range(12)],
+        'text': None,
+        'led_labels': []  # Add storage for LED label annotations
     }
     
     # Draw dodecahedron wireframe
@@ -690,24 +550,22 @@ def visualize_model(pcb_points=None):
     # Convert to numpy arrays
     led_positions = np.vstack(led_positions_by_side)
     
-    # Plot all LEDs
+    # Plot all LEDs with consistent size
     collections['leds'] = ax.scatter(led_positions[:, 0], 
                                    led_positions[:, 1], 
                                    led_positions[:, 2],
-                                   c='white', 
-                                   edgecolor='black', 
-                                   s=10, 
-                                   alpha=1.0,
+                                   c='white',  # Default color
+                                   edgecolor='black',
+                                   s=20,  # Fixed size
                                    depthshade=True,
-                                   zorder=2,
-                                   picker=True)  # Enable picking
+                                   zorder=2)
     
     # Add hover text (initially hidden)
     collections['text'] = ax.text2D(0.02, 0.98, '', transform=ax.transAxes)
     
-    def on_move(event):
-        """Handle mouse movement"""
-        if event.inaxes != ax:
+    def on_click(event):
+        """Handle mouse clicks"""
+        if event.inaxes != ax or event.button != 1:  # Only handle left clicks
             return
             
         # Get mouse coordinates and convert to 3D view coordinates
@@ -743,48 +601,111 @@ def visualize_model(pcb_points=None):
                     min_dist = dist
                     closest_face = i
         
-        if closest_face is not None and min_dist < 50:  # Add distance threshold
-            # Highlight the face and its LEDs
-            face_colors = collections['face_colors'].copy()  # Start with original colors
-            for i in range(12):
-                if i != closest_face:
-                    face_colors[i] = 'gray'  # Dim non-highlighted faces
+        if closest_face is not None and min_dist < 50:
+            # Set face colors
+            face_colors = [(0.3, 0.4, 0.3, 0.5)] * 12  # Unselected faces semi-transparent
+            face_colors[closest_face] = (*plt.cm.tab10(closest_face)[:3], 0.5)  # Selected face more solid
             collections['faces'].set_facecolor(face_colors)
             
-            # Update LED colors
-            led_colors = ['gray'] * len(led_positions)
+            # Set LED colors and properties
+            led_colors = [(0.5, 0.5, 0.5, 0.5)] * len(led_positions)  # Very faded unselected LEDs
+            led_edges = ['none'] * len(led_positions)  # No edges by default
+            
+            # Calculate start and end indices for the selected face
             start_idx = closest_face * len(pcb_points)
             end_idx = start_idx + len(pcb_points)
+            
+            # Update selected face LEDs
             for i in range(start_idx, end_idx):
-                led_colors[i] = 'white'
+                led_colors[i] = (1.0, 1.0, 1.0, 1.0)  # Bright white fill
+                led_edges[i] = 'black'  # Black border for contrast
+            
             collections['leds'].set_color(led_colors)
+            collections['leds'].set_edgecolor(led_edges)
+            collections['leds'].set_zorder(3)
             
-            # Show face info
-            info_text = f'Side {closest_face}\nTop edge is highlighted'
-            collections['text'].set_text(info_text)
-            collections['text'].set_visible(True)
+            # Clear any existing LED labels
+            for label in collections['led_labels']:
+                label.remove()
+            collections['led_labels'].clear()
             
-            # Highlight top edge of the pentagon
-            top_edge = np.array([faces[closest_face][0], faces[closest_face][1]])
+            # Add LED labels for selected face
+            for i in range(start_idx, end_idx):
+                led_num = (i - start_idx)  # Convert to 0-based LED number
+                pos = led_positions[i]
+                label = ax.text(pos[0], pos[1], pos[2], 
+                               str(led_num),
+                               fontsize=8,
+                               color='black',
+                               backgroundcolor='white',
+                               alpha=0.7,
+                               ha='left',
+                               va='bottom')
+                collections['led_labels'].append(label)
+            
+            # Get positions of LEDs 65-69 for top edge
+            top_led_indices = [65, 66, 67, 68]  # Skip corners 63 and 69
+            top_led_positions = []
+            for led_num in top_led_indices:
+                idx = start_idx + led_num
+                top_led_positions.append(led_positions[idx])
+            
+            # Use first and last LED of top row for edge direction
+            top_edge = np.array([top_led_positions[0], top_led_positions[-1]])
+            
+            # Draw the yellow highlight line along top edge
             if not hasattr(ax, '_top_edge'):
                 ax._top_edge = ax.plot(top_edge[:, 0], top_edge[:, 1], top_edge[:, 2], 
-                                     'yellow', linewidth=2)[0]
+                                     color='yellow', linewidth=3, zorder=3)[0]
             else:
                 ax._top_edge.set_data_3d(top_edge[:, 0], top_edge[:, 1], top_edge[:, 2])
                 ax._top_edge.set_visible(True)
             
-            fig.canvas.draw_idle()
+            # Add direction arrow perpendicular to top edge
+            mid_point = (top_edge[0] + top_edge[1]) / 2
+            edge_vector = top_edge[1] - top_edge[0]
+            normal = np.cross(edge_vector, np.array([0, 0, 1]))
+            normal = normal / np.linalg.norm(normal) * (radius * 0.3)
+            
+            # Ensure arrow points outward from pentagon
+            center = np.mean(faces[closest_face], axis=0)
+            if np.dot(normal, mid_point - center) < 0:
+                normal = -normal  # Flip if pointing inward
+            
+            arrow_end = mid_point + normal
+            if not hasattr(ax, '_direction_arrow'):
+                ax._direction_arrow = ax.quiver(mid_point[0], mid_point[1], mid_point[2],
+                                             normal[0], normal[1], normal[2],
+                                             color='red', linewidth=2, zorder=4)
+            else:
+                ax._direction_arrow.remove()
+                ax._direction_arrow = ax.quiver(mid_point[0], mid_point[1], mid_point[2],
+                                             normal[0], normal[1], normal[2],
+                                             color='red', linewidth=2, zorder=4)
+            
+            # Update status text with face and rotation info
+            if collections['text']:
+                collections['text'].remove()
+            status_text = f'Face {closest_face}\nRotation: {side_rotation[closest_face]}'
+            collections['text'] = ax.text2D(0.02, 0.98, status_text,
+                                          transform=ax.transAxes,
+                                          fontsize=10,
+                                          verticalalignment='top',
+                                          bbox=dict(facecolor='white', alpha=0.7))
         else:
-            # Reset to original colors when not hovering over any face
-            collections['faces'].set_facecolor(collections['face_colors'])
+            # Reset colors
+            collections['faces'].set_facecolor([plt.cm.tab10(i) for i in range(12)])
             collections['leds'].set_color('white')
             collections['text'].set_visible(False)
             if hasattr(ax, '_top_edge'):
                 ax._top_edge.set_visible(False)
+            if hasattr(ax, '_direction_arrow'):
+                ax._direction_arrow.remove()
             fig.canvas.draw_idle()
     
-    # Connect event handlers
-    fig.canvas.mpl_connect('motion_notify_event', on_move)
+    # Change event connection from motion to click
+    fig.canvas.mpl_disconnect('motion_notify_event')  # Remove motion handler if it exists
+    fig.canvas.mpl_connect('button_press_event', on_click)
     
     # Set equal aspect ratio for all axes
     ax.set_box_aspect([1,1,1])
@@ -817,6 +738,14 @@ def visualize_model(pcb_points=None):
     
     ax.legend(fontsize=8)
     
+    # Add view distance change handler to update labels visibility
+    def on_scroll(event):
+        if hasattr(ax, '_top_edge') and ax._top_edge.get_visible():
+            # Trigger click handler to update labels based on new zoom level
+            on_click(event)
+    
+    fig.canvas.mpl_connect('scroll_event', on_scroll)
+    
     plt.show()
 
 def print_matrix(m):
@@ -842,9 +771,6 @@ def analyze_reference_points():
     print(f"Z: {z_min:.1f} to {z_max:.1f} (range: {z_max-z_min:.1f})")
 
 if __name__ == "__main__":
-    # Run all tests
-    test_single_pentagon()
-    test_pentagon_orientations()
     
     # Load PCB points once
     pcb_points = load_pcb_points('PickAndPlace_PCB_DodecaRGB_v2_2024-11-22.csv')
