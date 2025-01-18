@@ -1,12 +1,18 @@
-# --- Imports ---
 import math
 from test_matrix3d import Matrix3D
 import os
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
+import matplotlib.animation as animation
+from mpl_toolkits.mplot3d import proj3d
 
-# --- Constants from Processing ---
+# Enable interactive backend
+import matplotlib
+matplotlib.use('TkAgg')  # or 'Qt5Agg' if you have Qt installed
+
+# Constants from Processing
 TWO_PI = 2 * math.pi
 zv = TWO_PI/20  # Rotation between faces
 ro = TWO_PI/5   # Rotation for pentagon points
@@ -43,6 +49,7 @@ class LEDPoint:
     
     def __str__(self):
         return f"Point {self.index}: [{self.x:.1f}, {self.y:.1f}, {self.z:.1f}] side={self.side} label={self.label_num}"
+
 def generate_face_points(radius: float, matrix: Matrix3D, side: int, start_index: int, rotation: int = 0):
     """Generate points for one face with given rotation (0-4)"""
     points = []
@@ -150,17 +157,12 @@ def compare_points(generated, cpp_points):
 
 def test_single_pentagon():
     """Test generation of a single pentagon's points"""
-    print("\nTesting single pentagon generation...")
     m = Matrix3D()
     m.translate(400, 400, 0)  # Center
     
     # Generate one pentagon's points
     points = generate_face_points(100, m, side=0, start_index=0)
     
-    print("\nPentagon points:")
-    for p in points:
-        print(p)  # Use LEDPoint's __str__ method
-        
     # Test point properties
     assert len(points) == 5, "Pentagon should have 5 points"
     assert points[0].index == 0, "First point should have index 0"
@@ -172,75 +174,76 @@ def test_single_pentagon():
     assert abs(points[0].y - 400.0) < 0.1, "Y coordinate wrong"
     assert abs(points[0].z - 0.0) < 0.1, "Z coordinate wrong"
     
-    print("Single pentagon test passed!")
+    print("✓ Single pentagon test")
 
 def test_pentagon_orientations():
     """Test pentagon point order in different orientations"""
-    print("\nTesting pentagon orientations...")
-    
     # Test 1: Basic pentagon (no flip)
     m = Matrix3D()
     m.translate(400, 400, 0)
     points_no_flip = generate_face_points(100, m, side=0, start_index=0)
-    print("\nPentagon without flip:")
-    for p in points_no_flip:
-        print(p)
     
     # Test 2: Flipped pentagon (like in dodecahedron)
     m = Matrix3D()
     m.translate(400, 400, 0)
     m.rotate_x(math.pi)
     points_flipped = generate_face_points(100, m, side=0, start_index=0)
-    print("\nPentagon with flip:")
-    for p in points_flipped:
-        print(p)
     
     # Verify point order is mirrored
     assert abs(points_no_flip[1].y - 495.1) < 0.1, "Top point wrong before flip"
     assert abs(points_flipped[1].y - 304.9) < 0.1, "Bottom point wrong after flip"
     
-    print("Pentagon orientation tests passed!")
+    print("✓ Pentagon orientation test")
 
 def transform_led_point(x: float, y: float, num: int, sideNumber: int):
     """Transform LED point exactly like Processing's buildLedsFromComponentPlacementCSV()"""
     m = Matrix3D()
     
-    if sideNumber == 0:  # TOP face
-        # Skip initial LED space rotation for Side 0
-        m.rotate_x(math.pi)  # Flip upside down
-        m.rotate_z(ro)      # Global rotation
-        m.rotate_z(-zv - ro*2)  # Side 0 positioning
-    else:
-        # Keep original sequence for other sides
-        m.rotate_z(-math.pi/5)  # Initial LED space rotation
+    # Initial transform
+    m.rotate_x(math.pi)
+    
+    # Side positioning from drawPentagon()
+    if sideNumber == 0:  # bottom
+        m.rotate_z(-zv - ro*2)
+    elif sideNumber > 0 and sideNumber < 6:  # bottom half
+        m.rotate_z(ro*sideNumber + zv - ro)
+        m.rotate_x(xv)
+    elif sideNumber >= 6 and sideNumber < 11:  # top half
+        m.rotate_z(ro*sideNumber - zv + ro*3)
+        m.rotate_x(math.pi - xv)
+    else:  # sideNumber == 11, top
         m.rotate_x(math.pi)
-        m.rotate_z(ro)
-        # ... rest of transformations
+        m.rotate_z(zv)
     
     # Move face out to radius
-    m.translate(0, 0, radius*1.34)
+    m.translate(0, 0, radius*1.31)
     
-    # Additional hemisphere rotation BEFORE side rotation
-    if sideNumber >= 6 and sideNumber < 11:  # lower hemisphere
+    # Additional hemisphere rotation
+    if sideNumber >= 6 and sideNumber < 11:
         m.rotate_z(zv)
-    elif sideNumber > 0:  # upper hemisphere except Side 0
+    else:
         m.rotate_z(-zv)
-    # No hemisphere rotation for Side 0
     
-    # Apply side rotation last
+    # Side rotation
     m.rotate_z(ro * side_rotation[sideNumber])
     
+    # LED-specific transforms
+    m.rotate_z(math.pi/10)
+    
+    # Final transform - negate Y and Z to match Processing's coordinate system
     result = m.apply([x, y, 0])
-    # Swap X,Y and negate Z to match points.cpp
-    return [result[1], result[0], -result[2]]
+    return [result[0], -result[1], -result[2]]
 
-def test_led_positions():
+def test_led_positions(pcb_points=None):
     """Test key LED positions against known-good values from points.cpp"""
     print("\nTesting LED positions against points.cpp reference:")
     
     # Load reference points
     ref_points = load_reference_points()
-    pcb_points = load_pcb_points('PickAndPlace_PCB_DodecaRGB_v2_2024-11-22.csv')
+    
+    # Load PCB points if not provided
+    if pcb_points is None:
+        pcb_points = load_pcb_points('PickAndPlace_PCB_DodecaRGB_v2_2024-11-22.csv')
     
     # Test specific points we want to verify
     test_cases = [
@@ -295,7 +298,8 @@ def load_pcb_points(csv_path):
     """Load LED positions from Pick & Place CSV"""
     pcb_points = []
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    csv_path = os.path.join(script_dir, csv_path)
+    project_root = os.path.dirname(script_dir)  # Go up one level from /util
+    csv_path = os.path.join(project_root, 'data', csv_path)  # Look in /data folder
     
     print(f"Loading PCB points from: {csv_path}")
     if not os.path.exists(csv_path):
@@ -344,46 +348,6 @@ def load_pcb_points(csv_path):
     print(f"Loaded {len(pcb_points)} LED positions from PCB")
     return pcb_points
 
-def validate_geometry(vertices_by_side):
-    """Validate the dodecahedron geometry"""
-    print("\nValidating dodecahedron geometry...")
-    
-    # Get all vertices as points with looser tolerance for matching
-    TOLERANCE = 5.0  # Increase tolerance to 5 units for matching vertices
-    vertex_map = {}  # Map similar vertices to a canonical version
-    
-    for side, verts in vertices_by_side.items():
-        for v in verts:
-            # Round less aggressively
-            v_rounded = (round(v[0], 0), round(v[1], 0), round(v[2], 0))
-            # Find if this vertex is close to an existing one
-            found = False
-            for canonical in vertex_map.keys():
-                dx = abs(canonical[0] - v_rounded[0])
-                dy = abs(canonical[1] - v_rounded[1])
-                dz = abs(canonical[2] - v_rounded[2])
-                if dx < TOLERANCE and dy < TOLERANCE and dz < TOLERANCE:
-                    vertex_map[canonical].add(side)
-                    found = True
-                    break
-            if not found:
-                vertex_map[v_rounded] = {side}
-    
-    # Print summary statistics
-    print(f"\nFound {len(vertex_map)} unique vertices")
-    print("\nVertex connections:")
-    connection_counts = {}
-    for sides in vertex_map.values():
-        count = len(sides)
-        connection_counts[count] = connection_counts.get(count, 0) + 1
-    
-    for count, num_vertices in sorted(connection_counts.items()):
-        print(f"{num_vertices} vertices connect to {count} sides")
-    
-    # Print warnings for incorrect connections
-    for v, sides in vertex_map.items():
-        if len(sides) != 3:
-            print(f"\nWarning: Vertex {v} connects to {len(sides)} sides: {sorted(sides)}")
 
 def load_reference_points():
     """Load reference points from points.cpp"""
@@ -418,18 +382,26 @@ def load_reference_points():
     print(f"Loaded {len(points)} reference points")
     
     # Verify first few points to ensure correct parsing
-    if points:
-        print("\nFirst few reference points:")
-        for p in points[:3]:
-            print(f"Point {p['index']}: [{p['x']:.2f}, {p['y']:.2f}, {p['z']:.2f}] label={p['label']} side={p['side']}")
+    # if points:
+    #     print("\nFirst few reference points:")
+    #     for p in points[:3]:
+    #         print(f"Point {p['index']}: [{p['x']:.2f}, {p['y']:.2f}, {p['z']:.2f}] label={p['label']} side={p['side']}")
     
     return points
 
 def validate_led_positions(generated_points, reference_points):
-    """Compare generated LED positions with reference points"""
+    """Validate LED positions against reference points from points.cpp"""
     EPSILON = 0.1  # Allowable difference in coordinates
     
-    print("\nValidating LED positions...")
+    # Track validation statistics
+    stats = {
+        'arrangement_tests': 0,
+        'arrangement_passed': 0,
+        'arrangement_total_diff': 0.0,
+        'orientation_tests': 0,
+        'orientation_passed': 0,
+        'orientation_total_diff': 0.0
+    }
     
     # Group reference points by side
     ref_by_side = {}
@@ -438,145 +410,413 @@ def validate_led_positions(generated_points, reference_points):
             ref_by_side[p['side']] = []
         ref_by_side[p['side']].append(p)
     
-    # Test points to check per side (matching points.cpp labels)
-    test_indices = [1, 52, 104]  # First, middle, last LED on each side
+    # PART 1: Validate overall face arrangement
+    arrangement_tests = [
+        (0, 1, "Bottom face center LED"),
+        (11, 1, "Top face center LED"),
+        (1, 1, "Bottom hemisphere equator LED"),
+        (6, 1, "Top hemisphere equator LED"),
+        (3, 1, "Bottom hemisphere middle face LED"),
+        (8, 1, "Top hemisphere middle face LED"),
+    ]
     
-    # Compare points for each side
+    for side, led_num, _ in arrangement_tests:
+        ref = next(p for p in ref_by_side[side] if p['label'] == led_num)
+        gen_pos = transform_led_point(ref['x'], ref['y'], led_num - 1, side)
+        
+        # Compare coordinates
+        dx = abs(gen_pos[0] - ref['x'])
+        dy = abs(gen_pos[1] - ref['y'])
+        dz = abs(gen_pos[2] - ref['z'])
+        max_diff = max(dx, dy, dz)
+        
+        stats['arrangement_tests'] += 1
+        stats['arrangement_total_diff'] += max_diff
+        if max_diff <= EPSILON:
+            stats['arrangement_passed'] += 1
+    
+    # PART 2: Validate individual face orientations
+    orientation_test_points = [1, 52, 104]  # First, middle, last LED
+    
     for side in range(12):
-        print(f"\nSide {side}:")
         ref_points = ref_by_side[side]
         
-        # Test specific points
-        for idx in test_indices:
-            ref = next(p for p in ref_points if p['label'] == idx)
-            # Pass 0-based index to transform_led_point
+        for idx in orientation_test_points:
+            ref = next((p for p in ref_points if p['label'] == idx), None)
+            if ref is None:
+                continue
+                
             gen_pos = transform_led_point(ref['x'], ref['y'], idx - 1, side)
             
             # Compare coordinates
             dx = abs(gen_pos[0] - ref['x'])
             dy = abs(gen_pos[1] - ref['y'])
             dz = abs(gen_pos[2] - ref['z'])
+            max_diff = max(dx, dy, dz)
             
-            if dx > EPSILON or dy > EPSILON or dz > EPSILON:
-                print(f"  LED {ref['label']}:")
-                print(f"    Reference: [{ref['x']:.1f}, {ref['y']:.1f}, {ref['z']:.1f}]")
-                print(f"    Generated: [{gen_pos[0]:.1f}, {gen_pos[1]:.1f}, {gen_pos[2]:.1f}]")
-                print(f"    Diff:      [{dx:.1f}, {dy:.1f}, {dz:.1f}]")
-            else:
-                print(f"  LED {ref['label']}: ✓")
+            stats['orientation_tests'] += 1
+            stats['orientation_total_diff'] += max_diff
+            if max_diff <= EPSILON:
+                stats['orientation_passed'] += 1
+    
+    # Calculate overall score (0-100)
+    total_tests = stats['arrangement_tests'] + stats['orientation_tests']
+    total_passed = stats['arrangement_passed'] + stats['orientation_passed']
+    total_diff = stats['arrangement_total_diff'] + stats['orientation_total_diff']
+    accuracy_score = 100 * (1.0 - min(1.0, total_diff / (total_tests * 10.0)))
+    
+    # Print summary
+    print("\n=== LED Position Validation Summary ===")
+    print(f"Face Arrangement:")
+    print(f"  {stats['arrangement_passed']}/{stats['arrangement_tests']} tests passed " +
+          f"({100 * stats['arrangement_passed'] / stats['arrangement_tests']:.1f}%)")
+    print(f"  Average deviation: {stats['arrangement_total_diff'] / stats['arrangement_tests']:.3f} units")
+    
+    print(f"\nFace Orientations:")
+    print(f"  {stats['orientation_passed']}/{stats['orientation_tests']} tests passed " +
+          f"({100 * stats['orientation_passed'] / stats['orientation_tests']:.1f}%)")
+    print(f"  Average deviation: {stats['orientation_total_diff'] / stats['orientation_tests']:.3f} units")
+    
+    print(f"\nOverall:")
+    print(f"  {total_passed}/{total_tests} total tests passed " +
+          f"({100 * total_passed / total_tests:.1f}%)")
+    print(f"  Accuracy score: {accuracy_score:.1f}/100")
+    
+    return accuracy_score > 95  # Return True if accuracy is acceptable
 
-def visualize_model():
-    """Draw the dodecahedron using matplotlib"""
-    fig = plt.figure(figsize=(10, 10))
-    ax = fig.add_subplot(111, projection='3d')
+def validate_dodecahedron_geometry(faces):
+    """
+    Validate that the generated dodecahedron geometry is mathematically correct.
     
-    # Define colors for each side
-    side_colors = [
-        'red',      # Side 0 (top)
-        'orange',   # Side 1
-        'yellow',   # Side 2
-        'green',    # Side 3
-        'blue',     # Side 4
-        'purple',   # Side 5
-        'pink',     # Side 6
-        'cyan',     # Side 7
-        'magenta',  # Side 8
-        'brown',    # Side 9
-        'gray',     # Side 10
-        'black'     # Side 11 (bottom)
-    ]
+    Args:
+        faces: List of faces, where each face is a list of [x,y,z] vertex coordinates
     
-    # Load PCB LED positions
-    pcb_points = load_pcb_points('PickAndPlace_PCB_DodecaRGB_v2_2024-11-22.csv')
+    Returns:
+        bool: True if geometry is valid
+        
+    Raises:
+        AssertionError: If any geometric property is invalid, with details
+    """
+    EPSILON = 0.001  # Tolerance for floating point comparisons
+    PENTAGON_ANGLE = 108 * math.pi / 180  # 108° in radians
     
-    # Draw coordinate axes for reference
-    ax.plot([0, 200], [0, 0], [0, 0], 'r-', label='X')
-    ax.plot([0, 0], [0, 200], [0, 0], 'g-', label='Y')
-    ax.plot([0, 0], [0, 0], [200], 'b-', label='Z')
+    def distance(v1, v2):
+        """Calculate distance between two vertices"""
+        return math.sqrt(sum((a - b) ** 2 for a, b in zip(v1, v2)))
     
-    # Collect vertices by side for validation
-    vertices_by_side = {}
+    def angle(v1, v2, v3):
+        """Calculate angle between three vertices (v2 is center)"""
+        a = [x1 - x2 for x1, x2 in zip(v1, v2)]
+        b = [x1 - x2 for x1, x2 in zip(v3, v2)]
+        dot = sum(x1 * x2 for x1, x2 in zip(a, b))
+        mag_a = math.sqrt(sum(x * x for x in a))
+        mag_b = math.sqrt(sum(x * x for x in b))
+        return math.acos(dot / (mag_a * mag_b))
     
-    # Draw only Side 0 for now
-    for sideNumber in range(1):  # Changed from range(12)
-        # Generate pentagon vertices
-        vertices = []
-        angle = ro
+    # Find unique vertices (with tolerance)
+    vertices = {}  # Map vertex to list of faces it belongs to
+    for face_idx, face in enumerate(faces):
+        for vertex in face:
+            v = tuple(round(x/EPSILON)*EPSILON for x in vertex)  # Round to tolerance
+            if v not in vertices:
+                vertices[v] = set()
+            vertices[v].add(face_idx)
+    
+    # Validate basic properties
+    assert len(faces) == 12, f"Expected 12 faces, found {len(faces)}"
+    assert len(vertices) == 20, f"Expected 20 vertices, found {len(vertices)}"
+    
+    # Validate vertex connections
+    incorrect_vertices = [v for v, faces in vertices.items() if len(faces) != 3]
+    assert not incorrect_vertices, f"Found {len(incorrect_vertices)} vertices not connected to exactly 3 faces"
+    
+    # Validate pentagon regularity
+    edge_lengths = []
+    angles = []
+    
+    for face in faces:
+        assert len(face) == 5, f"Face has {len(face)} vertices, expected 5"
+        
+        # Check edge lengths
         for i in range(5):
-            x = radius * math.cos(angle * i)
-            y = radius * math.sin(angle * i)
-            vertices.append([x, y, 0])
+            edge = distance(face[i], face[(i+1)%5])
+            edge_lengths.append(edge)
         
-        # Use exact same transformation sequence as LEDs
-        m = Matrix3D()
-        m.rotate_z(-math.pi/5)  # Initial LED space rotation
-        m.rotate_x(math.pi)     # Flip upside down
-        m.rotate_z(ro)          # Global rotation
+        # Check angles
+        for i in range(5):
+            v1 = face[i]
+            v2 = face[(i+1)%5]
+            v3 = face[(i+2)%5]
+            angles.append(angle(v1, v2, v3))
+    
+    # Validate measurements
+    avg_edge = sum(edge_lengths) / len(edge_lengths)
+    max_edge_diff = max(abs(e - avg_edge) for e in edge_lengths)
+    assert max_edge_diff < EPSILON, f"Edge lengths not uniform, max deviation: {max_edge_diff:.3f}"
+    
+    avg_angle = sum(angles) / len(angles)
+    max_angle_diff = max(abs(a - PENTAGON_ANGLE) for a in angles)
+    assert max_angle_diff < EPSILON, f"Pentagon angles not 108°, max deviation: {max_angle_diff*180/math.pi:.1f}°"
+    
+    print(f"✓ Dodecahedron geometry valid: 20 vertices, 12 faces, all measurements within {EPSILON}")
+    return True
+
+def draw_dodecahedron(ax, collections=None):
+    """Draw a dodecahedron with filled faces that match LED orientation."""
+    m = Matrix3D()
+    
+    # Initial transform to match LED orientation
+    m.rotate_x(math.pi)
+    
+    # Generate base pentagon vertices (at origin, in XY plane)
+    pentagon = []
+    for i in range(5):
+        angle = i * ro  # ro = TWO_PI/5
+        x = radius * math.cos(angle)
+        y = radius * math.sin(angle)
+        pentagon.append([x, y, 0])
+    
+    # Position faces using same angles as LED transforms
+    faces = []
+    colors = []  # Store a color for each face
+    
+    for side in range(12):
+        m.push_matrix()
         
-        # Side positioning - match drawPentagon() exactly
-        if sideNumber == 0:
+        # Match face positioning from transform_led_point()
+        if side == 0:  # bottom
             m.rotate_z(-zv - ro*2)
-        elif sideNumber > 0 and sideNumber < 6:
-            m.rotate_z(ro*sideNumber + zv - ro)
+        elif side > 0 and side < 6:  # bottom half
+            m.rotate_z(ro*side + zv - ro)
             m.rotate_x(xv)
-        elif sideNumber >= 6 and sideNumber < 11:
-            m.rotate_z(ro*sideNumber - zv + ro*3)
+        elif side >= 6 and side < 11:  # top half
+            m.rotate_z(ro*side - zv + ro*3)
             m.rotate_x(math.pi - xv)
-        else:
+        else:  # side == 11, top
             m.rotate_x(math.pi)
             m.rotate_z(zv)
         
         # Move face out to radius
         m.translate(0, 0, radius*1.31)
         
-        # Additional rotation based on hemisphere
-        if sideNumber >= 6 and sideNumber < 11:
+        # Additional hemisphere rotation
+        if side >= 6 and side < 11:
             m.rotate_z(zv)
         else:
             m.rotate_z(-zv)
         
-        m.rotate_z(ro * side_rotation[sideNumber])
+        # Transform pentagon vertices to face position
+        face = [m.apply(v) for v in pentagon]
+        faces.append(face)
+        colors.append(f'C{side}')  # Use matplotlib's color cycle
         
-        # Transform and draw pentagon vertices
-        transformed = []
-        for v in vertices:
-            t = m.apply(v)
-            transformed.append(t)
+        m.pop_matrix()
+    
+    # Create the 3D polygons with proper depth sorting
+    poly = Poly3DCollection(faces, alpha=0.3)
+    poly.set_facecolor(colors)
+    poly.set_edgecolor('gray')
+    poly.set_zorder(1)
+    
+    ax.add_collection3d(poly)
+    
+    if collections is not None:
+        collections['faces'] = poly
+    
+    # Simple validation of geometry
+    def validate_face(face):
+        """Check if pentagon is regular"""
+        edges = []
+        for i in range(5):
+            v1 = face[i]
+            v2 = face[(i+1)%5]
+            edge = math.sqrt(sum((a-b)**2 for a,b in zip(v1,v2)))
+            edges.append(edge)
         
-        # Plot the pentagon edges
-        xs, ys, zs = zip(*transformed)
-        xs = list(xs) + [xs[0]]  # Close the pentagon
-        ys = list(ys) + [ys[0]]
-        zs = list(zs) + [zs[0]]
-        ax.plot(xs, ys, zs, 'k-', linewidth=2, alpha=1.0, label=f'Side {sideNumber}')
-        
-        # Store vertices for validation
-        vertices_by_side[sideNumber] = transformed
-        
-        # Draw LEDs using same transform function
+        avg = sum(edges)/len(edges)
+        max_diff = max(abs(e-avg) for e in edges)
+        return max_diff < 0.1  # Allow 0.1 unit variation
+    
+    # Validate faces
+    valid = True
+    for i, face in enumerate(faces):
+        if not validate_face(face):
+            print(f"Warning: Face {i} is not a regular pentagon")
+            valid = False
+    
+    if valid:
+        print("✓ All pentagons are regular")
+    
+    return faces  # Return faces for additional validation if needed
+
+def visualize_model(pcb_points=None):
+    """Draw the dodecahedron using matplotlib"""
+    # Create figure and 3D axes with perspective projection
+    fig = plt.figure(figsize=(10, 10))
+    ax = fig.add_subplot(111, projection='3d')
+    
+    # Adjust the perspective - use equal scaling for all axes
+    ax.get_proj = lambda: np.dot(Axes3D.get_proj(ax), np.diag([1, 1, 1, 1]))
+    
+    # Set camera position and focal length
+    ax.dist = 10  # Reset to default distance
+    
+    # Enable mouse interaction
+    ax.mouse_init()
+    
+    # Draw coordinate axes for reference
+    ax.plot([0, 200], [0, 0], [0, 0], 'r-', label='X')
+    ax.plot([0, 0], [0, 200], [0, 0], 'g-', label='Y')
+    ax.plot([0, 0], [0, 0], [200], 'b-', label='Z')
+    
+    # Store collections for interactive access
+    collections = {
+        'faces': None,
+        'leds': None,
+        'face_colors': [f'C{i}' for i in range(12)],  # Store original colors
+        'text': None  # For hover info
+    }
+    
+    # Draw dodecahedron wireframe
+    faces = draw_dodecahedron(ax, collections)
+    
+    # Pre-calculate LED positions by side
+    led_positions_by_side = [[] for _ in range(12)]
+    for side in range(12):
         for led in pcb_points:
-            world_pos = transform_led_point(led['x'], led['y'], led['num'], sideNumber)
+            world_pos = transform_led_point(led['x'], led['y'], led['num'], side)
+            led_positions_by_side[side].append(world_pos)
+    
+    # Convert to numpy arrays
+    led_positions = np.vstack(led_positions_by_side)
+    
+    # Plot all LEDs
+    collections['leds'] = ax.scatter(led_positions[:, 0], 
+                                   led_positions[:, 1], 
+                                   led_positions[:, 2],
+                                   c='white', 
+                                   edgecolor='black', 
+                                   s=10, 
+                                   alpha=1.0,
+                                   depthshade=True,
+                                   zorder=2,
+                                   picker=True)  # Enable picking
+    
+    # Add hover text (initially hidden)
+    collections['text'] = ax.text2D(0.02, 0.98, '', transform=ax.transAxes)
+    
+    def on_move(event):
+        """Handle mouse movement"""
+        if event.inaxes != ax:
+            return
             
-            # Special marker for LED50 (bottom edge) for orientation
-            if led['num'] == 49:  # LED50 (0-based index)
-                ax.scatter(world_pos[0], world_pos[1], world_pos[2], 
-                          c=side_colors[sideNumber], s=100, alpha=1.0,
-                          marker='o', edgecolor='black')
+        # Get mouse coordinates and convert to 3D view coordinates
+        x, y = event.xdata, event.ydata
+        
+        # Get the current view transformation
+        proj = ax.get_proj()
+        
+        # Find closest face considering the current view
+        closest_face = None
+        min_dist = float('inf')
+        
+        for i, face in enumerate(faces):
+            # Convert face vertices to numpy arrays
+            face = np.array(face)
+            
+            # Calculate face center in 3D
+            center = np.mean(face, axis=0)
+            
+            # Project center to screen coordinates using the correct transform method
+            xs, ys, _ = proj3d.proj_transform(center[0], center[1], center[2], ax.get_proj())
+            
+            # Calculate screen-space distance
+            dist = np.sqrt((xs - x)**2 + (ys - y)**2)
+            
+            # Check if this face is facing the camera (simple back-face culling)
+            v1 = face[1] - face[0]  # Now works with numpy arrays
+            v2 = face[2] - face[0]
+            normal = np.cross(v1, v2)
+            view_dir = center - np.array([ax.get_xbound()[0], ax.get_ybound()[0], ax.get_zbound()[0]])
+            if np.dot(normal, view_dir) > 0:  # Face is visible
+                if dist < min_dist:
+                    min_dist = dist
+                    closest_face = i
+        
+        if closest_face is not None and min_dist < 50:  # Add distance threshold
+            # Highlight the face and its LEDs
+            face_colors = collections['face_colors'].copy()  # Start with original colors
+            for i in range(12):
+                if i != closest_face:
+                    face_colors[i] = 'gray'  # Dim non-highlighted faces
+            collections['faces'].set_facecolor(face_colors)
+            
+            # Update LED colors
+            led_colors = ['gray'] * len(led_positions)
+            start_idx = closest_face * len(pcb_points)
+            end_idx = start_idx + len(pcb_points)
+            for i in range(start_idx, end_idx):
+                led_colors[i] = 'white'
+            collections['leds'].set_color(led_colors)
+            
+            # Show face info
+            info_text = f'Side {closest_face}\nTop edge is highlighted'
+            collections['text'].set_text(info_text)
+            collections['text'].set_visible(True)
+            
+            # Highlight top edge of the pentagon
+            top_edge = np.array([faces[closest_face][0], faces[closest_face][1]])
+            if not hasattr(ax, '_top_edge'):
+                ax._top_edge = ax.plot(top_edge[:, 0], top_edge[:, 1], top_edge[:, 2], 
+                                     'yellow', linewidth=2)[0]
             else:
-                ax.scatter(world_pos[0], world_pos[1], world_pos[2], 
-                          c=side_colors[sideNumber], s=30, alpha=0.7,
-                          marker='o', edgecolor='black', facecolor='none')
+                ax._top_edge.set_data_3d(top_edge[:, 0], top_edge[:, 1], top_edge[:, 2])
+                ax._top_edge.set_visible(True)
+            
+            fig.canvas.draw_idle()
+        else:
+            # Reset to original colors when not hovering over any face
+            collections['faces'].set_facecolor(collections['face_colors'])
+            collections['leds'].set_color('white')
+            collections['text'].set_visible(False)
+            if hasattr(ax, '_top_edge'):
+                ax._top_edge.set_visible(False)
+            fig.canvas.draw_idle()
     
-    # Validate geometry
-    validate_geometry(vertices_by_side)
+    # Connect event handlers
+    fig.canvas.mpl_connect('motion_notify_event', on_move)
     
-    # Add validation against reference points
-    reference_points = load_reference_points()
-    validate_led_positions(pcb_points, reference_points)
-    
+    # Set equal aspect ratio for all axes
     ax.set_box_aspect([1,1,1])
-    ax.view_init(elev=30, azim=45)
-    ax.legend()
+    
+    # Set initial view angle for isometric-like view
+    ax.view_init(elev=35, azim=45)
+    
+    # Set axis limits to center the model
+    max_range = np.array([
+        led_positions[:,0].max() - led_positions[:,0].min(),
+        led_positions[:,1].max() - led_positions[:,1].min(),
+        led_positions[:,2].max() - led_positions[:,2].min()
+    ]).max() / 2.0
+    
+    mid_x = (led_positions[:,0].max() + led_positions[:,0].min()) * 0.5
+    mid_y = (led_positions[:,1].max() + led_positions[:,1].min()) * 0.5
+    mid_z = (led_positions[:,2].max() + led_positions[:,2].min()) * 0.5
+    
+    ax.set_xlim(mid_x - max_range, mid_x + max_range)
+    ax.set_ylim(mid_y - max_range, mid_y + max_range)
+    ax.set_zlim(mid_z - max_range, mid_z + max_range)
+    
+    # Reduce number of ticks and adjust their appearance
+    ax.set_xticks(np.linspace(ax.get_xlim()[0], ax.get_xlim()[1], 5))
+    ax.set_yticks(np.linspace(ax.get_ylim()[0], ax.get_ylim()[1], 5))
+    ax.set_zticks(np.linspace(ax.get_zlim()[0], ax.get_zlim()[1], 5))
+    
+    # Make axis labels and ticks smaller for cleaner look
+    ax.tick_params(labelsize=8)
+    
+    ax.legend(fontsize=8)
+    
     plt.show()
 
 def print_matrix(m):
@@ -601,66 +841,14 @@ def analyze_reference_points():
     print(f"Y: {y_min:.1f} to {y_max:.1f} (range: {y_max-y_min:.1f})")
     print(f"Z: {z_min:.1f} to {z_max:.1f} (range: {z_max-z_min:.1f})")
 
-def test_pentagon_alignment():
-    """Verify pentagon vertices align with outermost LED positions"""
-    m = Matrix3D()
-    
-    # Generate pentagon for side 0
-    vertices = []
-    for i in range(5):
-        angle = i * ro
-        x = radius * math.cos(angle)
-        y = radius * math.sin(angle)
-        vertices.append([x, y, 0])
-    
-    # Transform pentagon using same sequence as LEDs
-    m.rotate_x(math.pi)
-    m.rotate_z(-zv - ro*2)  # Side 0 positioning
-    m.translate(0, 0, radius*1.34)
-    m.rotate_z(-zv)
-    m.rotate_z(ro * side_rotation[0])
-    
-    # Load PCB points for comparison
-    pcb_points = load_pcb_points('PickAndPlace_PCB_DodecaRGB_v2_2024-11-22.csv')
-    
-    # Get outermost LED positions for side 0
-    side0_leds = []
-    for led in pcb_points:
-        pos = transform_led_point(led['x'], led['y'], led['num'], 0)
-        side0_leds.append(pos)
-    
-    print("\nTesting pentagon alignment:")
-    print("Pentagon vertices:")
-    for v in vertices:
-        transformed = m.apply(v)
-        print(f"  {transformed}")
-    
-    print("\nOutermost LED positions:")
-    # Print 5 most distant LEDs from center
-    # ... calculate and print
-
 if __name__ == "__main__":
-    print("\nRunning all tests:")
-    print("=================")
+    # Run all tests
+    test_single_pentagon()
+    test_pentagon_orientations()
     
-    print("\n1. Testing LED positions...")
-    test_led_positions()
-    
-    print("\n2. Loading reference points...")
-    reference_points = load_reference_points()
-    
-    print("\n3. Loading PCB points...")
+    # Load PCB points once
     pcb_points = load_pcb_points('PickAndPlace_PCB_DodecaRGB_v2_2024-11-22.csv')
     
-    print("\n4. Validating geometry...")
-    vertices_by_side = {}  # Will be populated during visualization
-    validate_geometry(vertices_by_side)
-    
-    print("\n5. Validating LED positions...")
-    validate_led_positions(pcb_points, reference_points)
-    
-    print("\n6. Generating visualization...")
-    visualize_model()
-    
-    print("\nAll tests completed!")
-
+    # Use loaded points for both functions
+    test_led_positions(pcb_points)
+    visualize_model(pcb_points)

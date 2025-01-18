@@ -97,6 +97,8 @@ Follow the official ISO C++ standards and guidelines for best practices in moder
 
 The util/ directory contains python helper scripts for visualizing the physical model, generating the LED coordinates and other pre-calculation tasks, as well as importing and exporting different files used (such as CSV pick-and-place files, json, etc). 
 
+As each face of the dodecahedron is a pentagon that could be rotated in 5 different positions. This configuration is defined in the side_rotation[] array, where each side has a number 1-5 indication on of 5 possible rotations in 72 degree increments.
+
 ## Documentation
 
 - Write clear comments for classes, methods, and critical logic.
