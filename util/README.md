@@ -2,12 +2,14 @@
 
 This directory contains Python utilities for the DodecaRGB project, including tools for:
 
-- Generating and validating LED coordinates
-- Visualizing the physical model
-- Processing PCB pick-and-place files
-- Pre-calculation tasks
+- Constructing the model and LEDs in 3D space
+- Importing PCB pick-and-place files for LED placement
+- Calculating and validating LED coordinates and neighbor distances
+- Exporting LED coordinates to a C++ file (and JSON file)
 
-There is also some legacy Processing code that was originally used to generate the LED coordinates.
+The original Processing code that was used to generate the LED coordinates is in the `test_transforms.pde` file.
+
+The Matrix3D class is a Python implementation of the 3D transformation matrix operations used in the Processing. It includes a test suite and was verified against the Processing code.
 
 ## Dependencies
 

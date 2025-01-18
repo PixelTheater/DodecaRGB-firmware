@@ -7,6 +7,7 @@
 #include "animations/geography.h"
 #include "animations/color_show.h"
 #include "animations/orientation_demo.h"
+#include "animations/identify_sides.h"
 
 // Define the static member with default value
 uint8_t Animation::global_brightness = 100;  // Start at 50% brightness
@@ -53,6 +54,7 @@ std::unique_ptr<Animation> AnimationBuilder::create(const String& name) {
     }
 
 // Register all animations here
+REGISTER_ANIMATION("identify_sides", IdentifySides)
 REGISTER_ANIMATION("blobs", BlobAnimation)
 REGISTER_ANIMATION("sparkles", Sparkles)
 REGISTER_ANIMATION("xyz_scanner", XYZScanner)
