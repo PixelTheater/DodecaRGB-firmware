@@ -43,6 +43,19 @@ class Matrix3D:
                [ 0,  0, 0, 1]]
         self.m = self._multiply_matrices(self.m, rot)
 
+    def rotate_y(self, angle):
+        """Rotate around Y axis by given angle in radians"""
+        c = math.cos(angle)
+        s = math.sin(angle)
+        
+        # Y rotation matrix - corrected signs for right-handed coordinate system
+        r = [[ c,  0,  s, 0],
+             [ 0,  1,  0, 0],
+             [-s,  0,  c, 0],
+             [ 0,  0,  0, 1]]
+        
+        self.m = self._multiply_matrices(self.m, r)
+
     def _multiply_matrices(self, a, b):
         """Multiply two 4x4 matrices"""
         result = [[0 for _ in range(4)] for _ in range(4)]

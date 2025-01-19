@@ -1,8 +1,8 @@
 # DodecaRGB
 
-Dec 2024: *V2 in development!* Version two introduces higher density micro-pixels (1248 in total!) and a slightly smaller size overall.
+Dec 2024: *V2 in development!* Version two introduces higher density micro-pixels (1248 in total!) and a slightly smaller size overall. Click below to see a teaser video.
 
-![DodecaRGBv2 hero image](<images/IMG_5557.jpeg>)
+[![DodecaRGB v2 Teaser Video](https://img.youtube.com/vi/RErgt5O7D7U/0.jpg)](https://www.youtube.com/watch?v=RErgt5O7D7U)
 
 ## The Concept
 
@@ -45,18 +45,63 @@ The combination of a hand-held ball of LEDs with motion sensing opens a lot of i
 
 There is some documentation on[creating animations](creating_animations.md)
 
+## Testing
+
+The project includes unit tests for the Python utilities. To run the tests:
+
+1. From the project root directory:
+```bash
+PYTHONPATH=. python -m util.tests.run_tests
+```
+
+This will run all tests and show detailed output. Tests are located in the `util/tests` directory and include:
+- Matrix3D transformations
+- LED point calculations
+- PCB data loading
+- Core utility functions
+
+All tests must pass before submitting changes.
+
+
 ## TODOs
 
-[in progress] motion-reactive support, currently evaluating different IMU choices. Investigating options for orientation and sensitivity, ideally with guestures like tap, shake, spin, etc.
-[done] refactoring animations into modules, to help isolate and standardize the interfaces. Goal is to make it easy to add new animations, or design simple playlists.
+### 🚧 In Progress
 
-- Wireless charging (Qi) - testing larger coils and ideal PCB thickness
-[in progress] 3d modelling of interior structure
-[in progress] Motherboard PCB to mount the Teensy 4.1 and 2x 18650 batteries, together with support electronics for power, charging, level shifting, sensors, etc.
-- image loading support (per-side images, or mapping projections for globes and spherical photos)
-- optimize wiring and arrangement of connector pads
-- move Processing-based coordinate calculations to build scripts
-- Step-by-step instructions, updated with pictures (or a video)
+- 📱 Motion-reactive support
+  - Evaluating different IMU choices
+  - Investigating orientation and sensitivity options
+  - Planning gesture support (tap, shake, spin, etc.)
+- 🎨 3D modelling of interior structure
+- 🔌 Motherboard PCB development
+  - Teensy 4.1 mounting
+  - 2x 18650 battery integration
+  - Power and charging circuits
+  - Level shifting
+  - Sensor integration
+
+### 🎯 Future Plans
+
+- 🔋 Wireless charging (Qi)
+  - Testing larger coils
+  - Optimizing PCB thickness
+- 🖼️ Image loading support
+  - Per-side images
+  - Mapping projections for globes and spherical photos
+- ⚡ Hardware optimizations
+  - Optimize wiring
+  - Improve connector pad arrangement
+- 📝 Documentation
+  - Step-by-step assembly instructions with photos
+  - Video tutorial
+
+### ✅ Completed
+
+- ✓ Refactoring animations into modules
+  - Isolated and standardized interfaces
+  - Simplified playlist and animation creation
+- ✓ Migrated coordinate and code generation to Python utilities
+- ✓ Added unit tests for Python utilities
+
 
 ---
 
@@ -194,3 +239,4 @@ renders an interactive 3D model of the dodecahedron with different views, and ma
 - custom battery PCB for 18650 cells, with 3d printed frame and (perhaps) wireless charging or a charge stand with pogo pins
 - capacitive touch buttons for mode changes, or shake/roll guestures
 - rev 1.2 of PCB with larger soldering points, available in black (with black LED housings!)
+
