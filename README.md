@@ -156,6 +156,6 @@ The python utilities are documented in [util/README.md](util/README.md). This in
 
 The project includes a 3D visualizer tool to help with development and testing, and ensuring that the side configuration and point positions are correct at export time.
 
-![Visualizer Screenshot](images/visualizer.png)  # You'll need to add this image
+![Visualizer Screenshot](images/python-visualizer.png)  # You'll need to add this image
 
 Please see the [utils README.md](utils/README.md) for more information.
