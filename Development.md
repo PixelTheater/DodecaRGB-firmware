@@ -1,7 +1,6 @@
 # DodecaRGB v2 Development
 
 - There's a guide for developing animations in [creating animations](creating_animations.md).
-- [Development Environment Setup](Development.md#development-environment-setup).
 - Development standards and best practices documented in [Coding Guidelines](coding_guidelines.md).
 - The project has Python utilities for generating LED coordinates and visualizing the 3D model. For info about using them , please refer to the [Utilities README](util/README.md).
 

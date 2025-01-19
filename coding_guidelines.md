@@ -1,4 +1,4 @@
-# DodecaRGB Development Guidelines
+# DodecaRGB Coding Guidelines
 
 This serves as documentation for chosen best practices and standards that all developers should follow for this project.
 
