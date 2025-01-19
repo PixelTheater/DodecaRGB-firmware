@@ -36,10 +36,10 @@ The combination of a hand-held ball of LEDs with motion sensing opens a lot of i
 - 2-layer PCBs with the WS2812 LEDs (SMD 1615 package), decoupling capacitors and connectors
 - A Teensy 4.1 microcontroller is used to control everything
 - Level shifters (for LEDs), power regulation, battery, etc.
-- FastLED parallel support is being used (see <https://github.com/FastLED/FastLED/releases/tag/3.9.8>)
+- FastLED parallel support is being used (see <https://github.com/FastLED/FastLED/releases/tag/3.9.9>)
 - The two hemispheres of the model are wired on separate channels, using pins 19 and 18 of the Teensy, so 624 LEDs per channel. This allows for higher frame rates.
 
-- [v2 - level shifters](images/level-shifters.jpeg)
+- [v2 - level shifters](images/level-shifter.jpeg)
 - [v2 - teensy 4.1 wiring](images/teensy-41.jpeg)
 - [v2 - prototype internal wiring](images/prototype-internal.jpeg)
 
@@ -59,7 +59,7 @@ The firmware is built in C++ using the Arduino framework and FastLED library. In
   - Pre-calculated LED positions and neighbor distances
   - IMU support for motion-reactive features
 
-- **Python Utilities** (in `util/` directory):
+- **Python Utilities** (`util/` directory):
   - 3D visualization tool for development and testing
   - LED coordinate generation from PCB pick-and-place files
   - Neighbor distance calculations and validation
@@ -158,4 +158,4 @@ The project includes a 3D visualizer tool to help with development and testing, 
 
 ![Visualizer Screenshot](images/python-visualizer.png)
 
-Please see the [utils README.md](utils/README.md) for more information.
+Please see the [utils README.md](util/README.md) for more information.
