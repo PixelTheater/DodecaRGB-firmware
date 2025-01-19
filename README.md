@@ -74,9 +74,7 @@ Each LED point knows its:
 - Its nearest neighbors and their distances
 - Original PCB position and label
 
-For more details on the Python utilities and point generation process, see the [utils README](util/README.md).
-
-There is also documentation on [creating animations](creating_animations.md).
+There is a [developer overview](Development.md) as well asdocumentation on [creating animations](creating_animations.md).
 
 ## Testing
 
