@@ -59,6 +59,15 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "list": "cpp",
-        "complex": "cpp"
+        "complex": "cpp",
+        "bit": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "csignal": "cpp",
+        "unordered_set": "cpp",
+        "netfwd": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp"
     }
 }

@@ -8,6 +8,12 @@ if __name__ == "__main__":
 
 from util.matrix3d import Matrix3D
 
+# Constants shared between Python and C++
+LEDS_PER_SIDE = 104
+NUM_SIDES = 12
+NUM_LEDS = NUM_SIDES * LEDS_PER_SIDE
+MAX_LED_NEIGHBORS = 7
+
 # Constants from Processing
 TWO_PI = 2 * math.pi
 zv = TWO_PI/20  # Rotation between faces

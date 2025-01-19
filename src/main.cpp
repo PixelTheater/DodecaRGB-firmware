@@ -36,6 +36,12 @@ you will need to re-generate the point mapping using this tool.
 
 ## Change Log
 
+v2.7.0 Jan 19 2025:
+- migrated Processing visualizer and point generator to Python
+- more documentation additions and updates
+- unit tests for Python utilities
+- point distance calculations are now done in Python, and no longer need to be calculated at firmware startup
+
 v2.6.0 Jan 12 2025:
 - moved rest of animations to new framework
 - cleaned up setup, loop, and status message
@@ -80,7 +86,7 @@ v1.0 Aug 2023:
 */
 
 // LED configs
-#define VERSION "2.6.0"
+#define VERSION "2.7.0"
 #define USER_BUTTON 2
 // https://github.com/FastLED/FastLED/wiki/Parallel-Output#parallel-output-on-the-teensy-4
 // pins 19+18 are used to control two strips of 624 LEDs, for a total of 1248 LEDs
@@ -141,6 +147,19 @@ void timerStatusMessage(){
     (Animation::getBrightness() / 255.0f) * 100);
 }
 
+void fadeInSide(int side, int start_led, int end_led, int duration_ms) {
+    for (int brightness = 0; brightness <= 120; brightness += 20) {
+        for (int led = start_led; led <= end_led; ++led) {
+            int index = side * LEDS_PER_SIDE + led;
+            CRGB side_color = ColorFromPalette(RainbowColors_p, side * 255 / NUM_SIDES);
+            leds[index] = side_color;
+            leds[index].fadeToBlackBy(255 - brightness);
+        }
+        FastLED.show();
+        delay(duration_ms);  // Adjust delay to complete fade-in within the specified duration
+    }
+}
+
 void setup() {
   float temp = InternalTemperature.readTemperatureC();
   random_seed = (temp - int(temp)) * 100000; 
@@ -193,28 +212,10 @@ void setup() {
   FastLED.clear();
   FastLED.show();
 
-  // light up the center led on each sid at boot, so we know everything is working
-  for (int side=0; side<NUM_SIDES; side++){
-    leds[side*LEDS_PER_SIDE] = ColorFromPalette(RainbowColors_p, side * 255 / NUM_SIDES);
-  }
-  FastLED.show();
-
-  // init Points, pre-calculate nearest leds for each point
-  for (int p=0; p < NUM_LEDS; p++){
-    int side = p/LEDS_PER_SIDE;
-    int side_led = p%LEDS_PER_SIDE;
-
-    if (side_led == 0){
-      Serial.printf("Calculating points, side %d\n",side);
-    }
-
-    points[p].find_nearest_leds();
-
-    if (side_led > 5 && side_led < 16 ){
-      CRGB side_color =  ColorFromPalette(RainbowColors_p, side * 255 / NUM_SIDES);
-      leds[p] = side_color;
-      FastLED.show();
-    }
+  // Fade in each side in sequence
+  int fade_duration = 1;  
+  for (int side = 0; side < NUM_SIDES; ++side) {
+    fadeInSide(side, 6, 15, fade_duration);
   }
 
   Serial.println("Init done");
