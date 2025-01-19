@@ -118,6 +118,31 @@ String ansiColor = getAnsiColorString(CRGB::Red);         // Terminal color
 float brightness = get_perceived_brightness(color);
 ```
 
+## Animation Playback Modes
+
+The AnimationManager supports three playback modes that control how animations transition:
+
+```cpp
+// Auto-advance every 30 seconds
+animationManager.setPlaybackMode(PlaybackMode::ADVANCE, 30.0f);
+
+// Random animation every 15 seconds
+animationManager.setPlaybackMode(PlaybackMode::RANDOM, 15.0f);
+
+// Manual mode (only change with button press)
+animationManager.setPlaybackMode(PlaybackMode::HOLD);
+```
+
+### Available Modes
+
+- `HOLD`: Stays on current animation until manually changed (default)
+- `ADVANCE`: Automatically advances to next animation after specified hold time
+- `RANDOM`: Randomly selects next animation after specified hold time
+
+The hold time is specified in seconds. Setting a hold time of 0 in `ADVANCE` or `RANDOM` mode will require manual advancement.
+
+This is useful for creating automated displays or demo modes where you want animations to cycle automatically. The playback mode can be changed at any time during runtime.
+
 ## Best Practices
 
 ### LED Management

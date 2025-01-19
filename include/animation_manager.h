@@ -10,13 +10,23 @@
 #define REGISTER_ANIMATION(className) \
   animations.add(std::make_unique<className>())
 
+enum class PlaybackMode {
+    HOLD,           // Stay on current animation until manual advance
+    ADVANCE,        // Automatically advance through animations
+    RANDOM         // Randomly select next animation
+};
+
 class AnimationManager {
 private:
   std::vector<std::unique_ptr<Animation>> animations;
   size_t current_index = 0;
+  Animation* _currentAnimation = nullptr;
   CRGB* leds;
   const uint8_t num_sides;
   uint16_t leds_per_side;
+  PlaybackMode _playbackMode = PlaybackMode::HOLD;
+  float _holdTime = 0.0f;  // Time in seconds between animations (0 = manual advance)
+  unsigned long _lastSwitchTime = 0;
 
 public:
   AnimationManager(CRGB* leds, uint16_t num_leds, uint8_t num_sides) 
@@ -32,6 +42,9 @@ public:
       anim->init(params);
       anim->configure(leds, points, num_sides, leds_per_side);
       animations.push_back(std::move(anim));
+      if (_currentAnimation == nullptr) {
+        _currentAnimation = animations.back().get();
+      }
     }
   }
 
@@ -70,13 +83,51 @@ public:
   }
 
   void update() {
-    if (auto current = getCurrentAnimation()) {
-      current->tick();
+    if (_playbackMode != PlaybackMode::HOLD) {
+        if (_holdTime > 0 && (millis() - _lastSwitchTime) >= (_holdTime * 1000)) {
+            if (_playbackMode == PlaybackMode::ADVANCE) {
+                nextAnimation();
+            } else { // RANDOM
+                randomAnimation();
+            }
+            _lastSwitchTime = millis();
+        }
+    }
+    
+    if (_currentAnimation) {
+        _currentAnimation->tick();
     }
   }
 
   void nextAnimation() {
-    current_index = (current_index + 1) % animations.size();
+    if (!animations.empty()) {
+        current_index = (current_index + 1) % animations.size();
+        _currentAnimation = animations[current_index].get();
+    }
+  }
+
+  void setPlaybackMode(PlaybackMode mode, float holdTimeSeconds = 0.0f) {
+        _playbackMode = mode;
+        _holdTime = holdTimeSeconds;
+        _lastSwitchTime = millis();
+    }
+
+  void randomAnimation() {
+    if (animations.empty()) return;
+    
+    // If we only have one animation, nothing to randomize
+    if (animations.size() == 1) {
+        setCurrentAnimation(0);
+        return;
+    }
+    
+    // Pick a random index that's different from current
+    size_t newIndex;
+    do {
+        newIndex = random(0, animations.size());
+    } while (newIndex == current_index);
+    
+    setCurrentAnimation(newIndex);
   }
 
 };
@@ -93,5 +144,6 @@ void AnimationManager::setCurrentAnimation(const std::string& name) {
 void AnimationManager::setCurrentAnimation(size_t index) {
     if (index < animations.size()) {
         current_index = index;
+        _currentAnimation = animations[current_index].get();
     }
 }

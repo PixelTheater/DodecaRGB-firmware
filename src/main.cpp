@@ -225,7 +225,8 @@ void setup() {
   delay(100);
 
   // Add animations with default settings (order defines sequence)
-  animation_manager.add("identify_sides");
+
+  // animation_manager.add("identify_sides");
   animation_manager.add("blobs");
   animation_manager.add("xyz_scanner");  
   animation_manager.add("sparkles");
@@ -240,11 +241,12 @@ void setup() {
   animation_manager.preset("blobs", "fast");
 
   // set initial animation
-  animation_manager.setCurrentAnimation("identify_sides");
+  // animation_manager.setCurrentAnimation("identify_sides");
+
+  animation_manager.setPlaybackMode(PlaybackMode::ADVANCE, 15.0f);  // will changes animations every 15 seconds
 
 }
 
-#define NUM_MODES 7
 long interval, last_interval = 0;
 const long max_interval = 3000;
 
