@@ -5,11 +5,17 @@
 - Development standards andbest practices documented in [Guidelines.md](Guidelines.md).
 - The project has Python utilities for generating LED coordinates and visualizing the 3D model. For info about using them , please refer to the [Utilities README](util/README.md).
 
-### C++ Firmware
+## C++ Firmware
 
 We're using PlatformIO to build the firmware and manage dependencies. Just clone the repo and open the project in VSCode/Cursor/whatever.
 
-### Python Environment
+### Configurating your dodecaRGB model
+
+If for some reason you need to change the orientation settings of the PCB, you will need to change the `side_rotation` array in `util/dodeca_core.py` and re-run the Python utilities to generate the new LED coordinates, and update the `points.h` file.
+
+To configure the animation settings, look at the bottom of the `setup()` function in `src/main.cpp`, there you will find how to disable the slideshow mode, or change the order of animations. Currently, the pushbutton is configured to advance to the next animation in the list.
+
+## Python Environment
 
 If you just want to make animations, you can skip the Python environment setup.
 

@@ -22,7 +22,8 @@ xv = 1.1071     # angle between faces
 radius = 200    # Base radius for pentagon faces
 scale = 5.15    # LED position scaling factor
 
-# Side rotation configuration
+# Side rotation configuration - each number represents the number of times the pentagon PCB
+# is rotated relative to the starting position, in 72 degree increments.
 side_rotation = [
     0,  # side 0 (bottom)
     3,  # side 1
