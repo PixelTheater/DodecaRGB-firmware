@@ -1,16 +1,16 @@
 # DodecaRGB V2
 
-Dec 2024: *V2 in development!* Version two introduces higher density micro-pixels (1248 in total!) and a slightly smaller size overall. Click below to see a teaser video.
+Jan 2025: *V2 in development!* Version two introduces higher density micro-pixels (1248 in total!) and a slightly smaller size overall. Click below to see a teaser video.
 
 [![DodecaRGB v2 Teaser Video](images/yt-preview-thumb.png)](https://www.youtube.com/watch?v=RErgt5O7D7U)
 
 ## Vision
 
-Create a powerful open-source animation and interaction platform for running resolution-indpendent apps on portable, interactive 3D physical models.
+To create an awesome open-source animation and interaction platform for running resolution-indpendent apps on portable, interactive 3D physical models. And because we love making things that have lots of LEDs.
 
 ## Realization
 
-DodecaRGB V2 is a powerful, modular, high-resolution programmable blinky gadget that was made for the hacker community, especially for coders that want to do spherical animations. Typically, this is quite hard - you either need to make a spinning POV globe, or wire up custom solutions - not to mention power and performance challenges.
+DodecaRGB V2 is a modular, high-resolution programmable blinky gadget that was made for the hacker community, especially for coders that want to do spherical animations. Typically, this is quite hard - you either need to make a spinning POV globe, or wire up custom solutions - not to mention power and performance challenges.
 
 This project aims to create a standard platform for resolution-indpendent animations based on spherical models. DodecaRGB V2 is the second iteration of this platform, and serves as a reference implementation.
 
@@ -119,24 +119,19 @@ Pull requests are welcome!
 
 ### 🎯 Future Plans
 
-- 🔋 Wireless charging (Qi)
-  - Testing larger coils
-  - Optimizing PCB thickness
-- 🖼️ Image loading support
-  - Per-side images
-  - Mapping projections for globes and spherical photos
-- ⚡ Hardware optimizations
-  - Optimize wiring
-  - Improve connector pad arrangement
-- 📝 Documentation
-  - Step-by-step assembly instructions with photos
-  - Video tutorial
+- 🔋 Wireless charging (Qi), testing different coils
+  - Optimizing PCB placement for production
+- 🖼️ Image loading support (per-side images, mapping projections for globes and spherical photos)
+  - Per-side images (for each face, for UI presentation)
+- ⚡ Hardware design improvements for wiring, closure, durability, etc.
+  - Step-by-step assembly instructions with photos, or video tutorial
 
-### ✅ Completed
+### ✅ Recently Completed
 
 - ✓ Refactoring animations into modules
-  - Isolated and standardized interfaces
-  - Simplified playlist and animation creation
+- ✓ Updated and expanded documentation
+- ✓ Isolated and standardized interfaces
+  ✓  Simplified playlist and animation creation
 - ✓ Migrated coordinate and code generation to Python utilities
 - ✓ Added unit tests for Python utilities
 
