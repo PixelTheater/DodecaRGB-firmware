@@ -148,7 +148,7 @@ void timerStatusMessage(){
 }
 
 void fadeInSide(int side, int start_led, int end_led, int duration_ms) {
-    for (int brightness = 0; brightness <= 120; brightness += 20) {
+    for (int brightness = 0; brightness <= 120; brightness += 30) {
         for (int led = start_led; led <= end_led; ++led) {
             int index = side * LEDS_PER_SIDE + led;
             CRGB side_color = ColorFromPalette(RainbowColors_p, side * 255 / NUM_SIDES);
@@ -244,8 +244,9 @@ void setup() {
   // set initial animation
   // animation_manager.setCurrentAnimation("identify_sides");
 
-  animation_manager.setPlaybackMode(PlaybackMode::ADVANCE, 15.0f);  // will changes animations every 15 seconds
-
+  // animation_manager.setPlaybackMode(PlaybackMode::ADVANCE, 15.0f);  // will changes animations every 15 seconds
+  animation_manager.setPlaybackMode(PlaybackMode::RANDOM, 60.0f);  // randomly select a new animation every 60 seconds
+  // animation_manager.setPlaybackMode(PlaybackMode::HOLD);  // stays on the current animation until the button is pressed
 }
 
 long interval, last_interval = 0;
