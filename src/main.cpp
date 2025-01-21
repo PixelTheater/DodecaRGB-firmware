@@ -228,25 +228,28 @@ void setup() {
   // Add animations with default settings (order defines sequence)
 
   // animation_manager.add("identify_sides");
+  animation_manager.add("boids");
   animation_manager.add("blobs");
   animation_manager.add("xyz_scanner");  
   animation_manager.add("sparkles");
   animation_manager.add("colorshow");
   animation_manager.add("wandering_particles");
   animation_manager.add("geography");
+  animation_manager.add("identify_sides");
   animation_manager.add("orientation_demo");
+
 
   // Configure animation presets
   animation_manager.preset("sparkles", "default");
   animation_manager.preset("xyz_scanner", "fast");  // Try different speeds
   animation_manager.preset("blobs", "fast");
 
-  // set initial animation
-  // animation_manager.setCurrentAnimation("identify_sides");
-
   // animation_manager.setPlaybackMode(PlaybackMode::ADVANCE, 15.0f);  // will changes animations every 15 seconds
-  animation_manager.setPlaybackMode(PlaybackMode::RANDOM, 60.0f);  // randomly select a new animation every 60 seconds
-  // animation_manager.setPlaybackMode(PlaybackMode::HOLD);  // stays on the current animation until the button is pressed
+  // animation_manager.setPlaybackMode(PlaybackMode::RANDOM, 60.0f);  // randomly select a new animation every 60 seconds
+  animation_manager.setPlaybackMode(PlaybackMode::HOLD);  // stays on the current animation until the button is pressed
+
+  // set initial animation
+  animation_manager.setCurrentAnimation("boids");
 }
 
 long interval, last_interval = 0;

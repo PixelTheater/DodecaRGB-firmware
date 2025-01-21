@@ -27,12 +27,19 @@ project_root/
 
 Steps to register your animation:
 
-```cpp
-// In animation_builder.cpp
-#include "animations/fadein.h"
-REGISTER_ANIMATION("fadein", FadeIn)
+In `animation_builder.cpp`:
 
-// In main.cpp
+```cpp
+#include "animations/fadein.h"
+
+// ...
+
+REGISTER_ANIMATION("fadein", FadeIn)
+```
+
+In `main.cpp`:
+
+```cpp
 animation_manager.add("fadein");
 ```
 

@@ -8,6 +8,7 @@
 #include "animations/color_show.h"
 #include "animations/orientation_demo.h"
 #include "animations/identify_sides.h"
+#include "animations/boids.h"
 
 // Define the static member with default value
 uint8_t Animation::global_brightness = 100;  // Start at 50% brightness
@@ -62,3 +63,4 @@ REGISTER_ANIMATION("wandering_particles", WanderingParticles)
 REGISTER_ANIMATION("geography", Geography)
 REGISTER_ANIMATION("colorshow", ColorShow)
 REGISTER_ANIMATION("orientation_demo", OrientationDemo)
+REGISTER_ANIMATION("boids", BoidsAnimation)
