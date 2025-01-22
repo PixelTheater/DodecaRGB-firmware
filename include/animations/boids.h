@@ -10,6 +10,11 @@
 
 class Boid {
 public:
+    enum class State {
+        FOLLOWING,  // Normal flocking behavior
+        EXPLORING  // Independent exploration with random heading changes
+    };
+
     static const int sphere_r = 317;  // Same radius as blob animation
     int16_t boid_id = 0;
     CRGB color = CRGB::White;
@@ -18,6 +23,21 @@ public:
     Vector3d pos;  // Always normalized (on sphere surface)
     Vector3d vel;  // Tangent to sphere at pos
     float max_speed;
+    
+    // Add timer and state
+    State state = State::FOLLOWING;
+    uint32_t state_timer = 0;
+    static const uint32_t MIN_FOLLOW_TIME = 8000;   // 8 seconds minimum following
+    static const uint32_t MAX_FOLLOW_TIME = 12000;  // 15 seconds maximum following
+    static const uint32_t MIN_REST_TIME = 4000;     // 4 seconds minimum exploring
+    static const uint32_t MAX_REST_TIME = 8000;     // 8 seconds maximum exploring
+
+    // Add heading change timer
+    uint32_t heading_change_timer = 0;
+    static const uint32_t MIN_HEADING_TIME = 800;   // 0.8 seconds minimum between changes
+    static const uint32_t MAX_HEADING_TIME = 2000;  // 2 seconds maximum between changes
+
+    float chaos_factor = 0.3f;  // Add chaos factor with default
 
     Boid(uint16_t unique_id, float speed_limit);
     void reset(float speed_limit);
@@ -27,16 +47,18 @@ public:
     
     void applyForce(const Vector3d& force);
     void tick();
+    void updateState();  // New function to handle state changes
 
 private:
     void limitSpeed();
     // Project velocity to be tangent to sphere at current position
     void constrainToSphere();
+    void setRandomTimer();  // New helper function
 };
 
 class BoidsAnimation : public Animation {
 private:
-    static const int sphere_r = Boid::sphere_r;  // Add sphere radius constant
+    static const int sphere_r = Boid::sphere_r;
     std::vector<std::unique_ptr<Boid>> boids;
     
     // Animation parameters
@@ -47,6 +69,8 @@ private:
     float matching_factor;   // Strength of velocity matching
     float speed_limit;       // Maximum speed
     uint8_t fade_amount;     // How quickly trails fade
+    float chaos_factor;      // 0-1: How likely boids are to explore vs follow
+    uint8_t boid_size;      // Size of boid light spread in pixels
     
     // Helper functions
     void updateBoid(Boid& boid);
@@ -62,15 +86,17 @@ public:
     
     AnimParams getDefaultParams() const override {
         AnimParams p;
-        p.setInt("num_boids", 70);             // Number of boids
-        p.setFloat("visual_range", 2.0f);     // Visual range in radians
-        p.setFloat("protected_range", 0.3f);  // Protection range
-        p.setFloat("centering_factor", 0.15f);// Flocking strength
-        p.setFloat("avoid_factor", 0.2f);     // Avoidance
-        p.setFloat("matching_factor", 0.3f);  // Velocity matching
-        p.setFloat("speed_limit", 8.0f);     // Speed limit
-        p.setInt("fade", 60);                 // Trail fade rate
-        p.setPalette("palette", RainbowColors_p);
+        p.setInt("num_boids", 70);              // Number of boids
+        p.setFloat("visual_range", 0.5f);       // Visual range in radians
+        p.setFloat("protected_range", 0.25f);   // Protection range
+        p.setFloat("centering_factor", 0.10f);  // Flocking strength
+        p.setFloat("avoid_factor", 0.4f);       // Stronger avoidance
+        p.setFloat("matching_factor", 0.35f);   // Velocity matching
+        p.setFloat("speed_limit", 8.0f);        // Base speed limit
+        p.setInt("fade", 10);                   // Trail fade rate
+        p.setFloat("chaos", 0.3f);              // 30% chance to explore
+        p.setInt("size", 40);                   // Light spread radius
+        p.setPalette("palette", OceanColors_p);
         return p;
     }
 

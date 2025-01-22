@@ -7,6 +7,8 @@ Boid::Boid(uint16_t unique_id, float speed_limit) : boid_id(unique_id), max_spee
 
 void Boid::reset(float speed_limit) {
     max_speed = speed_limit;
+    state = State::FOLLOWING;
+    setRandomTimer();
     
     // Random position on sphere using uniform distribution
     float theta = random(TWO_PI * 1000) / 1000.0f;
@@ -23,6 +25,70 @@ void Boid::reset(float speed_limit) {
     vel = random_vec.cross(pos.normalized());
     vel.normalize();
     vel *= max_speed;  // Start at max speed
+}
+
+void Boid::setRandomTimer() {
+    if (state == State::FOLLOWING) {
+        state_timer = millis() + random(MIN_FOLLOW_TIME, MAX_FOLLOW_TIME);
+    } else {
+        state_timer = millis() + random(MIN_REST_TIME, MAX_REST_TIME);
+        // Set first heading change timer
+        heading_change_timer = millis() + random(MIN_HEADING_TIME, MAX_HEADING_TIME);
+    }
+}
+
+void Boid::updateState() {
+    uint32_t now = millis();
+    
+    // Check for state changes
+    if (now > state_timer) {
+        if (state == State::FOLLOWING) {
+            // Use chaos_factor to determine if we should explore
+            if (random(1000) < chaos_factor * 1000) {
+                state = State::EXPLORING;
+                // Give initial push in random direction when starting to explore
+                float angle = random(-120, 120) * PI / 180.0f;
+                Vector3d up = pos.normalized();
+                Vector3d right = vel.cross(up).normalized();
+                Vector3d forward = up.cross(right);
+                
+                Matrix3d rot;
+                float c = cos(angle);
+                float s = sin(angle);
+                rot << c, -s, 0,
+                       s,  c, 0,
+                       0,  0, 1;
+                
+                vel = (rot * forward).normalized() * (max_speed * 1.2f);
+            } else {
+                // Stay following but reset timer
+                setRandomTimer();
+            }
+        } else {
+            state = State::FOLLOWING;
+            vel *= 0.8f;
+        }
+        setRandomTimer();
+    }
+    
+    // When exploring, make more dramatic heading changes
+    if (state == State::EXPLORING && now > heading_change_timer) {
+        float angle = random(-90, 90) * PI / 180.0f;  // ±90 degrees
+        Vector3d up = pos.normalized();
+        Vector3d right = vel.cross(up).normalized();
+        Vector3d forward = up.cross(right);
+        
+        Matrix3d rot;
+        float c = cos(angle);
+        float s = sin(angle);
+        rot << c, -s, 0,
+               s,  c, 0,
+               0,  0, 1;
+        
+        vel = (rot * forward).normalized() * (max_speed * 1.2f);  // Maintain higher speed
+        
+        heading_change_timer = now + random(MIN_HEADING_TIME, MAX_HEADING_TIME);
+    }
 }
 
 void Boid::getSphericalCoords(float& a, float& c) const {
@@ -44,6 +110,8 @@ void Boid::constrainToSphere() {
 }
 
 void Boid::tick() {
+    updateState();  // Check if we need to change states
+    
     // Constant velocity tangent to sphere
     if (vel.norm() < 0.001f) {
         // Initialize velocity if it's zero
@@ -71,14 +139,17 @@ void BoidsAnimation::init(const AnimParams& params) {
     matching_factor = params.getFloat("matching_factor", 0.1f);
     speed_limit = params.getFloat("speed_limit", 0.02f);
     fade_amount = params.getInt("fade", 5);
+    chaos_factor = params.getFloat("chaos", 0.3f);
+    boid_size = params.getInt("size", 25);
     
     // Get palette for colors
-    const CRGBPalette16 palette = params.getPalette("palette", RainbowColors_p);
+    const CRGBPalette16 palette = params.getPalette("palette", basePalette);
     
     // Create boids with unique colors
     boids.clear();
     for (int i = 0; i < num_boids; i++) {
         auto boid = std::make_unique<Boid>(i, speed_limit);
+        boid->chaos_factor = chaos_factor;  // Pass chaos factor to boid
         boid->color = ColorFromPalette(palette, i * (256 / num_boids));
         boids.push_back(std::move(boid));
     }
@@ -168,15 +239,14 @@ void BoidsAnimation::drawBoid(const Boid& boid) {
         if (visited.find(led) != visited.end()) continue;
         visited.insert(led);
         
-        // Light this LED based on network distance from center
-        if (dist < 25) {  // Reduced from 60 to 35
-            // Steeper falloff curve using square of distance
-            float falloff = 1.0f - (dist * dist) / (35.0f * 35.0f);
-            uint8_t brightness = 255 * falloff;
+        // Use boid_size parameter for light spread
+        if (dist < boid_size) {
+            float falloff = 1.0f - (dist * dist) / (float)(boid_size * boid_size);
+            uint8_t brightness = 128 * falloff;
             
             CRGB new_color = boid.color;
             new_color.nscale8(brightness);
-            nblend(leds[led], new_color, 192);
+            nblend(leds[led], new_color, 96);
             
             // Add neighbors with accumulated distances
             for (const auto& neighbor : points[led].neighbors) {
@@ -197,9 +267,87 @@ void Boid::limitSpeed() {
 }
 
 void BoidsAnimation::tick() {
-    // Just update and draw boids, no flocking behavior
+    // Calculate flocking forces for each boid
     for (auto& boid : boids) {
+        // Only apply flocking forces if the boid is following
+        if (boid->state == Boid::State::FOLLOWING) {
+            Vector3d center(0, 0, 0);
+            Vector3d avoid(0, 0, 0);
+            Vector3d match_vel(0, 0, 0);
+            Vector3d explorer_attraction(0, 0, 0);  // New force toward explorers
+            int neighbors = 0;
+            int explorer_count = 0;
+            
+            // Look at all other boids
+            for (auto& other : boids) {
+                if (other->boid_id == boid->boid_id) continue;
+                
+                float dist = sphericalDistance(*boid, *other);
+                
+                // Separation - avoid getting too close (from all boids)
+                if (dist < protected_range * sphere_r) {
+                    Vector3d diff = boid->pos - other->pos;
+                    diff.normalize();
+                    avoid += diff / dist;
+                }
+                
+                if (other->state == Boid::State::EXPLORING) {
+                    // Strong attraction to explorers at medium range
+                    if (dist < visual_range * sphere_r * 1.5f) {  // 50% larger range for seeing explorers
+                        Vector3d to_explorer = other->pos - boid->pos;
+                        to_explorer.normalize();
+                        explorer_attraction += to_explorer;
+                        explorer_count++;
+                    }
+                } else {
+                    // Normal flocking with other followers
+                    if (dist < visual_range * sphere_r) {
+                        center += other->pos;
+                        match_vel += other->vel;
+                        neighbors++;
+                    }
+                }
+            }
+            
+            // Apply flocking forces
+            if (neighbors > 0) {
+                // Reduced cohesion and alignment when explorers are present
+                float explorer_factor = explorer_count > 0 ? 0.5f : 1.0f;
+                
+                // Cohesion - move toward center of neighbors
+                center /= neighbors;
+                Vector3d cohesion = center - boid->pos;
+                cohesion.normalize();
+                cohesion *= centering_factor * explorer_factor;
+                boid->applyForce(cohesion);
+                
+                // Alignment - match velocity of neighbors
+                match_vel /= neighbors;
+                match_vel.normalize();
+                match_vel *= matching_factor * explorer_factor;
+                boid->applyForce(match_vel);
+            }
+            
+            // Apply explorer attraction force
+            if (explorer_count > 0) {
+                explorer_attraction.normalize();
+                explorer_attraction *= centering_factor * 1.5f;  // Stronger attraction to explorers
+                boid->applyForce(explorer_attraction);
+            }
+            
+            // Apply separation force
+            if (avoid.norm() > 0) {
+                avoid.normalize();
+                avoid *= avoid_factor;
+                boid->applyForce(avoid);
+            }
+        }
+        
         boid->tick();
+    }
+    
+    // Draw all boids
+    for (auto& boid : boids) {
         drawBoid(*boid);
     }
     
@@ -212,14 +360,16 @@ String BoidsAnimation::getStatus() const {
     output.printf("Ranges: Visual %.2f  Protected %.2f\n", 
         visual_range, protected_range);
     
+    int following = 0, exploring = 0;
     for (const auto& boid : boids) {
         float a, c;
         boid->getSphericalCoords(a, c);
         output.print(getAnsiColorString(boid->color));
-        output.printf(" Boid %d: pos(%.1f, %.1f)\n",
-            boid->boid_id, 
-            a * 180/PI, c * 180/PI);
+        output.printf(" %c", boid->state == Boid::State::FOLLOWING ? 'F' : 'E');
+        if (boid->state == Boid::State::FOLLOWING) following++; else exploring++;
     }
+    output.println("");
+    output.printf("States: %d Following, %d Exploring\n", following, exploring);
     return output.get();
 }
 
