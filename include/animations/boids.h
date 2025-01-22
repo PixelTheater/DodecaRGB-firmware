@@ -71,6 +71,7 @@ private:
     uint8_t fade_amount;     // How quickly trails fade
     float chaos_factor;      // 0-1: How likely boids are to explore vs follow
     uint8_t boid_size;      // Size of boid light spread in pixels
+    float intensity;        // Overall brightness and blend intensity
     
     // Helper functions
     void updateBoid(Boid& boid);
@@ -86,17 +87,18 @@ public:
     
     AnimParams getDefaultParams() const override {
         AnimParams p;
-        p.setInt("num_boids", 70);              // Number of boids
+        p.setInt("num_boids", 50);              // Number of boids
         p.setFloat("visual_range", 0.5f);       // Visual range in radians
-        p.setFloat("protected_range", 0.25f);   // Protection range
+        p.setFloat("protected_range", 0.15f);   // Protection range
         p.setFloat("centering_factor", 0.10f);  // Flocking strength
-        p.setFloat("avoid_factor", 0.4f);       // Stronger avoidance
-        p.setFloat("matching_factor", 0.35f);   // Velocity matching
-        p.setFloat("speed_limit", 8.0f);        // Base speed limit
-        p.setInt("fade", 10);                   // Trail fade rate
-        p.setFloat("chaos", 0.3f);              // 30% chance to explore
-        p.setInt("size", 40);                   // Light spread radius
-        p.setPalette("palette", OceanColors_p);
+        p.setFloat("avoid_factor", 2.4f);       // Stronger avoidance
+        p.setFloat("matching_factor", 0.25f);   // Velocity matching
+        p.setFloat("speed_limit", 2.5f);        // Base speed limit
+        p.setInt("fade", 2);                   // Trail fade rate
+        p.setFloat("chaos", 0.4f);              // 30% chance to explore
+        p.setInt("size", 90);                   // Size as percentage of sphere radius
+        p.setFloat("intensity", 0.3f);         // Overall brightness (0-1)
+        p.setPalette("palette", CloudColors_p);
         return p;
     }
 

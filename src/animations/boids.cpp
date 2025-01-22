@@ -141,6 +141,7 @@ void BoidsAnimation::init(const AnimParams& params) {
     fade_amount = params.getInt("fade", 5);
     chaos_factor = params.getFloat("chaos", 0.3f);
     boid_size = params.getInt("size", 25);
+    intensity = params.getFloat("intensity", 0.8f);
     
     // Get palette for colors
     const CRGBPalette16 palette = params.getPalette("palette", basePalette);
@@ -215,47 +216,78 @@ bool BoidsAnimation::pointInTriangle(const Vector3d& p, const Vector3d& a, const
 }
 
 void BoidsAnimation::drawBoid(const Boid& boid) {
-    // First find the closest LED to the boid
-    int center_led = 0;
+    // Find all LEDs within range of boid's actual position
+    std::vector<std::pair<float, int>> leds_to_light;
+    
+    // Convert size parameter to physical units (sphere_r = 317)
+    float physical_size = (boid_size / 100.0f) * sphere_r;  // Now size 100 = ~1/3 of sphere radius
+    
+    // Start with closest LED to get a reasonable starting point
     float min_dist = 1e9;
+    int start_led = 0;
     for (int i = 0; i < numLeds(); i++) {
         Vector3d led_pos(points[i].x, points[i].y, points[i].z);
         float dist = (led_pos - boid.pos).norm();
         if (dist < min_dist) {
             min_dist = dist;
-            center_led = i;
+            start_led = i;
         }
     }
     
-    // Now spread out from center LED using neighbor distances
+    // Flood fill from start LED, but calculate actual distances from boid position
     std::set<int> visited;
-    std::queue<std::pair<int, float>> to_visit;
-    to_visit.push({center_led, 0});
+    std::queue<int> to_visit;
+    to_visit.push(start_led);
     
     while (!to_visit.empty()) {
-        auto [led, dist] = to_visit.front();
+        int led = to_visit.front();
         to_visit.pop();
         
         if (visited.find(led) != visited.end()) continue;
         visited.insert(led);
         
-        // Use boid_size parameter for light spread
-        if (dist < boid_size) {
-            float falloff = 1.0f - (dist * dist) / (float)(boid_size * boid_size);
-            uint8_t brightness = 128 * falloff;
+        // Calculate true distance from boid position
+        Vector3d led_pos(points[led].x, points[led].y, points[led].z);
+        float dist = (led_pos - boid.pos).norm();
+        
+        if (dist < physical_size) {  // Use scaled size
+            // Store distance and LED for sorted rendering
+            leds_to_light.push_back({dist, led});
             
-            CRGB new_color = boid.color;
-            new_color.nscale8(brightness);
-            nblend(leds[led], new_color, 96);
-            
-            // Add neighbors with accumulated distances
+            // Add unvisited neighbors
             for (const auto& neighbor : points[led].neighbors) {
                 if (visited.find(neighbor.led_number) == visited.end()) {
-                    float new_dist = dist + neighbor.distance;
-                    to_visit.push({neighbor.led_number, new_dist});
+                    to_visit.push(neighbor.led_number);
                 }
             }
         }
+    }
+    
+    // Sort by distance for consistent rendering
+    std::sort(leds_to_light.begin(), leds_to_light.end());
+    
+    // Render all affected LEDs using true distances
+    for (const auto& [dist, led] : leds_to_light) {
+        // Smoother falloff using cubic easing
+        float x = dist / physical_size;  // Use scaled size
+        float falloff = 1.0f - (x * x * (3 - 2 * x));  // Smoothstep function
+        
+        // Apply intensity to both brightness and blend amount
+        uint8_t brightness = 255 * falloff * intensity;
+        uint8_t blend_amount = 192 * falloff * intensity;
+        
+        // Color mixing based on distance
+        CRGB new_color = boid.color;
+        if (x > 0.5) {
+            // Shift hue slightly for outer edges
+            CHSV hsv = rgb2hsv_approximate(new_color);
+            hsv.hue += 8;  // Subtle hue shift
+            hsv.sat = qadd8(hsv.sat, 32);  // Increase saturation slightly
+            new_color = hsv;
+        }
+        
+        new_color.nscale8(brightness);
+        nblend(leds[led], new_color, blend_amount);
     }
 }
 
