@@ -85,12 +85,17 @@ uint32_t colorDistance(const CRGB& c1, const CRGB& c2) {
 // Helper functions
 
 // Function to convert RGB to ANSI 24-bit color codes
-String getAnsiColorString(const CRGB& color) {
+String getAnsiColorString(const CRGB& color, const char c) {  // default char is space
     char buf[64];
+    CHSV inverted = rgb2hsv_approximate(color);
+    inverted.v = 255 - inverted.v;
+    CRGB invertedRGB = hsv2rgb_spectrum(inverted);
     snprintf(buf, sizeof(buf), 
-        "\033[38;2;%d;%d;%dm\033[48;2;%d;%d;%dm  \033[0m",
-        color.r, color.g, color.b,  // foreground
-        color.r, color.g, color.b); // background
+        //"\033[38;2;%d;%d;%dm\033[48;2;%d;%d;%dm%c\033[0m",  // ANSI color escape sequences
+        "\033[48;2;%d;%d;%dm%c\033[0m",  // ANSI color escape sequences
+        //invertedRGB.r, invertedRGB.g, invertedRGB.b,  // foreground
+        color.r, color.g, color.b,  // background
+        c); // character
     return String(buf);
 }
 

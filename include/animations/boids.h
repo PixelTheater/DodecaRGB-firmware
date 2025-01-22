@@ -87,18 +87,18 @@ public:
     
     AnimParams getDefaultParams() const override {
         AnimParams p;
-        p.setInt("num_boids", 50);              // Number of boids
-        p.setFloat("visual_range", 0.5f);       // Visual range in radians
-        p.setFloat("protected_range", 0.15f);   // Protection range
-        p.setFloat("centering_factor", 0.10f);  // Flocking strength
-        p.setFloat("avoid_factor", 2.4f);       // Stronger avoidance
-        p.setFloat("matching_factor", 0.25f);   // Velocity matching
-        p.setFloat("speed_limit", 2.5f);        // Base speed limit
-        p.setInt("fade", 2);                   // Trail fade rate
-        p.setFloat("chaos", 0.4f);              // 30% chance to explore
-        p.setInt("size", 90);                   // Size as percentage of sphere radius
-        p.setFloat("intensity", 0.3f);         // Overall brightness (0-1)
-        p.setPalette("palette", CloudColors_p);
+        p.setInt("num_boids", 80);              // Number of boids in simulation [10-150]
+        p.setFloat("visual_range", 0.90f);        // How far boids can see others, in radians [0.1-2.0]
+        p.setFloat("protected_range", 0.75);    // Minimum distance between boids [0.05-0.5]
+        p.setFloat("centering_factor", 0.10);   // How strongly boids move toward flock center [0.0-1.0]
+        p.setFloat("avoid_factor", 0.45f);       // How strongly boids avoid each other [0.0-1.0]
+        p.setFloat("matching_factor", 0.25);    // How strongly boids match neighbors' velocity [0.0-1.0]
+        p.setFloat("speed_limit", 5.0f);         // Maximum movement speed per frame [1.0-15.0]
+        p.setInt("fade", 25);                    // How quickly trails fade out [1-100]
+        p.setFloat("chaos", 0.25f);               // Probability of random movement [0.0-1.0]
+        p.setInt("size", 20);                    // Boid size as % of sphere radius [5-100]
+        p.setFloat("intensity", 0.60f);          // LED brightness multiplier [0.0-1.0]
+        p.setPalette("palette", OceanColors_p);  // Color palette for the boids
         return p;
     }
 

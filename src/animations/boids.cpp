@@ -97,6 +97,13 @@ void Boid::getSphericalCoords(float& a, float& c) const {
     a = atan2(norm_pos.y(), norm_pos.x());
 }
 
+void Boid::limitSpeed() {
+    float speed = vel.norm();
+    if (speed > max_speed) {
+        vel *= max_speed / speed;
+    }
+}
+
 void Boid::applyForce(const Vector3d& force) {
     vel += force;
     limitSpeed();
@@ -215,175 +222,144 @@ bool BoidsAnimation::pointInTriangle(const Vector3d& p, const Vector3d& a, const
     return (u >= 0) && (v >= 0) && (w >= 0) && (u + v + w <= 1.1f);  // Small epsilon for floating point
 }
 
-void BoidsAnimation::drawBoid(const Boid& boid) {
-    // Find all LEDs within range of boid's actual position
-    std::vector<std::pair<float, int>> leds_to_light;
-    
-    // Convert size parameter to physical units (sphere_r = 317)
-    float physical_size = (boid_size / 100.0f) * sphere_r;  // Now size 100 = ~1/3 of sphere radius
-    
-    // Start with closest LED to get a reasonable starting point
-    float min_dist = 1e9;
-    int start_led = 0;
-    for (int i = 0; i < numLeds(); i++) {
-        Vector3d led_pos(points[i].x, points[i].y, points[i].z);
-        float dist = (led_pos - boid.pos).norm();
-        if (dist < min_dist) {
-            min_dist = dist;
-            start_led = i;
-        }
-    }
-    
-    // Flood fill from start LED, but calculate actual distances from boid position
-    std::set<int> visited;
-    std::queue<int> to_visit;
-    to_visit.push(start_led);
-    
-    while (!to_visit.empty()) {
-        int led = to_visit.front();
-        to_visit.pop();
-        
-        if (visited.find(led) != visited.end()) continue;
-        visited.insert(led);
-        
-        // Calculate true distance from boid position
-        Vector3d led_pos(points[led].x, points[led].y, points[led].z);
-        float dist = (led_pos - boid.pos).norm();
-        
-        if (dist < physical_size) {  // Use scaled size
-            // Store distance and LED for sorted rendering
-            leds_to_light.push_back({dist, led});
-            
-            // Add unvisited neighbors
-            for (const auto& neighbor : points[led].neighbors) {
-                if (visited.find(neighbor.led_number) == visited.end()) {
-                    to_visit.push(neighbor.led_number);
-                }
-            }
-        }
-    }
-    
-    // Sort by distance for consistent rendering
-    std::sort(leds_to_light.begin(), leds_to_light.end());
-    
-    // Render all affected LEDs using true distances
-    for (const auto& [dist, led] : leds_to_light) {
-        // Smoother falloff using cubic easing
-        float x = dist / physical_size;  // Use scaled size
-        float falloff = 1.0f - (x * x * (3 - 2 * x));  // Smoothstep function
-        
-        // Apply intensity to both brightness and blend amount
-        uint8_t brightness = 255 * falloff * intensity;
-        uint8_t blend_amount = 192 * falloff * intensity;
-        
-        // Color mixing based on distance
-        CRGB new_color = boid.color;
-        if (x > 0.5) {
-            // Shift hue slightly for outer edges
-            CHSV hsv = rgb2hsv_approximate(new_color);
-            hsv.hue += 8;  // Subtle hue shift
-            hsv.sat = qadd8(hsv.sat, 32);  // Increase saturation slightly
-            new_color = hsv;
-        }
-        
-        new_color.nscale8(brightness);
-        nblend(leds[led], new_color, blend_amount);
-    }
-}
-
-void Boid::limitSpeed() {
-    float speed = vel.norm();
-    if (speed > max_speed) {
-        vel *= max_speed / speed;
-    }
-}
+struct BoidCone {
+    Vector3d pos_dir;     // Normalized position vector
+    Vector3d vel_dir;     // Normalized velocity vector
+    float cos_angle;      // Cosine of cone angle
+    CRGB color;
+    float intensity;
+};
 
 void BoidsAnimation::tick() {
-    // Calculate flocking forces for each boid
+    // Update boid physics first
     for (auto& boid : boids) {
         // Only apply flocking forces if the boid is following
         if (boid->state == Boid::State::FOLLOWING) {
             Vector3d center(0, 0, 0);
             Vector3d avoid(0, 0, 0);
-            Vector3d match_vel(0, 0, 0);
-            Vector3d explorer_attraction(0, 0, 0);  // New force toward explorers
+            Vector3d match(0, 0, 0);
             int neighbors = 0;
-            int explorer_count = 0;
             
-            // Look at all other boids
-            for (auto& other : boids) {
-                if (other->boid_id == boid->boid_id) continue;
-                
-                float dist = sphericalDistance(*boid, *other);
-                
-                // Separation - avoid getting too close (from all boids)
-                if (dist < protected_range * sphere_r) {
-                    Vector3d diff = boid->pos - other->pos;
-                    diff.normalize();
-                    avoid += diff / dist;
-                }
-                
-                if (other->state == Boid::State::EXPLORING) {
-                    // Strong attraction to explorers at medium range
-                    if (dist < visual_range * sphere_r * 1.5f) {  // 50% larger range for seeing explorers
-                        Vector3d to_explorer = other->pos - boid->pos;
-                        to_explorer.normalize();
-                        explorer_attraction += to_explorer;
-                        explorer_count++;
-                    }
-                } else {
-                    // Normal flocking with other followers
-                    if (dist < visual_range * sphere_r) {
+            // Calculate flocking forces from other boids
+            for (const auto& other : boids) {
+                if (other.get() != boid.get()) {
+                    float dist = sphericalDistance(*boid, *other);
+                    
+                    if (dist < visual_range) {
+                        // Cohesion - move towards center of neighbors
                         center += other->pos;
-                        match_vel += other->vel;
+                        
+                        // Velocity matching
+                        match += other->vel;
+                        
                         neighbors++;
+                        
+                        // Separation - avoid crowding
+                        if (dist < protected_range) {
+                            avoid += (boid->pos - other->pos).normalized() / dist;
+                        }
                     }
                 }
             }
             
-            // Apply flocking forces
+            // Apply flocking forces if we have neighbors
             if (neighbors > 0) {
-                // Reduced cohesion and alignment when explorers are present
-                float explorer_factor = explorer_count > 0 ? 0.5f : 1.0f;
+                // Cohesion force - normalize and scale
+                center = center / neighbors - boid->pos;
+                center.normalize();
+                center *= centering_factor;
                 
-                // Cohesion - move toward center of neighbors
-                center /= neighbors;
-                Vector3d cohesion = center - boid->pos;
-                cohesion.normalize();
-                cohesion *= centering_factor * explorer_factor;
-                boid->applyForce(cohesion);
+                // Matching force - normalize and scale
+                match = match / neighbors;
+                match.normalize();
+                match *= matching_factor;
                 
-                // Alignment - match velocity of neighbors
-                match_vel /= neighbors;
-                match_vel.normalize();
-                match_vel *= matching_factor * explorer_factor;
-                boid->applyForce(match_vel);
-            }
-            
-            // Apply explorer attraction force
-            if (explorer_count > 0) {
-                explorer_attraction.normalize();
-                explorer_attraction *= centering_factor * 1.5f;  // Stronger attraction to explorers
-                boid->applyForce(explorer_attraction);
-            }
-            
-            // Apply separation force
-            if (avoid.norm() > 0) {
+                // Avoid force is already normalized by distance
                 avoid.normalize();
                 avoid *= avoid_factor;
-                boid->applyForce(avoid);
+                
+                // Apply combined forces
+                boid->applyForce(center + avoid + match);
             }
         }
         
+        // Update boid position and state
         boid->tick();
     }
     
-    // Draw all boids
-    for (auto& boid : boids) {
-        drawBoid(*boid);
+    // Pre-calculate boid data
+    struct BoidData {
+        Vector3d dir;      // Normalized position
+        Vector3d vel_dir;  // Normalized velocity
+        float cos_angle;   // Cone angle cosine
+        CRGB color;
+    };
+    
+    std::vector<BoidData> boid_data;
+    boid_data.reserve(boids.size());
+    
+    float cone_angle = (boid_size / 100.0f) * 0.8f;
+    float cos_cone = cos(cone_angle);
+    
+    for (const auto& boid : boids) {
+        boid_data.push_back({
+            boid->pos.normalized(),
+            boid->vel.normalized(),
+            cos_cone,
+            boid->color
+        });
     }
     
-    fadeToBlackBy(leds, numLeds(), fade_amount);
+    // Process each LED once - like a shader
+    for (int i = 0; i < numLeds(); i++) {
+        Vector3d led_dir(points[i].x, points[i].y, points[i].z);
+        led_dir.normalize();
+        
+        // Start with faded version of current color
+        CRGB pixel_color = leds[i];
+        pixel_color.nscale8(255 - fade_amount);
+        
+        // Track number of influencing boids and accumulate hue
+        uint8_t num_influencers = 0;
+        uint16_t hue_sum = 0;
+        float brightness_sum = 0;
+        
+        // Check intersection with each boid's cone
+        for (const auto& boid : boid_data) {
+            float cos_angle = led_dir.dot(boid.dir);
+            
+            if (cos_angle > boid.cos_angle) {
+                // Inside cone - calculate smooth falloff from center
+                float t = (cos_angle - boid.cos_angle) / (1.0f - boid.cos_angle);
+                float brightness = t * t;  // Quadratic falloff
+                
+                // Add directional component
+                float vel_align = led_dir.dot(boid.vel_dir);
+                brightness *= (vel_align * 0.15f + 1.0f);
+                
+                // Get hue from boid color and accumulate
+                CHSV hsv = rgb2hsv_approximate(boid.color);
+                hue_sum += hsv.hue;
+                brightness_sum += brightness;
+                num_influencers++;
+            }
+        }
+        
+        // If we have any influencers, create final color
+        if (num_influencers > 0) {
+            CHSV hsv;
+            hsv.hue = hue_sum / num_influencers;  // Average hue
+            hsv.sat = 255;  // Full saturation
+            // Scale brightness by number of influencers and intensity
+            hsv.val = constrain((brightness_sum * 255.0f * intensity) / num_influencers, 0, 255);
+            
+            // Convert back to RGB and add to faded pixel
+            pixel_color += CRGB(hsv);
+        }
+        
+        // Write final color
+        leds[i] = pixel_color;
+    }
 }
 
 String BoidsAnimation::getStatus() const {
@@ -396,8 +372,8 @@ String BoidsAnimation::getStatus() const {
     for (const auto& boid : boids) {
         float a, c;
         boid->getSphericalCoords(a, c);
-        output.print(getAnsiColorString(boid->color));
-        output.printf(" %c", boid->state == Boid::State::FOLLOWING ? 'F' : 'E');
+        char status_char = boid->state == Boid::State::FOLLOWING ? '^' : '?';
+        output.print(getAnsiColorString(boid->color, status_char));
         if (boid->state == Boid::State::FOLLOWING) following++; else exploring++;
     }
     output.println("");
@@ -406,5 +382,8 @@ String BoidsAnimation::getStatus() const {
 }
 
 float BoidsAnimation::sphericalDistance(const Boid& b1, const Boid& b2) const {
-    return (b1.pos - b2.pos).norm();
+    // Should be great circle distance:
+    Vector3d dir1 = b1.pos.normalized();
+    Vector3d dir2 = b2.pos.normalized();
+    return acos(dir1.dot(dir2));
 } 

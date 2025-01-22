@@ -14,7 +14,7 @@ extern const ColorName colorLookup[];
 extern const size_t numLookupColors;
 
 // Color utility functions
-String getAnsiColorString(const CRGB& color);
+String getAnsiColorString(const CRGB& color, const char c = ' ');
 String getClosestColorName(const CRGB& color);
 uint32_t colorDistance(const CRGB& c1, const CRGB& c2);
 
