@@ -2,7 +2,6 @@
 #include <Wire.h>
 #include <InternalTemperature.h>
 #include <cmath>
-#define FASTLED_USES_OBJECTFLED
 #include <FastLED.h>
 
 #include "points.h"
@@ -35,6 +34,10 @@ renders an interactive 3D model of the dodecahedron. To change your dodecahedron
 you will need to re-generate the point mapping using this tool.
 
 ## Change Log
+
+v2.7.1 Jan 22 2025:
+- added new boids (flocking) animation
+- updated FastLED to 3.9.12
 
 v2.7.0 Jan 19 2025:
 - migrated Processing visualizer and point generator to Python
