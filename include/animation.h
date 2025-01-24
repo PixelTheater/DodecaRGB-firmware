@@ -71,3 +71,35 @@ protected:
     static uint8_t global_brightness;  // 0-255 brightness for all animations
 };
 
+// Core parameter and range definitions
+class Range {
+public:
+    static const Range Ratio;      // 0.0 to 1.0
+    static const Range SignedRatio; // -1.0 to 1.0
+    static const Range Percent;    // 0 to 100
+    static const Range Angle;      // 0 to TWO_PI
+    static const Range SignedAngle; // -PI to PI
+
+    float min;
+    float max;
+    
+    Range(float min, float max) : min(min), max(max) {}
+};
+
+// Parameter builder with fluent interface
+class ParamBuilder {
+public:
+    ParamBuilder& range(const Range& r);
+    ParamBuilder& float_(float min, float max);
+    ParamBuilder& int_(int min, int max);
+    ParamBuilder& default_(float value);
+    ParamBuilder& palette();
+    ParamBuilder& boolean();
+private:
+    String name;
+    float min_value;
+    float max_value;
+    float default_value;
+    bool has_default = false;
+};
+
