@@ -35,10 +35,14 @@ class LED_Point {
     float x;
     float y;
     float z;
+    uint8_t face;           // Which pentagon face (0-11)
+    uint8_t face_index;     // Index within face (0-103)
+    std::vector<Neighbor> neighbors;  // Physical wiring neighbors
+  
     int side;       // which of the 12 sides it's on
     int label_num;  // which LED on the side (they are labelled)
   
-    std::vector<distance_map> neighbors;
+    std::vector<distance_map> neighbors_map;
 
     // Constructor with neighbors data
     LED_Point(
@@ -56,6 +60,10 @@ class LED_Point {
     float distance_to(float x, float y, float z);
     float distance_to(LED_Point *p);
     float distanceFrom(float x, float y, float z);
+
+    // Hardware-specific helpers
+    int16_t distanceTo(const LED_Point& other) const;
+    bool isNeighbor(uint16_t led_number) const;
 };
 
 extern LED_Point points[];

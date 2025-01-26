@@ -1,0 +1,30 @@
+{
+    "name": "DodecaRGB",
+    "version": "2.0.0",
+    "description": "LED animation framework for dodecahedron display",
+    "keywords": "led, animation, fastled, teensy",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yourusername/DodecaRGB-firmware"
+    },
+    "authors": [
+        {
+            "name": "Your Name",
+            "email": "your.email@example.com"
+        }
+    ],
+    "dependencies": {
+        "fastled/FastLED": "~3.9.12"
+    },
+    "frameworks": ["arduino", "native"],
+    "platforms": ["native", "teensy"],
+    "export": {
+        "exclude": [
+            "test",
+            "util"
+        ]
+    },
+    "build": {
+        "includeDir": "lib"
+    }
+} 

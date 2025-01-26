@@ -26,6 +26,7 @@ htmlcov/
 *~
 .DS_Store
 .direnv
+backups/
 
 # SketchUp
 *\~.skp
