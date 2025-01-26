@@ -6,129 +6,9 @@ The project is built in C++ and uses the Arduino framework, FastLED, and several
 
 The DodecaRGB firmware can load multiple animations and switch between them. Each animation is like a small shader program - it runs every frame and updates the LED colors based where it is on the display. This happens 50+ times per second, and the addressable LEDs are updated in parallel. The animation framework provides common functionality and patterns for defining animations, handling settings, presets, playlists, color palettes, status messages, and more.
 
-The framework follows a simple structure: `Animation` (base class) ← `YourAnimation` (implementation) ← `AnimationManager` (controls flow) with `AnimationParams` for configuration.
 
 ## Getting Started
 
-Animations work through a simple lifecycle: they're registered with the system, initialized with parameters, and then their `tick()` function is called every frame to update the LEDs. The `tick()` function should be fast and efficient, typically just looping through the LEDs to update their colors. Think of it like a shader - it's called frequently and needs to be performant.
-
-Here's how things are structured in the source tree:
-
-```text
-project_root/
-├── include/
-│   └── animations/
-│       └── fadein.h            # Your new animation's header file
-└── src/
-    ├── animation_builder.cpp   # Register your animation here
-    └── animations/
-        └── fadein.cpp          # Your new animation's implementation file
-```
-
-Steps to register your animation:
-
-In `animation_builder.cpp`:
-
-```cpp
-#include "animations/fadein.h"
-
-// ...
-
-REGISTER_ANIMATION("fadein", FadeIn)
-```
-
-In `main.cpp`:
-
-```cpp
-animation_manager.add("fadein");
-```
-
-## Implementing an Animation
-
-Each animation needs a header and implementation file. Here's a basic example:
-
-```cpp
-// fadein.h
-class FadeIn : public Animation {
-  private:
-    float speed;
-    uint32_t counter = 0;
-    CRGBPalette16 palette;
-
-  public:
-    void init(const AnimParams& params) override;
-    void tick() override;
-    String getStatus() const override;
-    const char* getName() const override { return "fadein"; }
-};
-```
-
-```cpp
-// fadein.cpp
-void FadeIn::init(const AnimParams& params) {
-    speed = params.getFloat("speed", 1.0f);
-    palette = params.getPalette("palette", RainbowColors_p);
-}
-
-void FadeIn::tick() {
-    fadeToBlackBy(leds, numLeds(), 40);  // Prevent brightness accumulation
-    
-    float position = counter * speed;
-    for(int i = 0; i < numLeds(); i++) {
-        CRGB color = ColorFromPalette(palette, 
-            position + i * 16,    // Offset each LED
-            sin8(position));      // Modulate brightness
-        nblend(leds[i], color, 128);
-    }
-    counter++;
-}
-
-String FadeIn::getStatus() const {
-    output.printf("Speed: %.2f Pos: %.1f\n", speed, float(counter * speed));
-    output.print(getAnsiColorString(leds[0]));
-    return output.get();
-}
-```
-
-## Working with Parameters
-
-Animation parameters allow customization through key-value storage. This is useful when you have an animation that can be used in different ways. Here's how to define and use them:
-
-```cpp
-// In animations/myanimation.h
-class MyAnimation : public Animation {
-private:
-    float _speed;
-    int _brightness;
-    CRGBPalette16 _palette;
-
-public:
-    AnimParams getDefaultParams() override {
-        return {
-            {"speed", "1.0"},
-            {"brightness", "255"},
-            {"palette", "RainbowColors_p"}
-        };
-    }
-
-    void init(const AnimParams& params) override {
-        _speed = params.getFloat("speed", 1.0f);
-        _brightness = params.getInt("brightness", 255);
-        _palette = params.getPalette("palette", RainbowColors_p);
-    }
-};
-
-// In main.cpp or where you set up animations
-animation_manager.add("myanimation");  // Uses default parameters
-
-// Or with a specific preset
-animation_manager.preset("myanimation", "fast", {
-    {"speed", "2.5"},
-    {"brightness", "200"}
-});
-```
-
-Each animation can define its default parameters in `getDefaultParams()`, and these can be overridden when adding the animation to the manager or by applying presets later.
 
 ## Color Palettes
 
@@ -146,48 +26,12 @@ String ansiColor = getAnsiColorString(CRGB::Red);         // Terminal color
 float brightness = get_perceived_brightness(color);
 ```
 
-## Animation Playback and Playlists
-
-In main.cpp, you define your animation playlist and control how animations play back. Here's how to set up and control animations:
-
-```cpp
-// In main.cpp - Build your playlist
-animation_manager.add("rainbow");     // Uses default parameters
-animation_manager.add("sparkle");     // Uses default parameters
-
-// Customize an animation with a preset
-animation_manager.preset("rainbow", "fast", {
-    {"speed", "2.0"},
-    {"brightness", "200"}
-});
-
-// Control playback behavior
-animation_manager.setPlaybackMode(PlaybackMode::HOLD);        // Stay on current (default)
-animation_manager.setPlaybackMode(PlaybackMode::ADVANCE, 30); // Next every 30 seconds
-animation_manager.setPlaybackMode(PlaybackMode::RANDOM, 15);  // Random every 15 seconds
-
-// Manual control is always available
-animation_manager.nextAnimation();           // Go to next
-animation_manager.randomAnimation();         // Jump to random
-animation_manager.setCurrentAnimation(2);    // Jump to specific index
-animation_manager.setCurrentAnimation("rainbow"); // Jump to named animation
-
-// Query current state
-String current = animation_manager.getCurrentAnimationName();
-String status = animation_manager.getCurrentStatus();
-size_t index = animation_manager.getCurrentAnimationIndex();
-size_t count = animation_manager.getPlaylistLength();
-```
 
 ### Playback Modes
 
 - `HOLD`: Stays on current animation until manually changed (default)
 - `ADVANCE`: Automatically advances through playlist in order
 - `RANDOM`: Randomly selects next animation from playlist
-
-The second parameter to `setPlaybackMode()` specifies the hold time in seconds. A hold time of 0 means manual advancement only.
-
-This system makes it easy to create dynamic displays that automatically cycle through animations, or to build interactive controls that manually advance through the playlist.
 
 ## Best Practices
 
@@ -211,127 +55,17 @@ This system makes it easy to create dynamic displays that automatically cycle th
 - `leds_per_side`: LEDs per face
 - `num_sides`: Number of faces (12)
 
-### Status Reporting
 
-The Animation base class provides an `output` object for building status messages that appear in the serial terminal:
 
-```cpp
-String getStatus() const override {
-    // Basic info with printf-style formatting
-    output.printf("Speed: %.2f\n", _speed);
-    
-    // Color previews with ANSI codes
-    output.print(getAnsiColorString(_primary_color));
-    output.printf(" Primary: %s\n", getClosestColorName(_primary_color).c_str());
-    
-    return output.get();  // Returns and clears buffer
-}
-```
-
-The `output` object supports printf-style formatting, print/println, and automatic buffer management. There are also helper functions for color previews via `getAnsiColorString()`, and color name lookup via `getClosestColorName()`.
-
-### Working with Neighbors
-
-Each LED in the `points[]` array has pre-calculated neighbor data, allowing for fast implementation of effects that spread across the surface:
-
-```cpp
-void createRipple(int center_led, float radius) {
-    for (const auto& neighbor : points[center_led].neighbors) {
-        if (neighbor.distance <= radius) {
-            float brightness = 255 * (1.0f - neighbor.distance/radius);
-            leds[neighbor.led_number].fadeToBlackBy(255 - brightness);
-        }
-    }
-}
-```
-
-### Distance Calculations
-
-The `points[]` array provides distance calculation methods for creating spatial effects. For performance, calculate distances once during initialization when possible:
-
-```cpp
-class WaveAnimation : public Animation {
-private:
-    std::vector<float> _distances;
-    
-    void init(const AnimParams& params) override {
-        // Pre-calculate distances from center
-        _distances.resize(NUM_LEDS);
-        for (int i = 0; i < NUM_LEDS; i++) {
-            _distances[i] = points[i].distance_to(
-                points[NUM_LEDS/2].x,
-                points[NUM_LEDS/2].y,
-                points[NUM_LEDS/2].z
-            );
-        }
-    }
-    
-    void tick() override {
-        for (int i = 0; i < NUM_LEDS; i++) {
-            float wave = sin(_counter * _speed - _distances[i]);
-            leds[i] = CHSV(_distances[i] * 5, 255, wave * 255);
-        }
-    }
-};
-```
 
 ## Animation Strategies
 
 ### Time and Motion
 
-```cpp
-class WaveAnimation : public Animation {
-private:
-    float speed;
-    uint32_t counter = 0;
-    
-public:
-    void init(const AnimParams& params) override {
-        speed = params.getFloat("speed", 1.0f);  // Adjustable speed
-    }
-    
-    void tick() override {
-        float timePosition = counter * speed;  // Smooth time-based motion
-        
-        for(int i = 0; i < numLeds(); i++) {
-            // Create wave pattern using time
-            uint8_t brightness = sin8(timePosition + i * 16);
-            leds[i] = CRGB(brightness, brightness, brightness);
-        }
-        counter++;
-    }
-};
-```
+
 
 ### Palette-Based Colors
 
-```cpp
-class PaletteWave : public Animation {
-private:
-    CRGBPalette16 palette;
-    uint32_t counter = 0;
-    
-public:
-    void init(const AnimParams& params) override {
-        // Get palette parameter or use default
-        palette = params.getPalette("palette", RainbowColors_p);
-    }
-    
-    void tick() override {
-        // Clear previous frame
-        fadeToBlackBy(leds, numLeds(), 40);
-        
-        for(int i = 0; i < numLeds(); i++) {
-            // Use palette to create smooth color transitions
-            uint8_t colorIndex = counter + i * 2;
-            uint8_t brightness = sin8(counter + i * 4);
-            CRGB color = ColorFromPalette(palette, colorIndex, brightness);
-            leds[i] = color;
-        }
-        counter++;
-    }
-};
-```
 
 ### Random Effects
 
@@ -434,3 +168,11 @@ It helps to imagine a sphere inscribed in the DodecaRGB, with the center of the 
 ![DodecaRGB Sphere](images/dodeca-sphere.png)
 
 See the `Blob` animation for an example of orbital movement using spherical coordinates, and `XYZScanner` for cartesian coordinate scanning effects.
+
+## Scene Lifecycle
+
+Each animation goes through the following initialization sequence:
+
+... TODO
+
+
