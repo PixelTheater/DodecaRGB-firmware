@@ -1,5 +1,6 @@
 # Core dependencies
 numpy~=2.2.1             # For numerical operations and array handling
+pyyaml~=6.0.1           # For YAML parsing
 
 # Visualization and UI
 matplotlib~=3.10.0       # For plotting and visualization
