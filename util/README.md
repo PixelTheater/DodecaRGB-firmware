@@ -15,7 +15,17 @@ The Matrix3D class is a Python implementation of the 3D transformation matrix op
 
 ### Python Environment Setup
 
-See [the project README](../README.md) for details on how to set up the Python environment. As usual, you can use `pip` to install the dependencies.
+Install required Python packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+This will install all dependencies needed for:
+
+- Code generation utilities
+- 3D visualization tools
+- Development tools (linting, testing)
 
 ## Usage
 
