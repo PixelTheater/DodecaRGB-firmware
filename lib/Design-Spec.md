@@ -193,14 +193,89 @@ props:
 Standard parameter types with their ranges:
 
 ```cpp
+// Value Types
 Ratio       // float 0..1 (intensities, sizes)
 SignedRatio // float -1..1 (speeds, factors)
 Angle       // float 0..PI (rotations)
 SignedAngle // float -PI..PI (relative angles)
 Count       // int 0..max (quantities)
 Range       // float/int min..max (custom ranges)
+Switch      // bool false/true (toggles)
+Select      // int with named values (choices)
+
+// Resource Types
 Palette     // string (name of palette resource)
 Bitmap      // string (name of bitmap resource)
+```
+
+Ranges have a minimum and maximum value, and a default value. If no default value is provided, the range's minimum value is used (or 0.0 for signed ranges).
+
+Switch parameters are simple boolean toggles that default to false. Select parameters map named values to integers, useful for choosing between different modes or behaviors:
+
+```yaml
+parameters:
+  auto_rotate:  # Switch example
+    type: Switch
+    default: false
+    description: "Enable auto-rotation"
+
+  chaos:        # Select example
+    type: Select
+    values:     # Maps names to values
+      - none      # Position 0 = no particles
+      - mild      # Position 1 = few particles
+      - wild      # Position 2 = many particles
+    default: none
+    description: "Chaos level affects particle behavior"
+
+  direction:    # Select with explicit values
+    type: Select
+    values:
+      clockwise: 1     # Explicit value mapping
+      counter: -1
+      random: 0
+    default: clockwise
+    description: "Rotation direction and speed"
+```
+
+Manual configuration in scene code:
+
+```cpp
+void config() override {
+    // Switch - simple boolean toggle
+    param("auto_rotate", Switch, false);  // name, type, default
+
+    // Select - sequential positions (0,1,2)
+    param("chaos", Select, {
+        "none",     // Position 0
+        "mild",     // Position 1
+        "wild"      // Position 2
+    }, "none");    // default selection
+
+    // Select - with explicit values
+    param("direction", Select, {
+        {"clockwise", 1},   // Name maps to value
+        {"counter", -1},
+        {"random", 0}
+    }, "clockwise");       // default selection
+}
+```
+
+Usage in scene code:
+
+```cpp
+void tick() override {
+    // Switch usage
+    if (settings<bool>("auto_rotate")) {
+        // Auto-rotation enabled
+    }
+
+    // Select usage - get position (0,1,2)
+    int chaos_level = settings<int>("chaos");
+    
+    // Select usage - get mapped value (-1,0,1)
+    int direction = settings<int>("direction");
+}
 ```
 
 Parameter flags modify behavior:

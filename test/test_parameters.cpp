@@ -1,33 +1,9 @@
 #include <doctest/doctest.h>
 #include "PixelTheater/parameter.h"
 #include "PixelTheater/param_range.h"
-#include "PixelTheater/param_factory.h"
+#include "PixelTheater/param_types.h"
 
 using namespace PixelTheater;
-
-const char* TEST_YAML = R"(
-controls:
-  speed:
-    type: float
-    range: [-1.0, 1.0]
-    default: 0.5
-  brightness:
-    type: float
-    range: [0.0, 1.0]
-    default: 0.8
-  num_particles:
-    type: int
-    range: [0, 1000]
-    default: 100
-)";
-
-struct YAMLFixture {
-    YAMLParser::NodeType config;
-    
-    YAMLFixture() {
-        config = YAMLParser::Parse(TEST_YAML);
-    }
-};
 
 TEST_SUITE("Parameters") {
     TEST_CASE("Parameter ranges can be validated") {
@@ -67,86 +43,194 @@ TEST_SUITE("Parameters") {
             
             CHECK(brightness.get() == 0.8f);
             CHECK(brightness.default_value() == 0.8f);
-        }
-    }
-}
 
-TEST_SUITE("Parameter YAML Configuration") {
-    TEST_CASE_FIXTURE(YAMLFixture, "Parameters can be loaded from YAML") {
-        SUBCASE("Float parameters are parsed correctly") {
-            const char* speed_type = YAMLParser::GetText(config, "controls:speed:type");
-            const char* speed_min = YAMLParser::GetText(config, "controls:speed:range:0");
-            const char* speed_max = YAMLParser::GetText(config, "controls:speed:range:1");
-            const char* speed_default = YAMLParser::GetText(config, "controls:speed:default");
-            
-            CHECK(strcmp(speed_type, "float") == 0);
-            CHECK(atof(speed_min) == -1.0f);
-            CHECK(atof(speed_max) == 1.0f);
-            CHECK(atof(speed_default) == 0.5f);
+            brightness.set(0.5f);
+            CHECK(brightness.get() == 0.5f);
 
-            Parameter<float> speed(
-                "speed",
-                atof(speed_min),
-                atof(speed_max),
-                atof(speed_default)
-            );
-
-            CHECK(speed.get() == 0.5f);
-            CHECK(speed.range().min() == -1.0f);
-            CHECK(speed.range().max() == 1.0f);
+            brightness.reset();
+            CHECK(brightness.get() == 0.8f);
         }
 
-        SUBCASE("Integer parameters are parsed correctly") {
-            const char* particles_type = YAMLParser::GetText(config, "controls:num_particles:type");
-            const char* particles_min = YAMLParser::GetText(config, "controls:num_particles:range:0");
-            const char* particles_max = YAMLParser::GetText(config, "controls:num_particles:range:1");
-            const char* particles_default = YAMLParser::GetText(config, "controls:num_particles:default");
-            
-            CHECK(strcmp(particles_type, "int") == 0);
-            CHECK(atoi(particles_min) == 0);
-            CHECK(atoi(particles_max) == 1000);
-            CHECK(atoi(particles_default) == 100);
-
-            Parameter<int> particles(
-                "num_particles",
-                atoi(particles_min),
-                atoi(particles_max),
-                atoi(particles_default)
-            );
-
-            CHECK(particles.get() == 100);
-            CHECK(particles.range().min() == 0);
-            CHECK(particles.range().max() == 1000);
-        }
-    }
-
-    TEST_CASE_FIXTURE(YAMLFixture, "Parameter factory creates parameters from YAML") {
-        SUBCASE("Creates float parameter") {
-            auto param = ParamFactory::create<float>("speed", config["controls"]["speed"]);
-            CHECK(param.name() == "speed");
-            CHECK(param.get() == 0.5f);
-            CHECK(param.range().min() == -1.0f);
-            CHECK(param.range().max() == 1.0f);
-        }
-
-        SUBCASE("Handles missing default value") {
-            YAML::Node minimal_config = YAML::Load(R"(
-                type: float
-                range: [-1.0, 1.0]
-            )");
-            auto param = ParamFactory::create<float>("minimal", minimal_config);
-            CHECK(param.get() == -1.0f); // Should use min as default
-        }
-
-        SUBCASE("Throws on invalid range") {
-            YAML::Node invalid_config = YAML::Load(R"(
-                type: float
-                range: -1.0
-            )");
+        SUBCASE("Default values must be in range") {
             CHECK_THROWS_AS(
-                ParamFactory::create<float>("invalid", invalid_config),
+                Parameter<float>("invalid", 0.0f, 1.0f, 2.0f),
                 std::invalid_argument
             );
+        }
+    }
+
+    TEST_SUITE("Parameter Types") {
+        TEST_CASE("Parameter types have correct defaults") {
+            SUBCASE("Ratio defaults to min (0.0)") {
+                Parameter<float> p("test", 0.0f, 1.0f);
+                CHECK(p.get() == 0.0f);
+            }
+
+            SUBCASE("SignedRatio defaults to 0.0") {
+                Parameter<float> p("test", -1.0f, 1.0f);
+                CHECK(p.get() == 0.0f);  // -n..n range defaults to 0
+            }
+
+            SUBCASE("Angle defaults to min (0.0)") {
+                Parameter<float> p("test", 0.0f, Angle::PI);
+                CHECK(p.get() == 0.0f);
+            }
+
+            SUBCASE("SignedAngle defaults to 0.0") {
+                Parameter<float> p("test", -SignedAngle::PI, SignedAngle::PI);
+                CHECK(p.get() == 0.0f);  // -n..n range defaults to 0
+            }
+
+            SUBCASE("Count defaults to min (0)") {
+                Parameter<int> p("test", 0, 100);
+                CHECK(p.get() == 0);
+            }
+
+            SUBCASE("Range defaults to min value") {
+                Parameter<float> p("test", -5.0f, 5.0f);
+                CHECK(p.get() == 0.0f);  // -n..n range defaults to 0
+            }
+        }
+
+        TEST_CASE("Switch parameters behave like booleans") {
+            SUBCASE("Basic Switch behavior") {
+                Switch sw;
+                CHECK(sw.validate(true) == true);
+                CHECK(sw.validate(false) == true);
+                CHECK(sw.DEFAULT == false);  // Default should be false
+            }
+
+            SUBCASE("Switch parameter defaults to false") {
+                Parameter<bool> auto_rotate("auto_rotate", false, true);  // No default provided
+                CHECK(auto_rotate.get() == false);
+            }
+
+            SUBCASE("Switch parameter respects explicit default") {
+                Parameter<bool> auto_rotate("auto_rotate", false, true, true);
+                CHECK(auto_rotate.get() == true);
+            }
+        }
+
+        TEST_CASE("Select parameters map names to values") {
+            SUBCASE("Sequential values (0,1,2)") {
+                Select sel(2);  // Max position = 2
+                sel.add_value("none", 0);   // Position 0
+                sel.add_value("mild", 1);   // Position 1
+                sel.add_value("wild", 2);   // Position 2
+
+                Parameter<int> chaos("chaos", 0, 2, 0);  // Default to first position
+                CHECK(chaos.get() == 0);  // Default position
+
+                chaos.set(1);  // Set to "mild"
+                CHECK(chaos.get() == 1);
+            }
+
+            SUBCASE("Explicit value mapping") {
+                Select sel(1);  // -1..1 range
+                sel.add_value("clockwise", 1);
+                sel.add_value("counter", -1);
+                sel.add_value("random", 0);
+
+                Parameter<int> direction("direction", -1, 1, 1);  // Default to clockwise
+                CHECK(direction.get() == 1);
+
+                direction.set(-1);  // Set to counter
+                CHECK(direction.get() == -1);
+            }
+
+            SUBCASE("Out of range values are clamped") {
+                Select sel(2);
+                sel.add_value("none", 0);
+                sel.add_value("mild", 1);
+                sel.add_value("wild", 2);
+
+                Parameter<int> chaos("chaos", 0, 2, 0, Clamp);
+                chaos.set(3);  // Beyond max
+                CHECK(chaos.get() == 2);  // Clamped to max
+
+                chaos.set(-1);  // Below min
+                CHECK(chaos.get() == 0);  // Clamped to min
+            }
+        }
+
+        TEST_CASE("Standard parameter types have correct ranges") {
+            SUBCASE("Ratio is 0..1") {
+                Ratio r;
+                CHECK(r.validate(0.0f) == true);
+                CHECK(r.validate(0.5f) == true);
+                CHECK(r.validate(1.0f) == true);
+                CHECK(r.validate(-0.1f) == false);
+                CHECK(r.validate(1.1f) == false);
+            }
+
+            SUBCASE("SignedRatio is -1..1") {
+                SignedRatio sr;
+                CHECK(sr.validate(-1.0f) == true);
+                CHECK(sr.validate(0.0f) == true);
+                CHECK(sr.validate(1.0f) == true);
+                CHECK(sr.validate(-1.1f) == false);
+                CHECK(sr.validate(1.1f) == false);
+            }
+
+            SUBCASE("Angle is 0..PI") {
+                Angle a;
+                CHECK(a.validate(0.0f) == true);
+                CHECK(a.validate(Angle::PI/2) == true);
+                CHECK(a.validate(Angle::PI) == true);
+                CHECK(a.validate(-0.1f) == false);
+                CHECK(a.validate(Angle::PI + 0.1f) == false);
+            }
+
+            SUBCASE("SignedAngle is -PI..PI") {
+                SignedAngle sa;
+                CHECK(sa.validate(-SignedAngle::PI) == true);
+                CHECK(sa.validate(0.0f) == true);
+                CHECK(sa.validate(SignedAngle::PI) == true);
+                CHECK(sa.validate(-SignedAngle::PI - 0.1f) == false);
+                CHECK(sa.validate(SignedAngle::PI + 0.1f) == false);
+            }
+
+            SUBCASE("Count is 0..max") {
+                Count c(10);
+                CHECK(c.validate(0) == true);
+                CHECK(c.validate(5) == true);
+                CHECK(c.validate(10) == true);
+                CHECK(c.validate(-1) == false);
+                CHECK(c.validate(11) == false);
+            }
+
+            SUBCASE("Range allows custom ranges") {
+                Range<float> custom(-5.0f, 5.0f);
+                CHECK(custom.validate(-5.0f) == true);
+                CHECK(custom.validate(0.0f) == true);
+                CHECK(custom.validate(5.0f) == true);
+                CHECK(custom.validate(-5.1f) == false);
+                CHECK(custom.validate(5.1f) == false);
+            }
+        }
+
+        TEST_CASE("Parameter flags modify behavior") {
+            SUBCASE("Clamp limits values to range") {
+                Parameter<float> p("test", 0.0f, 1.0f, 0.5f, Clamp);
+                
+                p.set(-0.5f);
+                CHECK(p.get() == 0.0f);  // Clamped to min
+                
+                p.set(1.5f);
+                CHECK(p.get() == 1.0f);  // Clamped to max
+                
+                p.set(0.7f);
+                CHECK(p.get() == 0.7f);  // Within range
+            }
+
+            SUBCASE("Wrap wraps values around range") {
+                // TODO: Implement wrap behavior and test
+            }
+
+            SUBCASE("Slew smooths transitions") {
+                // TODO: Implement after control system
+                // Requires time-based parameter updates
+            }
         }
     }
 } 

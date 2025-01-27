@@ -52,6 +52,7 @@ and connected point graphs.
 - Prefer `std::optional`, `std::variant`, and `std::any` for type-safe alternatives.
 - Use `constexpr` and `const` to optimize compile-time computations.
 - Use `std::string_view` for read-only string operations to avoid unnecessary copies.
+- Use `std::map` for key-value pairs. Prefer `std::unordered_map` for faster lookups, and use `at()` to access values over `[]` to avoid silent failures.
 
 ### Syntax and Formatting
 
