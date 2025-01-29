@@ -320,7 +320,7 @@ The Director is responsible for selecting and transitioning between scenes. It c
 
 Props are binary assets (palettes, bitmaps) that can be:
 
-- Scene-specific: /scenes/<scene>/props/
+- Scene-specific: `/scenes/<scene>/props/`
 - Global: defined in props.yaml
 
 ### LED Coordinates
@@ -402,3 +402,18 @@ TEST_CASE_FIXTURE(SpaceSceneFixture, "Scene parameters work") {
 ```
 
 The doctest framework and PlatformIO's toolchains are used for testing. The native test environment only tests the library code, not the hardware. That means the arduino framework and FastLED are mocked out. 
+
+// Generated palette_data.h
+namespace PixelTheater {
+    // Each palette is a separate const struct
+    constexpr struct {
+        const uint8_t data[12] = {
+            0,   255, 0,   0,    // red
+            128, 0,   255, 0,    // green
+            255, 0,   0,   255   // blue
+        };
+    } PALETTE_RAINBOW;
+
+    // Simple lookup returns pointer to palette data
+    const uint8_t* get_palette(const char* name);
+} 
