@@ -152,3 +152,10 @@ The project includes a 3D visualizer tool to help with development and testing, 
 ![Visualizer Screenshot](images/python-visualizer.png)
 
 Please see the [utils README.md](util/README.md) for more information.
+
+
+## Further Inspiration
+
+- [What I learned from making a dodecahedron](https://www.youtube.com/watch?v=pcV9YAWSDRE) by the fabulous Dave Darko - honestly the video that got me addicted to this project
+- [Designing a Dodecahedron](https://www.youtube.com/watch?v=vR6oae0s6_M) in OnShape
+- [Geometry - Platonic Solids](https://www.cosmic-core.org/free/article-42-geometry-platonic-solids-part-3-spherical-stereographic-solids/) - great for learning about the geometry of the dodecahedron

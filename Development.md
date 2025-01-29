@@ -45,12 +45,12 @@ In your project root directory:
 cp .env.example .env
 cp .envrc.example .envrc
 
-# Allow direnv for this directory
-direnv allow .
-
 # Create and activate virtual environment
 /opt/homebrew/opt/python@3.12/bin/python3.12 -m venv venv
 source venv/bin/activate
+
+# Allow direnv for this directory
+direnv allow .
 
 # Install requirements
 pip install -r util/requirements.txt
@@ -91,9 +91,3 @@ brew uninstall python-tk@3.12
 brew install python@3.12 --with-tcl-tk
 ```
 
-## Further Inspiration
-
-- [What I learned from making a dodecahedron](https://www.youtube.com/watch?v=pcV9YAWSDRE) by the fabulous Dave Darko - honestly the video that got me addicted to this project
-- [Designing a Dodecahedron](https://www.youtube.com/watch?v=vR6oae0s6_M) in OnShape
-- [Geometry - Platonic Solids](https://www.cosmic-core.org/free/article-42-geometry-platonic-solids-part-3-spherical-stereographic-solids/) - great for learning about the geometry of the dodecahedron
-- 
