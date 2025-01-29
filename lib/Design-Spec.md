@@ -403,6 +403,7 @@ TEST_CASE_FIXTURE(SpaceSceneFixture, "Scene parameters work") {
 
 The doctest framework and PlatformIO's toolchains are used for testing. The native test environment only tests the library code, not the hardware. That means the arduino framework and FastLED are mocked out. 
 
+```
 // Generated palette_data.h
 namespace PixelTheater {
     // Each palette is a separate const struct
@@ -417,3 +418,4 @@ namespace PixelTheater {
     // Simple lookup returns pointer to palette data
     const uint8_t* get_palette(const char* name);
 } 
+```
