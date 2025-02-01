@@ -1,11 +1,132 @@
 #include <doctest/doctest.h>
 #include "PixelTheater/parameter.h"
-#include "PixelTheater/param_range.h"
-#include "PixelTheater/param_types.h"
 
 using namespace PixelTheater;
 
 TEST_SUITE("Parameters") {
+    TEST_CASE("Parameters handle basic types") {
+        SUBCASE("Boolean parameters") {
+            Parameter<bool> param("test", false, true, true);
+            CHECK(param.get() == true);  // Default value
+            
+            param.set(false);
+            CHECK(param.get() == false);
+            
+            param.reset();
+            CHECK(param.get() == true);  // Back to default
+        }
+
+        SUBCASE("Integer parameters") {
+            Parameter<int> param("test", 0, 100, 50);
+            CHECK(param.get() == 50);
+            
+            CHECK(param.set(75));  // Valid value
+            CHECK(!param.set(200)); // Invalid value
+            CHECK(param.get() == 75);
+        }
+
+        SUBCASE("Float parameters") {
+            Parameter<float> param("test", 0.0f, 1.0f, 0.5f);
+            CHECK(param.get() == doctest::Approx(0.5f));
+            
+            CHECK(param.set(0.75f));  // Valid value
+            CHECK(!param.set(2.0f));  // Invalid value
+            CHECK(param.get() == doctest::Approx(0.75f));
+        }
+    }
+
+    TEST_CASE("Parameters enforce ranges") {
+        SUBCASE("Integer ranges") {
+            Parameter<int> param("test", -10, 10, 0);
+            CHECK(param.set(5));   // Within range
+            CHECK(!param.set(20)); // Above max
+            CHECK(!param.set(-20)); // Below min
+        }
+
+        SUBCASE("Float ranges") {
+            Parameter<float> param("test", -1.0f, 1.0f, 0.0f);
+            CHECK(param.set(0.5f));    // Within range
+            CHECK(!param.set(1.5f));   // Above max
+            CHECK(!param.set(-1.5f));  // Below min
+        }
+    }
+
+    TEST_CASE("Parameters handle flags") {
+        SUBCASE("Flags can be queried") {
+            Parameter<float> p("test", 0.0f, 1.0f, 0.5f, Flags::CLAMP);
+            CHECK(Flags::has_flag(p.flags(), Flags::CLAMP));
+            CHECK(!Flags::has_flag(p.flags(), Flags::WRAP));
+        }
+
+        SUBCASE("Multiple flags") {
+            Parameter<float> p("test", 0.0f, 1.0f, 0.5f, Flags::CLAMP | Flags::SLEW);
+            CHECK(Flags::has_flag(p.flags(), Flags::CLAMP));
+            CHECK(Flags::has_flag(p.flags(), Flags::SLEW));
+            CHECK(!Flags::has_flag(p.flags(), Flags::WRAP));
+        }
+
+        SUBCASE("Flag names are readable") {
+            CHECK(std::string(Flags::get_name(Flags::CLAMP)) == "clamp");
+            CHECK(std::string(Flags::get_name(Flags::WRAP)) == "wrap");
+            CHECK(std::string(Flags::get_name(Flags::SLEW)) == "slew");
+        }
+    }
+
+    TEST_CASE("Parameter definitions can be created") {
+        SUBCASE("Switch parameters") {
+            constexpr ParamDef params[] = {
+                PARAM_SWITCH("auto_rotate", true, "Enable auto rotation"),
+            };
+            CHECK(params[0].bool_default == true);
+            CHECK(params[0].type == ParamType::switch_type);
+        }
+
+        SUBCASE("Range parameters") {
+            constexpr ParamDef params[] = {
+                PARAM_RANGE("gravity", -1.0f, 2.0f, -0.8f, Flags::WRAP, "Gravity control"),
+                PARAM_COUNT("particles", 10, 1000, 100, Flags::CLAMP, "Number of particles"),
+            };
+            CHECK(params[0].range_min == -1.0f);
+            CHECK(params[0].range_max == 2.0f);
+            CHECK(params[0].default_val == -0.8f);
+            CHECK(params[1].range_min_i == 10);
+            CHECK(params[1].range_max_i == 1000);
+            CHECK(params[1].default_val_i == 100);
+        }
+
+        SUBCASE("Select parameters") {
+            static constexpr const char* const pattern_options[] = {
+                "sphere", "fountain", "cascade", nullptr
+            };
+            
+            constexpr ParamDef params[] = {
+                {
+                    "pattern",
+                    ParamType::select,
+                    {
+                        .default_idx = 0,
+                        .options = pattern_options
+                    },
+                    Flags::NONE,
+                    "Pattern type"
+                }
+            };
+            CHECK(params[0].default_idx == 0);
+            CHECK(std::string(params[0].options[0]) == "sphere");
+            CHECK(std::string(params[0].options[1]) == "fountain");
+            CHECK(std::string(params[0].options[2]) == "cascade");
+            CHECK(params[0].options[3] == nullptr);  // Null terminated
+        }
+
+        SUBCASE("Resource parameters") {
+            constexpr ParamDef params[] = {
+                PARAM_PALETTE("palette", "rainbow", "Color scheme"),
+            };
+            CHECK(std::string(params[0].str_default) == "rainbow");
+            CHECK(params[0].type == ParamType::palette);
+        }
+    }
+
     TEST_CASE("Parameter ranges can be validated") {
         SUBCASE("Float parameters respect their ranges") {
             ParamRange<float> ratio_range(0.0f, 1.0f);
@@ -72,12 +193,12 @@ TEST_SUITE("Parameters") {
             }
 
             SUBCASE("Angle defaults to min (0.0)") {
-                Parameter<float> p("test", 0.0f, Angle::PI);
+                Parameter<float> p("test", 0.0f, Constants::PI);
                 CHECK(p.get() == 0.0f);
             }
 
             SUBCASE("SignedAngle defaults to 0.0") {
-                Parameter<float> p("test", -SignedAngle::PI, SignedAngle::PI);
+                Parameter<float> p("test", -Constants::PI, Constants::PI);
                 CHECK(p.get() == 0.0f);  // -n..n range defaults to 0
             }
 
@@ -118,7 +239,7 @@ TEST_SUITE("Parameters") {
                 sel.add_value("mild", 1);   // Position 1
                 sel.add_value("wild", 2);   // Position 2
 
-                Parameter<int> chaos("chaos", 0, 2, 0);  // Default to first position
+                Parameter<int> chaos("chaos", 0, 2, 0, Flags::CLAMP);
                 CHECK(chaos.get() == 0);  // Default position
 
                 chaos.set(1);  // Set to "mild"
@@ -144,7 +265,7 @@ TEST_SUITE("Parameters") {
                 sel.add_value("mild", 1);
                 sel.add_value("wild", 2);
 
-                Parameter<int> chaos("chaos", 0, 2, 0, Clamp);
+                Parameter<int> chaos("chaos", 0, 2, 0, Flags::CLAMP);
                 chaos.set(3);  // Beyond max
                 CHECK(chaos.get() == 2);  // Clamped to max
 
@@ -175,19 +296,19 @@ TEST_SUITE("Parameters") {
             SUBCASE("Angle is 0..PI") {
                 Angle a;
                 CHECK(a.validate(0.0f) == true);
-                CHECK(a.validate(Angle::PI/2) == true);
-                CHECK(a.validate(Angle::PI) == true);
+                CHECK(a.validate(Constants::PI/2) == true);
+                CHECK(a.validate(Constants::PI) == true);
                 CHECK(a.validate(-0.1f) == false);
-                CHECK(a.validate(Angle::PI + 0.1f) == false);
+                CHECK(a.validate(Constants::PI + 0.1f) == false);
             }
 
             SUBCASE("SignedAngle is -PI..PI") {
                 SignedAngle sa;
-                CHECK(sa.validate(-SignedAngle::PI) == true);
+                CHECK(sa.validate(-Constants::PI) == true);
                 CHECK(sa.validate(0.0f) == true);
-                CHECK(sa.validate(SignedAngle::PI) == true);
-                CHECK(sa.validate(-SignedAngle::PI - 0.1f) == false);
-                CHECK(sa.validate(SignedAngle::PI + 0.1f) == false);
+                CHECK(sa.validate(Constants::PI) == true);
+                CHECK(sa.validate(-Constants::PI - 0.1f) == false);
+                CHECK(sa.validate(Constants::PI + 0.1f) == false);
             }
 
             SUBCASE("Count is 0..max") {
@@ -211,7 +332,7 @@ TEST_SUITE("Parameters") {
 
         TEST_CASE("Parameter flags modify behavior") {
             SUBCASE("Clamp limits values to range") {
-                Parameter<float> p("test", 0.0f, 1.0f, 0.5f, Clamp);
+                Parameter<float> p("test", 0.0f, 1.0f, 0.5f, Flags::CLAMP);
                 
                 p.set(-0.5f);
                 CHECK(p.get() == 0.0f);  // Clamped to min
@@ -223,13 +344,18 @@ TEST_SUITE("Parameters") {
                 CHECK(p.get() == 0.7f);  // Within range
             }
 
-            SUBCASE("Wrap wraps values around range") {
-                // TODO: Implement wrap behavior and test
+            SUBCASE("Multiple flags can be combined") {
+                Parameter<float> p("test", 0.0f, 1.0f, 0.5f, Flags::CLAMP | Flags::SLEW);
+                CHECK(Flags::has_flag(p.flags(), Flags::CLAMP));
+                CHECK(Flags::has_flag(p.flags(), Flags::SLEW));
+                CHECK(!Flags::has_flag(p.flags(), Flags::WRAP));
             }
 
-            SUBCASE("Slew smooths transitions") {
-                // TODO: Implement after control system
-                // Requires time-based parameter updates
+            SUBCASE("Flag names are human readable") {
+                CHECK(std::string(Flags::get_name(Flags::CLAMP)) == "clamp");
+                CHECK(std::string(Flags::get_name(Flags::WRAP)) == "wrap");
+                CHECK(std::string(Flags::get_name(Flags::SLEW)) == "slew");
+                CHECK(std::string(Flags::get_name(Flags::NONE)) == "");
             }
         }
     }

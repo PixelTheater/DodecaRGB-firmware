@@ -1,0 +1,67 @@
+# Scene Header
+name: Fireworks
+description: "YAML EXAMPLE: Colorful particle-based firework simulation"
+
+# Parameters
+parameters:
+  # Boolean flags    
+  sparkle:
+    type: switch
+    default: true
+    description: Enable sparkle effect
+  
+  # Numeric ranges with different behaviors
+  num_particles:
+    type: count   # Changed from int to count per spec
+    range: [10, 1000]
+    default: 100
+    flags: [clamp]  # enforces min/max
+    description: Number of particles
+    
+  gravity:
+    type: range   # Changed from float to range per spec
+    range: [-1.0, 2.0]
+    default: -0.8
+    flags: [Wrap]  # Wrap around range
+    description: Gravity control
+    
+  # Predefined useful parameter types
+  speed:
+    type: ratio # float 0.0 .. 1.0, or 'signed_ratio' for -1.0 .. 1.0
+    default: 0.5
+    flags: [clamp]  # Limit to range
+    description: Animation speed multiplier
+    
+  brightness:
+    type: angle # float 0.0 .. PI, or 'signed_angle' for -PI .. PI
+    default: 0.8
+    flags: [Wrap]  # Wrap around range
+    description: Overall LED brightness
+    
+  # Enumerated choices
+  pattern:
+    type: select   # like an HTML dropdown!
+    values: ["sphere", "fountain", "cascade"]
+    default: "sphere"
+
+  direction:    # Select with explicit values
+    type: select
+    values:
+      forward: 1     # Explicit value mapping
+      reverse: -1
+      oscillate: 0
+    default: reverse
+    description: "Rotation direction and speed"
+
+  # Palette selection
+  palette:
+    type: palette
+    default: "rainbow"  # Reference to palette prop
+    
+  
+props:
+  palettes:
+    rainbow:
+      file: props/rainbow.pal.json
+    sparks:
+      file: props/sparks.pal.json

@@ -1,49 +1,89 @@
 #pragma once
 #include <string>
-#include "param_range.h"
+#include "params/param_def.h"
+#include "params/param_flags.h"
+#include "params/param_range.h"
+#include "params/param_types.h"
 
 namespace PixelTheater {
 
-template<typename T>
-class Parameter {
+class IParameter {  // Add non-template base
 public:
-    // Use type's default or min value if no default provided
-    Parameter(const std::string& name, T min, T max, T default_val = T(), ParamFlags flags = Clamp)
+    virtual ~IParameter() = default;
+    virtual void reset() = 0;
+    virtual const std::string& name() const = 0;
+    virtual const ParamDef& metadata() const = 0;
+};
+
+// Make base class template
+template<typename T>
+class ParameterBase : public IParameter {
+public:
+    virtual ~ParameterBase() = default;
+    virtual void reset() = 0;
+    virtual const std::string& name() const = 0;
+    virtual const ParamDef& metadata() const = 0;
+    
+    // Add type-safe accessors
+    virtual T get() const = 0;
+    virtual bool set(const T& value) = 0;
+};
+
+template<typename T>
+class Parameter : public ParameterBase<T> {
+public:
+    Parameter(const std::string& name, T min, T max, T default_val = T{}, 
+             const ParamFlags& flags = {})
         : _name(name)
         , _range(min, max)
-        , _flags(flags)
-        // Default rule: if range is -n..n use 0, otherwise use min
-        , _value(default_val == T() ? (min < T() && max > T() ? T() : min) : default_val)
-        , _default(default_val == T() ? (min < T() && max > T() ? T() : min) : default_val) {
-        // Validate default value
-        if (!_range.validate(_default)) {
+        , _value(default_val)
+        , _default(default_val)
+        , _flags(flags)  // Just store the flags
+    {
+        if (!_range.validate(default_val)) {
             throw std::invalid_argument("Default value out of range");
         }
     }
 
-    bool set(T value) {
-        _value = _range.apply(value, _flags);
-        return _range.validate(value);  // Return if original value was in range
+    // Basic parameter interface
+    void reset() override { _value = _default; }
+    const std::string& name() const override { return _name; }
+    T get() const override { return _value; }
+    bool set(const T& value) override {
+        T temp = value;
+        if (!_range.validate(temp)) {
+            if (Flags::has_flag(_flags, Flags::CLAMP)) {
+                temp = std::clamp(temp, _range.min(), _range.max());
+            } 
+            else if (Flags::has_flag(_flags, Flags::WRAP)) {
+                T range = _range.max() - _range.min();
+                while (temp < _range.min()) temp += range;
+                while (temp > _range.max()) temp -= range;
+            }
+            else {
+                return false;
+            }
+        }
+        _value = temp;
+        return true;
     }
 
-    T get() const { return _value; }
+    // Flag access
+    const ParamFlags& flags() const { return _flags; }
+
+    const ParamDef& metadata() const override {
+        return _metadata;
+    }
+
     T default_value() const { return _default; }
-    const std::string& name() const { return _name; }
-    const ParamRange<T>& range() const { return _range; }
-
-    ParamFlags flags() const { return _flags; }
-
-    // Reset to default value
-    void reset() {
-        _value = _default;
-    }
 
 private:
     std::string _name;
     ParamRange<T> _range;
-    ParamFlags _flags;
     T _value;
     T _default;
+    ParamFlags _flags;
+    ParamDef _metadata;  // Store metadata
 };
 
 } // namespace PixelTheater 

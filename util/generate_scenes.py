@@ -2,75 +2,98 @@ import os
 import yaml
 import argparse
 from datetime import datetime
+import sys
+from util.parameters import create_parameter, generate_header
 
-def generate_parameter_struct(param_name, param_data):
-    """Generate C++ parameter struct definition"""
-    param_type = param_data['type']
-    range_min, range_max = param_data['range']
-    default = param_data.get('default', range_min)
+def process_scene(scene_name: str, yaml_data: dict) -> str:
+    """Process scene YAML into C++ header"""
+    # Validate required scene name
+    if 'name' not in yaml_data:
+        raise ValueError(f"Scene '{scene_name}' missing required 'name' field")
     
-    return f"""    Parameter<{param_type}> {param_name} {{
-        "{param_name}",
-        {range_min}, {range_max},
-        {default}
-    }}"""
-
-def generate_scene_header(scene_name, yaml_data):
-    """Generate C++ header file for scene"""
-    class_name = ''.join(word.title() for word in scene_name.split('_'))
-    parameters = yaml_data.get('parameters', {})
+    # Get optional description
+    description = yaml_data.get('description', '')
     
-    param_structs = []
-    for name, data in parameters.items():
-        param_structs.append(generate_parameter_struct(name, data))
+    # Process parameters section
+    if 'parameters' not in yaml_data:
+        raise ValueError(f"Scene '{scene_name}' missing required 'parameters' section")
     
-    return f"""// Auto-generated from {scene_name}.yaml
-// Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-#pragma once
-#include "PixelTheater/parameter.h"
-
-namespace PixelTheater {{
-
-struct {class_name}Parameters {{
-{os.linesep.join(param_structs)}
-}};
-
-}} // namespace PixelTheater
-"""
-
-def process_scenes(scenes_dir, output_dir):
-    """Process all YAML files in scenes directory"""
-    print(f"Generating scene parameters from {scenes_dir}...")
-    os.makedirs(output_dir, exist_ok=True)
+    parameters = []
+    for name, param_data in yaml_data['parameters'].items():
+        try:
+            param = create_parameter(name, param_data)
+            parameters.append(param)
+        except Exception as e:
+            # Add parameter context to error
+            raise type(e)(f"Parameter '{name}': {str(e)}")
     
-    scenes_generated = 0
-    for filename in os.listdir(scenes_dir):
-        if not filename.endswith('.yaml'):
-            continue
+    return generate_header(scene_name, parameters, description)
+
+def handle_error(scene_path: str, error: Exception) -> None:
+    """Format error message with file context"""
+    scene_name = os.path.basename(scene_path)
+    
+    print(f"\nError in {scene_name}:", file=sys.stderr)
+    
+    if isinstance(error, KeyError):
+        # Handle missing key errors more gracefully
+        if str(error) == "0":
+            print("  Error processing select parameter - check that 'values' is either:", file=sys.stderr)
+            print("    - A list: values: ['a', 'b', 'c']", file=sys.stderr)
+            print("    - A mapping: values: {a: 1, b: 2}", file=sys.stderr)
+        else:
+            print(f"  Missing required field: '{str(error)}'", file=sys.stderr)
             
-        scene_name = os.path.splitext(filename)[0]
-        yaml_path = os.path.join(scenes_dir, filename)
+    elif isinstance(error, AttributeError):
+        print(f"  {str(error)}", file=sys.stderr)
+        print("  This might be a bug in the parameter type implementation", file=sys.stderr)
+    
+    elif isinstance(error, yaml.parser.ParserError):
+        print(f"  YAML syntax error: {str(error)}", file=sys.stderr)
         
-        with open(yaml_path, 'r') as f:
-            yaml_data = yaml.safe_load(f)
-            
-        header_content = generate_scene_header(scene_name, yaml_data)
-        header_path = os.path.join(output_dir, f"{scene_name}_params.h")
+    elif isinstance(error, ValueError):
+        print(f"  {str(error)}", file=sys.stderr)
         
-        with open(header_path, 'w') as f:
-            f.write(header_content)
-            
-        scenes_generated += 1
-        print(f"  Created {os.path.basename(header_path)}")
+    else:
+        print(f"  Unexpected error: {str(error)}", file=sys.stderr)
+    
+    # Re-raise with better context
+    if isinstance(error, yaml.YAMLError):
+        raise yaml.YAMLError(f"YAML error in {scene_name}: {str(error)}")
+    else:
+        raise type(error)(f"Error in {scene_name}: {str(error)}")
 
-    print(f"Generated {scenes_generated} scene parameter files")
+def process_scenes(scenes_dir: str, output_path: str = None) -> str:
+    """Process YAML file and generate parameter code
+    
+    Args:
+        scenes_dir: Path to YAML file
+        output_path: Optional output file path. If None, output to stdout
+        
+    Returns:
+        Generated code if output_path is None, otherwise None
+    """
+    # Load and process YAML
+    with open(scenes_dir, 'r') as f:
+        yaml_data = yaml.safe_load(f)
+    
+    scene_name = os.path.splitext(os.path.basename(scenes_dir))[0]
+    code = process_scene(scene_name, yaml_data)
+    
+    # Output handling
+    if output_path:
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        with open(output_path, 'w') as f:
+            f.write(code)
+    else:
+        return code
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--scenes', default='scenes',
-                      help='Directory containing scene YAML files')
-    parser.add_argument('--output', default='lib/PixelTheater/include/PixelTheater/generated',
-                      help='Output directory for generated headers')
+    parser = argparse.ArgumentParser(description='Generate parameter code from YAML')
+    parser.add_argument('input', help='Input YAML file')
+    parser.add_argument('-o', '--output', help='Output header file (defaults to stdout)')
     args = parser.parse_args()
     
-    process_scenes(args.scenes, args.output) 
+    result = process_scenes(args.input, args.output)
+    if result:
+        print(result) 

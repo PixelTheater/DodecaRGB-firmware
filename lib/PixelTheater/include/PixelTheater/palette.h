@@ -6,28 +6,25 @@ namespace PixelTheater {
 
 class Palette {
 public:
-    // Create from gradient data
+    static constexpr size_t MIN_ENTRIES = 2;      // At least black and white
+    static constexpr size_t MAX_ENTRIES = 256;    // 8-bit indices
+    
+    // Construct from raw data (4 bytes per entry: index,r,g,b)
     Palette(const uint8_t* data, size_t entries);
     
-    // Get raw value at index for testing
+    // Access palette data
     uint8_t value_at(size_t index) const;
-    
-    // Get number of entries
-    size_t size() const { return _entries; }
-    
     bool is_valid() const { return _data != nullptr; }
+    size_t size() const { return _entries; }
 
 private:
     // Validation helpers
-    bool validate_size() const;      // Check entry count 2-16
-    bool validate_indices() const;   // Check index values 0-255 ascending
-    bool validate_format() const;    // Check overall data format
-
-    static constexpr size_t MIN_ENTRIES = 2;
-    static constexpr size_t MAX_ENTRIES = 16;
-
-    const uint8_t* _data;  // Format: index,r,g,b repeating
-    size_t _entries;       // Number of 4-byte entries
+    bool validate_format() const;  // Check data exists and entry count
+    bool validate_size() const;    // Check min/max entries
+    bool validate_indices() const; // Check index ordering
+    
+    const uint8_t* _data;     // Raw palette data (4 bytes per entry)
+    size_t _entries;          // Number of color entries
 };
 
 } // namespace PixelTheater 
