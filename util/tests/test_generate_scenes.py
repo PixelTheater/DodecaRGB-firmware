@@ -32,7 +32,7 @@ class TestSceneGenerator(unittest.TestCase):
         self.assertEqual(param.param_type, "ratio")
         self.assertEqual(param.default, 0.5)
         self.assertEqual(param.base.description, "A ratio parameter")
-        self.assertEqual(param.base.flags, None)
+        self.assertEqual(param.base.flags, ["NONE"])  # Default to NONE
 
     def test_range_parameter(self):
         """Test parameter with range values"""
@@ -60,12 +60,12 @@ class TestSceneGenerator(unittest.TestCase):
             speed:
                 type: signed_ratio
                 default: 0.5
-                flags: [clamp]
+                flags: [CLAMP]
                 description: Controls animation speed
             brightness:
                 type: ratio
                 default: 0.8
-                flags: [wrap]
+                flags: [WRAP]
                 description: Overall LED brightness
         """
         yaml_data = load_yaml_param(yaml_str)
@@ -73,12 +73,12 @@ class TestSceneGenerator(unittest.TestCase):
         speed_param = create_parameter('speed', yaml_data['parameters']['speed'])
         self.assertEqual(speed_param.param_type, 'signed_ratio')
         self.assertEqual(speed_param.default, 0.5)
-        self.assertEqual(speed_param.base.flags, ['Clamp'])
+        self.assertEqual(speed_param.base.flags, ['CLAMP'])
         
         bright_param = create_parameter('brightness', yaml_data['parameters']['brightness'])
         self.assertEqual(bright_param.param_type, 'ratio')
         self.assertEqual(bright_param.default, 0.8)
-        self.assertEqual(bright_param.base.flags, ['Wrap'])
+        self.assertEqual(bright_param.base.flags, ['WRAP'])
 
     def test_choice_types(self):
         """Test select and switch parameters"""
@@ -142,21 +142,21 @@ class TestSceneGenerator(unittest.TestCase):
             speed:
                 type: signed_ratio
                 default: 0.5
-                flags: [clamp, slew]
+                flags: [CLAMP]
                 description: Speed with flags
             brightness:
                 type: ratio
                 default: 1.0
-                flags: [wrap]
+                flags: [WRAP]
                 description: Brightness with wrap
         """
         yaml_data = load_yaml_param(yaml_str)
         
         speed_param = create_parameter('speed', yaml_data['parameters']['speed'])
-        self.assertEqual(speed_param.base.flags, ['Clamp', 'Slew'])
+        self.assertEqual(speed_param.base.flags, ['CLAMP'])
         
         bright_param = create_parameter('brightness', yaml_data['parameters']['brightness'])
-        self.assertEqual(bright_param.base.flags, ['Wrap'])
+        self.assertEqual(bright_param.base.flags, ['WRAP'])
 
     def test_validation_errors(self):
         """Test parameter validation error cases"""
@@ -224,6 +224,36 @@ class TestSceneGenerator(unittest.TestCase):
         self.assertEqual(select_param.param_type, 'select')
         self.assertEqual(select_param.values, ["sphere", "fountain", "cascade"])
         self.assertEqual(select_param.default, "sphere")
+
+    def test_generated_format(self):
+        """Test the generated code matches the new format"""
+        yaml_str = """
+        name: Test Scene
+        parameters:
+            pattern:
+                type: select
+                values: ["sphere", "fountain"]
+                default: sphere
+                description: Pattern type
+            speed:
+                type: ratio
+                default: 0.5
+                flags: [CLAMP]
+                description: Animation speed
+        """
+        yaml_data = load_yaml_param(yaml_str)
+        
+        header = process_scene('test', yaml_data)
+        
+        # Check for options array
+        self.assertIn('static constexpr const char* const pattern_options[]', header)
+        self.assertIn('nullptr', header)  # Check for null terminator
+        
+        # Check parameter format
+        self.assertIn('ParamType::select', header)
+        self.assertIn('.default_idx = 0', header)
+        self.assertIn('.options = pattern_options', header)
+        self.assertIn('Flags::CLAMP', header)
 
 def test_generate_scenes():
     """Test scene parameter generation"""

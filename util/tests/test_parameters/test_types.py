@@ -8,6 +8,7 @@ from util.parameters.types import (
     ParameterBase,
     PARAM_TYPES
 )
+from util.parameters.validation import create_parameter
 
 class TestParameterTypes(unittest.TestCase):
     def test_semantic_parameter(self):
@@ -15,7 +16,7 @@ class TestParameterTypes(unittest.TestCase):
         base = ParameterBase(
             name="speed",
             description="Speed control",
-            flags=["Clamp"]
+            flags=["CLAMP"]
         )
         param = SemanticParameter(
             base=base,
@@ -46,7 +47,7 @@ class TestParameterTypes(unittest.TestCase):
         base = ParameterBase(
             name="active",
             description="Enable animation",
-            flags=["Slew"]
+            flags=["NONE"]
         )
         param = SwitchParameter(
             base=base,
@@ -55,8 +56,8 @@ class TestParameterTypes(unittest.TestCase):
         param.validate()
         code = param.generate_code()
         self.assertIn("ParamType::switch", code)
-        self.assertIn("true", code)
-        self.assertIn("ParamFlag::Slew", code)
+        self.assertIn(".bool_default = true", code)
+        self.assertIn("Flags::NONE", code)
 
     def test_resource_parameter(self):
         """Test resource parameters"""
@@ -102,44 +103,21 @@ class TestParameterTypes(unittest.TestCase):
 
     def test_flag_validation(self):
         """Test flag validation"""
-        # Valid flag
-        base = ParameterBase(
-            name="test",
-            description="Test param",
-            flags=["Clamp"]
-        )
-        param = RangeParameter(
-            base=base,
-            param_type="range",
-            range_min=0,
-            range_max=1,
-            default=0.5
-        )
-        param.validate()  # Should pass
-
-        # Invalid flag type
-        base = ParameterBase(
-            name="test",
-            description="Test param",
-            flags=["Clamp"]  # Clamp not allowed for select
-        )
-        try:
-            param = SelectParameter(
-                base=base,
-                values=["a", "b"],
-                default="a"
-            )
-            param.validate()
-            self.fail("Expected ValueError for invalid flag on select parameter")
-        except ValueError as e:
-            self.assertIn("Flag 'Clamp' not allowed for parameter type 'select'", str(e))
+        with self.assertRaisesRegex(ValueError, "Flag 'CLAMP' not allowed for parameter type 'select'"):
+            create_parameter("test", {
+                "type": "select",
+                "values": ["a", "b"],
+                "default": "a",
+                "flags": ["CLAMP"],  # Changed to uppercase
+                "description": "Test"
+            })
 
     def test_complete_code_generation(self):
         """Test complete C++ code generation format"""
         base = ParameterBase(
             name="speed",
             description="Speed control",
-            flags=["Clamp"]
+            flags=["CLAMP"]
         )
         param = SemanticParameter(
             base=base,
@@ -151,7 +129,7 @@ class TestParameterTypes(unittest.TestCase):
         # Remove extra whitespace for comparison
         actual = ' '.join(code.split())
         expected = ' '.join(
-            '    {"speed", ParamType::ratio, 0.5f, ParamFlag::Clamp, "Speed control"}'
+            '    {"speed",         ParamType::ratio, {.range_min = 0.0f, .range_max = 1.0f, .default_val = 0.5f}, Flags::CLAMP, "Speed control"}'
             .split()
         )
         self.assertEqual(actual, expected)
@@ -161,7 +139,7 @@ class TestParameterTypes(unittest.TestCase):
         base = ParameterBase(
             name="speed",
             description="Speed control",
-            flags=["Clamp", "Slew"]  # Multiple flags
+            flags=["CLAMP"]  # Single flag now
         )
         param = SemanticParameter(
             base=base,
@@ -172,7 +150,7 @@ class TestParameterTypes(unittest.TestCase):
         code = param.generate_code()
         actual = ' '.join(code.split())
         expected = ' '.join(
-            '    {"speed", ParamType::signed_ratio, 0.5f, ParamFlag::Clamp | ParamFlag::Slew, "Speed control"}'
+            '    {"speed",         ParamType::signed_ratio, {.range_min = -1.0f, .range_max = 1.0f, .default_val = 0.5f}, Flags::CLAMP, "Speed control"}'
             .split()
         )
         self.assertEqual(actual, expected)
@@ -190,10 +168,39 @@ class TestParameterTypes(unittest.TestCase):
         )
         param.validate()
         code = param.generate_code()
-        # Check value mapping in generated code
         actual = ' '.join(code.split())
         expected = ' '.join(
-            '    {"direction", ParamType::select, 0, , "reverse", "Direction control", {"forward", "reverse", "oscillate"}},'
+            '    {"direction",         ParamType::select, {.default_idx = 0, .options = direction_options}, Flags::NONE, "Direction control"}'
             .split()
         )
-        self.assertEqual(actual, expected) 
+        self.assertEqual(actual, expected)
+
+    def test_semantic_parameter_ranges(self):
+        """Test that semantic parameters enforce their fixed ranges"""
+        # Should raise error if trying to set custom range on ratio
+        with self.assertRaises(ValueError) as cm:
+            param = SemanticParameter(
+                base=ParameterBase(
+                    name="speed",
+                    description="Speed control"
+                ),
+                param_type="ratio",
+                default=0.5,
+                range_min=0.0,  # Trying to set custom range
+                range_max=2.0
+            )
+            param.validate()
+        self.assertIn("cannot have custom range", str(cm.exception))
+
+        # Should work fine without custom range
+        param = SemanticParameter(
+            base=ParameterBase(
+                name="speed",
+                description="Speed control"
+            ),
+            param_type="ratio",
+            default=0.5
+        )
+        param.validate()  # Should not raise
+        self.assertEqual(param.range_min, 0.0)  # Should use fixed range
+        self.assertEqual(param.range_max, 1.0) 

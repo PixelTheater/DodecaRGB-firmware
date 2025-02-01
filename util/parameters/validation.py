@@ -29,8 +29,12 @@ def validate_yaml_structure(name: str, param_data: dict) -> None:
         if not isinstance(flags, list):
             raise ValueError(f"Parameter '{name}' flags must be a list")
         
-        # Case insensitive flag matching
-        invalid_flags = set(f.title() for f in flags) - set(PARAM_FLAGS.keys())
+        # Convert to uppercase for new format
+        flags = [f.upper() for f in flags]
+        if not flags:
+            flags = ['NONE']
+            
+        invalid_flags = set(flags) - set(PARAM_FLAGS.keys())
         if invalid_flags:
             valid_flags = ", ".join(sorted(PARAM_FLAGS.keys()))
             raise ValueError(
@@ -42,13 +46,17 @@ def create_parameter(name: str, param_data: dict) -> Parameter:
     """Create and validate appropriate Parameter instance from YAML data"""
     validate_yaml_structure(name, param_data)
     
-    # Only create flags list if flags are specified
-    flags = [flag.title() for flag in param_data.get('flags', [])] if 'flags' in param_data else None
+    # Convert flags to uppercase and default to NONE if not specified
+    flags = None
+    if 'flags' in param_data:
+        flags = [flag.upper() for flag in param_data['flags']]
+    if not flags:
+        flags = ['NONE']
     
     base = ParameterBase(
         name=name,
         description=param_data.get('description', ''),
-        flags=flags  # Now None if no flags specified
+        flags=flags
     )
     
     param_type = param_data['type'].lower()
