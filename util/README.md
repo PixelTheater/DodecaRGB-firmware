@@ -29,6 +29,12 @@ This will install all dependencies needed for:
 
 ## Usage
 
+To run the tests:
+
+```bash
+python -m util.tests.run_tests
+```
+
 To parse the pick-and-place file and calculate all the LED position data:
 
 ```bash

@@ -33,59 +33,6 @@ of points, the X,Y,Z coordinates, and defines the order of the sides and their r
 renders an interactive 3D model of the dodecahedron. To change your dodecahedron's configuration,
 you will need to re-generate the point mapping using this tool.
 
-## Change Log
-
-v2.7.1 Jan 22 2025:
-- added new boids (flocking) animation
-- updated FastLED to 3.9.12
-
-v2.7.0 Jan 19 2025:
-- migrated Processing visualizer and point generator to Python
-- more documentation additions and updates
-- unit tests for Python utilities
-- point distance calculations are now done in Python, and no longer need to be calculated at firmware startup
-
-v2.6.0 Jan 12 2025:
-- moved rest of animations to new framework
-- cleaned up setup, loop, and status message
-- improved power estimation
-- added playlist functions to animation manager (next, getCurrentAnimationName, etc)
-
-v2.5 Jan 12 2025:
-- added wandering particles animation
-- added xyz-scanner animation
-
-v2.4 Jan 11 2025:
-- refactoring: as the main file is getting too big, I'm moving the animation code to separate files
-- add animation manager to handle animations, and animation params to handle parameters
-- refactored palettes and color lookup to be included in the header file
-- new logging system for animations
-- add sparkles animation
-- TODO: migrate more animations to new structure
-
-v2.3 Jan 10 2025:
-- update FastLED to 3.9.10
-- improved orientation demo, colors and transitions
-
-v2.2 Jan 1 2025:
-- added orientation demo, with rotating sphere animations
-
-v2.1 Jan 2025:
-- added support for orientation sensor
-- improved random seeding based on CPU temp and analog noise
-- new animations: ...
-
-v2.0 Dec 8 2024:
-- new hardware, micro-leds (1615 package), 104 per side
-- overall size is smaller, around 80% compared to v1
-- switched to Teensy microcontroller, code refactoring in progress
-- working, but only tested with 6 sides active (624) and frame rates of 50fps are achievable so far
-
-v1.0 Aug 2023:
-- version 1 with only 26 LEDs per side, 312 in total
-- initial animations, including blobs, 3d lines, particles, and color show
-- released at CCC Camp 2023 https://hackaday.io/project/192557-dodecargb
-
 */
 
 // LED configs

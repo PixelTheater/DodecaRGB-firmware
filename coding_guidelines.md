@@ -36,6 +36,7 @@ and connected point graphs.
 - Leverage STL and standard algorithms for collection operations.
 - Use descriptive variable and method names (e.g., 'isUserSignedIn', 'calculateTotal').
 - Structure files into headers (*.hpp) and implementation files (*.cpp) with logical separation of concerns.
+- Before adding implementation to a .h file, first check the .cpp file to see if it's already implemented.
 
 ### Naming Conventions
 
@@ -59,6 +60,7 @@ and connected point graphs.
 - Follow a consistent coding style, suggest improvements for clarity and consistency.
 - Place braces on the same line for control structures and methods.
 - Use clear and consistent commenting practices.
+- Add comments to code that represents important design decisions, or to explain complex code.
 
 ### Error Handling and Validation
 
