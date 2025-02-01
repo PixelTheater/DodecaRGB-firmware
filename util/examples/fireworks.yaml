@@ -15,7 +15,6 @@ parameters:
     type: count   # Changed from int to count per spec
     range: [10, 1000]
     default: 100
-    flags: [clamp]  # enforces min/max
     description: Number of particles
     
   gravity:
@@ -29,7 +28,6 @@ parameters:
   speed:
     type: ratio # float 0.0 .. 1.0, or 'signed_ratio' for -1.0 .. 1.0
     default: 0.5
-    flags: [clamp]  # Limit to range
     description: Animation speed multiplier
     
   brightness:
