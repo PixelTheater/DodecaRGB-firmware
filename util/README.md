@@ -29,11 +29,23 @@ This will install all dependencies needed for:
 
 ## Usage
 
+### Python Tests
+
 To run the tests:
 
 ```bash
 python -m util.tests.run_tests
 ```
+
+### Scene Code Generation and YAML Parsing
+
+To generate the scene code and parse the YAML file:
+
+```bash
+python generate_scene.py -h   # for help
+```
+
+### Pick-and-Place File Parsing (Point Data Generation)
 
 To parse the pick-and-place file and calculate all the LED position data:
 
@@ -42,6 +54,8 @@ python generate_points.py -h   # for help
 python generate_points.py       # outputs Point data to terminal
 python generate_points.py -f json -o data/points.json    # outputs Point data to terminal and json file
 ```
+
+### 3D Visualizer
 
 To use the visualizer:
 
