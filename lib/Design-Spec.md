@@ -137,6 +137,7 @@ Think of parameters as smart variables that understand their purpose. They know 
   - For rotations and angular measurements
 - signed_angle: -PI .. PI (radians)
   - For relative angles and bidirectional rotations
+
 Note: Semantic types have fixed ranges that cannot be overridden. Any attempt to specify custom min/max values for these types will result in a validation error.
 
 #### Basic Types (Custom Ranges)
@@ -147,6 +148,7 @@ Note: These types require explicit min/max values to be specified.
 
 #### Choice Types
 
+- switch: Boolean true/false (a "checkbox" setting)
 - select: Named options that map to integer indices
 - Requires `values` field with either:
   - Simple list: `values: ["sphere", "fountain", "cascade"]`
@@ -155,12 +157,11 @@ Note: These types require explicit min/max values to be specified.
     - Like HTML <select> with explicit value="..." attributes
 - Requires `default` that matches one of the values
 - Example: Animation patterns, modes, directions
-- switch: Boolean true/false
 
 #### Resource Types
 
-- palette: Reference to a color palette
-- bitmap: Reference to an image resource
+- palette: Reference to a color palette (see [Palettes.md](Palettes.md))
+- bitmap: Reference to an image resource (TODO)
 
 ### [3.4] Parameter Flags
 
@@ -176,7 +177,7 @@ Example flags:
 
 • `clamp`: Suggests values should be limited to their range
 • `wrap`: Suggests values should wrap around their range
-• `slew`: Suggests value changes should be rate-limited
+• `slew`: Suggests value changes should be rate-limited (TODO)
 
 Example:
 
@@ -218,15 +219,21 @@ brightness:
 
 A Scene defines an animation written in C++ that runs on the teensy and controls the animation. Scenes are called frequently (50fps+) to update the LEDs based on their parameters and internal state.
 
+- defines the classname (`FireworksScene`) and friendly name ("fireworks") of the animation
+- will automatically load and include parameters from the generated `_params file
+- provides foundation for Scene lifecycle methods (init, config, setup, tick, status, reset)
+- provides helper methods from PixelTheater like `settings[]` and parameter reflection
+- exposes access to LEDs (via FastLED) and hardware devices (buttons, sensors, accelerometer)
+
 #### Structure and Files
 
 Each scene lives in its own directory:
 
 ```bash
-scenes/space/               # Scene root directory
+scenes/space/              # Scene root directory
 ├── space.yaml             # Parameter configuration
 ├── space.cpp              # Scene implementation 
-├── scene_params.h         # Generated parameters (auto-included)
+├── _params.h              # Generated parameters (auto-included)
 ├── README.md              # Scene documentation
 └── props/                 # Scene-specific assets
     ├── nebula.bmp         # Bitmap resource
@@ -287,9 +294,9 @@ The build process generates C++ code from YAML that defines parameters, presets,
 ```text
 scenes/
 ├── fireworks/
-│   ├── fireworks.yaml        # Scene definition
-│   ├── fireworks.cpp         # Scene implementation (setup, tick, status, reset)
-│   ├── fireworks_params.h    # _Generated_ parameter structs
+│   ├── fireworks.yaml       # Scene definition
+│   ├── fireworks.cpp        # Scene implementation (setup, tick, status, reset)
+│   ├── _params.h            # _Generated_ parameter structs
 │   ├── README.md            # User documentation
 │   └── props/               # Scene-specific props
 │       └── sparks.pal.json
