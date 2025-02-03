@@ -1,3 +1,12 @@
+---
+author: Jeremy Seitz - somebox.com
+generated: 2025-02-03 00:33
+project: DodecaRGB Firmware
+repository: https://github.com/somebox/DodecaRGB-firmware
+title: DodecaRGB Coding Guidelines
+version: 2.8.0
+---
+
 # DodecaRGB Coding Guidelines
 
 This serves as documentation for chosen best practices and standards that all developers should follow for this project.
@@ -73,7 +82,6 @@ and connected point graphs.
 
 - Avoid unnecessary heap allocations; prefer stack-based objects where possible.
 - Use `std::move` to enable move semantics and avoid copies.
-- Optimize loops with algorithms from `<algorithm>` (e.g., `std::sort`, `std::for_each`).
 
 ### Key Conventions
 

@@ -1,3 +1,11 @@
+---
+author: Jeremy Seitz - somebox.com
+generated: 2025-02-03 00:33
+project: DodecaRGB Firmware
+repository: https://github.com/somebox/DodecaRGB-firmware
+title: DodecaRGB V1 info
+version: 2.8.0
+---
 
 # DodecaRGB V1 info 
 
@@ -5,7 +13,6 @@
 
 This is the firmware for DodecaRGB, a colorful DIY IoT model 12-sided shape made from PCB circuit boards adorned with bright LEDs. It can be assembled as a desktop light, or built with a battery pack and motion sensors for reactive animations and games.
 
-**Hackaday page**: <https://hackaday.io/project/192557-dodecargb>
 
 ![DodecaRGB](images/hero.jpeg)
 
@@ -86,13 +93,9 @@ Note that in all software and docs, side 0 is the bottom, and side 11 is the top
 
 #### Connection flow
 
-<img height="400" src="images/connections-bottom.jpg"></img>
-<img height="400" src="images/connections-top.jpg"></img>
 
 #### PCB details
 
-<img height="400" src="images/pcb-detail-top.jpeg"></img>
-<img height="400" src="images/pcb-detail-bottom.jpeg"></img>
 
 ## Notes
 
@@ -106,8 +109,6 @@ Once the model is assembled and working, the ESP32 can be connected to a small U
 
 Included in this repo is an [STL file](3d-models/d12-corner.stl) for printing the 12 small corner pieces that connect the PCBs at the correct angles with M3 screws. The image below shows the recommended print bed orientation. The printed holes are slightly small so M3 screws can be inserted with a friction fit.
 
-<img height="450" src="images/corner-stl.jpeg" />
-<img height="450" src="images/corner-slicing.jpeg" />
 
 ## Software
 
@@ -119,11 +120,9 @@ There are currently a number of animations. To switch between them, press the "u
 
 The [simulator](https://github.com/somebox/dodeca-rgb-simulator) calculates where each of the 312 LEDs are in 3D space, and outputs the data as JSON and a C data structure. The current version is already part of this repo, so you don't have to do anything. Using these points, we can calculate and display 3D lighting effects.
 
-There's a processing sketch at <https://github.com/somebox/dodeca-rgb-simulator> that generates the list
 of points, the X,Y,Z coordinates, and defines the order of the sides and their rotations. It also
 renders an interactive 3D model of the dodecahedron with different views, and makes it easier to visualize how the boards are lined up inside.
 
-<img  src="https://user-images.githubusercontent.com/7750/264390630-26a079d8-aabb-4b0e-907a-5e34e593b98c.png" />
 
 ## Todo and Ideas
 

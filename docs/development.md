@@ -1,3 +1,13 @@
+---
+author: Jeremy Seitz - somebox.com
+generated: 2025-02-03 00:33
+project: DodecaRGB Firmware
+repository: https://github.com/somebox/DodecaRGB-firmware
+title: DodecaRGB v2 Development
+version: 2.8.0
+---
+
+
 # DodecaRGB v2 Development
 
 - There's a guide for developing animations in [creating animations](creating_animations.md).
@@ -96,4 +106,4 @@ brew install python@3.12 --with-tcl-tk
 - [What I learned from making a dodecahedron](https://www.youtube.com/watch?v=pcV9YAWSDRE) by the fabulous Dave Darko - honestly the video that got me addicted to this project
 - [Designing a Dodecahedron](https://www.youtube.com/watch?v=vR6oae0s6_M) in OnShape
 - [Geometry - Platonic Solids](https://www.cosmic-core.org/free/article-42-geometry-platonic-solids-part-3-spherical-stereographic-solids/) - great for learning about the geometry of the dodecahedron
-- 
+-

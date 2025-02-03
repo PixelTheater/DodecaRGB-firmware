@@ -1,4 +1,14 @@
-# Palette System
+---
+author: Jeremy Seitz - somebox.com
+generated: 2025-02-03 00:33
+project: DodecaRGB Firmware
+repository: https://github.com/somebox/DodecaRGB-firmware
+title: Palette System
+version: 2.8.0
+---
+
+
+# [14] Palette System
 
 ## Overview
 
@@ -54,7 +64,6 @@ void config() override {
 
 void tick() override {
     // Get palette data and create FastLED palette
-    auto pal_data = settings<const uint8_t*>("palette");
     CRGBPalette16 fastled_pal(pal_data);
 
     // Use FastLED palette directly
