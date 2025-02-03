@@ -1,6 +1,6 @@
 ---
 author: Jeremy Seitz - somebox.com
-generated: 2025-02-03 00:33
+generated: 2025-02-03 01:26
 project: DodecaRGB Firmware
 repository: https://github.com/somebox/DodecaRGB-firmware
 title: scenes/fireworks/fireworks.yaml
@@ -9,11 +9,11 @@ version: 2.8.0
 
 <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>
-                <p style="font-size: 1.2em; color: #888;">Documentation for <a href="https://github.com/somebox/DodecaRGB-firmware">DodecaRGB Firmware</a></p>
+                <p style="font-size: 1.0em; color: #888;">Documentation for <a href="https://github.com/somebox/DodecaRGB-firmware">DodecaRGB Firmware</a></p>
             </div>
-            <div style="text-align: right; font-size: 0.8em; color: #888;">
+            <div style="text-align: right; font-size: 0.7em; color: #888;">
                 <p>Version 2.8.0<br/>
-                Generated: 2025-02-03 00:33</p>
+                Generated: 2025-02-03 01:26</p>
             </div>
           </div>
 
