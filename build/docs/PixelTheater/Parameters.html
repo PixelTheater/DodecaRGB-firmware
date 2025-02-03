@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - PixelTheater</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <meta name="theme-color" content="#432E54">
+    <meta name="color-scheme" content="dark">
+    
+    <!-- Highlight.js for syntax highlighting -->
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <!-- Additional languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/arduino.min.js"></script>
+    
+    
+    
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-content">
+            <a href="/" class="logo">PixelTheater</a>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/" >Home</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/README.html" >PixelTheater</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/development.html" >Guides</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/simulator/index.html" class="button accent">Web Simulator</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+    </nav>
+    
+    <main>
+        
+<div class="content-wrapper">
+    <aside class="sidebar">
+        
+        <div class="sidebar-section">
+            <h3>Main Documentation</h3>
+            <ul>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>PixelTheater</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/README.html" >PixelTheater Animation System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Parameters.html" class="active">Parameters</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Model.html" >Model System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Palettes.html" >Palette System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/build-system.html" >Build System</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Guides</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/guides/creating_animations.html" >Creating Animations</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/web-simulator.html" >DodecaRGB Web Simulator</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/development.html" >DodecaRGB v2 Development</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/coding_guidelines.html" >Project Guidelines</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/Dodeca-V1-info.html" >DodecaRGB V1 info</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Special Links</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/simulator/index.html" class="special">Web Simulator</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://github.com/somebox/DodecaRGB-firmware" class="special">GitHub Repository</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+    </aside>
+    
+    <article class="main-content">
+        
+        
+        <h1>Parameters</h1>
+<h2>What are Parameters For?</h2>
+<p>Parameters allow for more flexibility and easier configuration. They:</p>
+<ul>
+<li>Define an interface contract between the scene and the Director</li>
+<li>Enable preset support for saving and loading configurations</li>
+<li>Provide type safety and range validation</li>
+<li>Allow remote control and real-time adjustment</li>
+<li>Make scenes more reusable and configurable</li>
+</ul>
+<blockquote>
+<p>Parameters define constraints and behaviors that help prevent errors and
+make animations more robust. They also enable features like presets and
+remote control that would be difficult to implement with raw variables.</p>
+</blockquote>
+<h2>Defining Parameters</h2>
+<p>Parameters are defined in the <code>setup()</code> method of your Scene class. This approach offers a clear and maintainable way to configure your scenes directly in code.</p>
+<pre class="codehilite"><code class="language-cpp">// Example Scene Parameter Definition
+void setup() override {
+    // Define parameters with name, type, default value, and optional flags
+    param(&quot;speed&quot;, &quot;ratio&quot;, 0.5f, &quot;clamp&quot;, &quot;Controls animation speed&quot;);
+    param(&quot;brightness&quot;, &quot;ratio&quot;, 0.8f, &quot;wrap&quot;, &quot;Overall LED brightness&quot;);
+    param(&quot;count&quot;, &quot;count&quot;, 0, 100, 50, &quot;clamp&quot;, &quot;Number of particles&quot;);
+    param(&quot;enabled&quot;, &quot;switch&quot;, true, &quot;&quot;, &quot;Enable or disable the effect&quot;);
+
+    // Selection parameter with options
+    param(&quot;pattern&quot;, &quot;select&quot;, {&quot;sphere&quot;, &quot;fountain&quot;, &quot;cascade&quot;}, &quot;sphere&quot;, &quot;&quot;, &quot;Animation pattern&quot;);
+}
+</code></pre>
+
+<p>In this example:
+- Each parameter is defined with a name, type, and default value
+- Additional arguments can include ranges (for applicable types), flags, and descriptions
+- The parameters become available through the scene's <code>settings</code> object</p>
+<h2>Parameter Types and Ranges</h2>
+<p>Parameters serve as the foundation of our animation control system, providing a bridge between the raw code and user-friendly controls. They're designed to be both intuitive for creators and safe for runtime execution. To achieve this, parameters are strongly-typed values that control how animations behave.</p>
+<p>Different parameter types allow you to define various kinds of controls, from simple numeric ranges to selection menus.</p>
+<p>For example, instead of defining float ranges manually, use semantic types like <code>ratio</code>
+for values like brightness or opacity. The ranges will be handled automatically.</p>
+<h3>Semantic Types (Fixed Ranges)</h3>
+<ul>
+<li>ratio: 0.0 .. 1.0 (normalized value)</li>
+<li>For intensities, sizes, and other normalized values</li>
+<li>signed_ratio: -1.0 .. 1.0 (bidirectional normalized value)</li>
+<li>For speeds, factors, and bidirectional controls</li>
+<li>angle: 0.0 .. PI (radians)</li>
+<li>For rotations and angular measurements</li>
+<li>signed_angle: -PI .. PI (radians)</li>
+<li>For relative angles and bidirectional rotations</li>
+</ul>
+<h3>Basic Types (Custom Ranges)</h3>
+<ul>
+<li>range: min .. max (float, requires range)</li>
+<li>count: min .. max (integer, requires range)</li>
+</ul>
+<h3>Choice Types</h3>
+<ul>
+<li>switch: Boolean true/false (a "checkbox" setting)</li>
+<li>select: Named options that map to integer indices</li>
+</ul>
+<h2>Parameter Flags</h2>
+<p>Parameter flags control how values are handled when they change. They help create
+smoother animations and prevent unwanted behavior. Multiple flags can be combined
+to achieve the desired effect.</p>
+<p>Flags control value handling based on parameter type:</p>
+<ul>
+<li>
+<p>Numeric types (ratio, signed_ratio, angle, signed_angle, range):
+  • <code>clamp</code>: Values are limited to their defined range
+  • <code>wrap</code>: Values wrap around their defined range</p>
+</li>
+<li>
+<p>Integer types (count, select):
+  • <code>clamp</code>: Values are limited to their integer range
+  • <code>wrap</code>: Values wrap around their integer range</p>
+</li>
+<li>
+<p>Non-numeric types (switch):
+  No flags supported - values are validated directly</p>
+</li>
+</ul>
+<p>Example:</p>
+<pre class="codehilite"><code class="language-cpp">param(&quot;speed&quot;, &quot;ratio&quot;, 0.5f, &quot;clamp&quot;, &quot;Animation speed&quot;);
+</code></pre>
+
+<p>Note: Flags are validated at runtime. Invalid flag combinations
+(like using both clamp and wrap) or unsupported flags for a type will result
+in validation errors.</p>
+<h2>Parameter API Reference</h2>
+<h3>param() Method Overloads</h3>
+<p>All parameters are defined in setup() using the following param() method variations:</p>
+<ol>
+<li>Basic Parameter Definition</li>
+</ol>
+<pre class="codehilite"><code class="language-cpp">// param(name, type, default_value, flags = &quot;&quot;, description = &quot;&quot;)
+param(&quot;speed&quot;, &quot;ratio&quot;, 0.5f);                    // Basic definition
+param(&quot;speed&quot;, &quot;ratio&quot;, 0.5f, &quot;clamp&quot;);          // With flags
+param(&quot;speed&quot;, &quot;ratio&quot;, 0.5f, &quot;clamp&quot;, &quot;Controls animation speed&quot;); // With description
+</code></pre>
+
+<ol>
+<li>Range Parameters</li>
+</ol>
+<pre class="codehilite"><code class="language-cpp">// param(name, type, min, max, default_value, flags = &quot;&quot;, description = &quot;&quot;)
+param(&quot;count&quot;, &quot;count&quot;, 0, 100, 50);             // Integer range
+param(&quot;scale&quot;, &quot;range&quot;, 0.0f, 10.0f, 5.0f);      // Float range
+param(&quot;count&quot;, &quot;count&quot;, 0, 100, 50, &quot;&quot;, &quot;Number of particles&quot;); // With description, no flags
+</code></pre>
+
+<ol>
+<li>Select Parameters</li>
+</ol>
+<pre class="codehilite"><code class="language-cpp">// param(name, type, values, default_value, flags = &quot;&quot;, description = &quot;&quot;)
+// With string array
+param(&quot;mode&quot;, &quot;select&quot;, {&quot;sphere&quot;, &quot;fountain&quot;, &quot;cascade&quot;}, &quot;sphere&quot;);
+
+// With value mapping
+param(&quot;direction&quot;, &quot;select&quot;, {
+    {&quot;forward&quot;, 1},
+    {&quot;reverse&quot;, -1},
+    {&quot;oscillate&quot;, 0}
+}, &quot;forward&quot;, &quot;&quot;, &quot;Movement direction&quot;);
+</code></pre>
+
+<ol>
+<li>Switch Parameters</li>
+</ol>
+<pre class="codehilite"><code class="language-cpp">// param(name, type, default_value, flags = &quot;&quot;, description = &quot;&quot;)
+param(&quot;enabled&quot;, &quot;switch&quot;, true, &quot;&quot;, &quot;Enable or disable the effect&quot;);
+</code></pre>
+
+<h3>Quick Reference Table</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Range</th>
+<th>Example Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ratio</td>
+<td>0.0 .. 1.0</td>
+<td><code>param("brightness", "ratio", 0.5f)</code></td>
+</tr>
+<tr>
+<td>signed_ratio</td>
+<td>-1.0 .. 1.0</td>
+<td><code>param("speed", "signed_ratio", 0.0f)</code></td>
+</tr>
+<tr>
+<td>angle</td>
+<td>0.0 .. PI</td>
+<td><code>param("rotation", "angle", 0.0f)</code></td>
+</tr>
+<tr>
+<td>signed_angle</td>
+<td>-PI .. PI</td>
+<td><code>param("direction", "signed_angle", 0.0f)</code></td>
+</tr>
+<tr>
+<td>range</td>
+<td>custom float</td>
+<td><code>param("scale", "range", 0.0f, 10.0f, 5.0f)</code></td>
+</tr>
+<tr>
+<td>count</td>
+<td>custom int</td>
+<td><code>param("particles", "count", 0, 100, 50)</code></td>
+</tr>
+<tr>
+<td>switch</td>
+<td>true/false</td>
+<td><code>param("enabled", "switch", true)</code></td>
+</tr>
+<tr>
+<td>select</td>
+<td>named options</td>
+<td><code>param("mode", "select", {"a", "b"}, "a")</code></td>
+</tr>
+</tbody>
+</table>
+<h3>Common Flags</h3>
+<ul>
+<li><code>clamp</code>: Limit values to defined range</li>
+<li><code>wrap</code>: Wrap values around defined range</li>
+</ul>
+<p>Example combining multiple parameters:</p>
+<pre class="codehilite"><code class="language-cpp">void setup() override {
+    // Basic parameters
+    param(&quot;speed&quot;, &quot;ratio&quot;, 0.5f, &quot;clamp&quot;);
+    param(&quot;direction&quot;, &quot;signed_ratio&quot;, 0.0f);
+
+    // Range parameters
+    param(&quot;particles&quot;, &quot;count&quot;, 0, 100, 50);
+    param(&quot;scale&quot;, &quot;range&quot;, 0.0f, 10.0f, 5.0f);
+
+    // Selection and switches
+    param(&quot;mode&quot;, &quot;select&quot;, {&quot;sphere&quot;, &quot;fountain&quot;}, &quot;sphere&quot;);
+    param(&quot;enabled&quot;, &quot;switch&quot;, true);
+}
+</code></pre>
+
+<blockquote>
+<p>Note: All parameter definitions are validated at runtime. Invalid combinations
+or values will trigger validation errors.</p>
+</blockquote>
+<h2>Parameter Inspection and Runtime Access</h2>
+<p>Parameters can be inspected at runtime to discover a scene's capabilities and interface. This is useful for:</p>
+<ul>
+<li>Building dynamic user interfaces</li>
+<li>Serializing and deserializing scene configurations</li>
+<li>Remote control and monitoring</li>
+</ul>
+<h3>Accessing Parameter Values</h3>
+<p>The most common operation is accessing parameter values:</p>
+<pre class="codehilite"><code class="language-cpp">// Get parameter values with automatic type conversion
+float speed = settings[&quot;speed&quot;];
+int count = settings[&quot;count&quot;];
+bool enabled = settings[&quot;enabled&quot;];
+
+// Set parameter values
+settings[&quot;speed&quot;] = 0.8f;
+settings[&quot;count&quot;] = 42;
+settings[&quot;enabled&quot;] = false;
+</code></pre>
+
+<h3>Accessing Parameter Metadata</h3>
+<p>You can access parameter metadata directly through the settings object:</p>
+<pre class="codehilite"><code class="language-cpp">// Access parameter metadata
+std::string type = settings[&quot;speed&quot;].type();
+float min = settings[&quot;speed&quot;].min();
+float max = settings[&quot;speed&quot;].max();
+float default_val = settings[&quot;speed&quot;].default_value();
+std::string description = settings[&quot;speed&quot;].description();
+ParamFlags flags = settings[&quot;speed&quot;].flags();
+
+// Check parameter properties
+bool has_range = settings[&quot;speed&quot;].has_range();
+bool is_select = settings[&quot;speed&quot;].is_select_type();
+bool is_clamped = settings[&quot;speed&quot;].has_flag(Flags::CLAMP);
+
+// For select parameters
+if (settings[&quot;mode&quot;].is_select_type()) {
+    auto options = settings[&quot;mode&quot;].options();
+}
+</code></pre>
+
+<h3>Parameter Collection Access</h3>
+<p>You can get a list of all parameter names:</p>
+<pre class="codehilite"><code class="language-cpp">// Get all parameter names
+auto param_names = settings.names();
+
+// Check if a parameter exists
+if (settings.has_parameter(&quot;speed&quot;)) {
+    // Use the parameter
+}
+</code></pre>
+
+<h3>Parameter Schema</h3>
+<p>For UI generation or serialization, you can get the complete parameter schema:</p>
+<pre class="codehilite"><code class="language-cpp">// Get complete parameter schema
+auto schema = scene-&gt;parameter_schema();
+
+// Convert to JSON for web interfaces
+std::string json = scene-&gt;parameter_schema_json();
+</code></pre>
+
+<p>Parameters are designed to be immutable after definition. The parameter schema (names, types, ranges) should not change during runtime, though their values can be modified through the settings interface.</p>
+<h2>Parameter Inheritance</h2>
+<p>Scenes can inherit parameters from base scenes to promote code reuse and maintain consistent behavior:</p>
+<pre class="codehilite"><code class="language-cpp">// Base scene with common parameters
+class BaseEffect : public Scene&lt;ModelDef&gt; {
+    void setup() override {
+        param(&quot;speed&quot;, &quot;ratio&quot;, 0.5f, &quot;clamp&quot;, &quot;Animation speed&quot;);
+        param(&quot;enabled&quot;, &quot;switch&quot;, true, &quot;&quot;, &quot;Enable effect&quot;);
+    }
+};
+
+// Derived scene inherits and extends
+class DerivedEffect : public BaseEffect {
+    void setup() override {
+        // First call base setup to inherit parameters
+        BaseEffect::setup();
+
+        // Then add or override parameters
+        param(&quot;size&quot;, &quot;ratio&quot;, 1.0f, &quot;&quot;, &quot;Effect size&quot;);  // Add new parameter
+    }
+};
+</code></pre>
+
+<p>When overriding the <code>setup()</code> method in a derived class, be sure to call the base class's <code>setup()</code> method first to inherit its parameters.</p>
+<h2>Internal Parameter Representation</h2>
+<p>Internally, parameters are represented by the <code>ParamDef</code> structure, which stores all metadata about a parameter:</p>
+<pre class="codehilite"><code class="language-cpp">struct ParamDef {
+    std::string name;
+    ParamType type;
+    std::string type_name;  // Human-readable type name
+
+    // Unified storage for range values
+    float min_value;
+    float max_value;
+
+    // Default values (only one is used based on type)
+    float default_float;
+    int default_int;
+    bool default_bool;
+
+    std::vector&lt;std::string&gt; options;  // For select type
+
+    ParamFlags flags;
+    std::string description;
+
+    // Methods for value validation and transformation
+    bool validate_value(const ParamValue&amp; value) const;
+    ParamValue apply_flags(const ParamValue&amp; value) const;
+
+    // Helper methods for inspection
+    bool has_flag(ParamFlags flag) const;
+    bool has_range() const;
+    bool is_select_type() const;
+
+    // Get appropriate default value based on type
+    ParamValue get_default_value() const;
+
+    // Factory methods for creating parameters
+    static ParamDef create_ratio(const std::string&amp; name, float default_val, 
+                                ParamFlags flags, const std::string&amp; description);
+    static ParamDef create_count(const std::string&amp; name, int min, int max, int default_val, 
+                                ParamFlags flags, const std::string&amp; description);
+    // Other factory methods...
+};
+</code></pre>
+
+<p>This structure is used both for defining parameters and for inspecting them at runtime. It provides a unified representation that can be easily serialized for UI generation or other purposes.</p>
+<h2>Removed Features</h2>
+<p>The following features have been removed from the parameter system:</p>
+<ol>
+<li>
+<p><strong>YAML-based Parameter Configuration</strong>: Parameters must now be defined directly in code using the <code>param()</code> method in the <code>setup()</code> function.</p>
+</li>
+<li>
+<p><strong>Resource Parameter Types</strong>: The <code>palette</code> and <code>bitmap</code> parameter types have been removed. Resource management will be handled by a separate system in the future.</p>
+</li>
+<li>
+<p><strong>Constexpr Requirements</strong>: The parameter system no longer requires constexpr compatibility, allowing for more flexible string handling with std::string.</p>
+</li>
+<li>
+<p><strong>Generated Code</strong>: There is no longer any code generation step for parameters. All parameters are defined and processed at runtime.</p>
+</li>
+</ol>
+<h2>Refactoring Plan</h2>
+<p>The parameter system refactoring is being implemented in these focused steps:</p>
+<ol>
+<li><strong>✅ Simplify ParamDef Structure</strong></li>
+<li>Replace const char* with std::string</li>
+<li>Unify storage for range values and defaults</li>
+<li>Add helper methods for type checking and value access</li>
+<li>
+<p>Remove resource type support</p>
+</li>
+<li>
+<p><strong>✅ Enhance Parameter Proxy</strong></p>
+</li>
+<li>Add metadata access methods (type(), min(), max(), etc.)</li>
+<li>Add helper methods for type checking (has_range(), is_select_type())</li>
+<li>
+<p>Implement flag checking methods</p>
+</li>
+<li>
+<p><strong>✅ Fix String Handling in Log Functions</strong></p>
+</li>
+<li>Ensure proper handling of std::string in log messages</li>
+<li>
+<p>Update code to use c_str() when passing strings to variadic functions</p>
+</li>
+<li>
+<p><strong>✅ Update Settings Implementation</strong></p>
+</li>
+<li>Replace macro usage with factory methods</li>
+<li>Update field access to use new unified fields</li>
+<li>
+<p>Fix validation and default value handling</p>
+</li>
+<li>
+<p><strong>✅ Fix Scene.h Metadata References</strong></p>
+</li>
+<li>Update ParamDef::Metadata references to use ParamDef directly</li>
+<li>
+<p>Ensure proper inheritance of parameters in derived scenes</p>
+</li>
+<li>
+<p><strong>✅ Implement Parameter Names Collection</strong></p>
+</li>
+<li>Add names() method to Settings/SettingsProxy</li>
+<li>
+<p>Ensure proper iteration support</p>
+</li>
+<li>
+<p><strong>✅ Refactor Settings.cpp</strong></p>
+</li>
+<li>Replace nested switch statement with cleaner if-else structure</li>
+<li>Improve code organization and readability</li>
+<li>
+<p>Ensure proper error handling</p>
+</li>
+<li>
+<p><strong>✅ Create Parameter Schema</strong></p>
+</li>
+<li>Define schema structure for serialization</li>
+<li>Implement parameter_schema() method in Scene</li>
+<li>
+<p>Add JSON serialization support</p>
+</li>
+<li>
+<p><strong>✅ Update Parameter Definition</strong></p>
+</li>
+<li>Simplify param() method overloads</li>
+<li>Remove YAML-based parameter loading</li>
+<li>
+<p>Ensure proper handling of empty flags with descriptions</p>
+</li>
+<li>
+<p><strong>✅ Clean Up Legacy Code</strong></p>
+<ul>
+<li>Remove unused YAML generation code</li>
+<li>Remove resource parameter handling</li>
+<li>Update documentation</li>
+</ul>
+</li>
+<li>
+<p><strong>✅ Updated parameter definition with simplified method overloads</strong></p>
+</li>
+</ol>
+<p>Next immediate steps:</p>
+<ol>
+<li>🔜 Update documentation to reflect the new parameter system</li>
+<li>Update Scenes.md to remove YAML references</li>
+<li>Update README.md to reflect the new parameter system</li>
+<li>Add examples of using the new parameter system</li>
+</ol>
+<p>Remaining challenges:</p>
+<ol>
+<li>Scene inheritance and constructor issues in test files</li>
+<li>Clean up python parameter generation code, tests and related docs in /util</li>
+</ol>
+    </article>
+</div>
+
+    </main>
+
+    <footer>
+        <p>PixelTheater Documentation</p>
+        <p><small>Built with <a href="https://github.com/yourusername/PixelTheater">PixelTheater</a></small></p>
+    </footer>
+
+    
+    <script src="/assets/js/main.js"></script>
+    
+    <!-- Initialize syntax highlighting and add copy buttons -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply syntax highlighting
+            document.querySelectorAll('pre code').forEach((block) => {
+                // Get language from class if available
+                const codeElement = block;
+                const preElement = block.parentElement;
+                
+                // Add copy button to each code block
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-button';
+                copyButton.textContent = 'Copy';
+                preElement.appendChild(copyButton);
+                
+                // Apply highlighting
+                hljs.highlightElement(block);
+                
+                // Add copy functionality
+                copyButton.addEventListener('click', () => {
+                    const code = block.textContent;
+                    navigator.clipboard.writeText(code).then(() => {
+                        // Visual feedback
+                        copyButton.textContent = 'Copied!';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                        copyButton.textContent = 'Error';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    });
+                });
+            });
+        });
+    </script>
+    
+    
+    
+</body>
+</html> 

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - PixelTheater</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <meta name="theme-color" content="#432E54">
+    <meta name="color-scheme" content="dark">
+    
+    <!-- Highlight.js for syntax highlighting -->
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <!-- Additional languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/arduino.min.js"></script>
+    
+    
+    
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-content">
+            <a href="/" class="logo">PixelTheater</a>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/" >Home</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/README.html" >PixelTheater</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/development.html" >Guides</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/simulator/index.html" class="button accent">Web Simulator</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+    </nav>
+    
+    <main>
+        
+<div class="content-wrapper">
+    <aside class="sidebar">
+        
+        <div class="sidebar-section">
+            <h3>Main Documentation</h3>
+            <ul>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>PixelTheater</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/README.html" >PixelTheater Animation System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Parameters.html" >Parameters</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Model.html" >Model System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Palettes.html" >Palette System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/build-system.html" >Build System</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Guides</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/guides/creating_animations.html" class="active">Creating Animations</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/web-simulator.html" >DodecaRGB Web Simulator</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/development.html" >DodecaRGB v2 Development</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/coding_guidelines.html" >Project Guidelines</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/Dodeca-V1-info.html" >DodecaRGB V1 info</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Special Links</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/simulator/index.html" class="special">Web Simulator</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://github.com/somebox/DodecaRGB-firmware" class="special">GitHub Repository</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+    </aside>
+    
+    <article class="main-content">
+        
+        
+        <h1>Creating Animations</h1>
+<p>This short guide was made to help you create your own animations for the DodecaRGB. It assumes you are already a bit familiar with the <a href="PixelTheater/README.md">PixelTheater</a> animation system and the <a href="development.md">development environment</a>.</p>
+<h2>Getting Started</h2>
+<p>Once you have understood the basics of creating a scene, you might be looking to see what else you can do with the animation system. This guide will cover some of the more advanced features and techniques.</p>
+<h2>Color Palettes</h2>
+<p>Three default palettes are available:</p>
+<ul>
+<li><code>basePalette</code>: Rich, saturated colors</li>
+<li><code>highlightPalette</code>: Bright, light colors</li>
+<li><code>uniquePalette</code>: Distinct, high-contrast colors</li>
+</ul>
+<p>Helper functions for color management:</p>
+<pre class="codehilite"><code class="language-cpp">String colorName = getClosestColorName(CRGB(255, 0, 0));  // Returns &quot;Red&quot;
+String ansiColor = getAnsiColorString(CRGB::Red);         // Terminal color
+float brightness = get_perceived_brightness(color);
+</code></pre>
+
+<h3>Playback Modes</h3>
+<ul>
+<li><code>HOLD</code>: Stays on current animation until manually changed (default)</li>
+<li><code>ADVANCE</code>: Automatically advances through playlist in order</li>
+<li><code>RANDOM</code>: Randomly selects next animation from playlist</li>
+</ul>
+<h2>Best Practices</h2>
+<h3>LED Management</h3>
+<ul>
+<li>Access LEDs directly through <code>leds[]</code> array</li>
+<li>Framework handles <code>FastLED.show()</code> calls</li>
+<li>Use <code>fadeToBlackBy()</code> or <code>nscale8()</code> to manage brightness</li>
+<li><code>nblend()</code> for safe color mixing</li>
+</ul>
+<h3>Animation Flow</h3>
+<ul>
+<li>Track time with counters or <code>millis()</code></li>
+<li>Make speed adjustable via parameters</li>
+<li>No <code>delay()</code> calls in <code>tick()</code></li>
+<li>Pre-calculate values in <code>init()</code></li>
+</ul>
+<h3>Hardware Model Constants</h3>
+<ul>
+<li><code>numLeds()</code>: Total LEDs</li>
+<li><code>leds_per_side</code>: LEDs per face</li>
+<li><code>num_sides</code>: Number of faces (12)</li>
+</ul>
+<h2>Animation Strategies</h2>
+<h3>Time and Motion</h3>
+<p>TODO</p>
+<h3>Palette-Based Colors</h3>
+<p>TODO</p>
+<h3>Random Effects</h3>
+<p>The animation framework automatically seeds both the system random number generator and FastLED's random functions during setup() using hardware entropy from the microcontroller, so you don't need to call random.seed() or random16_set_seed() in your animations.</p>
+<pre class="codehilite"><code class="language-cpp">void sparkleEffect() {
+    // Add random sparkles to each face
+    for(int face = 0; face &lt; num_sides; face++) {
+        if(random8() &lt; 40) {  // 40/255 chance per face
+            int led = (face * leds_per_side) + random8(leds_per_side);
+            leds[led] = CRGB::White;
+        }
+    }
+    // Fade all LEDs each frame
+    fadeToBlackBy(leds, numLeds(), 64);
+}
+</code></pre>
+
+<h2>Coordinate Systems</h2>
+<p>The DodecaRGB provides several ways to address LEDs spatially:</p>
+<h3>Linear Addressing</h3>
+<p>The LEDs of each PCB are laid out roughly in a spiral pattern, starting in the center and radiating outwards. Each side connects to the next, so all 12 sides are connected to each other in a single array.</p>
+<p>Basic sequential access:</p>
+<pre class="codehilite"><code class="language-cpp">for(int i = 0; i &lt; numLeds(); i++) {
+    leds[i] = CHSV(i * 256/numLeds(), 255, 255);  // Hue varies smoothly across LEDs
+}
+</code></pre>
+
+<p><img alt="DodecaRGB Linear Addressing" src="/assets/images/pcb-leds.png" /></p>
+<h3>Face-Based Rendering</h3>
+<pre class="codehilite"><code class="language-cpp">void renderByFace() {
+    for(int face = 0; face &lt; num_sides; face++) {
+        // Calculate LED range for this face
+        int start = face * leds_per_side;
+        int end = start + leds_per_side;
+
+        // Example: alternate faces between two colors
+        CRGB faceColor = (face % 2 == 0) ? CRGB::Red : CRGB::Blue;
+        fill_solid(leds[start], leds_per_side, faceColor);
+    }
+}
+</code></pre>
+
+<h3>3D Coordinates</h3>
+<p>Each LED has a mapped position using the <code>points[]</code> array. All of the 3D positions of each LED of the DodecaRGB model have been pre-calculated and are available to animation code.</p>
+<p>Some examples showing use in a scene:</p>
+<pre class="codehilite"><code class="language-cpp">        // Access a specific LED point (e.g. LED #42)
+    LED_Point&amp; led = points[42];
+
+    // Access coordinates
+    float x = led.x;
+    float y = led.y;
+    float z = led.z;
+
+    // Get which side it's on (0-11)
+    int side = led.side;
+
+    // Get its label number within that side (they are labelled)
+    int label = led.label_num;
+
+    // Access neighbors (stored as distance_map structs)
+    for (const auto&amp; neighbor : led.neighbors_map) {
+        // Each neighbor has an LED number, distance, and direction vector
+        int neighbor_led = neighbor.led_number;
+        float distance = neighbor.distance;
+        Vector3d direction = neighbor.direction;
+
+        // Can look up neighbor's coordinates
+        LED_Point&amp; neighbor_point = points[neighbor_led];
+    }
+
+    // Calculate distance to another point
+    float dist = led.distance_to(&amp;points[100]);
+
+    // Or distance to arbitrary XYZ coordinate
+    float dist2 = led.distance_to(1.0f, 0.0f, 0.0f);
+</code></pre>
+
+<p><img alt="DodecaRGB 3D Coordinates" src="/assets/images/leds-3d-space.png" /></p>
+<h3>Spherical Coordinates</h3>
+<p>With the x,y,z coordinates in place we can use spherical coordidnates to animate objecgts in a spherical space. This is useful for orbital effects (as seen in Blob animation):</p>
+<pre class="codehilite"><code class="language-cpp">// Convert angle and elevation to position
+float azimuth = counter * 0.01;          // Horizontal angle
+float elevation = PI/2;                  // Vertical angle (0=top, PI=bottom)
+float radius = sphere_radius;            // Distance from center
+
+// Convert to cartesian
+float x = radius * sin(elevation) * cos(azimuth);
+float y = radius * sin(elevation) * sin(azimuth);
+float z = radius * cos(elevation);
+
+// Light LEDs near this position
+for(int i = 0; i &lt; numLeds(); i++) {
+    if(points[i].distance_to(x, y, z) &lt; radius) {
+        leds[i] = CRGB::Blue;
+    }
+}
+</code></pre>
+
+<p>It helps to imagine a sphere inscribed in the DodecaRGB, with the center of the sphere at the center of the DodecaRGB. The <code>points[]</code> array contains the 3D coordinates of each LED in this sphere.</p>
+<p><img alt="DodecaRGB Sphere" src="/assets/images/dodeca-sphere.png" /></p>
+<p>See the <code>Blob</code> animation for an example of orbital movement using spherical coordinates, and <code>XYZScanner</code> for cartesian coordinate scanning effects.</p>
+<h2>Scene Lifecycle</h2>
+<p>Each animation goes through the following initialization sequence:</p>
+<p>... TODO</p>
+    </article>
+</div>
+
+    </main>
+
+    <footer>
+        <p>PixelTheater Documentation</p>
+        <p><small>Built with <a href="https://github.com/yourusername/PixelTheater">PixelTheater</a></small></p>
+    </footer>
+
+    
+    <script src="/assets/js/main.js"></script>
+    
+    <!-- Initialize syntax highlighting and add copy buttons -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply syntax highlighting
+            document.querySelectorAll('pre code').forEach((block) => {
+                // Get language from class if available
+                const codeElement = block;
+                const preElement = block.parentElement;
+                
+                // Add copy button to each code block
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-button';
+                copyButton.textContent = 'Copy';
+                preElement.appendChild(copyButton);
+                
+                // Apply highlighting
+                hljs.highlightElement(block);
+                
+                // Add copy functionality
+                copyButton.addEventListener('click', () => {
+                    const code = block.textContent;
+                    navigator.clipboard.writeText(code).then(() => {
+                        // Visual feedback
+                        copyButton.textContent = 'Copied!';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                        copyButton.textContent = 'Error';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    });
+                });
+            });
+        });
+    </script>
+    
+    
+    
+</body>
+</html> 

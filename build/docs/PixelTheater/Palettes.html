@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - PixelTheater</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <meta name="theme-color" content="#432E54">
+    <meta name="color-scheme" content="dark">
+    
+    <!-- Highlight.js for syntax highlighting -->
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <!-- Additional languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/arduino.min.js"></script>
+    
+    
+    
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-content">
+            <a href="/" class="logo">PixelTheater</a>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/" >Home</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/README.html" >PixelTheater</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/development.html" >Guides</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/simulator/index.html" class="button accent">Web Simulator</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+    </nav>
+    
+    <main>
+        
+<div class="content-wrapper">
+    <aside class="sidebar">
+        
+        <div class="sidebar-section">
+            <h3>Main Documentation</h3>
+            <ul>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>PixelTheater</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/README.html" >PixelTheater Animation System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Parameters.html" >Parameters</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Model.html" >Model System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Palettes.html" class="active">Palette System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/build-system.html" >Build System</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Guides</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/guides/creating_animations.html" >Creating Animations</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/web-simulator.html" >DodecaRGB Web Simulator</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/development.html" >DodecaRGB v2 Development</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/coding_guidelines.html" >Project Guidelines</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/Dodeca-V1-info.html" >DodecaRGB V1 info</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Special Links</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/simulator/index.html" class="special">Web Simulator</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://github.com/somebox/DodecaRGB-firmware" class="special">GitHub Repository</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+    </aside>
+    
+    <article class="main-content">
+        
+        
+        <h1>Palette System</h1>
+<h2>Overview</h2>
+<p>The palette system provides a way to define, store and use color palettes for LED animations. It uses the WLED palette format which is compatible with FastLED's gradient palettes.</p>
+<h2>Lifecycle</h2>
+<ol>
+<li>Palettes are defined as JSON files in the <code>palettes</code> directory (by scene, or globally)</li>
+<li>Scenes define parameters that can reference palettes</li>
+<li>During build:<ul>
+<li>Python script validates JSON files (format, indices, etc)</li>
+<li>Generates separate const structs for each palette</li>
+<li>Generates simple name lookup function</li>
+</ul>
+</li>
+<li>When the firmware is built, the palettes are compiled into the image</li>
+<li>At runtime:<ul>
+<li>Scene config() validates palette names exist</li>
+<li>settings() returns palette data ready for FastLED use</li>
+</ul>
+</li>
+</ol>
+<h2>Palette Format</h2>
+<p>Palettes are stored in JSON files with a .pal.json extension:</p>
+<pre class="codehilite"><code class="language-json">{
+  &quot;name&quot;: &quot;Ocean Breeze&quot;,
+  &quot;description&quot;: &quot;Cool blues and cyan tones&quot;,
+  &quot;palette&quot;: [
+    0,   0,   0,   128,   // Dark blue at 0%
+    64,  0,   255, 255,   // Cyan at 25% 
+    128, 255, 255, 255,   // White at 50%
+    192, 0,   255, 255,   // Cyan at 75%
+    255, 0,   0,   128    // Dark blue at 100%
+  ]
+}
+</code></pre>
+
+<p>The palette file format <code>*.pal.json</code> is compatible with <a href="https://kno.wled.ge/features/palettes/#custom-palettes">WLED Custom Palettes</a>.</p>
+<p>Each entry in the palette array is 4 numbers:</p>
+<ul>
+<li>Position (0-255, maps to 0-100%)</li>
+<li>Red (0-255)</li>
+<li>Green (0-255)</li>
+<li>Blue (0-255)</li>
+</ul>
+<h2>Usage in Scenes</h2>
+<pre class="codehilite"><code class="language-cpp">void config() override {
+    // Reference palette by name - only validates existence
+    param(&quot;palette&quot;, Palette, &quot;ocean&quot;);
+}
+
+void tick() override {
+    // Get palette data and create FastLED palette
+    CRGBPalette16 fastled_pal(pal_data);
+
+    // Use FastLED palette directly
+    CRGB color = ColorFromPalette(fastled_pal, position * 255);
+}
+</code></pre>
+
+<h2>Built-in Palettes</h2>
+<p>The system includes the <a href="https://fastled.io/docs/group___predefined_palettes.html">FastLED Predefined Palettes</a>: <code>CloudColors_p, LavaColors_p, OceanColors_p, ForestColors_p, RainbowColors_p, RainbowStripeColors_p, PartyColors_p, HeatColors_p</code>.</p>
+<h2>Creating Custom Palettes</h2>
+<p>Custom palettes can be:</p>
+<ol>
+<li>Added to the global props.yaml:</li>
+</ol>
+<pre class="codehilite"><code class="language-yaml">props:
+  palettes:
+    custom_pal:
+      file: palettes/custom.pal.json
+</code></pre>
+
+<ol>
+<li>Added to a scene's props:</li>
+</ol>
+<pre class="codehilite"><code class="language-yaml">props:
+  scene_pal:
+    file: props/scene.pal.json
+</code></pre>
+
+<p>Palettes can also be imported from WLED's <a href="http://fastled.io/tools/paletteknife/">PaletteKnife tool</a>, which use a simple json format.</p>
+<p>TODO (idea): support CSS3 gradient palettes.</p>
+<h2>Palettes and the Build System</h2>
+<p>The build system will:</p>
+<ol>
+<li>Load .pal.json files</li>
+<li>Convert to FastLED gradient format</li>
+<li>Generate C++ palette data</li>
+<li>Make palettes available to scenes</li>
+</ol>
+<pre class="codehilite"><code class="language-cpp">// Generated palette_data.h (C++) from pallete file (json)
+namespace PixelTheater {
+    // Each palette is a separate const struct
+    constexpr struct {
+        const uint8_t data[12] = {
+            0,   255, 0,   0,    // red
+            128, 0,   255, 0,    // green
+            255, 0,   0,   255   // blue
+        };
+    } PALETTE_RAINBOW;
+
+    // Simple lookup returns pointer to palette data
+    const uint8_t* get_palette(const char* name);
+} 
+</code></pre>
+    </article>
+</div>
+
+    </main>
+
+    <footer>
+        <p>PixelTheater Documentation</p>
+        <p><small>Built with <a href="https://github.com/yourusername/PixelTheater">PixelTheater</a></small></p>
+    </footer>
+
+    
+    <script src="/assets/js/main.js"></script>
+    
+    <!-- Initialize syntax highlighting and add copy buttons -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply syntax highlighting
+            document.querySelectorAll('pre code').forEach((block) => {
+                // Get language from class if available
+                const codeElement = block;
+                const preElement = block.parentElement;
+                
+                // Add copy button to each code block
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-button';
+                copyButton.textContent = 'Copy';
+                preElement.appendChild(copyButton);
+                
+                // Apply highlighting
+                hljs.highlightElement(block);
+                
+                // Add copy functionality
+                copyButton.addEventListener('click', () => {
+                    const code = block.textContent;
+                    navigator.clipboard.writeText(code).then(() => {
+                        // Visual feedback
+                        copyButton.textContent = 'Copied!';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                        copyButton.textContent = 'Error';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    });
+                });
+            });
+        });
+    </script>
+    
+    
+    
+</body>
+</html> 

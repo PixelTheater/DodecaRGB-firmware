@@ -1,0 +1,119 @@
+/* 
+ * DodecaRGB Simulator CSS for Documentation Site
+ * Page layout and structure only
+ */
+
+/* ===== LAYOUT STRUCTURE ===== */
+/* Base layout for simulator pages */
+.simulator-wrapper,
+.simulator-container,
+.simulator-fullwidth,
+.simulator-content,
+.main-content {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Main container with proper margins */
+.simulator-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+/* Dark theme for simulator page */
+body.simulator-page {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+/* Main content and sidebar */
+body.simulator-page main {
+    padding: 0;
+    max-width: 100%;
+    background-color: #121212;
+}
+
+body.simulator-page .sidebar {
+    display: none;
+}
+
+/* ===== VISUALIZER & CANVAS ===== */
+/* Column layout */
+.visualizer-column {
+    flex: 7;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.settings-column {
+    flex: 3;
+}
+
+/* Documentation link specific */
+.docs-link {
+    display: inline-block;
+    padding: 12px 0 0 20px;
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+@media (max-width: 1200px) {
+    /* Stack layout on smaller screens */
+    .simulator-layout {
+        flex-direction: column;
+    }
+    
+    /* Full width columns */
+    .settings-column,
+    .visualizer-column {
+        flex: none;
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Smaller padding for mobile */
+    .visualizer-column {
+        padding: 10px;
+    }
+    
+    .simulator-container {
+        padding: 0 10px;
+    }
+}
+
+.scene-dropdown {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    margin-top: 4px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.scene-list {
+    padding: 4px 0;
+}
+
+.scene-item {
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    color: var(--text-color);
+}
+
+.scene-item:hover {
+    background-color: var(--hover-color);
+}
+
+.scene-item.active {
+    background-color: var(--active-color);
+    color: var(--active-text-color);
+} 

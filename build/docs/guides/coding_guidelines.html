@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - PixelTheater</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <meta name="theme-color" content="#432E54">
+    <meta name="color-scheme" content="dark">
+    
+    <!-- Highlight.js for syntax highlighting -->
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <!-- Additional languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/arduino.min.js"></script>
+    
+    
+    
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-content">
+            <a href="/" class="logo">PixelTheater</a>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/" >Home</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/README.html" >PixelTheater</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/development.html" >Guides</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/simulator/index.html" class="button accent">Web Simulator</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+    </nav>
+    
+    <main>
+        
+<div class="content-wrapper">
+    <aside class="sidebar">
+        
+        <div class="sidebar-section">
+            <h3>Main Documentation</h3>
+            <ul>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>PixelTheater</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/README.html" >PixelTheater Animation System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Parameters.html" >Parameters</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Model.html" >Model System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Palettes.html" >Palette System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/build-system.html" >Build System</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Guides</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/guides/creating_animations.html" >Creating Animations</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/web-simulator.html" >DodecaRGB Web Simulator</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/development.html" >DodecaRGB v2 Development</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/coding_guidelines.html" class="active">Project Guidelines</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/Dodeca-V1-info.html" >DodecaRGB V1 info</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Special Links</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/simulator/index.html" class="special">Web Simulator</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://github.com/somebox/DodecaRGB-firmware" class="special">GitHub Repository</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+    </aside>
+    
+    <article class="main-content">
+        
+        
+        <h1>Project Guidelines</h1>
+<p>This serves as documentation for chosen best practices and standards that all developers should follow for this project.</p>
+<h2>Overview</h2>
+<p>DodecaRGB is a project to enable the creation and orchestration of multiple colorful animations for a hardware-based LED object.
+Animations are structured in a 360-degree environment, with support for different coordinate strategies: spherical, cartesian, and connected point graphs.
+The PixelTheater library is used to define scenes, and the Point class is used to define the geometry of the LED object.</p>
+<h3>The hardware</h3>
+<ul>
+<li>A Teensy 4.1 microcontroller drives 1,248 individually addressable RGB LEDs arranged as follows:</li>
+<li>12 identical pentagon-shaped PCBs with 104 LEDs each</li>
+<li>All PCBs assembled form a dodecahedron which is around 13cm in diameter</li>
+<li>Each face's LEDs can be controlled independently using FastLED, addressible as one long strip</li>
+<li>IMU (accelerometer, gyroscope, magnetometer)</li>
+<li>Pushbutton (for advancing control or resetting)</li>
+</ul>
+<h3>The main application (the "firmware")</h3>
+<ul>
+<li>Developed in C++ using the Arduino framework</li>
+<li>main.cc is where setup() initializes and loop() runs the animation environment</li>
+<li>the PixelTheater library is where the animation system is defined</li>
+<li>Each scene is defined in a separate .cpp file in the /src/scenes directory</li>
+<li>The Point class in points.cpp defines every LED pixel and their X,Y,Z coordinates, and which face they belong to as well as polar coordinate functions. It can also find nearest neighbors and measure distances.</li>
+</ul>
+<h2>Development Guidelines</h2>
+<h3>Code Style and Structure</h3>
+<ul>
+<li>Write concise, idiomatic C++ code with accurate examples.</li>
+<li>Follow modern C++ conventions and best practices.</li>
+<li>Use object-oriented, procedural, or functional programming patterns as appropriate.</li>
+<li>Leverage STL and standard algorithms for collection operations.</li>
+<li>Use descriptive variable and method names (e.g., 'isUserSignedIn', 'calculateTotal').</li>
+<li>Structure files into headers (<em>.hpp) and implementation files (</em>.cpp) with logical separation of concerns.</li>
+<li>Before adding implementation to a .h file, first check the .cpp file to see if it's already implemented.</li>
+</ul>
+<h3>Naming Conventions</h3>
+<ul>
+<li>Use PascalCase for class names.</li>
+<li>Use camelCase for variable names and methods.</li>
+<li>Use SCREAMING_SNAKE_CASE for constants and macros.</li>
+<li>Prefix member variables with an underscore (e.g., <code>_speed</code>).</li>
+<li>Use namespaces to organize code logically.</li>
+</ul>
+<h3>C++ Features Usage</h3>
+<ul>
+<li>Prefer modern C++ features (e.g., auto, range-based loops, smart pointers).</li>
+<li>Use <code>std::unique_ptr</code> and <code>std::shared_ptr</code> for memory management.</li>
+<li>Prefer <code>std::optional</code>, <code>std::variant</code>, and <code>std::any</code> for type-safe alternatives.</li>
+<li>Use <code>constexpr</code> and <code>const</code> to optimize compile-time computations.</li>
+<li>Use <code>std::string_view</code> for read-only string operations to avoid unnecessary copies.</li>
+<li>Use <code>std::map</code> for key-value pairs. Prefer <code>std::unordered_map</code> for faster lookups, and use <code>at()</code> to access values over <code>[]</code> to avoid silent failures.</li>
+</ul>
+<h3>Syntax and Formatting</h3>
+<ul>
+<li>Follow a consistent coding style, suggest improvements for clarity and consistency.</li>
+<li>Place braces on the same line for control structures and methods.</li>
+<li>Use clear and consistent commenting practices.</li>
+<li>Add comments to code that represents important design decisions, or to explain complex code.</li>
+</ul>
+<h3>Error Handling and Validation</h3>
+<ul>
+<li>Use exceptions for error handling (e.g., <code>std::runtime_error</code>, <code>std::invalid_argument</code>).</li>
+<li>Use RAII for resource management to avoid memory leaks.</li>
+<li>Validate inputs at function boundaries.</li>
+<li>Log errors using Serial.printf()</li>
+</ul>
+<h3>Performance Optimization</h3>
+<ul>
+<li>Avoid unnecessary heap allocations; prefer stack-based objects where possible.</li>
+<li>Use <code>std::move</code> to enable move semantics and avoid copies.</li>
+</ul>
+<h3>Key Conventions</h3>
+<ul>
+<li>Use smart pointers over raw pointers for better memory safety.</li>
+<li>Use <code>enum class</code> for strongly typed enumerations.</li>
+<li>Separate interface from implementation in classes unless the class is very simple.</li>
+<li>Use templates and metaprogramming judiciously for generic solutions.</li>
+</ul>
+<h3>Testing</h3>
+<ul>
+<li>Aim to structure code in a way that is easy to test.</li>
+<li>Firmware can be hard to test as the arduino framework is not easy to mock.</li>
+<li>Aim to test modules or classes in isolation, and use the physical model to test the integration.</li>
+</ul>
+<h3>Security</h3>
+<ul>
+<li>Use secure coding practices to avoid vulnerabilities (e.g., buffer overflows, dangling pointers).</li>
+<li>Prefer <code>std::array</code> or <code>std::vector</code> over raw arrays.</li>
+<li>Avoid C-style casts; use <code>static_cast</code>, <code>dynamic_cast</code>, or <code>reinterpret_cast</code> when necessary.</li>
+<li>Enforce const-correctness in functions and member variables.</li>
+</ul>
+<p>Follow the official ISO C++ standards and guidelines for best practices in modern C++ development.</p>
+<h2>Utilities and Build System</h2>
+<p>The util/ directory contains python helper scripts for visualizing the physical model, generating the LED coordinates and other pre-calculation tasks, as well as importing and exporting different files used (such as CSV pick-and-place files, json, etc).</p>
+<p>As each face of the dodecahedron is a pentagon that could be rotated in 5 different positions. This configuration is defined in the side_rotation[] array, where each side has a number 1-5 indication on of 5 possible rotations in 72 degree increments.</p>
+<h2>Documentation</h2>
+<ul>
+<li>In code, write clear comments for classes, methods, and critical logic.</li>
+<li>Add coments to code where it helps document assumptions, constraints, and expected behavior.</li>
+<li>Add comments to code that has known problems, limitations, or could be the source of common errors.</li>
+<li>Aim to keep documentation short and factual, organized into logical sections, and explained with examples.</li>
+<li>In Markdown files, leave a blank line between headings and code blocks.</li>
+<li>After any major change is working, update the developer guide and tutorial creating_animations.md.</li>
+<li>After any major change, update the README.md with any new or changed information.</li>
+<li>After any major commit, update the VERSION variable in the main.cc file.</li>
+</ul>
+    </article>
+</div>
+
+    </main>
+
+    <footer>
+        <p>PixelTheater Documentation</p>
+        <p><small>Built with <a href="https://github.com/yourusername/PixelTheater">PixelTheater</a></small></p>
+    </footer>
+
+    
+    <script src="/assets/js/main.js"></script>
+    
+    <!-- Initialize syntax highlighting and add copy buttons -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply syntax highlighting
+            document.querySelectorAll('pre code').forEach((block) => {
+                // Get language from class if available
+                const codeElement = block;
+                const preElement = block.parentElement;
+                
+                // Add copy button to each code block
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-button';
+                copyButton.textContent = 'Copy';
+                preElement.appendChild(copyButton);
+                
+                // Apply highlighting
+                hljs.highlightElement(block);
+                
+                // Add copy functionality
+                copyButton.addEventListener('click', () => {
+                    const code = block.textContent;
+                    navigator.clipboard.writeText(code).then(() => {
+                        // Visual feedback
+                        copyButton.textContent = 'Copied!';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                        copyButton.textContent = 'Error';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    });
+                });
+            });
+        });
+    </script>
+    
+    
+    
+</body>
+</html> 

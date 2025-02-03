@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - PixelTheater</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <meta name="theme-color" content="#432E54">
+    <meta name="color-scheme" content="dark">
+    
+    <!-- Highlight.js for syntax highlighting -->
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <!-- Additional languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/arduino.min.js"></script>
+    
+    
+    
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-content">
+            <a href="/" class="logo">PixelTheater</a>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/" >Home</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/README.html" >PixelTheater</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/development.html" class="active">Guides</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/simulator/index.html" class="button accent">Web Simulator</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+    </nav>
+    
+    <main>
+        
+<div class="content-wrapper">
+    <aside class="sidebar">
+        
+        <div class="sidebar-section">
+            <h3>Main Documentation</h3>
+            <ul>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>PixelTheater</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/README.html" >PixelTheater Animation System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Parameters.html" >Parameters</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Model.html" >Model System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Palettes.html" >Palette System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/build-system.html" >Build System</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Guides</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/guides/creating_animations.html" >Creating Animations</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/web-simulator.html" >DodecaRGB Web Simulator</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/development.html" class="active">DodecaRGB v2 Development</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/coding_guidelines.html" >Project Guidelines</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/Dodeca-V1-info.html" >DodecaRGB V1 info</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Special Links</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/simulator/index.html" class="special">Web Simulator</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://github.com/somebox/DodecaRGB-firmware" class="special">GitHub Repository</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+    </aside>
+    
+    <article class="main-content">
+        
+        
+        <h1>DodecaRGB v2 Development</h1>
+<ul>
+<li>There's a guide for developing animations in <a href="creating_animations.md">creating animations</a>.</li>
+<li>Development standards and best practices documented in <a href="coding_guidelines.md">Coding Guidelines</a>.</li>
+<li>The project has Python utilities for generating LED coordinates and visualizing the 3D model. For info about using them , please refer to the <a href="util/README.md">Utilities README</a>.</li>
+</ul>
+<h2>C++ Firmware</h2>
+<p>We're using PlatformIO to build the firmware and manage dependencies. Just clone the repo and open the project in VSCode/Cursor/whatever.</p>
+<h3>Configurating your dodecaRGB model</h3>
+<p>If for some reason you need to change the orientation settings of the PCB, you will need to change the <code>side_rotation</code> array in <code>util/dodeca_core.py</code> and re-run the Python utilities to generate the new LED coordinates, and update the <code>points.h</code> file.</p>
+<p>To configure the animation settings, look at the bottom of the <code>setup()</code> function in <code>src/main.cpp</code>, there you will find how to disable the slideshow mode, or change the order of animations. Currently, the pushbutton is configured to advance to the next animation in the list.</p>
+<h2>Python Environment</h2>
+<p>If you just want to make animations, you can skip the Python environment setup.</p>
+<ol>
+<li><strong>Install Required Tools</strong></li>
+</ol>
+<pre class="codehilite"><code class="language-bash"># Install Python 3.12 and direnv
+brew install python@3.12 direnv tcl-tk
+</code></pre>
+
+<ol>
+<li><strong>Configure direnv</strong></li>
+</ol>
+<p>Add this to your <code>~/.zshrc</code> or <code>~/.bashrc</code>:</p>
+<pre class="codehilite"><code class="language-bash"># Add direnv hook
+eval &quot;$(direnv hook zsh)&quot;  # or bash if you use bash
+</code></pre>
+
+<p>Restart your terminal or run: <code>source ~/.zshrc</code></p>
+<ol>
+<li><strong>Project Setup</strong></li>
+</ol>
+<p>In your project root directory:</p>
+<pre class="codehilite"><code class="language-bash"># Copy example configuration files
+cp .env.example .env
+cp .envrc.example .envrc
+
+# Allow direnv for this directory
+direnv allow .
+
+# Create and activate virtual environment
+/opt/homebrew/opt/python@3.12/bin/python3.12 -m venv venv
+source venv/bin/activate
+
+# Install requirements
+pip install -r util/requirements.txt
+</code></pre>
+
+<p>Now whenever you cd into the project directory:</p>
+<ul>
+<li>The correct Python version (3.12) will be activated</li>
+<li>The virtual environment will be activated automatically</li>
+<li>PYTHONPATH will be set correctly</li>
+</ul>
+<p>To verify your setup:</p>
+<pre class="codehilite"><code class="language-bash">python --version  # Should show Python 3.12.x
+echo $PYTHONPATH  # Should show your project root
+pip list  # Should show installed packages
+</code></pre>
+
+<h3>Testing</h3>
+<p>Tests are organized into two environments:</p>
+<pre class="codehilite"><code class="language-bash"># Run native cpp tests
+pio test -e native
+
+# Run python tests (from root of repo)
+python -m util.tests.run_tests
+</code></pre>
+
+<p>The <a href="utils/test/fixtures/fireworks.yaml">fireworks.yaml</a> example file is used to generate a C++ code for scene parameters which should be written to the <code>test/fixtures/</code> directory. Running the python tests will generate the files needed for the C++ tests.</p>
+<p>The C++ codebase uses the doctest framework for testing. PlatformIO's toolchains are used for the C++ tests. The native test environment only tests the library code, not the hardware. That means the arduino framework and FastLED are mocked out.</p>
+<p>Th Python tests are located in the <code>util/tests</code> directory. The <code>run_tests.py</code> script runs all the tests and formats the results.</p>
+<h3>Troubleshooting</h3>
+<p>If you see Python version mismatches when opening a new terminal:</p>
+<ol>
+<li>Ensure direnv is properly hooked into your shell</li>
+<li>Check that <code>.envrc</code> and <code>.env</code> are in the project root</li>
+<li>Run <code>direnv allow .</code> in the project directory</li>
+<li>Verify with <code>which python</code> that it points to your venv</li>
+</ol>
+<p>If Tkinter issues occur:</p>
+<pre class="codehilite"><code class="language-bash"># Test Tkinter
+python -c &quot;import tkinter; tkinter._test()&quot;
+
+# If needed, reinstall Python with Tk support
+brew unlink python-tk
+brew uninstall python-tk@3.12
+brew install python@3.12 --with-tcl-tk
+</code></pre>
+
+<h2>Further Inspiration</h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=pcV9YAWSDRE">What I learned from making a dodecahedron</a> by the fabulous Dave Darko - honestly the video that got me addicted to this project</li>
+<li><a href="https://www.youtube.com/watch?v=vR6oae0s6_M">Designing a Dodecahedron</a> in OnShape</li>
+<li>
+<h2><a href="https://www.cosmic-core.org/free/article-42-geometry-platonic-solids-part-3-spherical-stereographic-solids/">Geometry - Platonic Solids</a> - great for learning about the geometry of the dodecahedron</h2>
+</li>
+</ul>
+    </article>
+</div>
+
+    </main>
+
+    <footer>
+        <p>PixelTheater Documentation</p>
+        <p><small>Built with <a href="https://github.com/yourusername/PixelTheater">PixelTheater</a></small></p>
+    </footer>
+
+    
+    <script src="/assets/js/main.js"></script>
+    
+    <!-- Initialize syntax highlighting and add copy buttons -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply syntax highlighting
+            document.querySelectorAll('pre code').forEach((block) => {
+                // Get language from class if available
+                const codeElement = block;
+                const preElement = block.parentElement;
+                
+                // Add copy button to each code block
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-button';
+                copyButton.textContent = 'Copy';
+                preElement.appendChild(copyButton);
+                
+                // Apply highlighting
+                hljs.highlightElement(block);
+                
+                // Add copy functionality
+                copyButton.addEventListener('click', () => {
+                    const code = block.textContent;
+                    navigator.clipboard.writeText(code).then(() => {
+                        // Visual feedback
+                        copyButton.textContent = 'Copied!';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                        copyButton.textContent = 'Error';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    });
+                });
+            });
+        });
+    </script>
+    
+    
+    
+</body>
+</html> 

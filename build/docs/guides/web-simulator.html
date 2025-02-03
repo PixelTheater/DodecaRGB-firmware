@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - PixelTheater</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <meta name="theme-color" content="#432E54">
+    <meta name="color-scheme" content="dark">
+    
+    <!-- Highlight.js for syntax highlighting -->
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <!-- Additional languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/arduino.min.js"></script>
+    
+    
+    
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-content">
+            <a href="/" class="logo">PixelTheater</a>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/" >Home</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/README.html" >PixelTheater</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/development.html" >Guides</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/simulator/index.html" class="button accent">Web Simulator</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+    </nav>
+    
+    <main>
+        
+<div class="content-wrapper">
+    <aside class="sidebar">
+        
+        <div class="sidebar-section">
+            <h3>Main Documentation</h3>
+            <ul>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>PixelTheater</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/README.html" >PixelTheater Animation System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Parameters.html" >Parameters</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Model.html" >Model System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Palettes.html" >Palette System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/build-system.html" >Build System</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Guides</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/guides/creating_animations.html" >Creating Animations</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/web-simulator.html" class="active">DodecaRGB Web Simulator</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/development.html" >DodecaRGB v2 Development</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/coding_guidelines.html" >Project Guidelines</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/Dodeca-V1-info.html" >DodecaRGB V1 info</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Special Links</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/simulator/index.html" class="special">Web Simulator</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://github.com/somebox/DodecaRGB-firmware" class="special">GitHub Repository</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+    </aside>
+    
+    <article class="main-content">
+        
+        
+        <h1>DodecaRGB Web Simulator</h1>
+<p>The DodecaRGB Web Simulator provides a browser-based visualization and testing environment for LED animations using WebGL and WebAssembly. This guide explains the architecture, design patterns, and implementation details to help developers understand and modify the codebase.</p>
+<p><img alt="web sim" src="/assets/images/web-simulator.png:600x" /></p>
+<h2>Architecture Overview</h2>
+<p>The web simulator uses a hybrid architecture:</p>
+<ul>
+<li><strong>C++ Core</strong>: Animation logic and scene definitions are implemented in C++, identical to the firmware code</li>
+<li><strong>WebAssembly Bridge</strong>: Emscripten compiles C++ code to WebAssembly and creates JavaScript bindings</li>
+<li><strong>JavaScript UI Layer</strong>: Provides interactive controls and WebGL rendering</li>
+</ul>
+<p>This architecture allows sharing code between the firmware and simulator, ensuring animations behave consistently across platforms.</p>
+<h2>Code Organization</h2>
+<h3>C++ Components</h3>
+<ul>
+<li><strong><a href="../src/web_simulator.cpp"><code>src/web_simulator.cpp</code></a></strong>: Main C++ entry point for the simulator</li>
+<li>Contains the <code>WebSimulator</code> class that manages scene execution and parameter handling</li>
+<li>Implements Emscripten bindings for JavaScript interoperability</li>
+<li>
+<p>Defines the <code>SceneParameter</code> struct for passing parameter data to the UI</p>
+</li>
+<li>
+<p><strong><code>lib/PixelTheater/</code></strong>: Core animation framework</p>
+</li>
+<li>Identical to the code used in the firmware</li>
+<li>Scene definitions, animations, and parameter management</li>
+</ul>
+<h3>JavaScript Components</h3>
+<ul>
+<li><strong><a href="../../web/js/simulator-ui.js"><code>web/js/simulator-ui.js</code></a></strong>: Main JavaScript UI controller</li>
+<li><code>DodecaSimulator</code> class handles UI interaction and WebGL rendering</li>
+<li>Manages parameter controls, camera settings, and animation playback</li>
+<li>
+<p>Communicates with WebAssembly module through Emscripten bindings</p>
+</li>
+<li>
+<p><strong><a href="../../web/index.html"><code>web/index.html</code></a></strong>: HTML structure for the simulator interface</p>
+</li>
+</ul>
+<h2>Parameter System</h2>
+<p>The parameter system allows scenes to expose configurable values to the UI. For comprehensive details on parameter types and usage, see the <a href="../PixelTheater/Parameters.md">Parameters documentation</a>.</p>
+<h3>Parameter Schema</h3>
+<ol>
+<li><strong>Parameter Definition in C++ (<code>ParamDef</code> class)</strong>:</li>
+<li>Defines metadata: name, type, default value, range values</li>
+<li>Supports various types: ratio, signed_ratio, angle, signed_angle, range, count, select, switch_type</li>
+<li>
+<p>Each parameter has validation and transformation rules based on its type</p>
+</li>
+<li>
+<p><strong>Parameter Values in C++ (<code>ParamValue</code> class)</strong>:</p>
+</li>
+<li>Stores and manipulates parameter values with appropriate type safety</li>
+<li>
+<p>Handles conversions between different value representations</p>
+</li>
+<li>
+<p><strong>Parameter Representation in WebAssembly Bridge (<code>SceneParameter</code> struct)</strong>:</p>
+</li>
+</ol>
+<pre class="codehilite"><code class="language-cpp">struct SceneParameter {
+      std::string id;           // Parameter identifier
+      std::string label;        // Display name
+      std::string controlType;  // UI control (&quot;slider&quot;, &quot;checkbox&quot;, &quot;select&quot;)
+      std::string value;        // String representation of value
+      std::string type;         // Parameter type from C++ (ratio, count, etc.)
+      float min;                // Minimum value for numeric parameters
+      float max;                // Maximum value for numeric parameters
+      float step;               // Step increment for numeric parameters
+      std::vector&lt;std::string&gt; options;  // Options for select parameters
+};
+</code></pre>
+
+<h3>Parameter Type Handling</h3>
+<p>The simulator adapts UI controls based on parameter types as defined in the <a href="../PixelTheater/Parameters.md">Parameters documentation</a>:</p>
+<ul>
+<li><strong>Numeric Types</strong>:</li>
+<li><code>ratio</code>, <code>signed_ratio</code>: Float values in range [0,1] or [-1,1], displayed with 3 decimal places</li>
+<li><code>angle</code>, <code>signed_angle</code>: Float values in radians, displayed with 3 decimal places</li>
+<li><code>range</code>: Custom float range, displayed with 3 decimal places</li>
+<li>
+<p><code>count</code>: Integer values, displayed as rounded integers</p>
+</li>
+<li>
+<p><strong>Option Types</strong>:</p>
+</li>
+<li><code>select</code>: Dropdown selection from predefined options</li>
+<li><code>switch_type</code>: Boolean value displayed as checkbox</li>
+</ul>
+<h3>Step Size Calculation</h3>
+<p>Step sizes are dynamically calculated based on parameter type:
+- For <code>ratio</code> and <code>signed_ratio</code>: 0.01
+- For <code>angle</code> and <code>signed_angle</code>: PI/100
+- For <code>range</code>: (max-min)/100
+- For <code>count</code>: 1</p>
+<h2>Emscripten Bindings</h2>
+<p>The simulator uses Emscripten to create JavaScript bindings for C++ functions:</p>
+<pre class="codehilite"><code class="language-cpp">EMSCRIPTEN_BINDINGS(scene_parameters) {
+    emscripten::function(&quot;getSceneParameters&quot;, &amp;get_scene_parameters_wrapper);
+    emscripten::function(&quot;updateSceneParameter&quot;, &amp;update_scene_parameter_wrapper);
+    // Additional bindings for simulator control...
+}
+</code></pre>
+
+<p>These bindings enable JavaScript to:
+1. Get scene parameter definitions
+2. Update parameter values
+3. Control simulator behavior (change scenes, adjust camera, etc.)</p>
+<p>JavaScript accesses these functions through the global <code>Module</code> object:</p>
+<pre class="codehilite"><code class="language-javascript">// Example of calling a bound function from JavaScript
+const parameters = Module.getSceneParameters();
+</code></pre>
+
+<h2>UI Control System</h2>
+<p>The UI controls are dynamically generated based on parameter definitions:</p>
+<ol>
+<li><strong>Parameter Retrieval</strong>: When a scene is selected, the UI calls <code>Module.getSceneParameters()</code> to get parameter definitions</li>
+<li><strong>Control Generation</strong>: For each parameter, appropriate controls are created based on <code>controlType</code> and <code>type</code></li>
+<li><strong>Value Storage</strong>: Parameter values are stored in memory to persist across scene changes</li>
+<li><strong>Event Handling</strong>: Input changes trigger <code>handleSceneParameterChange()</code> which calls <code>Module.updateSceneParameter()</code></li>
+</ol>
+<h3>Value Formatting</h3>
+<p>The UI formats parameter values based on their type (in <a href="../../web/js/simulator-ui.js"><code>simulator-ui.js</code></a>):</p>
+<pre class="codehilite"><code class="language-javascript">const formatValue = (val, paramType) =&gt; {
+    if (paramType === 'count') {
+        return Math.round(val);
+    }
+    if (paramType === 'ratio' || paramType === 'signed_ratio') {
+        return parseFloat(val).toFixed(3);  // 3 decimal places for ratios
+    }
+    if (paramType === 'angle' || paramType === 'signed_angle') {
+        return parseFloat(val).toFixed(3);  // 3 decimal places for angles
+    }
+    if (paramType === 'range') {
+        return parseFloat(val).toFixed(3);  // 3 decimal places for ranges
+    }
+    return val;
+};
+</code></pre>
+
+<h2>Rendering and Display Controls</h2>
+<p>The simulator provides controls for adjusting the visual representation:</p>
+<ul>
+<li><strong>WebGL Rendering</strong>: Uses a WebGL context to render the 3D model</li>
+<li><strong>Visual Settings</strong>: Brightness, LED size, mesh visibility, opacity, atmosphere intensity</li>
+<li><strong>Animation Updates</strong>: Renders at up to 60fps using <code>requestAnimationFrame</code></li>
+</ul>
+<h2>Camera System</h2>
+<p>The camera system allows users to navigate the 3D space:</p>
+<ul>
+<li><strong>Manual Rotation</strong>: Click and drag to rotate the model</li>
+<li><strong>Auto-rotation</strong>: Toggle automatic rotation with speed control</li>
+<li><strong>Preset Views</strong>: Predefined viewing angles</li>
+<li><strong>Zoom Levels</strong>: Different distance settings from the model</li>
+</ul>
+<h2>Initialization Sequence</h2>
+<p>The initialization sequence follows these steps:</p>
+<ol>
+<li><strong>DOM Ready</strong>: Wait for HTML document to load</li>
+<li><strong>WebGL Support Check</strong>: Verify browser supports WebGL2</li>
+<li><strong>Module Initialization</strong>:</li>
+<li>Create WebAssembly module</li>
+<li>Set up JavaScript callbacks</li>
+<li>Initialize rendering context</li>
+<li><strong>Scene Setup</strong>:</li>
+<li>Load scene definitions</li>
+<li>Set default scene</li>
+<li>Generate UI controls</li>
+<li><strong>Event Binding</strong>: Connect UI elements to event handlers</li>
+<li><strong>Start Rendering Loop</strong>: Begin animation frame requests</li>
+</ol>
+<p>For more information on scene implementation, see the <a href="../PixelTheater/Scenes.md">Scenes documentation</a>.</p>
+<h2>Performance Considerations</h2>
+<ul>
+<li><strong>Benchmarking</strong>: Built-in performance monitoring</li>
+<li><strong>Memory Management</strong>: Proper cleanup of resources when switching scenes</li>
+<li><strong>FPS Control</strong>: Monitoring and logging of frame rate</li>
+<li><strong>Floating-Point Precision</strong>: Careful handling of decimal values to maintain animation quality</li>
+</ul>
+<h2>Building the Simulator</h2>
+<h3>Prerequisites</h3>
+<ul>
+<li>Emscripten SDK (3.1.0+)</li>
+<li>Build system (Make)</li>
+</ul>
+<h3>Build Commands</h3>
+<pre class="codehilite"><code class="language-bash"># Build the simulator
+pio run -e web
+
+# Start development server
+pio run -t serve
+</code></pre>
+
+<h2>Troubleshooting</h2>
+<ul>
+<li><strong>Console Logging</strong>: Browser console provides debug information</li>
+<li><strong>Debug Mode</strong>: Toggle debug mode for additional logging</li>
+<li><strong>Common Issues</strong>: Browser compatibility, WebGL support, parameter precision</li>
+</ul>
+<h2>Contributing</h2>
+<p>When modifying the web simulator:
+1. Test in multiple browsers
+2. Update this documentation for architectural changes
+3. Follow the project's coding style guidelines</p>
+    </article>
+</div>
+
+    </main>
+
+    <footer>
+        <p>PixelTheater Documentation</p>
+        <p><small>Built with <a href="https://github.com/yourusername/PixelTheater">PixelTheater</a></small></p>
+    </footer>
+
+    
+    <script src="/assets/js/main.js"></script>
+    
+    <!-- Initialize syntax highlighting and add copy buttons -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply syntax highlighting
+            document.querySelectorAll('pre code').forEach((block) => {
+                // Get language from class if available
+                const codeElement = block;
+                const preElement = block.parentElement;
+                
+                // Add copy button to each code block
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-button';
+                copyButton.textContent = 'Copy';
+                preElement.appendChild(copyButton);
+                
+                // Apply highlighting
+                hljs.highlightElement(block);
+                
+                // Add copy functionality
+                copyButton.addEventListener('click', () => {
+                    const code = block.textContent;
+                    navigator.clipboard.writeText(code).then(() => {
+                        // Visual feedback
+                        copyButton.textContent = 'Copied!';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                        copyButton.textContent = 'Error';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    });
+                });
+            });
+        });
+    </script>
+    
+    
+    
+</body>
+</html> 

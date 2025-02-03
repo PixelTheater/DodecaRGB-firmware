@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - PixelTheater</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <meta name="theme-color" content="#432E54">
+    <meta name="color-scheme" content="dark">
+    
+    <!-- Highlight.js for syntax highlighting -->
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <!-- Additional languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/arduino.min.js"></script>
+    
+    
+    
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-content">
+            <a href="/" class="logo">PixelTheater</a>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/" >Home</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/README.html" >PixelTheater</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/development.html" >Guides</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/simulator/index.html" class="button accent">Web Simulator</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+    </nav>
+    
+    <main>
+        
+<div class="content-wrapper">
+    <aside class="sidebar">
+        
+        <div class="sidebar-section">
+            <h3>Main Documentation</h3>
+            <ul>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>PixelTheater</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/README.html" >PixelTheater Animation System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Parameters.html" >Parameters</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Stage.html" class="active">Stage System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Model.html" >Model System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Palettes.html" >Palette System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/build-system.html" >Build System</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Guides</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/guides/creating_animations.html" >Creating Animations</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/web-simulator.html" >DodecaRGB Web Simulator</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/development.html" >DodecaRGB v2 Development</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/coding_guidelines.html" >Project Guidelines</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/Dodeca-V1-info.html" >DodecaRGB V1 info</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Special Links</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/simulator/index.html" class="special">Web Simulator</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://github.com/somebox/DodecaRGB-firmware" class="special">GitHub Repository</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+    </aside>
+    
+    <article class="main-content">
+        
+        
+        <h1>Stage System</h1>
+<p>The Stage is the central orchestrator in PixelTheater, managing the hardware platform, model state, and scene execution. It provides a unified interface for coordinating all components of an LED animation system.</p>
+<h2>Core Responsibilities</h2>
+<ol>
+<li><strong>Hardware Integration</strong></li>
+<li>Platform abstraction (FastLED, custom drivers)</li>
+<li>LED buffer management</li>
+<li>Frame rate control</li>
+<li>
+<p>Hardware synchronization</p>
+</li>
+<li>
+<p><strong>Scene Management</strong></p>
+</li>
+<li>Scene registration and lifecycle</li>
+<li>Scene transitions</li>
+<li>Global state coordination</li>
+<li>
+<p>Resource allocation</p>
+</li>
+<li>
+<p><strong>Update Loop</strong></p>
+</li>
+<li>Frame timing</li>
+<li>Scene execution</li>
+<li>LED buffer updates</li>
+<li>Platform synchronization</li>
+</ol>
+<h2>Basic Setup</h2>
+<pre class="codehilite"><code class="language-cpp">#include &quot;FastLED.h&quot;
+#include &quot;PixelTheater.h&quot;
+#include &quot;models/DodecaRGBv2/model.h&quot;  // Include generated model header
+
+// Define model type alias - all models live in PixelTheater::Models namespace
+using DodecaModel = PixelTheater::Models::DodecaRGBv2;
+
+class Application {
+private:
+    // LED buffer for FastLED
+    CRGB leds[DodecaModel::LED_COUNT];
+
+    // Core components
+    std::unique_ptr&lt;PixelTheater::FastLEDPlatform&gt; platform;
+    std::unique_ptr&lt;PixelTheater::Model&lt;DodecaModel&gt;&gt; model;
+    std::unique_ptr&lt;PixelTheater::Stage&lt;DodecaModel&gt;&gt; stage;
+
+public:
+    void setup() {
+        // Initialize FastLED
+        FastLED.addLeds&lt;WS2812B, DATA_PIN, GRB&gt;(leds, DodecaModel::LED_COUNT);
+        FastLED.setBrightness(128);
+        FastLED.setMaxRefreshRate(60);
+
+        // Create platform
+        platform = std::make_unique&lt;PixelTheater::FastLEDPlatform&gt;(
+            reinterpret_cast&lt;PixelTheater::CRGB*&gt;(leds),
+            DodecaModel::LED_COUNT
+        );
+
+        // Create model
+        model = std::make_unique&lt;PixelTheater::Model&lt;DodecaModel&gt;&gt;(
+            DodecaModel{},
+            platform-&gt;getLEDs()
+        );
+
+        // Create stage
+        stage = std::make_unique&lt;PixelTheater::Stage&lt;DodecaModel&gt;&gt;(
+            std::move(platform),
+            std::move(model)
+        );
+
+        // Register scenes
+        registerScenes();
+    }
+
+    void loop() {
+        stage-&gt;update();  // Updates current scene and syncs hardware
+    }
+
+private:
+    void registerScenes() {
+        // Register scenes with metadata
+        stage-&gt;registerScene&lt;SpaceScene&lt;DodecaModel&gt;&gt;(
+            &quot;Space&quot;,
+            &quot;Deep space visualization&quot;
+        );
+
+        stage-&gt;registerScene&lt;FireworksScene&lt;DodecaModel&gt;&gt;(
+            &quot;Fireworks&quot;,
+            &quot;Colorful firework display&quot;
+        );
+
+        // Set initial scene
+        if (auto* scene = stage-&gt;getScene(&quot;Space&quot;)) {
+            stage-&gt;setScene(scene);
+        }
+    }
+};
+</code></pre>
+
+<h2>Platform Integration</h2>
+<p>The Stage manages hardware through platform abstractions:</p>
+<pre class="codehilite"><code class="language-cpp">// Platform interface (simplified)
+class Platform {
+public:
+    virtual void update() = 0;              // Update hardware
+    virtual void setBrightness(uint8_t) = 0;// Set global brightness
+    virtual CRGB* getLEDs() = 0;            // Get LED buffer
+    virtual size_t getLEDCount() = 0;       // Get LED count
+};
+
+// FastLED implementation
+class FastLEDPlatform : public Platform {
+public:
+    void update() override {
+        FastLED.show();  // Update physical LEDs
+    }
+
+    void setBrightness(uint8_t value) override {
+        FastLED.setBrightness(value);
+    }
+    // ... other methods ...
+};
+</code></pre>
+
+<h2>Scene Management</h2>
+<p>The Stage provides a type-safe API for scene management:</p>
+<pre class="codehilite"><code class="language-cpp">// Scene registration
+auto* scene = stage-&gt;registerScene&lt;MyScene&lt;ModelDef&gt;&gt;(
+    &quot;My Scene&quot;,
+    &quot;Scene description&quot;
+);
+
+// Scene transitions
+stage-&gt;setScene(scene);           // Switch to scene
+stage-&gt;setScene(&quot;My Scene&quot;);      // Switch by name
+stage-&gt;nextScene();               // Advance to next scene
+stage-&gt;previousScene();           // Return to previous scene
+
+// Scene queries
+if (auto* scene = stage-&gt;getScene(&quot;My Scene&quot;)) {
+    // Scene exists
+}
+
+// Scene enumeration
+for (const auto&amp; info : stage-&gt;getSceneInfo()) {
+    std::cout &lt;&lt; info.name &lt;&lt; &quot;: &quot; &lt;&lt; info.description &lt;&lt; &quot;\n&quot;;
+}
+</code></pre>
+
+<h2>Update Loop</h2>
+<p>The Stage's update loop coordinates all components:</p>
+<pre class="codehilite"><code class="language-cpp">void Stage::update() {
+    // Update timing
+    auto now = std::chrono::steady_clock::now();
+    float delta = std::chrono::duration&lt;float&gt;(now - _last_update).count();
+    _last_update = now;
+
+    // Update current scene
+    if (_current_scene) {
+        _current_scene-&gt;tick();
+    }
+
+    // Update platform
+    _platform-&gt;update();
+}
+</code></pre>
+
+<h2>Global State</h2>
+<p>The Stage maintains global state accessible to all scenes:</p>
+<pre class="codehilite"><code class="language-cpp">// Global brightness
+stage-&gt;brightness(128);           // Set brightness
+uint8_t bright = stage-&gt;brightness(); // Get brightness
+
+// Frame timing
+float delta = stage-&gt;deltaTime(); // Time since last frame
+float fps = stage-&gt;frameRate();   // Current frame rate
+
+// Scene information
+const auto&amp; info = stage-&gt;currentScene(); // Current scene info
+size_t count = stage-&gt;sceneCount();      // Number of scenes
+</code></pre>
+
+<h2>Best Practices</h2>
+<ol>
+<li><strong>Resource Management</strong>:</li>
+<li>Use smart pointers for components</li>
+<li>Let Stage manage scene lifecycle</li>
+<li>
+<p>Clean up resources in scene destructors</p>
+</li>
+<li>
+<p><strong>Performance</strong>:</p>
+</li>
+<li>Maintain consistent frame rate</li>
+<li>Minimize allocations in update loop</li>
+<li>
+<p>Use platform-specific optimizations</p>
+</li>
+<li>
+<p><strong>Error Handling</strong>:</p>
+</li>
+<li>Check scene existence before use</li>
+<li>Validate transitions</li>
+<li>
+<p>Provide fallback scenes</p>
+</li>
+<li>
+<p><strong>Scene Organization</strong>:</p>
+</li>
+<li>Register scenes at startup</li>
+<li>Use meaningful names and descriptions</li>
+<li>Group related scenes together</li>
+</ol>
+<p>See <a href="Scenes.md">Scene Documentation</a> for details on implementing scenes.</p>
+    </article>
+</div>
+
+    </main>
+
+    <footer>
+        <p>PixelTheater Documentation</p>
+        <p><small>Built with <a href="https://github.com/yourusername/PixelTheater">PixelTheater</a></small></p>
+    </footer>
+
+    
+    <script src="/assets/js/main.js"></script>
+    
+    <!-- Initialize syntax highlighting and add copy buttons -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply syntax highlighting
+            document.querySelectorAll('pre code').forEach((block) => {
+                // Get language from class if available
+                const codeElement = block;
+                const preElement = block.parentElement;
+                
+                // Add copy button to each code block
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-button';
+                copyButton.textContent = 'Copy';
+                preElement.appendChild(copyButton);
+                
+                // Apply highlighting
+                hljs.highlightElement(block);
+                
+                // Add copy functionality
+                copyButton.addEventListener('click', () => {
+                    const code = block.textContent;
+                    navigator.clipboard.writeText(code).then(() => {
+                        // Visual feedback
+                        copyButton.textContent = 'Copied!';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                        copyButton.textContent = 'Error';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    });
+                });
+            });
+        });
+    </script>
+    
+    
+    
+</body>
+</html> 

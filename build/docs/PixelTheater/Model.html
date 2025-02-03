@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - PixelTheater</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <meta name="theme-color" content="#432E54">
+    <meta name="color-scheme" content="dark">
+    
+    <!-- Highlight.js for syntax highlighting -->
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <!-- Additional languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/arduino.min.js"></script>
+    
+    
+    
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-content">
+            <a href="/" class="logo">PixelTheater</a>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/" >Home</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/README.html" >PixelTheater</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/development.html" >Guides</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/simulator/index.html" class="button accent">Web Simulator</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+    </nav>
+    
+    <main>
+        
+<div class="content-wrapper">
+    <aside class="sidebar">
+        
+        <div class="sidebar-section">
+            <h3>Main Documentation</h3>
+            <ul>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>PixelTheater</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/README.html" >PixelTheater Animation System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Parameters.html" >Parameters</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Model.html" class="active">Model System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/Palettes.html" >Palette System</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/PixelTheater/build-system.html" >Build System</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Guides</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/guides/creating_animations.html" >Creating Animations</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/web-simulator.html" >DodecaRGB Web Simulator</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/development.html" >DodecaRGB v2 Development</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/coding_guidelines.html" >Project Guidelines</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="/guides/Dodeca-V1-info.html" >DodecaRGB V1 info</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <h3>Special Links</h3>
+            <ul>
+                
+                <li>
+                    
+                    <a href="/simulator/index.html" class="special">Web Simulator</a>
+                    
+                </li>
+                
+                <li>
+                    
+                    <a href="https://github.com/somebox/DodecaRGB-firmware" class="special">GitHub Repository</a>
+                    
+                </li>
+                
+            </ul>
+        </div>
+        
+    </aside>
+    
+    <article class="main-content">
+        
+        
+        <h1>Model System</h1>
+<p>The Model system in PixelTheater represents physical LED arrangements and their geometric relationships. Models are defined through YAML configuration and generated into C++ header files that provide type-safe access to LED data and geometric information.</p>
+<h2>Namespace Organization</h2>
+<p>Models are defined in the <code>PixelTheater::Models</code> namespace to avoid naming conflicts. Each model is defined in its own header file:</p>
+<pre class="codehilite"><code class="language-cpp">// In models/DodecaRGBv2/model.h
+namespace PixelTheater {
+namespace Models {
+
+struct DodecaRGBv2 : public ModelDefinition&lt;1248, 12&gt; {
+    static constexpr const char* NAME = &quot;DodecaRGBv2&quot;;
+    static constexpr const char* VERSION = &quot;2.0.0&quot;;
+    static constexpr const char* DESCRIPTION = &quot;12-sided RGB LED dodecahedron&quot;;
+    static constexpr const char* MODEL_TYPE = &quot;dodecahedron&quot;;
+    // ... model-specific data ...
+};
+
+}} // namespace PixelTheater::Models
+</code></pre>
+
+<h2>Model Organization</h2>
+<p>Models follow a specific folder structure:</p>
+<pre class="codehilite"><code>src/models/
+└── DodecaRGBv2/             # Model directory
+    ├── model.yaml           # Model definition
+    ├── model.h              # Generated header file
+    ├── pcb/                 # PCB-related files
+    │   ├── DodecaRGB.csv    # Pick-and-place file
+    └── README.md            # Model documentation
+</code></pre>
+
+<h2>Core Components</h2>
+<p>A Model consists of three main collections that work together to represent the physical LED arrangement:</p>
+<ol>
+<li><strong>LED Array</strong> (<code>leds</code>): </li>
+<li>Direct access to LED color data</li>
+<li>Compatible with FastLED</li>
+<li>Zero-based continuous indexing</li>
+<li>
+<p>Bounds-checked access</p>
+</li>
+<li>
+<p><strong>Point Geometry</strong> (<code>points</code>):</p>
+</li>
+<li>3D coordinates for each LED</li>
+<li>Face assignments</li>
+<li>Neighbor relationships</li>
+<li>
+<p>Distance calculations</p>
+</li>
+<li>
+<p><strong>Face Hierarchy</strong> (<code>faces</code>):</p>
+</li>
+<li>Physical surface definitions</li>
+<li>LED groupings</li>
+<li>Geometric transformations</li>
+<li>Local coordinate systems</li>
+</ol>
+<h2>Data Organization</h2>
+<p>The Model maintains parallel arrays that represent each physical LED:</p>
+<pre class="codehilite"><code class="language-cpp">// Internal storage (simplified)
+namespace PixelTheater {
+template&lt;typename ModelDef&gt;
+class Model {
+private:
+    CRGB* _leds;                                        // LED colors (FastLED)
+    std::array&lt;Point, ModelDef::LED_COUNT&gt; _points;     // 3D geometry
+    std::array&lt;Face, ModelDef::FACE_COUNT&gt; _faces;      // Surface hierarchy
+};
+}
+</code></pre>
+
+<p>These arrays are always synchronized:
+- Same indexing scheme (leds[i] and points[i] refer to same LED)
+- Consistent face assignments
+- Maintained automatically by the Model class</p>
+<h2>Coordinate Systems</h2>
+<p>Models support multiple coordinate systems:</p>
+<ol>
+<li><strong>World Space</strong>:</li>
+<li>Global 3D coordinates</li>
+<li>Used for distance calculations</li>
+<li>
+<p>Origin at model center</p>
+</li>
+<li>
+<p><strong>Face Space</strong>:</p>
+</li>
+<li>Local to each face</li>
+<li>Used for surface effects</li>
+<li>
+<p>Origin at face center</p>
+</li>
+<li>
+<p><strong>LED Indices</strong>:</p>
+</li>
+<li>Zero-based continuous array</li>
+<li>Used for direct LED access</li>
+<li>Maps to physical wiring</li>
+</ol>
+<p>Example coordinate relationships:</p>
+<pre class="codehilite"><code class="language-cpp">// World space position of LED
+Point&amp; p = model.points[42];
+float x = p.x();  // Global X coordinate
+float y = p.y();  // Global Y coordinate
+float z = p.z();  // Global Z coordinate
+
+// Face space mapping
+Face&amp; f = model.faces[p.face_id()];
+size_t local_idx = f.local_index(42);  // LED index within face
+
+// Direct LED access
+CRGB&amp; led = model.leds[42];  // Color data for same LED
+</code></pre>
+
+<h2>Model Definition</h2>
+<p>Models are defined in YAML with explicit geometric relationships:</p>
+<pre class="codehilite"><code class="language-yaml">model:
+  name: &quot;DodecaRGBv2&quot;
+  version: &quot;2.0.0&quot;
+  description: &quot;12-sided RGB LED dodecahedron&quot;
+  author: &quot;PixelTheater Team&quot;
+
+geometry:
+  shape: &quot;dodecahedron&quot;
+  edge_length_mm: 130.0
+
+face_types:
+  pentagon:
+    num_leds: 104
+    num_sides: 5
+    groups:
+      edge: [0-19, 20-39, 40-59, 60-79, 80-99]
+      center: [100-103]
+
+faces:
+  - id: 0
+    type: pentagon
+    rotation: 0
+  # ... additional faces ...
+</code></pre>
+
+<p>The YAML definition is processed by the model generator to create a C++ header file that provides:
+- Type-safe access to LED data
+- Compile-time constants
+- Geometric relationships
+- Neighbor calculations</p>
+<h2>Model Generation</h2>
+<p>Models are generated using the <code>generate_model.py</code> utility which creates a header file containing the complete model definition:</p>
+<pre class="codehilite"><code class="language-bash"># Generate model from a model directory (recommended)
+python util/generate_model.py -d src/models/DodecaRGBv2
+
+# Or specify individual files
+python util/generate_model.py -m src/models/DodecaRGBv2/model.yaml -i src/models/DodecaRGBv2/pcb/DodecaRGB.csv
+</code></pre>
+
+<p>The model generator:
+1. Reads the YAML model definition file that specifies face types, face instances, and model metadata
+2. Loads PCB pick-and-place data to get LED positions
+3. Transforms LED positions based on face positions and rotations
+4. Calculates neighbor relationships between LEDs
+5. Generates a C++ header file with the complete model definition</p>
+<p>This creates <code>model.h</code> with:
+- LED count and face count as template parameters
+- Face type definitions with vertices
+- Point coordinates and face assignments
+- Neighbor relationships
+- Model metadata</p>
+<h3>Command Line Options</h3>
+<pre class="codehilite"><code>Options:
+  -m, --model MODEL       Path to model YAML definition file
+  -d, --model-dir DIR     Path to model directory containing model.yaml and pcb/*.pos
+  -o, --output FILE       Output file (default: model.h in model directory)
+  -f, --format FORMAT     Output format: cpp or json (default: cpp)
+  -i, --input FILE        Input PCB pick and place file (overrides YAML definition)
+  -y, --yes               Automatically overwrite existing files without confirmation
+</code></pre>
+
+<h2>Best Practices</h2>
+<ol>
+<li><strong>Model Organization</strong>:</li>
+<li>Keep model definitions in <code>src/models/</code></li>
+<li>One directory per model with model.h as the main header</li>
+<li>Include PCB data and documentation</li>
+<li>
+<p>Never manually edit generated model.h files</p>
+</li>
+<li>
+<p><strong>Coordinate Systems</strong>:</p>
+</li>
+<li>Use world space for global effects</li>
+<li>Use face space for surface effects</li>
+<li>
+<p>Use LED indices for direct access</p>
+</li>
+<li>
+<p><strong>Type Safety</strong>:</p>
+</li>
+<li>Use the Models namespace</li>
+<li>Let the compiler check LED counts</li>
+<li>
+<p>Use provided bounds-checking accessors</p>
+</li>
+<li>
+<p><strong>Documentation</strong>:</p>
+</li>
+<li>Document coordinate conventions</li>
+<li>Explain face numbering</li>
+<li>Note any special LED arrangements</li>
+<li>Keep a README.md in each model directory</li>
+</ol>
+<h2>Creating New Models</h2>
+<p>To create a new model:</p>
+<ol>
+<li>Create a new directory in <code>src/models/</code></li>
+<li>Create a <code>model.yaml</code> file defining your model's properties</li>
+<li>Add the PCB pick-and-place data (CSV) to the <code>pcb/</code> subdirectory</li>
+<li>Run the model generator:
+   <code>bash
+   python util/generate_model.py -d src/models/YourModel</code></li>
+<li>Create a README.md documenting:</li>
+<li>Physical dimensions</li>
+<li>LED arrangement</li>
+<li>Coordinate system</li>
+<li>Special considerations</li>
+<li>Assembly instructions</li>
+</ol>
+<p>See the DodecaRGBv2 model for a complete example.</p>
+    </article>
+</div>
+
+    </main>
+
+    <footer>
+        <p>PixelTheater Documentation</p>
+        <p><small>Built with <a href="https://github.com/yourusername/PixelTheater">PixelTheater</a></small></p>
+    </footer>
+
+    
+    <script src="/assets/js/main.js"></script>
+    
+    <!-- Initialize syntax highlighting and add copy buttons -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply syntax highlighting
+            document.querySelectorAll('pre code').forEach((block) => {
+                // Get language from class if available
+                const codeElement = block;
+                const preElement = block.parentElement;
+                
+                // Add copy button to each code block
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-button';
+                copyButton.textContent = 'Copy';
+                preElement.appendChild(copyButton);
+                
+                // Apply highlighting
+                hljs.highlightElement(block);
+                
+                // Add copy functionality
+                copyButton.addEventListener('click', () => {
+                    const code = block.textContent;
+                    navigator.clipboard.writeText(code).then(() => {
+                        // Visual feedback
+                        copyButton.textContent = 'Copied!';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                        copyButton.textContent = 'Error';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 2000);
+                    });
+                });
+            });
+        });
+    </script>
+    
+    
+    
+</body>
+</html> 
