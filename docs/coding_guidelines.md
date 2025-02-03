@@ -40,10 +40,9 @@ and connected point graphs.
 
 - Developed in C++ using the Arduino framework
 - main.cc is where setup() initializes and loop() runs the animation environment
-- palettes.cpp contains the color palettes and color functions
-- Each animation is defined in a separate .cpp file in the animations/ directory and may 
+- the PixelTheater library is where the animation system is defined
+- Each scene is defined in a separate .cpp file in the /src/scenes directory and may 
 - The Point class in points.cpp defines every LED pixel and their X,Y,Z coordinates, and which face they belong to as well as polar coordinate functions. It can also find nearest neighbors and measure distances.
-- The Particle class in particles.cpp defines the particles that are animated with lifespan, velocity, and acceleration.
 
 ## Development Guidelines
 
