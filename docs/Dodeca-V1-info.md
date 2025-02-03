@@ -24,7 +24,7 @@ version: 2.8.0
 This is the firmware for DodecaRGB, a colorful DIY IoT model 12-sided shape made from PCB circuit boards adorned with bright LEDs. It can be assembled as a desktop light, or built with a battery pack and motion sensors for reactive animations and games.
 
 
-![DodecaRGB](images/hero.jpeg)
+![DodecaRGB](../images/hero.jpeg)
 
 ## Hardware
 
@@ -53,13 +53,13 @@ As the PCB circuit boards are wired together in series, and each PCB has in and 
 
 Note that in all software and docs, side 0 is the bottom, and side 11 is the top.
 
-![connectors and corners](images/internal.jpeg)
-![closeup of 3-pin header connection near a corner](images/header-closeup.jpeg)
+![connectors and corners](../images/internal.jpeg)
+![closeup of 3-pin header connection near a corner](../images/header-closeup.jpeg)
 
 ### Parts and Tools required for assembly
 
 - 12 DodecaRGB PCBs
-- 20 3d-printed [corner pieces](3d-models/d12-corner.stl)
+- 20 3d-printed [corner pieces](../3d-models/d12-corner.stl)
 - 60 M3 screws (~6mm long) and the appropriate screwdriver
 - board-to-board interconnections: ~15-20cm 3 wire cable (22-22 AWG, solid core is easier to solder) .. or standard male 3p pin headers, bent at angles (see notes below)
 - ESP32 (WROOM, WROVER, ESP32-S3 probably works as well)
@@ -83,7 +83,7 @@ Note that in all software and docs, side 0 is the bottom, and side 11 is the top
 1. connect the second JHT cable to the input at side 0, and connect (or solder) the other end of the wire to your EPS32 board. The default data pin for LEDs is pin 5 on the ESP (can be changed).
 1. flash the ESP32 with this firmware, configure WIFI, and get started
 
-![the two halves](images/two-halves.jpeg)
+![the two halves](../images/two-halves.jpeg)
 
 ### PCB connection points
 
@@ -117,7 +117,7 @@ Once the model is assembled and working, the ESP32 can be connected to a small U
 
 ### 3D-Printed Parts
 
-Included in this repo is an [STL file](3d-models/d12-corner.stl) for printing the 12 small corner pieces that connect the PCBs at the correct angles with M3 screws. The image below shows the recommended print bed orientation. The printed holes are slightly small so M3 screws can be inserted with a friction fit.
+Included in this repo is an [STL file](../3d-models/d12-corner.stl) for printing the 12 small corner pieces that connect the PCBs at the correct angles with M3 screws. The image below shows the recommended print bed orientation. The printed holes are slightly small so M3 screws can be inserted with a friction fit.
 
 
 ## Software
