@@ -1,3 +1,12 @@
+---
+author: Jeremy Seitz - somebox.com
+generated: 2025-02-03 00:33
+project: DodecaRGB Firmware
+repository: https://github.com/somebox/DodecaRGB-firmware
+title: Creating Animations
+version: 2.8.0
+---
+
 # Creating Animations
 
 This short guide was made to help you create your own animations for the DodecaRGB. 
@@ -6,9 +15,9 @@ The project is built in C++ and uses the Arduino framework, FastLED, and several
 
 The DodecaRGB firmware can load multiple animations and switch between them. Each animation is like a small shader program - it runs every frame and updates the LED colors based where it is on the display. This happens 50+ times per second, and the addressable LEDs are updated in parallel. The animation framework provides common functionality and patterns for defining animations, handling settings, presets, playlists, color palettes, status messages, and more.
 
-
 ## Getting Started
 
+Read the overview of the [PixelTheater animation system](PixelTheater/README.md).
 
 ## Color Palettes
 
@@ -49,23 +58,21 @@ float brightness = get_perceived_brightness(color);
 - No `delay()` calls in `tick()`
 - Pre-calculate values in `init()`
 
-### Layout Constants
+### Hardware Model Constants
 
 - `numLeds()`: Total LEDs
 - `leds_per_side`: LEDs per face
 - `num_sides`: Number of faces (12)
 
-
-
-
 ## Animation Strategies
 
 ### Time and Motion
 
-
+TODO
 
 ### Palette-Based Colors
 
+TODO
 
 ### Random Effects
 
@@ -101,7 +108,7 @@ for(int i = 0; i < numLeds(); i++) {
 }
 ```
 
-![DodecaRGB Linear Addressing](images/pcb-leds.png)
+![DodecaRGB Linear Addressing](../images/pcb-leds.png)
 
 ### Face-Based Rendering
 
@@ -123,22 +130,42 @@ void renderByFace() {
 
 Each LED has a mapped position using the `points[]` array. All of the 3D positions of each LED of the DodecaRGB model have been pre-calculated and are available to animation code.
 
-```cpp
-// Access x,y,z coordinates of any LED
-float x = points[i].x;
-float y = points[i].y;
-float z = points[i].z;
+Some examples showing use in a scene:
 
-// Find LEDs near a point in space
-for(int i = 0; i < numLeds(); i++) {
-    float dist = points[i].distance_to(target_x, target_y, target_z);
-    if(dist < threshold) {
-        leds[i] = CRGB::White;
+```cpp
+        // Access a specific LED point (e.g. LED #42)
+    LED_Point& led = points[42];
+    
+    // Access coordinates
+    float x = led.x;
+    float y = led.y;
+    float z = led.z;
+    
+    // Get which side it's on (0-11)
+    int side = led.side;
+    
+    // Get its label number within that side (they are labelled)
+    int label = led.label_num;
+    
+    // Access neighbors (stored as distance_map structs)
+    for (const auto& neighbor : led.neighbors_map) {
+        // Each neighbor has an LED number, distance, and direction vector
+        int neighbor_led = neighbor.led_number;
+        float distance = neighbor.distance;
+        Vector3d direction = neighbor.direction;
+        
+        // Can look up neighbor's coordinates
+        LED_Point& neighbor_point = points[neighbor_led];
     }
-}
+    
+    // Calculate distance to another point
+    float dist = led.distance_to(&points[100]);
+    
+    // Or distance to arbitrary XYZ coordinate
+    float dist2 = led.distance_to(1.0f, 0.0f, 0.0f);
 ```
 
-![DodecaRGB 3D Coordinates](images/leds-3d-space.png)
+![DodecaRGB 3D Coordinates](../images/leds-3d-space.png)
 
 ### Spherical Coordinates
 
@@ -165,7 +192,7 @@ for(int i = 0; i < numLeds(); i++) {
 
 It helps to imagine a sphere inscribed in the DodecaRGB, with the center of the sphere at the center of the DodecaRGB. The `points[]` array contains the 3D coordinates of each LED in this sphere.
 
-![DodecaRGB Sphere](images/dodeca-sphere.png)
+![DodecaRGB Sphere](../images/dodeca-sphere.png)
 
 See the `Blob` animation for an example of orbital movement using spherical coordinates, and `XYZScanner` for cartesian coordinate scanning effects.
 
@@ -174,5 +201,3 @@ See the `Blob` animation for an example of orbital movement using spherical coor
 Each animation goes through the following initialization sequence:
 
 ... TODO
-
-

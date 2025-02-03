@@ -36,7 +36,8 @@ you will need to re-generate the point mapping using this tool.
 */
 
 // LED configs
-#define VERSION "2.7.0"
+// Version is defined in VERSION file in root directory
+#define VERSION PROJECT_VERSION
 #define USER_BUTTON 2
 // https://github.com/FastLED/FastLED/wiki/Parallel-Output#parallel-output-on-the-teensy-4
 // pins 19+18 are used to control two strips of 624 LEDs, for a total of 1248 LEDs
