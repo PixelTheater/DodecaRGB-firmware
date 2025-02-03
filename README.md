@@ -12,7 +12,7 @@ To create an awesome open-source animation and interaction platform for running 
 
 DodecaRGB V2 is a modular, high-resolution programmable blinky gadget that was made for the hacker community, especially for coders that want to do spherical animations. Typically, this is quite hard - you either need to make a spinning POV globe, or wire up custom solutions - not to mention power and performance challenges.
 
-This project aims to create a standard platform for resolution-indpendent animations based on spherical models. DodecaRGB V2 is the second iteration of this platform, and serves as a reference implementation.
+This project aims to create a standard platform for resolution-indpendent animations based on spherical models (a developing library here called [PixelTheater](docs/PixelTheater.md)). DodecaRGB V2 is the second iteration of this platform, and serves as a reference implementation.
 
 The firmware, 3d models and tooling are open source and free to use and modify. The hardware PCBs will are planned as a kit for 2025, which will include most of the parts needed to 3d print and assemble your own.
 
@@ -74,32 +74,26 @@ Each LED point knows its:
 - Its nearest neighbors and their distances
 - Original PCB position and label
 
-There is a [developer overview](Development.md) as well asdocumentation on [creating animations](creating_animations.md).
+There is a [developer overview](docs/development.md) as well as documentation on [creating animations](docs/creating_animations.md).
 
 ## Testing
 
-The project includes unit tests for the Python utilities. To run the tests:
+The project includes unit tests for the cpp classes and python utilities. To run the tests:
+
+
+### Python Tests
 
 First, ensure you have all requirements installed:
-
-```bash
-pip install -r util/requirements.txt
-```
-
-1. From the project root directory:
 
 ```bash
 PYTHONPATH=. python -m util.tests.run_tests
 ```
 
-This will run all tests and show detailed output. Tests are located in the `util/tests` directory and include:
+### C++ Tests (using PlatformIO)
 
-- Matrix3D transformations
-- LED point calculations
-- PCB data loading
-- Core utility functions
-
-Pull requests are welcome!
+```bash
+pio test -e native
+```
 
 ## TODOs
 
@@ -137,18 +131,19 @@ Pull requests are welcome!
 
 ### Version 1 (2023)
 
-For info and assembly instructions for version 1, see [the archived readme](Dodeca-V1-info.md).
+For info and assembly instructions for version 1, see [the archived readme](docs/Dodeca-V1-info.md).
 
 ## Development Tools
 
-Documentation about doing development with this project is available in [Development.md](Development.md).
+The project uses the PixelTheater animation system (part of this project) to manage animations. Full docs are in [docs/PixelTheater.md](docs/PixelTheater.md).
+
+Info about doing development with this project is available in [Development.md](docs/Development.md). (pull requests welcome!)
 
 The python utilities are documented in [util/README.md](util/README.md). This includes how to generate the LED coordinates and visualizer from the PCB pick-and-place files, along with unit tests for the utilities.
 
 ### 3D Visualizer
 
-The project includes a 3D visualizer tool to help with development and testing, and ensuring that the side configuration and point positions are correct at export time.
+The project includes a 3D visualizer tool to help with development and testing, and ensuring that the side configuration and point positions are correct at export time. See [util/README.md](util/README.md) for more information.
 
 ![Visualizer Screenshot](images/python-visualizer.png)
 
-Please see the [utils README.md](util/README.md) for more information.

@@ -1,0 +1,14 @@
+# Core dependencies
+numpy~=2.2.1             # For numerical operations and array handling
+pyyaml~=6.0.1           # For YAML parsing
+
+# Visualization and UI
+matplotlib~=3.10.0       # For plotting and visualization
+tk~=0.1.0               # For GUI elements if needed
+
+# Development tools
+pytest~=8.3.4           # For testing
+black~=24.10.0          # For code formatting
+pylint~=3.3.3           # For code linting
+mypy~=1.14.1            # For type checking
+python-frontmatter~=1.1.0  # For parsing frontmatter in markdown files
