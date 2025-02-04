@@ -1,6 +1,6 @@
 ---
 author: Jeremy Seitz - somebox.com
-generated: 2025-02-03 01:26
+generated: 2025-02-04 07:23
 project: DodecaRGB Firmware
 repository: https://github.com/somebox/DodecaRGB-firmware
 title: Palette System
@@ -13,7 +13,7 @@ version: 2.8.0
             </div>
             <div style="text-align: right; font-size: 0.7em; color: #888;">
                 <p>Version 2.8.0<br/>
-                Generated: 2025-02-03 01:26</p>
+                Generated: 2025-02-04 07:23</p>
             </div>
           </div>
 
@@ -31,7 +31,7 @@ The palette system provides a way to define, store and use color palettes for LE
     - Python script validates JSON files (format, indices, etc)
     - Generates separate const structs for each palette
     - Generates simple name lookup function
-4. When the firmware is built, the palettes are compiled into the image 
+4. When the firmware is built, the palettes are compiled into the image
 5. At runtime:
     - Scene config() validates palette names exist
     - settings() returns palette data ready for FastLED use
@@ -89,6 +89,7 @@ The system includes the [FastLED Predefined Palettes](https://fastled.io/docs/gr
 Custom palettes can be:
 
 1. Added to the global props.yaml:
+
 ```yaml
 props:
   palettes:
@@ -97,6 +98,7 @@ props:
 ```
 
 2. Added to a scene's props:
+
 ```yaml
 props:
   scene_pal:
@@ -110,7 +112,25 @@ TODO (idea): support CSS3 gradient palettes.
 ## Palettes and the Build System
 
 The build system will:
+
 1. Load .pal.json files
 2. Convert to FastLED gradient format
 3. Generate C++ palette data
 4. Make palettes available to scenes
+
+```cpp
+// Generated palette_data.h (C++) from pallete file (json)
+namespace PixelTheater {
+    // Each palette is a separate const struct
+    constexpr struct {
+        const uint8_t data[12] = {
+            0,   255, 0,   0,    // red
+            128, 0,   255, 0,    // green
+            255, 0,   0,   255   // blue
+        };
+    } PALETTE_RAINBOW;
+
+    // Simple lookup returns pointer to palette data
+    const uint8_t* get_palette(const char* name);
+} 
+```
