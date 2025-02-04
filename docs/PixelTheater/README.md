@@ -1,6 +1,6 @@
 ---
 author: Jeremy Seitz - somebox.com
-generated: 2025-02-03 01:26
+generated: 2025-02-04 07:23
 project: DodecaRGB Firmware
 repository: https://github.com/somebox/DodecaRGB-firmware
 title: PixelTheater Animation System
@@ -13,7 +13,7 @@ version: 2.8.0
             </div>
             <div style="text-align: right; font-size: 0.7em; color: #888;">
                 <p>Version 2.8.0<br/>
-                Generated: 2025-02-03 01:26</p>
+                Generated: 2025-02-04 07:23</p>
             </div>
           </div>
 
@@ -133,44 +133,12 @@ Tests are organized into two environments:
 # Run native tests
 pio test -e native
 
-# Run specific test file
-pio test -e native -f test_parameters
+# Run python tests (from root of repo)
+python -m util.tests.run_tests
 ```
 
-Test fixtures are generated from scene YAML files to enable testing with real scene configurations:
+The [fireworks.yaml](utils/test/fixtures/fireworks.yaml) file is used to test fixture code generation, and the generated file is written to the `test/fixtures/` directory. Running the python tests will generate the files needed for the C++ tests.
 
-```cpp
-// Generated fixture provides scene parameters
-struct SpaceSceneFixture {
-    PixelTheater::SpaceSceneParameters params;
-};
+The C++ doctest framework is used for testing. PlatformIO's toolchains are used for the C++ tests. The native test environment only tests the library code, not the hardware. That means the arduino framework and FastLED are mocked out.
 
-// Use fixture in tests
-TEST_CASE_FIXTURE(SpaceSceneFixture, "Scene parameters work") {
-    // Test semantic type ranges
-    CHECK(params.speed.get() == 0.5f);          // signed_ratio [-1.0, 1.0]
-    CHECK(params.brightness.set(0.8f) == true); // ratio [0.0, 1.0]
-    
-    // Test select with mapped values
-    CHECK(params.direction.get() == -1);        // "reverse" maps to -1
-}
-```
-
-The doctest framework and PlatformIO's toolchains are used for testing. The native test environment only tests the library code, not the hardware. That means the arduino framework and FastLED are mocked out.
-
-```cpp
-// Generated palette_data.h
-namespace PixelTheater {
-    // Each palette is a separate const struct
-    constexpr struct {
-        const uint8_t data[12] = {
-            0,   255, 0,   0,    // red
-            128, 0,   255, 0,    // green
-            255, 0,   0,   255   // blue
-        };
-    } PALETTE_RAINBOW;
-
-    // Simple lookup returns pointer to palette data
-    const uint8_t* get_palette(const char* name);
-} 
-```
+The python tests are run with the `run_tests.py` script, which also formats the output. This runs all the tests in the `util/tests` directory. Both doctest and testunit are used for the python tests.

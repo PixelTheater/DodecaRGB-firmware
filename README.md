@@ -16,16 +16,19 @@ This project aims to create a standard platform for resolution-indpendent animat
 
 The firmware, 3d models and tooling are open source and free to use and modify. The hardware PCBs will are planned as a kit for 2025, which will include most of the parts needed to 3d print and assemble your own.
 
-## The Reference Model
+## The Reference LED Model
 
 - We have a dodecahedron model with 12 sides.
 - Each side is a pentgon-shaped PCB circuit board that contains 104 RGB leds.
 - Each side connects to the next, in series, for a grand total of 1248 LEDs.
 - The whole thing runs at >50fps, and can be battery powered
-- Portable and interactive: features like wireless charging, orientation sensor, magnetic closing, 3d printed interior.
-- Other ideas may extend the model (touch sensitivity, sound reactive, etc)
+- Portable and interactive: wireless charging, orientation sensor, magnetic closing, 3d printed interior (soon)
+- Other ideas may extend the model (haptic feedback, sound reactive, speaker and sound engine, etc)
 
-The combination of a hand-held ball of LEDs with motion sensing opens a lot of interesting user interaction experiments: motion light performances, visualizing data, interactive games, puzzles, etc. This reference platform is intended to be availabe as a kit for 2025, but the implementation is open source and could be applied to other models with different shapes and LED layouts.
+The combination of a hand-held ball of LEDs with motion sensing opens a lot of interesting user interaction experiments: motion light performances, visualizing data, interactive games, puzzles, etc.
+
+> This reference platform is planned to be available as a kit for mid-2025, but the implementation is open
+> source and could be applied to other models with different shapes and LED layouts.
 
 ![fits in the hand](<images/v2-juggle.gif>)
 
@@ -78,22 +81,7 @@ There is a [developer overview](docs/development.md) as well as documentation on
 
 ## Testing
 
-The project includes unit tests for the cpp classes and python utilities. To run the tests:
-
-
-### Python Tests
-
-First, ensure you have all requirements installed:
-
-```bash
-PYTHONPATH=. python -m util.tests.run_tests
-```
-
-### C++ Tests (using PlatformIO)
-
-```bash
-pio test -e native
-```
+The project includes unit tests for the cpp classes and python utilities. See [Development.md](docs/Development.md) for more information.
 
 ## TODOs
 
@@ -146,4 +134,3 @@ The python utilities are documented in [util/README.md](util/README.md). This in
 The project includes a 3D visualizer tool to help with development and testing, and ensuring that the side configuration and point positions are correct at export time. See [util/README.md](util/README.md) for more information.
 
 ![Visualizer Screenshot](images/python-visualizer.png)
-
