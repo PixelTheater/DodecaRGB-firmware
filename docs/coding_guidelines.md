@@ -1,10 +1,10 @@
 ---
 author: Jeremy Seitz - somebox.com
-generated: 2025-02-04 07:23
+generated: 2025-02-06 22:47
 project: DodecaRGB Firmware
 repository: https://github.com/somebox/DodecaRGB-firmware
 title: DodecaRGB Coding Guidelines
-version: 2.8.0
+version: 2.8.1
 ---
 
 <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -12,8 +12,8 @@ version: 2.8.0
                 <p style="font-size: 1.0em; color: #888;">Documentation for <a href="https://github.com/somebox/DodecaRGB-firmware">DodecaRGB Firmware</a></p>
             </div>
             <div style="text-align: right; font-size: 0.7em; color: #888;">
-                <p>Version 2.8.0<br/>
-                Generated: 2025-02-04 07:23</p>
+                <p>Version 2.8.1<br/>
+                Generated: 2025-02-06 22:47</p>
             </div>
           </div>
 
@@ -123,10 +123,11 @@ As each face of the dodecahedron is a pentagon that could be rotated in 5 differ
 
 ## Documentation
 
-- Write clear comments for classes, methods, and critical logic.
-- Document assumptions, constraints, and expected behavior of code.
-- Keep documentation short and factual, only add comments that improve clarity
-- Add comments in code to point out known problems, limitations, or common pitfalls.
-- After any major changes, update the developer guide and tutorial creating_animations.md.
-- After any major changes, update the README.md with any new or changed information.
-- After any major changes, update the VERSION variable in the main.cc file.
+- In code, write clear comments for classes, methods, and critical logic.
+- Add coments to code where it helps document assumptions, constraints, and expected behavior.
+- Add comments to code that has known problems, limitations, or could be the source of common errors.
+- Aim to keep documentation short and factual, organized into logical sections, and explained with examples.
+- In Markdown files, leave a blank line between headings and code blocks.
+- After any major change is working, update the developer guide and tutorial creating_animations.md.
+- After any major change, update the README.md with any new or changed information.
+- After any major commit, update the VERSION variable in the main.cc file.

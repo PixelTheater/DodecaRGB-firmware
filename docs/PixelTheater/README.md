@@ -1,10 +1,10 @@
 ---
 author: Jeremy Seitz - somebox.com
-generated: 2025-02-04 07:23
+generated: 2025-02-06 22:47
 project: DodecaRGB Firmware
 repository: https://github.com/somebox/DodecaRGB-firmware
 title: PixelTheater Animation System
-version: 2.8.0
+version: 2.8.1
 ---
 
 <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -12,8 +12,8 @@ version: 2.8.0
                 <p style="font-size: 1.0em; color: #888;">Documentation for <a href="https://github.com/somebox/DodecaRGB-firmware">DodecaRGB Firmware</a></p>
             </div>
             <div style="text-align: right; font-size: 0.7em; color: #888;">
-                <p>Version 2.8.0<br/>
-                Generated: 2025-02-04 07:23</p>
+                <p>Version 2.8.1<br/>
+                Generated: 2025-02-06 22:47</p>
             </div>
           </div>
 
@@ -124,21 +124,3 @@ Bitmap resources can be used for textures, masks, or lookup tables:
 - Images are converted to binary data at build time
 - Access via resource manager to save RAM
 - Consider memory limits when using large images
-
-### Testing
-
-Tests are organized into two environments:
-
-```bash
-# Run native tests
-pio test -e native
-
-# Run python tests (from root of repo)
-python -m util.tests.run_tests
-```
-
-The [fireworks.yaml](utils/test/fixtures/fireworks.yaml) file is used to test fixture code generation, and the generated file is written to the `test/fixtures/` directory. Running the python tests will generate the files needed for the C++ tests.
-
-The C++ doctest framework is used for testing. PlatformIO's toolchains are used for the C++ tests. The native test environment only tests the library code, not the hardware. That means the arduino framework and FastLED are mocked out.
-
-The python tests are run with the `run_tests.py` script, which also formats the output. This runs all the tests in the `util/tests` directory. Both doctest and testunit are used for the python tests.

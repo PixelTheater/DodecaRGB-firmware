@@ -1,10 +1,10 @@
 ---
 author: Jeremy Seitz - somebox.com
-generated: 2025-02-04 07:23
+generated: 2025-02-06 22:47
 project: DodecaRGB Firmware
 repository: https://github.com/somebox/DodecaRGB-firmware
 title: DodecaRGB V1 info
-version: 2.8.0
+version: 2.8.1
 ---
 
 <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -12,8 +12,8 @@ version: 2.8.0
                 <p style="font-size: 1.0em; color: #888;">Documentation for <a href="https://github.com/somebox/DodecaRGB-firmware">DodecaRGB Firmware</a></p>
             </div>
             <div style="text-align: right; font-size: 0.7em; color: #888;">
-                <p>Version 2.8.0<br/>
-                Generated: 2025-02-04 07:23</p>
+                <p>Version 2.8.1<br/>
+                Generated: 2025-02-06 22:47</p>
             </div>
           </div>
 
