@@ -1,6 +1,6 @@
 ---
 author: Jeremy Seitz - somebox.com
-generated: 2025-02-04 07:23
+generated: 2025-02-04 19:17
 project: DodecaRGB Firmware
 repository: https://github.com/somebox/DodecaRGB-firmware
 title: '[4] Scenes'
@@ -13,7 +13,7 @@ version: 2.8.0
             </div>
             <div style="text-align: right; font-size: 0.7em; color: #888;">
                 <p>Version 2.8.0<br/>
-                Generated: 2025-02-04 07:23</p>
+                Generated: 2025-02-04 19:17</p>
             </div>
           </div>
 
@@ -25,7 +25,7 @@ Scenes are the main building blocks of PixelTheater. They define the animation, 
 
 ### What is a Scene?
 
-A Scene defines an animation written in C++ that runs on the teensy and controls the animation. Scenes are called frequently (50fps+) to update the LEDs based on their parameters and internal state.
+A Scene defines an animation written in C++ that runs on the teensy display (the "stage"). Scenes are called frequently (50fps+) to update the LEDs based on their parameters and internal state.
 
 - defines the classname (`FireworksScene`) and friendly name ("fireworks") of the animation
 - will automatically load and include parameters from the generated `_params file
