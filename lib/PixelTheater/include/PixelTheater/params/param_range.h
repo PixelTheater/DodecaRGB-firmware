@@ -1,24 +1,13 @@
 #pragma once
 #include <map>
 #include <string>
+#include "../constants.h"
+
+// ParamRange - Defines a range for a parameter
+//  - used to validate default values and ranges
+//  - used by ParamValue to perform range checks and flag-based behavior (clamping, wrapping, etc)
 
 namespace PixelTheater {
-
-// Standard ranges for semantic types
-namespace Constants {
-    constexpr float RATIO_MIN = 0.0f;
-    constexpr float RATIO_MAX = 1.0f;
-    constexpr float PI = 3.14159265359f;
-    
-    constexpr float SIGNED_RATIO_MIN = -1.0f;
-    constexpr float SIGNED_RATIO_MAX = 1.0f;
-    
-    constexpr float ANGLE_MIN = 0.0f;
-    constexpr float ANGLE_MAX = PI;
-    
-    constexpr float SIGNED_ANGLE_MIN = -PI;
-    constexpr float SIGNED_ANGLE_MAX = PI;
-}
 
 // Base range validation
 template<typename T>

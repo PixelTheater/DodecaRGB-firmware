@@ -1,0 +1,41 @@
+---
+description: rules for writing and maintaining tests in this project
+globs: util/test/**, test/**
+---
+
+# Writings and Maintaining Project Tests
+
+## General Guidelines
+
+- before adding a new test, check that the file does not already contain a similar test
+- try to keep each test independent so that it tests one assumption
+- Test the implementation and not the behaviour
+- Use consistent include paths across test files 
+- organize unit tests in a way that follow the general structure of the code under test (by modules, methods, data structures, etc.)
+- if code is difficult to test due to design or dependencies, consider design changes that would make the code simpler to test
+
+## Python Testing
+
+- The Python tests are located in the `util/tests` directory. The `run_tests.py` script runs all the tests and formats the results. 
+- use `unittest` for simpler things involving predictable values, and `doctest` for more text-based situations where input has to be captured and matched.
+
+## C++ Testing
+
+- The C++ codebase uses the doctest framework for testing. PlatformIO's toolchains are used for the C++ tests. The native test environment only tests the library code, not the hardware. That means the arduino framework and FastLED are mocked out.
+- Don't get distracted by linter errors related to doctest during test development, if the tests are able to run at all, it's probably not an issue
+
+## Generated Fixtures
+
+- The [fireworks.yaml](mdc:utils/test/fixtures/fireworks.yaml) example file is used to generate a C++ code for scene parameters which should be written to the `test/fixtures/` directory. Running the python tests will generate the files needed for the C++ tests.
+
+## Test Maintenance and Errors
+
+- When refactoring tests, ensure coverage is maintained
+- Move tests to more appropriate locations if component responsibilities change
+- Update tests when architecture or design changes
+- Remove redundant or overlapping tests 
+- when debugging test errors, focus on making sure the tests are runnable, solving major errors first before digging into specific failures or design issues.
+- check that tests are up-to-date after recent changes
+- suggest to remove tests that are problematic or no longer useful
+- if a test is failing and the reasons are not clear, consider alternative ways to expose more information about what's happening (simplify test conditions, test challenged assumptions, disabling code temporarily, logging info messages, etc) in an effort to understand the problem better.
+

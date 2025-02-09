@@ -1,31 +1,18 @@
 ---
-author: Jeremy Seitz - somebox.com
-generated: 2025-02-06 22:47
-project: DodecaRGB Firmware
-repository: https://github.com/somebox/DodecaRGB-firmware
-title: DodecaRGB Coding Guidelines
+category: Guidelines
+generated: 2025-02-09 15:24
 version: 2.8.1
 ---
 
-<div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <p style="font-size: 1.0em; color: #888;">Documentation for <a href="https://github.com/somebox/DodecaRGB-firmware">DodecaRGB Firmware</a></p>
-            </div>
-            <div style="text-align: right; font-size: 0.7em; color: #888;">
-                <p>Version 2.8.1<br/>
-                Generated: 2025-02-06 22:47</p>
-            </div>
-          </div>
-
-# DodecaRGB Coding Guidelines
+# Project Guidelines
 
 This serves as documentation for chosen best practices and standards that all developers should follow for this project.
 
 ## Overview
 
 DodecaRGB is a project to enable the creation and orchestration of multiple colorful animations for a hardware-based LED object.
-Animations are structured in a 360-degree environment, with support for different coordinate strategies: spherical, cartesian, 
-and connected point graphs.
+Animations are structured in a 360-degree environment, with support for different coordinate strategies: spherical, cartesian, and connected point graphs.
+The PixelTheater library is used to define scenes, and the Point class is used to define the geometry of the LED object.
 
 ### The hardware
 
@@ -102,7 +89,6 @@ and connected point graphs.
 ### Testing
 
 - Aim to structure code in a way that is easy to test.
-- Write unit tests using Catch2.
 - Firmware can be hard to test as the arduino framework is not easy to mock. 
 - Aim to test modules or classes in isolation, and use the physical model to test the integration.
 

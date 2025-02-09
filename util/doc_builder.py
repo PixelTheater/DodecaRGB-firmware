@@ -90,7 +90,7 @@ class DocBuilder:
 def main():
     docs_dir = "../docs"
     builder = DocBuilder(docs_dir)
-    builder.process_docs()
+    # builder.process_docs()
 
 if __name__ == "__main__":
     main() 

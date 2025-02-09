@@ -1,45 +1,90 @@
 #pragma once
-#include "parameter.h"
+#include "params/param_def.h"
+#include "params/param_value.h"
+#include "settings.h"
+#include <string>
 
 namespace PixelTheater {
 
-// Forward declare Settings
-class Settings;
+// SettingsProxy - A proxy for a Settings instance
+//  - Provides helper functions for parameter access from within a scene
+//  - Enables a nice syntax for accessing values and metadata of parameters
+//  - Enforces type safety, ranges and flags for parameter values
 
 class SettingsProxy {
 public:
-    SettingsProxy(Settings& settings, const std::string& name);
+    // Main proxy that wraps a Settings instance
+    SettingsProxy(Settings& settings) : _settings(settings) {}
 
-    // Value access - move implementations to cpp file
-    operator float() const;
-    operator int() const;
-    operator bool() const;
-    
-    // Assignment
-    SettingsProxy& operator=(float value);
-    SettingsProxy& operator=(int value);
-    SettingsProxy& operator=(bool value);
-    
-    // Parameter interface
-    float max() const;
-    float min() const;
-    float default_value() const;
-    const char* description() const;
-    const ParamDef& metadata() const;
+    // Parameter proxy returned by operator[]
+    class Parameter {
+    public:
+        Parameter(Settings& settings, const std::string& name)
+            : _settings(settings)
+            , _name(name)
+        {}
 
-    // Flag helpers
-    bool has_flag(ParamFlags flag) const {
-        return Flags::has_flag(metadata().flags, flag);
+        // Direct value access
+        operator float() const { return _settings.get_value(_name).as_float(); }
+        operator int() const { return _settings.get_value(_name).as_int(); }
+        operator bool() const { return _settings.get_value(_name).as_bool(); }
+
+        // Direct assignment
+        Parameter& operator=(float value) {
+            try {
+                _settings.set_value(_name, ParamValue(value));
+            } catch (const std::invalid_argument& e) {
+                throw std::out_of_range(e.what());
+            }
+            return *this;
+        }
+        Parameter& operator=(int value) {
+            try {
+                _settings.set_value(_name, ParamValue(value));
+            } catch (const std::invalid_argument& e) {
+                throw std::out_of_range(e.what());
+            }
+            return *this;
+        }
+        Parameter& operator=(bool value) {
+            try {
+                _settings.set_value(_name, ParamValue(value));
+            } catch (const std::invalid_argument& e) {
+                throw std::out_of_range(e.what());
+            }
+            return *this;
+        }
+        Parameter& operator=(const ParamValue& value) {
+            try {
+                _settings.set_value(_name, value);
+            } catch (const std::invalid_argument& e) {
+                throw std::out_of_range(e.what());  // Convert to out_of_range
+            }
+            return *this;
+        }
+
+        // Direct metadata access
+        float min() const { return _settings.get_metadata(_name).get_min(); }
+        float max() const { return _settings.get_metadata(_name).get_max(); }
+        bool has_flag(ParamFlags flag) const { return _settings.get_metadata(_name).has_flag(flag); }
+        const char* name() const { return _settings.get_metadata(_name).name; }
+        const char* description() const { return _settings.get_metadata(_name).description; }
+
+    private:
+        Settings& _settings;
+        std::string _name;
+    };
+
+    // Return Parameter proxy for operator[]
+    Parameter operator[](const std::string& name) {
+        return Parameter(_settings, name);
     }
-
-    // Type-specific getters
-    float get_float() const { return operator float(); }
-    int get_int() const { return operator int(); }
-    bool get_bool() const { return operator bool(); }
+    const Parameter operator[](const std::string& name) const { 
+        return Parameter(_settings, name); 
+    }
 
 private:
     Settings& _settings;
-    std::string _name;
 };
 
 } // namespace PixelTheater 

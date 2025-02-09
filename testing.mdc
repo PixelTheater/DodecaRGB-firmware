@@ -1,0 +1,28 @@
+## Test Organization
+
+- Group tests by component responsibility, not just by code structure
+- Place validation tests where the validation actually occurs (e.g., Settings tests in test_settings.cpp)
+- Avoid duplicating test coverage across different test files
+- If similar tests exist in multiple files, consider consolidating them
+
+## Test Design
+
+- Test behavior rather than implementation details
+- Write tests that reflect how users will interact with the system
+- Consider the complete call stack when deciding where to test functionality
+- Make test failures clear and actionable
+
+## Build and Linter Issues
+
+- Don't get distracted by linter errors during test development
+- For include path issues:
+  - Check that doctest is properly installed via platformio.ini
+  - Verify include paths in platformio.ini match project structure
+  - Use consistent include paths across test files
+
+## Test Maintenance
+
+- When refactoring tests, ensure coverage is maintained
+- Move tests to more appropriate locations if component responsibilities change
+- Update tests when architecture or design changes
+- Remove redundant or overlapping tests
