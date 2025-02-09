@@ -1,6 +1,6 @@
 ---
 category: Development
-generated: 2025-02-09 19:04
+generated: 2025-02-10 00:32
 version: 2.8.2
 ---
 
@@ -61,7 +61,6 @@ The animation system provides a type-safe, flexible framework for creating LED a
 - **Actors**: Animation objects (classes) used in a scene
 - **Controllers**: An external interface to drive scene controls in real time
 - **Settings**: The configuration of controls, props and presets
-
 
 The Director manages scene transitions and ensures proper lifecycle method calls.
 

@@ -1,6 +1,6 @@
 ---
 category: Development
-generated: 2025-02-09 19:04
+generated: 2025-02-10 00:32
 version: 2.8.2
 ---
 
@@ -76,6 +76,7 @@ class TestScene : public Scene {
     }
 };
 ```
+
 The Director manages scene transitions and ensures proper lifecycle method calls.
 
 ### [4.3] Accessing Scene Information
