@@ -1,7 +1,7 @@
 ---
 category: Guidelines
-generated: 2025-02-09 15:24
-version: 2.8.1
+generated: 2025-02-09 19:04
+version: 2.8.2
 ---
 
 # Project Guidelines

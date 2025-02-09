@@ -1,7 +1,7 @@
 ---
 category: Development
-generated: 2025-02-09 15:24
-version: 2.8.1
+generated: 2025-02-09 19:04
+version: 2.8.2
 ---
 
 # PixelTheater Animation System
@@ -20,33 +20,33 @@ The animation system provides a type-safe, flexible framework for creating LED a
 ### [2] Architecture and Class Structure
 
 ```text
-┌──────────┐                          
-│ Director │                          
-└┬─────────┘                          
- │  ┌────────┐                        
- ├─▶│ Show   │                        
- │  └┬───────┘                        
- │   │  ┌────────┐┌────────┐┌────────┐
- │   └─▶│Scene 1 ││Scene 2 ││Scene N │
- │      └┬───────┘└────────┘└────────┘
- │       │  ┌─────────────┐  ┌───────┐  ┌───────┐
- │       ├─▶│Settings     │◀─┤Presets│◀─┤Actors │
- │       │  └─────────────┘  └───────┘  └───────┘
- │       │  ┌────────┐   ┌───────────┐
- │       └─▶│Controls│◀──┤Controllers│
- │          └────────┘   └───────────┘
-┌┴───────┐    ╔════════════════╗      
-│ Stage  │───▶║ current scene  ║      
-└┬───────┘    ╚════════════════╝      
- │  ┌────────────────┐                   
- └─▶│ VenueDevice    │                   
-    └┬───────────────┘                   
-     │  ┌────────────┐                
-     ├─▶│ LEDSurface │                
-     │  └────────────┘                
-     │  ┌────────────┐                
-     └─▶│ HWDevices  │                
-        └────────────┘                             
+┌──────────┐                                                   
+│ Director │                                                   
+└┬─────────┘                                                   
+ │  ┌────────┐                                                 
+ ├─▶│  Show  │ - configure and prepare scenes                  
+ │  └┬───────┘                                                 
+ │   │  ┌────────┐         ┌───────┐                           
+ │   └─▶│ Scene  │     ┌───┤Presets│                           
+ │      └┬───────┘     ▼   └───────┘                           
+ │       │  ┌───────────┐  ┌──────────┐  - types & ranges      
+ │       ├─▶│ Settings  │◀─┤Parameters│  - constants & flags   
+ │       │  └───────────┘  └──────────┘  - values & validation 
+ │       │  ┌────────┐                                         
+ │       └─▶│ Props  │ - palettes and bitmaps                  
+ │          └────────┘                                         
+┌┴───────┐    ╔════════════════╗                               
+│ Stage  │───▶║ current scene  ║                               
+└┬───────┘    ╚════════════════╝                               
+ │  ┌────────────┐          ▲                                  
+ ├─▶│PixelSurface│ geometry │                                  
+ │  └┬───────────┘          │                                  
+ │   │  ┌────────────┐      │                                  
+ │   └─▶│ LEDSurface │linear│                                  
+ │      └────────────┘      │                                  
+ │   ┌────────────┐   ┌─────┴─────┐                            
+ └──▶│  Devices   ├──▶│Controllers│ - sensors, events          
+     └────────────┘   └───────────┘                                              
 ```
 
 ### [2.1] Key Concepts

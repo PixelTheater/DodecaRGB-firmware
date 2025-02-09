@@ -1,5 +1,15 @@
 # Change Log
 
+v2.8.2 Feb 9 2025:
+
+- refactored settings, settings proxy, parameter values and generation
+- documentation and test updates
+
+v2.8.1 Feb 7 2025:
+
+- refactoring of parameters, types, and ranges
+- reworked documentation
+
 v2.8.0 Feb 1 2025:
 
 - rebuilt parameter system, added new settings.h and settings.cpp files

@@ -32,50 +32,7 @@ class DocBuilder:
         post.metadata.update({
             'version': self.version,
             'generated': datetime.now().strftime('%Y-%m-%d %H:%M'),
-            'repository': self.repository,
-            'author': self.author,
-            'project': self.project
         })
-        
-        # Create HTML header with version and date
-        header_html = f'''<div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <p style="font-size: 1.0em; color: #888;">Documentation for <a href="{self.repository}">{self.project}</a></p>
-            </div>
-            <div style="text-align: right; font-size: 0.7em; color: #888;">
-                <p>Version {self.version}<br/>
-                Generated: {post.metadata['generated']}</p>
-            </div>
-          </div>
-'''
-        
-        # Split content into lines
-        lines = post.content.split('\n')
-        filtered_lines = []
-        found_title = False
-        html_pattern = re.compile(r'</?[^>]+>')
-        
-        # Skip initial HTML content
-        i = 0
-        while i < len(lines):
-            line = lines[i].strip()
-            # Skip empty lines and lines containing HTML tags
-            if line == '' or html_pattern.search(line):
-                i += 1
-                continue
-            break
-        
-        # Process remaining lines
-        for line in lines[i:]:
-            # Extract title from first header if not already found
-            if not found_title and line.startswith('# '):
-                if 'title' not in post.metadata:
-                    post.metadata['title'] = line[2:].strip()
-                found_title = True
-            filtered_lines.append(line)
-        
-        # Combine everything with new header
-        post.content = header_html + '\n' + '\n'.join(filtered_lines).strip() + '\n'
         
         # Write updated file
         with open(filepath, 'w', encoding='utf-8') as f:
@@ -90,7 +47,7 @@ class DocBuilder:
 def main():
     docs_dir = "../docs"
     builder = DocBuilder(docs_dir)
-    # builder.process_docs()
+    builder.process_docs()
 
 if __name__ == "__main__":
     main() 
