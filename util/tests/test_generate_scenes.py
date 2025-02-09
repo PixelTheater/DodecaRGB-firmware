@@ -229,6 +229,7 @@ class TestSceneGenerator(unittest.TestCase):
         """Test the generated code matches the new format"""
         yaml_str = """
         name: Test Scene
+        description: Test scene description
         parameters:
             pattern:
                 type: select
@@ -245,15 +246,84 @@ class TestSceneGenerator(unittest.TestCase):
         
         header = process_scene('test', yaml_data)
         
-        # Check for options array
-        self.assertIn('static constexpr const char* const pattern_options[]', header)
-        self.assertIn('nullptr', header)  # Check for null terminator
+        # Check header format
+        self.assertIn('// Auto-generated from test.yaml', header)
+        self.assertIn('// Test scene description', header)
+        self.assertIn('#pragma once', header)
+        self.assertIn('#include "PixelTheater/parameter.h"', header)
         
-        # Check parameter format
-        self.assertIn('ParamType::select', header)
-        self.assertIn('.default_idx = 0', header)
-        self.assertIn('.options = pattern_options', header)
-        self.assertIn('Flags::CLAMP', header)
+        # Check namespace
+        self.assertIn('namespace PixelTheater {', header)
+        self.assertIn('} // namespace PixelTheater', header)
+        
+        # Check options array format
+        self.assertIn('static constexpr const char* const pattern_options[] = {', header)
+        self.assertIn('    "sphere", "fountain", nullptr', header)
+        self.assertIn('};', header)
+        
+        # Check parameter array format
+        self.assertIn('constexpr ParamDef TEST_PARAMS[] = {', header)
+        self.assertIn('    PARAM_SELECT("pattern", 0, pattern_options, "Pattern type"),', header)
+        self.assertIn('    PARAM_RATIO("speed", 0.5f, Flags::CLAMP, "Animation speed"),', header)
+
+    def test_parameter_macros(self):
+        """Test each parameter macro format"""
+        yaml_str = """
+        name: Test Scene
+        parameters:
+            switch_param:
+                type: switch
+                default: true
+                description: A switch
+            count_param:
+                type: count
+                range: [0, 100]
+                default: 50
+                description: A counter
+            range_param:
+                type: range
+                range: [-1.0, 1.0]
+                default: 0.0
+                flags: [WRAP]
+                description: A range
+            palette_param:
+                type: palette
+                default: rainbow
+                description: A palette
+        """
+        yaml_data = load_yaml_param(yaml_str)
+        header = process_scene('test', yaml_data)
+        
+        # Check each macro format
+        self.assertIn('    PARAM_SWITCH("switch_param", true, "A switch"),', header)
+        self.assertIn('    PARAM_COUNT("count_param", 0, 100, 50, Flags::NONE, "A counter"),', header)
+        self.assertIn('    PARAM_RANGE("range_param", -1.0f, 1.0f, 0.0f, Flags::WRAP, "A range"),', header)
+        self.assertIn('    PARAM_PALETTE("palette_param", "rainbow", "A palette"),', header)
+
+    def test_select_value_mapping(self):
+        """Test select parameters with value mappings"""
+        yaml_str = """
+        name: Test Scene
+        parameters:
+            direction:
+                type: select
+                values:
+                    forward: 1
+                    reverse: -1
+                    oscillate: 0
+                default: reverse
+                description: Direction control
+        """
+        yaml_data = load_yaml_param(yaml_str)
+        header = process_scene('test', yaml_data)
+        
+        # Check options array format
+        self.assertIn('static constexpr const char* const direction_options[] = {', header)
+        self.assertIn('    "forward", "reverse", "oscillate", nullptr', header)
+        self.assertIn('};', header)
+        
+        # Check parameter definition
+        self.assertIn('    PARAM_SELECT("direction", 0, direction_options, "Direction control"),', header)
 
 def test_generate_scenes():
     """Test scene parameter generation"""

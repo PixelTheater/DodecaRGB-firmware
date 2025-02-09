@@ -18,7 +18,7 @@ For each scene's YAML file, the generator creates a C++ `_params.h` header file 
 
 ```cpp
 // scenes/fireworks/_params.h
-// Auto-generated from fireworks.yaml
+// Auto-generated from scenes/fireworks/fireworks.yaml
 #pragma once
 #include "PixelTheater/parameter.h"
 
@@ -31,18 +31,10 @@ static constexpr const char* const pattern_options[] = {
 
 // Parameter definitions
 constexpr ParamDef FIREWORKS_PARAMS[] = {
-    {"sparkle", ParamType::switch_type, {.bool_default = true}, 
-     Flags::NONE, "Enable sparkle effect"},
-    
-    {"num_particles", ParamType::count, 
-     {.range_min_i = 10, .range_max_i = 1000, .default_val_i = 100}, 
-     Flags::NONE, "Number of particles"},
-    
-    {"speed", ParamType::ratio, {.default_val_f = 0.5f},
-     Flags::CLAMP, "Animation speed multiplier"},
-     
-    {"pattern", ParamType::select, {.select_options = pattern_options,
-     .default_index = 0}, Flags::NONE, "Animation pattern"}
+    PARAM_SWITCH("sparkle", true, "Enable sparkle effect"),
+    PARAM_COUNT("num_particles", 10, 1000, 100, Flags::NONE, "Number of particles"),
+    PARAM_RATIO("speed", 0.5f, Flags::CLAMP, "Animation speed multiplier"),
+    PARAM_SELECT("pattern", 0, pattern_options, "Animation pattern")
 };
 
 } // namespace PixelTheater

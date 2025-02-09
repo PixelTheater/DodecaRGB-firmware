@@ -15,14 +15,14 @@ static constexpr const char* const direction_options[] = {
 
 // Parameter definitions - one line per param for easy diffing
 constexpr ParamDef FIREWORKS_PARAMS[] = {
-    {"sparkle",           ParamType::switch_type, {.bool_default = true}, Flags::NONE, "Enable sparkle effect"},
-    {"num_particles",     ParamType::count, {.range_min_i = 10, .range_max_i = 1000, .default_val_i = 100}, Flags::CLAMP, "Number of particles"},
-    {"gravity",           ParamType::range, {.range_min_i = -1.0, .range_max_i = 2.0, .default_val_i = -0.8}, Flags::WRAP, "Gravity control"},
-    {"speed",             ParamType::ratio, {.range_min = 0.0f, .range_max = 1.0f, .default_val = 0.5f}, Flags::CLAMP, "Animation speed multiplier"},
-    {"brightness",        ParamType::angle, {.range_min = 0.0f, .range_max = 3.141592653589793f, .default_val = 0.8f}, Flags::WRAP, "Overall LED brightness"},
-    {"pattern",           ParamType::select, {.default_idx = 0, .options = pattern_options}, Flags::NONE, ""},
-    {"direction",         ParamType::select, {.default_idx = 0, .options = direction_options}, Flags::NONE, "Rotation direction and speed"},
-    {"palette",           ParamType::palette, {.str_default = "rainbow"}, Flags::NONE, ""}
+    PARAM_SWITCH("sparkle", true, "Enable sparkle effect"),
+    PARAM_COUNT("num_particles", 10, 1000, 100, Flags::NONE, "Number of particles"),
+    PARAM_RANGE("gravity", -1.0f, 2.0f, -0.8f, Flags::WRAP, "Gravity control"),
+    PARAM_RATIO("speed", 0.5f, Flags::NONE, "Animation speed multiplier"),
+    PARAM_ANGLE("brightness", 0.8f, Flags::WRAP, "Overall LED brightness"),
+    PARAM_SELECT("pattern", 0, pattern_options, ""),
+    PARAM_SELECT("direction", 0, direction_options, "Rotation direction and speed"),
+    PARAM_PALETTE("palette", "rainbow", "")
 };
 
 } // namespace PixelTheater

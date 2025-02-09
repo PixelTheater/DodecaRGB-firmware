@@ -28,7 +28,7 @@ The PixelTheater library is used to define scenes, and the Point class is used t
 - Developed in C++ using the Arduino framework
 - main.cc is where setup() initializes and loop() runs the animation environment
 - the PixelTheater library is where the animation system is defined
-- Each scene is defined in a separate .cpp file in the /src/scenes directory and may 
+- Each scene is defined in a separate .cpp file in the /src/scenes directory
 - The Point class in points.cpp defines every LED pixel and their X,Y,Z coordinates, and which face they belong to as well as polar coordinate functions. It can also find nearest neighbors and measure distances.
 
 ## Development Guidelines
@@ -48,7 +48,7 @@ The PixelTheater library is used to define scenes, and the Point class is used t
 - Use PascalCase for class names.
 - Use camelCase for variable names and methods.
 - Use SCREAMING_SNAKE_CASE for constants and macros.
-- Prefix member variables with an underscore or m_ (e.g., `_speed`).
+- Prefix member variables with an underscore (e.g., `_speed`).
 - Use namespaces to organize code logically.
 
 ### C++ Features Usage
