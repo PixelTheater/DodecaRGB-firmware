@@ -1,94 +1,89 @@
 #include <doctest/doctest.h>
 #include "PixelTheater/settings.h"
+#include "PixelTheater/settings_proxy.h"
 #include "PixelTheater/params/param_def.h"
+#include "fixtures/parameter_test_params.h"
 #include "fixtures/fireworks_params.h"
 #include <iostream>
 
 using namespace PixelTheater;
 
 TEST_SUITE("Settings") {
-    TEST_CASE("Settings can be initialized from ParamDef array") {
-        Settings settings(FIREWORKS_PARAMS, sizeof(FIREWORKS_PARAMS)/sizeof(ParamDef));
+    TEST_CASE("Core Settings functionality") {
+        Settings settings;
 
-        SUBCASE("Parameters have correct default values") {
-            CHECK(bool(settings["sparkle"]) == true);
-            CHECK(int(settings["num_particles"]) == 100);
-            CHECK(float(settings["gravity"]) == doctest::Approx(-0.8f));
-        }
-
-        SUBCASE("Parameters respect their ranges") {
-            CHECK_THROWS_AS(settings["num_particles"] = 2000, std::out_of_range);  // Above max
-            CHECK_THROWS_AS(settings["num_particles"] = 5, std::out_of_range);     // Below min
+        SUBCASE("Parameter definition") {
+            ParamDef def = PARAM_RATIO("test_ratio", 0.5f, Flags::NONE, "Test ratio");
+            settings.add_parameter(def);
             
-            settings["num_particles"] = 500;  // Valid
-            CHECK(int(settings["num_particles"]) == 500);
+            // Test metadata storage
+            const ParamDef& stored = settings.get_metadata("test_ratio");
+            CHECK(stored.type == ParamType::ratio);
+            CHECK(std::string(stored.description) == "Test ratio");
         }
 
-        SUBCASE("Parameters can be reset") {
-            settings["speed"] = 0.75f;
-            settings.reset_all();
-            CHECK(float(settings["speed"]) == doctest::Approx(0.5f));
+        SUBCASE("Value storage and retrieval") {
+            settings.add_parameter(PARAM_RATIO("speed", 0.5f, Flags::NONE, ""));
+            
+            // Direct value access
+            settings.set_value("speed", ParamValue(0.75f));
+            ParamValue val = settings.get_value("speed");
+            CHECK(val.as_float() == doctest::Approx(0.75f));
         }
 
-        SUBCASE("Parameter metadata is accessible") {
-            auto speed = settings["speed"];
-            CHECK(speed.min() == 0.0f);
-            CHECK(speed.max() == 1.0f);
-            CHECK(speed.default_value() == doctest::Approx(0.5f));
-            CHECK(std::string(speed.description()) == "Animation speed multiplier");
+        SUBCASE("Parameter validation") {
+            settings.add_parameter(PARAM_RANGE("test", -1.0f, 1.0f, 0.0f, Flags::NONE, ""));
+            
+            // Valid value
+            CHECK_NOTHROW(settings.set_value("test", ParamValue(0.5f)));
+            
+            // Invalid value
+            CHECK_THROWS_AS(settings.set_value("test", ParamValue(1.5f)), std::out_of_range);
+        }
+
+        SUBCASE("Parameter proxy access") {
+            settings.add_parameter(PARAM_RATIO("speed", 0.5f, Flags::NONE, ""));
+            SettingsProxy proxy(settings);
+
+            SUBCASE("Value access") {
+                float speed = proxy["speed"];
+                CHECK(speed == doctest::Approx(0.5f));
+            }
+        }
+
+        SUBCASE("Invalid parameter definitions") {
+            Settings settings;
+            
+            // Test invalid default value
+            ParamDef invalid_def = PARAM_RATIO("test", 1.5f, Flags::CLAMP, "");
+            CHECK_THROWS_AS(settings.add_parameter(invalid_def), std::out_of_range);
         }
     }
+}
 
-    TEST_CASE("Settings can be accessed via operator[]") {
-        Settings settings(FIREWORKS_PARAMS, sizeof(FIREWORKS_PARAMS)/sizeof(ParamDef));
-
-        SUBCASE("Basic value access") {
-            // Direct type conversion
-            bool sparkle = settings["sparkle"];
-            float speed = settings["speed"];
-            int particles = settings["num_particles"];
+TEST_SUITE("SettingsProxy") {
+    TEST_CASE("Proxy interface") {
+        Settings settings;
+        SettingsProxy proxy(settings);
+        
+        SUBCASE("Type-safe access") {
+            settings.add_parameter(PARAM_RATIO("speed", 0.5f, Flags::NONE, ""));
             
-            CHECK(sparkle == true);
-            CHECK(speed == doctest::Approx(0.5f));
-            CHECK(particles == 100);
-        }
-
-        SUBCASE("Assignment") {
-            settings["speed"] = 0.8f;
-            settings["num_particles"] = 500;
-            settings["sparkle"] = false;
+            // Assignment
+            proxy["speed"] = 0.75f;
             
-            CHECK(float(settings["speed"]) == doctest::Approx(0.8f));
-            CHECK(int(settings["num_particles"]) == 500);
-            CHECK(bool(settings["sparkle"]) == false);
+            // Access
+            float speed = proxy["speed"];
+            CHECK(speed == doctest::Approx(0.75f));
         }
 
-        SUBCASE("Range validation") {
-            // Out of range values should throw
-            CHECK_THROWS_AS(settings["speed"] = 2.0f, std::out_of_range);
-            CHECK_THROWS_AS(settings["num_particles"] = 2000, std::out_of_range);
+        SUBCASE("Parameter metadata access") {
+            settings.add_parameter(PARAM_RATIO("speed", 0.5f, Flags::CLAMP, "Speed control"));
             
-            // In range values should work
-            settings["speed"] = 0.75f;
-            CHECK(float(settings["speed"]) == doctest::Approx(0.75f));
-        }
-
-        SUBCASE("Parameter metadata") {
-            auto speed = settings["speed"];
-            CHECK(speed.min() == 0.0f);
-            CHECK(speed.max() == 1.0f);
-            CHECK(speed.default_value() == doctest::Approx(0.5f));
-            CHECK(std::string(speed.description()) == "Animation speed multiplier");
-        }
-
-        SUBCASE("Invalid parameters") {
-            CHECK_THROWS_AS(settings["invalid"], std::out_of_range);
-        }
-
-        SUBCASE("Reset to defaults") {
-            settings["speed"] = 0.8f;
-            settings.reset_all();
-            CHECK(float(settings["speed"]) == doctest::Approx(0.5f));
+            auto param = proxy["speed"];
+            CHECK(param.min() == Constants::RATIO_MIN);
+            CHECK(param.max() == Constants::RATIO_MAX);
+            CHECK(std::string(param.description()) == "Speed control");
         }
     }
 } 

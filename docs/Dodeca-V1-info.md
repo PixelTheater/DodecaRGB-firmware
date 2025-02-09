@@ -1,28 +1,14 @@
 ---
-author: Jeremy Seitz - somebox.com
-generated: 2025-02-06 22:47
-project: DodecaRGB Firmware
-repository: https://github.com/somebox/DodecaRGB-firmware
-title: DodecaRGB V1 info
+category: Guide
+generated: 2025-02-09 15:24
 version: 2.8.1
 ---
-
-<div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <p style="font-size: 1.0em; color: #888;">Documentation for <a href="https://github.com/somebox/DodecaRGB-firmware">DodecaRGB Firmware</a></p>
-            </div>
-            <div style="text-align: right; font-size: 0.7em; color: #888;">
-                <p>Version 2.8.1<br/>
-                Generated: 2025-02-06 22:47</p>
-            </div>
-          </div>
 
 # DodecaRGB V1 info 
 
 **Note: This is the archive of the first version, made for CCC camp 2023.**
 
 This is the firmware for DodecaRGB, a colorful DIY IoT model 12-sided shape made from PCB circuit boards adorned with bright LEDs. It can be assembled as a desktop light, or built with a battery pack and motion sensors for reactive animations and games.
-
 
 ![DodecaRGB](../images/hero.jpeg)
 

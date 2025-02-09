@@ -1,5 +1,11 @@
 #pragma once
 #include <cstdint>
+#include <string>
+
+// ParamFlags - Defines the flags that can be used to modify the behavior of a parameter
+//  - used by ParamDef to declare flag-based behavior (clamping, wrapping, etc)
+//  - used by ParamDef::apply_flags() to manipulate values
+//  - used by Settings to validate flags when parameters are configured
 
 namespace PixelTheater {
 
@@ -26,6 +32,15 @@ namespace Flags {
             case SLEW:  return "slew";
             default:    return "";
         }
+    }
+
+    // Add flag parsing here
+    inline ParamFlags from_string(const std::string& flags) {
+        ParamFlags bits = NONE;
+        if (flags.find("clamp") != std::string::npos) bits |= CLAMP;
+        if (flags.find("wrap") != std::string::npos) bits |= WRAP;
+        if (flags.find("slew") != std::string::npos) bits |= SLEW;
+        return bits;
     }
 }
 
