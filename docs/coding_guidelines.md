@@ -1,6 +1,6 @@
 ---
 category: Guidelines
-generated: 2025-02-09 19:04
+generated: 2025-02-10 00:32
 version: 2.8.2
 ---
 
@@ -19,7 +19,7 @@ The PixelTheater library is used to define scenes, and the Point class is used t
 - A Teensy 4.1 microcontroller drives 1,248 individually addressable RGB LEDs arranged as follows:
   - 12 identical pentagon-shaped PCBs with 104 LEDs each
   - All PCBs assembled form a dodecahedron which is around 13cm in diameter
-  - Each face's LEDs can be controlled independently using FastLED, addressible as one long strip 
+  - Each face's LEDs can be controlled independently using FastLED, addressible as one long strip
 - IMU (accelerometer, gyroscope, magnetometer)
 - Pushbutton (for advancing control or resetting)
 
@@ -89,7 +89,7 @@ The PixelTheater library is used to define scenes, and the Point class is used t
 ### Testing
 
 - Aim to structure code in a way that is easy to test.
-- Firmware can be hard to test as the arduino framework is not easy to mock. 
+- Firmware can be hard to test as the arduino framework is not easy to mock.
 - Aim to test modules or classes in isolation, and use the physical model to test the integration.
 
 ### Security
@@ -103,7 +103,7 @@ Follow the official ISO C++ standards and guidelines for best practices in moder
 
 ## Utilities and Build System
 
-The util/ directory contains python helper scripts for visualizing the physical model, generating the LED coordinates and other pre-calculation tasks, as well as importing and exporting different files used (such as CSV pick-and-place files, json, etc). 
+The util/ directory contains python helper scripts for visualizing the physical model, generating the LED coordinates and other pre-calculation tasks, as well as importing and exporting different files used (such as CSV pick-and-place files, json, etc).
 
 As each face of the dodecahedron is a pentagon that could be rotated in 5 different positions. This configuration is defined in the side_rotation[] array, where each side has a number 1-5 indication on of 5 possible rotations in 72 degree increments.
 

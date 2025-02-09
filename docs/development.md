@@ -1,6 +1,6 @@
 ---
 category: Development
-generated: 2025-02-09 19:04
+generated: 2025-02-10 00:32
 version: 2.8.2
 ---
 
@@ -76,7 +76,6 @@ echo $PYTHONPATH  # Should show your project root
 pip list  # Should show installed packages
 ```
 
-
 ### Testing
 
 Tests are organized into two environments:
@@ -93,7 +92,7 @@ The [fireworks.yaml](utils/test/fixtures/fireworks.yaml) example file is used to
 
 The C++ codebase uses the doctest framework for testing. PlatformIO's toolchains are used for the C++ tests. The native test environment only tests the library code, not the hardware. That means the arduino framework and FastLED are mocked out.
 
-Th Python tests are located in the `util/tests` directory. The `run_tests.py` script runs all the tests and formats the results. 
+Th Python tests are located in the `util/tests` directory. The `run_tests.py` script runs all the tests and formats the results.
 
 ### Troubleshooting
 
@@ -124,4 +123,7 @@ brew install python@3.12 --with-tcl-tk
 - [Designing a Dodecahedron](https://www.youtube.com/watch?v=vR6oae0s6_M) in OnShape
 - [Geometry - Platonic Solids](https://www.cosmic-core.org/free/article-42-geometry-platonic-solids-part-3-spherical-stereographic-solids/) - great for learning about the geometry of the dodecahedron
 -
+<<<<<<< HEAD
 >>>>>>> a40f713 (reorganized docs into /docs folder, added build step and python script to compile headers and frontmatter in markdown, added script to update VERSION strings in project and docs):docs/development.md
+=======
+>>>>>>> 10248fd (fix doc_builder.py script to take parameters and check file dates against headers (avoiding needless modifications))

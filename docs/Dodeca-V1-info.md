@@ -1,10 +1,10 @@
 ---
 category: Guide
-generated: 2025-02-09 19:04
+generated: 2025-02-10 00:32
 version: 2.8.2
 ---
 
-# DodecaRGB V1 info 
+# DodecaRGB V1 info
 
 **Note: This is the archive of the first version, made for CCC camp 2023.**
 
@@ -89,9 +89,7 @@ Note that in all software and docs, side 0 is the bottom, and side 11 is the top
 
 #### Connection flow
 
-
 #### PCB details
-
 
 ## Notes
 
@@ -105,7 +103,6 @@ Once the model is assembled and working, the ESP32 can be connected to a small U
 
 Included in this repo is an [STL file](../3d-models/d12-corner.stl) for printing the 12 small corner pieces that connect the PCBs at the correct angles with M3 screws. The image below shows the recommended print bed orientation. The printed holes are slightly small so M3 screws can be inserted with a friction fit.
 
-
 ## Software
 
 This repo contains the firmware designed for ESP32, and is built using PlatformIO. The C++ codebase depends on the FastLED, ArduinoJSON and WifiManager libraries.
@@ -118,7 +115,6 @@ The [simulator](https://github.com/somebox/dodeca-rgb-simulator) calculates wher
 
 of points, the X,Y,Z coordinates, and defines the order of the sides and their rotations. It also
 renders an interactive 3D model of the dodecahedron with different views, and makes it easier to visualize how the boards are lined up inside.
-
 
 ## Todo and Ideas
 
