@@ -1,9 +1,6 @@
 # project files (refactor)
 /README.md
-/creating_animations.md
 /src/docs/README.md
-/lib/Architecture.md
-/lib/animation
 /include/network.h
 /src/hardware
 

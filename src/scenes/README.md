@@ -459,4 +459,3 @@ if (animations["pattern"].hasPreset("fast")) {
 ```
 
 Note: Inside Scene methods (tick, reset, etc), settings access is always safe as parameters are validated during setup.
-
