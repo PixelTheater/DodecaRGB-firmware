@@ -1,6 +1,6 @@
 // Auto-generated from fireworks.yaml
 // YAML EXAMPLE: Colorful particle-based firework simulation
-// Generated on 2025-02-03 02:04:06
+// Generated on 2025-02-09 16:34:24
 #pragma once
 #include "PixelTheater/parameter.h"
 
@@ -22,7 +22,7 @@ constexpr ParamDef FIREWORKS_PARAMS[] = {
     PARAM_ANGLE("brightness", 0.8f, Flags::WRAP, "Overall LED brightness"),
     PARAM_SELECT("pattern", 0, pattern_options, ""),
     PARAM_SELECT("direction", 0, direction_options, "Rotation direction and speed"),
-    PARAM_PALETTE("palette", "rainbow", "")
+    PARAM_PALETTE("palette", "rainbow", ""),
 };
 
 } // namespace PixelTheater

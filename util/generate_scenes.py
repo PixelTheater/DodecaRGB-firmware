@@ -3,7 +3,7 @@ import yaml
 import argparse
 from datetime import datetime
 import sys
-from util.parameters import create_parameter, generate_header
+from util.parameters import create_parameter
 
 def process_scene(scene_name: str, yaml_data: dict) -> str:
     """Process scene YAML into C++ header"""
@@ -87,6 +87,93 @@ def process_scenes(scenes_dir: str, output_path: str = None) -> str:
             f.write(code)
     else:
         return code
+
+def format_flags(flags):
+    """Convert flag list to C++ enum format"""
+    if not flags or flags == ['NONE']:
+        return 'Flags::NONE'
+    if len(flags) == 1:
+        return f"Flags::{flags[0]}"
+    # For multiple flags, we'd need to implement flag combination
+    # For now just use the first flag as that's what the examples show
+    return f"Flags::{flags[0]}"
+
+def generate_header(scene_name: str, parameters: list, description: str = "") -> str:
+    """Generate C++ header file content"""
+    # Format timestamp
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Start with header
+    lines = [
+        f"// Auto-generated from {scene_name}.yaml",
+        f"// {description}",
+        f"// Generated on {timestamp}",
+        "#pragma once",
+        '#include "PixelTheater/parameter.h"',
+        "",
+        "namespace PixelTheater {",
+        ""
+    ]
+    
+    # Generate option arrays for select parameters
+    select_params = [p for p in parameters if p.param_type == "select"]
+    for param in select_params:
+        array_name = f"{param.base.name}_options"
+        if isinstance(param.values, list):
+            # String array for simple options
+            options = [f'"{opt}"' for opt in param.values]
+            lines.extend([
+                f"static constexpr const char* const {array_name}[] = {{",
+                f"    {', '.join(options)}, nullptr",
+                "};",
+            ])
+        elif isinstance(param.values, dict):
+            # Handle value mappings
+            options = [f'"{key}"' for key in param.values.keys()]
+            lines.extend([
+                f"static constexpr const char* const {array_name}[] = {{",
+                f"    {', '.join(options)}, nullptr",
+                "};",
+            ])
+    
+    # Generate parameter array
+    lines.extend([
+        "",
+        "// Parameter definitions - one line per param for easy diffing",
+        f"constexpr ParamDef {scene_name.upper()}_PARAMS[] = {{",
+    ])
+    
+    # Add each parameter definition
+    for param in parameters:
+        flags = format_flags(param.base.flags)  # Format flags properly
+        if param.param_type == "switch":
+            line = f'    PARAM_SWITCH("{param.base.name}", {str(param.default).lower()}, "{param.base.description}"),'
+        elif param.param_type == "count":
+            line = f'    PARAM_COUNT("{param.base.name}", {param.range_min}, {param.range_max}, {param.default}, {flags}, "{param.base.description}"),'
+        elif param.param_type == "range":
+            line = f'    PARAM_RANGE("{param.base.name}", {param.range_min}f, {param.range_max}f, {param.default}f, {flags}, "{param.base.description}"),'
+        elif param.param_type == "ratio":
+            line = f'    PARAM_RATIO("{param.base.name}", {param.default}f, {flags}, "{param.base.description}"),'
+        elif param.param_type == "angle":
+            line = f'    PARAM_ANGLE("{param.base.name}", {param.default}f, {flags}, "{param.base.description}"),'
+        elif param.param_type == "select":
+            line = f'    PARAM_SELECT("{param.base.name}", 0, {param.base.name}_options, "{param.base.description}"),'
+        elif param.param_type == "palette":
+            line = f'    PARAM_PALETTE("{param.base.name}", "{param.default}", "{param.base.description}"),'
+        else:
+            raise ValueError(f"Unknown parameter type: {param.param_type}")
+        
+        lines.append(line)
+    
+    # Close array and namespace
+    lines.extend([
+        "};",
+        "",
+        "} // namespace PixelTheater",
+        ""
+    ])
+    
+    return "\n".join(lines)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate parameter code from YAML')
