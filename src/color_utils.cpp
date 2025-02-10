@@ -1,4 +1,4 @@
-#include "palettes.h"
+#include "color_utils.h"
 
 // application color palettes, hand picked for good contrast and exceptional taste of the author
 

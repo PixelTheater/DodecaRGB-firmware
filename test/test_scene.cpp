@@ -1,6 +1,7 @@
 #include <doctest/doctest.h>
 #include "PixelTheater/scene.h"
 #include "PixelTheater/params/param_def.h"
+#include "helpers/fastled_test_helper.h"
 #include <iostream>
 
 using namespace PixelTheater;

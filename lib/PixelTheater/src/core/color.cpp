@@ -2,14 +2,7 @@
 
 namespace PixelTheater {
 
-// Define static color constants
-const CRGB CRGB::Black = CRGB(0, 0, 0);
-const CRGB CRGB::White = CRGB(255, 255, 255);
-const CRGB CRGB::Red = CRGB(255, 0, 0);
-const CRGB CRGB::Green = CRGB(0, 255, 0);
-const CRGB CRGB::Blue = CRGB(0, 0, 255);
-
-// Add HSV conversion implementations
+// HSV conversion implementation
 
 void hsv2rgb_rainbow(const CHSV& hsv, CRGB& rgb) {
     // Handle grayscale case

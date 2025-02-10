@@ -1,5 +1,6 @@
 #include <doctest/doctest.h>
 #include "PixelTheater/palette.h"
+#include "helpers/fastled_test_helper.h"  // Add this for CRGBPalette16 mock
 
 using namespace PixelTheater;
 

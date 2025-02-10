@@ -5,17 +5,17 @@ using namespace PixelTheater;
 
 TEST_SUITE("CRGB") {
   TEST_CASE("construction") {
-      CRGB c1;  // Default constructor
+      PixelTheater::CRGB c1;  // Explicitly use our CRGB
       CHECK(c1.r == 0);
       CHECK(c1.g == 0);
       CHECK(c1.b == 0);
 
-      CRGB c2(100, 150, 200);  // RGB constructor
+      PixelTheater::CRGB c2(100, 150, 200);
       CHECK(c2.r == 100);
       CHECK(c2.g == 150);
       CHECK(c2.b == 200);
 
-      CRGB c3(0xFF8800);  // 24-bit color constructor
+      PixelTheater::CRGB c3(0xFF8800);
       CHECK(c3.r == 0xFF);
       CHECK(c3.g == 0x88);
       CHECK(c3.b == 0x00);
@@ -133,6 +133,70 @@ TEST_SUITE("CRGB") {
           CHECK(c1.b == 255);
       }
   }
+
+  TEST_CASE("array access") {
+      CRGB c(100, 150, 200);
+      
+      // Read access
+      CHECK(c[0] == 100);  // r
+      CHECK(c[1] == 150);  // g
+      CHECK(c[2] == 200);  // b
+
+      // Write access
+      c[0] = 50;
+      c[1] = 75;
+      c[2] = 100;
+      CHECK(c.r == 50);
+      CHECK(c.g == 75);
+      CHECK(c.b == 100);
+  }
+
+  TEST_CASE("CRGB constructors and assignment") {
+      SUBCASE("copy construction") {
+          CRGB c1(100, 150, 200);
+          CRGB c2(c1);
+          CHECK(c2.r == 100);
+          CHECK(c2.g == 150);
+          CHECK(c2.b == 200);
+      }
+
+      SUBCASE("HSV construction") {
+          CRGB rgb(CHSV(160, 255, 255));  // Pure blue
+          CHECK(rgb.r == 0);
+          CHECK(rgb.g == 0);
+          CHECK(rgb.b == 255);
+      }
+
+      SUBCASE("assignment operators") {
+          CRGB c;
+          
+          // Assign from RGB
+          c = CRGB(100, 150, 200);
+          CHECK(c.r == 100);
+          CHECK(c.g == 150);
+          CHECK(c.b == 200);
+
+          // Assign from HSV
+          c = CHSV(160, 255, 255);
+          CHECK(c.r == 0);
+          CHECK(c.g == 0);
+          CHECK(c.b == 255);
+
+          // Assign from hex color
+          c = 0xFF0000;  // Red
+          CHECK(c.r == 255);
+          CHECK(c.g == 0);
+          CHECK(c.b == 0);
+      }
+
+      SUBCASE("setRGB") {
+          CRGB c;
+          c.setRGB(100, 150, 200);
+          CHECK(c.r == 100);
+          CHECK(c.g == 150);
+          CHECK(c.b == 200);
+      }
+  }
 }
 
 TEST_CASE("HSV colors") {
@@ -240,5 +304,88 @@ TEST_CASE("HSV color wheel points") {
             CHECK(rgb.g == point.expected.g);
             CHECK(rgb.b == point.expected.b);
         }
+    }
+}
+
+TEST_CASE("CRGB operators") {
+    SUBCASE("addition") {
+        CRGB c1(100, 150, 200);
+        CRGB c2(50, 100, 150);
+        
+        c1 += c2;
+        CHECK(c1.r == 150);  // 100 + 50
+        CHECK(c1.g == 250);  // 150 + 100
+        CHECK(c1.b == 255);  // 200 + 150 = 350, saturates to 255
+    }
+
+    SUBCASE("subtraction") {
+        CRGB c1(100, 150, 200);
+        CRGB c2(50, 200, 150);
+        
+        c1 -= c2;
+        CHECK(c1.r == 50);   // 100 - 50
+        CHECK(c1.g == 0);    // 150 - 200, saturates to 0
+        CHECK(c1.b == 50);   // 200 - 150
+    }
+
+    SUBCASE("scaling") {
+        CRGB c(100, 150, 200);
+        
+        SUBCASE("zero scale") {
+            c *= 0;
+            CHECK(c.r == 0);
+            CHECK(c.g == 0);
+            CHECK(c.b == 0);
+        }
+
+        SUBCASE("half scale") {
+            c *= 128;  // ~50%
+            CHECK(c.r == 50);
+            CHECK(c.g == 75);
+            CHECK(c.b == 100);
+        }
+
+        SUBCASE("full scale") {
+            CRGB original = c;
+            c *= 255;
+            CHECK(c.r == original.r);
+            CHECK(c.g == original.g);
+            CHECK(c.b == original.b);
+        }
+    }
+
+    SUBCASE("saturation handling") {
+        CRGB c1(255, 255, 255);
+        CRGB c2(1, 1, 1);
+        
+        // Test addition saturation
+        c1 += c2;
+        CHECK(c1.r == 255);
+        CHECK(c1.g == 255);
+        CHECK(c1.b == 255);
+
+        // Test subtraction saturation
+        CRGB c3(0, 0, 0);
+        c3 -= c2;
+        CHECK(c3.r == 0);
+        CHECK(c3.g == 0);
+        CHECK(c3.b == 0);
+    }
+}
+
+TEST_CASE("FastLED predefined colors") {
+    SUBCASE("color values") {
+        // Test direct color constants
+        CHECK(CRGB::AliceBlue.r == 0xF0);
+        CHECK(CRGB::AliceBlue.g == 0xF8);
+        CHECK(CRGB::AliceBlue.b == 0xFF);
+
+        CHECK(CRGB::Amethyst.r == 0x99);
+        CHECK(CRGB::Amethyst.g == 0x66);
+        CHECK(CRGB::Amethyst.b == 0xCC);
+
+        CHECK(CRGB::Aqua.r == 0x00);
+        CHECK(CRGB::Aqua.g == 0xFF);
+        CHECK(CRGB::Aqua.b == 0xFF);
     }
 } 
