@@ -1,7 +1,6 @@
 #include <doctest/doctest.h>
 #include "PixelTheater/core/math.h"
-#include "helpers/arduino_mock.h"
-#include "Core"  // Direct Eigen include
+#include "Core"  // Eigen includes
 #include "Dense"
 
 using namespace PixelTheater;
