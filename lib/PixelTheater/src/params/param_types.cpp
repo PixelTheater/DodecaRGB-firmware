@@ -1,4 +1,5 @@
 #include "PixelTheater/params/param_types.h"
+#include "PixelTheater/core/log.h"
 #include <stdexcept>
 #include <string>
 
@@ -17,7 +18,8 @@ ParamType from_string(const std::string& type) {
     if (type == "palette") return ParamType::palette;
     if (type == "bitmap") return ParamType::bitmap;
     
-    throw std::invalid_argument("Unknown parameter type: " + type);
+    Log::warning("[WARNING] Unknown parameter type: %s\n", type.c_str());
+    return ParamType::ratio;  // Return safe default instead of throwing
 }
 
 } // namespace ParamTypes

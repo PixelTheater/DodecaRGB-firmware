@@ -1,0 +1,60 @@
+#include <doctest/doctest.h>
+#include "PixelTheater/core/math.h"
+#include <Arduino.h>
+
+using namespace PixelTheater;
+
+TEST_CASE("Arduino Math Functions") {
+    Serial.println("\n=== Testing Math Functions ===");
+
+    SUBCASE("map function") {
+        // Test integer mapping
+        int result = map(50, 0, 100, 0, 1000);
+        Serial.printf("map(50, 0, 100, 0, 1000) = %d\n", result);
+        CHECK(result == 500);
+
+        // Test float mapping
+        float fresult = map(0.5f, 0.0f, 1.0f, 0.0f, 100.0f);
+        Serial.printf("map(0.5, 0.0, 1.0, 0.0, 100.0) = %.2f\n", fresult);
+        CHECK(fresult == doctest::Approx(50.0f));
+    }
+
+    SUBCASE("constrain function") {
+        int clamped = constrain(150, 0, 100);
+        Serial.printf("constrain(150, 0, 100) = %d\n", clamped);
+        CHECK(clamped == 100);
+    }
+
+    Serial.println("Math tests complete!");
+}
+
+TEST_CASE("Arduino Math Edge Cases") {
+    Serial.println("\n=== Testing Math Edge Cases ===");
+
+    SUBCASE("map with reversed ranges") {
+        // Arduino map can handle reversed ranges
+        int result = map(75, 0, 100, 1000, 0);
+        Serial.printf("map(75, 0, 100, 1000, 0) = %d\n", result);
+        CHECK(result == 250);
+    }
+
+    SUBCASE("map with zero range") {
+        Serial.println("Testing map with zero range...");
+        // Protect against crash
+        #ifdef PLATFORM_TEENSY
+            // Skip this test on hardware
+            Serial.println("Skipping zero range test on hardware");
+        #else
+            int result = map(50, 0, 0, 0, 100);
+            Serial.printf("map with zero input range = %d\n", result);
+        #endif
+    }
+
+    SUBCASE("constrain edge cases") {
+        CHECK(constrain(100, 100, 100) == 100);  // Equal bounds
+        CHECK(constrain(-1000, 0, 100) == 0);    // Far below
+        CHECK(constrain(1000, 0, 100) == 100);   // Far above
+    }
+
+    Serial.println("Edge case tests complete!");
+} 
