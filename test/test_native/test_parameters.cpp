@@ -1,6 +1,7 @@
 #include <doctest/doctest.h>
 #include "PixelTheater/parameter.h"
 #include "fixtures/parameter_test_params.h"
+#include "helpers/log_capture.h"
 
 using namespace PixelTheater;
 
@@ -83,12 +84,11 @@ TEST_SUITE("Parameters") {
             ParamDef def = PARAM_RATIO("test", 0.5f, Flags::NONE, "");
             
             ParamValue valid(0.5f);
-            // Check that value is unchanged when no flags
             CHECK(def.apply_flags(valid).as_float() == valid.as_float());
             
             ParamValue invalid(1.5f);
-            // Should throw for out of range without CLAMP/WRAP
-            CHECK_THROWS_AS(def.apply_flags(invalid), std::out_of_range);
+            ParamValue result = def.apply_flags(invalid);
+            CHECK(SentinelHandler::is_sentinel(result.as_float()));
         }
 
         SUBCASE("Signed ratio parameters") {
@@ -98,17 +98,19 @@ TEST_SUITE("Parameters") {
             CHECK(def.apply_flags(valid).as_float() == valid.as_float());
             
             ParamValue invalid(-1.1f);
-            CHECK_THROWS_AS(def.apply_flags(invalid), std::out_of_range);
+            ParamValue result = def.apply_flags(invalid);
+            CHECK(SentinelHandler::is_sentinel(result.as_float()));
         }
 
         SUBCASE("Angle parameters") {
-            ParamDef def = PARAM_ANGLE("test", Constants::HALF_PI, Flags::NONE, "");
+            ParamDef def = PARAM_ANGLE("test", Constants::PT_HALF_PI, Flags::NONE, "");
             
-            ParamValue valid(Constants::HALF_PI);
+            ParamValue valid(Constants::PT_HALF_PI);
             CHECK(def.apply_flags(valid).as_float() == valid.as_float());
             
-            ParamValue invalid(Constants::TWO_PI);
-            CHECK_THROWS_AS(def.apply_flags(invalid), std::out_of_range);
+            ParamValue invalid(Constants::PT_TWO_PI);
+            ParamValue result = def.apply_flags(invalid);
+            CHECK(SentinelHandler::is_sentinel(result.as_float()));
         }
 
         SUBCASE("Signed angle parameters") {
@@ -117,8 +119,21 @@ TEST_SUITE("Parameters") {
             ParamValue valid(0.0f);
             CHECK(def.apply_flags(valid).as_float() == valid.as_float());
             
-            ParamValue invalid(-Constants::TWO_PI);
-            CHECK_THROWS_AS(def.apply_flags(invalid), std::out_of_range);
+            ParamValue invalid(-Constants::PT_TWO_PI);
+            ParamValue result = def.apply_flags(invalid);
+            CHECK(SentinelHandler::is_sentinel(result.as_float()));
+        }
+
+        SUBCASE("Invalid values generate warning messages") {
+            Test::LogCapture log;
+            
+            ParamDef def = PARAM_RATIO("test", 1.5f, Flags::NONE, "");  // Invalid default
+            CHECK(log.contains_warning());
+            
+            log.clear();
+            ParamValue val(1.5f);
+            def.apply_flags(val);  // Out of range
+            CHECK(log.contains_warning());
         }
     }
 
@@ -137,12 +152,63 @@ TEST_SUITE("Parameters") {
         SUBCASE("WRAP flag") {
             ParamDef def = PARAM_ANGLE("test", 0.0f, Flags::WRAP, "");
             
-            ParamValue param(Constants::TWO_PI);
+            ParamValue param(Constants::PT_TWO_PI);
             // With WRAP, should wrap to 0.0
             CHECK(def.apply_flags(param).as_float() == 0.0f);
             
-            param = ParamValue(Constants::HALF_PI);
-            CHECK(def.apply_flags(param).as_float() == Constants::HALF_PI);
+            param = ParamValue(Constants::PT_HALF_PI);
+            CHECK(def.apply_flags(param).as_float() == Constants::PT_HALF_PI);
+        }
+
+        SUBCASE("CLAMP with sentinel values") {
+            ParamDef def = PARAM_RATIO("test", 0.5f, Flags::CLAMP, "");
+            
+            // Test NaN/Inf handling with CLAMP
+            ParamValue nan_val(NAN);
+            ParamValue inf_val(INFINITY);
+            
+            CHECK(SentinelHandler::is_sentinel(def.apply_flags(nan_val).as_float()));
+            CHECK(SentinelHandler::is_sentinel(def.apply_flags(inf_val).as_float()));
+            
+            // Test that clamping works after sentinel
+            ParamValue valid(0.5f);
+            CHECK(def.apply_flags(valid).as_float() == 0.5f);
+        }
+
+        SUBCASE("WRAP with sentinel values") {
+            ParamDef def = PARAM_ANGLE("test", 0.0f, Flags::WRAP, "");
+            
+            // Test NaN/Inf handling with WRAP
+            ParamValue nan_val(NAN);
+            ParamValue inf_val(INFINITY);
+            
+            CHECK(SentinelHandler::is_sentinel(def.apply_flags(nan_val).as_float()));
+            CHECK(SentinelHandler::is_sentinel(def.apply_flags(inf_val).as_float()));
+            
+            // Test wrapping with large values
+            ParamValue large_val(10.0f * Constants::PT_TWO_PI);  // 10 full rotations
+            float wrapped = def.apply_flags(large_val).as_float();
+            CHECK(wrapped >= 0.0f);
+            CHECK(wrapped < Constants::PT_TWO_PI);
+        }
+
+        SUBCASE("CLAMP and WRAP interaction") {
+            ParamDef def = PARAM_RATIO("test", 0.5f, Flags::CLAMP | Flags::WRAP, "");
+            
+            // Test values above range
+            ParamValue over(1.5f);
+            CHECK(def.apply_flags(over).as_float() == 1.0f);  // Should clamp to max
+            
+            // Test values below range
+            ParamValue under(-0.5f);
+            CHECK(def.apply_flags(under).as_float() == 0.0f);  // Should clamp to min
+            
+            // Test with angle parameter
+            ParamDef angle_def = PARAM_ANGLE("angle", 0.0f, Flags::CLAMP | Flags::WRAP, "");
+            
+            // Large value that would wrap to middle of range if wrapping
+            ParamValue large_angle(10.0f * Constants::PT_TWO_PI + Constants::PT_HALF_PI);
+            CHECK(angle_def.apply_flags(large_angle).as_float() == Constants::PT_PI);  // Should clamp to max
         }
     }
 
@@ -154,18 +220,26 @@ TEST_SUITE("Parameters") {
         }
 
         SUBCASE("Angle parameters") {
-            ParamDef def = PARAM_ANGLE("test", Constants::HALF_PI, Flags::NONE, "");
-            
+            ParamDef def = PARAM_ANGLE("test", Constants::PT_HALF_PI, Flags::NONE, "");
             CHECK(def.get_min() == Constants::ANGLE_MIN);
             CHECK(def.get_max() == Constants::ANGLE_MAX);
         }
+
+        SUBCASE("Unsupported types return sentinel values") {
+            ParamDef def("test", ParamType::palette, "default", "");  // Palette type has no min/max
+            
+            CHECK(SentinelHandler::is_sentinel(def.get_min()));
+            CHECK(SentinelHandler::is_sentinel(def.get_max()));
+            CHECK(SentinelHandler::is_sentinel(def.get_default()));
+        }
     }
 
-    TEST_CASE("Parameter validation throws appropriately") {
-        SUBCASE("Invalid values throw without flags") {
+    TEST_CASE("Parameter validation returns sentinel") {
+        SUBCASE("Invalid values return sentinel without flags") {
             ParamDef def = PARAM_RATIO("test", 0.5f, Flags::NONE, "");
             ParamValue param(1.5f);
-            CHECK_THROWS_AS(def.apply_flags(param), std::out_of_range);
+            ParamValue result = def.apply_flags(param);
+            CHECK(SentinelHandler::is_sentinel(result.as_float()));
         }
     }
 }
@@ -182,11 +256,25 @@ TEST_SUITE("Parameter System") {
             CHECK(bool_val.type() == ParamType::switch_type);
         }
 
-        SUBCASE("Type-safe access") {
-            ParamValue val(0.5f);
-            CHECK(val.as_float() == doctest::Approx(0.5f));
-            CHECK_THROWS_AS(val.as_int(), std::bad_cast);
-            CHECK_THROWS_AS(val.as_bool(), std::bad_cast);
+        SUBCASE("Type-safe access returns sentinels for invalid types") {
+            ParamValue float_val(0.5f);
+            ParamValue int_val(42);
+            ParamValue bool_val(true);
+
+            // Float value
+            CHECK(float_val.as_float() == doctest::Approx(0.5f));  // Valid
+            CHECK(float_val.as_int() == SentinelHandler::get_sentinel<int>());  // Invalid
+            CHECK(float_val.as_bool() == SentinelHandler::get_sentinel<bool>());  // Invalid
+
+            // Int value
+            CHECK(int_val.as_float() == SentinelHandler::get_sentinel<float>());  // Invalid
+            CHECK(int_val.as_int() == 42);  // Valid
+            CHECK(int_val.as_bool() == SentinelHandler::get_sentinel<bool>());  // Invalid
+
+            // Bool value
+            CHECK(bool_val.as_float() == SentinelHandler::get_sentinel<float>());  // Invalid
+            CHECK(bool_val.as_int() == SentinelHandler::get_sentinel<int>());  // Invalid
+            CHECK(bool_val.as_bool() == true);  // Valid
         }
 
         SUBCASE("Type conversion compatibility") {
@@ -200,6 +288,54 @@ TEST_SUITE("Parameter System") {
             CHECK(count.can_convert_to(ParamType::select));
             CHECK_FALSE(count.can_convert_to(ParamType::ratio));
         }
+
+        SUBCASE("Invalid float conversion returns sentinel") {
+            ParamValue int_val(42);  // COUNT type
+            ParamValue bool_val(true);  // SWITCH type
+            
+            CHECK(int_val.as_float() == SentinelHandler::get_sentinel<float>());
+            CHECK(bool_val.as_float() == SentinelHandler::get_sentinel<float>());
+            CHECK(SentinelHandler::is_sentinel(int_val.as_float()));
+        }
+
+        SUBCASE("Invalid int conversion returns sentinel") {
+            ParamValue float_val(0.5f);  // RANGE type
+            ParamValue bool_val(true);   // SWITCH type
+            
+            CHECK(float_val.as_int() == SentinelHandler::get_sentinel<int>());
+            CHECK(bool_val.as_int() == SentinelHandler::get_sentinel<int>());
+            CHECK(SentinelHandler::is_sentinel(float_val.as_int()));
+        }
+
+        SUBCASE("Invalid string conversion returns sentinel") {
+            ParamValue float_val(0.5f);
+            ParamValue int_val(42);
+            ParamValue bool_val(true);
+            ParamValue str_val("test");  // PALETTE type
+            
+            CHECK(str_val.as_string() != nullptr);  // Valid
+            CHECK(float_val.as_string() == nullptr);  // Invalid
+            CHECK(int_val.as_string() == nullptr);  // Invalid
+            CHECK(bool_val.as_string() == nullptr);  // Invalid
+        }
+
+        SUBCASE("Invalid type conversion returns sentinel") {
+            ParamDef def = PARAM_RATIO("test", 0.5f, Flags::NONE, "");
+            
+            // Try to apply float parameter to bool type
+            ParamValue bool_val(true);
+            ParamValue result = def.apply_flags(bool_val);
+            
+            CHECK(SentinelHandler::is_sentinel(result.as_float()));
+        }
+
+        SUBCASE("Invalid float values use sentinel") {
+            ParamValue nan_val(NAN);
+            ParamValue inf_val(INFINITY);
+            
+            CHECK(SentinelHandler::is_sentinel(nan_val.as_float()));
+            CHECK(SentinelHandler::is_sentinel(inf_val.as_float()));
+        }
     }
 
     TEST_CASE("ParamDef validation") {
@@ -210,7 +346,8 @@ TEST_SUITE("Parameter System") {
             CHECK(def.apply_flags(valid).as_float() == valid.as_float());
             
             ParamValue invalid(1.5f);
-            CHECK_THROWS_AS(def.apply_flags(invalid), std::out_of_range);
+            ParamValue result = def.apply_flags(invalid);
+            CHECK(SentinelHandler::is_sentinel(result.as_float()));
         }
 
         SUBCASE("Count parameters") {
@@ -220,7 +357,8 @@ TEST_SUITE("Parameter System") {
             CHECK(def.apply_flags(valid).as_int() == valid.as_int());
             
             ParamValue invalid(11);
-            CHECK_THROWS_AS(def.apply_flags(invalid), std::out_of_range);
+            ParamValue result = def.apply_flags(invalid);
+            CHECK(SentinelHandler::is_sentinel(result.as_int()));
         }
 
         SUBCASE("Switch parameters") {
@@ -239,11 +377,5 @@ TEST_SUITE("Parameter System") {
         ParamValue param(0.0f);
         param = 0.5f;
         CHECK(param.as_float() == 0.5f);
-    }
-
-    TEST_CASE("Parameter definitions have correct ranges") {
-        ParamDef def = PARAM_ANGLE("test", 0.0f, Flags::NONE, "");
-        CHECK(def.get_min() == Constants::ANGLE_MIN);
-        CHECK(def.get_max() == Constants::ANGLE_MAX);
     }
 }

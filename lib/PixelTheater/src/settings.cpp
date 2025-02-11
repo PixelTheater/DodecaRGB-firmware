@@ -24,13 +24,13 @@ Settings& Settings::operator=(const Settings& other) {
 }
 
 void Settings::add_parameter(const ParamDef& def) {
-    // Validate default value first
     if (!def.validate_definition()) {
-        throw std::out_of_range("Invalid default value for parameter: " + 
-                               std::string(def.name));
+        Log::warning("[WARNING] Invalid default value for parameter '%s'. Using sentinel value.\n", def.name);
+        _params[def.name] = def;
+        _values[def.name] = def.get_sentinel_for_type(def.type);
+        return;
     }
     
-    // Only store if validation passes
     _params[def.name] = def;
     _values[def.name] = def.get_default_as_param_value();
 }
@@ -99,23 +99,51 @@ void Settings::add_parameter_from_strings(const std::string& name, const std::st
             add_parameter(PARAM_SIGNED_ANGLE(name.c_str(), default_val.as_float(), param_flags, ""));
             break;
         case ParamType::range:
-            // Note: Range needs min/max which we don't have from strings
-            throw std::invalid_argument("Range parameters must be defined with min/max values");
+            Log::warning("[WARNING] Range parameters must be defined with min/max values. Parameter '%s' not added.\n", name.c_str());
+            break;
         case ParamType::count:
-            // Note: Count needs min/max which we don't have from strings
-            throw std::invalid_argument("Count parameters must be defined with min/max values");
+            Log::warning("[WARNING] Count parameters must be defined with min/max values. Parameter '%s' not added.\n", name.c_str());
+            break;
         case ParamType::switch_type:
             add_parameter(PARAM_SWITCH(name.c_str(), default_val.as_bool(), ""));
             break;
         case ParamType::select:
-            // Note: Select needs options which we don't have from strings
-            throw std::invalid_argument("Select parameters must be defined with options");
+            Log::warning("[WARNING] Select parameters must be defined with options. Parameter '%s' not added.\n", name.c_str());
+            break;
         case ParamType::palette:
             add_parameter(PARAM_PALETTE(name.c_str(), default_val.as_string(), ""));
             break;
         default:
-            throw std::invalid_argument("Unsupported parameter type");
+            Log::warning("[WARNING] Unsupported parameter type for '%s'. Parameter not added.\n", name.c_str());
+            break;
     }
+}
+
+bool Settings::is_valid_value(const std::string& name, const ParamValue& value) const {
+    const ParamDef& def = get_metadata(name);
+    
+    // Check type compatibility
+    if (!value.can_convert_to(def.type)) {
+        return false;
+    }
+
+    // Check range if applicable
+    if (!def.has_flag(Flags::CLAMP) && !def.has_flag(Flags::WRAP)) {
+        switch (def.type) {
+            case ParamType::ratio:
+            case ParamType::signed_ratio:
+            case ParamType::angle:
+            case ParamType::signed_angle:
+            case ParamType::range:
+                return value.as_float() >= def.get_min() && value.as_float() <= def.get_max();
+            case ParamType::count:
+                return value.as_int() >= def.range_min_i && value.as_int() <= def.range_max_i;
+            default:
+                return true;  // Other types don't need range validation
+        }
+    }
+    
+    return true;  // Value will be clamped/wrapped
 }
 
 } // namespace PixelTheater 

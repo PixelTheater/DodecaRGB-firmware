@@ -15,7 +15,7 @@ static constexpr ParamDef TEST_PARAMS[] = {
     PARAM_RATIO("test_ratio", 0.5f, Flags::NONE, "Test ratio parameter"),
 
     // [3] test_angle
-    PARAM_ANGLE("test_angle", Constants::HALF_PI, Flags::NONE, "Test angle parameter"),
+    PARAM_ANGLE("test_angle", Constants::PT_HALF_PI, Flags::NONE, "Test angle parameter"),
 
     // [4] test_range_float - This was wrong
     PARAM_RANGE("test_range", -1.0f, 1.0f, 0.0f, Flags::NONE, "Test range parameter"),

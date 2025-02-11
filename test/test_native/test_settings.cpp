@@ -37,8 +37,10 @@ TEST_SUITE("Settings") {
             // Valid value
             CHECK_NOTHROW(settings.set_value("test", ParamValue(0.5f)));
             
-            // Invalid value
-            CHECK_THROWS_AS(settings.set_value("test", ParamValue(1.5f)), std::out_of_range);
+            // Set invalid value and check it returns sentinel
+            settings.set_value("test", ParamValue(1.5f));  // Out of range
+            ParamValue result = settings.get_value("test");
+            CHECK(SentinelHandler::is_sentinel(result.as_float()));
         }
 
         SUBCASE("Parameter proxy access") {
@@ -56,7 +58,11 @@ TEST_SUITE("Settings") {
             
             // Test invalid default value
             ParamDef invalid_def = PARAM_RATIO("test", 1.5f, Flags::CLAMP, "");
-            CHECK_THROWS_AS(settings.add_parameter(invalid_def), std::out_of_range);
+            settings.add_parameter(invalid_def);
+            
+            // Should use sentinel value
+            ParamValue result = settings.get_value("test");
+            CHECK(SentinelHandler::is_sentinel(result.as_float()));
         }
     }
 }
@@ -84,6 +90,14 @@ TEST_SUITE("SettingsProxy") {
             CHECK(param.min() == Constants::RATIO_MIN);
             CHECK(param.max() == Constants::RATIO_MAX);
             CHECK(std::string(param.description()) == "Speed control");
+        }
+
+        SUBCASE("Invalid assignments return sentinel") {
+            settings.add_parameter(PARAM_RATIO("speed", 0.5f, Flags::NONE, ""));
+            SettingsProxy proxy(settings);
+
+            proxy["speed"] = 1.5f;  // Out of range
+            CHECK(SentinelHandler::is_sentinel(settings.get_value("speed").as_float()));
         }
     }
 } 
