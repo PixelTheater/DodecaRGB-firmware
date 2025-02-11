@@ -27,10 +27,12 @@ namespace Log {
     #else
         // Hardware environment - direct to Serial
         inline void warning(const char* fmt, ...) {
+            char buf[256];  // Safe buffer for formatting
             va_list args;
             va_start(args, fmt);
-            Serial.printf(fmt, args);
+            vsnprintf(buf, sizeof(buf), fmt, args);
             va_end(args);
+            Serial.print(buf);  // Print the formatted string
         }
     #endif
 

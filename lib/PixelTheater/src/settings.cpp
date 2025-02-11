@@ -45,21 +45,19 @@ void Settings::reset_all() {
 void Settings::set_value(const std::string& name, const ParamValue& value) {
     auto param_it = _params.find(name);
     if (param_it == _params.end()) {
-        throw std::invalid_argument("Parameter not found: " + name);
+        Log::warning("[WARNING] Parameter not found: %s\n", name.c_str());
+        return;  // Silently fail instead of throwing
     }
     
     const ParamDef& def = param_it->second;
-    try {
-        _values[name] = def.apply_flags(value);
-    } catch (const std::invalid_argument& e) {
-        throw std::out_of_range(e.what());  // Convert to out_of_range
-    }
+    _values[name] = def.apply_flags(value);  // apply_flags already handles errors with sentinels
 }
 
 ParamValue Settings::get_value(const std::string& name) const {
     auto value_it = _values.find(name);
     if (value_it == _values.end()) {
-        throw std::invalid_argument("Parameter not found: " + name);
+        Log::warning("[WARNING] Parameter not found: %s\n", name.c_str());
+        return ParamValue();  // Return default sentinel value
     }
     return value_it->second;
 }
@@ -67,7 +65,9 @@ ParamValue Settings::get_value(const std::string& name) const {
 const ParamDef& Settings::get_metadata(const std::string& name) const {
     auto it = _params.find(name);
     if (it == _params.end()) {
-        throw std::invalid_argument("Parameter not found: " + name);
+        Log::warning("[WARNING] Parameter not found: %s\n", name.c_str());
+        static const ParamDef sentinel_def;  // Returns empty ParamDef
+        return sentinel_def;
     }
     return it->second;
 }

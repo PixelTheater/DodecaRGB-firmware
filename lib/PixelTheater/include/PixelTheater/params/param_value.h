@@ -17,7 +17,7 @@ namespace PixelTheater {
     class ParamValue {
     public:
         // Simple value storage with type safety
-        constexpr ParamValue(float v) : _type(ParamType::range), _float_val(validate_float(v) ? v : SentinelHandler::get_sentinel<float>()) {}
+        constexpr ParamValue(float v) : _type(ParamType::range), _float_val(v) {}
         constexpr ParamValue(int v) : _type(ParamType::count), _int_val(v) {}
         constexpr ParamValue(bool v) : _type(ParamType::switch_type), _bool_val(v) {}
 
@@ -35,6 +35,10 @@ namespace PixelTheater {
                 case ParamType::signed_ratio:
                 case ParamType::angle:
                 case ParamType::signed_angle:
+                    // Check for NaN/Inf at runtime
+                    if (is_nan(_float_val) || is_inf(_float_val)) {
+                        return SentinelHandler::get_sentinel<float>();
+                    }
                     return _float_val;
                 default:
                     return SentinelHandler::get_sentinel<float>();
@@ -115,13 +119,16 @@ namespace PixelTheater {
             return *this;
         }
 
-        bool validate_float(float value) {
-            if (is_nan(value) || is_inf(value)) {
-                Log::warning("[WARNING] Invalid float value: %s. Using sentinel value instead.\n",
-                    is_nan(value) ? "NaN" : "Inf");
-                return false;
+        // Runtime validation
+        bool is_valid() const {
+            switch (_type) {
+                case ParamType::range:
+                case ParamType::ratio:
+                    return !is_nan(_float_val) && !is_inf(_float_val);
+                // ... other cases
+                default:
+                    return true;
             }
-            return true;
         }
 
     private:

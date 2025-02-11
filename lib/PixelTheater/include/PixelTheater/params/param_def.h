@@ -214,67 +214,51 @@ struct ParamDef {
 
     // Value transformation according to flags
     ParamValue apply_flags(const ParamValue& value) const {
+        // Type compatibility first
         if (!value.can_convert_to(type)) {
             Log::warning("[WARNING] Parameter '%s': incompatible type conversion. Using sentinel value.\n", name);
             return get_sentinel_for_type(type);
         }
 
-        // For numeric types, validate range if no CLAMP/WRAP
-        if (!has_flag(Flags::CLAMP) && !has_flag(Flags::WRAP)) {
-            switch (type) {
-                case ParamType::ratio:
-                case ParamType::signed_ratio:
-                case ParamType::angle:
-                case ParamType::signed_angle:
-                case ParamType::range: {
-                    float val = value.as_float();
-                    if (val < get_min() || val > get_max()) {
-                        Log::warning("[WARNING] Parameter '%s': value %.2f out of range [%.2f, %.2f]. Using sentinel value.\n",
-                            name, val, get_min(), get_max());
-                        return ParamValue(SentinelHandler::get_sentinel<float>());
-                    }
-                    break;
-                }
-                case ParamType::count: {
-                    int val = value.as_int();
-                    if (val < range_min_i || val > range_max_i) {
-                        Log::warning("[WARNING] Parameter '%s': value %d out of range [%d, %d]. Using sentinel value.\n",
-                            name, val, range_min_i, range_max_i);
-                        return ParamValue(SentinelHandler::get_sentinel<int>());
-                    }
-                    break;
-                }
-                case ParamType::select:
-                case ParamType::switch_type:
-                case ParamType::palette:
-                    break;
-                default:
-                    Log::warning("[WARNING] Parameter '%s': unsupported parameter type. Using sentinel value.\n", name);
-                    return get_sentinel_for_type(type);
+        // For float types, handle flags and range validation
+        if (type == ParamType::ratio || type == ParamType::signed_ratio || 
+            type == ParamType::angle || type == ParamType::signed_angle || 
+            type == ParamType::range) {
+            
+            float val = value.as_float();  // This will handle NaN/Inf
+            if (SentinelHandler::is_sentinel(val)) {
+                return ParamValue(val);
+            }
+
+            // Apply flags
+            if (has_flag(Flags::CLAMP)) {
+                return ParamValue(std::clamp(val, get_min(), get_max()));
+            } else if (has_flag(Flags::WRAP)) {
+                float range = get_max() - get_min();
+                val = std::fmod(val - get_min(), range);
+                if (val < 0) val += range;
+                return ParamValue(val + get_min());
+            }
+
+            // No flags, validate range
+            if (val < get_min() || val > get_max()) {
+                Log::warning("[WARNING] Parameter '%s': value %.2f out of range [%.2f, %.2f]. Using sentinel value.\n",
+                    name, val, get_min(), get_max());
+                return ParamValue(SentinelHandler::get_sentinel<float>());
             }
         }
 
-        // Now apply transformations
-        switch (type) {
-            case ParamType::ratio:
-            case ParamType::signed_ratio:
-            case ParamType::angle:
-            case ParamType::signed_angle:
-            case ParamType::range: {
-                float val = value.as_float();
-                if (has_flag(Flags::CLAMP)) {
-                    return ParamValue(std::clamp(val, get_min(), get_max()));
-                } else if (has_flag(Flags::WRAP)) {
-                    float range = get_max() - get_min();
-                    val = std::fmod(val - get_min(), range);
-                    if (val < 0) val += range;
-                    return ParamValue(val + get_min());
-                }
-                return value;
+        // Handle integer types
+        if (type == ParamType::count) {
+            int val = value.as_int();
+            if (val < range_min_i || val > range_max_i) {
+                Log::warning("[WARNING] Parameter '%s': value %d out of range [%d, %d]. Using sentinel value.\n",
+                    name, val, range_min_i, range_max_i);
+                return ParamValue(SentinelHandler::get_sentinel<int>());
             }
-            default:
-                return value;
         }
+
+        return value;
     }
 
     // Helper to avoid duplication
