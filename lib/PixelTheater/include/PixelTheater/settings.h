@@ -37,6 +37,9 @@ public:
                                   const ParamValue& default_val, 
                                   const std::string& flags);
 
+    // Value validation
+    bool is_valid_value(const std::string& name, const ParamValue& value) const;
+
 private:
     std::unordered_map<std::string, ParamDef> _params;
     std::unordered_map<std::string, ParamValue> _values;

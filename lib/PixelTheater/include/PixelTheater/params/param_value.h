@@ -1,6 +1,9 @@
 #pragma once
 #include "param_types.h"
 #include <stdexcept>
+#include "PixelTheater/core/math_platform.h"
+#include "PixelTheater/core/sentinel.h"
+#include "PixelTheater/core/log.h"
 
 // ParamValue - Type-safe container for animation parameter values
 // 
@@ -14,7 +17,7 @@ namespace PixelTheater {
     class ParamValue {
     public:
         // Simple value storage with type safety
-        constexpr ParamValue(float v) : _type(ParamType::range), _float_val(v) {}
+        constexpr ParamValue(float v) : _type(ParamType::range), _float_val(validate_float(v) ? v : SentinelHandler::get_sentinel<float>()) {}
         constexpr ParamValue(int v) : _type(ParamType::count), _int_val(v) {}
         constexpr ParamValue(bool v) : _type(ParamType::switch_type), _bool_val(v) {}
 
@@ -26,15 +29,15 @@ namespace PixelTheater {
 
         // Type-safe getters
         constexpr float as_float() const {
-            switch(_type) {
+            switch (_type) {
+                case ParamType::range:
                 case ParamType::ratio:
                 case ParamType::signed_ratio:
                 case ParamType::angle:
                 case ParamType::signed_angle:
-                case ParamType::range:
                     return _float_val;
                 default:
-                    throw std::bad_cast();
+                    return SentinelHandler::get_sentinel<float>();
             }
         }
 
@@ -44,23 +47,23 @@ namespace PixelTheater {
                 case ParamType::select:
                     return _int_val;
                 default:
-                    throw std::bad_cast();
+                    return SentinelHandler::get_sentinel<int>();
             }
         }
 
         constexpr bool as_bool() const {
-            if (_type != ParamType::switch_type) {
-                throw std::bad_cast();
+            if (_type == ParamType::switch_type) {
+                return _bool_val;
             }
-            return _bool_val;
+            return SentinelHandler::get_sentinel<bool>();
         }
 
         // Add string accessor
         constexpr const char* as_string() const {
-            if (_type != ParamType::palette) {
-                throw std::bad_cast();
+            if (_type == ParamType::palette) {
+                return _str_val;
             }
-            return _str_val;
+            return SentinelHandler::get_sentinel<const char*>();  // Returns nullptr
         }
 
         ParamType type() const { return _type; }
@@ -92,16 +95,33 @@ namespace PixelTheater {
         // Add explicit conversion
         ParamValue convert_to(ParamType target_type) const {
             if (!can_convert_to(target_type)) {
-                throw std::bad_cast();
+                // Return a sentinel value of the target type
+                switch (target_type) {
+                    case ParamType::range:
+                    case ParamType::ratio:
+                    case ParamType::signed_ratio:
+                    case ParamType::angle:
+                    case ParamType::signed_angle:
+                        return ParamValue(SentinelHandler::get_sentinel<float>());
+                    case ParamType::count:
+                    case ParamType::select:
+                        return ParamValue(SentinelHandler::get_sentinel<int>());
+                    case ParamType::switch_type:
+                        return ParamValue(SentinelHandler::get_sentinel<bool>());
+                    default:
+                        return ParamValue();  // Default sentinel
+                }
             }
-            return *this;  // Value stays same, just type changes
+            return *this;
         }
 
-        void validate_float(float value) {
-            // Should throw std::invalid_argument if value is invalid
-            if (std::isnan(value) || std::isinf(value)) {
-                throw std::invalid_argument("Invalid float value");
+        bool validate_float(float value) {
+            if (is_nan(value) || is_inf(value)) {
+                Log::warning("[WARNING] Invalid float value: %s. Using sentinel value instead.\n",
+                    is_nan(value) ? "NaN" : "Inf");
+                return false;
             }
+            return true;
         }
 
     private:

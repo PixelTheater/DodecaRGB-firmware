@@ -59,32 +59,74 @@ struct ParamDef {
     ParamFlags flags;  // Now a vector<string>
     const char* description;
 
-    // Default constructor needed for containers
-    constexpr ParamDef() : name(""), type(ParamType::ratio), float_default(0), flags(Flags::NONE), description("") {}
+    // Default constructor
+    constexpr ParamDef() 
+        : name(""), type(ParamType::ratio), float_default(0), flags(Flags::NONE), description("") 
+    {}
 
-    // Constructor for float-based parameters (ratio, angle)
-    constexpr ParamDef(const char* n, ParamType t, float def, ParamFlags f, const char* d) 
-        : name(n), type(t), float_default(def), flags(f), description(d) {}
+    // Basic constructor for float-based parameters (ratio, angle)
+    constexpr ParamDef(const char* n, ParamType t, float def, ParamFlags f, const char* d)
+        : name(n), type(t), float_default(def), flags(f), description(d)
+    {
+        // Validate at construction time
+        switch (type) {
+            case ParamType::ratio:
+                if (def < Constants::RATIO_MIN || def > Constants::RATIO_MAX) {
+                    Log::warning("[WARNING] Parameter '%s': invalid default value %.2f. Using sentinel value.\n", 
+                        name, def);
+                    float_default = SentinelHandler::get_sentinel<float>();
+                }
+                break;
+            case ParamType::signed_ratio:
+                if (def < Constants::SIGNED_RATIO_MIN || def > Constants::SIGNED_RATIO_MAX) {
+                    Log::warning("[WARNING] Parameter '%s': invalid default value %.2f. Using sentinel value.\n", 
+                        name, def);
+                    float_default = SentinelHandler::get_sentinel<float>();
+                }
+                break;
+            case ParamType::angle:
+                if (def < Constants::ANGLE_MIN || def > Constants::ANGLE_MAX) {
+                    Log::warning("[WARNING] Parameter '%s': invalid default value %.2f. Using sentinel value.\n", 
+                        name, def);
+                    float_default = SentinelHandler::get_sentinel<float>();
+                }
+                break;
+            case ParamType::signed_angle:
+                if (def < Constants::SIGNED_ANGLE_MIN || def > Constants::SIGNED_ANGLE_MAX) {
+                    Log::warning("[WARNING] Parameter '%s': invalid default value %.2f. Using sentinel value.\n", 
+                        name, def);
+                    float_default = SentinelHandler::get_sentinel<float>();
+                }
+                break;
+            default:
+                break;
+        }
+    }
 
-    // Constructor for range parameters
+    // Range parameters
     constexpr ParamDef(const char* n, ParamType t, float min, float max, float def, ParamFlags f, const char* d)
-        : name(n), type(t), range_min(min), range_max(max), default_val(def), flags(f), description(d) {}
+        : name(n), type(t), range_min(min), range_max(max), default_val(def), flags(f), description(d)
+    {}
 
     // Constructor for count parameters
     constexpr ParamDef(const char* n, ParamType t, int min, int max, int def, ParamFlags f, const char* d)
-        : name(n), type(t), range_min_i(min), range_max_i(max), default_val_i(def), flags(f), description(d) {}
+        : name(n), type(t), range_min_i(min), range_max_i(max), default_val_i(def), flags(f), description(d)
+    {}
 
     // Constructor for switch parameters
     constexpr ParamDef(const char* n, ParamType t, bool def, ParamFlags f, const char* d)
-        : name(n), type(t), bool_default(def), flags(f), description(d) {}
+        : name(n), type(t), bool_default(def), flags(f), description(d)
+    {}
 
     // Constructor for select parameters
     constexpr ParamDef(const char* n, ParamType t, int def_idx, const char* const* opts, const char* d)
-        : name(n), type(t), default_idx(def_idx), options(opts), flags(Flags::NONE), description(d) {}
+        : name(n), type(t), default_idx(def_idx), options(opts), flags(Flags::NONE), description(d)
+    {}
 
     // Constructor for palette parameters
     constexpr ParamDef(const char* n, ParamType t, const char* def, const char* d)
-        : name(n), type(t), str_default(def), flags(Flags::NONE), description(d) {}
+        : name(n), type(t), str_default(def), flags(Flags::NONE), description(d)
+    {}
 
     // Move validation to Settings::add_parameter instead
     constexpr bool validate_definition() const {
@@ -122,7 +164,8 @@ struct ParamDef {
             case ParamType::count:
                 return static_cast<float>(range_max_i);
             default:
-                throw std::invalid_argument("Parameter type has no standard max");
+                Log::warning("[WARNING] Parameter '%s': type has no standard max value. Using sentinel.\n", name);
+                return SentinelHandler::get_sentinel<float>();
         }
     }
 
@@ -141,7 +184,8 @@ struct ParamDef {
             case ParamType::count:
                 return static_cast<float>(range_min_i);
             default:
-                throw std::invalid_argument("Parameter type has no standard min");
+                Log::warning("[WARNING] Parameter '%s': type has no standard min value. Using sentinel.\n", name);
+                return SentinelHandler::get_sentinel<float>();
         }
     }
 
@@ -159,7 +203,8 @@ struct ParamDef {
             case ParamType::switch_type:
                 return static_cast<float>(bool_default);
             default:
-                throw std::invalid_argument("Parameter type has no standard default");
+                Log::warning("[WARNING] Parameter '%s': type has no standard default value. Using sentinel.\n", name);
+                return SentinelHandler::get_sentinel<float>();
         }
     }
 
@@ -170,7 +215,8 @@ struct ParamDef {
     // Value transformation according to flags
     ParamValue apply_flags(const ParamValue& value) const {
         if (!value.can_convert_to(type)) {
-            throw std::out_of_range("Value has incompatible type");
+            Log::warning("[WARNING] Parameter '%s': incompatible type conversion. Using sentinel value.\n", name);
+            return get_sentinel_for_type(type);
         }
 
         // For numeric types, validate range if no CLAMP/WRAP
@@ -183,24 +229,28 @@ struct ParamDef {
                 case ParamType::range: {
                     float val = value.as_float();
                     if (val < get_min() || val > get_max()) {
-                        throw std::out_of_range("Value out of range");
+                        Log::warning("[WARNING] Parameter '%s': value %.2f out of range [%.2f, %.2f]. Using sentinel value.\n",
+                            name, val, get_min(), get_max());
+                        return ParamValue(SentinelHandler::get_sentinel<float>());
                     }
                     break;
                 }
                 case ParamType::count: {
                     int val = value.as_int();
                     if (val < range_min_i || val > range_max_i) {
-                        throw std::out_of_range("Value out of range");
+                        Log::warning("[WARNING] Parameter '%s': value %d out of range [%d, %d]. Using sentinel value.\n",
+                            name, val, range_min_i, range_max_i);
+                        return ParamValue(SentinelHandler::get_sentinel<int>());
                     }
                     break;
                 }
                 case ParamType::select:
                 case ParamType::switch_type:
                 case ParamType::palette:
-                    // These types don't need range validation
                     break;
                 default:
-                    throw std::invalid_argument("Unsupported parameter type");
+                    Log::warning("[WARNING] Parameter '%s': unsupported parameter type. Using sentinel value.\n", name);
+                    return get_sentinel_for_type(type);
             }
         }
 
@@ -227,6 +277,25 @@ struct ParamDef {
         }
     }
 
+    // Helper to avoid duplication
+    ParamValue get_sentinel_for_type(ParamType t) const {
+        switch (t) {
+            case ParamType::range:
+            case ParamType::ratio:
+            case ParamType::signed_ratio:
+            case ParamType::angle:
+            case ParamType::signed_angle:
+                return ParamValue(SentinelHandler::get_sentinel<float>());
+            case ParamType::count:
+            case ParamType::select:
+                return ParamValue(SentinelHandler::get_sentinel<int>());
+            case ParamType::switch_type:
+                return ParamValue(SentinelHandler::get_sentinel<bool>());
+            default:
+                return ParamValue();
+        }
+    }
+
 public:
     // Move from private to public
     constexpr ParamValue get_default_as_param_value() const {
@@ -245,6 +314,58 @@ public:
             default:
                 return ParamValue(0.0f); // Safe default for constexpr
         }
+    }
+
+    // Runtime validation - called when parameter is actually used
+    bool validate_and_warn() const {
+        switch (type) {
+            case ParamType::ratio:
+                return validate_range(Constants::RATIO_MIN, Constants::RATIO_MAX);
+            case ParamType::signed_ratio:
+                return validate_range(Constants::SIGNED_RATIO_MIN, Constants::SIGNED_RATIO_MAX);
+            case ParamType::angle:
+                return validate_range(Constants::ANGLE_MIN, Constants::ANGLE_MAX);
+            case ParamType::signed_angle:
+                return validate_range(Constants::SIGNED_ANGLE_MIN, Constants::SIGNED_ANGLE_MAX);
+            case ParamType::range:
+                return validate_range(range_min, range_max);
+            case ParamType::count:
+                return validate_range_int(range_min_i, range_max_i);
+            case ParamType::select:
+            case ParamType::switch_type:
+            case ParamType::palette:
+                return true;  // These types don't need range validation
+            default:
+                Log::warning("[WARNING] Parameter '%s': unsupported type. Using sentinel value.\n", name);
+                return false;
+        }
+    }
+
+    private:
+    bool validate_range(float min, float max) const {
+        if (float_default < min || float_default > max) {
+            Log::warning("[WARNING] Parameter '%s': invalid default value %.2f. Using sentinel value.\n", 
+                name, float_default);
+            return false;
+        }
+        return true;
+    }
+
+    bool validate_range_int(int min, int max) const {
+        if (default_val_i < min || default_val_i > max) {
+            Log::warning("[WARNING] Parameter '%s': invalid default value %d. Using sentinel value.\n", 
+                name, default_val_i);
+            return false;
+        }
+        return true;
+    }
+
+    // Get value with validation
+    ParamValue get_validated_value() const {
+        if (!validate_and_warn()) {
+            return get_sentinel_for_type(type);
+        }
+        return get_default_as_param_value();
     }
 };
 

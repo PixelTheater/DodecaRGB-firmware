@@ -56,9 +56,9 @@ TEST_SUITE("Scene") {
 
         SUBCASE("Tick updates scene state") {
             scene.setup();
-            scene.settings["hue"] = Constants::HALF_PI;
+            scene.settings["hue"] = Constants::PT_HALF_PI;
             scene.tick();
-            CHECK(scene.get_hue() == doctest::Approx(Constants::HALF_PI));
+            CHECK(scene.get_hue() == doctest::Approx(Constants::PT_HALF_PI));
         }
     }
 

@@ -1,10 +1,12 @@
 #pragma once
 #include <string>
-#include "params/param_def.h"
-#include "params/param_flags.h"
-#include "params/param_range.h"
-#include "params/param_types.h"
-#include "constants.h"  // For PI
+#include "PixelTheater/params/param_def.h"
+#include "PixelTheater/params/param_flags.h"
+#include "PixelTheater/params/param_range.h"
+#include "PixelTheater/params/param_types.h"
+#include "PixelTheater/constants.h"  // For PI
+#include "PixelTheater/core/sentinel.h"
+#include "PixelTheater/core/log.h"
 
 // Parameter - A single parameter for a scene
 //  - connects the static definition of a parameter (ParamDef) to a running scene
@@ -64,16 +66,18 @@ public:
              const ParamFlags& flags, const ParamDef& metadata)
         : _name(name)
         , _range(min, max)
-        , _value(default_val)    // Current value starts at default
-        , _default(default_val)    // Store default for reset
         , _flags(flags)
-        , _metadata(metadata)  // Store metadata
+        , _metadata(metadata)
     {
         if (!_range.validate(default_val)) {
-            throw std::invalid_argument("Default value out of range");
+            Log::warning("[WARNING] Parameter '%s': default value out of range. Using sentinel value.\n", name.c_str());
+            _value = SentinelHandler::get_sentinel<T>();
+            _default = SentinelHandler::get_sentinel<T>();
+        } else {
+            _value = default_val;
+            _default = default_val;
         }
     }
-
 
     // Reset implementation returns to default
     void reset() override { _value = _default; }
@@ -87,7 +91,8 @@ public:
             } else if (Flags::has_flag(_flags, Flags::WRAP)) {
                 _value = wrap_value(value);
             } else {
-                throw std::out_of_range("Value out of range");
+                Log::warning("[WARNING] Parameter '%s': value out of range. Using sentinel value.\n", _name.c_str());
+                _value = SentinelHandler::get_sentinel<T>();
             }
         } else {
             _value = value;

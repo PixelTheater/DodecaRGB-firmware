@@ -31,34 +31,42 @@ public:
 
         // Direct assignment
         Parameter& operator=(float value) {
-            try {
-                _settings.set_value(_name, ParamValue(value));
-            } catch (const std::invalid_argument& e) {
-                throw std::out_of_range(e.what());
+            ParamValue val(value);
+            if (!_settings.is_valid_value(_name, val)) {
+                Log::warning("[WARNING] Parameter '%s': invalid value %.2f. Using sentinel.\n", 
+                    _name.c_str(), value);
+                val = _settings.get_metadata(_name).get_sentinel_for_type(_settings.get_metadata(_name).type);
             }
+            _settings.set_value(_name, val);
             return *this;
         }
         Parameter& operator=(int value) {
-            try {
-                _settings.set_value(_name, ParamValue(value));
-            } catch (const std::invalid_argument& e) {
-                throw std::out_of_range(e.what());
+            ParamValue val(value);
+            if (!_settings.is_valid_value(_name, val)) {
+                Log::warning("[WARNING] Parameter '%s': invalid value %d. Using sentinel.\n", 
+                    _name.c_str(), value);
+                val = _settings.get_metadata(_name).get_sentinel_for_type(_settings.get_metadata(_name).type);
             }
+            _settings.set_value(_name, val);
             return *this;
         }
         Parameter& operator=(bool value) {
-            try {
-                _settings.set_value(_name, ParamValue(value));
-            } catch (const std::invalid_argument& e) {
-                throw std::out_of_range(e.what());
+            ParamValue val(value);
+            if (!_settings.is_valid_value(_name, val)) {
+                Log::warning("[WARNING] Parameter '%s': invalid value %s. Using sentinel.\n", 
+                    _name.c_str(), value ? "true" : "false");
+                val = _settings.get_metadata(_name).get_sentinel_for_type(_settings.get_metadata(_name).type);
             }
+            _settings.set_value(_name, val);
             return *this;
         }
         Parameter& operator=(const ParamValue& value) {
-            try {
+            if (!_settings.is_valid_value(_name, value)) {
+                Log::warning("[WARNING] Parameter '%s': invalid value. Using sentinel.\n", _name.c_str());
+                ParamValue val = _settings.get_metadata(_name).get_sentinel_for_type(_settings.get_metadata(_name).type);
+                _settings.set_value(_name, val);
+            } else {
                 _settings.set_value(_name, value);
-            } catch (const std::invalid_argument& e) {
-                throw std::out_of_range(e.what());  // Convert to out_of_range
             }
             return *this;
         }
