@@ -54,8 +54,26 @@ TEST_SUITE("Scene") {
             CHECK(float(scene.settings["brightness"]) == doctest::Approx(0.8f));
         }
 
-        SUBCASE("Tick updates scene state") {
+        SUBCASE("Parameter inheritance") {
             scene.setup();
+            // Use _settings_storage instead of settings proxy
+            CHECK(scene._settings_storage.has_parameter("hue"));
+            CHECK(scene._settings_storage.has_parameter("saturation"));
+            CHECK(scene._settings_storage.has_parameter("brightness"));
+        }
+
+        SUBCASE("Parameter flags") {
+            scene.setup();
+            // Use _settings_storage for metadata access
+            const auto& hue_def = scene._settings_storage.get_metadata("hue");
+            CHECK(hue_def.has_flag(Flags::WRAP));
+            const auto& sat_def = scene._settings_storage.get_metadata("saturation");
+            CHECK(sat_def.has_flag(Flags::CLAMP));
+        }
+
+        SUBCASE("Runtime updates") {
+            scene.setup();
+            // Use proxy for value access
             scene.settings["hue"] = Constants::PT_HALF_PI;
             scene.tick();
             CHECK(scene.get_hue() == doctest::Approx(Constants::PT_HALF_PI));

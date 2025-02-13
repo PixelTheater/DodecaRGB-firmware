@@ -1,7 +1,7 @@
 ---
 category: Development
-generated: 2025-02-10 02:07
-version: 2.8.2
+generated: 2025-02-13 18:48
+version: 2.8.3
 ---
 
 # [3] Parameters
@@ -22,10 +22,14 @@ Parameters allow for more flexibility and easier configuration. They:
 
 ## [3.2] Defining Parameters
 
-Parameters are defined in YAML files, which provide a clear and maintainable way to
-configure your scene. The YAML is converted to C++ code during build.
+Parameters are primarily defined in YAML files. This approach offers a clear and maintainable way to configure your scenes, separating the animation logic from its adjustable settings. The YAML is converted to C++ code during the build process.
 
 ```yaml
+# Example Scene Configuration (YAML)
+# This file defines the parameters for a specific animation scene.
+# It includes the scene's name, a brief description, and a list of
+# configurable parameters.
+
 # Scene Header
 name: Space Animation
 description: "A smooth particle-based space animation with configurable patterns"
@@ -50,15 +54,27 @@ parameters:
     default: "sphere"
 ```
 
+In this example:
+
+- `name` and `description` provide basic information about the scene.
+- The `parameters` section lists the configurable parameters, such as `speed`, `brightness`, and `pattern`.
+
 ## [3.3] Parameter Types and Ranges
 
-Parameters serve as the foundation of our animation control system, providing a bridge between the raw code and user-friendly controls. They're designed to be both intuitive for creators and safe for runtime execution.
+Parameters serve as the foundation of our animation control system, providing a bridge between the raw code and user-friendly controls. They're designed to be both intuitive for creators and safe for runtime execution. To achieve this, parameters are strongly-typed values that control how animations behave.
 
-**Core Concept**: At their heart, parameters are strongly-typed values that control how animations behave.
+Different parameter types allow you to define various kinds of controls, from simple numeric ranges to selection menus.
+
+For example, instead of defining float ranges manually, use semantic types like `ratio`
+for values like brightness or opacity. The ranges will be handled automatically.
 
 Parameters use semantic types to make common animation controls more intuitive and safer.
 For example, instead of defining float ranges manually, use semantic types like `ratio`
 for values like brightness or opacity. The ranges will be handled automatically.
+
+> Note: The YAML configuration is converted to C++ code during the build process.
+> This means that the parameters defined in YAML directly influence the behavior
+> of your animation code.
 
 > Note: Parameter types and flags in YAML and config() use lowercase with underscores.
 > The generated code will use the appropriate data types in the resulting header file.
@@ -94,13 +110,17 @@ Note: Semantic types have fixed ranges that cannot be overridden. Any attempt to
 
 - range: min .. max (float, requires range)
 - count: min .. max (integer, requires range)
-Note: These types require explicit min/max values to be specified.
+Note: These types require explicit min/max values to be specified. For count, the default range is [0,100].
 
 ### Choice Types
 
 - switch: Boolean true/false (a "checkbox" setting)
 - select: Named options that map to integer indices
 - Requires `values` field with either:
+  - When a `select` parameter is used, the animation code receives an integer
+  - corresponding to the index of the selected value in the `values` list.
+  - For example, if "fountain" is selected, the code receives the value `1`.
+
   - Simple list: `values: ["sphere", "fountain", "cascade"]`
   - Value mapping: `values: {forward: 1, reverse: -1, oscillate: 0}`
 - Requires `default` that matches one of the values
@@ -117,15 +137,18 @@ Parameter flags control how values are handled when they change. They help creat
 smoother animations and prevent unwanted behavior. Multiple flags can be combined
 to achieve the desired effect.
 
-Flags are simple bit flags (up to 32) that can be present or not on a parameter.
-The system only validates that flags are known - their actual behavior is implemented
-by controllers and settings processors later.
+Flags control value handling based on parameter type:
 
-Example flags:
+- Numeric types (ratio, signed_ratio, angle, signed_angle, range):
+  • `clamp`: Values are limited to their defined range
+  • `wrap`: Values wrap around their defined range
 
-• `clamp`: Suggests values should be limited to their range
-• `wrap`: Suggests values should wrap around their range
-• `slew`: Suggests value changes should be rate-limited (TODO)
+- Integer types (count, select):
+  • `clamp`: Values are limited to their integer range
+  • `wrap`: Values wrap around their integer range
+
+- Non-numeric types (switch, palette, bitmap):
+  No flags supported - values are validated directly
 
 Example:
 
@@ -136,6 +159,10 @@ speed:
   flags: [clamp]  # Suggest range limiting
   description: Animation speed
 ```
+
+Note: Flags are validated at compile time and runtime. Invalid flag combinations
+(like using both clamp and wrap) or unsupported flags for a type will result
+in validation errors.
 
 ## [3.5] Manual Configuration
 
@@ -194,3 +221,57 @@ parameters:
     default: "sphere"
     description: Animation pattern
 ```
+
+## [3.6] Parameter Inheritance
+
+Scenes can inherit parameters from base scenes to promote code reuse and maintain consistent behavior. This is useful for:
+
+- Creating common base classes with shared parameters
+- Specializing animations while preserving core controls
+- Building parameter hierarchies
+
+### Inheritance Rules
+
+When a scene inherits parameters:
+
+1. Base Parameters
+   - All parameters are copied from base to derived
+   - Values and metadata are preserved
+   - Type safety is maintained
+
+2. Parameter Overrides
+   - Derived scenes can override parameter values
+   - Flags can be changed in derived scenes
+   - Type must remain compatible with base
+
+3. Extensions
+   - New parameters can be added to derived scenes
+   - Base parameters remain unchanged
+   - No naming conflicts allowed
+
+Example:
+
+```cpp
+// Base scene with common parameters
+class BaseEffect : public Scene {
+    void setup() override {
+        param("speed", "ratio", 0.5f, "clamp");
+        param("enabled", "switch", true);
+    }
+};
+
+// Derived scene inherits and extends
+class DerivedEffect : public BaseEffect {
+    void setup() override {
+        // First inherit base parameters
+        settings.inherit_from(base_settings);
+        
+        // Then add or override parameters
+        param("speed", "ratio", 0.8f, "wrap");  // Override with new value/flags
+        param("size", "ratio", 1.0f);           // Add new parameter
+    }
+};
+```
+
+> Note: Parameter inheritance happens at runtime during scene initialization.
+> YAML-defined parameters and manually defined parameters can be mixed freely.

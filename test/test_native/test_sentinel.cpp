@@ -1,7 +1,8 @@
 #include <doctest/doctest.h>
-#include "PixelTheater/core/sentinel.h"
+#include "PixelTheater/params/handlers/sentinel_handler.h"
 
 using namespace PixelTheater;
+using namespace PixelTheater::ParamHandlers;
 
 TEST_CASE("SentinelHandler basic functionality") {
     SUBCASE("Get sentinel values") {

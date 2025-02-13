@@ -27,7 +27,7 @@ void Settings::add_parameter(const ParamDef& def) {
     if (!def.validate_definition()) {
         Log::warning("[WARNING] Invalid default value for parameter '%s'. Using sentinel value.\n", def.name);
         _params[def.name] = def;
-        _values[def.name] = def.get_sentinel_for_type(def.type);
+        _values[def.name] = ParamHandlers::TypeHandler::get_sentinel_for_type(def.type);
         return;
     }
     
@@ -46,11 +46,17 @@ void Settings::set_value(const std::string& name, const ParamValue& value) {
     auto param_it = _params.find(name);
     if (param_it == _params.end()) {
         Log::warning("[WARNING] Parameter not found: %s\n", name.c_str());
-        return;  // Silently fail instead of throwing
+        return;
     }
     
     const ParamDef& def = param_it->second;
-    _values[name] = def.apply_flags(value);  // apply_flags already handles errors with sentinels
+    
+    if (!is_valid_value(name, value)) {
+        _values[name] = ParamHandlers::TypeHandler::get_sentinel_for_type(def.type);
+        return;
+    }
+    
+    _values[name] = def.apply_flags(value);
 }
 
 ParamValue Settings::get_value(const std::string& name) const {
@@ -85,65 +91,63 @@ void Settings::add_parameter_from_strings(const std::string& name, const std::st
     ParamType param_type = ParamTypes::from_string(type);
     ParamFlags param_flags = Flags::from_string(flags);
     
+    if (!ParamHandlers::TypeHandler::can_create_from_strings(param_type)) {
+        return;
+    }
+
     switch (param_type) {
         case ParamType::ratio:
-            add_parameter(PARAM_RATIO(name.c_str(), default_val.as_float(), param_flags, ""));
-            break;
         case ParamType::signed_ratio:
-            add_parameter(PARAM_SIGNED_RATIO(name.c_str(), default_val.as_float(), param_flags, ""));
-            break;
         case ParamType::angle:
-            add_parameter(PARAM_ANGLE(name.c_str(), default_val.as_float(), param_flags, ""));
-            break;
         case ParamType::signed_angle:
-            add_parameter(PARAM_SIGNED_ANGLE(name.c_str(), default_val.as_float(), param_flags, ""));
-            break;
-        case ParamType::range:
-            Log::warning("[WARNING] Range parameters must be defined with min/max values. Parameter '%s' not added.\n", name.c_str());
-            break;
-        case ParamType::count:
-            Log::warning("[WARNING] Count parameters must be defined with min/max values. Parameter '%s' not added.\n", name.c_str());
+            add_parameter(ParamDef(name.c_str(), param_type, default_val.as_float(), param_flags, ""));
             break;
         case ParamType::switch_type:
             add_parameter(PARAM_SWITCH(name.c_str(), default_val.as_bool(), ""));
             break;
-        case ParamType::select:
-            Log::warning("[WARNING] Select parameters must be defined with options. Parameter '%s' not added.\n", name.c_str());
-            break;
         case ParamType::palette:
             add_parameter(PARAM_PALETTE(name.c_str(), default_val.as_string(), ""));
             break;
-        default:
-            Log::warning("[WARNING] Unsupported parameter type for '%s'. Parameter not added.\n", name.c_str());
+        case ParamType::count:
+            add_parameter(PARAM_COUNT(name.c_str(), 0, 100, default_val.as_int(), param_flags, ""));
             break;
+        default:  // Add this to handle remaining cases
+            break;  // These are already filtered by can_create_from_strings
     }
 }
 
 bool Settings::is_valid_value(const std::string& name, const ParamValue& value) const {
     const ParamDef& def = get_metadata(name);
     
-    // Check type compatibility
-    if (!value.can_convert_to(def.type)) {
+    // 1. Type validation
+    if (!ParamHandlers::TypeHandler::validate(def.type, value)) {
+        Log::warning("[WARNING] Parameter '%s': invalid type (expected %s)\n", 
+            name.c_str(), ParamHandlers::TypeHandler::get_name(def.type));
         return false;
     }
 
-    // Check range if applicable
+    // 2. Range validation (if no CLAMP/WRAP)
     if (!def.has_flag(Flags::CLAMP) && !def.has_flag(Flags::WRAP)) {
-        switch (def.type) {
-            case ParamType::ratio:
-            case ParamType::signed_ratio:
-            case ParamType::angle:
-            case ParamType::signed_angle:
-            case ParamType::range:
-                return value.as_float() >= def.get_min() && value.as_float() <= def.get_max();
-            case ParamType::count:
-                return value.as_int() >= def.range_min_i && value.as_int() <= def.range_max_i;
-            default:
-                return true;  // Other types don't need range validation
+        // Let RangeHandler handle all range validation
+        if (ParamHandlers::TypeHandler::has_range(def.type)) {
+            float min = (def.type == ParamType::range) ? def.range_min : def.get_min();
+            float max = (def.type == ParamType::range) ? def.range_max : def.get_max();
+            return ParamHandlers::RangeHandler::validate(def.type, value.as_float(), min, max);
         }
     }
-    
-    return true;  // Value will be clamped/wrapped
+
+    // 3. Flag validation
+    return ParamHandlers::FlagHandler::validate_flags(def.flags, def.type);
+}
+
+void Settings::inherit_from(const Settings& base) {
+    // Copy all parameters and values from base
+    _params = base._params;
+    _values = base._values;
+}
+
+bool Settings::has_parameter(const std::string& name) const {
+    return _params.find(name) != _params.end();
 }
 
 } // namespace PixelTheater 

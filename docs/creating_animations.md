@@ -1,20 +1,16 @@
 ---
 category: Guide, Development
-generated: 2025-02-10 00:32
-version: 2.8.2
+generated: 2025-02-13 18:48
+version: 2.8.3
 ---
 
 # Creating Animations
 
-This short guide was made to help you create your own animations for the DodecaRGB. 
-
-The project is built in C++ and uses the Arduino framework, FastLED, and several other libraries. In general, common patterns around the stdlib are use, such as std::string, std::vector, std::map, std::unique_ptr, etc. In addition the Eigen library is used for linear algebra. PlatformIO or Cursor IDE are assumed for development.
-
-The DodecaRGB firmware can load multiple animations and switch between them. Each animation is like a small shader program - it runs every frame and updates the LED colors based where it is on the display. This happens 50+ times per second, and the addressable LEDs are updated in parallel. The animation framework provides common functionality and patterns for defining animations, handling settings, presets, playlists, color palettes, status messages, and more.
+This short guide was made to help you create your own animations for the DodecaRGB. It assumes you are already a bit familiar with the [PixelTheater](PixelTheater/README.md) animation system and the [development environment](development.md).
 
 ## Getting Started
 
-Read the overview of the [PixelTheater animation system](PixelTheater/README.md).
+Once you have understood the basics of creating a scene, you might be looking to see what else you can do with the animation system. This guide will cover some of the more advanced features and techniques.
 
 ## Color Palettes
 
@@ -31,7 +27,6 @@ String colorName = getClosestColorName(CRGB(255, 0, 0));  // Returns "Red"
 String ansiColor = getAnsiColorString(CRGB::Red);         // Terminal color
 float brightness = get_perceived_brightness(color);
 ```
-
 
 ### Playback Modes
 

@@ -2,10 +2,10 @@
 #include <string>
 #include "PixelTheater/params/param_def.h"
 #include "PixelTheater/params/param_flags.h"
-#include "PixelTheater/params/param_range.h"
 #include "PixelTheater/params/param_types.h"
 #include "PixelTheater/constants.h"  // For PI
-#include "PixelTheater/core/sentinel.h"
+#include "PixelTheater/params/handlers/sentinel_handler.h"
+#include "PixelTheater/params/handlers/range_handler.h"
 #include "PixelTheater/core/log.h"
 
 // Parameter - A single parameter for a scene
@@ -65,11 +65,12 @@ public:
     Parameter(const std::string& name, T min, T max, T default_val,
              const ParamFlags& flags, const ParamDef& metadata)
         : _name(name)
-        , _range(min, max)
+        , _min(min)
+        , _max(max)
         , _flags(flags)
         , _metadata(metadata)
     {
-        if (!_range.validate(default_val)) {
+        if (!ParamHandlers::RangeHandler::validate(_metadata.type, default_val, _min, _max)) {
             Log::warning("[WARNING] Parameter '%s': default value out of range. Using sentinel value.\n", name.c_str());
             _value = SentinelHandler::get_sentinel<T>();
             _default = SentinelHandler::get_sentinel<T>();
@@ -87,7 +88,7 @@ public:
     void set(const T& value) override {
         if (!is_valid(value)) {
             if (Flags::has_flag(_flags, Flags::CLAMP)) {
-                _value = std::clamp(value, _range.min(), _range.max());
+                _value = std::clamp(value, _min, _max);
             } else if (Flags::has_flag(_flags, Flags::WRAP)) {
                 _value = wrap_value(value);
             } else {
@@ -123,10 +124,10 @@ public:
             case ParamType::angle:
             case ParamType::signed_angle:
             case ParamType::range:
-                return _range.validate(value);
+                return ParamHandlers::RangeHandler::validate(_metadata.type, value, _min, _max);
 
             case ParamType::count:
-                return value >= _range.min() && value <= _range.max() 
+                return value >= _min && value <= _max 
                        && static_cast<int>(value) == value;  // Must be integer
 
             case ParamType::switch_type:
@@ -150,11 +151,12 @@ public:
 
 private:
     std::string _name;
-    ParamRange<T> _range;
+    T _min;
+    T _max;
     T _value;      // Current value
     T _default;    // Default value
     ParamFlags _flags;
-    ParamDef _metadata;  // Store complete metadata
+    const ParamDef& _metadata;
     size_t _option_count{0};  // For select parameters
 };
 
