@@ -36,6 +36,9 @@ public:
                                   const std::string& type,
                                   const ParamValue& default_val, 
                                   const std::string& flags);
+    // Parameter inheritance
+    void inherit_from(const Settings& base);
+    bool has_parameter(const std::string& name) const;
 
     // Value validation
     bool is_valid_value(const std::string& name, const ParamValue& value) const;

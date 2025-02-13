@@ -28,12 +28,13 @@ parameters:
   speed:
     type: ratio # float 0.0 .. 1.0, or 'signed_ratio' for -1.0 .. 1.0
     default: 0.5
+    flags: [clamp] 
     description: Animation speed multiplier
     
   brightness:
     type: angle # float 0.0 .. PI, or 'signed_angle' for -PI .. PI
     default: 0.8
-    flags: [Wrap]  # Wrap around range
+    flags: [wrap]  # Wrap around range
     description: Overall LED brightness
     
   # Enumerated choices

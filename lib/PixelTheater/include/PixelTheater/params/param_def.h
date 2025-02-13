@@ -5,6 +5,8 @@
 #include <algorithm>  // for std::clamp
 #include <cmath>  // for applying flags
 #include "../constants.h"  // For PI
+#include "handlers/range_handler.h"
+#include "PixelTheater/params/handlers/flag_handler.h"
 
 // ParamDef - Fully defines a single parameter for a scene (static definition)
 //  - tracks parameter metadata (name, type, description, etc)
@@ -67,41 +69,7 @@ struct ParamDef {
     // Basic constructor for float-based parameters (ratio, angle)
     constexpr ParamDef(const char* n, ParamType t, float def, ParamFlags f, const char* d)
         : name(n), type(t), float_default(def), flags(f), description(d)
-    {
-        // Validate at construction time
-        switch (type) {
-            case ParamType::ratio:
-                if (def < Constants::RATIO_MIN || def > Constants::RATIO_MAX) {
-                    Log::warning("[WARNING] Parameter '%s': invalid default value %.2f. Using sentinel value.\n", 
-                        name, def);
-                    float_default = SentinelHandler::get_sentinel<float>();
-                }
-                break;
-            case ParamType::signed_ratio:
-                if (def < Constants::SIGNED_RATIO_MIN || def > Constants::SIGNED_RATIO_MAX) {
-                    Log::warning("[WARNING] Parameter '%s': invalid default value %.2f. Using sentinel value.\n", 
-                        name, def);
-                    float_default = SentinelHandler::get_sentinel<float>();
-                }
-                break;
-            case ParamType::angle:
-                if (def < Constants::ANGLE_MIN || def > Constants::ANGLE_MAX) {
-                    Log::warning("[WARNING] Parameter '%s': invalid default value %.2f. Using sentinel value.\n", 
-                        name, def);
-                    float_default = SentinelHandler::get_sentinel<float>();
-                }
-                break;
-            case ParamType::signed_angle:
-                if (def < Constants::SIGNED_ANGLE_MIN || def > Constants::SIGNED_ANGLE_MAX) {
-                    Log::warning("[WARNING] Parameter '%s': invalid default value %.2f. Using sentinel value.\n", 
-                        name, def);
-                    float_default = SentinelHandler::get_sentinel<float>();
-                }
-                break;
-            default:
-                break;
-        }
-    }
+    {}
 
     // Range parameters
     constexpr ParamDef(const char* n, ParamType t, float min, float max, float def, ParamFlags f, const char* d)
@@ -129,19 +97,13 @@ struct ParamDef {
     {}
 
     // Move validation to Settings::add_parameter instead
-    constexpr bool validate_definition() const {
-        switch (type) {
-            case ParamType::ratio:
-            case ParamType::signed_ratio:
-            case ParamType::angle:
-            case ParamType::signed_angle:
-            case ParamType::range:
-                return float_default >= get_min() && float_default <= get_max();
-            case ParamType::count:
-                return default_val_i >= range_min_i && default_val_i <= range_max_i;
-            default:
-                return true;
-        }
+    bool validate_definition() const {
+        // Get default value first
+        ParamValue default_val = get_default_as_param_value();
+        
+        // Use handlers to validate both flags and value
+        return ParamHandlers::FlagHandler::validate_flags(flags, type) &&
+               ParamHandlers::TypeHandler::validate(type, default_val);
     }
 
     // Get transformed value (called during runtime)
@@ -150,43 +112,15 @@ struct ParamDef {
     }
 
     float get_max() const {
-        switch (type) {
-            case ParamType::ratio:
-                return Constants::RATIO_MAX;
-            case ParamType::signed_ratio:
-                return Constants::SIGNED_RATIO_MAX;
-            case ParamType::angle:
-                return Constants::ANGLE_MAX;
-            case ParamType::signed_angle:
-                return Constants::SIGNED_ANGLE_MAX;
-            case ParamType::range:
-                return range_max;
-            case ParamType::count:
-                return static_cast<float>(range_max_i);
-            default:
-                Log::warning("[WARNING] Parameter '%s': type has no standard max value. Using sentinel.\n", name);
-                return SentinelHandler::get_sentinel<float>();
-        }
+        float min, max;
+        ParamHandlers::RangeHandler::get_range(type, min, max);
+        return max;
     }
 
     float get_min() const {
-        switch (type) {
-            case ParamType::ratio:
-                return Constants::RATIO_MIN;
-            case ParamType::signed_ratio:
-                return Constants::SIGNED_RATIO_MIN;
-            case ParamType::angle:
-                return Constants::ANGLE_MIN;
-            case ParamType::signed_angle:
-                return Constants::SIGNED_ANGLE_MIN;
-            case ParamType::range:
-                return range_min;
-            case ParamType::count:
-                return static_cast<float>(range_min_i);
-            default:
-                Log::warning("[WARNING] Parameter '%s': type has no standard min value. Using sentinel.\n", name);
-                return SentinelHandler::get_sentinel<float>();
-        }
+        float min, max;
+        ParamHandlers::RangeHandler::get_range(type, min, max);
+        return min;
     }
 
     float get_default() const {
@@ -214,70 +148,25 @@ struct ParamDef {
 
     // Value transformation according to flags
     ParamValue apply_flags(const ParamValue& value) const {
-        // Type compatibility first
-        if (!value.can_convert_to(type)) {
-            Log::warning("[WARNING] Parameter '%s': incompatible type conversion. Using sentinel value.\n", name);
-            return get_sentinel_for_type(type);
-        }
+        ParamFlags effective_flags = ParamHandlers::FlagHandler::apply_flag_rules(flags);
 
-        // For float types, handle flags and range validation
-        if (type == ParamType::ratio || type == ParamType::signed_ratio || 
-            type == ParamType::angle || type == ParamType::signed_angle || 
-            type == ParamType::range) {
-            
-            float val = value.as_float();  // This will handle NaN/Inf
-            if (SentinelHandler::is_sentinel(val)) {
-                return ParamValue(val);
+        // Get range based on type
+        if (ParamHandlers::TypeHandler::has_range(type)) {
+            if (type == ParamType::range) {
+                return ParamValue(ParamHandlers::RangeHandler::apply_flags(
+                    value.as_float(), range_min, range_max, effective_flags));
             }
-
-            // Apply flags
-            if (has_flag(Flags::CLAMP)) {
-                return ParamValue(std::clamp(val, get_min(), get_max()));
-            } else if (has_flag(Flags::WRAP)) {
-                float range = get_max() - get_min();
-                val = std::fmod(val - get_min(), range);
-                if (val < 0) val += range;
-                return ParamValue(val + get_min());
+            // Handle integer types separately
+            if (type == ParamType::count || type == ParamType::select) {
+                return ParamValue(ParamHandlers::RangeHandler::apply_flags(
+                    value.as_int(), range_min_i, range_max_i, effective_flags));
             }
-
-            // No flags, validate range
-            if (val < get_min() || val > get_max()) {
-                Log::warning("[WARNING] Parameter '%s': value %.2f out of range [%.2f, %.2f]. Using sentinel value.\n",
-                    name, val, get_min(), get_max());
-                return ParamValue(SentinelHandler::get_sentinel<float>());
-            }
+            float min, max;
+            ParamHandlers::RangeHandler::get_range(type, min, max);
+            return ParamValue(ParamHandlers::RangeHandler::apply_flags(
+                value.as_float(), min, max, effective_flags));
         }
-
-        // Handle integer types
-        if (type == ParamType::count) {
-            int val = value.as_int();
-            if (val < range_min_i || val > range_max_i) {
-                Log::warning("[WARNING] Parameter '%s': value %d out of range [%d, %d]. Using sentinel value.\n",
-                    name, val, range_min_i, range_max_i);
-                return ParamValue(SentinelHandler::get_sentinel<int>());
-            }
-        }
-
-        return value;
-    }
-
-    // Helper to avoid duplication
-    ParamValue get_sentinel_for_type(ParamType t) const {
-        switch (t) {
-            case ParamType::range:
-            case ParamType::ratio:
-            case ParamType::signed_ratio:
-            case ParamType::angle:
-            case ParamType::signed_angle:
-                return ParamValue(SentinelHandler::get_sentinel<float>());
-            case ParamType::count:
-            case ParamType::select:
-                return ParamValue(SentinelHandler::get_sentinel<int>());
-            case ParamType::switch_type:
-                return ParamValue(SentinelHandler::get_sentinel<bool>());
-            default:
-                return ParamValue();
-        }
+        return value; // Non-range types pass through unchanged
     }
 
 public:
@@ -300,54 +189,10 @@ public:
         }
     }
 
-    // Runtime validation - called when parameter is actually used
-    bool validate_and_warn() const {
-        switch (type) {
-            case ParamType::ratio:
-                return validate_range(Constants::RATIO_MIN, Constants::RATIO_MAX);
-            case ParamType::signed_ratio:
-                return validate_range(Constants::SIGNED_RATIO_MIN, Constants::SIGNED_RATIO_MAX);
-            case ParamType::angle:
-                return validate_range(Constants::ANGLE_MIN, Constants::ANGLE_MAX);
-            case ParamType::signed_angle:
-                return validate_range(Constants::SIGNED_ANGLE_MIN, Constants::SIGNED_ANGLE_MAX);
-            case ParamType::range:
-                return validate_range(range_min, range_max);
-            case ParamType::count:
-                return validate_range_int(range_min_i, range_max_i);
-            case ParamType::select:
-            case ParamType::switch_type:
-            case ParamType::palette:
-                return true;  // These types don't need range validation
-            default:
-                Log::warning("[WARNING] Parameter '%s': unsupported type. Using sentinel value.\n", name);
-                return false;
-        }
-    }
-
-    private:
-    bool validate_range(float min, float max) const {
-        if (float_default < min || float_default > max) {
-            Log::warning("[WARNING] Parameter '%s': invalid default value %.2f. Using sentinel value.\n", 
-                name, float_default);
-            return false;
-        }
-        return true;
-    }
-
-    bool validate_range_int(int min, int max) const {
-        if (default_val_i < min || default_val_i > max) {
-            Log::warning("[WARNING] Parameter '%s': invalid default value %d. Using sentinel value.\n", 
-                name, default_val_i);
-            return false;
-        }
-        return true;
-    }
-
     // Get value with validation
     ParamValue get_validated_value() const {
-        if (!validate_and_warn()) {
-            return get_sentinel_for_type(type);
+        if (!validate_definition()) {
+            return ParamHandlers::TypeHandler::get_sentinel_for_type(type);
         }
         return get_default_as_param_value();
     }

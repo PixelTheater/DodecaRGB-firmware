@@ -1,12 +1,16 @@
 ---
 category: Guide
-generated: 2025-02-10 00:32
-version: 2.8.2
+generated: 2025-02-13 18:48
+version: 2.8.3
 ---
 
 # DodecaRGB and PixelTheater Documentation
 
 This directory contains documentation for the DodecaRGB and PixelTheater projects.
+
+The project is built in C++ and uses the Arduino framework, FastLED, and several other libraries. In general, common patterns around the stdlib are use, such as std::string, std::vector, std::map, std::unique_ptr, etc. In addition the Eigen library is used for linear algebra. PlatformIO or Cursor IDE are assumed for development.
+
+The DodecaRGB firmware can load multiple animations and switch between them. Each animation is like a small shader program - it runs every frame and updates the LED colors based where it is on the display. This happens 50+ times per second, and the addressable LEDs are updated in parallel. The animation framework provides common functionality and patterns for defining animations, handling settings, presets, playlists, color palettes, status messages, and more.
 
 ## PixelTheater
 

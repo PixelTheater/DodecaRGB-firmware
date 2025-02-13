@@ -2,6 +2,7 @@
 #include <cmath>
 #include <cstdint>  // For int32_t, uint8_t
 #include "../constants.h"  // For M_PI
+#include "math_platform.h"  // For constrain_value
 
 namespace PixelTheater {
 
@@ -11,8 +12,8 @@ public:
     virtual int32_t map(int32_t x, int32_t in_min, int32_t in_max, int32_t out_min, int32_t out_max) = 0;
     virtual float map(float x, float in_min, float in_max, float out_min, float out_max) = 0;
     
-    virtual int32_t constrain(int32_t x, int32_t min, int32_t max) = 0;
-    virtual float constrain(float x, float min, float max) = 0;
+    virtual int32_t clamp_value(int32_t x, int32_t min, int32_t max) = 0;
+    virtual float clamp_value(float x, float min, float max) = 0;
     
     // Min/max functions
     template<typename T>
@@ -99,13 +100,13 @@ public:
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 
-    int32_t constrain(int32_t x, int32_t min, int32_t max) override {
+    int32_t clamp_value(int32_t x, int32_t min, int32_t max) override {
         if (x < min) return min;
         if (x > max) return max;
         return x;
     }
 
-    float constrain(float x, float min, float max) override {
+    float clamp_value(float x, float min, float max) override {
         if (x < min) return min;
         if (x > max) return max;
         return x;

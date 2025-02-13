@@ -1,5 +1,11 @@
 # Change Log
 
+v2.8.3 Feb 13 2025:
+
+- refactored with type handlers and sentinel values, resulting in cleaner code
+- improved tests and coverage
+- documentation and test fixture updates
+
 v2.8.2 Feb 9 2025:
 
 - refactored settings, settings proxy, parameter values and generation

@@ -1,7 +1,7 @@
 ---
 category: Development
-generated: 2025-02-10 00:32
-version: 2.8.2
+generated: 2025-02-13 18:48
+version: 2.8.3
 ---
 
 # [4] Scenes
@@ -47,7 +47,7 @@ scenes/space/              # Scene root directory
 
 ### [4.4] Parameter Definition
 
-Parameters can be defined in two ways:
+Parameters can be defined in three ways:
 
 1. YAML Definition (Recommended):
 
@@ -64,15 +64,24 @@ parameters:
 2. Manual Definition:
 
 ```cpp
-class TestScene : public Scene {
+void setup() override {
+    param("speed", "ratio", 0.5f, "clamp");
+}
+```
+
+3. Inheritance from Base Scene:
+
+```cpp
+class BaseScene : public Scene {
     void setup() override {
-        // Define parameters first
-        param("speed", "ratio", 0.5f, "clamp");
-        param("brightness", "ratio", 0.8f, "wrap");
-        
-        // Now safe to use parameters
-        float speed = settings["speed"];
-        initialize_with_speed(speed);
+        param("global_speed", "ratio", 1.0f);
+    }
+};
+
+class DerivedScene : public BaseScene {
+    void setup() override {
+        BaseScene::setup();  // Inherit base parameters
+        param("local_speed", "ratio", 0.5f);
     }
 };
 ```
@@ -81,54 +90,59 @@ The Director manages scene transitions and ensures proper lifecycle method calls
 
 ### [4.3] Accessing Scene Information
 
-The following methods are available to all scenes:
+The following methods and properties are available to all scenes:
 
 - `name()`: Returns the name of the scene
 - `description()`: Returns the description of the scene
 - `status()`: Returns a string describing the scene's current state
 - `tick_count()`: Returns the number of times the scene has been ticked
-- `settings[]`: Returns a proxy object for accessing parameters
+- `settings[]`: Returns a proxy object (`SettingsProxy`) for accessing parameters. This provides a clean and type-safe way to get and set parameter values.
 
 ### [4.5] Parameter System Architecture
 
-Parameters in PixelTheater use a three-layer system for type safety and validation:
+Parameters in PixelTheater use a four-layer architecture for type safety and validation:
 
-1. **ParamValue**: Type-safe value container
-   - Handles type conversion and validation
-   - Supports float, int, and bool values
-   - Throws if incorrect type accessed
-
-   ```cpp
-   ParamValue speed(0.5f);  // Creates float parameter
-   float f = speed.as_float();  // Safe
-   int i = speed.as_int();   // Throws bad_cast
-   ```
-
-2. **Settings**: Parameter Storage
-   - Stores parameter definitions and current values
-   - Validates values against parameter definitions
+1. **Scene Layer** (User Interface)
+   - Provides clean parameter access via `settings[]`
+   - Handles parameter definition in `setup()`
    - Manages parameter lifecycle
-  
-   ```cpp
-   // In scene setup
-   settings.add_parameter(PARAM_RATIO("speed", 0.5f, Flags::CLAMP, "Animation speed"));
-   
-   // Later in tick()
-   settings["speed"] = 0.75f;  // Valid, stored
-   settings["speed"] = 1.5f;   // Throws (out of range)
-   ```
 
-3. **SettingsProxy**: User Interface
-   - Provides clean syntax for parameter access
-   - Handles type conversion automatically
-   - Validates ranges and types
-  
-   ```cpp
-   // Type-safe access
-   float speed = settings["speed"];        // Automatic conversion
-   settings["speed"] = 0.5f;               // Type checked
-   bool enabled = settings["is_enabled"];   // Different type
-   ```
+2. **Settings Layer** (Parameter Management)
+   - Stores parameter definitions and values
+   - Manages validation chains
+   - Handles parameter inheritance
+
+3. **Parameter Layer** (Type System)
+   - `ParamDef`: Parameter definitions and metadata
+   - `ParamValue`: Type-safe value container
+   - Validation and conversion rules
+
+4. **Handler Layer** (Core Logic)
+   - Type validation and conversion
+   - Range validation and operations (clamp/wrap)
+   - Flag handling and validation
+   - Error handling via sentinels
+
+Example usage:
+
+```cpp
+void MyScene::setup() override {
+    // Parameter definition
+    param("speed", "ratio", 0.5f, "clamp");
+    
+    // Safe to use after definition
+    float speed = settings["speed"];
+    initialize(speed);
+}
+
+void MyScene::tick() override {
+    // Type-safe access with validation
+    float speed = settings["speed"];
+    if (speed > 0.0f) {  // Sentinel values handled safely
+        update(speed);
+    }
+}
+```
 
 ### [4.6] Parameter Best Practices
 
@@ -253,3 +267,31 @@ settings["some_ratio"] = 1.2f;  // Clamped to 1.0
 settings["some_signed_ratio"] = -1.5f; // Clamped to -1.0
 settings["some_angle_wrapped"] = 7.3f;  // Wrapped to 7.3 - 2PI
 ```
+
+### [4.9] Error Handling
+
+The parameter system uses sentinel values instead of exceptions for error handling:
+
+```cpp
+// Reading an invalid parameter returns a sentinel
+float speed = settings["nonexistent"];  // Returns 0.0f
+int count = settings["bad_count"];      // Returns -1
+bool flag = settings["missing"];        // Returns false
+
+// Invalid assignments are logged and clamped/wrapped based on flags
+settings["speed"] = 1.5f;  // With CLAMP: becomes 1.0f
+                          // With WRAP: wraps to 0.5f
+```
+
+Validation occurs in this order:
+
+1. Type validation
+2. Range validation
+3. Flag application
+
+Each validation failure:
+
+1. Logs a warning message
+2. Returns an appropriate sentinel value
+3. Maintains type safety
+4. Allows scene code to recover

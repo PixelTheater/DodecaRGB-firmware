@@ -25,9 +25,18 @@ public:
         {}
 
         // Direct value access
-        operator float() const { return _settings.get_value(_name).as_float(); }
-        operator int() const { return _settings.get_value(_name).as_int(); }
-        operator bool() const { return _settings.get_value(_name).as_bool(); }
+        operator float() const {
+            ParamValue val = _settings.get_value(_name);
+            return val.as_float();
+        }
+        operator int() const {
+            ParamValue val = _settings.get_value(_name);
+            return val.as_int();
+        }
+        operator bool() const {
+            ParamValue val = _settings.get_value(_name);
+            return val.as_bool();
+        }
 
         // Direct assignment
         Parameter& operator=(float value) {
@@ -35,7 +44,7 @@ public:
             if (!_settings.is_valid_value(_name, val)) {
                 Log::warning("[WARNING] Parameter '%s': invalid value %.2f. Using sentinel.\n", 
                     _name.c_str(), value);
-                val = _settings.get_metadata(_name).get_sentinel_for_type(_settings.get_metadata(_name).type);
+                val = ParamHandlers::TypeHandler::get_sentinel_for_type(_settings.get_metadata(_name).type);
             }
             _settings.set_value(_name, val);
             return *this;
@@ -45,7 +54,7 @@ public:
             if (!_settings.is_valid_value(_name, val)) {
                 Log::warning("[WARNING] Parameter '%s': invalid value %d. Using sentinel.\n", 
                     _name.c_str(), value);
-                val = _settings.get_metadata(_name).get_sentinel_for_type(_settings.get_metadata(_name).type);
+                val = ParamHandlers::TypeHandler::get_sentinel_for_type(_settings.get_metadata(_name).type);
             }
             _settings.set_value(_name, val);
             return *this;
@@ -55,7 +64,7 @@ public:
             if (!_settings.is_valid_value(_name, val)) {
                 Log::warning("[WARNING] Parameter '%s': invalid value %s. Using sentinel.\n", 
                     _name.c_str(), value ? "true" : "false");
-                val = _settings.get_metadata(_name).get_sentinel_for_type(_settings.get_metadata(_name).type);
+                val = ParamHandlers::TypeHandler::get_sentinel_for_type(_settings.get_metadata(_name).type);
             }
             _settings.set_value(_name, val);
             return *this;
@@ -63,7 +72,7 @@ public:
         Parameter& operator=(const ParamValue& value) {
             if (!_settings.is_valid_value(_name, value)) {
                 Log::warning("[WARNING] Parameter '%s': invalid value. Using sentinel.\n", _name.c_str());
-                ParamValue val = _settings.get_metadata(_name).get_sentinel_for_type(_settings.get_metadata(_name).type);
+                ParamValue val = ParamHandlers::TypeHandler::get_sentinel_for_type(_settings.get_metadata(_name).type);
                 _settings.set_value(_name, val);
             } else {
                 _settings.set_value(_name, value);
