@@ -1,22 +1,48 @@
 import sys
 import os
 import logging
+import matplotlib  # Move this up here for error handling
 
 # Add project root to Python path
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 
-import numpy as np
+def setup_matplotlib_backend():
+    """Setup matplotlib with the first available backend"""
+    print("Debug: Setting up matplotlib...")
+    print(f"Debug: Matplotlib version {matplotlib.__version__}")
+    
+    # Preferred backends in order
+    backends = ['MacOSX', 'TkAgg', 'Qt5Agg', 'Agg']  # Reorder to try MacOSX first
+    
+    for backend in backends:
+        try:
+            print(f"Debug: Trying {backend} backend...")
+            matplotlib.use(backend, force=True)
+            # Try to actually create a figure to verify backend works
+            import matplotlib.pyplot as plt
+            plt.figure()
+            plt.close()
+            print(f"Debug: Successfully using {backend} backend")
+            return matplotlib.get_backend()
+        except Exception as e:
+            print(f"Debug: {backend} failed: {e}")
+            continue
+    
+    raise RuntimeError("No suitable matplotlib backend found")
+
+# Setup matplotlib before ANY other matplotlib-related imports
+backend = setup_matplotlib_backend()
+print(f"Debug: Using backend: {backend}")
+
+# Now we can safely import matplotlib components
 import matplotlib.pyplot as plt
+import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from mpl_toolkits.mplot3d import proj3d
-import matplotlib
 import math
 from util.matrix3d import Matrix3D
-
-# Enable interactive backend
-matplotlib.use('TkAgg')
 
 # Import shared constants and functions
 from util.dodeca_core import (
@@ -28,22 +54,28 @@ from util.dodeca_core import (
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+print("Debug: Imports complete")
+
 def draw_dodecahedron(ax, collections=None):
-    """Draw a dodecahedron with filled faces that match LED orientation."""
+    print("Debug: Starting draw_dodecahedron")
     m = Matrix3D()
     
     # Generate base pentagon vertices (at origin, in XY plane)
+    print("Debug: Generating pentagon vertices")
     pentagon = []
     for i in range(5):
         angle = i * ro  # ro = TWO_PI/5
         x = radius * math.cos(angle)
         y = radius * math.sin(angle)
         pentagon.append([x, y, 0])
+    print(f"Debug: Generated {len(pentagon)} vertices")
     
     # Position faces using same angles as LED transforms
+    print("Debug: Starting face positioning")
     faces = []
     
     for side in range(12):
+        print(f"Debug: Processing side {side}")
         m.push_matrix()
         
         # Match face positioning from transform_led_point()
@@ -73,8 +105,10 @@ def draw_dodecahedron(ax, collections=None):
         faces.append(face)
         
         m.pop_matrix()
+    print(f"Debug: Generated {len(faces)} faces")
     
     # Create the 3D polygons with proper depth sorting
+    print("Debug: Creating 3D polygons")
     poly = Poly3DCollection(faces, alpha=0.3)
     poly.set_facecolor(FACE_COLORS)  # Use our custom colors
     poly.set_edgecolor('gray')
@@ -84,13 +118,25 @@ def draw_dodecahedron(ax, collections=None):
         collections['faces'] = poly
     
     ax.add_collection3d(poly)
+    print("Debug: Finished draw_dodecahedron")
     return faces
 
 def visualize_model(pcb_points=None):
-    """Draw the dodecahedron using matplotlib"""
+    print("Debug: Starting visualize_model")
+    print(f"Debug: Received {len(pcb_points)} PCB points")
+    
     # Create figure and 3D axes with perspective projection
-    fig = plt.figure(figsize=(10, 10))
-    ax = fig.add_subplot(111, projection='3d')
+    print("Debug: Creating matplotlib figure")
+    try:
+        fig = plt.figure(figsize=(10, 10))
+        print("Debug: Figure created, creating 3D subplot...")
+        ax = fig.add_subplot(111, projection='3d')
+        print("Debug: 3D subplot created")
+    except Exception as e:
+        print(f"Debug: ERROR creating plot: {e}")
+        print("Debug: Matplotlib backend:", matplotlib.get_backend())
+        print("Debug: Matplotlib version:", matplotlib.__version__)
+        raise
     
     # Set camera position and focal length using set_box_aspect
     ax.set_box_aspect([1, 1, 1])  # Equal aspect ratio for all axes
@@ -121,11 +167,14 @@ def visualize_model(pcb_points=None):
     faces = draw_dodecahedron(ax, collections)
     
     # Calculate all LED positions
+    print("Debug: Starting LED position calculation")
     led_positions = []
     for side in range(12):
+        print(f"Debug: Processing LEDs for side {side}")
         for led in pcb_points:
             world_pos = transform_led_point(led['x'], led['y'], led['num'], side)
             led_positions.append(world_pos)
+    print(f"Debug: Generated {len(led_positions)} LED positions")
     
     # Convert to numpy arrays for faster plotting
     led_positions = np.array(led_positions)
@@ -341,11 +390,13 @@ def visualize_model(pcb_points=None):
     if labeled_artists:
         ax.legend(fontsize=8)
     
+    print("Debug: Showing plot")
     plt.show()
 
 if __name__ == "__main__":
-    # Load PCB points
+    print("Debug: Program starting")
     pcb_points = load_pcb_points('PickAndPlace_PCB_DodecaRGB_v2_2024-11-22.csv')
+    print(f"Debug: Loaded {len(pcb_points)} PCB points")
     
     # Show visualization
     visualize_model(pcb_points) 

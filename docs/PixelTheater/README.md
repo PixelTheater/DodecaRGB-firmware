@@ -38,9 +38,9 @@ The animation system provides a type-safe, flexible framework for creating LED a
 ┌┴───────┐    ╔════════════════╗                               
 │ Stage  │───▶║ current scene  ║                               
 └┬───────┘    ╚════════════════╝                               
- │  ┌────────────┐          ▲                                  
- ├─▶│PixelSurface│ geometry │                                  
- │  └┬───────────┘          │                                  
+ │  ┌────────┐              ▲                                  
+ ├─▶│ Model  │ geometry     │                                  
+ │  └┬───────┘              │                                  
  │   │  ┌────────────┐      │                                  
  │   └─▶│ LEDSurface │linear│                                  
  │      └────────────┘      │                                  
@@ -51,16 +51,19 @@ The animation system provides a type-safe, flexible framework for creating LED a
 
 ### [2.1] Key Concepts
 
-- **Stage**: The virtual spherical display where the scene is rendered
-- **Director**: Manages the animation system, including scene selection and transitions
-- **Show**: A list of scenes to play
+- **Stage**: The place where animated scenes are played on a model covered in LEDs
+  - **Model**: Definition of a geometric shape covered with LEDs, generated from hardware files
+  - **LEDSurface**: The configured driver for addressable LEDs of a given model
 - **Scene**: A single animation, including its parameters and behavior
-- **Controls**: A set of controls that can be used to interact with the scene
-- **Presets**: A snapshot of settings for the controls, props and scenes
-- **Props**: Chunks of data like color palettes, bitmaps, geometry used by the scene
-- **Actors**: Animation objects (classes) used in a scene
-- **Controllers**: An external interface to drive scene controls in real time
-- **Settings**: The configuration of controls, props and presets
+  - **Parameters**: The types and ranges that define how a scene is configured
+  - **Settings**: The interface and internal state of a scene's parameters
+  - **Presets**: A snapshot of settings for a scene
+  - **Props**: Chunks of data like color palettes, bitmaps, or datasets used by the scene
+  - **Actors**: Animation objects (classes) used in a scene
+- **Show**: A sequenced list of scenes to play
+  - **Director**: Manages the performance: scene selection, transitions, behavior
+- **Controls**: Hardware events or sensors that enable interaction
+  - **Controllers**: An control mapped to a parameter of a scene
 
 The Director manages scene transitions and ensures proper lifecycle method calls.
 
