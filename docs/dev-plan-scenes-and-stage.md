@@ -1,112 +1,107 @@
-# Development Plan for Scenes and Stage
+# PixelTheater Development Plan
 
-## Overview
+Reference docs:
+‼️ @model.md : Model structure and data format documentation
+‼️ @scene.md : Scene class documentation
 
-Build core Scene and Stage functionality with clean syntax and model integration.
+## Development Plan
 
-## Phase 1: Model Access Layer
+### 1. Core Data Structures
 
-Goal: Clean access to model constants and data
+1. Model Definition Format
 
-- Create Model namespace with constants
-- Test fixture for basic model data
-- Model data access patterns
-- Test model data access
+- [ ] Define constexpr data structures:
+  - FaceTypeData (num_leds, edge_length, region counts)
+  - FaceData (id, type_id, rotation, position)
+  - PointData (id, face_id, position)
+  - RegionData (id, face_id, type, led_ids)
+  - NeighborData (point_id, neighbor distances)
+- [ ] Update ModelDefinition template
+- [ ] Add compile-time validation
 
-## Phase 2: LED Array Access
+2. Test Fixtures
 
-Goal: Clean LED array syntax with bounds checking
+- [ ] Update BasicPentagonModel with complete data
+- [ ] Add validation test cases
+- [ ] Test neighbor relationships
 
-- Stage::leds[] array access
-- Bounds checking and sentinel values
-- FastLED array management
-- Test LED array operations
+### 2. Runtime Classes
 
-## Phase 3: Basic Stage
+1. Point & LED Implementation
 
-Goal: Stage initialization and LED control
+- [ ] Update Point class for new format
+- [ ] Implement LED array initialization
+- [ ] Add neighbor access methods
 
-- Stage construction with model data
-- LED array assignment
-- Basic LED operations
-- Test stage operations
+2. Region Implementation
 
-## Phase 4: Scene Framework
+- [ ] Region class with LED collections
+- [ ] Face region grouping (center, rings, edges)
+- [ ] Region validation (completeness, uniqueness)
 
-Goal: Scene lifecycle and LED access
+3. Face Implementation
 
-- Scene base class
-- Stage reference in scenes
-- Scene setup/tick lifecycle
-- Test scene operations
+- [ ] Face type properties and validation
+- [ ] Face position and normal calculation
+- [ ] Region access methods
 
-## Phase 5: Hardware Integration
+4. Model Implementation
 
-Goal: Validate on device
+- [ ] LED/Point array management
+- [ ] Face collection and lookup
+- [ ] Region access and validation
 
-- FastLED integration
-- Main loop timing
-- Basic test scene
-- Hardware validation
+### 3. Testing Strategy
 
-## Phase 6: Region Support
+1. Unit Tests
 
-Goal: Clean region syntax and operations
+- [ ] Data structure validation
+- [ ] Point/LED relationships
+- [ ] Region completeness
+- [ ] Face geometry
+- [ ] Model construction
 
-- LedSpan implementation
-- Chainable operations
-- Region access through stage
-- Test region operations
+2. Integration Tests
 
-## Phase 7: Points Integration
+- [ ] Complete model initialization
+- [ ] LED access patterns
+- [ ] Region operations
+- [ ] Neighbor traversal
 
-Goal: Integrate existing points.cpp functionality
+Next Steps:
 
-- Import existing Point class and data
-- Create test fixture that matches points.cpp LED count
-- Add point access methods to Stage
-- Keep points.cpp unchanged initially
-- Test point queries through Stage
+- Implement core data structures
+- Create test fixtures
+- Build runtime classes
 
-## Phase 8: Model/Points Bridge 
+## Future Considerations
 
-Goal: Create clean interface between Model and Points
+### Teensy41 Platform Investigation
 
-- Add point lookup to Model namespace
-- Bridge between Model indices and Points indices
-- Ensure Region operations work with Points data
-- Test point-based operations
-- Maintain points.cpp compatibility
+Current Issues:
 
-## Future Work
+- Binary.h macro conflicts with Eigen
+- ARM GCC iterator differences from native
+- Memory model differences in STL containers
 
-- Python generator will eventually:
-  1. Generate model.h with constants and regions
-  2. Generate points data in same format as points.cpp
-  3. Combine both into unified model interface
-  4. Replace manual points.cpp
-  5. Support multiple model types
+### Math Library Evaluation
 
-## Key Principles
+Current: Using Eigen for Vector3d normals in Face class
 
-1. Clean, chainable syntax
-2. Always check headers and includes when updating code, including dependencies and proper separation of implentation and interface
-3. Use consistent access patterns
-4. Bounds checking everywhere
-5. Test-driven development
-6. Hardware validation later
-7. Don't break working points code
-8. Keep points system independent
-9. Plan for future integration
+Required Operations:
 
-## Success Criteria
+- Basic: Vector3, Matrix3x3, rotations (currently only using Vector3d)
+- Spherical: coordinate conversion, surface mapping, wave propagation
+- Motion: quaternions, IMU integration (9-axis sensor support)
 
-1. Our API reads naturally and follows the syntax defined in Scenes.md and Stage.md
-2. LED operations are safe and consistent
-3. Region operations are intuitive and consistent
-4. Tests verify behavior and are located in the appropriate test file
-5. Hardware performs as expected
-6. Points system remains functional
-7. Model and Points systems cooperate cleanly
-8. Existing point queries still work
-9. Path clear for future generator work
+Options:
+
+- Keep Eigen but wrap in our interfaces
+- Create minimal math lib for common ops
+- Hybrid: basic ops in-house + optional Eigen
+
+Next Steps:
+
+1. Profile Eigen memory usage on Teensy
+2. Document animation math requirements
+3. Test basic ops performance vs Eigen

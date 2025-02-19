@@ -1,0 +1,6 @@
+#include <string>  // Add missing include for std::string
+#include <doctest/doctest.h>
+
+TEST_SUITE("Model") {   
+ 
+} 

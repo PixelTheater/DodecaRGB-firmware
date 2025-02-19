@@ -11,7 +11,8 @@ globs: util/test/**, test/**
 - try to keep each test independent so that it tests one assumption
 - Test the implementation and not the behaviour
 - Use consistent include paths across test files 
-- organize unit tests in a way that follow the general structure of the code under test (by modules, methods, data structures, etc.)
+- Avoid adding multiple assertations that check the same things
+- organize test cases in a way that follow the general structure of the code (by category, use case, types, etc.)
 - if code is difficult to test due to design or dependencies, consider design changes that would make the code simpler to test
 
 ## Python Testing

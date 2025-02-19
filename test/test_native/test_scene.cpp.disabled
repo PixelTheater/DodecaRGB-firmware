@@ -15,7 +15,7 @@ static constexpr ParamDef::Metadata TEST_SCENE_INFO = {
 // Example scene implementation like a user would create
 class ColorScene : public Scene {
 public:
-    ColorScene() : Scene() {}
+    ColorScene(Stage& stage) : Scene(stage) {}
 
     void setup() override {
         // Define parameters as a user would
@@ -46,7 +46,8 @@ private:
 
 TEST_SUITE("Scene") {
     TEST_CASE("Scene lifecycle") {
-        ColorScene scene;
+        Stage stage;
+        ColorScene scene(stage);
 
         SUBCASE("Setup initializes parameters") {
             scene.setup();
@@ -81,7 +82,8 @@ TEST_SUITE("Scene") {
     }
 
     TEST_CASE("Parameter validation") {
-        ColorScene scene;
+        Stage stage;
+        ColorScene scene(stage);
         scene.setup();
 
         SUBCASE("Valid parameter changes") {

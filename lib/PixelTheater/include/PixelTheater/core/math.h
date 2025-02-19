@@ -2,6 +2,8 @@
 #include <cmath>
 #include <cstdint>  // For int32_t, uint8_t
 #include "../constants.h"  // For M_PI
+#include "Core"  // Eigen includes
+#include "Dense"
 #include "math_platform.h"  // For constrain_value
 
 namespace PixelTheater {

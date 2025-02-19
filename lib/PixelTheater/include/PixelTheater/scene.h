@@ -5,6 +5,8 @@
 #include "settings_proxy.h"
 #include "params/param_def.h"
 #include "params/param_value.h"
+#include "model/model.h"
+#include "stage.h"
 
 namespace PixelTheater {
 
@@ -17,9 +19,10 @@ namespace PixelTheater {
 
 class Scene {
 public:
-    Scene(const ParamDef* params = nullptr, size_t param_count = 0,
+    Scene(Stage& stage, const ParamDef* params = nullptr, size_t param_count = 0,
           const ParamDef::Metadata* metadata = nullptr)
-        : _settings_storage()  // Initialize underlying Settings
+        : _stage(stage)  // Initialize reference
+        , _settings_storage()  // Initialize underlying Settings
         , settings(_settings_storage)  // Initialize proxy wrapper
     {
         if (params) {
@@ -113,6 +116,7 @@ private:
 
     size_t _tick_count{0};
     const ParamDef::Metadata* _metadata;
+    Stage& _stage;
 };
 
 } // namespace PixelTheater 
