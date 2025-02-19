@@ -1,7 +1,5 @@
 #include <doctest/doctest.h>
 #include "PixelTheater/core/math.h"
-#include "Core"  // Eigen includes
-#include "Dense"
 
 using namespace PixelTheater;
 

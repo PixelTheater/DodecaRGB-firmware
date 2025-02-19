@@ -11,6 +11,9 @@
 
 #include <Adafruit_LSM6DSOX.h>
 
+#include "models/DodecaRGBv2/model.h"
+// or #include "models/IcosahedronV1.h"
+
 /* 
 
 # DodecaRBG V2
@@ -201,6 +204,9 @@ void setup() {
 
   // set initial animation
   animation_manager.setCurrentAnimation("boids");
+
+  auto model = std::make_unique<Models::DodecaRGBv2>();
+  stage.setModel(std::move(model));
 }
 
 long interval, last_interval = 0;
