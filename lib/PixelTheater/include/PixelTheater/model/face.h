@@ -5,19 +5,9 @@
 #include "../limits.h"  // For Config::Limits
 #include "point.h"
 #include "region.h"
+#include "face_type.h"  // Use the single definition
 
 namespace PixelTheater {
-
-// Just the basic geometric types
-enum class FaceType {
-    None = 0,
-    Strip = 1,
-    Circle = 2,
-    Triangle = 3,
-    Square = 4,
-    Pentagon = 5,
-    Hexagon = 6
-};
 
 class Face {
 private:
