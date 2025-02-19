@@ -21,9 +21,9 @@ class Scene {
 public:
     Scene(Stage& stage, const ParamDef* params = nullptr, size_t param_count = 0,
           const ParamDef::Metadata* metadata = nullptr)
-        : _stage(stage)  // Initialize reference
-        , _settings_storage()  // Initialize underlying Settings
-        , settings(_settings_storage)  // Initialize proxy wrapper
+        : _stage(stage)
+        , _settings_storage()
+        , settings(_settings_storage)
     {
         if (params) {
             _settings_storage = Settings(params, param_count);
@@ -80,6 +80,7 @@ public:
      */
     size_t tick_count() const { return _tick_count; }
 
+    Stage& _stage;
     Settings _settings_storage;
     SettingsProxy settings;      // Now public - main interface for parameter access
 
@@ -116,7 +117,6 @@ private:
 
     size_t _tick_count{0};
     const ParamDef::Metadata* _metadata;
-    Stage& _stage;
 };
 
 } // namespace PixelTheater 

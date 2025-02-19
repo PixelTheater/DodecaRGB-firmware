@@ -1,10 +1,19 @@
 #pragma once
+
+// First let Eigen set up its Arduino compatibility
+#ifdef PLATFORM_TEENSY
+  #include <ArduinoEigen.h>
+#else
+  #include <Eigen/Core>
+  #include <Eigen/Dense>
+#endif
+
+// Then include our platform-specific math functions
+#include "math_platform.h"
+
 #include <cmath>
 #include <cstdint>  // For int32_t, uint8_t
 #include "../constants.h"  // For M_PI
-#include "Core"  // Eigen includes
-#include "Dense"
-#include "math_platform.h"  // For constrain_value
 
 namespace PixelTheater {
 
