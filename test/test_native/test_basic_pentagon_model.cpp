@@ -1,5 +1,5 @@
 #include <doctest/doctest.h>
-#include "fixtures/basic_pentagon_model.h"
+#include "../fixtures/models/basic_pentagon_model.h"
 
 using namespace PixelTheater;
 using namespace PixelTheater::Fixtures;

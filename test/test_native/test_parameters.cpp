@@ -1,6 +1,6 @@
 #include <doctest/doctest.h>
 #include "PixelTheater/parameter.h"
-#include "fixtures/parameter_test_params.h"
+#include "../fixtures/params/parameter_test_params.h"
 #include "helpers/log_capture.h"
 
 using namespace PixelTheater;

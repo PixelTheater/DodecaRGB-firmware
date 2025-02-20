@@ -29,44 +29,69 @@ Reference docs:
   - [✓] Metadata validation
   - [✓] Basic face configuration
   - [✓] Point geometry validation
-  - [ ] Core relationship implementation
-    - [ ] Model to Face access
-    - [ ] Face to Region access
-    - [ ] Region to LED access
-    - [ ] LED to Point access
+  - [✓] Core relationship implementation
+    - [✓] Model to Face access
+    - [🔄] Face Region Structure
+      - [✓] Region base implementation (LedSpan, center Point)
+      - [✓] Center region initialization
+      - [✓] Ring collection setup
+      - [✓] Edge collection setup
+    - [🔄] Model Relationships
+      - [✓] Face-to-Region linking
+      - [✓] Region-to-LED indexing
+      - [ ] LED-to-Point mapping
+      - [ ] Point-to-Face assignment
+      - [ ] Neighbor relationships
+      - [ ] Relationship Validation
+        - [ ] Compile-time ModelDef checks
+        - [ ] Runtime relationship integrity
+        - [ ] Pointer ownership & lifetime
+    - [ ] LED Management
+      - [✓] LedSpan implementation
+      - [ ] Color access patterns
+        - [ ] Memory safety validation
+        - [ ] Direct LED color assignment
+        - [ ] Region fill operations
+        - [ ] FastLED array synchronization
+        - [ ] FastLED integration
 
 2. Test Cases
 
 - ✓ Basic enum value validation
 - ✓ Type consistency checks
 - [✓] Metadata validation
-- [ ] Collection access patterns
-  - [ ] Model.faces() access
-  - [ ] Face.regions() access
-  - [ ] Region.leds() access
+- [🔄] Collection access patterns
+  - [✓] Model.faces() access
+  - [✓] Face.regions() access
+  - [✓] Region.leds() access
   - [ ] LED/Point relationships
 
 Next Steps:
 
-A. Implement core Model class
+A. Complete Model Relationships Testing
+- Add tests for all ModelDef relationships:
+  - Face -> Regions (center, rings, edges)
+  - Region -> LEDs (indices correct)
+  - LED -> Point (coordinates match)
+  - Point -> Face (assignments valid)
+  - Point -> Neighbors (connections valid)
+  - Validate pointer lifetimes and ownership
+  - Test relationship integrity across operations
 
-- Add basic collection access methods
-- Define relationships between components
-- Create minimal test fixture data
-- Test access patterns work as expected
+B. Validate Collection Access
+- Test array_view implementations
+- Verify bounds checking
+- Test iteration patterns
+- Ensure const correctness
+- Standardize error handling across collections
+- Document collection access patterns
 
-B. Implement Face and Region classes
-
-- Add collection access methods
-- Test relationship with Model class
-- Verify LED access patterns
-
-C. Future Tasks (After Core Implementation)
-
-- Validate face requirements
-- Add region completeness checks
-- Implement neighbor relationships
-- Add geometric validation
+C. Add Feature Implementation
+- LED color management
+- Prove FastLED integration performance
+- Geometric operations
+- Neighbor traversal
+- Create animation proof-of-concept
 
 ## Future Considerations
 
@@ -74,28 +99,18 @@ C. Future Tasks (After Core Implementation)
 
 Current Issues:
 
-- Binary.h macro conflicts with Eigen
+- Binary.h macro conflicts with Eigen - ✓ FIXED using ArduinoEigen
 - ARM GCC iterator differences from native
 - Memory model differences in STL containers
 
-### Math Library Evaluation
+Verified Platform Features:
 
-Current: Using Eigen for Vector3d normals in Face class
+- std::array with full C++17 features ✓
+- Template deduction guides ✓
+- Range-based for loops ✓
+- Move semantics ✓
+- Reference types ✓
+- STL containers (vector, initializer_list) ✓
+- Memory alignment (alignas) ✓
+- array_view implementation works in both environments ✓
 
-Required Operations:
-
-- Basic: Vector3, Matrix3x3, rotations (currently only using Vector3d)
-- Spherical: coordinate conversion, surface mapping, wave propagation
-- Motion: quaternions, IMU integration (9-axis sensor support)
-
-Options:
-
-- Keep Eigen but wrap in our interfaces
-- Create minimal math lib for common ops
-- Hybrid: basic ops in-house + optional Eigen
-
-Next Steps:
-
-1. Profile Eigen memory usage on Teensy
-2. Document animation math requirements
-3. Test basic ops performance vs Eigen

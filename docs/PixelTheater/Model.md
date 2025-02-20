@@ -37,14 +37,25 @@ Each `Region` contains:
 - `LedSpan` - An array of non-contiguous LEDs that form a region
 
 
-## Model API: A brief list of geometry access methods
+## Model API
 
-Note that collections are returned as `std:array` types, and can be iterated over or indexed. By convention, a matching `operator[]` method is offered for indexing each collection type:
+The interface is designed to allow inspection of the model and its components, as well as manipulation of the LEDs. Many methods are chainable, and return the object they are called on, allowing for a fluid syntax. Collections are returned as `ArrayView` types, and can be iterated over or indexed. By convention, a matching `operator[]` method is offered for indexing each collection type:
 
 - `model.faces()  // collection of all faces`
 - `model.faces[0] // single face`
 
-### Model
+### Collection Access
+
+Collections are returned as `array_view` types which provide:
+
+- Bounds checking (returns first element for out-of-range access)
+- Range-based for loop support
+- Both const and non-const access where appropriate
+- No memory allocation or copying
+
+This is very similar to the `std::span` type, but is specialized for the model classes and provides bounds checking and type safety, as well as cross-platform compatibility with hardware environments that don't support the C++20 standard library.
+
+### API Methods
 
 Metadata:
 
@@ -128,16 +139,15 @@ for(auto& face : model.faces) {
 }
 ```
 
-All collection types (faces, regions, LEDs, etc.) provide both a faces() getter method as well as an overload of operator[] for convenience. Note that if an out-of-range index is provided, the last valid element is returned.
-
-The Led class provides a very flexible interface, with FastLED style assignment and chaining, which still allows inspection of properties like the led index and point position:
+The Led class provides a flexible interface with FastLED style assignment and chaining. This allows inspection of properties like the led index and point position:
 
 ```cpp
-auto& led = face.edges[0].leds[0];
-led = CRGB::Red;
-led.color = CRGB::Red;  // still works!
+auto& led = model.leds[0];
 led.index; // 0
-led.point(); // Point
+led.point().x(); // float, x coordinate
+led.point().normal(); // Vector3, normal vector to the face
+Point p2 = new Point(0.3, 0.6, 0.2);
+led.point().distanceTo(p2); // distance to another point
 ```
 
 All array access and methods should be bounds-checked and not crash on invalid inputs:

@@ -27,16 +27,11 @@ struct BasicPentagonModel : public ModelDefinition<20, 1> {
         }
     };
 
-    // Face instance - single face at origin
+    // Face instances - top and bottom
     static constexpr FaceData FACES[] = {
-        {
-            .id = 0,
-            .type_id = 0,
-            .rotation = 0,
-            .x = 0.0f,
-            .y = 0.0f,
-            .z = 1.0f
-        }
+        // id, type_id, rotation, x, y, z
+        {0, 0, 0,  0.0f,  0.0f,  1.0f},  // Top face
+        {1, 0, 2,  0.0f,  0.0f, -1.0f}   // Bottom face, rotated 144°
     };
 
     // Point geometry - define key points first
@@ -51,28 +46,22 @@ struct BasicPentagonModel : public ModelDefinition<20, 1> {
         {.id = 4, .face_id = 0, .x = -8.09f, .y = -5.88f, .z = 0.0f},
         {.id = 5, .face_id = 0, .x = 3.09f, .y = -9.51f, .z = 0.0f},
         
-        // Additional points will be added...
+        // Edges
+        {.id = 6, .face_id = 0, .x = 10.0f, .y = 0.0f, .z = 0.0f},
+        {.id = 7, .face_id = 0, .x = 3.09f, .y = 9.51f, .z = 0.0f},
+        {.id = 8, .face_id = 0, .x = -8.09f, .y = 5.88f, .z = 0.0f},
+        {.id = 9, .face_id = 0, .x = -8.09f, .y = -5.88f, .z = 0.0f},
+        {.id = 10, .face_id = 0, .x = 3.09f, .y = -9.51f, .z = 0.0f},
     };
 
     // Region definitions
     static constexpr RegionData REGIONS[] = {
-        // Center region
-        {
-            .id = 0,
-            .face_id = 0,
-            .type = RegionType::Center,
-            .led_ids = {0}  // Center LED
-        },
-        
-        // First ring region
-        {
-            .id = 1,
-            .face_id = 0,
-            .type = RegionType::Ring,
-            .led_ids = {1, 2, 3, 4, 5}  // First ring LEDs
-        },
-        
-        // Additional regions will be added...
+        // Face 0 regions
+        {0, 0, RegionType::Center, 1, {0}},                    // Center    
+        {1, 0, RegionType::Ring, 5, {1, 2, 3, 4, 5}},         // Ring 1
+        {2, 0, RegionType::Edge, 5, {6, 7, 8, 9, 10}},        // Edge 1
+        {3, 0, RegionType::Edge, 5, {11, 12, 13, 14, 15}},    // Edge 2
+        {4, 0, RegionType::Edge, 4, {16, 17, 18, 19}},        // Edge 3
     };
 
     // Define neighbor relationships

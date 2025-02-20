@@ -1,14 +1,14 @@
 #include <doctest/doctest.h>
 #include "PixelTheater/core/crgb.h"
 #include "PixelTheater/model/point.h"
-#include "PixelTheater/led.h"  // We'll create this
+#include "PixelTheater/model/led.h"  // We'll create this
 
 using namespace PixelTheater;
 
 TEST_SUITE("LED Classes") {
     TEST_CASE("Led Basic Properties") {
         CRGB color;
-        Point point(1.0f, 2.0f, 3.0f, 0, 0);
+        Point point(0, 0, 1.0f, 2.0f, 3.0f);  // id, face_id, x, y, z
         const size_t index = 42;
         
         Led led(color, point, index);

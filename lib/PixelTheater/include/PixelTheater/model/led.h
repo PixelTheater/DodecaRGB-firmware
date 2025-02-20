@@ -1,7 +1,6 @@
-// In PixelTheater/led.h
 #pragma once
-#include "core/crgb.h"
-#include "model/point.h"
+#include "PixelTheater/core/crgb.h"
+#include "PixelTheater/model/point.h"
 
 namespace PixelTheater {
 
@@ -14,8 +13,19 @@ private:
 
 public:
     Led() : _color(nullptr), _point(nullptr), _index(0) {}  // Default constructor
+    
+    // Add constructor for index-only initialization
+    explicit Led(size_t index) 
+        : _color(nullptr)
+        , _point(nullptr)
+        , _index(index) 
+    {}
+    
     Led(CRGB& c, const Point& p, size_t i) 
-        : _color(&c), _point(&p), _index(i) {}
+        : _color(&c)
+        , _point(&p)
+        , _index(i) 
+    {}
 
     CRGB& color() { return *_color; }
     const Point& point() const { return *_point; }

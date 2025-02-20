@@ -3,6 +3,9 @@
 #include <array>
 #include <vector>
 #include <span>
+#include "PixelTheater/core/array_view.h"
+
+using namespace PixelTheater;
 
 TEST_CASE("Platform Compatibility") {
     Serial.println("\n=== Testing Platform Compatibility ===");
@@ -117,6 +120,28 @@ TEST_CASE("Platform Compatibility") {
         Serial.println("std::span is NOT supported");
         Serial.printf("Required C++ feature test macro __cpp_lib_span not defined\n");
         #endif
+    }
+
+    SUBCASE("array_view hardware compatibility") {
+        Serial.println("Testing array_view...");
+        
+        // Test with LED-like data
+        uint8_t leds[] = {10, 20, 30, 40, 50};
+        array_view<uint8_t> view(leds, 5);
+        
+        CHECK(view.size() == 5);
+        CHECK(view[0] == 10);
+        
+        // Test modification
+        view[0] = 15;
+        CHECK(leds[0] == 15);
+        
+        // Test iteration
+        uint32_t sum = 0;
+        for(const auto& led : view) {
+            sum += led;
+        }
+        CHECK(sum == (15 + 20 + 30 + 40 + 50));
     }
 
     Serial.println("Platform compatibility tests complete!");

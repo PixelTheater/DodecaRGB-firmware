@@ -32,7 +32,7 @@ def generate_test_fixtures():
     # Generate fireworks fixture
     yaml_path = os.path.join(project_root, 'util', 'examples', 'fireworks.yaml')
     fixture_code = generate_cpp_fixture(yaml_path)
-    fixture_path = os.path.join(fixtures_dir, 'fireworks_params.h')
+    fixture_path = os.path.join(fixtures_dir, 'params', 'fireworks_params.h')
     
     with open(fixture_path, 'w') as f:
         f.write(fixture_code)
