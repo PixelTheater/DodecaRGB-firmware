@@ -25,9 +25,10 @@ TEST_SUITE("ModelDefinition") {
     }
     
     TEST_CASE("region type values") {
-        CHECK(static_cast<uint8_t>(RegionType::Center) == 0);
-        CHECK(static_cast<uint8_t>(RegionType::Ring) == 1);
-        CHECK(static_cast<uint8_t>(RegionType::Edge) == 2);
+        CHECK(static_cast<uint8_t>(RegionType::None) == 0);
+        CHECK(static_cast<uint8_t>(RegionType::Center) == 1);
+        CHECK(static_cast<uint8_t>(RegionType::Ring) == 2);
+        CHECK(static_cast<uint8_t>(RegionType::Edge) == 3);
     }
     
     TEST_CASE("region type consistency") {

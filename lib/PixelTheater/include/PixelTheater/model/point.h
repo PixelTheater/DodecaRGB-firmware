@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <array>
-#include "../core/math.h"  // For Vector3d
+#include "PixelTheater/core/math.h"  // For Vector3d
 
 namespace PixelTheater {
 
@@ -33,30 +33,28 @@ struct NeighborData {
 // Main Point class
 class Point {
 public:
-    // Core position data
+    Point() = default;
+    Point(uint16_t id, uint8_t face_id, float x, float y, float z)
+        : _id(id)
+        , _face_id(face_id)
+        , _x(x), _y(y), _z(z)
+    {}
+
+    // Accessors
+    uint16_t id() const { return _id; }
+    uint8_t face_id() const { return _face_id; }
     float x() const { return _x; }
     float y() const { return _y; }
     float z() const { return _z; }
-
-    // Face information
-    uint8_t face() const { return _face; }
-    uint8_t index() const { return _index; }  // Index within face
-    uint16_t id() const { return _id; }       // Global point ID
 
     // Geometric calculations
     float distanceTo(const Point& other) const;
     bool isNeighbor(const Point& other) const;
 
-    // Construction
-    Point() = default;
-    Point(float x, float y, float z, uint8_t face, uint8_t index, uint16_t id = 0)
-        : _x(x), _y(y), _z(z), _face(face), _index(index), _id(id) {}
-
 private:
+    uint16_t _id{0};
+    uint8_t _face_id{0};
     float _x{0}, _y{0}, _z{0};
-    uint8_t _face{0};
-    uint8_t _index{0};  // Index within face
-    uint16_t _id{0};    // Global point ID
 };
 
 } // namespace PixelTheater 

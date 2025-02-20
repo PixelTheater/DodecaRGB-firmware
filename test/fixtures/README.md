@@ -2,8 +2,6 @@
 
 ## Scene Configuration Test
 
-
-
 `test_scene.yaml`: is the source for `test_scene_params.h`, which is used to test the scene configuration.
 
 To re-generate:
@@ -12,6 +10,18 @@ To re-generate:
 python util/scene_generator.py test/fixtures/test_scene.yaml -o test/fixtures/test_scene_params.h
 ```
 
-`parameter_test_params.h`: is the source for `parameter_test.cpp`, which is used to test the parameter system.
+## Parameter Test Fixtures
 
-`fireworks_params.h`: is the source for `fireworks.yaml`, which is used to test the python tests for generating C++ fixtures. See `util/README.md` for more details.
+- `parameter_test_params.h`: generated source from `parameter_test.yaml` which is used to test the parameter system.
+
+- `params/fireworks_params.h`: generated source from `params/fireworks.yaml` a configuration example that is also used in python tests for generating C++ fixtures.
+
+See `util/README.md` for more details.
+
+
+## Model Fixtures
+
+- `models/basic_pentagon_model.h`: a basic model with a pentagon face.
+- `models/model_relationships.h`: validate the relationships between parts of the model.
+
+

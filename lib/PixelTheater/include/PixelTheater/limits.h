@@ -9,6 +9,7 @@ namespace PixelTheater {
 namespace Limits {
     // Maximum calculated point neighbors
     static constexpr size_t MAX_NEIGHBORS = 7;         // Per LED
+    static constexpr float NEIGHBOR_THRESHOLD = 30.0f; // Based on existing points.cpp data
 
     // Maximum possible values for any model
     static constexpr size_t MAX_LEDS_PER_REGION = 32;
