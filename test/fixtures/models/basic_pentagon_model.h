@@ -6,48 +6,58 @@ namespace PixelTheater {
 namespace Fixtures {
 
 // Basic pentagon model with 20 LEDs for testing core functionality
-struct BasicPentagonModel : public ModelDefinition<20, 1> {
+struct BasicPentagonModel : public ModelDefinition<20, 3> {
     // Required metadata
     static constexpr const char* NAME = "Basic Pentagon Model";
     static constexpr const char* VERSION = "1.0";
     static constexpr const char* DESCRIPTION = "Single pentagon face for testing";
     static constexpr const char* MODEL_TYPE = "Pentagon";
 
-    // Face type definition - just one pentagon face
-    static constexpr FaceTypeData FACE_TYPES[] = {
+    static constexpr size_t LED_COUNT = 20;
+    static constexpr size_t FACE_COUNT = 3;  // Using 3 faces for testing
+
+    // Face type definitions
+    static constexpr std::array<FaceTypeData, 1> FACE_TYPES{{
         {
             .id = 0,
             .type = FaceType::Pentagon,
             .num_leds = 20,
-            .edge_length_mm = 50.0f,
+            .edge_length_mm = 50.0f
         }
-    };
+    }};
 
-    // Face instances - top and bottom
-    static constexpr FaceData FACES[] = {
-        // id, type_id, rotation, x, y, z
-        {0, 0, 0,  0.0f,  0.0f,  1.0f},  // Top face
-        {1, 0, 2,  0.0f,  0.0f, -1.0f}   // Bottom face, rotated 144°
-    };
+    // Face instances
+    static constexpr std::array<FaceData, FACE_COUNT> FACES{{
+        {.id = 0, .type_id = 0},  // Face 0: type 0
+        {.id = 1, .type_id = 0},  // Face 1: type 0
+        {.id = 2, .type_id = 0}   // Face 2: type 0
+    }};
 
-    // Point geometry - define key points first
+    // Point geometry - define key points
     static constexpr PointData POINTS[] = {
         // Center point
-        {.id = 0, .face_id = 0, .x = 0.0f, .y = 0.0f, .z = 0.0f},
-        
-        // First ring (5 points)
-        {.id = 1, .face_id = 0, .x = 10.0f, .y = 0.0f, .z = 0.0f},
-        {.id = 2, .face_id = 0, .x = 3.09f, .y = 9.51f, .z = 0.0f},
-        {.id = 3, .face_id = 0, .x = -8.09f, .y = 5.88f, .z = 0.0f},
-        {.id = 4, .face_id = 0, .x = -8.09f, .y = -5.88f, .z = 0.0f},
-        {.id = 5, .face_id = 0, .x = 3.09f, .y = -9.51f, .z = 0.0f},
-        
-        // Edges
-        {.id = 6, .face_id = 0, .x = 10.0f, .y = 0.0f, .z = 0.0f},
-        {.id = 7, .face_id = 0, .x = 3.09f, .y = 9.51f, .z = 0.0f},
-        {.id = 8, .face_id = 0, .x = -8.09f, .y = 5.88f, .z = 0.0f},
-        {.id = 9, .face_id = 0, .x = -8.09f, .y = -5.88f, .z = 0.0f},
-        {.id = 10, .face_id = 0, .x = 3.09f, .y = -9.51f, .z = 0.0f},
+        {0, 0,   0.0f,  0.0f,  1.0f},  // Center
+        // Ring points (5)
+        {1, 0,   1.0f,  0.0f,  1.0f},
+        {2, 0,  -0.5f,  0.87f, 1.0f},
+        {3, 0,  -0.5f, -0.87f, 1.0f},
+        {4, 0,   0.31f, 0.95f, 1.0f},
+        {5, 0,  -0.81f, 0.59f, 1.0f},
+        // More points to reach 20...
+        {6, 0,   0.0f,  0.0f,  1.0f},
+        {7, 0,   0.0f,  0.0f,  1.0f},
+        {8, 0,   0.0f,  0.0f,  1.0f},
+        {9, 0,   0.0f,  0.0f,  1.0f},
+        {10, 0,  0.0f,  0.0f,  1.0f},
+        {11, 0,  0.0f,  0.0f,  1.0f},
+        {12, 0,  0.0f,  0.0f,  1.0f},
+        {13, 0,  0.0f,  0.0f,  1.0f},
+        {14, 0,  0.0f,  0.0f,  1.0f},
+        {15, 0,  0.0f,  0.0f,  1.0f},
+        {16, 0,  0.0f,  0.0f,  1.0f},
+        {17, 0,  0.0f,  0.0f,  1.0f},
+        {18, 0,  0.0f,  0.0f,  1.0f},
+        {19, 0,  0.0f,  0.0f,  1.0f},
     };
 
     // Define neighbor relationships

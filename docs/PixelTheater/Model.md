@@ -19,9 +19,11 @@ The model represents physical LEDs in two ways:
 Consider a face that has 20 LEDs, on a model with 8 faces. Indexing from the model is from 0..159. But each face has its own indexing from 0..19. Therefore:
 
 ```cpp
-model.leds[3] == model.faces[0].leds[3]
-model.leds[47] == model.faces[2].leds[7]
-model.leds[159] == model.faces[7].leds[19]
+auto faces = model.faces();
+
+model.leds[3] == faces[0].leds[3]
+model.leds[47] == faces[2].leds[7]
+model.leds[159] == faces[7].leds[19]
 ```
 
 ### Storage and Indexing
@@ -98,7 +100,7 @@ Different animation styles access LEDs differently:
 
 ```cpp
 // Fill all LEDs blue
-model.leds.fill(CRGB::Blue);
+model.leds().fill(CRGB::Blue);
 ```
 
 2. Geometric animations (height, distance):
@@ -151,7 +153,7 @@ Collections are accessed in two ways:
 
 1. Direct element access:
    - model.leds[i] = CRGB::Red
-   - model.faces[0].leds[0] = CRGB::Red
+   - model.faces()[0].leds[0] = CRGB::Red
 
 2. Collection operations:
    - model.leds().fill(CRGB::Blue)
