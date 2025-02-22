@@ -15,6 +15,8 @@ namespace Limits {
     static constexpr size_t MAX_LEDS_PER_REGION = 32;
     static constexpr size_t MAX_LEDS_PER_FACE = 128;
     static constexpr size_t MAX_RINGS_PER_FACE = 8;
+    static constexpr size_t MAX_EDGES_PER_FACE = 5;
+    static constexpr size_t MAX_REGIONS_PER_FACE = 1 + MAX_RINGS_PER_FACE + MAX_EDGES_PER_FACE;
     
     // Absolute hardware limits for validation
     static constexpr size_t ABSOLUTE_MAX_LEDS = 10000;    // Sanity check

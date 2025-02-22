@@ -1,0 +1,81 @@
+---
+description: 
+globs: 
+---
+
+# PixelTheater Library Syntax Rules
+
+## Type Standards
+
+1. **LED Indexing**
+- Use `uint16_t` for all LED indices (local and global)
+- Use `uint16_t` for LED counts and sizes
+- Use `uint16_t` for face-local indices in LED groups
+
+2. **Other Types**
+- Use `uint8_t` for face indices (we rarely have >255 faces)
+- Use `float` for coordinates and distances
+- Use `size_t` only for STL container operations
+
+### Syntax Rules and Principles
+
+1. **FastLED-Style Direct Access** (using `[]`)
+```cpp
+model.leds[42] = CRGB::Blue;            // Direct LED access
+model.leds[42].fadeToBlackBy(128);      // FastLED operations
+face.leds[3] = CRGB::Red;                  // Face-local LED access
+face.ledGroup("name")[0] = CRGB::Green;     // Group LED access
+```
+
+2. **Collection Operations** (using methods)
+```cpp
+model.faces();   // all Face objects in order
+model.points();   
+uint16_t count = model.points().size();       // Get size
+```
+
+3. **Iteration Patterns**
+```cpp
+// Range-based for loops
+for(CRGB& led : model.leds) { ... }     // All LEDs
+for(const Point& p : model.points) { ... } // All points
+for(uint16_t idx : ledGroup) { ... }      // Group indices
+```
+
+4. **Index Space Rules**
+- Model uses global indices (0 to LED_COUNT-1)
+- Faces use local indices (0 to face.num_leds-1)
+- LED Groups use local indices relative to their face
+- Use `face.led_offset()` to convert local to global
+
+5. **Access Pattern Rules**
+- Use `[]` for single LED access and FastLED operations
+- Use methods for collection operations (fill, etc)
+- Use range-based for loops for iteration
+- Never mix local/global indices without explicit conversion
+
+6. **Size and Bounds**
+- All array access is bounds-checked
+- Out of range access returns last valid element
+- Empty collections are handled safely
+- Size is always available via `.size()`
+
+7. **Point Access**
+```cpp
+model.points[42]                        // Global point access
+model.points[face.led_offset() + idx]   // Local to global conversion
+```
+
+8. **Group Access**
+```cpp
+face.ledGroup("name")                   // Get LED group by name
+face.ledGroup("name")[0]                // Access first LED in group
+```
+
+The key principles are:
+1. FastLED compatibility for direct LED manipulation
+2. Clear distinction between single-element and collection operations
+3. Consistent use of local indices within faces and groups
+4. Explicit conversion between local and global spaces
+5. Safe bounds checking and error handling
+6. Simple, intuitive iteration patterns

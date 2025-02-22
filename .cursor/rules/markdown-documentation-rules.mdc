@@ -5,7 +5,7 @@ globs: *.md
 
 # Markdown Rules
 
-- Ensure to add blank lines before and after all headers and lists
+- Ensure to add blank lines before and after headers and lists
 - Always specify a language for code blocks 
 - Avoid adding duplicated content
 - Be factual and casual with writing style. Don't add "features" or "benefits" to documentation that attempt to sell the solution

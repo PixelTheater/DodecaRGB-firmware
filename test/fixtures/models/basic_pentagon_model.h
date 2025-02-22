@@ -1,7 +1,6 @@
 #pragma once
 #include "PixelTheater/model_def.h"
 #include "PixelTheater/model/face_type.h"
-#include "PixelTheater/model/region_type.h"
 
 namespace PixelTheater {
 namespace Fixtures {
@@ -21,9 +20,6 @@ struct BasicPentagonModel : public ModelDefinition<20, 1> {
             .type = FaceType::Pentagon,
             .num_leds = 20,
             .edge_length_mm = 50.0f,
-            .num_centers = 1,
-            .num_rings = 3,
-            .num_edges = 5
         }
     };
 
@@ -52,16 +48,6 @@ struct BasicPentagonModel : public ModelDefinition<20, 1> {
         {.id = 8, .face_id = 0, .x = -8.09f, .y = 5.88f, .z = 0.0f},
         {.id = 9, .face_id = 0, .x = -8.09f, .y = -5.88f, .z = 0.0f},
         {.id = 10, .face_id = 0, .x = 3.09f, .y = -9.51f, .z = 0.0f},
-    };
-
-    // Region definitions
-    static constexpr RegionData REGIONS[] = {
-        // Face 0 regions
-        {0, 0, RegionType::Center, 1, {0}},                    // Center    
-        {1, 0, RegionType::Ring, 5, {1, 2, 3, 4, 5}},         // Ring 1
-        {2, 0, RegionType::Edge, 5, {6, 7, 8, 9, 10}},        // Edge 1
-        {3, 0, RegionType::Edge, 5, {11, 12, 13, 14, 15}},    // Edge 2
-        {4, 0, RegionType::Edge, 4, {16, 17, 18, 19}},        // Edge 3
     };
 
     // Define neighbor relationships

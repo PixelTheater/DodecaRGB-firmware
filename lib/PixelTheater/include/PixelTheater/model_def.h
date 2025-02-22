@@ -1,6 +1,5 @@
 #pragma once
 #include "model/face_type.h"
-#include "model/region_type.h"
 #include "limits.h"  // For MAX_LEDS_PER_REGION
 #include <array>
 
@@ -18,9 +17,6 @@ struct ModelDefinition {
         FaceType type;
         uint16_t num_leds;
         float edge_length_mm;
-        uint8_t num_centers;
-        uint8_t num_rings;
-        uint8_t num_edges;
     };
 
     // Face instance data
@@ -37,18 +33,6 @@ struct ModelDefinition {
         uint8_t face_id;
         float x, y, z;
     };
-
-    // Region definition
-    struct RegionData {
-        uint8_t id;
-        uint8_t face_id;
-        RegionType type;
-        uint8_t led_count;  // Explicit count
-        std::array<uint16_t, 32> led_ids;
-    };
-
-    // Add constexpr size helper
-    static constexpr size_t REGION_LED_ARRAY_SIZE = 32;  // Size of led_ids array
 
     // Point neighbor data
     struct NeighborData {
