@@ -1,153 +1,222 @@
 # Model Initialization and Use
 
-A geometric model with LED mapping. Models can be generated from hardware specifications (YAML + pick-and-place files) using the utility scripts.
+In PixelTheater, a **Model** represents a physical shape made from PCBs, along with all of the geometry data and LED points and region mappings. Models are generated from YAML configuration files and hardware specifications (EDA pick-and-place files) using the utility scripts. The result is a compete set of 3d point and geometric data in a C++ header file that can be used to animate the model. This workflow allows many model shapes and sizes to be designed and remixed while maintaining support for [Scene](Scene.md) animations.
 
 ## Core Relationships
 
-The `Model` contains a collection of `Face` objects and `Led` objects.
+The `Model` contains collections of `Face` objects, `CRGB` colors, and `Point` coordinates.
 
-Each `Face` represents a physical surface and contains:
+Each `Face` represents a physical surface. There can be different types of faces on the same model, so every model defines one or more `FaceType` objects. 
 
-- Multiple `Region` objects, grouping LEDs into logical areas (center, rings, edges).
-- A `center` region, which is a single `Region` representing the central LEDs.
-- `rings`: a collection of `Region` objects representing concentric rings of LEDs.
-- `edges`: a collection of `Region` objects representing the edges of the face.
-Each `Region` contains:
-- An `LedSpan` representing the LEDs within that region.
-- Geometric information like a center `Point`.
-  
-## Model Classes
+for each `FaceType`, users can optionally define mutiple named `LedGroup` arrays, which are simple lists of LEDs numbers that define patterns or groups of LEDs on a face for animations. These will be avilable on each face instance.
+
+## Understanding LEDs and Points
+
+The model represents physical LEDs in two ways:
+1. As RGB colors that can be manipulated (leds)
+2. As 3D coordinates with relationships (points)
+
+Consider a face that has 20 LEDs, on a model with 8 faces. Indexing from the model is from 0..159. But each face has its own indexing from 0..19. Therefore:
+
+```cpp
+model.leds[3] == model.faces[0].leds[3]
+model.leds[47] == model.faces[2].leds[7]
+model.leds[159] == model.faces[7].leds[19]
+```
+
+### Storage and Indexing
+
+The Model maintains two parallel arrays that represent each physical LED in two ways:
+
+```cpp
+std::array<CRGB, ModelDef::LED_COUNT> _leds_data;    // LED colors (FastLED compatible)
+std::array<Point, ModelDef::LED_COUNT> _points;       // 3D coordinates and relationships
+```
+
+These arrays are always synchronized:
+- Same size (defined by ModelDef::LED_COUNT)
+- Same indexing (leds[i] and points[i] refer to same physical LED)
+- Zero-based indexing (required for FastLED and hardware addressing)
+- Direct array access for FastLED compatibility
+- Point data for geometric calculations and relationships
+
+The key difference is that while the storage remains the same, the access patterns have evolved:
+```cpp
+// Direct LED access (FastLED compatible)
+CRGB& led = model.leds[42];
+led.fadeToBlackBy(128);
+
+// Corresponding point access
+const Point& point = model.points[42];
+float height = point.y();
+```
+
+### Access Patterns
+
+The model provides three main patterns for working with LEDs:
+
+1. Direct LED Access (FastLED Compatible):
+
+```cpp
+// Get LED reference for direct manipulation
+CRGB& led = model.leds[42];
+led = CRGB::Blue;
+led.fadeToBlackBy(128);
+
+// Or use inline operations
+model.leds[42] = CRGB::Red;
+model.leds[42].nscale8(192);
+
+// Point access for coordinates
+const Point& point = model.points[42];
+float x = point.x();
+```
+
+2. Collection Operations:
+
+```cpp
+// Fill operations
+model.leds.fill(CRGB::Blue);
+
+// Iteration with references
+for(CRGB& led : model.leds) {
+    led.fadeToBlackBy(128);
+}
+
+// Point iteration
+for(const Point& point : model.points) {
+    float height = point.y();
+    model.leds[point.id()].setHue(height * 255);
+}
+```
+
+### Animation Patterns
+
+Different animation styles access LEDs differently:
+
+1. LED-based animations (colors, patterns):
+
+```cpp
+// Fill all LEDs blue
+model.leds.fill(CRGB::Blue);
+```
+
+2. Geometric animations (height, distance):
+
+```cpp
+// Work with coordinates
+for(size_t i = 0; i < model.leds().size(); i++) {
+    float height = model.points[i].y();
+    uint8_t brightness = map(height, -1, 1, 0, 255);
+    model.leds[i] = CRGB(255-brightness, brightness, brightness/2);
+}
+
+// Or using range-based for with points
+for(const auto& point : model.points()) {
+    // Create a color based on distance from origin
+    float distance = sqrt(point.x() * point.x() + point.y() * point.y() + point.z() * point.z());
+    model.leds[point.id()] = CRGB::FromHSV(distance * 255, 255, 255);
+}
+```
+
+3. LedGroup-based animations (user-defined groups):
+
+```cpp
+// Fill each ring red
+for(auto& ring : model.led_groups("ring0", "ring1", "ring2")) {
+    ring.fill(CRGB::Red);
+}
+// define shapes or symbols, for example counting from 1-3 using led_groups
+for (int i=0; i<3; i++) {
+    model.led_groups("digit_" + String(i)).fill(CRGB::Red);
+}   
+```
+
+## Model API
+
+The model interface is designed to allow inspection of the overall shape and its components, as well as manipulation of the LEDs. Many methods are chainable, and return the object they are called on, allowing for a fluid syntax.
 
 ### Core Classes
 
 - `Model` - The main model class that implements IModel interface
-- `model_internal.h` - Generated model macros for configuration via generated code
-
-### Geometry Classes
-
+  - `model_internal.h` - Generated model macros for configuration via generated code
 - `Face` - A physical face of the model with its LEDs and layout
-- `FaceType` - Enum defining types of faces (Pentagon, Triangle, etc)
-- `Point` - A 3D point with LED index and face assignment
-
-### Region Classes
-
-- `Region` - Groups of LEDs on a face (center, rings, edges)
-- `RegionType` - Enum defining types of LED groups (Center, Ring, Edge)
-- `Led` - A aggregate LED object that provides access to a CRGB color and Point object
-- `LedSpan` - An array of non-contiguous LEDs that form a region
-
-
-## Model API
-
-The interface is designed to allow inspection of the model and its components, as well as manipulation of the LEDs. Many methods are chainable, and return the object they are called on, allowing for a fluid syntax. Collections are returned as `ArrayView` types, and can be iterated over or indexed. By convention, a matching `operator[]` method is offered for indexing each collection type:
-
-- `model.faces()  // collection of all faces`
-- `model.faces[0] // single face`
+  - `FaceType` - Enum defining types of faces (Pentagon, Triangle, etc)
+  - `LedGroup` - A collection of LEDs on a face, defined by a list of LED indices
+  - `Point` - A 3D point with LED index and face assignment
 
 ### Collection Access
 
-Collections are returned as `array_view` types which provide:
+Collections are accessed in two ways:
 
-- Bounds checking (returns first element for out-of-range access)
-- Range-based for loop support
-- Both const and non-const access where appropriate
-- No memory allocation or copying
+1. Direct element access:
+   - model.leds[i] = CRGB::Red
+   - model.faces[0].leds[0] = CRGB::Red
 
-This is very similar to the `std::span` type, but is specialized for the model classes and provides bounds checking and type safety, as well as cross-platform compatibility with hardware environments that don't support the C++20 standard library.
+2. Collection operations:
+   - model.leds().fill(CRGB::Blue)
+   - model.faces().size()
+
+3. Led Groups (lists of led indices):
+   - model.led_groups("ring0", "ring1", "ring2")
+   - model.led_groups("middle")
+
+Collections are returned as `ArrayView` types, and can be iterated over or indexed. By convention, a matching `operator[]` method is offered for indexing each collection type:
+
+- `model.faces()`  // collection of all faces
+- `auto& face = model.faces[0]`  // single face
+
+This works in a similar way to the `std::span`, but is specialized for the model classes and provides bounds checking and type safety, as well as cross-platform compatibility with hardware environments that don't support the C++20 standard library (like Teensy, ESP32, etc).
 
 ### API Methods
 
-Metadata:
+### Model Metadata
 
 - `model.name` - Name of the model
 - `model.version` - Version of the model
 - `model.description` - Description of the model
 
-### Collections:
+### Model Collections
 
 - `model.faces()` - collection of all faces (in order of definition)
-- `model.regions()` - collection of all regions
-- `model.edges()` - collection of all edges
-- `model.rings()` - collection of all rings
-- `model.centers()` - collection of all center regions
-- `model.leds()` - collection of all LEDs
-- `model.points()` - collection of all points
+- `model.leds()` - collection of all LEDs as CRGB colors
+- `model.points()` - collection of all Points
 
 ### Faces
 
 given `auto face = model.faces[0];`
 
-- `face.edges()` - collection of all edges on the face
-- `face.rings()` - collection of all rings on the face
-- `face.center()` - Central region of the face
-- `face.midpoint()` - Geometric center point of the face
 - `face.leds()` - collection of all LEDs on the face
-- `face.regions()` - collection of all regions on the face
+- `face.led_offset()` - the global index of the first LED on the face
+- `face.points()` - collection of all points on the face
+- `face.led_groups()` - collection of all led groups on the face (in order of definition)
 
-### Region Components
-
-given `auto edge = face.edges[0];`
-
-- `edge.leds` - collection of all LEDs on the edge
-- `edge.midpoint()` - Geometric center point of the edge
-- `edge.normal` - Normal vector to the edge plane
-- `edge.face` - Face that the edge belongs to
-- `edge.type` - The region type (e.g. Edge)
-
-The `leds` property is an LedSpan instance. It can be accessed as an array or iterated over, or inspected to find the properties of the region. As it contains CRGB objects, and can be manipulated like a FastLED array.
 
 ### Syntax Examples
 
 We aim to support a clean and easy style of syntax for accessing regionsand manipulating leds on the model.
 
 ```cpp
-// Direct LED access and index operator, without needing to type model.leds() each time
-auto model = stage.model;
+// Direct LED access and index operator
 model.leds[2];                          // index getter, Led type
-model.leds[42] = CRGB::Blue;            // index setter, void
-model.leds[42].color = CRGB::Blue;      // set color, CRGB type
+model.leds[42] = CRGB::Blue;            // Set LED color directly
 model.leds().size();                    // optional getter syntax, size_t
 
-// Face and region access
-auto& face = model.faces[3];            // get face by index (Face instance)
-auto& ring = face.rings[2];             // get ring by index (Region instance, type FaceType::RING)
-
-// LED batch manipulation
-face.rings[2].leds.fill(CRGB::Red);       // Fill third ring
-Face f = face.center();                   // get center region (Region of type FaceType::CENTER)
-f.center().leds.fill(CRGB::White);        // Fill center LED
-
 // Point to LED relationships
-float x = model.leds[42].point().x();     // get x coordinate of LED 42
-Point p = face.center().point();          // Get face center point (Point instance)
-auto nearby = model.findNearby(p, 0.5f);  // find all leds within 0.5 radius
-nearby.fill(CRGB::Blue);
-
-// Iteration with geometry
-for(auto& face : model.faces) {
-    // Color faces based on height
-    float y = face.center().y();
-    uint8_t hue = map(y, -50, 50, 0, 255);
-    face.leds().fill(CHSV(hue, 255, 255));
-    
-    // Fade rings by index
-    for(int r = 0; r < face.rings().size(); r++) {
-        face.rings[r].leds.
-            .fill(CHSV(hue, 255, 255))
-            .fadeToBlackBy(r * 32);  // Outer rings darker
-    }
+float x = model.points[42].x();           // Get x coordinate of LED 42
+auto& center = face.led_groups("center");
+Point p = model.points[center[0]+face.led_offset()];    // middle Point on the face
+for(const auto& id : model.findNearby(p, 0.5f)) {      // find all leds within 0.5 radius
+    model.leds[id] = CRGB::Blue;
 }
-```
 
-The Led class provides a flexible interface with FastLED style assignment and chaining. This allows inspection of properties like the led index and point position:
-
-```cpp
-auto& led = model.leds[0];
-led.index; // 0
-led.point().x(); // float, x coordinate
-led.point().normal(); // Vector3, normal vector to the face
-Point p2 = new Point(0.3, 0.6, 0.2);
-led.point().distanceTo(p2); // distance to another point
+// Iterate faces
+for(size_t i = 0; i < model.faces().size(); i++) {
+    auto& face = model.faces[i];
+    // fill different color for each face
+    CHSV hsv = CHSV(i * 255 / model.faces().size(), 255, 255);
+    face.leds().fill(hsv);
+}
 ```
 
 All array access and methods should be bounds-checked and not crash on invalid inputs:
@@ -156,24 +225,6 @@ All array access and methods should be bounds-checked and not crash on invalid i
 - Invalid geometric queries return zero/empty results
 - Color operations on empty spans are safely ignored
 - Warnings are logged to the console when invalid operations are attempted
-
-### Generated Model Files
-
-Models are organized in self-contained folders:
-
-```cpp
-// Model folder structure:
-src/
-  models/
-    dodecav2r1/             # Each model in its own folder
-      README.md             # Model user documentation
-      model.cpp             # **Generated data** (using ModelDefinition struct)
-      model.yaml            # Model definition
-      pcb/                  # PCB files
-        pentagon.csv        # Pick and place file
-```
-
-The initialization code uses this data to implement the model interface. The generated files are focused purely on the model-specific data, while the API implementation lives in the core library.
 
 ### Setup and Configuration in main.cpp
 
@@ -196,7 +247,7 @@ void setup() {
 
     // startup: Set the brightness and fill the LEDs with a color
     stage.brightness(128);
-    stage.leds.fill(CRGB::Green);
+    stage.leds().fill(CRGB::Green);
     stage.update();
     stage.delay(500);
 
@@ -209,6 +260,8 @@ void loop() {
     stage.update();
 }
 ```
+
+## Model Definition and Generation
 
 ### YAML Definition
 
@@ -224,13 +277,14 @@ description: "Sample model for testing"
 # Face type definitions
 face_types:          # most models will have a single face type, but some may have multiple
   - small_pentagon:
-      face_type: Pentagon
-      num_leds: 104
-      edge_length_mm: 50.0
-      regions:
-        centers: 1
-        rings: 3
-        edges: 5
+        face_type: Pentagon
+        num_leds: 104
+        edge_length_mm: 50.0
+        led_groups:
+            # All indices are local to face
+            middle: [0]
+            ring0: [1, 2, 3, 4, 5]
+            shape: [6, 7, 8, 16, 17, 18]
 
 # Face instances, all conform to face_types. rotation is important for PCB assembly.
 faces:
@@ -243,12 +297,31 @@ faces:
   - id: 2
     type: small_pentagon
     rotation: 1
+    ## ... etc
     
 # LED definitions - all points are generated from the pnp file(s), one for each face type.
 led_placement:
   - face_type: small_pentagon
     pnp_file: "pnp-files/dodecav2r1.csv"
 ```
+
+### Model File Structure
+
+Models are organized in self-contained folders:
+
+```cpp
+// Model folder structure:
+src/
+  models/
+    dodecav2r1/             # Each model in its own folder
+      README.md             # Model user documentation
+      model.cpp             # **Generated data** (using ModelDefinition struct)
+      model.yaml            # Model definition
+      pcb/                  # PCB files
+        pentagon.csv        # Pick and place file
+```
+
+The initialization code uses this data to implement the model interface. The generated files are focused purely on the model-specific data, while the API implementation lives in the core library.
 
 ### Generation Process
 
@@ -257,8 +330,7 @@ Python generator validates YAML:
 - No required values or sections are missing
 - Face IDs are unique and sequential (0..N-1)
 - LED IDs are unique and sequential (0..N-1)
-- Region LED lists reference valid LED IDs
-- Face type and region counts match declarations
+- LedGroups indices are valid
 
 The generator creates C++ model.h file which is based on the ModelDefinition template. It's a simple struct and some constants that are used to define the data for the model.
 
@@ -299,10 +371,17 @@ struct ModelDefinition {
         FaceType type;
         uint16_t num_leds;
         float edge_length_mm;
-        uint8_t num_centers;
-        uint8_t num_rings;
-        uint8_t num_edges;
     };
+
+    // Led group data
+    struct LedGroupData {
+        uint8_t id;
+        uint16_t num_leds;
+        const char* name[16];
+        FaceType type;
+        uint16_t led_ids[MAX_LEDS_PER_REGION];
+    };
+
 
     // Face instance data
     struct FaceData {
@@ -310,23 +389,6 @@ struct ModelDefinition {
         uint8_t type_id;
         uint8_t rotation;
         float x, y, z;  // Position (normal calculated from this)
-    };
-
-    // Region type constants  
-    struct RegionTypes {
-        static constexpr uint8_t CENTER = 0;
-        static constexpr uint8_t RING = 1;
-        static constexpr uint8_t EDGE = 2;
-        static constexpr uint8_t WEDGE = 3;
-        static constexpr uint8_t PATCH = 4;
-    };
-
-    // Region definition
-    struct RegionData {
-        uint8_t id;
-        uint8_t face_id;
-        RegionType type;
-        uint16_t led_ids[MAX_LEDS_PER_REGION];
     };
 
     // Point geometry
@@ -350,12 +412,6 @@ struct ModelDefinition {
 };
 ```
 
-Then models can use these constants by including the generated model.h file.
-
-- All generated data for points, regions, and faces is stored in the ModelDefinition struct.
-- Regions belong to a Face, and regions in the ModelDefinition have a face_id.
-- Every Point belongs to a face, as points have a defined face_id.
-
 ### Generated Model.h
 
 ```cpp
@@ -371,7 +427,6 @@ struct ModelDefinition {
     // Generated data
     static constexpr FaceTypeData face_types[FACE_TYPES_COUNT] = { ... };
     static constexpr FaceData faces[FACE_COUNT] = { ... };
-    static constexpr RegionData regions[REGION_COUNT] = { ... };
     static constexpr NeighborData neighbors[POINT_COUNT] = { ... };
     static constexpr PointData points[LED_COUNT] = { ... };
 };
@@ -381,25 +436,34 @@ The Model class includes this data at compile-time and provides runtime access t
 
 ### Model Definition Requirements
 
-The model must include metadata, and define at least one face type, and at least one face instance. Coordinates in a model are based on a unit sphere, with the origin at the center. All faces are assumed to be tangent to the origin. 
+The model must include metadata, and define at least one face type, and at least one face instance. Coordinates in a model are based on a unit sphere, with the origin at the center. All faces are assumed to be tangent to the origin.
 
-Each face must have a minimum region structure defined for proper model operation:
+Each face is assumed to have edges of equal length, defined in millimeters. This is helpful for calculating led density and real-world size of the model.
 
-1. Center Region (Required)
-   - Single center point for geometric calculations
-   - Reference point for face orientation, ised to establish face normal vectors
+### Index Spaces
 
-2. Ring Regions (Required)
-   - Concentric rings around center allow orientation-independent animations
-   - Helps to understand the overall resolution of the model (more rings = higher resolution)
-   - Enable systematic LED testing patterns, used for hardware testing and validation
+The implementation maintains two distinct index spaces:
 
-3. Edge Regions (Required)
-   - Define face boundaries
-   - Used for edge-based animations
-   - Essential for verifying PCB rotation
-   - Valuable feedback during assembly and testing
-   - Number of edges is determined by the face type, and is defined in the FaceTypeData struct.
+1. **Global Indices** (0 to LED_COUNT-1)
+- Used by Model for LED and Point arrays
+- Required for FastLED compatibility
+- Used for hardware addressing
 
-Every LED on a face must be a member of at least one region and define a point. Neighbors are optional, but recommended for more complex animations. If they are not present, some animations may not work properly.
+2. **Local Indices** (0 to face.num_leds-1)
+- Used within Faces and LedGroups
+- Makes face-based animations simpler
+- Preserves PCB LED sequences
 
+Example:
+
+```cpp
+// Global space (model level)
+model.leds(42) = CRGB::Blue;
+
+// Local space (face level)
+face.leds(3) = CRGB::Red;  // Local index 3
+
+// Converting between spaces
+auto i = face.led_groups("shape")[0];
+size_t global_idx = face.led_offset() + i;
+```

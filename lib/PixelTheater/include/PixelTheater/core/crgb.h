@@ -6,7 +6,6 @@ namespace PixelTheater {
 
 class CRGB {
 public:
-public:
     union {
         struct {
             union {
@@ -26,8 +25,8 @@ public:
     };
 
     // Constructors
-    CRGB() : r(0), g(0), b(0) {}
-    CRGB(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
+    constexpr CRGB() : r(0), g(0), b(0) {}
+    constexpr CRGB(uint8_t r_, uint8_t g_, uint8_t b_) : r(r_), g(g_), b(b_) {}
     CRGB(uint32_t colorcode) {
         r = (colorcode >> 16) & 0xFF;
         g = (colorcode >> 8) & 0xFF;
@@ -127,7 +126,16 @@ public:
         return *this;
     }
 
-        // basic colors
+    // Comparison operators
+    bool operator==(const CRGB& rhs) const {
+        return r == rhs.r && g == rhs.g && b == rhs.b;
+    }
+
+    bool operator!=(const CRGB& rhs) const {
+        return !(*this == rhs);
+    }
+
+    // basic colors
     static const CRGB Black;
     static const CRGB White;
     static const CRGB Red;
@@ -282,5 +290,14 @@ public:
     static const CRGB FairyLight;
     static const CRGB FairyLightNCC;
 };
+
+// Common colors namespace
+namespace Colors {
+    extern const CRGB White;
+    extern const CRGB Red;
+    extern const CRGB Green;
+    extern const CRGB Blue;
+    extern const CRGB Black;
+}
 
 } // namespace PixelTheater 

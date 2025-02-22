@@ -1,7 +1,6 @@
 #pragma once
 #include "PixelTheater/model_def.h"
 #include "PixelTheater/model/face_type.h"
-#include "PixelTheater/model/region_type.h"
 
 namespace PixelTheater {
 namespace Fixtures {
@@ -19,10 +18,7 @@ struct RelationshipsTestModel : public ModelDefinition<12, 2> {  // 12 LEDs, 2 f
             .id = 0,
             .type = FaceType::Triangle,
             .num_leds = 6,        // 1 center + 3 ring + 2 edge
-            .edge_length_mm = 10.0f,
-            .num_centers = 1,
-            .num_rings = 1,
-            .num_edges = 2
+            .edge_length_mm = 10.0f
         }
     };
 
@@ -51,19 +47,6 @@ struct RelationshipsTestModel : public ModelDefinition<12, 2> {  // 12 LEDs, 2 f
         {11, 1,  -1.0f,  1.73f,-1.0f}   // Edge point 2
     };
 
-    // Regions - define center, ring, edges for each face
-    static constexpr RegionData REGIONS[] = {
-        // Face 0
-        {0, 0, RegionType::Center, 1, {0}},                // Center
-        {1, 0, RegionType::Ring,   3, {1, 2, 3}},         // Ring
-        {2, 0, RegionType::Edge,   2, {4, 5}},            // Edge
-
-        // Face 1
-        {3, 1, RegionType::Center, 1, {6}},               // Center
-        {4, 1, RegionType::Ring,   3, {7, 8, 9}},         // Ring
-        {5, 1, RegionType::Edge,   2, {10, 11}}           // Edge
-    };
-
     // Define neighbor relationships
     static constexpr NeighborData NEIGHBORS[] = {
         // Face 0 center neighbors
@@ -73,4 +56,4 @@ struct RelationshipsTestModel : public ModelDefinition<12, 2> {  // 12 LEDs, 2 f
     };
 };
 
-}} // namespace PixelTheater::Test
+}} // namespace PixelTheater::Fixtures
