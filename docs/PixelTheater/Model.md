@@ -19,11 +19,9 @@ The model represents physical LEDs in two ways:
 Consider a face that has 20 LEDs, on a model with 8 faces. Indexing from the model is from 0..159. But each face has its own indexing from 0..19. Therefore:
 
 ```cpp
-auto faces = model.faces();
-
-model.leds[3] == faces[0].leds[3]
-model.leds[47] == faces[2].leds[7]
-model.leds[159] == faces[7].leds[19]
+model.leds[3] == model.faces[0].leds[3]    // Same LED, different index space
+model.leds[47] == model.faces[2].leds[7]
+model.leds[159] == model.faces[7].leds[19]
 ```
 
 ### Storage and Indexing
@@ -68,10 +66,6 @@ led.fadeToBlackBy(128);
 // Or use inline operations
 model.leds[42] = CRGB::Red;
 model.leds[42].nscale8(192);
-
-// Point access for coordinates
-const Point& point = model.points[42];
-float x = point.x();
 ```
 
 2. Collection Operations:
@@ -100,14 +94,14 @@ Different animation styles access LEDs differently:
 
 ```cpp
 // Fill all LEDs blue
-model.leds().fill(CRGB::Blue);
+model.leds.fill(CRGB::Blue);
 ```
 
 2. Geometric animations (height, distance):
 
 ```cpp
 // Work with coordinates
-for(size_t i = 0; i < model.leds().size(); i++) {
+for(size_t i = 0; i < model.leds.size(); i++) {
     float height = model.points[i].y();
     uint8_t brightness = map(height, -1, 1, 0, 255);
     model.leds[i] = CRGB(255-brightness, brightness, brightness/2);
@@ -156,8 +150,8 @@ Collections are accessed in two ways:
    - model.faces()[0].leds[0] = CRGB::Red
 
 2. Collection operations:
-   - model.leds().fill(CRGB::Blue)
-   - model.faces().size()
+   - model.leds.fill(CRGB::Blue)
+   - model.faces.size()
 
 3. Led Groups (lists of led indices):
    - model.led_groups("ring0", "ring1", "ring2")
@@ -180,17 +174,17 @@ This works in a similar way to the `std::span`, but is specialized for the model
 
 ### Model Collections
 
-- `model.faces()` - collection of all faces (in order of definition)
-- `model.leds()` - collection of all LEDs as CRGB colors
-- `model.points()` - collection of all Points
+- `model.faces` - collection of all faces (in order of definition)
+- `model.leds` - collection of all LEDs as CRGB colors
+- `model.points` - collection of all Points
 
 ### Faces
 
 given `auto face = model.faces[0];`
 
-- `face.leds()` - collection of all LEDs on the face
+- `face.leds` - collection of all LEDs on the face
 - `face.led_offset()` - the global index of the first LED on the face
-- `face.points()` - collection of all points on the face
+- `face.points` - collection of all points on the face
 - `face.led_groups()` - collection of all led groups on the face (in order of definition)
 
 
@@ -202,7 +196,7 @@ We aim to support a clean and easy style of syntax for accessing regionsand mani
 // Direct LED access and index operator
 model.leds[2];                          // index getter, Led type
 model.leds[42] = CRGB::Blue;            // Set LED color directly
-model.leds().size();                    // optional getter syntax, size_t
+model.leds.size();                    // optional getter syntax, size_t
 
 // Point to LED relationships
 float x = model.points[42].x();           // Get x coordinate of LED 42
@@ -213,11 +207,11 @@ for(const auto& id : model.findNearby(p, 0.5f)) {      // find all leds within 0
 }
 
 // Iterate faces
-for(size_t i = 0; i < model.faces().size(); i++) {
+for(size_t i = 0; i < model.faces.size(); i++) {
     auto& face = model.faces[i];
     // fill different color for each face
-    CHSV hsv = CHSV(i * 255 / model.faces().size(), 255, 255);
-    face.leds().fill(hsv);
+    CHSV hsv = CHSV(i * 255 / model.faces.size(), 255, 255);
+    face.leds.fill(hsv);
 }
 ```
 
@@ -249,7 +243,7 @@ void setup() {
 
     // startup: Set the brightness and fill the LEDs with a color
     stage.brightness(128);
-    stage.leds().fill(CRGB::Green);
+    stage.leds.fill(CRGB::Green);
     stage.update();
     stage.delay(500);
 
@@ -460,10 +454,10 @@ Example:
 
 ```cpp
 // Global space (model level)
-model.leds(42) = CRGB::Blue;
+model.leds[42] = CRGB::Blue;
 
 // Local space (face level)
-face.leds(3) = CRGB::Red;  // Local index 3
+face.leds[3] = CRGB::Red;  // Local index 3
 
 // Converting between spaces
 auto i = face.led_groups("shape")[0];

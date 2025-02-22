@@ -16,12 +16,12 @@ TEST_SUITE("ModelDefinition") {
 
     TEST_CASE("fixture data validation") {
         // Verify our test fixture has valid data
-        CHECK(BasicPentagonModel::LED_COUNT == 20);
+        CHECK(BasicPentagonModel::LED_COUNT == 15);
         CHECK(BasicPentagonModel::FACE_COUNT == 3);
         
         // Check face type data
         CHECK(BasicPentagonModel::FACE_TYPES[0].type == FaceType::Pentagon);
-        CHECK(BasicPentagonModel::FACE_TYPES[0].num_leds == 20);
+        CHECK(BasicPentagonModel::FACE_TYPES[0].num_leds == 5);
         
         // Check face instance data
         CHECK(BasicPentagonModel::FACES[0].id == 0);
@@ -29,6 +29,6 @@ TEST_SUITE("ModelDefinition") {
         
         // Check point data consistency
         CHECK(BasicPentagonModel::POINTS[0].face_id == 0);  // First point on face 0
-        CHECK(BasicPentagonModel::POINTS[19].face_id == 0); // Last point on face 0
+        CHECK(BasicPentagonModel::POINTS[14].face_id == 2); // Last point on face 2
     }
 } 

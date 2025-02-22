@@ -32,21 +32,22 @@ public:
         _leds.fill(CRGB::Black);
 
         // Initialize faces
+        size_t led_offset = 0;  // Start at beginning of LED strip
         for(size_t i = 0; i < ModelDef::FACE_COUNT; i++) {
             const auto& face_data = _def.FACES[i];
             const auto& face_type = _def.FACE_TYPES[face_data.type_id];
             _faces[i] = Face(
                 face_type.type,
                 face_data.id,
-                face_type.num_leds * i,  // LED offset
-                face_type.num_leds,      // LED count
-                _leds.data()            // Pointer to LED array
+                led_offset,             // Current offset in LED strip
+                face_type.num_leds,     // Number of LEDs in this face
+                _leds.data()           // Pointer to start of LED strip
             );
+            led_offset += face_type.num_leds;  // Move offset to start of next face
         }
     }
 
-    // Direct LED access - matches Model.md
-    // example: model.leds[0] = CRGB::Red;
+    // LED array access
     struct Leds {
         std::array<CRGB, ModelDef::LED_COUNT>& _data;
         
@@ -62,16 +63,63 @@ public:
         void fill(const CRGB& color) {
             _data.fill(color);
         }
-    } leds{_leds};  // Direct member access
 
-    // Collection access for range-based for loops
-    std::array<Face, ModelDef::FACE_COUNT>& faces() { return _faces; }
-    const std::array<Face, ModelDef::FACE_COUNT>& faces() const { return _faces; }
+        // Add size() method
+        size_t size() const { return ModelDef::LED_COUNT; }
 
-    // Points still use method access since not shown in spec
-    std::array<Point, ModelDef::LED_COUNT>& points() { return _points; }
-    const std::array<Point, ModelDef::LED_COUNT>& points() const { return _points; }
-    
+        // Allow iteration
+        auto begin() { return _data.begin(); }
+        auto end() { return _data.end(); }
+        auto begin() const { return _data.begin(); }
+        auto end() const { return _data.end(); }
+    } leds{_leds};
+
+    // Point array access
+    struct Points {
+        std::array<Point, ModelDef::LED_COUNT>& _data;
+        
+        Point& operator[](size_t i) {
+            if (i >= ModelDef::LED_COUNT) i = ModelDef::LED_COUNT - 1;
+            return _data[i];
+        }
+        const Point& operator[](size_t i) const {
+            if (i >= ModelDef::LED_COUNT) i = ModelDef::LED_COUNT - 1;
+            return _data[i];
+        }
+
+        // Add size() method
+        size_t size() const { return ModelDef::LED_COUNT; }
+
+        // Allow iteration
+        auto begin() { return _data.begin(); }
+        auto end() { return _data.end(); }
+        auto begin() const { return _data.begin(); }
+        auto end() const { return _data.end(); }
+    } points{_points};
+
+    // Face array access
+    struct Faces {
+        std::array<Face, ModelDef::FACE_COUNT>& _data;
+        
+        Face& operator[](size_t i) {
+            if (i >= ModelDef::FACE_COUNT) i = ModelDef::FACE_COUNT - 1;
+            return _data[i];
+        }
+        const Face& operator[](size_t i) const {
+            if (i >= ModelDef::FACE_COUNT) i = ModelDef::FACE_COUNT - 1;
+            return _data[i];
+        }
+
+        // Add size() method
+        size_t size() const { return ModelDef::FACE_COUNT; }
+
+        // Allow iteration
+        auto begin() { return _data.begin(); }
+        auto end() { return _data.end(); }
+        auto begin() const { return _data.begin(); }
+        auto end() const { return _data.end(); }
+    } faces{_faces};
+
     // Size info
     static constexpr size_t led_count() { return ModelDef::LED_COUNT; }
     static constexpr size_t face_count() { return ModelDef::FACE_COUNT; }
