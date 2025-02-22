@@ -16,10 +16,10 @@ TEST_SUITE("Model - Basic Operations") {
         }
 
         // Check points were initialized correctly
-        CHECK(model.points()[0].face_id() == def.POINTS[0].face_id);
-        CHECK(model.points()[0].x() == def.POINTS[0].x);
-        CHECK(model.points()[0].y() == def.POINTS[0].y);
-        CHECK(model.points()[0].z() == def.POINTS[0].z);
+        CHECK(model.points[0].face_id() == def.POINTS[0].face_id);
+        CHECK(model.points[0].x() == def.POINTS[0].x);
+        CHECK(model.points[0].y() == def.POINTS[0].y);
+        CHECK(model.points[0].z() == def.POINTS[0].z);
     }
 
     TEST_CASE("LED direct access") {
