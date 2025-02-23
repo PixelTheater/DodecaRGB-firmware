@@ -86,45 +86,16 @@ for(const Point& point : model.points) {
 }
 ```
 
-### Animation Patterns
-
-Different animation styles access LEDs differently:
-
-1. LED-based animations (colors, patterns):
-
-```cpp
-// Fill all LEDs blue
-model.leds.fill(CRGB::Blue);
-```
-
-2. Geometric animations (height, distance):
-
-```cpp
-// Work with coordinates
-for(size_t i = 0; i < model.leds.size(); i++) {
-    float height = model.points[i].y();
-    uint8_t brightness = map(height, -1, 1, 0, 255);
-    model.leds[i] = CRGB(255-brightness, brightness, brightness/2);
-}
-
-// Or using range-based for with points
-for(const auto& point : model.points()) {
-    // Create a color based on distance from origin
-    float distance = sqrt(point.x() * point.x() + point.y() * point.y() + point.z() * point.z());
-    model.leds[point.id()] = CRGB::FromHSV(distance * 255, 255, 255);
-}
-```
-
 3. LedGroup-based animations (user-defined groups):
 
 ```cpp
 // Fill each ring red
-for(auto& ring : model.led_groups("ring0", "ring1", "ring2")) {
+for(auto& ring : model.groups("ring0", "ring1", "ring2")) {
     ring.fill(CRGB::Red);
 }
-// define shapes or symbols, for example counting from 1-3 using led_groups
+// define shapes or symbols, for example counting from 1-3 using groups
 for (int i=0; i<3; i++) {
-    model.led_groups("digit_" + String(i)).fill(CRGB::Red);
+    model.groups("digit_" + String(i)).fill(CRGB::Red);
 }   
 ```
 
@@ -146,16 +117,16 @@ The model interface is designed to allow inspection of the overall shape and its
 Collections are accessed in two ways:
 
 1. Direct element access:
-   - model.leds[i] = CRGB::Red
-   - model.faces()[0].leds[0] = CRGB::Red
+   - `model.leds[i] = CRGB::Red`
+   - `model.faces()[0].leds[0] = CRGB::Red`
 
 2. Collection operations:
-   - model.leds.fill(CRGB::Blue)
-   - model.faces.size()
+   - `model.leds.fill(CRGB::Blue)`
+   - `model.faces.size()`
 
 3. Led Groups (lists of led indices):
-   - model.led_groups("ring0", "ring1", "ring2")
-   - model.led_groups("middle")
+   - `model.groups("ring0")`
+   - `face.groups()`
 
 Collections are returned as `ArrayView` types, and can be iterated over or indexed. By convention, a matching `operator[]` method is offered for indexing each collection type:
 
@@ -185,7 +156,7 @@ given `auto face = model.faces[0];`
 - `face.leds` - collection of all LEDs on the face
 - `face.led_offset()` - the global index of the first LED on the face
 - `face.points` - collection of all points on the face
-- `face.led_groups()` - collection of all led groups on the face (in order of definition)
+- `face.groups()` - collection of all led groups on the face (in order of definition)
 
 
 ### Syntax Examples
@@ -200,7 +171,7 @@ model.leds.size();                    // optional getter syntax, size_t
 
 // Point to LED relationships
 float x = model.points[42].x();           // Get x coordinate of LED 42
-auto& center = face.led_groups("center");
+auto& center = face.groups("center");
 Point p = model.points[center[0]+face.led_offset()];    // middle Point on the face
 for(const auto& id : model.findNearby(p, 0.5f)) {      // find all leds within 0.5 radius
     model.leds[id] = CRGB::Blue;
@@ -276,7 +247,7 @@ face_types:          # most models will have a single face type, but some may ha
         face_type: Pentagon
         num_leds: 104
         edge_length_mm: 50.0
-        led_groups:
+        groups:
             # All indices are local to face
             middle: [0]
             ring0: [1, 2, 3, 4, 5]
@@ -459,7 +430,95 @@ model.leds[42] = CRGB::Blue;
 // Local space (face level)
 face.leds[3] = CRGB::Red;  // Local index 3
 
-// Converting between spaces
-auto i = face.led_groups("shape")[0];
-size_t global_idx = face.led_offset() + i;
+
+// Get global LED index and look up its point
+uint16_t global_idx = face.group["edge1"][i].id();
+const Point& p = model.points[global_idx];
+// do something with the point
 ```
+
+## LED Groups
+
+LedGroups provide a way to work with collections of LEDs as a single unit. They can be defined in the model configuration or created at runtime through operations on other groups.
+
+### Basic Usage
+
+LedGroups can be accessed at both model and face scope:
+
+```cpp
+// Face-local group access
+auto& center = model.faces[0].group("center");
+fill_solid(center, CRGB::Red);
+
+// Model-wide group access (gets all groups with name across faces)
+auto all_groups = model.groups();
+for(auto& group : all_groups) {
+}
+```
+
+### Working with Groups
+
+LedGroups support array-style indexing and iteration:
+
+```cpp
+// Direct LED access
+center[0] = CRGB::Red;  // Set first LED in group
+
+// Range-based iteration
+for(auto& led : ring) {
+    led = CRGB::Blue;
+}
+
+// FastLED operations work directly
+fill_solid(ring, CRGB::Green);
+fadeToBlackBy(edge, 128);
+```
+
+### Group Operations
+
+LedGroups can be combined using set operations:
+
+```cpp
+auto& ring = face.group("ring1");    // e.g. LEDs [1,2,3,4]
+auto& edge = face.group("edge");     // e.g. LEDs [2,3]
+
+// Union - all LEDs from both groups (unique)
+auto combined = ring + edge;         // LEDs [1,2,3,4]
+
+// Intersection - only LEDs in both groups
+auto shared = ring & edge;           // LEDs [2,3]
+
+// Difference - LEDs in first group but not second
+auto ring_only = ring - edge;        // LEDs [1,4]
+```
+
+These operations create new temporary groups that can be used for animations or further operations. All groups must be from the same model (they share the same LED array).
+
+### Pattern Composition
+
+The group operations can be used to compose complex patterns from simple building blocks at runtime. For example, with a 7-segment display defined in the model:
+
+```cpp
+static constexpr FaceTypeData FACE_TYPES[1] = {{
+    .groups = {
+        // Basic segments
+        { .name = "seg_a", .leds = {0, 1, 2} },    // Top
+        { .name = "seg_b", .leds = {3, 4} },       // Top right
+        { .name = "seg_c", .leds = {5, 6} },       // Bottom right
+        { .name = "seg_d", .leds = {7, 8, 9} },    // Bottom
+        { .name = "seg_e", .leds = {10, 11} },     // Bottom left
+        { .name = "seg_f", .leds = {12, 13} },     // Top left
+        { .name = "seg_g", .leds = {14, 15} },     // Middle
+    }
+}};
+```
+
+Scenes can compose digits by combining segments:
+
+```cpp
+// Create digit "7" from segments a + b + g + e + d
+auto seven = face.group("seg_a") + face.group("seg_b") + face.group("seg_c");
+fill_solid(seven, CRGB::Black);
+```
+
+By combining basic segments with group operations, animations can create complex patterns while maintaining efficient LED addressing.

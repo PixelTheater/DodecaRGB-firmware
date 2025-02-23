@@ -7,33 +7,38 @@ using namespace PixelTheater;
 TEST_CASE("FastLED Integration") {
     Serial.println("\n=== Testing FastLED Integration ===");
 
-    SUBCASE("Core CRGB") {
-        // Use FastLED's specific color constants
-        ::CRGB color = ::CHSV(HUE_RED, 255, 255);  // Explicitly use FastLED's CHSV
-        Serial.printf("FastLED HSV color: R=%d, G=%d, B=%d\n", 
-            color.r, color.g, color.b);
+    SUBCASE("Basic Color Operations") {
+        Serial.println("Testing basic color operations...");
+        ::CRGB color(255, 0, 0);  // Red
+        CHECK(color.r == 255);
+        CHECK(color.g == 0);
+        CHECK(color.b == 0);
+        Serial.printf("Color components check: R=%d, G=%d, B=%d\n", color.r, color.g, color.b);
+
+        // Test color scaling
+        color.nscale8(128);
+        CHECK(color.r == 128);
+        Serial.printf("Color scaling check: R=%d (expected 128)\n", color.r);
     }
 
-    SUBCASE("Color Helpers") {
-        // Use FastLED's specific palette features
-        CRGBPalette16 pal;  // Only exists in FastLED
-        fill_rainbow(pal, 16, 0, 16);
+    SUBCASE("Color Fill Operations") {
+        Serial.println("Testing color fill operations...");
+        ::CRGB leds[5];
+        fill_solid(leds, 5, ::CRGB::Blue);
         
-        ::CRGB color = ColorFromPalette(pal, 0);  // FastLED-specific
-        Serial.printf("Palette color: R=%d, G=%d, B=%d\n", 
-            color.r, color.g, color.b);
-    }
-
-    SUBCASE("FastLED Purity Test") {
-        // Use FastLED's specific math functions
-        ::CRGB color(255, 0, 0);
-        color.nscale8_video(128);  // FastLED-specific scaling
-        
-        // Use FastLED's specific operators
-        color |= ::CRGB(0, 255, 0);  // FastLED's operator overloading
-        
-        Serial.printf("After FastLED ops: R=%d, G=%d, B=%d\n", 
-            color.r, color.g, color.b);
+        bool all_correct = true;
+        for(int i = 0; i < 5; i++) {
+            CHECK(leds[i].b == 255);
+            CHECK(leds[i].r == 0);
+            CHECK(leds[i].g == 0);
+            if(leds[i].b != 255 || leds[i].r != 0 || leds[i].g != 0) {
+                all_correct = false;
+                Serial.printf("LED %d incorrect: R=%d, G=%d, B=%d\n", i, leds[i].r, leds[i].g, leds[i].b);
+            }
+        }
+        if(all_correct) {
+            Serial.println("All LEDs verified blue (0, 0, 255)");
+        }
     }
 
     Serial.println("FastLED tests complete!");
