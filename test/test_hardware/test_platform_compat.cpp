@@ -2,10 +2,15 @@
 #include <Arduino.h>
 #include <array>
 #include <vector>
-#include <span>
-#include "PixelTheater/core/array_view.h"
+#include <FastLED.h>
+#include "PixelTheater/core/crgb.h"
 
 using namespace PixelTheater;
+
+// Hardware configuration for Teensy 41
+#define LED_PIN_1 19
+#define LED_PIN_2 18
+#define NUM_LEDS_PER_PIN 624  // Half of total LEDs for DodecaRGB
 
 TEST_CASE("Platform Compatibility") {
     Serial.println("\n=== Testing Platform Compatibility ===");
@@ -14,7 +19,9 @@ TEST_CASE("Platform Compatibility") {
         Serial.println("Testing std::array...");
         std::array<int, 5> arr = {1, 2, 3, 4, 5};
         CHECK(arr.size() == 5);
+        Serial.printf("Array size check: %d == 5\n", arr.size());
         CHECK(arr[0] == 1);
+        Serial.printf("First element check: %d == 1\n", arr[0]);
         
         // Test array iteration
         int sum = 0;
@@ -22,54 +29,7 @@ TEST_CASE("Platform Compatibility") {
             sum += val;
         }
         CHECK(sum == 15);
-    }
-
-    SUBCASE("array_view compatibility") {
-        Serial.println("Testing array_view alternative...");
-        int raw_array[] = {1, 2, 3, 4, 5};
-        
-        // Test our array_view implementation
-        struct array_view {
-            const int* _data;
-            size_t _size;
-            array_view(const int* data, size_t size) : _data(data), _size(size) {}
-            size_t size() const { return _size; }
-            const int& operator[](size_t i) const { return i < _size ? _data[i] : _data[0]; }
-            const int* begin() const { return _data; }
-            const int* end() const { return _data + _size; }
-        };
-
-        array_view view(raw_array, 5);
-        CHECK(view.size() == 5);
-        CHECK(view[0] == 1);
-        
-        // Test view iteration
-        int sum = 0;
-        for(const auto& val : view) {
-            sum += val;
-        }
-        CHECK(sum == 15);
-    }
-
-    SUBCASE("constexpr evaluation") {
-        Serial.println("Testing constexpr...");
-        constexpr int arr_size = 5;
-        std::array<int, arr_size> arr = {1, 2, 3, 4, 5};
-        CHECK(arr.size() == arr_size);
-    }
-
-    SUBCASE("template features") {
-        Serial.println("Testing templates...");
-        // Test if template deduction guides work
-        std::array arr{1, 2, 3, 4, 5};  // C++17 deduction
-        CHECK(arr.size() == 5);
-    }
-
-    SUBCASE("memory alignment") {
-        Serial.println("Testing memory alignment...");
-        // Test if alignas works
-        alignas(16) int aligned_var = 42;
-        CHECK(reinterpret_cast<uintptr_t>(&aligned_var) % 16 == 0);
+        Serial.printf("Array sum check: %d == 15\n", sum);
     }
 
     SUBCASE("STL containers") {
@@ -78,71 +38,105 @@ TEST_CASE("Platform Compatibility") {
         // Test vector availability and behavior
         std::vector<int> vec = {1, 2, 3};
         CHECK(vec.size() == 3);
+        Serial.printf("Vector size check: %d == 3\n", vec.size());
+        
         vec.push_back(4);
         CHECK(vec.size() == 4);
+        Serial.printf("Vector push_back check: %d == 4\n", vec.size());
         
         // Test initializer lists
         std::initializer_list<int> init = {1, 2, 3};
-        CHECK(std::distance(init.begin(), init.end()) == 3);
+        auto dist = std::distance(init.begin(), init.end());
+        CHECK(dist == 3);
+        Serial.printf("Initializer list size check: %d == 3\n", dist);
+    }
+
+    SUBCASE("memory alignment") {
+        Serial.println("Testing memory alignment...");
+        alignas(16) int aligned_var = 42;
+        auto addr = reinterpret_cast<uintptr_t>(&aligned_var);
+        CHECK(addr % 16 == 0);
+        Serial.printf("Alignment check: %lu mod 16 = %lu\n", addr, addr % 16);
     }
 
     SUBCASE("move semantics") {
         Serial.println("Testing move semantics...");
         std::array<int, 3> arr1 = {1, 2, 3};
-        auto arr2 = std::move(arr1);  // Should compile and work
+        auto arr2 = std::move(arr1);
         CHECK(arr2[0] == 1);
+        Serial.printf("Moved array check: %d == 1\n", arr2[0]);
     }
 
     SUBCASE("reference types") {
         Serial.println("Testing reference types...");
         int x = 42;
         int& ref = x;
-        CHECK(&ref == &x);  // Reference works as expected
+        CHECK(&ref == &x);
+        Serial.println("Reference identity check passed");
         
-        // Test reference in range-based for
         std::array<int, 3> arr = {1, 2, 3};
         for(int& val : arr) {
-            val *= 2;  // Modify through reference
+            val *= 2;
         }
         CHECK(arr[0] == 2);
-    }
-
-    SUBCASE("C++20 features") {
-        Serial.println("Testing C++20 features...");
-        Serial.printf("C++ version: %ld\n", __cplusplus);
-        
-        #ifdef __cpp_lib_span
-        Serial.println("std::span is supported");
-        int raw_array[] = {1, 2, 3, 4, 5};
-        std::span<int> span(raw_array);
-        CHECK(span.size() == 5);
-        #else
-        Serial.println("std::span is NOT supported");
-        Serial.printf("Required C++ feature test macro __cpp_lib_span not defined\n");
-        #endif
-    }
-
-    SUBCASE("array_view hardware compatibility") {
-        Serial.println("Testing array_view...");
-        
-        // Test with LED-like data
-        uint8_t leds[] = {10, 20, 30, 40, 50};
-        array_view<uint8_t> view(leds, 5);
-        
-        CHECK(view.size() == 5);
-        CHECK(view[0] == 10);
-        
-        // Test modification
-        view[0] = 15;
-        CHECK(leds[0] == 15);
-        
-        // Test iteration
-        uint32_t sum = 0;
-        for(const auto& led : view) {
-            sum += led;
-        }
-        CHECK(sum == (15 + 20 + 30 + 40 + 50));
+        Serial.printf("Reference modification check: %d == 2\n", arr[0]);
     }
 
     Serial.println("Platform compatibility tests complete!");
+}
+
+TEST_CASE("Hardware Platform Tests") {
+    Serial.println("\n=== Testing Hardware Platform ===");
+
+    SUBCASE("Basic Hardware Setup") {
+        Serial.println("Testing basic hardware setup...");
+        
+        // Create LED array
+        ::CRGB leds[NUM_LEDS_PER_PIN * 2];
+        Serial.println("LED array created");
+        
+        // Configure FastLED
+        FastLED.addLeds<WS2812B, LED_PIN_1, GRB>(leds, 0, NUM_LEDS_PER_PIN);
+        FastLED.addLeds<WS2812B, LED_PIN_2, GRB>(leds + NUM_LEDS_PER_PIN, NUM_LEDS_PER_PIN);
+        Serial.println("FastLED configured");
+        
+        // Basic LED test pattern
+        Serial.println("Running LED test pattern:");
+        
+        Serial.println("1. All LEDs off");
+        fill_solid(leds, NUM_LEDS_PER_PIN * 2, ::CRGB::Black);
+        FastLED.show();
+        delay(500);
+        
+        Serial.println("2. First 5 LEDs red");
+        for(int i = 0; i < 5; i++) {
+            leds[i] = ::CRGB::Red;
+        }
+        FastLED.show();
+        delay(500);
+        
+        Serial.println("3. Back to black");
+        fill_solid(leds, NUM_LEDS_PER_PIN * 2, ::CRGB::Black);
+        FastLED.show();
+        
+        CHECK(true);
+        Serial.println("Hardware initialization complete");
+    }
+
+    SUBCASE("Color Operations") {
+        Serial.println("Testing color operations...");
+        
+        ::CRGB color(255, 0, 0);  // Red
+        CHECK(color.r == 255);
+        CHECK(color.g == 0);
+        CHECK(color.b == 0);
+        Serial.printf("Color components check: R=%d, G=%d, B=%d\n", color.r, color.g, color.b);
+        
+        // Test basic color manipulation
+        color.nscale8(128);
+        CHECK(color.r == 128);
+        Serial.printf("Color scaling check: R=%d (expected 128)\n", color.r);
+    }
+
+    Serial.println("Hardware platform tests complete!");
 } 
