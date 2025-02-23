@@ -8,11 +8,57 @@ version: 2.8.3
 
 Scenes are the main building blocks of PixelTheater. They define the animation, parameters, and other settings for a single animation.
 
-## [4.1] Scenes and Animations
+## [4.1] Creating and Using Scenes
+
+Scenes are created through the Stage's type-safe creation API:
+
+```cpp
+// In main.cpp or setup code
+auto* scene = stage.addScene<SpaceScene>();
+```
+
+The Stage manages the scene's lifecycle and memory. The returned pointer can be used to configure the scene if needed, but ownership remains with the Stage.
 
 ### What is a Scene?
 
 A Scene defines an animation written in C++ that runs on the teensy display (the "stage"). Scenes are called frequently (50fps+) to update the LEDs based on their parameters and internal state.
+
+A Scene:
+- Defines a classname (e.g. `FireworksScene`) and friendly name ("fireworks")
+- Automatically loads parameters from the generated `_params` file if present
+- Provides lifecycle methods (setup, tick, reset, status)
+- Provides helper methods like `settings[]` and parameter reflection
+- Exposes access to LEDs and hardware devices (buttons, sensors, accelerometer)
+
+Example Scene:
+```cpp
+class SpaceScene : public Scene {
+    void setup() override {
+        // Define parameters if not using YAML
+        param("speed", "ratio", 0.5f, "clamp");
+    }
+    
+    void tick() override {
+        // Get parameters
+        float speed = settings["speed"];
+        
+        // Update animation using Stage interface
+        auto* leds = _stage.leds();
+        auto face = _stage.model()->getFace(0);
+        
+        // Animate face LEDs
+        for (auto led_index : face.getLEDs()) {
+            leds[led_index] = CHSV(speed * 255, 255, 255);
+        }
+    }
+};
+```
+
+Key Features:
+- Automatic parameter management
+- Safe LED access through Stage
+- Model geometry helpers
+- Platform-agnostic animation code
 
 - defines the classname (`FireworksScene`) and friendly name ("fireworks") of the animation
 - will automatically load and include parameters from the generated `_params file
