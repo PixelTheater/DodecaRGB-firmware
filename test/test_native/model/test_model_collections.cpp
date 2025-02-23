@@ -6,20 +6,32 @@ using namespace PixelTheater;
 using namespace PixelTheater::Fixtures;
 
 TEST_SUITE("Model - Collections") {
-    TEST_CASE("LED collections") {
+    TEST_CASE("LED indexing and access") {
         BasicPentagonModel def;
         Model<BasicPentagonModel> model(def);
 
-        SUBCASE("fill operations") {
-            // Fill entire array
-            model.leds.fill(CRGB::Blue);
-            CHECK(model.leds[0] == CRGB::Blue);
+        SUBCASE("face-local to global indexing") {
+            model.leds[7] = CRGB::Green;
+            CHECK(model.faces[1].leds[2] == CRGB::Green);  // LED 7 is index 2 on face 1
 
-            // Fill a face
-            auto& face = model.faces[0];
-            face.leds.fill(CRGB::Red);
-            CHECK(face.leds[0] == CRGB::Red);
+            model.faces[2].leds[3] = CRGB::Blue;
+            CHECK(model.leds[13] == CRGB::Blue);  // LED 13 is index 3 on face 2
         }
+
+        SUBCASE("face boundaries") {
+            // Set each face a different color
+            for(size_t i = 0; i < model.face_count(); i++) {
+                fill_solid(model.faces[i].leds, CRGB(i * 50, 0, 0));  // Different red shades
+            }
+            // Check face boundaries are respected
+            CHECK(model.leds[4] != model.leds[5]);   // Face 0/1 boundary
+            CHECK(model.leds[9] != model.leds[10]);  // Face 1/2 boundary
+        }
+    }
+
+    TEST_CASE("LED collections") {
+        BasicPentagonModel def;
+        Model<BasicPentagonModel> model(def);
 
         SUBCASE("array access") {
             model.leds[0] = CRGB::Red;
@@ -57,7 +69,7 @@ TEST_SUITE("Model - Collections") {
 
         // Fill all LEDs in each face
         for(auto& face : model.faces) {
-            face.leds.fill(CRGB::Red);
+            fill_solid(face.leds, CRGB::Red);
         }
         CHECK(model.leds[0] == CRGB::Red);
     }
@@ -82,7 +94,7 @@ TEST_SUITE("Model - Collections") {
 
             // Face iteration
             for(auto& face : model.faces) {
-                face.leds.fill(CRGB::Red);
+                fill_solid(face.leds, CRGB::Red);
             }
             CHECK(model.leds[0] == CRGB::Red);
         }

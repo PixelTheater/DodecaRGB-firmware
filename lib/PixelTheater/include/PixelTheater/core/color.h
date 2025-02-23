@@ -7,50 +7,13 @@ namespace PixelTheater {
 
 // Forward declarations
 class CRGB;
-class CHSV;
 void hsv2rgb_rainbow(const CHSV& hsv, CRGB& rgb);
 CRGB blend(const CRGB& color1, const CRGB& color2, uint8_t blend_amount);
 
-class CHSV {
-public:
-    union {
-        struct {
-            union {
-                uint8_t h;
-                uint8_t hue;
-            };
-            union {
-                uint8_t s;
-                uint8_t sat;
-                uint8_t saturation;
-            };
-            union {
-                uint8_t v;
-                uint8_t val;
-                uint8_t value;
-            };
-        };
-        uint8_t raw[3];
-    };
-
-    // Constructors
-    CHSV() : h(0), s(0), v(0) {}
-    CHSV(uint8_t hue, uint8_t sat, uint8_t val) : h(hue), s(sat), v(val) {}
-
-    // Common HSV color points
-    static const uint8_t HUE_RED = 0;
-    static const uint8_t HUE_ORANGE = 32;
-    static const uint8_t HUE_YELLOW = 64;
-    static const uint8_t HUE_GREEN = 96;
-    static const uint8_t HUE_AQUA = 128;
-    static const uint8_t HUE_BLUE = 160;
-    static const uint8_t HUE_PURPLE = 192;
-    static const uint8_t HUE_PINK = 224;
-};
-
 // Helper function matching FastLED's blend8
 inline uint8_t blend8(uint8_t a, uint8_t b, uint8_t amountOfB) {
-    uint16_t result = (a * (255 - amountOfB) + b * amountOfB) + 128;
+    // Add 128 for proper rounding
+    uint16_t result = (a * (255 - amountOfB) + b * amountOfB + 128);
     return (result + (result >> 8)) >> 8;
 }
 
@@ -93,17 +56,51 @@ void hsv2rgb_spectrum(const CHSV& hsv, CRGB& rgb);
 void hsv2rgb_rainbow(const CHSV* hsv, CRGB* rgb, int count);
 void hsv2rgb_spectrum(const CHSV* hsv, CRGB* rgb, int count);
 
-// Automatic conversion operator
-inline CRGB operator|(const CHSV& hsv, const CRGB&) {
-    CRGB rgb;
-    hsv2rgb_rainbow(hsv, rgb);
-    return rgb;
+// Analysis functions
+inline uint8_t getAverageLight(const CRGB& color) {
+    return (color.r + color.g + color.b) / 3;
 }
 
-// Assignment operator for automatic conversion
-inline CRGB& operator%=(CRGB& rgb, const CHSV& hsv) {
-    hsv2rgb_rainbow(hsv, rgb);
-    return rgb;
+// Fading operations
+inline void fadeToBlackBy(CRGB& color, uint8_t amount) {
+    // Add 1 to handle rounding up
+    color.r = ((uint16_t)color.r * (256 - amount) + 128) >> 8;
+    color.g = ((uint16_t)color.g * (256 - amount) + 128) >> 8;
+    color.b = ((uint16_t)color.b * (256 - amount) + 128) >> 8;
+}
+
+inline void fadeLightBy(CRGB& color, uint8_t amount) {
+    fadeToBlackBy(color, amount);
+}
+
+inline void nscale8(CRGB& color, uint8_t scale) {
+    if (scale == 255) return;  // No change needed
+    if (scale == 0) {  // Fast path to black
+        color.r = color.g = color.b = 0;
+        return;
+    }
+    color.r = ((uint16_t)color.r * (1 + scale)) >> 8;
+    color.g = ((uint16_t)color.g * (1 + scale)) >> 8;
+    color.b = ((uint16_t)color.b * (1 + scale)) >> 8;
+}
+
+// Array fill operations
+void fill_solid(CRGB* leds, int numToFill, const CRGB& color);
+void fill_rainbow(CRGB* leds, int numToFill, uint8_t initialHue, uint8_t deltaHue = 5);
+void fill_gradient_RGB(CRGB* leds, uint16_t startpos, CRGB startcolor, 
+                      uint16_t endpos, CRGB endcolor);
+
+// Template array operations
+template<typename Range>
+void fill_solid(Range& leds, const CRGB& color) {
+    std::fill(std::begin(leds), std::end(leds), color);
+}
+
+// Deprecated template function
+template<typename Range>
+[[deprecated("Use fill_solid instead to match FastLED API")]]
+void fill(Range& leds, const CRGB& color) {
+    fill_solid(leds, color);
 }
 
 } // namespace PixelTheater 

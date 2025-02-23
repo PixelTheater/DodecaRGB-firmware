@@ -67,4 +67,15 @@ TEST_SUITE("Model - Face Operations") {
             CHECK(model.leds[face.led_offset()] == CRGB::Green);
         }
     }
+
+    TEST_CASE("face operations") {
+        BasicPentagonModel def;
+        Model<BasicPentagonModel> model(def);
+
+        // Fill all LEDs in each face
+        for(auto& face : model.faces) {
+            fill_solid(face.leds, CRGB::Red);
+        }
+        CHECK(model.leds[0] == CRGB::Red);
+    }
 } 

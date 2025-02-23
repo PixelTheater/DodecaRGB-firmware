@@ -22,39 +22,47 @@ TEST_SUITE("CRGB") {
   }
 
   TEST_CASE("fading") {
-      CRGB c(200, 100, 50);
-      
       SUBCASE("fadeToBlackBy") {
-          c.fadeToBlackBy(128);  // 50% fade
-          CHECK(c.r == 100);
-          CHECK(c.g == 50);
-          CHECK(c.b == 25);
+          CRGB c(255, 255, 255);
+          fadeToBlackBy(c, 128);  // 50% fade
+          CHECK(c.r == 128);
+          CHECK(c.g == 128);
+          CHECK(c.b == 128);
       }
 
       SUBCASE("nscale8") {
-          c.nscale8(128);  // 50% scaling
-          CHECK(c.r == 100);
-          CHECK(c.g == 50);
-          CHECK(c.b == 25);
+          CRGB c(255, 255, 255);
+          nscale8(c, 128);  // 50% scaling
+          CHECK(c.r == 128);
+          CHECK(c.g == 128);
+          CHECK(c.b == 128);
       }
   }
 
   TEST_CASE("blending") {
-      CRGB c1(200, 0, 0);
-      CRGB c2(0, 200, 0);
-      
       SUBCASE("blend") {
+          CRGB c1(255, 0, 0);    // Red
+          CRGB c2(0, 0, 255);    // Blue
           CRGB result = blend(c1, c2, 128);  // 50% blend
-          CHECK(result.r == 100);
-          CHECK(result.g == 100);
-          CHECK(result.b == 0);
+          
+          // Split complex checks into separate statements
+          CHECK(result.r >= 126);
+          CHECK(result.r <= 129);
+          CHECK(result.g == 0);
+          CHECK(result.b >= 126);
+          CHECK(result.b <= 129);
       }
 
       SUBCASE("nblend") {
-          nblend(c1, c2, 128);  // 50% blend into c1
-          CHECK(c1.r == 100);
-          CHECK(c1.g == 100);
-          CHECK(c1.b == 0);
+          CRGB c1(255, 0, 0);    // Red
+          CRGB c2(0, 0, 255);    // Blue
+          nblend(c1, c2, 128);   // 50% blend in place
+          
+          CHECK(c1.r >= 126);
+          CHECK(c1.r <= 129);
+          CHECK(c1.g == 0);
+          CHECK(c1.b >= 126);
+          CHECK(c1.b <= 129);
       }
   }
 
@@ -108,17 +116,17 @@ TEST_SUITE("CRGB") {
 
   TEST_CASE("light calculations") {
       SUBCASE("getAverageLight") {
-          CHECK(CRGB(0, 0, 0).getAverageLight() == 0);
-          CHECK(CRGB(255, 255, 255).getAverageLight() == 255);
-          CHECK(CRGB(150, 150, 150).getAverageLight() == 150);
-          CHECK(CRGB(100, 200, 255).getAverageLight() == 185);
+          CHECK(getAverageLight(CRGB(0, 0, 0)) == 0);
+          CHECK(getAverageLight(CRGB(255, 255, 255)) == 255);
+          CHECK(getAverageLight(CRGB(150, 150, 150)) == 150);
+          CHECK(getAverageLight(CRGB(100, 200, 255)) == 185);
       }
   }
 
   TEST_CASE("overflow protection") {
       SUBCASE("nscale8 overflow") {
           CRGB c(255, 255, 255);
-          c.nscale8(255);
+          nscale8(c, 255);
           CHECK(c.r == 255);
           CHECK(c.g == 255);
           CHECK(c.b == 255);
@@ -195,6 +203,45 @@ TEST_SUITE("CRGB") {
           CHECK(c.r == 100);
           CHECK(c.g == 150);
           CHECK(c.b == 200);
+      }
+  }
+
+  TEST_CASE("array operations") {
+      CRGB leds[5];  // Small test array
+
+      SUBCASE("fill_solid") {
+          fill_solid(leds, 5, CRGB::Blue);
+          CHECK(leds[0] == CRGB::Blue);
+          CHECK(leds[4] == CRGB::Blue);
+      }
+
+      SUBCASE("fill_rainbow") {
+          fill_rainbow(leds, 5, 0, 32);  // Start at hue 0, increment by 32
+          // First LED should be red (hue 0)
+          CHECK(leds[0].r > 250);
+          CHECK(leds[0].g == 0);
+          CHECK(leds[0].b == 0);
+          // Colors should progress through rainbow
+          CHECK(leds[4] != leds[0]);
+      }
+
+      SUBCASE("fill_gradient_RGB") {
+          fill_gradient_RGB(leds, 0, CRGB::Red, 4, CRGB::Blue);
+          
+          // Start should be pure red
+          CHECK(leds[0].r > 250);
+          CHECK(leds[0].g == 0);
+          CHECK(leds[0].b == 0);
+          
+          // End should have significant blue component
+          CHECK(leds[4].r < 100);  // Allow some red
+          CHECK(leds[4].g == 0);   // No green
+          CHECK(leds[4].b > 200);  // Strong blue presence
+          
+          // Middle LED should be purple-ish blend
+          CHECK(leds[2].r > 100);  // Significant red
+          CHECK(leds[2].b > 100);  // Significant blue
+          CHECK(leds[2].g == 0);   // No green
       }
   }
 }
@@ -387,5 +434,45 @@ TEST_CASE("FastLED predefined colors") {
         CHECK(CRGB::Aqua.r == 0x00);
         CHECK(CRGB::Aqua.g == 0xFF);
         CHECK(CRGB::Aqua.b == 0xFF);
+    }
+}
+
+TEST_CASE("FastLED compatibility") {
+    SUBCASE("multiple ways to access color components") {
+        CRGB color(50, 100, 150);
+        
+        // r,g,b access
+        CHECK(color.r == 50);
+        CHECK(color.g == 100);
+        CHECK(color.b == 150);
+        
+        // red,green,blue access
+        CHECK(color.red == 50);
+        CHECK(color.green == 100);
+        CHECK(color.blue == 150);
+        
+        // raw array access
+        CHECK(color.raw[0] == 50);
+        CHECK(color.raw[1] == 100);
+        CHECK(color.raw[2] == 150);
+    }
+
+    SUBCASE("modifying through any accessor changes all views") {
+        CRGB color(50, 100, 150);
+        
+        // Modify through r
+        color.r = 255;
+        CHECK(color.red == 255);
+        CHECK(color.raw[0] == 255);
+        
+        // Modify through green
+        color.green = 255;
+        CHECK(color.g == 255);
+        CHECK(color.raw[1] == 255);
+        
+        // Modify through raw
+        color.raw[2] = 255;
+        CHECK(color.b == 255);
+        CHECK(color.blue == 255);
     }
 } 

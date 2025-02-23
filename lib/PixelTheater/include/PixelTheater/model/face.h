@@ -43,13 +43,6 @@ public:
             return _data[_offset + i];
         }
 
-        // Collection operations
-        void fill(const CRGB& color) const {
-            for(size_t i = 0; i < _count; i++) {
-                _data[_offset + i] = color;
-            }
-        }
-
         // Allow iteration
         CRGB* begin() const { return _data + _offset; }
         CRGB* end() const { return _data + _offset + _count; }

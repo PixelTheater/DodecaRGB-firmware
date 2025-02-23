@@ -161,4 +161,5 @@ const CRGB CRGB::YellowGreen = CRGB(0x9ACD32);
 const CRGB CRGB::FairyLight = CRGB(0xFFE42D);
 const CRGB CRGB::FairyLightNCC = CRGB(0xFF9D2A);  // No color correction
 
+
 } // namespace PixelTheater 
