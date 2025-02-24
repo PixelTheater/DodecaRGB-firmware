@@ -4,13 +4,17 @@
 
 namespace PixelTheater {
 
+// Forward declare FastLED-compatible helper functions
+void fill_solid(CRGB* leds, size_t num_leds, const CRGB& color);
+void nscale8(CRGB* leds, size_t num_leds, uint8_t scale);
+
 class Platform {
 public:
     virtual ~Platform() = default;
 
     // Core LED array management
     virtual CRGB* getLEDs() = 0;
-    virtual size_t getNumLEDs() const = 0;
+    virtual uint16_t getNumLEDs() const = 0;
 
     // Hardware control operations
     virtual void show() = 0;
@@ -21,4 +25,18 @@ public:
     virtual void setMaxRefreshRate(uint8_t fps) = 0;
     virtual void setDither(uint8_t dither) = 0;
 };
-} 
+
+// FastLED-compatible helper function implementations for native environment
+inline void fill_solid(CRGB* leds, uint16_t num_leds, const CRGB& color) {
+    for (uint16_t i = 0; i < num_leds; i++) {
+        leds[i] = color;
+    }
+}
+
+inline void nscale8(CRGB* leds, uint16_t num_leds, uint8_t scale) {
+    for (uint16_t i = 0; i < num_leds; i++) {
+        leds[i] *= scale;
+    }
+}
+
+} // namespace PixelTheater 

@@ -84,10 +84,13 @@ inline void nscale8(CRGB& color, uint8_t scale) {
     color.b = ((uint16_t)color.b * (1 + scale)) >> 8;
 }
 
+// Add array version of nscale8
+void nscale8(CRGB* leds, uint16_t count, uint8_t scale);
+
 // Array fill operations
-void fill_solid(CRGB* leds, int numToFill, const CRGB& color);
-void fill_rainbow(CRGB* leds, int numToFill, uint8_t initialHue, uint8_t deltaHue = 5);
-void fill_gradient_RGB(CRGB* leds, uint16_t startpos, CRGB startcolor, 
+void fill_solid(CRGB* leds, uint16_t numToFill, const CRGB& color);
+void fill_rainbow(CRGB* leds, int numToFill, uint8_t initialHue, uint8_t deltaHue);
+void fill_gradient_RGB(CRGB* leds, uint16_t startpos, CRGB startcolor,
                       uint16_t endpos, CRGB endcolor);
 
 // Template array operations

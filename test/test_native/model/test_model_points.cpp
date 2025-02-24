@@ -1,4 +1,5 @@
 #include <doctest/doctest.h>
+#include "PixelTheater/platform/native_platform.h"
 #include "PixelTheater/model/model.h"
 #include "../../fixtures/models/basic_pentagon_model.h"
 
@@ -8,7 +9,9 @@ using namespace PixelTheater::Fixtures;
 TEST_SUITE("Model - Point Operations") {
     TEST_CASE("point coordinate access") {
         BasicPentagonModel def;
-        Model<BasicPentagonModel> model(def);
+        NativePlatform platform(BasicPentagonModel::LED_COUNT);
+        platform.clear();
+        Model<BasicPentagonModel> model(def, platform.getLEDs());
 
         SUBCASE("point properties") {
             auto& point = model.points[0];

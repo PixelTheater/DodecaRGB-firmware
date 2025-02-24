@@ -1,4 +1,5 @@
 #include <doctest/doctest.h>
+#include "PixelTheater/platform/native_platform.h"
 #include "PixelTheater/model/model.h"
 #include "../../fixtures/models/basic_pentagon_model.h"
 
@@ -8,7 +9,9 @@ using namespace PixelTheater::Fixtures;
 TEST_SUITE("Model - Face Operations") {
     TEST_CASE("local face LED indexing") {
         BasicPentagonModel def;
-        Model<BasicPentagonModel> model(def);
+        NativePlatform platform(BasicPentagonModel::LED_COUNT);
+        platform.clear();
+        Model<BasicPentagonModel> model(def, platform.getLEDs());
 
         // Check face 0
         const auto& face = model.faces[0];
@@ -29,7 +32,10 @@ TEST_SUITE("Model - Face Operations") {
 
     TEST_CASE("face LED bounds") {
         BasicPentagonModel def;
-        Model<BasicPentagonModel> model(def);
+        NativePlatform platform(BasicPentagonModel::LED_COUNT);
+        platform.clear();
+        Model<BasicPentagonModel> model(def, platform.getLEDs());
+
         const auto& face = model.faces[0];
 
         // Set last LED in face
@@ -43,7 +49,10 @@ TEST_SUITE("Model - Face Operations") {
 
     TEST_CASE("face indexing relationships") {
         BasicPentagonModel def;
-        Model<BasicPentagonModel> model(def);
+        NativePlatform platform(BasicPentagonModel::LED_COUNT);
+        platform.clear();
+        Model<BasicPentagonModel> model(def, platform.getLEDs());
+
 
         SUBCASE("local to global index mapping") {
             // Check face 1 
@@ -70,7 +79,10 @@ TEST_SUITE("Model - Face Operations") {
 
     TEST_CASE("face operations") {
         BasicPentagonModel def;
-        Model<BasicPentagonModel> model(def);
+        NativePlatform platform(BasicPentagonModel::LED_COUNT);
+        platform.clear();
+        Model<BasicPentagonModel> model(def, platform.getLEDs());
+
 
         // Fill all LEDs in each face
         for(auto& face : model.faces) {
