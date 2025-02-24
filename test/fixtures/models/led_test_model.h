@@ -18,16 +18,13 @@ struct LedTestModel : public ModelDefinition<8, 1> {  // 8 LEDs, 1 face
             .id = 0,
             .type = FaceType::Circle,
             .num_leds = 8,        // 1 center + 7 ring
-            .edge_length_mm = 10.0f,
-            .num_centers = 1,
-            .num_rings = 1,
-            .num_edges = 0
+            .edge_length_mm = 10.0f
         }
     };
 
     // Single face
     static constexpr FaceData FACES[] = {
-        {0, 0, 0,  0.0f,  0.0f,  1.0f}  // Single face at origin
+        {0, 0}  // Single face, id=0 type=0
     };
 
     // Points in a simple circular pattern

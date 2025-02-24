@@ -62,12 +62,11 @@ template<typename ModelDef>
 class Model {
 private:
     const ModelDef& _def;
-    std::array<CRGB, ModelDef::LED_COUNT> _leds;
+    CRGB* _leds;  // Non-owning pointer to LED array
     std::array<Point, ModelDef::LED_COUNT> _points;
     std::array<Face, ModelDef::FACE_COUNT> _faces;
 
-public:
-    explicit Model(const ModelDef& def) : _def(def) {
+    void initialize() {
         // Initialize points
         for(const auto& point_data : _def.POINTS) {
             _points[point_data.id] = Point(
@@ -79,46 +78,53 @@ public:
             );
         }
 
-        // Initialize LEDs to black
-        fill_solid(leds, CRGB::Black);
-
         // Initialize faces
-        size_t led_offset = 0;  // Start at beginning of LED strip
+        size_t led_offset = 0;
         for(size_t i = 0; i < ModelDef::FACE_COUNT; i++) {
             const auto& face_data = _def.FACES[i];
             const auto& face_type = _def.FACE_TYPES[face_data.type_id];
             _faces[i] = Face(
                 face_type.type,
                 face_data.id,
-                led_offset,             // Current offset in LED strip
-                face_type.num_leds,     // Number of LEDs in this face
-                _leds.data()           // Pointer to start of LED strip
+                led_offset,
+                face_type.num_leds,
+                _leds
             );
-            led_offset += face_type.num_leds;  // Move offset to start of next face
+            led_offset += face_type.num_leds;
         }
+    }
+
+public:
+    // Single constructor - requires LED array from Platform
+    explicit Model(const ModelDef& def, CRGB* leds) 
+        : _def(def)
+        , _leds(leds)
+    {
+        initialize();
     }
 
     // LED array access
     struct Leds {
-        std::array<CRGB, ModelDef::LED_COUNT>& _data;
+        CRGB* _data;  // Change to pointer
+        size_t _size;
         
         CRGB& operator[](size_t i) {
-            if (i >= ModelDef::LED_COUNT) i = ModelDef::LED_COUNT - 1;
+            if (i >= _size) i = _size - 1;
             return _data[i];
         }
         const CRGB& operator[](size_t i) const {
-            if (i >= ModelDef::LED_COUNT) i = ModelDef::LED_COUNT - 1;
+            if (i >= _size) i = _size - 1;
             return _data[i];
         }
 
-        size_t size() const { return ModelDef::LED_COUNT; }
+        size_t size() const { return _size; }
         
         // Just iteration support
-        auto begin() { return _data.begin(); }
-        auto end() { return _data.end(); }
-        auto begin() const { return _data.begin(); }
-        auto end() const { return _data.end(); }
-    } leds{_leds};
+        auto begin() { return _data; }
+        auto end() { return _data + _size; }
+        auto begin() const { return _data; }
+        auto end() const { return _data + _size; }
+    } leds{_leds, ModelDef::LED_COUNT};  // Pass size explicitly
 
     // Point array access
     struct Points {

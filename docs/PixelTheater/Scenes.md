@@ -8,50 +8,104 @@ version: 2.8.3
 
 Scenes are the main building blocks of PixelTheater. They define the animation, parameters, and other settings for a single animation.
 
-## [4.1] Creating and Using Scenes
+## [4.1] Creating Scenes
 
 Scenes are created through the Stage's type-safe creation API:
 
 ```cpp
 // In main.cpp or setup code
-auto* scene = stage.addScene<SpaceScene>();
+auto* scene = stage->addScene<MyScene<ModelDef>>(*stage);
+stage->setScene(scene);
 ```
-
-The Stage manages the scene's lifecycle and memory. The returned pointer can be used to configure the scene if needed, but ownership remains with the Stage.
 
 ### What is a Scene?
 
-A Scene defines an animation written in C++ that runs on the teensy display (the "stage"). Scenes are called frequently (50fps+) to update the LEDs based on their parameters and internal state.
-
-A Scene:
-- Defines a classname (e.g. `FireworksScene`) and friendly name ("fireworks")
-- Automatically loads parameters from the generated `_params` file if present
-- Provides lifecycle methods (setup, tick, reset, status)
-- Provides helper methods like `settings[]` and parameter reflection
-- Exposes access to LEDs and hardware devices (buttons, sensors, accelerometer)
+A Scene defines an animation that runs on a Stage with a specific Model. Scenes are called frequently (50fps+) to update LEDs based on their parameters and internal state.
 
 Example Scene:
 ```cpp
-class SpaceScene : public Scene {
+template<typename ModelDef>
+class SpaceScene : public Scene<ModelDef> {
     void setup() override {
-        // Define parameters if not using YAML
+        // Define parameters
         param("speed", "ratio", 0.5f, "clamp");
     }
     
     void tick() override {
+        Scene<ModelDef>::tick();  // Call base to increment counter
+        
         // Get parameters
         float speed = settings["speed"];
         
-        // Update animation using Stage interface
-        auto* leds = _stage.leds();
-        auto face = _stage.model()->getFace(0);
+        // Direct LED access
+        this->stage.leds[0] = CRGB::Red;
         
-        // Animate face LEDs
-        for (auto led_index : face.getLEDs()) {
-            leds[led_index] = CHSV(speed * 255, 255, 255);
-        }
+        // Face-based access
+        auto& face = this->stage.model.faces[0];
+        face.leds[0] = CRGB::Blue;
+        
+        // FastLED operations
+        fadeToBlackBy(this->stage.leds[1], 128);
+        nscale8(this->stage.leds[2], 192);
+        
+        // Fill operations
+        fill_solid(face.leds, CRGB::Green);
+        fill_rainbow(face.leds, face.led_count(), 0, 32);
     }
 };
+```
+
+### [4.2] LED Access Patterns
+
+Scenes can access and modify LEDs in several ways:
+
+1. Direct LED Array Access:
+```cpp
+// Single LED
+this->stage.leds[0] = CRGB::Red;
+
+// Range-based iteration
+for(auto& led : this->stage.leds) {
+    led = CRGB::Blue;
+}
+```
+
+2. Model Face Access:
+```cpp
+// Single LED on face
+this->stage.model.faces[0].leds[1] = CRGB::Green;
+
+// All LEDs on face
+for(auto& face : this->stage.model.faces) {
+    for(auto& led : face.leds) {
+        led = CRGB::Blue;
+    }
+}
+```
+
+3. FastLED Operations:
+```cpp
+// Color operations
+fadeToBlackBy(led, 128);  // Fade to black by amount
+nscale8(led, 192);       // Scale brightness
+nblend(led1, led2, 128); // Blend between colors
+
+// Fill operations
+fill_solid(leds, CRGB::Red);
+fill_rainbow(leds, num_leds, start_hue, delta_hue);
+fill_gradient_RGB(leds, start_pos, start_color, end_pos, end_color);
+```
+
+4. Color Types:
+```cpp
+// RGB colors
+CRGB color(255, 0, 0);     // Red
+CRGB::Red                  // Predefined color
+CRGB::Blue                 // Predefined color
+
+// HSV colors
+CHSV hsv(0, 255, 255);    // Red in HSV
+hsv2rgb_rainbow(hsv, rgb); // Convert to RGB
 ```
 
 Key Features:
