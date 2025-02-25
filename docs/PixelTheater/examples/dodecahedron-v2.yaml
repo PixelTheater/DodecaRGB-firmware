@@ -1,77 +1,79 @@
 # models/dodecahedron-v2.yaml
-name: DodecaRGBv2
-version: "2.0.0"
-description: "Dodecahedron with 12 pentagon PCBs, 1248 LEDs"
+model:
+  name: DodecaRGBv2
+  version: "2.0.0"
+  description: "Dodecahedron with 12 pentagon PCBs, 1248 LEDs"
 
-# Physical properties
-shape: Dodecahedron
-edge_length_mm: 60.0
-led_diameter_mm: 1.6
-led_spacing_mm: 5.0  # Average spacing between LEDs
-
+geometry:
+  shape: Dodecahedron
+  num_faces: 12
+  edge_length_mm: 60.0
+  radius_mm: 130.0
 # Face definitions
 face_types:
   pentagon:
-    leds_per_face: 104  # Each pentagon PCB has 104 LEDs
+    num_leds: 104  # Each pentagon PCB has 104 LEDs
+    num_sides: 5
+    groups:
+      # Optional predefined LED groups for animations
+      center: [0]
+      ring0: [1, 2, 3, 4, 5]
+      ring1: [6, 7, 8, 9, 10]
 
 # Assembly sequence - defines how PCBs connect in series
 # - face: PCB number (0-11) for assembly and wiring order
 # - type: PCB shape type
-# - rotation: 0-4 for pentagon (72° increments clockwise)
-face_map:
-  - face: 0          # First PCB in series
+# - rotation: clockwise steps, 360/num_sides (72 for pentagon, 60 for hexagon)
+faces:
+  - id: 0          # First PCB in series
     type: pentagon
-    rotation: 1      # 72° clockwise
-  
-  - face: 1          # Second PCB
+    rotation: 1      # 72° clockwise  
+  - id: 1          # Second PCB
     type: pentagon   
-    rotation: 2      # 144° clockwise
-  
-  - face: 2          # Third PCB
+    rotation: 2      # 144° clockwise  
+  - id: 2          # Third PCB
     type: pentagon
     rotation: 1      # 72° clockwise
-  
-  - face: 3          # Fourth PCB
+  - id: 3          # Fourth PCB
     type: pentagon
     rotation: 3      # 216° clockwise
-  
   # ... continues clockwise around upper hemisphere
-  - face: 4
+  - id: 4
     type: pentagon
-    rotation: 2
-  
-  - face: 5
+    rotation: 2  
+  - id: 5
     type: pentagon
     rotation: 1
-  
   # ... crosses to lower hemisphere
-  - face: 6
+  - id: 6
     type: pentagon
-    rotation: 2
-  
-  - face: 7
+    rotation: 2  
+  - id: 7
     type: pentagon
     rotation: 3
-  
-  - face: 8
+  - id: 8
     type: pentagon
     rotation: 1
-  
-  - face: 9
+  - id: 9
     type: pentagon
     rotation: 2
-  
-  - face: 10
+  - id: 10
     type: pentagon
     rotation: 1
-  
-  - face: 11         # Last PCB in series
+  - id: 11         # Last PCB in series
     type: pentagon
     rotation: 3
 
 # Hardware configuration
 hardware:
-  led_type: WS2812B
-  color_order: GRB
-  max_current_per_led_ma: 20
-  avg_current_per_led_ma: 10
+  pcb:
+    pick_and_place_file: "data/PickAndPlace_PCB_DodecaRGB_v2_2024-11-22.csv"
+    led_designator_prefix: "LED"  # How LEDs are labeled in the PnP file
+  led:
+    type: WS2812B
+    color_order: GRB
+    diameter_mm: 1.6
+    spacing_mm: 5.0  # Average spacing between LEDs
+  power:
+    max_current_per_led_ma: 20  # Maximum current per LED
+    avg_current_per_led_ma: 10  # Average current per LED

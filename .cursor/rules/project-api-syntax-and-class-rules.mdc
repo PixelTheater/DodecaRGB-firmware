@@ -1,6 +1,7 @@
 ---
 description: 
 globs: 
+alwaysApply: false
 ---
 
 # PixelTheater Library Syntax Rules
@@ -68,8 +69,8 @@ model.points[face.led_offset() + idx]   // Local to global conversion
 
 8. **Group Access**
 ```cpp
-face.ledGroup("name")                   // Get LED group by name
-face.ledGroup("name")[0]                // Access first LED in group
+face.group("name")                   // Get group by name
+face.groups("name")[0]                // Access first group
 ```
 
 The key principles are:
