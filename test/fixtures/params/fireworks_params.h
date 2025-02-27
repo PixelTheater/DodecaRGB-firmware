@@ -1,6 +1,6 @@
 // Auto-generated from fireworks.yaml
 // YAML EXAMPLE: Colorful particle-based firework simulation
-// Generated on 2025-02-25 01:24:08
+// Generated on 2025-02-27 07:45:22
 #pragma once
 #include "PixelTheater/parameter.h"
 

@@ -3,8 +3,23 @@
 #include <InternalTemperature.h>
 #include <cmath>
 #include <FastLED.h>
+#include <memory>
 
+// PixelTheater includes
+#include "PixelTheater/platform/fastled_platform.h"
+#include "PixelTheater/model/model.h"
+#include "PixelTheater/stage.h"
+// Include the model definition - we'll use an include guard to prevent multiple definitions
+#ifndef DODECARGBV2_MODEL_INCLUDED
+#define DODECARGBV2_MODEL_INCLUDED
+#include "model.cpp" // Include the generated model
+#endif
+#include "scenes/blob_scene.h" // Include our blob scene
+#include "benchmark.h" // Include our benchmark utilities
 
+#ifndef PROJECT_VERSION
+#define PROJECT_VERSION "0.0.1"
+#endif
 
 // LED configs
 // Version is defined in VERSION file in root directory
@@ -22,7 +37,7 @@
 // https://www.pjrc.com/teensy/td_libs_Wire.html
 // ex: Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x29, &Wire1);
 
-#define BRIGHTNESS  50      // global brightness, should be used by all animations
+#define BRIGHTNESS  30      // global brightness, should be used by all animations
 #define USE_IMU true        // enable orientation sensor (currently: LSM6DSOX)
 
 // model settings (replace with generated model params)
@@ -30,9 +45,16 @@
 #define NUM_SIDES 12
 #define LEDS_PER_SIDE 104
 
-#define NUM_SCENES 1
+#define NUM_SCENES 1  // We'll increase this as we add more scenes
 
 CRGB leds[NUM_LEDS];
+
+// PixelTheater components
+using ModelDef = PixelTheater::Fixtures::DodecaRGBv2;
+std::unique_ptr<PixelTheater::FastLEDPlatform> platform;
+std::unique_ptr<PixelTheater::Model<ModelDef>> model;
+std::unique_ptr<PixelTheater::Stage<ModelDef>> stage;
+Scenes::BlobScene<ModelDef>* blob_scene = nullptr;
 
 long random_seed = 0;
 int seed1,seed2 = 0;
@@ -45,7 +67,12 @@ float calculate_power_usage() {
 
 void timerStatusMessage(){
   uint8_t scene_number = 0;
-  String scene_name = "scene";
+  String scene_name = "BlobScene";
+  
+  if (stage && blob_scene) {
+    scene_name = blob_scene->status().c_str();
+  }
+  
   Serial.printf("--> mode:%d (%s) @ %d FPS <--\n", 
     scene_number,
     scene_name.c_str(),
@@ -58,6 +85,9 @@ void timerStatusMessage(){
   Serial.printf("Est Power: %0.1f W (%.1f%% brightness)\n", 
     calculate_power_usage()/1000.0,
     (BRIGHTNESS/ 255.0f) * 100);
+    
+  // Include benchmark report in status message
+  BENCHMARK_REPORT(FastLED.getFPS());
 }
 
 void fadeInSide(int side, int start_led, int end_led, int duration_ms) {
@@ -121,15 +151,36 @@ void setup() {
     fadeInSide(side, 6, 15, fade_duration);
   }
 
+  // Initialize PixelTheater components
+  Serial.println("Initializing PixelTheater...");
+  
+  // Enable or disable benchmarking
+  Benchmark::enabled = true;  // Set to false to disable benchmarking
+  
+  // Create platform with FastLED integration
+  // Need to cast the leds array to PixelTheater::CRGB* to match the expected type
+  platform = std::make_unique<PixelTheater::FastLEDPlatform>(
+    reinterpret_cast<PixelTheater::CRGB*>(leds), 
+    ModelDef::LED_COUNT
+  );
+  
+  // Create model based on our model definition
+  model = std::make_unique<PixelTheater::Model<ModelDef>>(ModelDef{}, platform->getLEDs());
+  
+  // Create stage with platform and model
+  stage = std::make_unique<PixelTheater::Stage<ModelDef>>(std::move(platform), std::move(model));
+  
+  // Add and set initial scene
+  blob_scene = stage->addScene<Scenes::BlobScene<ModelDef>>(*stage);
+  blob_scene->setup();
+  stage->setScene(blob_scene);
+
   Serial.println("Init done");
 
   FastLED.clear();
   FastLED.show();
 
   delay(100);
-
-  // Add animations with default settings (order defines sequence)
-
 }
 
 long interval, last_interval = 0;
@@ -157,6 +208,7 @@ void loop() {
     timerStatusMessage();
     last_interval = interval;
   }
+  
   // handle button press for mode change
   if (digitalRead(USER_BUTTON) == LOW){
     // flash while button is still down
@@ -170,10 +222,13 @@ void loop() {
     Serial.println("Button released");
     mode = (mode + 1) % NUM_SCENES;
     Serial.printf("Button pressed, changed mode to %d\n", mode);
-    // TODO: change scene
+    // TODO: implement scene switching when we have more scenes
   }
 
-  // update scene tick()
-  // update stage leds
-
+  // Update the stage (calls current scene's tick() and updates LEDs)
+  if (stage) {
+    BENCHMARK_START("frame_total");
+    stage->update();
+    BENCHMARK_END();
+  }
 }

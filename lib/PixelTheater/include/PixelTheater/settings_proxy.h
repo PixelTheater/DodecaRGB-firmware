@@ -37,6 +37,12 @@ public:
             ParamValue val = _settings.get_value(_name);
             return val.as_bool();
         }
+        
+        // Add conversion operator for uint8_t
+        operator uint8_t() const {
+            ParamValue val = _settings.get_value(_name);
+            return static_cast<uint8_t>(val.as_int());
+        }
 
         // Direct assignment
         Parameter& operator=(float value) {
@@ -98,6 +104,29 @@ public:
     }
     const Parameter operator[](const std::string& name) const { 
         return Parameter(_settings, name); 
+    }
+
+    // Direct methods for adding range parameters
+    void add_range_parameter(const std::string& name, 
+                           float min, float max, float default_val,
+                           const std::string& flags = "",
+                           const std::string& description = "") {
+        _settings.add_range_parameter(name, min, max, default_val, flags, description);
+    }
+    
+    void add_count_parameter(const std::string& name, 
+                           int min, int max, int default_val,
+                           const std::string& flags = "",
+                           const std::string& description = "") {
+        _settings.add_count_parameter(name, min, max, default_val, flags, description);
+    }
+    
+    // Forward add_parameter_from_strings to Settings
+    void add_parameter_from_strings(const std::string& name, 
+                                  const std::string& type,
+                                  const ParamValue& default_val, 
+                                  const std::string& flags) {
+        _settings.add_parameter_from_strings(name, type, default_val, flags);
     }
 
 private:

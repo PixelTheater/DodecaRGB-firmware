@@ -25,9 +25,42 @@ TEST_SUITE("CRGB") {
       SUBCASE("fadeToBlackBy") {
           CRGB c(255, 255, 255);
           fadeToBlackBy(c, 128);  // 50% fade
-          CHECK(c.r == 128);
-          CHECK(c.g == 128);
-          CHECK(c.b == 128);
+          CHECK(c.r == 127);
+          CHECK(c.g == 127);
+          CHECK(c.b == 127);
+          
+          // Test complete fade to black
+          CRGB c2(255, 255, 255);
+          fadeToBlackBy(c2, 255);
+          CHECK(c2.r == 0);
+          CHECK(c2.g == 0);
+          CHECK(c2.b == 0);
+          
+          // Test no fade
+          CRGB c3(255, 255, 255);
+          fadeToBlackBy(c3, 0);
+          CHECK(c3.r == 255);
+          CHECK(c3.g == 255);
+          CHECK(c3.b == 255);
+          
+          // Test low value fading
+          CRGB c4(10, 10, 10);
+          fadeToBlackBy(c4, 128);  // 50% fade
+          CHECK(c4.r == 5);
+          CHECK(c4.g == 5);
+          CHECK(c4.b == 5);
+          
+          // Test very low value fading - should go to zero with sufficient fade
+          CRGB c5(3, 3, 3);
+          fadeToBlackBy(c5, 128);  // 50% fade
+          CHECK(c5.r == 1);
+          CHECK(c5.g == 1);
+          CHECK(c5.b == 1);
+          
+          fadeToBlackBy(c5, 128);  // Another 50% fade
+          CHECK(c5.r == 0);
+          CHECK(c5.g == 0);
+          CHECK(c5.b == 0);
       }
 
       SUBCASE("nscale8") {
@@ -36,6 +69,39 @@ TEST_SUITE("CRGB") {
           CHECK(c.r == 128);
           CHECK(c.g == 128);
           CHECK(c.b == 128);
+          
+          // Test complete scaling to black
+          CRGB c2(255, 255, 255);
+          nscale8(c2, 0);
+          CHECK(c2.r == 0);
+          CHECK(c2.g == 0);
+          CHECK(c2.b == 0);
+          
+          // Test no scaling
+          CRGB c3(255, 255, 255);
+          nscale8(c3, 255);
+          CHECK(c3.r == 255);
+          CHECK(c3.g == 255);
+          CHECK(c3.b == 255);
+          
+          // Test low value scaling
+          CRGB c4(10, 10, 10);
+          nscale8(c4, 128);  // 50% scaling
+          CHECK(c4.r == 5);
+          CHECK(c4.g == 5);
+          CHECK(c4.b == 5);
+          
+          // Test very low value scaling
+          CRGB c5(3, 3, 3);
+          nscale8(c5, 128);  // 50% scaling
+          CHECK(c5.r == 1);
+          CHECK(c5.g == 1);
+          CHECK(c5.b == 1);
+          
+          nscale8(c5, 128);  // Another 50% scaling
+          CHECK(c5.r == 0);
+          CHECK(c5.g == 0);
+          CHECK(c5.b == 0);
       }
   }
 

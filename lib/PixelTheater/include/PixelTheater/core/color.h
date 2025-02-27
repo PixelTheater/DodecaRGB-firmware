@@ -48,6 +48,21 @@ inline uint8_t scale8_video(uint8_t i, uint8_t scale) {
     return (((uint16_t)i * (uint16_t)scale) >> 8) + ((i && scale) ? 1 : 0);
 }
 
+// Add single-color version of nscale8 before it's used
+inline void nscale8(CRGB& color, uint8_t scale) {
+    if (scale == 255) return;  // No change needed
+    if (scale == 0) {  // Fast path to black
+        color.r = color.g = color.b = 0;
+        return;
+    }
+    
+    // Implement proper FastLED-style scaling with rounding
+    // The key is to use the formula: (i * (scale + 1)) >> 8
+    color.r = ((uint16_t)color.r * (uint16_t)(scale + 1)) >> 8;
+    color.g = ((uint16_t)color.g * (uint16_t)(scale + 1)) >> 8;
+    color.b = ((uint16_t)color.b * (uint16_t)(scale + 1)) >> 8;
+}
+
 // Add HSV conversion functions
 void hsv2rgb_rainbow(const CHSV& hsv, CRGB& rgb);
 void hsv2rgb_spectrum(const CHSV& hsv, CRGB& rgb);
@@ -63,28 +78,16 @@ inline uint8_t getAverageLight(const CRGB& color) {
 
 // Fading operations
 inline void fadeToBlackBy(CRGB& color, uint8_t amount) {
-    // Add 1 to handle rounding up
-    color.r = ((uint16_t)color.r * (256 - amount) + 128) >> 8;
-    color.g = ((uint16_t)color.g * (256 - amount) + 128) >> 8;
-    color.b = ((uint16_t)color.b * (256 - amount) + 128) >> 8;
+    // Correctly implement fadeToBlackBy by calling nscale8 with inverted scale
+    // This matches FastLED's implementation: fadeToBlackBy = nscale8 with (255 - amount)
+    nscale8(color, 255 - amount);
 }
 
 inline void fadeLightBy(CRGB& color, uint8_t amount) {
     fadeToBlackBy(color, amount);
 }
 
-inline void nscale8(CRGB& color, uint8_t scale) {
-    if (scale == 255) return;  // No change needed
-    if (scale == 0) {  // Fast path to black
-        color.r = color.g = color.b = 0;
-        return;
-    }
-    color.r = ((uint16_t)color.r * (1 + scale)) >> 8;
-    color.g = ((uint16_t)color.g * (1 + scale)) >> 8;
-    color.b = ((uint16_t)color.b * (1 + scale)) >> 8;
-}
-
-// Add array version of nscale8
+// Array version of nscale8
 void nscale8(CRGB* leds, uint16_t count, uint8_t scale);
 
 // Array fill operations

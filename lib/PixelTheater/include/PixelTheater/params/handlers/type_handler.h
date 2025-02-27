@@ -68,10 +68,9 @@ public:
             case ParamType::signed_angle:
             case ParamType::switch_type:
             case ParamType::palette:
+            case ParamType::count:  // Allow count type
+            case ParamType::range:  // Allow range type
                 return true;
-            case ParamType::range:
-                Log::warning("[WARNING] Range parameters require min/max values\n");
-                return false;
             case ParamType::select:
                 Log::warning("[WARNING] Select parameters require option list\n");
                 return false;

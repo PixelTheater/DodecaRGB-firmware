@@ -95,4 +95,28 @@ TEST_CASE("Hardware Parameter System") {
         CHECK(all_accessible);
         Serial.printf("Successfully created and verified %d parameters\n", NUM_PARAMS);
     }
+    
+    SUBCASE("Range Parameter Creation") {
+        // Create a settings object
+        Settings settings;
+        
+        // Add a count parameter with min/max range
+        settings.add_parameter(PARAM_COUNT("particles", 10, 100, 50, Flags::CLAMP, "Number of particles"));
+        
+        // Verify parameter was created correctly
+        CHECK(settings.has_parameter("particles"));
+        CHECK(settings.get_value("particles").as_int() == 50);
+        
+        // Test min/max validation
+        settings.set_value("particles", ParamValue(5));  // Below min
+        CHECK(settings.get_value("particles").as_int() == 10);  // Should clamp to min
+        
+        settings.set_value("particles", ParamValue(150));  // Above max
+        CHECK(settings.get_value("particles").as_int() == 100);  // Should clamp to max
+        
+        settings.set_value("particles", ParamValue(75));  // Within range
+        CHECK(settings.get_value("particles").as_int() == 75);  // Should use provided value
+        
+        Serial.println("Range parameter validation complete");
+    }
 } 
