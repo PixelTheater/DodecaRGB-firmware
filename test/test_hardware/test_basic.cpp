@@ -6,9 +6,6 @@
 using namespace PixelTheater;
 
 TEST_CASE("Basic parameter functionality") {
-    // Initialize Serial first
-    Serial.begin(115200);
-    delay(100);  // Give serial a moment to initialize
     
     Serial.println("\n=== Starting Basic Parameter Test ===");
     

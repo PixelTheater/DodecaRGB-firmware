@@ -1,11 +1,13 @@
 #include <doctest/doctest.h>
 #include <FastLED.h>
 #include "PixelTheater/core/crgb.h"
+#include "PixelTheater/core/color.h"
 
 using namespace PixelTheater;
 
 TEST_CASE("FastLED Integration") {
-    Serial.println("\n=== Testing FastLED Integration ===");
+    // Remove the Serial.println here as our custom reporter will handle this
+    // Serial.println("\n=== Testing FastLED Integration ===");
 
     SUBCASE("Basic Color Operations") {
         Serial.println("Testing basic color operations...");
@@ -41,5 +43,68 @@ TEST_CASE("FastLED Integration") {
         }
     }
 
-    Serial.println("FastLED tests complete!");
+    SUBCASE("PixelTheater and FastLED Integration") {
+        Serial.println("Testing PixelTheater and FastLED integration...");
+        
+        // Create arrays for both implementations
+        ::CRGB fastled_array[5] = {};
+        PixelTheater::CRGB pixeltheater_array[5] = {};
+        
+        // Test FastLED's fill_solid
+        fill_solid(fastled_array, 5, ::CRGB::Red);
+        
+        // Test PixelTheater's fill_solid
+        PixelTheater::fill_solid(pixeltheater_array, 5, PixelTheater::CRGB(255, 0, 0));
+        
+        // Verify both implementations work correctly
+        CHECK(fastled_array[0].r == 255);
+        CHECK(pixeltheater_array[0].r == 255);
+        
+        Serial.println("Both implementations produce correct results");
+        
+        // Test conversion between types
+        PixelTheater::CRGB pt_color = PixelTheater::CRGB(fastled_array[0].r, fastled_array[0].g, fastled_array[0].b);
+        CHECK(pt_color.r == 255);
+        CHECK(pt_color.g == 0);
+        CHECK(pt_color.b == 0);
+        
+        Serial.println("Conversion between types works correctly");
+    }
+    
+    SUBCASE("FastLED Hardware Functions") {
+        Serial.println("Testing FastLED hardware functions...");
+        
+        // Create a small LED array
+        ::CRGB leds[10];
+        
+        // Configure FastLED with hardware pins
+        FastLED.addLeds<WS2812B, 19, GRB>(leds, 10);
+        
+        // Set brightness
+        FastLED.setBrightness(50);
+        CHECK(FastLED.getBrightness() == 50);
+        
+        // Test show() function (should not crash)
+        fill_solid(leds, 10, ::CRGB::Red);
+        
+        unsigned long start_time = micros();
+        FastLED.show();
+        unsigned long show_time = micros() - start_time;
+        Serial.printf("FastLED.show() took %lu microseconds\n", show_time);
+        
+        delay(100);
+        
+        // Test clear function
+        FastLED.clear();
+        FastLED.show();
+        delay(100);
+        
+        // Test FPS control
+        FastLED.setMaxRefreshRate(60);
+        
+        Serial.println("FastLED hardware functions verified");
+    }
+
+    // Remove the Serial.println here as our custom reporter will handle this
+    // Serial.println("FastLED tests complete!");
 } 

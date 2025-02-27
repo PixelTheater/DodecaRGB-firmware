@@ -204,27 +204,27 @@ class DodecaModel:
         print("    };", file=file)
 
         # Face types
-        print("\n    static constexpr FaceTypeData face_types[] = {", file=file)
+        print("\n    PROGMEM static constexpr FaceTypeData face_types[] = {", file=file)
         for ft in self.model_def.face_types.values():
             print(f"        {{ \"{ft.name}\", {ft.num_sides}, {ft.num_leds}, {ft.edge_length_mm}f }},", file=file)
         print("    };", file=file)
 
         # Face instances
-        print("\n    static constexpr FaceData faces[] = {", file=file)
+        print("\n    PROGMEM static constexpr FaceData faces[] = {", file=file)
         for face in self.model_def.faces:
             print(f"        {{ {face.id}, \"{face.type}\", {face.rotation}, "
                   f"{face.position.x}f, {face.position.y}f, {face.position.z}f }},", file=file)
         print("    };", file=file)
 
         # Points
-        print("\n    static constexpr PointData points[] = {", file=file)
+        print("\n    PROGMEM static constexpr PointData points[] = {", file=file)
         for led in self.model_def.leds:
             print(f"        {{ {led.index}, {led.face_id}, {led.position.x:.3f}f, "
                   f"{led.position.y:.3f}f, {led.position.z:.3f}f }},", file=file)
         print("    };", file=file)
 
         # Neighbors
-        print("\n    static constexpr NeighborData neighbors[] = {", file=file)
+        print("\n    PROGMEM static constexpr NeighborData neighbors[] = {", file=file)
         for led in self.model_def.leds:
             neighbors_str = ", ".join(
                 f"{{ {n.led_number}, {n.distance:.3f}f }}"

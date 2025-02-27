@@ -1,6 +1,4 @@
 #include "PixelTheater/settings.h"
-#include <iostream>
-#include <stdexcept>
 
 namespace PixelTheater {
 
