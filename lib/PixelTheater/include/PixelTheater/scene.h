@@ -119,6 +119,36 @@ protected:
         param(name, type, ParamValue(default_val), flags);
     }
 
+    /**
+     * Additional overload for range parameters (count, range)
+     * Allows specifying min/max values in addition to default
+     */
+    void param(const std::string& name, const std::string& type,
+              int min, int max, int default_val, const std::string& flags = "") {
+        // Use the direct method for count parameters
+        if (type == "count") {
+            _settings_storage.add_count_parameter(name, min, max, default_val, flags);
+        } else {
+            // For other types, use the string-based method
+            _settings_storage.add_parameter_from_strings(name, type, ParamValue(default_val), flags);
+        }
+    }
+    
+    /**
+     * Additional overload for float range parameters
+     * Allows specifying min/max values in addition to default
+     */
+    void param(const std::string& name, const std::string& type,
+              float min, float max, float default_val, const std::string& flags = "") {
+        // Use the direct method for range parameters
+        if (type == "range") {
+            _settings_storage.add_range_parameter(name, min, max, default_val, flags);
+        } else {
+            // For other types, use the string-based method
+            _settings_storage.add_parameter_from_strings(name, type, ParamValue(default_val), flags);
+        }
+    }
+
 private:
     /**
      * Non-virtual interface for parameter initialization

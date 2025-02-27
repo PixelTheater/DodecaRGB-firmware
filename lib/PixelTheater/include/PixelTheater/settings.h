@@ -36,6 +36,18 @@ public:
                                   const std::string& type,
                                   const ParamValue& default_val, 
                                   const std::string& flags);
+    
+    // Direct methods for adding range parameters
+    void add_range_parameter(const std::string& name, 
+                           float min, float max, float default_val,
+                           const std::string& flags = "",
+                           const std::string& description = "");
+    
+    void add_count_parameter(const std::string& name, 
+                           int min, int max, int default_val,
+                           const std::string& flags = "",
+                           const std::string& description = "");
+    
     // Parameter inheritance
     void inherit_from(const Settings& base);
     bool has_parameter(const std::string& name) const;

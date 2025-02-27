@@ -21,6 +21,11 @@ from util.dodeca_core import (
     MAX_LED_NEIGHBORS
 )
 
+# Define the PixelTheater namespace constants for C++ output
+class PixelTheater:
+    class Limits:
+        MAX_NEIGHBORS = MAX_LED_NEIGHBORS
+
 @dataclass
 class Point3D:
     """Represents a point in 3D space"""
@@ -179,73 +184,121 @@ class DodecaModel:
 
     def export_cpp_header(self, file=sys.stdout) -> None:
         """Export model as C++ header file"""
+        # Get current date and time
+        generation_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
         print("#pragma once", file=file)
-        print("\n#include <cstdint>", file=file)
-        print("#include \"model_types.h\"", file=file)
-        print("\nnamespace Models {", file=file)
+        print("#include \"PixelTheater/model_def.h\"", file=file)
+        print("#include \"PixelTheater/model/face_type.h\"", file=file)
+        print(f"\n// Generated on: {generation_date}", file=file)
+        print("\nnamespace PixelTheater {", file=file)
+        print("namespace Fixtures {", file=file)
         
         # Start model definition
-        print(f"\nstruct {self.model_def.model['name']} {{", file=file)
-        print(f"    static constexpr uint16_t LED_COUNT = {len(self.model_def.leds)};", file=file)
-        print(f"    static constexpr uint8_t FACE_COUNT = {len(self.model_def.faces)};", file=file)
+        model_name = self.model_def.model['name']
+        led_count = len(self.model_def.leds)
+        face_count = len(self.model_def.faces)
         
-        # Metadata
-        print("\n    struct Metadata {", file=file)
-        print(f'        static constexpr const char* name = "{self.model_def.model["name"]}";', file=file)
-        print(f'        static constexpr const char* version = "{self.model_def.model["version"]}";', file=file)
-        print(f'        static constexpr const char* description = "{self.model_def.model["description"]}";', file=file)
-        print("    };", file=file)
-
-        # Geometry
-        print("\n    struct Geometry {", file=file)
-        print(f'        static constexpr const char* shape = "{self.model_def.geometry["shape"]}";', file=file)
-        print(f'        static constexpr float edge_length_mm = {self.model_def.geometry["edge_length_mm"]}f;', file=file)
-        print(f'        static constexpr float radius_mm = {self.model_def.geometry["radius_mm"]}f;', file=file)
-        print("    };", file=file)
+        print(f"\n// {self.model_def.model['description']}", file=file)
+        print(f"struct {model_name} : public ModelDefinition<{led_count}, {face_count}> {{", file=file)
+        
+        # Required metadata
+        print("\n    // Required metadata", file=file)
+        print(f'    static constexpr const char* NAME = "{self.model_def.model["name"]}";', file=file)
+        print(f'    static constexpr const char* VERSION = "{self.model_def.model["version"]}";', file=file)
+        print(f'    static constexpr const char* DESCRIPTION = "{self.model_def.model["description"]}";', file=file)
+        print(f'    static constexpr const char* MODEL_TYPE = "{self.model_def.geometry["shape"]}";', file=file)
+        print(f'    static constexpr const char* GENERATED_DATE = "{generation_date}";', file=file)
+        
+        # Required constants
+        print(f"\n    static constexpr size_t LED_COUNT = {led_count};", file=file)
+        print(f"    static constexpr size_t FACE_COUNT = {face_count};", file=file)
 
         # Face types
-        print("\n    PROGMEM static constexpr FaceTypeData face_types[] = {", file=file)
-        for ft in self.model_def.face_types.values():
-            print(f"        {{ \"{ft.name}\", {ft.num_sides}, {ft.num_leds}, {ft.edge_length_mm}f }},", file=file)
-        print("    };", file=file)
+        print(f"\n    // Face type definitions", file=file)
+        print(f"    static constexpr std::array<FaceTypeData, {len(self.model_def.face_types)}> FACE_TYPES{{{{", file=file)
+        for i, (name, ft) in enumerate(self.model_def.face_types.items()):
+            face_type = f"FaceType::{ft.name.capitalize()}"
+            if ft.name.lower() == "pentagon":
+                face_type = "FaceType::Pentagon"
+            elif ft.name.lower() == "triangle":
+                face_type = "FaceType::Triangle"
+            elif ft.name.lower() == "square":
+                face_type = "FaceType::Square"
+            print(f"        {{", file=file)
+            print(f"            .id = {i},", file=file)
+            print(f"            .type = {face_type},", file=file)
+            print(f"            .num_leds = {ft.num_leds},", file=file)
+            print(f"            .edge_length_mm = {ft.edge_length_mm}f", file=file)
+            print(f"        }}{'' if i == len(self.model_def.face_types) - 1 else ','}", file=file)
+        print("    }};", file=file)
 
         # Face instances
-        print("\n    PROGMEM static constexpr FaceData faces[] = {", file=file)
-        for face in self.model_def.faces:
-            print(f"        {{ {face.id}, \"{face.type}\", {face.rotation}, "
-                  f"{face.position.x}f, {face.position.y}f, {face.position.z}f }},", file=file)
-        print("    };", file=file)
+        print(f"\n    // Face instances", file=file)
+        print(f"    static constexpr std::array<FaceData, FACE_COUNT> FACES{{{{", file=file)
+        for i, face in enumerate(self.model_def.faces):
+            # Find the type_id for this face
+            type_id = 0
+            for j, (name, _) in enumerate(self.model_def.face_types.items()):
+                if name == face.type:
+                    type_id = j
+                    break
+            
+            # Check if we have position data
+            if hasattr(face.position, 'x') and face.position.x != 0 and face.position.y != 0 and face.position.z != 0:
+                print(f"        {{.id = {face.id}, .type_id = {type_id}, .rotation = {face.rotation}, "
+                      f".x = {face.position.x}f, .y = {face.position.y}f, .z = {face.position.z}f }}{'' if i == len(self.model_def.faces) - 1 else ','}", file=file)
+            else:
+                print(f"        {{.id = {face.id}, .type_id = {type_id}, .rotation = {face.rotation}}}{'' if i == len(self.model_def.faces) - 1 else ','}", file=file)
+        print("    }};", file=file)
 
         # Points
-        print("\n    PROGMEM static constexpr PointData points[] = {", file=file)
-        for led in self.model_def.leds:
-            print(f"        {{ {led.index}, {led.face_id}, {led.position.x:.3f}f, "
-                  f"{led.position.y:.3f}f, {led.position.z:.3f}f }},", file=file)
+        print(f"\n    // Point geometry - define all points with correct face assignments", file=file)
+        print(f"    static constexpr PointData POINTS[] = {{", file=file)
+        for i, led in enumerate(self.model_def.leds):
+            print(f"        {{{led.index}, {led.face_id}, {led.position.x:.3f}f, "
+                  f"{led.position.y:.3f}f, {led.position.z:.3f}f}}{'' if i == len(self.model_def.leds) - 1 else ','}", file=file)
         print("    };", file=file)
 
         # Neighbors
-        print("\n    PROGMEM static constexpr NeighborData neighbors[] = {", file=file)
-        for led in self.model_def.leds:
-            neighbors_str = ", ".join(
-                f"{{ {n.led_number}, {n.distance:.3f}f }}"
-                for n in (led.neighbors or [])
-            )
-            print(f"        {{ {led.index}, {{ {neighbors_str} }} }},", file=file)
+        print(f"\n    // Define neighbor relationships", file=file)
+        print(f"    static constexpr NeighborData NEIGHBORS[] = {{", file=file)
+        for i, led in enumerate(self.model_def.leds):
+            if not led.neighbors:
+                continue
+                
+            print(f"        {{", file=file)
+            print(f"            .point_id = {led.index},", file=file)
+            print(f"            .neighbors = {{", file=file)
+            
+            neighbors_str = []
+            for j, n in enumerate(led.neighbors[:MAX_LED_NEIGHBORS]):
+                neighbors_str.append(f"                {{.id = {n.led_number}, .distance = {n.distance:.3f}f}}")
+            
+            print(",\n".join(neighbors_str), file=file)
+            print(f"            }}", file=file)
+            print(f"        }}{'' if i == len(self.model_def.leds) - 1 else ','}", file=file)
         print("    };", file=file)
 
         # Close model definition
         print("};", file=file)
-        print("\n} // namespace Models", file=file)
+        print("\n}} // namespace PixelTheater::Fixtures", file=file)
 
     def export_json(self, file=sys.stdout) -> None:
         """Export model as JSON"""
+        # Get current date and time
+        generation_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
         data = {
             "model": self.model_def.model,
             "geometry": self.model_def.geometry,
             "hardware": self.model_def.hardware,
             "face_types": {name: asdict(ft) for name, ft in self.model_def.face_types.items()},
             "faces": [asdict(f) for f in self.model_def.faces],
-            "points": [led.to_dict() for led in self.model_def.leds]
+            "points": [led.to_dict() for led in self.model_def.leds],
+            "metadata": {
+                "generated_date": generation_date
+            }
         }
         json.dump(data, file, indent=2)
 

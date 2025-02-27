@@ -199,9 +199,17 @@ class TestDodecaModel(unittest.TestCase):
         # Verify header content
         with open(header_file) as f:
             content = f.read()
-            self.assertIn("namespace Models", content)
+            self.assertIn("namespace PixelTheater", content)
+            self.assertIn("namespace Fixtures", content)
             self.assertIn("struct TestModel", content)
-            self.assertIn(f"static constexpr uint16_t LED_COUNT = {expected_led_count}", content)
+            self.assertIn(f"static constexpr size_t LED_COUNT = {expected_led_count}", content)
+            
+            # Check for new format elements
+            self.assertIn("static constexpr std::array<FaceTypeData,", content)
+            self.assertIn("FACE_TYPES", content)
+            self.assertIn("static constexpr std::array<FaceData, FACE_COUNT> FACES", content)
+            self.assertIn("static constexpr PointData POINTS[]", content)
+            self.assertIn("static constexpr NeighborData NEIGHBORS[]", content)
 
     def tearDown(self):
         # Clean up temporary files
