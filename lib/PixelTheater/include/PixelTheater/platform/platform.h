@@ -5,7 +5,8 @@
 namespace PixelTheater {
 
 // Forward declare FastLED-compatible helper functions
-void fill_solid(CRGB* leds, size_t num_leds, const CRGB& color);
+// Remove this declaration to avoid ambiguity with the inline implementation below
+// void fill_solid(CRGB* leds, size_t num_leds, const CRGB& color);
 void nscale8(CRGB* leds, size_t num_leds, uint8_t scale);
 
 class Platform {

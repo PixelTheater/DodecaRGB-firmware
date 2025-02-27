@@ -21,7 +21,9 @@ TEST_CASE("LED Model Hardware") {
         Serial.println("Testing model construction...");
         
         BasicPentagonModel def;
-        Model<BasicPentagonModel> model(def);
+        // Create LED array for the model
+        PixelTheater::CRGB leds[BasicPentagonModel::LED_COUNT] = {};
+        Model<BasicPentagonModel> model(def, leds);
         
         CHECK(model.led_count() == BasicPentagonModel::LED_COUNT);
         CHECK(model.faces.size() == BasicPentagonModel::FACE_COUNT);
@@ -52,7 +54,9 @@ TEST_CASE("LED Model Hardware") {
         Serial.println("Testing face operations...");
         
         BasicPentagonModel def;
-        Model<BasicPentagonModel> model(def);
+        // Create LED array for the model
+        PixelTheater::CRGB leds[BasicPentagonModel::LED_COUNT] = {};
+        Model<BasicPentagonModel> model(def, leds);
         
         // Test first face
         auto& face0 = model.faces[0];
@@ -81,8 +85,8 @@ TEST_CASE("LED Model Hardware") {
         
         Serial.println("Face LED access verified");
         
-        // Test face fill operation
-        fill_solid(face0.leds.data(), face0.led_count(), PixelTheater::CRGB(255, 255, 255));  // White
+        // Test face fill operation - use the template version with just 2 parameters
+        fill_solid(face0.leds, PixelTheater::CRGB(255, 255, 255));  // White
         FastLED.show();
         
         for(size_t i = 0; i < face0.led_count(); i++) {
@@ -97,7 +101,9 @@ TEST_CASE("LED Model Hardware") {
         Serial.println("Testing LED groups...");
         
         BasicPentagonModel def;
-        Model<BasicPentagonModel> model(def);
+        // Create LED array for the model
+        PixelTheater::CRGB leds[BasicPentagonModel::LED_COUNT] = {};
+        Model<BasicPentagonModel> model(def, leds);
         auto& face = model.faces[0];
         
         // Test center group
@@ -127,12 +133,14 @@ TEST_CASE("LED Model Hardware") {
         Serial.println("Testing patterns across faces...");
         
         BasicPentagonModel def;
-        Model<BasicPentagonModel> model(def);
+        // Create LED array for the model
+        PixelTheater::CRGB leds[BasicPentagonModel::LED_COUNT] = {};
+        Model<BasicPentagonModel> model(def, leds);
         
-        // Set each face to a different color
-        fill_solid(model.faces[0].leds, model.faces[0].led_count(), PixelTheater::CRGB(255, 0, 0));    // Red
-        fill_solid(model.faces[1].leds, model.faces[1].led_count(), PixelTheater::CRGB(0, 255, 0));    // Green
-        fill_solid(model.faces[2].leds, model.faces[2].led_count(), PixelTheater::CRGB(0, 0, 255));    // Blue
+        // Set each face to a different color - use the template version with just 2 parameters
+        fill_solid(model.faces[0].leds, PixelTheater::CRGB(255, 0, 0));    // Red
+        fill_solid(model.faces[1].leds, PixelTheater::CRGB(0, 255, 0));    // Green
+        fill_solid(model.faces[2].leds, PixelTheater::CRGB(0, 0, 255));    // Blue
         FastLED.show();
         
         // Verify face colors
@@ -155,7 +163,7 @@ TEST_CASE("LED Model Hardware") {
         
         // Clear all LEDs
         for(auto& face : model.faces) {
-            fill_solid(face.leds, face.led_count(), PixelTheater::CRGB(0, 0, 0));  // Black
+            fill_solid(face.leds, PixelTheater::CRGB(0, 0, 0));  // Black
         }
         FastLED.show();
         

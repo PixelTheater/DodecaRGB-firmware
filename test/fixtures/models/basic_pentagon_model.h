@@ -17,7 +17,7 @@ struct BasicPentagonModel : public ModelDefinition<15, 3> {  // 15 total LEDs (5
     static constexpr size_t FACE_COUNT = 3;
 
     // Face type definitions - each face has 5 LEDs
-    static constexpr std::array<FaceTypeData, 1> FACE_TYPES{{
+    PROGMEM static constexpr std::array<FaceTypeData, 1> FACE_TYPES{{
         {
             .id = 0,
             .type = FaceType::Pentagon,
@@ -27,14 +27,14 @@ struct BasicPentagonModel : public ModelDefinition<15, 3> {  // 15 total LEDs (5
     }};
 
     // Face instances
-    static constexpr std::array<FaceData, FACE_COUNT> FACES{{
+    PROGMEM static constexpr std::array<FaceData, FACE_COUNT> FACES{{
         {.id = 0, .type_id = 0},  // Face 0: LEDs 0-4
         {.id = 1, .type_id = 0},  // Face 1: LEDs 5-9
         {.id = 2, .type_id = 0}   // Face 2: LEDs 10-14
     }};
 
     // Point geometry - define all points with correct face assignments
-    static constexpr PointData POINTS[] = {
+    PROGMEM static constexpr PointData POINTS[] = {
         // Face 0 points
         {0,  0, 0.0f,  0.0f,  1.0f},
         {1,  0, 1.0f,  0.0f,  1.0f},
@@ -58,7 +58,7 @@ struct BasicPentagonModel : public ModelDefinition<15, 3> {  // 15 total LEDs (5
     };
 
     // Define neighbor relationships
-    static constexpr NeighborData NEIGHBORS[] = {
+    PROGMEM static constexpr NeighborData NEIGHBORS[] = {
         // Center point neighbors
         {
             .point_id = 0,

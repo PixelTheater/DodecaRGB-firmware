@@ -1,6 +1,5 @@
 #pragma once
 #include "param_types.h"
-#include <stdexcept>
 #include "PixelTheater/core/math_platform.h"
 #include "PixelTheater/core/log.h"
 #include "PixelTheater/params/handlers/sentinel_handler.h"
