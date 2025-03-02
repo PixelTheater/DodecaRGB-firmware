@@ -259,6 +259,9 @@ private:
     // Coordinate provider callback
     CoordinateProviderCallback _coordinate_provider{nullptr};
     
+    // Frame counter for debugging
+    int frame_count{0};
+    
     // Uniform locations
     int _projectionLoc{-1};
     int _viewLoc{-1};
