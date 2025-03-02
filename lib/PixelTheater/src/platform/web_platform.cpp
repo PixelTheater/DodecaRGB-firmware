@@ -26,17 +26,21 @@ extern void* g_model_ptr;
 
 namespace PixelTheater {
 
-// Vertex shader source with 3D projection
+// Vertex shader source with 3D projection - First pass
 const char* vertex_shader_source = R"(#version 300 es
+precision mediump float;
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 color;
 out vec3 fragColor;
 out float depth;
 out float occlusion; // Pass occlusion to fragment shader
-uniform float pointSize;  // Uniform for point size
+uniform float ledSizeRatio;  // User-controlled size ratio (0.2 to 2.5)
+uniform float physicalLedSize; // Physical LED size in model units
+uniform float cameraDistance;  // Current camera distance
 uniform mat4 projection;  // Projection matrix
 uniform mat4 view;        // View matrix
 uniform float time;       // Time for animation
+uniform float canvasHeight; // Height of the canvas in pixels
 
 void main() {
     // Apply transformations
@@ -46,28 +50,41 @@ void main() {
     // Calculate depth for fragment shader (to fade distant points)
     depth = -viewPos.z;
     
-    // The occlusion is determined by the color alpha:
+    // The occlusion is determined by the color sum:
     // If all color components are very near zero, the LED is occluded
     occlusion = (color.r + color.g + color.b) < 0.01 ? 0.0 : 1.0;
     
-    // Adjust point size based on z-coordinate (perspective)
-    // Use a gentler scaling to maintain visibility at different zoom levels
-    float sizeScale = 1.0 - gl_Position.z * 0.1; // Reduced from 0.1 for more consistent size
-    gl_PointSize = pointSize * max(sizeScale, 0.15); // Increased minimum scale from 0.1
+    // Calculate physically-based LED size
+    // 1. Base physical size calculation
+    float physicalSize = physicalLedSize;
+    
+    // 2. Apply perspective division to get size in screen space
+    // The negative viewPos.z is the distance to the camera in view space
+    float distanceToCamera = -viewPos.z;
+    
+    // 3. Calculate a size that scales properly with distance
+    // This is based on similar triangles principle in a perspective projection
+    float fieldOfViewFactor = canvasHeight / (2.0 * distanceToCamera * tan(radians(15.0))); // 15 degrees is half the FOV
+    float baseScreenSize = physicalSize * fieldOfViewFactor;
+    
+    // 4. Apply user's size ratio
+    float finalSize = baseScreenSize * ledSizeRatio;
+    
+    // 5. Ensure a minimum visible size and apply very subtle distance-based scaling
+    float distanceScale = 1.0 - gl_Position.z * 0.05; // Gentler scaling factor
+    gl_PointSize = max(finalSize * distanceScale, 3.0); // Minimum visible size
     
     fragColor = color;
 }
 )";
 
-// Fragment shader source
+// Fragment shader source - First pass (LED rendering)
 const char* fragment_shader_source = R"(#version 300 es
 precision mediump float;
 in vec3 fragColor;
 in float depth;
 in float occlusion; // Receive occlusion from vertex shader
 out vec4 outColor;
-uniform float ledSize;
-uniform float glowIntensity;
 uniform float brightness;
 
 void main() {
@@ -76,66 +93,161 @@ void main() {
         discard;
     }
     
-    // Create a circular point with soft edges
+    // Distance from center of the point
     float dist = distance(gl_PointCoord, vec2(0.5, 0.5));
     
-    // Discard fragments outside the circle
+    // Simple LED with a bright core and smooth falloff
     if (dist > 0.5) {
-        discard;
+        discard; // Outside the LED's circle
     }
     
-    // Create a bright center with soft glow
-    float intensity = smoothstep(0.5, 0.0, dist);
-    intensity = pow(intensity, 1.2); // Slightly softer falloff for better glow
+    // Calculate normalized brightness (0.0-1.0)
+    float normalizedBrightness = brightness / 255.0;
     
     // Calculate overall brightness of the color
     float colorBrightness = max(max(fragColor.r, fragColor.g), fragColor.b);
     
-    // Make the sphere visible based on global brightness
+    // For lit LEDs
     vec3 baseColor;
-    if (colorBrightness < 0.05) {
-        // For very dim/off LEDs, make them visible based on global brightness
-        // At high brightness (>0.8), make the sphere structure visible
-        float sphereVisibility = max(0.0, (brightness - 0.8) * 5.0); // Ramp up from 0.8 to 1.0
-        baseColor = mix(fragColor * 0.1, vec3(0.1, 0.1, 0.15), sphereVisibility);
-    } else {
-        // For lit LEDs, enhance color vibrancy and brightness
-        baseColor = fragColor * 6.0; // Significantly boost colors
-        baseColor = clamp(baseColor, 0.0, 1.0); // Ensure valid color range
-        
-        // Add a much smaller white core for lit LEDs to preserve color
-        float glowAmount = pow(colorBrightness, 1.1) * 0.4; // Reduced from 0.9 to preserve colors
-        baseColor = mix(baseColor, vec3(1.0), glowAmount);
-    }
+    float alpha;
     
-    // Add bloom/glow effect that preserves color
-    float glow = glowIntensity * pow(1.0 - dist, 2.0) * colorBrightness;
-    baseColor += fragColor * glow; // Use original color for glow instead of white
-    baseColor = clamp(baseColor, 0.0, 1.0);
-    
-    // Fade out LEDs that are facing away from the camera (back-facing)
-    // This helps hide LEDs that should be occluded by the model
-    float depthFade = 1.0;
-    if (depth < 0.0) {
-        // Completely hide points behind the camera
-        discard;
-    } else {
-        // Apply a much softer fade based on depth
-        depthFade = clamp(1.0 - (depth / 8.0), 0.3, 1.0); // Using depth fade values
+    if (colorBrightness > 0.01) {
+        // Core brightness with sharper center
+        float coreBrightness = 1.0 - pow(dist * 1.8, 2.0);
         
-        // Only discard points that are completely facing away
-        if (depthFade < 0.1) {
+        // Apply color with more moderate intensity
+        // Scale down with brightness to preserve dynamic range
+        baseColor = fragColor * 2.5 * coreBrightness;
+        
+        // Add white highlight at center for extra brightness
+        float centerHighlight = 1.0 - dist * 3.5;
+        centerHighlight = max(0.0, centerHighlight);
+        baseColor = mix(baseColor, vec3(1.0), centerHighlight * 0.2);
+        
+        // Use higher alpha for brighter LEDs
+        alpha = coreBrightness;
+    } 
+    // For unlit LEDs - show model structure at very high brightness or when brightness is 0
+    else {
+        if (normalizedBrightness > 0.90) {
+            // Make unlit LEDs faintly visible at high brightness to see model structure
+            float modelVisibility = (normalizedBrightness - 0.90) * 10.0; // Ramp up from 90% to 100%
+            baseColor = vec3(0.15, 0.15, 0.2) * modelVisibility;
+            alpha = modelVisibility * 0.5;
+        } 
+        else if (normalizedBrightness < 0.01) {
+            // When brightness is essentially zero, ensure LEDs are completely dark
+            baseColor = vec3(0.0);
+            alpha = 0.0;
+            discard; // Skip rendering at zero brightness
+        }
+        else {
+            // Otherwise discard unlit LEDs
             discard;
         }
     }
     
-    // Apply the glow effect and depth fade through the alpha channel
-    outColor = vec4(baseColor, intensity * depthFade * occlusion);
+    // Apply depth fading
+    float depthFade = 1.0;
+    if (depth < 0.0) {
+        discard; // Behind the camera
+    } else {
+        depthFade = clamp(1.0 - (depth / 8.0), 0.3, 1.0);
+        if (depthFade < 0.1) {
+            discard; // Too far away
+        }
+    }
+    
+    // Apply depth fade and occlusion to color (not just alpha)
+    // This preserves more brightness while still applying falloff
+    baseColor *= depthFade * occlusion;
+    
+    // No additional boost needed with additive blending
+    
+    // Clamp color values
+    baseColor = clamp(baseColor, 0.0, 1.0);
+    
+    // Output color with full alpha for bright pixels, partial for dim ones
+    // This preserves brightness better with the blending mode we'll use
+    alpha = clamp(max(max(baseColor.r, baseColor.g), baseColor.b), 0.0, 1.0);
+    outColor = vec4(baseColor, alpha);
+}
+)";
+
+// Vertex shader for post-processing (screen quad)
+const char* quad_vertex_shader_source = R"(#version 300 es
+precision mediump float;
+layout(location = 0) in vec2 position;
+layout(location = 1) in vec2 texCoord;
+out vec2 fragTexCoord;
+
+void main() {
+    gl_Position = vec4(position, 0.0, 1.0);
+    fragTexCoord = texCoord;
+}
+)";
+
+// Fragment shader for bloom post-processing
+const char* bloom_fragment_shader_source = R"(#version 300 es
+precision mediump float;
+in vec2 fragTexCoord;
+out vec4 outColor;
+uniform sampler2D sceneTex;
+uniform float bloomIntensity;
+
+void main() {
+    // Sample the original scene
+    vec4 originalColor = texture(sceneTex, fragTexCoord);
+    
+    // Always preserve the original brightness
+    vec3 baseColor = originalColor.rgb;
+    
+    // Skip bloom processing for very low bloom settings
+    if (bloomIntensity <= 0.05) {
+        outColor = vec4(baseColor, originalColor.a);
+        return;
+    }
+    
+    // Use a larger sampling area for higher bloom settings
+    // Scale up for extended range (max is now 3.0)
+    float bloomRadius = max(0.5, bloomIntensity * 1.5);
+    vec4 bloomAccumulator = vec4(0.0);
+    float totalWeight = 0.0;
+    
+    // Sample in a larger radius for bloom effect
+    const int SAMPLES = 16;
+    for (int i = 0; i < SAMPLES; i++) {
+        float angle = float(i) * (3.14159 * 2.0) / float(SAMPLES);
+        vec2 offset = vec2(cos(angle), sin(angle)) * bloomRadius / vec2(textureSize(sceneTex, 0));
+        
+        // Weight based on distance from center
+        float weight = 1.0 - float(i) / float(SAMPLES);
+        vec4 sampleColor = texture(sceneTex, fragTexCoord + offset);
+        
+        // Add weighted sample to accumulator
+        bloomAccumulator += sampleColor * weight;
+        totalWeight += weight;
+    }
+    
+    // Normalize the bloom color
+    vec4 bloomColor = bloomAccumulator / max(totalWeight, 0.001);
+    
+    // Apply bloom with intensity scaling that allows for higher values
+    // Scale up for the extended slider range (0-3.0)
+    float scaledIntensity = bloomIntensity * 0.7;
+    vec3 bloomResult = bloomColor.rgb * scaledIntensity;
+    
+    // Combine original scene with bloom (additive)
+    vec3 finalColor = baseColor + bloomResult;
+    
+    // Preserve alpha from original scene
+    outColor = vec4(finalColor, originalColor.a);
 }
 )";
 
 WebPlatform::WebPlatform(uint16_t num_leds)
-    : _num_leds(num_leds), _leds(nullptr), _brightness(DEFAULT_BRIGHTNESS), _gl_initialized(false) {
+    : _num_leds(num_leds), _leds(nullptr), _brightness(DEFAULT_BRIGHTNESS), 
+      _led_size(DEFAULT_LED_SIZE), _bloom_intensity(DEFAULT_BLOOM_INTENSITY), _gl_initialized(false) {
     
     try {
         // Allocate memory for LEDs
@@ -171,6 +283,16 @@ WebPlatform::~WebPlatform() {
         glDeleteVertexArrays(1, &_vao);
         glDeleteBuffers(1, &_vbo);
         glDeleteProgram(_shader_program);
+        glDeleteProgram(_bloom_shader_program);
+        
+        // Delete framebuffer resources
+        glDeleteFramebuffers(1, &_scene_fbo);
+        glDeleteTextures(1, &_scene_texture);
+        glDeleteRenderbuffers(1, &_scene_depth_rbo);
+        
+        // Delete quad resources
+        glDeleteVertexArrays(1, &_quad_vao);
+        glDeleteBuffers(1, &_quad_vbo);
     }
 }
 
@@ -215,61 +337,27 @@ bool WebPlatform::initWebGL() {
         return false;
     }
     
-    // Create and compile vertex shader
-    GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_shader, 1, &vertex_shader_source, nullptr);
-    glCompileShader(vertex_shader);
+    // Get canvas dimensions for framebuffer setup
+    emscripten_get_canvas_element_size("#canvas", &_canvas_width, &_canvas_height);
     
-    // Check vertex shader compilation
-    GLint success;
-    glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        char info_log[512];
-        glGetShaderInfoLog(vertex_shader, 512, nullptr, info_log);
-        std::cerr << "Vertex shader compilation failed: " << info_log << std::endl;
+    // Create and compile main shader program (LED rendering)
+    _shader_program = createShaderProgram(vertex_shader_source, fragment_shader_source);
+    if (!_shader_program) {
         return false;
     }
     
-    // Create and compile fragment shader
-    GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &fragment_shader_source, nullptr);
-    glCompileShader(fragment_shader);
-    
-    // Check fragment shader compilation
-    glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        char info_log[512];
-        glGetShaderInfoLog(fragment_shader, 512, nullptr, info_log);
-        std::cerr << "Fragment shader compilation failed: " << info_log << std::endl;
+    // Create and compile bloom shader program (post-processing)
+    _bloom_shader_program = createShaderProgram(quad_vertex_shader_source, bloom_fragment_shader_source);
+    if (!_bloom_shader_program) {
         return false;
     }
     
-    // Create shader program and link shaders
-    _shader_program = glCreateProgram();
-    glAttachShader(_shader_program, vertex_shader);
-    glAttachShader(_shader_program, fragment_shader);
-    glLinkProgram(_shader_program);
-    
-    // Check program linking
-    glGetProgramiv(_shader_program, GL_LINK_STATUS, &success);
-    if (!success) {
-        char info_log[512];
-        glGetProgramInfoLog(_shader_program, 512, nullptr, info_log);
-        std::cerr << "Shader program linking failed: " << info_log << std::endl;
-        return false;
-    }
-    
-    // Delete shaders as they're linked into the program now
-    glDeleteShader(vertex_shader);
-    glDeleteShader(fragment_shader);
-    
-    // Get uniform locations
+    // Get uniform locations for main shader
     _projectionLoc = glGetUniformLocation(_shader_program, "projection");
     _viewLoc = glGetUniformLocation(_shader_program, "view");
-    _pointSizeLoc = glGetUniformLocation(_shader_program, "pointSize");
     _timeLoc = glGetUniformLocation(_shader_program, "time");
     
-    // Create VAO and VBO
+    // Create VAO and VBO for LEDs
     glGenVertexArrays(1, &_vao);
     glGenBuffers(1, &_vbo);
     
@@ -278,8 +366,8 @@ bool WebPlatform::initWebGL() {
     
     // Set up initial buffer data (will be updated each frame)
     struct Vertex {
-        float x, y, z;  // Now using 3D coordinates
-        float r, g, b;
+        float x, y, z;  // 3D coordinates
+        float r, g, b;  // Color
     };
     
     std::vector<Vertex> vertices(_num_leds);
@@ -297,7 +385,7 @@ bool WebPlatform::initWebGL() {
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_DYNAMIC_DRAW);
     
-    // Position attribute (now 3D)
+    // Position attribute (3D)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
     glEnableVertexAttribArray(0);
     
@@ -305,16 +393,127 @@ bool WebPlatform::initWebGL() {
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
     
-    // Unbind VBO and VAO
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    // Create a screen-aligned quad for the post-processing pass
+    glGenVertexArrays(1, &_quad_vao);
+    glGenBuffers(1, &_quad_vbo);
     
-    // Enable depth testing for 3D rendering
+    glBindVertexArray(_quad_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, _quad_vbo);
+    
+    // Define the quad vertices (full screen)
+    float quadVertices[] = {
+        // positions   // texture coords
+        -1.0f,  1.0f,  0.0f, 1.0f,
+        -1.0f, -1.0f,  0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+        
+        -1.0f,  1.0f,  0.0f, 1.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+         1.0f,  1.0f,  1.0f, 1.0f
+    };
+    
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+    
+    // Position attribute
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    
+    // Texture coordinates attribute
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    
+    // Set up framebuffers for multi-pass rendering
+    setupFramebuffers();
+    
+    // Enable depth testing and blending
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    // Use additive blending for LED points - much brighter results
+    // Source color is added to destination color (GL_ONE, GL_ONE)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     
     return true;
+}
+
+GLuint WebPlatform::createShaderProgram(const char* vertexSource, const char* fragmentSource) {
+    // Compile vertex shader
+    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexSource, nullptr);
+    glCompileShader(vertexShader);
+    
+    // Check vertex shader compilation
+    GLint success;
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        char infoLog[512];
+        glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
+        std::cerr << "Vertex shader compilation failed: " << infoLog << std::endl;
+        return 0;
+    }
+    
+    // Compile fragment shader
+    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentSource, nullptr);
+    glCompileShader(fragmentShader);
+    
+    // Check fragment shader compilation
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        char infoLog[512];
+        glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
+        std::cerr << "Fragment shader compilation failed: " << infoLog << std::endl;
+        return 0;
+    }
+    
+    // Create and link shader program
+    GLuint program = glCreateProgram();
+    glAttachShader(program, vertexShader);
+    glAttachShader(program, fragmentShader);
+    glLinkProgram(program);
+    
+    // Check program linking
+    glGetProgramiv(program, GL_LINK_STATUS, &success);
+    if (!success) {
+        char infoLog[512];
+        glGetProgramInfoLog(program, 512, nullptr, infoLog);
+        std::cerr << "Shader program linking failed: " << infoLog << std::endl;
+        return 0;
+    }
+    
+    // Clean up shaders
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+    
+    return program;
+}
+
+void WebPlatform::setupFramebuffers() {
+    // Create framebuffer for the scene render
+    glGenFramebuffers(1, &_scene_fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, _scene_fbo);
+    
+    // Create texture for color attachment
+    glGenTextures(1, &_scene_texture);
+    glBindTexture(GL_TEXTURE_2D, _scene_texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _canvas_width, _canvas_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _scene_texture, 0);
+    
+    // Create renderbuffer for depth attachment
+    glGenRenderbuffers(1, &_scene_depth_rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, _scene_depth_rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, _canvas_width, _canvas_height);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _scene_depth_rbo);
+    
+    // Check framebuffer completeness
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        std::cerr << "Framebuffer is not complete!" << std::endl;
+    }
+    
+    // Unbind the framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void WebPlatform::updateVertexBuffer() {
@@ -459,9 +658,6 @@ void WebPlatform::updateVertexBuffer() {
             }
         }
         
-        // Apply brightness scaling with bounds checking
-        float brightness_scale = _brightness / 255.0f;
-        
         // Make sure we're not accessing out of bounds
         if (i < _num_leds) {
             // Get base RGB values
@@ -469,55 +665,66 @@ void WebPlatform::updateVertexBuffer() {
             float g = _leds[i].g / 255.0f;
             float b = _leds[i].b / 255.0f;
             
-            // Apply brightness as an additive boost rather than a multiplier
-            // This ensures colors remain vibrant even at lower brightness settings
-            float boost = brightness_scale;  // Full brightness effect
-            
-            // Significantly increase brightness scaling and preserve color saturation
-            vertices[i].r = std::min(r * brightness_scale * COLOR_BRIGHTNESS_BOOST + boost * 0.1f, 1.0f);
-            vertices[i].g = std::min(g * brightness_scale * COLOR_BRIGHTNESS_BOOST + boost * 0.1f, 1.0f);
-            vertices[i].b = std::min(b * brightness_scale * COLOR_BRIGHTNESS_BOOST + boost * 0.1f, 1.0f);
-            
-            // Apply occlusion factor (0=hidden, 1=fully visible)
-            vertices[i].r *= occlusion_factor;
-            vertices[i].g *= occlusion_factor;
-            vertices[i].b *= occlusion_factor;
-            
-            // Ensure colors are visible (minimum brightness)
-            if ((r > 0 || g > 0 || b > 0) && occlusion_factor > 0.0f) {
-                // Only apply minimum brightness if the LED is not completely off and not occluded
-                float max_component = std::max(std::max(vertices[i].r, vertices[i].g), vertices[i].b);
-                if (max_component < MIN_LED_BRIGHTNESS) {
-                    // Scale up all components proportionally
-                    float scale_factor = MIN_LED_BRIGHTNESS / max_component;
-                    vertices[i].r *= scale_factor;
-                    vertices[i].g *= scale_factor;
-                    vertices[i].b *= scale_factor;
-                }
-                
-                // Enhance color saturation by reducing the minimum component
-                float min_component = std::min(std::min(vertices[i].r, vertices[i].g), vertices[i].b);
-                if (min_component > 0.0f) {
-                    // Reduce the minimum component to increase saturation
-                    float saturation_factor = 0.7f; // Adjust to control saturation level
-                    vertices[i].r -= min_component * saturation_factor;
-                    vertices[i].g -= min_component * saturation_factor;
-                    vertices[i].b -= min_component * saturation_factor;
-                    
-                    // Ensure values remain positive
-                    vertices[i].r = std::max(vertices[i].r, 0.0f);
-                    vertices[i].g = std::max(vertices[i].g, 0.0f);
-                    vertices[i].b = std::max(vertices[i].b, 0.0f);
-                }
+            // Check for zero brightness to avoid white LEDs at brightness=0
+            if (_brightness < 2) {
+                vertices[i].r = 0.0f;
+                vertices[i].g = 0.0f;
+                vertices[i].b = 0.0f;
             } else {
-                // For completely off LEDs or occluded LEDs, make them very dark or invisible
-                if (occlusion_factor > 0.0f) {
-                    // Dim but visible for non-occluded off LEDs
-                    vertices[i].r = 0.02f * occlusion_factor;
-                    vertices[i].g = 0.02f * occlusion_factor;
-                    vertices[i].b = 0.02f * occlusion_factor;
+                // Apply enhanced brightness scaling with better dynamic range preservation
+                float brightness_scale = _brightness / 255.0f;
+                
+                // Use a more moderate multiplier for better dynamic range
+                float multiplier = 1.5f;
+                float boost = brightness_scale * 0.05f; // Very small boost
+                
+                vertices[i].r = std::min(r * brightness_scale * multiplier + boost, 1.0f);
+                vertices[i].g = std::min(g * brightness_scale * multiplier + boost, 1.0f);
+                vertices[i].b = std::min(b * brightness_scale * multiplier + boost, 1.0f);
+                
+                // Apply occlusion factor (0=hidden, 1=fully visible)
+                vertices[i].r *= occlusion_factor;
+                vertices[i].g *= occlusion_factor;
+                vertices[i].b *= occlusion_factor;
+                
+                // Ensure colors are visible (minimum brightness)
+                if ((r > 0 || g > 0 || b > 0) && occlusion_factor > 0.0f) {
+                    // Only apply minimum brightness if the LED is not completely off and not occluded
+                    float max_component = std::max(std::max(vertices[i].r, vertices[i].g), vertices[i].b);
+                    float min_brightness = MIN_LED_BRIGHTNESS;
+                    
+                    if (max_component < min_brightness) {
+                        // Scale up all components proportionally
+                        float scale_factor = min_brightness / max_component;
+                        vertices[i].r *= scale_factor;
+                        vertices[i].g *= scale_factor;
+                        vertices[i].b *= scale_factor;
+                    }
+                    
+                    // Enhance color saturation by reducing the minimum component
+                    float min_component = std::min(std::min(vertices[i].r, vertices[i].g), vertices[i].b);
+                    if (min_component > 0.0f) {
+                        // Reduce the minimum component to increase saturation
+                        float saturation_factor = 0.3f; // Lower value preserves more accurate colors
+                        vertices[i].r -= min_component * saturation_factor;
+                        vertices[i].g -= min_component * saturation_factor;
+                        vertices[i].b -= min_component * saturation_factor;
+                        
+                        // Ensure values remain positive
+                        vertices[i].r = std::max(vertices[i].r, 0.0f);
+                        vertices[i].g = std::max(vertices[i].g, 0.0f);
+                        vertices[i].b = std::max(vertices[i].b, 0.0f);
+                    }
+                } 
+                // For unlit LEDs
+                else if (occlusion_factor > 0.0f && _brightness > 230) {
+                    // At very high brightness, visualize unlit LEDs to see the model structure
+                    float visibility = (_brightness - 230.0f) / 25.0f; // Ramp up from 230-255
+                    vertices[i].r = 0.03f * visibility * occlusion_factor;
+                    vertices[i].g = 0.03f * visibility * occlusion_factor;
+                    vertices[i].b = 0.05f * visibility * occlusion_factor; // Slightly blue tint
                 } else {
-                    // Completely invisible for occluded LEDs
+                    // Completely off LEDs or occluded LEDs are invisible
                     vertices[i].r = 0.0f;
                     vertices[i].g = 0.0f;
                     vertices[i].b = 0.0f;
@@ -577,6 +784,108 @@ void WebPlatform::createViewMatrix(float* view_matrix) {
     }
 }
 
+void WebPlatform::firstPass() {
+    // Render scene to framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, _scene_fbo);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // Clear with transparent black
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    // Use the main shader for LED rendering
+    glUseProgram(_shader_program);
+    
+    // Calculate and set projection matrix
+    float fov = CAMERA_FOV_DEGREES * 3.14159f / 180.0f;
+    float aspect = static_cast<float>(_canvas_width) / static_cast<float>(_canvas_height);
+    float f = 1.0f / tan(fov / 2.0f);
+    float projection[16] = {
+        f / aspect, 0.0f, 0.0f, 0.0f,
+        0.0f, f, 0.0f, 0.0f,
+        0.0f, 0.0f, (CAMERA_FAR_PLANE + CAMERA_NEAR_PLANE) / (CAMERA_NEAR_PLANE - CAMERA_FAR_PLANE), -1.0f,
+        0.0f, 0.0f, (2.0f * CAMERA_FAR_PLANE * CAMERA_NEAR_PLANE) / (CAMERA_NEAR_PLANE - CAMERA_FAR_PLANE), 0.0f
+    };
+    
+    // Create and set view matrix
+    float view[16];
+    createViewMatrix(view);
+    
+    // Set uniforms
+    glUniformMatrix4fv(_projectionLoc, 1, GL_FALSE, projection);
+    glUniformMatrix4fv(_viewLoc, 1, GL_FALSE, view);
+    
+    // Set new physically-based LED size uniforms
+    GLint ledSizeRatioLoc = glGetUniformLocation(_shader_program, "ledSizeRatio");
+    if (ledSizeRatioLoc != -1) {
+        glUniform1f(ledSizeRatioLoc, _led_size);
+    }
+    
+    // The physical LED size in model units
+    // Convert from mm to model units based on the scaling factor used in the model
+    // Scaling factor is 0.0018f, as used in updateVertexBuffer
+    GLint physicalLedSizeLoc = glGetUniformLocation(_shader_program, "physicalLedSize");
+    if (physicalLedSizeLoc != -1) {
+        // Calculate physical LED size relative to model scale
+        float ledSizeInModelUnits = PHYSICAL_LED_DIAMETER / PHYSICAL_FACE_EDGE * 0.5f;
+        glUniform1f(physicalLedSizeLoc, ledSizeInModelUnits);
+    }
+    
+    // Pass camera distance for size calculation
+    GLint cameraDistanceLoc = glGetUniformLocation(_shader_program, "cameraDistance");
+    if (cameraDistanceLoc != -1) {
+        glUniform1f(cameraDistanceLoc, _camera_distance);
+    }
+    
+    // Pass canvas height for FOV calculation
+    GLint canvasHeightLoc = glGetUniformLocation(_shader_program, "canvasHeight");
+    if (canvasHeightLoc != -1) {
+        glUniform1f(canvasHeightLoc, static_cast<float>(_canvas_height));
+    }
+    
+    // Pass brightness uniform
+    GLint brightnessLoc = glGetUniformLocation(_shader_program, "brightness");
+    if (brightnessLoc != -1) {
+        glUniform1f(brightnessLoc, static_cast<float>(_brightness));
+    }
+    
+    // Draw the LEDs
+    glBindVertexArray(_vao);
+    glDrawArrays(GL_POINTS, 0, _num_leds);
+    
+    // Unbind
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void WebPlatform::bloomPass() {
+    // Render to default framebuffer (screen)
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    // Use bloom shader for post-processing
+    glUseProgram(_bloom_shader_program);
+    
+    // Bind the scene texture
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, _scene_texture);
+    
+    // Set uniforms for bloom shader
+    GLint sceneTexLoc = glGetUniformLocation(_bloom_shader_program, "sceneTex");
+    if (sceneTexLoc != -1) {
+        glUniform1i(sceneTexLoc, 0); // Texture unit 0
+    }
+    
+    GLint bloomIntensityLoc = glGetUniformLocation(_bloom_shader_program, "bloomIntensity");
+    if (bloomIntensityLoc != -1) {
+        glUniform1f(bloomIntensityLoc, _bloom_intensity);
+    }
+    
+    // Switch to additive blending for the bloom pass
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    
+    // Draw the full-screen quad
+    glBindVertexArray(_quad_vao);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
 void WebPlatform::show() {
     // Initialize WebGL if not already done
     if (!_gl_initialized) {
@@ -602,103 +911,37 @@ void WebPlatform::show() {
     // Update vertex buffer with LED colors
     updateVertexBuffer();
     
-    // Clear the screen
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Pure black background for better contrast
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    // Draw LEDs
-    glUseProgram(_shader_program);
-    glBindVertexArray(_vao);
-    
-    // Get canvas dimensions for correct aspect ratio
+    // Check if canvas size has changed
     int width, height;
     emscripten_get_canvas_element_size("#canvas", &width, &height);
-    float aspect = width > 0 && height > 0 ? (float)width / (float)height : 1.0f;
-    
-    // Set up projection matrix (perspective)
-    float fov = CAMERA_FOV_DEGREES * 3.14159f / 180.0f;  // Convert degrees to radians
-    float near = CAMERA_NEAR_PLANE;
-    float far = CAMERA_FAR_PLANE;
-    
-    // Create perspective projection matrix with correct aspect ratio
-    float f = 1.0f / tan(fov / 2.0f);
-    float projection[16] = {
-        f / aspect, 0.0f, 0.0f, 0.0f,
-        0.0f, f, 0.0f, 0.0f,
-        0.0f, 0.0f, (far + near) / (near - far), -1.0f,
-        0.0f, 0.0f, (2.0f * far * near) / (near - far), 0.0f
-    };
-    
-    // Create view matrix with rotation
-    float view[16];
-    createViewMatrix(view);
-    
-    // Set uniforms
-    if (_projectionLoc != -1) {
-        glUniformMatrix4fv(_projectionLoc, 1, GL_FALSE, projection);
+    if (width != _canvas_width || height != _canvas_height) {
+        _canvas_width = width;
+        _canvas_height = height;
+        
+        // Resize framebuffer textures
+        glBindTexture(GL_TEXTURE_2D, _scene_texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _canvas_width, _canvas_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        
+        glBindRenderbuffer(GL_RENDERBUFFER, _scene_depth_rbo);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, _canvas_width, _canvas_height);
     }
     
-    if (_viewLoc != -1) {
-        glUniformMatrix4fv(_viewLoc, 1, GL_FALSE, view);
-    }
+    // First pass: render LEDs to framebuffer
+    firstPass();
     
-    if (_pointSizeLoc != -1) {
-        glUniform1f(_pointSizeLoc, _led_size);  // Use the configurable LED size
-    }
-    
-    // Set the new uniforms for LED size and glow intensity
-    GLint ledSizeLoc = glGetUniformLocation(_shader_program, "ledSize");
-    if (ledSizeLoc != -1) {
-        glUniform1f(ledSizeLoc, _led_size);
-    }
-    
-    GLint glowIntensityLoc = glGetUniformLocation(_shader_program, "glowIntensity");
-    if (glowIntensityLoc != -1) {
-        glUniform1f(glowIntensityLoc, _glow_intensity);
-    }
-    
-    // Pass the brightness as a uniform for sphere visibility
-    GLint brightnessLoc = glGetUniformLocation(_shader_program, "brightness");
-    if (brightnessLoc != -1) {
-        glUniform1f(brightnessLoc, _brightness / 255.0f);
-    }
-    
-    if (_timeLoc != -1) {
-        // Pass current time for animation (not used for rotation anymore)
-        glUniform1f(_timeLoc, emscripten_get_now());
-    }
-    
-    // Print debug info about what we're drawing
-    if (_num_leds > 0 && g_debug_mode) {
-        // Only print occasionally to reduce spam
-        static uint32_t last_debug_time = 0;
-        uint32_t current_time = emscripten_get_now();
-        if (current_time - last_debug_time > 10000) { // Only print every 10 seconds
-            std::cout << "Drawing " << _num_leds << " LEDs. Brightness: " << (int)_brightness << std::endl;
-            last_debug_time = current_time;
-        }
-    }
-    
-    // Enable backface culling
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    
-    glDrawArrays(GL_POINTS, 0, _num_leds);
-    
-    // Disable culling after drawing
-    glDisable(GL_CULL_FACE);
-    
-    // Unbind
-    glBindVertexArray(0);
-    glUseProgram(0);
+    // Second pass: apply bloom and render to screen
+    bloomPass();
 }
 
 void WebPlatform::setBrightness(uint8_t brightness) {
-    // Only log brightness changes in debug mode
     if (_brightness != brightness && g_debug_mode) {
         std::cout << "Brightness changed from " << (int)_brightness << " to " << (int)brightness << std::endl;
     }
     _brightness = brightness;
+}
+
+uint8_t WebPlatform::getBrightness() const {
+    return _brightness;
 }
 
 void WebPlatform::clear() {
@@ -709,14 +952,10 @@ void WebPlatform::clear() {
 
 void WebPlatform::setMaxRefreshRate(uint8_t fps) {
     _max_refresh_rate = fps;
-    // Note: In WebGL, we don't control the refresh rate directly
-    // It's tied to the browser's requestAnimationFrame
 }
 
 void WebPlatform::setDither(uint8_t dither) {
     _dither = dither;
-    // Note: Dithering would need to be implemented in the shader
-    // For simplicity, we're ignoring this for now
 }
 
 void WebPlatform::setLEDSize(float size) {
@@ -727,12 +966,12 @@ float WebPlatform::getLEDSize() const {
     return _led_size;
 }
 
-void WebPlatform::setGlowIntensity(float intensity) {
-    _glow_intensity = intensity;
+void WebPlatform::setBloomIntensity(float intensity) {
+    _bloom_intensity = intensity;
 }
 
-float WebPlatform::getGlowIntensity() const {
-    return _glow_intensity;
+float WebPlatform::getBloomIntensity() const {
+    return _bloom_intensity;
 }
 
 void WebPlatform::setLEDSpacing(float spacing) {
@@ -755,25 +994,6 @@ void WebPlatform::setLEDArrangement(const float* positions, uint16_t count) {
     std::memcpy(_led_positions, positions, count * 3 * sizeof(float));
 }
 
-GLuint WebPlatform::compileShader(unsigned int type, const char* source) {
-    GLuint shader = glCreateShader(type);
-    glShaderSource(shader, 1, &source, nullptr);
-    glCompileShader(shader);
-    
-    // Check compilation status
-    GLint success;
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        char info_log[512];
-        glGetShaderInfoLog(shader, 512, nullptr, info_log);
-        std::cerr << "Shader compilation failed: " << info_log << std::endl;
-        glDeleteShader(shader);
-        return 0;
-    }
-    
-    return shader;
-}
-
 } // namespace PixelTheater
 
 #else
@@ -787,6 +1007,9 @@ namespace PixelTheater {
 
 WebPlatform::WebPlatform(uint16_t num_leds) : _num_leds(num_leds) {
     _leds = new CRGB[num_leds]();  // Initialize to zero
+    _brightness = DEFAULT_BRIGHTNESS;
+    _led_size = DEFAULT_LED_SIZE;
+    _bloom_intensity = DEFAULT_BLOOM_INTENSITY;
     std::cout << "Created stub WebPlatform with " << num_leds << " LEDs (non-web build)" << std::endl;
 }
 

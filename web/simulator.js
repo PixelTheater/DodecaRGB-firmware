@@ -5095,6 +5095,8 @@ async function createWasm() {
   }
   }
 
+  var _glActiveTexture = (x0) => GLctx.activeTexture(x0);
+
   var _glAttachShader = (program, shader) => {
       GLctx.attachShader(GL.programs[program], GL.shaders[shader]);
     };
@@ -5122,6 +5124,20 @@ async function createWasm() {
         GLctx.currentPixelUnpackBufferBinding = buffer;
       }
       GLctx.bindBuffer(target, GL.buffers[buffer]);
+    };
+
+  var _glBindFramebuffer = (target, framebuffer) => {
+  
+      GLctx.bindFramebuffer(target, GL.framebuffers[framebuffer]);
+  
+    };
+
+  var _glBindRenderbuffer = (target, renderbuffer) => {
+      GLctx.bindRenderbuffer(target, GL.renderbuffers[renderbuffer]);
+    };
+
+  var _glBindTexture = (target, texture) => {
+      GLctx.bindTexture(target, GL.textures[texture]);
     };
 
   var _glBindVertexArray = (vao) => {
@@ -5161,6 +5177,8 @@ async function createWasm() {
       GLctx.bufferSubData(target, offset, HEAPU8.subarray(data, data+size));
     };
 
+  var _glCheckFramebufferStatus = (x0) => GLctx.checkFramebufferStatus(x0);
+
   var _glClear = (x0) => GLctx.clear(x0);
 
   var _glClearColor = (x0, x1, x2, x3) => GLctx.clearColor(x0, x1, x2, x3);
@@ -5189,8 +5207,6 @@ async function createWasm() {
       return id;
     };
 
-  var _glCullFace = (x0) => GLctx.cullFace(x0);
-
   var _glDeleteBuffers = (n, buffers) => {
       for (var i = 0; i < n; i++) {
         var id = HEAP32[(((buffers)+(i*4))>>2)];
@@ -5211,6 +5227,17 @@ async function createWasm() {
       }
     };
 
+  var _glDeleteFramebuffers = (n, framebuffers) => {
+      for (var i = 0; i < n; ++i) {
+        var id = HEAP32[(((framebuffers)+(i*4))>>2)];
+        var framebuffer = GL.framebuffers[id];
+        if (!framebuffer) continue; // GL spec: "glDeleteFramebuffers silently ignores 0s and names that do not correspond to existing framebuffer objects".
+        GLctx.deleteFramebuffer(framebuffer);
+        framebuffer.name = 0;
+        GL.framebuffers[id] = null;
+      }
+    };
+
   var _glDeleteProgram = (id) => {
       if (!id) return;
       var program = GL.programs[id];
@@ -5223,6 +5250,17 @@ async function createWasm() {
       GLctx.deleteProgram(program);
       program.name = 0;
       GL.programs[id] = null;
+    };
+
+  var _glDeleteRenderbuffers = (n, renderbuffers) => {
+      for (var i = 0; i < n; i++) {
+        var id = HEAP32[(((renderbuffers)+(i*4))>>2)];
+        var renderbuffer = GL.renderbuffers[id];
+        if (!renderbuffer) continue; // GL spec: "glDeleteRenderbuffers silently ignores 0s and names that do not correspond to existing renderbuffer objects".
+        GLctx.deleteRenderbuffer(renderbuffer);
+        renderbuffer.name = 0;
+        GL.renderbuffers[id] = null;
+      }
     };
 
   var _glDeleteShader = (id) => {
@@ -5238,6 +5276,19 @@ async function createWasm() {
       GL.shaders[id] = null;
     };
 
+  var _glDeleteTextures = (n, textures) => {
+      for (var i = 0; i < n; i++) {
+        var id = HEAP32[(((textures)+(i*4))>>2)];
+        var texture = GL.textures[id];
+        // GL spec: "glDeleteTextures silently ignores 0s and names that do not
+        // correspond to existing textures".
+        if (!texture) continue;
+        GLctx.deleteTexture(texture);
+        texture.name = 0;
+        GL.textures[id] = null;
+      }
+    };
+
   var _glDeleteVertexArrays = (n, vaos) => {
       for (var i = 0; i < n; i++) {
         var id = HEAP32[(((vaos)+(i*4))>>2)];
@@ -5245,8 +5296,6 @@ async function createWasm() {
         GL.vaos[id] = null;
       }
     };
-
-  var _glDisable = (x0) => GLctx.disable(x0);
 
   var _glDrawArrays = (mode, first, count) => {
       // bind any client-side buffers
@@ -5265,8 +5314,33 @@ async function createWasm() {
       GLctx.enableVertexAttribArray(index);
     };
 
+  var _glFramebufferRenderbuffer = (target, attachment, renderbuffertarget, renderbuffer) => {
+      GLctx.framebufferRenderbuffer(target, attachment, renderbuffertarget,
+                                         GL.renderbuffers[renderbuffer]);
+    };
+
+  var _glFramebufferTexture2D = (target, attachment, textarget, texture, level) => {
+      GLctx.framebufferTexture2D(target, attachment, textarget,
+                                      GL.textures[texture], level);
+    };
+
   var _glGenBuffers = (n, buffers) => {
       GL.genObject(n, buffers, 'createBuffer', GL.buffers
+        );
+    };
+
+  var _glGenFramebuffers = (n, ids) => {
+      GL.genObject(n, ids, 'createFramebuffer', GL.framebuffers
+        );
+    };
+
+  var _glGenRenderbuffers = (n, renderbuffers) => {
+      GL.genObject(n, renderbuffers, 'createRenderbuffer', GL.renderbuffers
+        );
+    };
+
+  var _glGenTextures = (n, textures) => {
+      GL.genObject(n, textures, 'createTexture', GL.textures
         );
     };
 
@@ -5474,11 +5548,104 @@ async function createWasm() {
   
     };
 
+  var _glRenderbufferStorage = (x0, x1, x2, x3) => GLctx.renderbufferStorage(x0, x1, x2, x3);
+
   var _glShaderSource = (shader, count, string, length) => {
       var source = GL.getSource(shader, count, string, length);
   
       GLctx.shaderSource(GL.shaders[shader], source);
     };
+
+  var computeUnpackAlignedImageSize = (width, height, sizePerPixel) => {
+      function roundedToNextMultipleOf(x, y) {
+        return (x + y - 1) & -y;
+      }
+      var plainRowSize = (GL.unpackRowLength || width) * sizePerPixel;
+      var alignedRowSize = roundedToNextMultipleOf(plainRowSize, GL.unpackAlignment);
+      return height * alignedRowSize;
+    };
+  
+  var colorChannelsInGlTextureFormat = (format) => {
+      // Micro-optimizations for size: map format to size by subtracting smallest
+      // enum value (0x1902) from all values first.  Also omit the most common
+      // size value (1) from the list, which is assumed by formats not on the
+      // list.
+      var colorChannels = {
+        // 0x1902 /* GL_DEPTH_COMPONENT */ - 0x1902: 1,
+        // 0x1906 /* GL_ALPHA */ - 0x1902: 1,
+        5: 3,
+        6: 4,
+        // 0x1909 /* GL_LUMINANCE */ - 0x1902: 1,
+        8: 2,
+        29502: 3,
+        29504: 4,
+        // 0x1903 /* GL_RED */ - 0x1902: 1,
+        26917: 2,
+        26918: 2,
+        // 0x8D94 /* GL_RED_INTEGER */ - 0x1902: 1,
+        29846: 3,
+        29847: 4
+      };
+      return colorChannels[format - 0x1902]||1;
+    };
+  
+  var heapObjectForWebGLType = (type) => {
+      // Micro-optimization for size: Subtract lowest GL enum number (0x1400/* GL_BYTE */) from type to compare
+      // smaller values for the heap, for shorter generated code size.
+      // Also the type HEAPU16 is not tested for explicitly, but any unrecognized type will return out HEAPU16.
+      // (since most types are HEAPU16)
+      type -= 0x1400;
+      if (type == 0) return HEAP8;
+  
+      if (type == 1) return HEAPU8;
+  
+      if (type == 2) return HEAP16;
+  
+      if (type == 4) return HEAP32;
+  
+      if (type == 6) return HEAPF32;
+  
+      if (type == 5
+        || type == 28922
+        || type == 28520
+        || type == 30779
+        || type == 30782
+        )
+        return HEAPU32;
+  
+      return HEAPU16;
+    };
+  
+  var toTypedArrayIndex = (pointer, heap) =>
+      pointer >>> (31 - Math.clz32(heap.BYTES_PER_ELEMENT));
+  
+  var emscriptenWebGLGetTexPixelData = (type, format, width, height, pixels, internalFormat) => {
+      var heap = heapObjectForWebGLType(type);
+      var sizePerPixel = colorChannelsInGlTextureFormat(format) * heap.BYTES_PER_ELEMENT;
+      var bytes = computeUnpackAlignedImageSize(width, height, sizePerPixel);
+      return heap.subarray(toTypedArrayIndex(pixels, heap), toTypedArrayIndex(pixels + bytes, heap));
+    };
+  
+  
+  
+  var _glTexImage2D = (target, level, internalFormat, width, height, border, format, type, pixels) => {
+      if (GL.currentContext.version >= 2) {
+        if (GLctx.currentPixelUnpackBufferBinding) {
+          GLctx.texImage2D(target, level, internalFormat, width, height, border, format, type, pixels);
+          return;
+        }
+        if (pixels) {
+          var heap = heapObjectForWebGLType(type);
+          var index = toTypedArrayIndex(pixels, heap);
+          GLctx.texImage2D(target, level, internalFormat, width, height, border, format, type, heap, index);
+          return;
+        }
+      }
+      var pixelData = pixels ? emscriptenWebGLGetTexPixelData(type, format, width, height, pixels, internalFormat) : null;
+      GLctx.texImage2D(target, level, internalFormat, width, height, border, format, type, pixelData);
+    };
+
+  var _glTexParameteri = (x0, x1, x2) => GLctx.texParameteri(x0, x1, x2);
 
   var webglGetUniformLocation = (location) => {
       var p = GLctx.currentProgram;
@@ -5501,6 +5668,11 @@ async function createWasm() {
   
   var _glUniform1f = (location, v0) => {
       GLctx.uniform1f(webglGetUniformLocation(location), v0);
+    };
+
+  
+  var _glUniform1i = (location, v0) => {
+      GLctx.uniform1i(webglGetUniformLocation(location), v0);
     };
 
   
@@ -5631,9 +5803,17 @@ var wasmImports = {
   /** @export */
   fd_write: _fd_write,
   /** @export */
+  glActiveTexture: _glActiveTexture,
+  /** @export */
   glAttachShader: _glAttachShader,
   /** @export */
   glBindBuffer: _glBindBuffer,
+  /** @export */
+  glBindFramebuffer: _glBindFramebuffer,
+  /** @export */
+  glBindRenderbuffer: _glBindRenderbuffer,
+  /** @export */
+  glBindTexture: _glBindTexture,
   /** @export */
   glBindVertexArray: _glBindVertexArray,
   /** @export */
@@ -5642,6 +5822,8 @@ var wasmImports = {
   glBufferData: _glBufferData,
   /** @export */
   glBufferSubData: _glBufferSubData,
+  /** @export */
+  glCheckFramebufferStatus: _glCheckFramebufferStatus,
   /** @export */
   glClear: _glClear,
   /** @export */
@@ -5653,17 +5835,19 @@ var wasmImports = {
   /** @export */
   glCreateShader: _glCreateShader,
   /** @export */
-  glCullFace: _glCullFace,
-  /** @export */
   glDeleteBuffers: _glDeleteBuffers,
+  /** @export */
+  glDeleteFramebuffers: _glDeleteFramebuffers,
   /** @export */
   glDeleteProgram: _glDeleteProgram,
   /** @export */
+  glDeleteRenderbuffers: _glDeleteRenderbuffers,
+  /** @export */
   glDeleteShader: _glDeleteShader,
   /** @export */
-  glDeleteVertexArrays: _glDeleteVertexArrays,
+  glDeleteTextures: _glDeleteTextures,
   /** @export */
-  glDisable: _glDisable,
+  glDeleteVertexArrays: _glDeleteVertexArrays,
   /** @export */
   glDrawArrays: _glDrawArrays,
   /** @export */
@@ -5671,7 +5855,17 @@ var wasmImports = {
   /** @export */
   glEnableVertexAttribArray: _glEnableVertexAttribArray,
   /** @export */
+  glFramebufferRenderbuffer: _glFramebufferRenderbuffer,
+  /** @export */
+  glFramebufferTexture2D: _glFramebufferTexture2D,
+  /** @export */
   glGenBuffers: _glGenBuffers,
+  /** @export */
+  glGenFramebuffers: _glGenFramebuffers,
+  /** @export */
+  glGenRenderbuffers: _glGenRenderbuffers,
+  /** @export */
+  glGenTextures: _glGenTextures,
   /** @export */
   glGenVertexArrays: _glGenVertexArrays,
   /** @export */
@@ -5687,9 +5881,17 @@ var wasmImports = {
   /** @export */
   glLinkProgram: _glLinkProgram,
   /** @export */
+  glRenderbufferStorage: _glRenderbufferStorage,
+  /** @export */
   glShaderSource: _glShaderSource,
   /** @export */
+  glTexImage2D: _glTexImage2D,
+  /** @export */
+  glTexParameteri: _glTexParameteri,
+  /** @export */
   glUniform1f: _glUniform1f,
+  /** @export */
+  glUniform1i: _glUniform1i,
   /** @export */
   glUniformMatrix4fv: _glUniformMatrix4fv,
   /** @export */
@@ -5716,11 +5918,12 @@ var _get_scene_name = Module['_get_scene_name'] = createExportWrapper('get_scene
 var _set_scene = Module['_set_scene'] = createExportWrapper('set_scene', 1);
 var _set_led_size = Module['_set_led_size'] = createExportWrapper('set_led_size', 1);
 var _get_led_size = Module['_get_led_size'] = createExportWrapper('get_led_size', 0);
-var _set_glow_intensity = Module['_set_glow_intensity'] = createExportWrapper('set_glow_intensity', 1);
-var _get_glow_intensity = Module['_get_glow_intensity'] = createExportWrapper('get_glow_intensity', 0);
+var _set_bloom_intensity = Module['_set_bloom_intensity'] = createExportWrapper('set_bloom_intensity', 1);
+var _get_bloom_intensity = Module['_get_bloom_intensity'] = createExportWrapper('get_bloom_intensity', 0);
 var _get_led_count = Module['_get_led_count'] = createExportWrapper('get_led_count', 0);
 var _get_fps = Module['_get_fps'] = createExportWrapper('get_fps', 0);
 var _log_message = Module['_log_message'] = createExportWrapper('log_message', 1);
+var _get_brightness = Module['_get_brightness'] = createExportWrapper('get_brightness', 0);
 var _main = Module['_main'] = createExportWrapper('main', 2);
 var _fflush = createExportWrapper('fflush', 1);
 var _strerror = createExportWrapper('strerror', 1);
@@ -5865,12 +6068,7 @@ var missingLibrarySymbols = [
   'FS_unlink',
   'FS_mkdirTree',
   '_setNetworkCallback',
-  'heapObjectForWebGLType',
-  'toTypedArrayIndex',
   'emscriptenWebGLGet',
-  'computeUnpackAlignedImageSize',
-  'colorChannelsInGlTextureFormat',
-  'emscriptenWebGLGetTexPixelData',
   'emscriptenWebGLGetUniform',
   'emscriptenWebGLGetVertexAttrib',
   '__glGetActiveAttribOrUniform',
@@ -6004,6 +6202,8 @@ var unexportedSymbols = [
   'tempFixedLengthArray',
   'miniTempWebGLFloatBuffers',
   'miniTempWebGLIntBuffers',
+  'heapObjectForWebGLType',
+  'toTypedArrayIndex',
   'webgl_enable_ANGLE_instanced_arrays',
   'webgl_enable_OES_vertex_array_object',
   'webgl_enable_WEBGL_draw_buffers',
@@ -6012,6 +6212,9 @@ var unexportedSymbols = [
   'webgl_enable_EXT_clip_control',
   'webgl_enable_WEBGL_polygon_mode',
   'GL',
+  'computeUnpackAlignedImageSize',
+  'colorChannelsInGlTextureFormat',
+  'emscriptenWebGLGetTexPixelData',
   'webglGetUniformLocation',
   'webglPrepareUniformLocationsBeforeFirstUse',
   'webglGetLeftBracePos',

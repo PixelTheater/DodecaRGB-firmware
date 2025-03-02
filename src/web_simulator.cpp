@@ -226,6 +226,18 @@ public:
         }
     }
     
+    // Get current brightness
+    uint8_t getBrightness() const {
+        if (stage) {
+            auto* platform = dynamic_cast<PixelTheater::WebPlatform*>(stage->getPlatform());
+            if (platform) {
+                return platform->getBrightness();
+            }
+        }
+        // Return default if platform not available
+        return PixelTheater::WebPlatform::DEFAULT_BRIGHTNESS;
+    }
+    
     // Rotation management
     void updateRotation(float delta_x, float delta_y) {
         if (stage) {
@@ -376,14 +388,15 @@ public:
         std::cout << "Copied scene name: " << name << " (index: " << scene_index << ")" << std::endl;
     }
     
-    // LED size control
+    // LED appearance settings
     void setLEDSize(float size) {
         if (stage) {
-            auto* platform = dynamic_cast<PixelTheater::WebPlatform*>(stage->getPlatform());
+            std::cout << "Setting LED size to: " << size << std::endl;
+            auto* platform = stage->getPlatform();
             if (platform) {
-                platform->setLEDSize(size);
-                if (g_debug_mode) {
-                    std::cout << "LED size set to: " << size << std::endl;
+                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+                if (web_platform) {
+                    web_platform->setLEDSize(size);
                 }
             }
         }
@@ -391,35 +404,41 @@ public:
     
     float getLEDSize() const {
         if (stage) {
-            auto* platform = dynamic_cast<PixelTheater::WebPlatform*>(stage->getPlatform());
+            auto* platform = stage->getPlatform();
             if (platform) {
-                return platform->getLEDSize();
+                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+                if (web_platform) {
+                    return web_platform->getLEDSize();
+                }
             }
         }
-        return 30.0f; // Default value
+        return 0.0f;
     }
     
-    // Glow intensity control
-    void setGlowIntensity(float intensity) {
+    void setBloomIntensity(float intensity) {
         if (stage) {
-            auto* platform = dynamic_cast<PixelTheater::WebPlatform*>(stage->getPlatform());
+            std::cout << "Setting bloom intensity to: " << intensity << std::endl;
+            auto* platform = stage->getPlatform();
             if (platform) {
-                platform->setGlowIntensity(intensity);
-                if (g_debug_mode) {
-                    std::cout << "Glow intensity set to: " << intensity << std::endl;
+                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+                if (web_platform) {
+                    web_platform->setBloomIntensity(intensity);
                 }
             }
         }
     }
     
-    float getGlowIntensity() const {
+    float getBloomIntensity() const {
         if (stage) {
-            auto* platform = dynamic_cast<PixelTheater::WebPlatform*>(stage->getPlatform());
+            auto* platform = stage->getPlatform();
             if (platform) {
-                return platform->getGlowIntensity();
+                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+                if (web_platform) {
+                    return web_platform->getBloomIntensity();
+                }
             }
         }
-        return 0.8f; // Default value
+        return 0.0f;
     }
     
     // LED count
@@ -520,7 +539,7 @@ extern "C" {
         g_simulator.setScene(scene_index);
     }
     
-    // LED size and glow intensity controls
+    // LED size and bloom intensity controls
     EMSCRIPTEN_KEEPALIVE
     void set_led_size(float size) {
         g_simulator.setLEDSize(size);
@@ -532,13 +551,13 @@ extern "C" {
     }
     
     EMSCRIPTEN_KEEPALIVE
-    void set_glow_intensity(float intensity) {
-        g_simulator.setGlowIntensity(intensity);
+    void set_bloom_intensity(float intensity) {
+        g_simulator.setBloomIntensity(intensity);
     }
     
     EMSCRIPTEN_KEEPALIVE
-    float get_glow_intensity() {
-        return g_simulator.getGlowIntensity();
+    float get_bloom_intensity() {
+        return g_simulator.getBloomIntensity();
     }
     
     // Add functions for model stats
@@ -556,6 +575,12 @@ extern "C" {
     EMSCRIPTEN_KEEPALIVE
     void log_message(const char* message) {
         PixelTheater::Log::warning("%s", message);
+    }
+    
+    // JavaScript callback for getting brightness
+    EMSCRIPTEN_KEEPALIVE
+    uint8_t get_brightness() {
+        return g_simulator.getBrightness();
     }
 }
 

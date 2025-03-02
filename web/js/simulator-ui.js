@@ -11,8 +11,8 @@ class DodecaSimulator {
         this.brightnessValue = document.getElementById('brightness-value');
         this.ledSizeSlider = document.getElementById('led-size');
         this.ledSizeValue = document.getElementById('led-size-value');
-        this.glowSlider = document.getElementById('glow-intensity');
-        this.glowValue = document.getElementById('glow-intensity-value');
+        this.bloomSlider = document.getElementById('glow-intensity');
+        this.bloomValue = document.getElementById('glow-intensity-value');
         this.ledCountElement = document.getElementById('led-count');
         this.fpsElement = document.getElementById('fps');
         
@@ -130,9 +130,14 @@ class DodecaSimulator {
         console.log("WebAssembly runtime initialized");
         this.moduleReady = true;
         
-        // Set up initial UI state
-        this.setupScenes();
-        this.setupControlValues();
+        // Add a short delay before initial setup to ensure everything is properly initialized
+        console.log("Setting up initial state in 100ms...");
+        setTimeout(() => {
+            // Set up initial UI state
+            this.setupScenes();
+            this.setupControlValues();
+            console.log("Initial UI state setup complete");
+        }, 100);
     }
     
     /**
@@ -171,8 +176,8 @@ class DodecaSimulator {
             
             this.sceneButtons.appendChild(button);
             
-            // Set the first scene as active
-            if (i === 0) {
+            // Set the Blob Scene (index 1) as active by default to match C++ initialization
+            if (i === 1) {
                 button.classList.add('active');
             }
         }
@@ -182,20 +187,71 @@ class DodecaSimulator {
      * Set up the initial values for controls
      */
     setupControlValues() {
-        // Set initial brightness
-        const initialBrightness = parseInt(this.brightnessSlider.value);
-        this.brightnessValue.textContent = initialBrightness;
-        this.callModule('set_brightness', initialBrightness);
+        // Get actual current values from the simulator (if available)
         
-        // Set initial LED size
-        const initialLedSize = parseInt(this.ledSizeSlider.value);
-        this.ledSizeValue.textContent = initialLedSize;
-        this.callModule('set_led_size', initialLedSize);
+        // Brightness - internal value is 0-255, UI is 0-100
+        let actualBrightness;
+        try {
+            // Get the current brightness from C++
+            actualBrightness = this.callModule('get_brightness');
+            if (actualBrightness === null) {
+                throw new Error("Could not get brightness");
+            }
+            
+            // Convert from internal brightness (0-255) to percentage (0-100)
+            const brightnessPercentage = Math.round((actualBrightness * 100) / 255);
+            
+            // Update the slider and text
+            this.brightnessSlider.value = brightnessPercentage;
+            this.brightnessValue.textContent = brightnessPercentage;
+        } catch (error) {
+            // Fallback to slider default if we can't get the actual value
+            const initialBrightness = parseInt(this.brightnessSlider.value);
+            this.brightnessValue.textContent = initialBrightness;
+            // Convert from percentage (0-100) to the internal brightness range (0-255)
+            const scaledBrightness = Math.round((initialBrightness * 255) / 100);
+            this.callModule('set_brightness', scaledBrightness);
+        }
         
-        // Set initial glow intensity
-        const initialGlow = parseFloat(this.glowSlider.value) / 10.0;
-        this.glowValue.textContent = initialGlow.toFixed(1);
-        this.callModule('set_glow_intensity', initialGlow);
+        // LED size - get the actual value
+        try {
+            const actualLedSize = this.callModule('get_led_size');
+            if (actualLedSize !== null) {
+                this.ledSizeSlider.value = actualLedSize;
+                this.ledSizeValue.textContent = parseFloat(actualLedSize).toFixed(1);
+                console.log(`Setting initial LED size: ${parseFloat(actualLedSize).toFixed(1)}x`);
+            } else {
+                throw new Error("Could not get LED size");
+            }
+        } catch (error) {
+            // Fallback to slider default
+            const initialLedSize = parseFloat(this.ledSizeSlider.value);
+            this.ledSizeValue.textContent = initialLedSize.toFixed(1);
+            this.callModule('set_led_size', initialLedSize);
+            console.log(`Fallback LED size: ${initialLedSize.toFixed(1)}x`);
+        }
+        
+        // Bloom intensity - get the actual value
+        try {
+            const actualBloomIntensity = this.callModule('get_bloom_intensity');
+            if (actualBloomIntensity !== null) {
+                // Convert from internal range (typically 0.0-3.0) to slider range (0-30)
+                const bloomSliderValue = Math.round(actualBloomIntensity * 10);
+                this.bloomSlider.value = bloomSliderValue;
+                this.bloomValue.textContent = actualBloomIntensity.toFixed(1);
+                console.log(`Setting initial bloom intensity: value=${actualBloomIntensity.toFixed(1)}, slider=${bloomSliderValue}`);
+            } else {
+                throw new Error("Could not get bloom intensity");
+            }
+        } catch (error) {
+            // Fallback to slider default - but make sure we use the slider's actual value
+            const bloomSliderValue = parseInt(this.bloomSlider.value);
+            // Convert range 0-30 to 0.0-3.0
+            const initialBloom = bloomSliderValue / 10.0;
+            this.bloomValue.textContent = initialBloom.toFixed(1);
+            this.callModule('set_bloom_intensity', initialBloom);
+            console.log(`Fallback bloom intensity: value=${initialBloom.toFixed(1)}, slider=${bloomSliderValue}`);
+        }
         
         // Set initial view
         this.callModule('set_preset_view', 0); // Start with side view
@@ -224,9 +280,9 @@ class DodecaSimulator {
             this.ledSizeSlider.addEventListener('input', (e) => this.handleLEDSizeChange(e));
         }
         
-        // Set up glow intensity slider
-        if (this.glowSlider) {
-            this.glowSlider.addEventListener('input', (e) => this.handleGlowChange(e));
+        // Set up bloom intensity slider
+        if (this.bloomSlider) {
+            this.bloomSlider.addEventListener('input', (e) => this.handleBloomChange(e));
         }
         
         // Set up debug buttons
@@ -437,8 +493,11 @@ class DodecaSimulator {
     handleBrightnessChange(event) {
         const value = parseInt(event.target.value);
         this.brightnessValue.textContent = value;
-        console.log(`Setting brightness to: ${value}`);
-        this.callModule('set_brightness', value);
+        
+        // Convert from percentage (0-100) to the internal brightness range (0-255)
+        const scaledBrightness = Math.round((value * 255) / 100);
+        console.log(`Setting brightness to: ${value}% (${scaledBrightness}/255)`);
+        this.callModule('set_brightness', scaledBrightness);
     }
     
     /**
@@ -446,21 +505,23 @@ class DodecaSimulator {
      * @param {Event} event - Input event
      */
     handleLEDSizeChange(event) {
-        const size = parseInt(event.target.value);
-        this.ledSizeValue.textContent = size;
-        console.log(`Setting LED size to: ${size}`);
+        const size = parseFloat(event.target.value);
+        this.ledSizeValue.textContent = size.toFixed(1);
+        console.log(`Setting LED size ratio to: ${size.toFixed(1)}x`);
         this.callModule('set_led_size', size);
     }
     
     /**
-     * Handle glow intensity slider change
+     * Handle bloom intensity slider change
      * @param {Event} event - Input event
      */
-    handleGlowChange(event) {
-        const intensity = parseFloat(event.target.value) / 10.0; // Convert to 0.0-2.0 range
-        this.glowValue.textContent = intensity.toFixed(1);
-        console.log(`Setting glow intensity to: ${intensity.toFixed(1)}`);
-        this.callModule('set_glow_intensity', intensity);
+    handleBloomChange(event) {
+        const rawValue = parseFloat(event.target.value);
+        // Convert range 0-30 to 0.0-3.0
+        const intensity = rawValue / 10.0;
+        this.bloomValue.textContent = intensity.toFixed(1);
+        console.log(`Setting bloom intensity to: ${intensity.toFixed(1)}`);
+        this.callModule('set_bloom_intensity', intensity);
     }
     
     /**

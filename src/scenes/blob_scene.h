@@ -130,7 +130,7 @@ public:
         if (lifespan - age < max_age/20) {
             radius *= 0.99;
         }
-        if (age > lifespan) {
+        if (age++ > lifespan) {
             reset();
         }
     }
@@ -155,7 +155,7 @@ public:
     static constexpr int DEFAULT_MAX_RADIUS = 130;
     static constexpr int DEFAULT_MAX_AGE = 4000;
     static constexpr float DEFAULT_SPEED = 1.2;
-    static constexpr uint8_t DEFAULT_FADE = 3;
+    static constexpr uint8_t DEFAULT_FADE = 2;
     
     void setup() override {
         // Define parameters with the correct types and required min/max values
@@ -203,13 +203,6 @@ public:
         
         // Initialize blobs
         initBlobs();
-        
-        // Test pattern - set first 10 LEDs to bright colors
-        for (size_t i = 0; i < 10 && i < this->stage.model.led_count(); i++) {
-            this->stage.leds[i].r = 255;
-            this->stage.leds[i].g = 0;
-            this->stage.leds[i].b = 0;
-        }
         
         PixelTheater::Log::warning("Setup complete, test pattern applied");
     }
@@ -418,7 +411,7 @@ public:
                         }
                         
                         // Blend color based on distance (closer = brighter)
-                        uint8_t blend_amount = PixelTheater::map(dist, 0, rad_sq, 7, 3);
+                        uint8_t blend_amount = PixelTheater::map(dist, 0, rad_sq, 30, 7);
                         
                         // Get reference to the LED in the face
                         PixelTheater::CRGB& led = face.leds[led_idx];

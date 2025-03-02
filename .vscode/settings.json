@@ -86,6 +86,7 @@
         "queue": "cpp",
         "span": "cpp",
         "stack": "cpp",
-        "core": "cpp"
+        "core": "cpp",
+        "shared_mutex": "cpp"
     }
 }
