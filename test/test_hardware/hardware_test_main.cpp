@@ -1,6 +1,9 @@
-// Only define implementation and signals, other configs in platformio.ini
+// Only define implementation and signals, other configs defined here
 #define DOCTEST_CONFIG_IMPLEMENT
 #define DOCTEST_CONFIG_NO_POSIX_SIGNALS
+// Add flags that were previously in platformio.ini
+#define DOCTEST_CONFIG_NO_EXCEPTIONS_BUT_WITH_ALL_ASSERTS
+#define DOCTEST_CONFIG_NO_MULTITHREADING
 #include <doctest/doctest.h>
 #include <Arduino.h>
 

@@ -44,6 +44,11 @@ public:
         , model{*_model}  // Initialize model reference
     {}
 
+    // Platform access
+    Platform* getPlatform() const {
+        return _platform.get();
+    }
+
     // Core operations
     void update() {
         if (_current_scene) {

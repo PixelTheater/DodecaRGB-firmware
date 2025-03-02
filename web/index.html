@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DodecaRGB Web Simulator</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>DodecaRGB Web Simulator</h1>
+    
+    <div id="webgl-error">
+            <h3>WebGL2 Not Supported</h3>
+            <p>Your browser does not support WebGL2, which is required to run this simulator.</p>
+            <p>Please try using a modern browser like Chrome, Firefox, or Edge.</p>
+        </div>
+        
+        <div class="canvas-container">
+            <canvas id="canvas" width="800" height="500"></canvas>
+            <div id="instructions">Drag to rotate | Double-click to reset view</div>
+        </div>
+        
+        <div class="model-info">
+            <div>LEDs: <span id="led-count">0</span></div>
+            <div>FPS: <span id="fps">0</span></div>
+    </div>
+    
+    <div class="controls">
+            <div class="control-section">
+                <h2>Scenes</h2>
+                <div id="scene-buttons" class="button-group"></div>
+            </div>
+            
+            <div class="control-section">
+                <h2>View Controls</h2>
+                <div>
+                    <label>View Preset:</label>
+                    <div class="button-group">
+                        <button id="side-view" class="active">Side</button>
+                        <button id="top-view">Top</button>
+                        <button id="angle-view">Angle</button>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <label>Zoom Level:</label>
+                    <div class="button-group">
+                        <button id="zoom-close">Close</button>
+                        <button id="zoom-normal" class="active">Normal</button>
+                        <button id="zoom-far">Far</button>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <label>Auto-Rotation:</label>
+                    <div class="button-group">
+                        <button id="rotation-off" class="active">Off</button>
+                        <button id="rotation-slow">Slow</button>
+                        <button id="rotation-fast">Fast</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <h2>Display Settings</h2>
+                <div class="slider-container">
+                    <label>Brightness: <span id="brightness-value">100</span>%</label>
+                    <input type="range" id="brightness" min="0" max="100" value="100">
+                </div>
+                
+                <div class="slider-container">
+                    <label>LED Size: <span id="led-size-value">30</span>px</label>
+                    <input type="range" id="led-size" min="10" max="50" value="30">
+        </div>
+        
+        <div class="slider-container">
+                    <label>Glow Intensity: <span id="glow-intensity-value">0.8</span></label>
+                    <input type="range" id="glow-intensity" min="0" max="20" value="8">
+                </div>
+            </div>
+            
+            <div class="control-section">
+                <h2>Debug Tools</h2>
+                <div class="button-group">
+                    <button id="benchmark-btn">Benchmark</button>
+                    <button id="debug-btn">Toggle Debug</button>
+                    <button id="model-info-btn">Model Info</button>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <button id="toggle-console">Show Console</button>
+                    <button id="clear-console">Clear Console</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="console-container" style="display: none;">
+            <div id="console"></div>
+        </div>
+    </div>
+    
+    <!-- Module Configuration -->
+    <script>
+            var Module = {
+                canvas: document.getElementById('canvas'),
+                print: function(text) {
+                    console.log(text);
+                },
+                printErr: function(text) {
+                    console.error(text);
+            }
+        };
+    </script>
+    
+    <!-- Load our JavaScript files -->
+    <script src="js/console-manager.js"></script>
+    <script src="js/simulator-ui.js"></script>
+    <script src="simulator.js"></script>
+</body>
+</html> 

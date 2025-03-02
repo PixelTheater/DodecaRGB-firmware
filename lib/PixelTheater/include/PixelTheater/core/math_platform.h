@@ -1,6 +1,14 @@
 #pragma once
 
-#ifdef PLATFORM_NATIVE
+// Define PLATFORM_WEB for Emscripten/web builds
+#ifdef EMSCRIPTEN
+#ifndef PLATFORM_WEB
+#define PLATFORM_WEB
+#endif
+#endif
+
+// Use standard library for native and web platforms
+#if defined(PLATFORM_NATIVE) || defined(PLATFORM_WEB)
 #include <cmath>
 namespace PixelTheater {
     inline bool is_nan(float x) { return std::isnan(x); }
@@ -17,6 +25,7 @@ T constrain(T x, T min, T max) {
     return PixelTheater::constrain_value(x, min, max);
 }
 
+// For Arduino platform
 #else
 #include <Arduino.h>
 namespace PixelTheater {

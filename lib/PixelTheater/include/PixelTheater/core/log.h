@@ -3,7 +3,15 @@
 #include <cstdio>   // For vprintf
 #include <functional>
 
-#ifndef PLATFORM_NATIVE
+// Define PLATFORM_WEB for Emscripten/web builds if not already defined
+#ifdef EMSCRIPTEN
+#ifndef PLATFORM_WEB
+#define PLATFORM_WEB
+#endif
+#endif
+
+// Include Arduino.h only for actual hardware platforms
+#if !defined(PLATFORM_NATIVE) && !defined(PLATFORM_WEB)
 #include <Arduino.h>  // For Serial
 #endif
 
@@ -14,15 +22,32 @@
 
 namespace PixelTheater {
 namespace Log {
-    #ifdef PLATFORM_NATIVE
-        // Test environment - use std::function for flexibility
+    // For native and web platforms - use std::function for flexibility
+    #if defined(PLATFORM_NATIVE) || defined(PLATFORM_WEB)
         using LogFunction = std::function<void(const char*)>;
         
         inline LogFunction set_log_function(LogFunction new_func) {
-            static LogFunction current_func = [](const char* msg) { printf("%s", msg); };
+            static LogFunction current_func = [](const char* msg) { 
+                #ifdef PLATFORM_WEB
+                // In web environment, use console.log via printf
+                printf("%s", msg); 
+                #else
+                // In native environment, use standard printf
+                printf("%s", msg); 
+                #endif
+            };
             auto old = current_func;
             if (new_func) current_func = new_func;
             return old;
+        }
+        
+        inline void warning(const char* fmt, ...) {
+            static char buffer[256];
+            va_list args;
+            va_start(args, fmt);
+            vsnprintf(buffer, sizeof(buffer), fmt, args);
+            va_end(args);
+            set_log_function(nullptr)(buffer);
         }
     #else
         // Hardware environment - direct to Serial
@@ -35,17 +60,5 @@ namespace Log {
             Serial.print(buf);  // Print the formatted string
         }
     #endif
-
-    // Common interface
-    #ifdef PLATFORM_NATIVE
-        inline void warning(const char* fmt, ...) {
-            static char buffer[256];
-            va_list args;
-            va_start(args, fmt);
-            vsnprintf(buffer, sizeof(buffer), fmt, args);
-            va_end(args);
-            set_log_function(nullptr)(buffer);
-        }
-    #endif
 }
-} 
+} // namespace PixelTheater 
