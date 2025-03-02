@@ -89,7 +89,7 @@ String getAnsiColorString(const CRGB& color, const char c) {  // default char is
     char buf[64];
     CHSV inverted = rgb2hsv_approximate(color);
     inverted.v = 255 - inverted.v;
-    CRGB invertedRGB = hsv2rgb_spectrum(inverted);
+    // CRGB invertedRGB = hsv2rgb_spectrum(inverted);
     snprintf(buf, sizeof(buf), 
         //"\033[38;2;%d;%d;%dm\033[48;2;%d;%d;%dm%c\033[0m",  // ANSI color escape sequences
         "\033[48;2;%d;%d;%dm%c\033[0m",  // ANSI color escape sequences

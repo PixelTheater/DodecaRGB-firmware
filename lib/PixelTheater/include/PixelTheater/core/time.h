@@ -6,6 +6,9 @@
 #include <chrono>
 #elif defined(PLATFORM_TEENSY)
 #include <Arduino.h>
+#elif defined(PLATFORM_WEB)
+// Web platform uses emscripten
+#include <emscripten.h>
 #endif
 
 namespace PixelTheater {
@@ -43,6 +46,20 @@ class SystemTimeProvider : public TimeProvider {
 public:
     uint32_t millis() override { return ::millis(); }
     uint32_t micros() override { return ::micros(); }
+};
+
+#elif defined(PLATFORM_WEB)
+class SystemTimeProvider : public TimeProvider {
+private:
+    const double _start_time = emscripten_get_now();
+public:
+    uint32_t millis() override { 
+        return static_cast<uint32_t>(emscripten_get_now() - _start_time); 
+    }
+    
+    uint32_t micros() override { 
+        return static_cast<uint32_t>((emscripten_get_now() - _start_time) * 1000.0); 
+    }
 };
 
 #else

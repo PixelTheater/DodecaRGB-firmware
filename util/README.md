@@ -66,3 +66,4 @@ python visualizer.py
 This app shows the arrangement of all the PCBs and their orientation. When using the visualizer, you can click and drag the mouse to rotate the view. Clicking on a specific face will hightlight all the LEDs number on that PCB. Note that you must have the `tk` library installed to run the app. 
 
 ![3D Visualizer](../images/python-visualizer.png)
+
