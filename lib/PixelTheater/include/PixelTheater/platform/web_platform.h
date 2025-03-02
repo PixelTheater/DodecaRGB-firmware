@@ -47,10 +47,14 @@ public:
     // ============================================
     
     // LED Appearance
-    static constexpr float DEFAULT_LED_SIZE = 25.0f;           // Default LED size in pixels
-    static constexpr float DEFAULT_GLOW_INTENSITY = 1.2f;      // Default glow/bloom effect intensity
-    static constexpr float DEFAULT_LED_SPACING = 5.0f;         // Spacing between LEDs
-    static constexpr uint8_t DEFAULT_BRIGHTNESS = 128;         // Initial brightness (0-255)
+    static constexpr float DEFAULT_LED_SIZE = 1.0f;           // Default LED size ratio (1.0 = physically accurate)
+    static constexpr float MIN_LED_SIZE_RATIO = 0.2f;         // Minimum LED size ratio
+    static constexpr float MAX_LED_SIZE_RATIO = 2.5f;         // Maximum LED size ratio
+    static constexpr float PHYSICAL_LED_DIAMETER = 3.8f;      // Physical diameter of each LED in mm
+    static constexpr float PHYSICAL_FACE_EDGE = 107.3f;       // Physical edge length of each face in mm
+    static constexpr float DEFAULT_BLOOM_INTENSITY = 1.2f;    // Default bloom effect intensity
+    static constexpr float DEFAULT_LED_SPACING = 5.0f;        // Spacing between LEDs
+    static constexpr uint8_t DEFAULT_BRIGHTNESS = 180;        // Initial brightness (0-255)
     
     // Camera Settings
     static constexpr float CAMERA_CLOSE_DISTANCE = 2.0f;       // Camera distance for close zoom
@@ -61,16 +65,16 @@ public:
     static constexpr float CAMERA_FAR_PLANE = 80.0f;          // Far clipping plane
     
     // Rotation Settings
-    static constexpr float ROTATION_SCALE = 0.0017f;           // Scale factor for mouse/touch rotation
+    static constexpr float ROTATION_SCALE = 0.0015f;           // Scale factor for mouse/touch rotation
     static constexpr float MAX_VERTICAL_ROTATION = 1.5f;       // Maximum vertical rotation (about 85 degrees)
-    static constexpr float DEFAULT_AUTO_ROTATION_SPEED = 1.0f; // Default auto-rotation speed
-    static constexpr float AUTO_ROTATION_TIME_SCALE = 0.17f;   // Time scaling for auto-rotation
+    static constexpr float DEFAULT_AUTO_ROTATION_SPEED = 0.7f; // Default auto-rotation speed
+    static constexpr float AUTO_ROTATION_TIME_SCALE = 0.15f;   // Time scaling for auto-rotation
     
     // Shader Effects
-    static constexpr float COLOR_BRIGHTNESS_BOOST = 4.0f;      // Multiplier for LED color brightness
+    static constexpr float COLOR_BRIGHTNESS_BOOST = 1.0f;      // Multiplier for LED color brightness
     static constexpr float MIN_LED_BRIGHTNESS = 0.05f;         // Minimum brightness for visible LEDs
-    static constexpr float MAX_DEPTH_FADE = 8.0f;              // Maximum depth for LED visibility fade
-    static constexpr float MIN_DEPTH_FADE = 0.3f;              // Minimum depth fade value
+    static constexpr float MAX_DEPTH_FADE = 6.0f;              // Maximum depth for LED visibility fade
+    static constexpr float MIN_DEPTH_FADE = 0.4f;              // Minimum depth fade value
     
     // View Presets (in radians)
     static constexpr float TOP_VIEW_X_ROTATION = -1.57f;       // Top view X rotation (about -90 degrees)
@@ -91,6 +95,7 @@ public:
     // Hardware control operations
     void show() override;
     void setBrightness(uint8_t brightness) override;
+    uint8_t getBrightness() const;
     void clear() override;
 
     // Performance settings
@@ -101,8 +106,8 @@ public:
     // WebGL-specific methods - only available in web builds
     void setLEDSize(float size);
     float getLEDSize() const;
-    void setGlowIntensity(float intensity);
-    float getGlowIntensity() const;
+    void setBloomIntensity(float intensity);
+    float getBloomIntensity() const;
     void setLEDSpacing(float spacing);
     void setLEDArrangement(const float* positions, uint16_t count);
     
@@ -225,6 +230,10 @@ private:
     bool initWebGL();
     void updateVertexBuffer();
     void createViewMatrix(float* view_matrix);
+    void setupFramebuffers();
+    void firstPass();
+    void bloomPass();
+    GLuint createShaderProgram(const char* vertexSource, const char* fragmentSource);
 
     CRGB* _leds{nullptr};
     uint16_t _num_leds{0};
@@ -237,10 +246,20 @@ private:
     GLuint _vbo{0};
     GLuint _vao{0};
     GLuint _shader_program{0};
+    GLuint _bloom_shader_program{0};
+    
+    // Framebuffer objects for multi-pass rendering
+    GLuint _scene_fbo{0};
+    GLuint _scene_texture{0};
+    GLuint _scene_depth_rbo{0};
+    GLuint _quad_vao{0};
+    GLuint _quad_vbo{0};
+    int _canvas_width{800};
+    int _canvas_height{600};
 
     // WebGL rendering properties
     float _led_size{DEFAULT_LED_SIZE};
-    float _glow_intensity{DEFAULT_GLOW_INTENSITY};
+    float _bloom_intensity{DEFAULT_BLOOM_INTENSITY};
     float _led_spacing{DEFAULT_LED_SPACING};
     float* _led_positions{nullptr};
     bool _custom_arrangement{false};
@@ -277,8 +296,8 @@ private:
     // Empty stub methods for non-web builds
     void setLEDSize(float size) {}
     float getLEDSize() const { return DEFAULT_LED_SIZE; }
-    void setGlowIntensity(float intensity) {}
-    float getGlowIntensity() const { return DEFAULT_GLOW_INTENSITY; }
+    void setBloomIntensity(float intensity) {}
+    float getBloomIntensity() const { return DEFAULT_BLOOM_INTENSITY; }
     void setLEDSpacing(float spacing) {}
     void setLEDArrangement(const float* positions, uint16_t count) {}
     void setCoordinateProvider(CoordinateProviderCallback callback) {}
