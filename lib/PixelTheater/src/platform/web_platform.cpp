@@ -10,6 +10,7 @@
 #include <emscripten/html5.h>
 #include <iostream>
 #include <cmath>
+#include <numeric>
 
 // External declaration of debug mode flag
 extern bool g_debug_mode;
@@ -31,6 +32,7 @@ layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 color;
 out vec3 fragColor;
 out float depth;
+out float occlusion; // Pass occlusion to fragment shader
 uniform float pointSize;  // Uniform for point size
 uniform mat4 projection;  // Projection matrix
 uniform mat4 view;        // View matrix
@@ -43,6 +45,10 @@ void main() {
     
     // Calculate depth for fragment shader (to fade distant points)
     depth = -viewPos.z;
+    
+    // The occlusion is determined by the color alpha:
+    // If all color components are very near zero, the LED is occluded
+    occlusion = (color.r + color.g + color.b) < 0.01 ? 0.0 : 1.0;
     
     // Adjust point size based on z-coordinate (perspective)
     // Use a gentler scaling to maintain visibility at different zoom levels
@@ -58,12 +64,18 @@ const char* fragment_shader_source = R"(#version 300 es
 precision mediump float;
 in vec3 fragColor;
 in float depth;
+in float occlusion; // Receive occlusion from vertex shader
 out vec4 outColor;
 uniform float ledSize;
 uniform float glowIntensity;
 uniform float brightness;
 
 void main() {
+    // If the LED is occluded, discard the fragment immediately
+    if (occlusion < 0.1) {
+        discard;
+    }
+    
     // Create a circular point with soft edges
     float dist = distance(gl_PointCoord, vec2(0.5, 0.5));
     
@@ -118,7 +130,7 @@ void main() {
     }
     
     // Apply the glow effect and depth fade through the alpha channel
-    outColor = vec4(baseColor, intensity * depthFade);
+    outColor = vec4(baseColor, intensity * depthFade * occlusion);
 }
 )";
 
@@ -152,6 +164,7 @@ WebPlatform::WebPlatform(uint16_t num_leds)
 
 WebPlatform::~WebPlatform() {
     delete[] _leds;
+    delete[] _led_positions;
     
     // Clean up WebGL resources
     if (_gl_initialized) {
@@ -324,7 +337,13 @@ void WebPlatform::updateVertexBuffer() {
     
     std::vector<Vertex> vertices(_num_leds);
     
-    // For each LED, position it based on its index
+    // First, collect all coordinates to calculate the model center
+    std::vector<float> x_coords, y_coords, z_coords;
+    x_coords.reserve(_num_leds);
+    y_coords.reserve(_num_leds);
+    z_coords.reserve(_num_leds);
+    
+    // Collect all LED coordinates
     for (uint16_t i = 0; i < _num_leds; i++) {
         // Default to circle arrangement
         float angle = 2.0f * 3.14159f * i / _num_leds;
@@ -348,6 +367,29 @@ void WebPlatform::updateVertexBuffer() {
             z = 0.0f;
         }
         
+        x_coords.push_back(x);
+        y_coords.push_back(y);
+        z_coords.push_back(z);
+    }
+    
+    // Calculate model center (average of all LED positions)
+    float center_x = 0.0f, center_y = 0.0f, center_z = 0.0f;
+    if (!x_coords.empty()) {
+        center_x = std::accumulate(x_coords.begin(), x_coords.end(), 0.0f) / x_coords.size();
+        center_y = std::accumulate(y_coords.begin(), y_coords.end(), 0.0f) / y_coords.size();
+        center_z = std::accumulate(z_coords.begin(), z_coords.end(), 0.0f) / z_coords.size();
+    }
+    
+    if (g_debug_mode && frame_count % 600 == 0) {
+        std::cout << "Model center: " << center_x << ", " << center_y << ", " << center_z << std::endl;
+    }
+    
+    // For each LED, position it based on its index
+    for (uint16_t i = 0; i < _num_leds; i++) {
+        float x = x_coords[i];
+        float y = y_coords[i];
+        float z = z_coords[i];
+        
         // Apply model rotation consistently regardless of view
         // First rotate around Y axis (horizontal rotation)
         float x_rotated = x * cos_y + z * sin_y;
@@ -357,10 +399,65 @@ void WebPlatform::updateVertexBuffer() {
         float y_final = y * cos_x - z_rotated * sin_x;
         float z_final = y * sin_x + z_rotated * cos_x;
         
+        // Also rotate the center point
+        float center_x_rotated = center_x * cos_y + center_z * sin_y;
+        float center_z_rotated = -center_x * sin_y + center_z * cos_y;
+        float center_y_final = center_y * cos_x - center_z_rotated * sin_x;
+        float center_z_final = center_y * sin_x + center_z_rotated * cos_x;
+        
         // Store rotated coordinates
         vertices[i].x = x_rotated;
         vertices[i].y = y_final;
         vertices[i].z = z_final;
+        
+        // Check if this LED is visible from the camera viewpoint
+        // Camera is at (0, 0, -_camera_distance) looking at the origin
+        
+        // Vector from camera to center of model
+        float cam_to_center_x = center_x_rotated;
+        float cam_to_center_y = center_y_final;
+        float cam_to_center_z = center_z_final + _camera_distance; // Camera is at -_camera_distance
+        
+        // Vector from camera to this LED
+        float cam_to_led_x = x_rotated;
+        float cam_to_led_y = y_final;
+        float cam_to_led_z = z_final + _camera_distance;
+        
+        // Vector from center to this LED
+        float center_to_led_x = x_rotated - center_x_rotated;
+        float center_to_led_y = y_final - center_y_final;
+        float center_to_led_z = z_final - center_z_final;
+        
+        // Dot product of camera-to-center and center-to-LED
+        // If positive, LED is on the far side of the center from the camera's viewpoint
+        float dot_product = (cam_to_center_x * center_to_led_x +
+                             cam_to_center_y * center_to_led_y +
+                             cam_to_center_z * center_to_led_z);
+        
+        // Distance from center to LED
+        float center_to_led_distance = std::sqrt(
+            center_to_led_x * center_to_led_x +
+            center_to_led_y * center_to_led_y +
+            center_to_led_z * center_to_led_z
+        );
+        
+        // Calculate occlusion factor (0=hidden, 1=fully visible)
+        float occlusion_factor = 1.0f;
+        
+        // If the LED is on the far side from the camera (using the center as reference),
+        // then apply occlusion. A negative dot product means the LED is on the opposite
+        // side of the center from the camera's viewpoint.
+        if (dot_product < 0 && center_to_led_distance > 0.03f) {
+            // Apply a smooth transition near the edge of visibility
+            // The more negative the dot product, the more it's hidden
+            float hide_threshold = -0.2f * center_to_led_distance;
+            if (dot_product < hide_threshold) {
+                occlusion_factor = 0.0f; // Completely hidden
+            } else {
+                // Smooth transition at the edges
+                occlusion_factor = 1.0f - (dot_product / hide_threshold);
+            }
+        }
         
         // Apply brightness scaling with bounds checking
         float brightness_scale = _brightness / 255.0f;
@@ -381,9 +478,14 @@ void WebPlatform::updateVertexBuffer() {
             vertices[i].g = std::min(g * brightness_scale * COLOR_BRIGHTNESS_BOOST + boost * 0.1f, 1.0f);
             vertices[i].b = std::min(b * brightness_scale * COLOR_BRIGHTNESS_BOOST + boost * 0.1f, 1.0f);
             
+            // Apply occlusion factor (0=hidden, 1=fully visible)
+            vertices[i].r *= occlusion_factor;
+            vertices[i].g *= occlusion_factor;
+            vertices[i].b *= occlusion_factor;
+            
             // Ensure colors are visible (minimum brightness)
-            if (r > 0 || g > 0 || b > 0) {
-                // Only apply minimum brightness if the LED is not completely off
+            if ((r > 0 || g > 0 || b > 0) && occlusion_factor > 0.0f) {
+                // Only apply minimum brightness if the LED is not completely off and not occluded
                 float max_component = std::max(std::max(vertices[i].r, vertices[i].g), vertices[i].b);
                 if (max_component < MIN_LED_BRIGHTNESS) {
                     // Scale up all components proportionally
@@ -408,10 +510,18 @@ void WebPlatform::updateVertexBuffer() {
                     vertices[i].b = std::max(vertices[i].b, 0.0f);
                 }
             } else {
-                // For completely off LEDs, make them very dark but still visible
-                vertices[i].r = 0.02f;
-                vertices[i].g = 0.02f;
-                vertices[i].b = 0.02f;
+                // For completely off LEDs or occluded LEDs, make them very dark or invisible
+                if (occlusion_factor > 0.0f) {
+                    // Dim but visible for non-occluded off LEDs
+                    vertices[i].r = 0.02f * occlusion_factor;
+                    vertices[i].g = 0.02f * occlusion_factor;
+                    vertices[i].b = 0.02f * occlusion_factor;
+                } else {
+                    // Completely invisible for occluded LEDs
+                    vertices[i].r = 0.0f;
+                    vertices[i].g = 0.0f;
+                    vertices[i].b = 0.0f;
+                }
             }
         } else {
             // Default color if out of bounds
@@ -482,6 +592,9 @@ void WebPlatform::show() {
             std::cout << "WebGL initialized successfully!" << std::endl;
         }
     }
+    
+    // Increment frame counter
+    frame_count++;
     
     // Update auto-rotation if enabled
     updateAutoRotation();
