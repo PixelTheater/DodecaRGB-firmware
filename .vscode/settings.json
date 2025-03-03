@@ -87,6 +87,14 @@
         "span": "cpp",
         "stack": "cpp",
         "core": "cpp",
-        "shared_mutex": "cpp"
+        "shared_mutex": "cpp",
+        "any": "cpp",
+        "strstream": "cpp",
+        "barrier": "cpp",
+        "cfenv": "cpp",
+        "codecvt": "cpp",
+        "coroutine": "cpp",
+        "ranges": "cpp",
+        "valarray": "cpp"
     }
 }

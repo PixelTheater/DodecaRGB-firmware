@@ -2,29 +2,29 @@
 
 #include "PixelTheater/core/crgb.h"
 #include "PixelTheater/platform/platform.h"
+#include "PixelTheater/platform/webgl/renderer.h"
+#include "PixelTheater/platform/webgl/camera.h"
+#include "PixelTheater/platform/webgl/mesh.h"
+
+#include <functional>
+#include <vector>
+#include <array>
+#include <cstdint>
 
 // Only include WebGL and Emscripten headers in web builds
 #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
-#include <GLES3/gl3.h>
 #include <emscripten.h>
 #include <emscripten/html5.h>
 #endif
 
-#include <vector>
-#include <functional>
-#include <cmath>
-
 namespace PixelTheater {
 
-// Forward declarations and typedefs for non-web builds
+// Forward declarations for non-web builds
 #if !defined(PLATFORM_WEB) && !defined(EMSCRIPTEN)
 // Just enough to make the header compile, implementation will be empty
 typedef unsigned int GLuint;
 typedef int GLint;
 #endif
-
-// Define a type for the coordinate provider callback
-using CoordinateProviderCallback = std::function<void(uint16_t index, float& x, float& y, float& z)>;
 
 // Define preset view types
 enum class PresetView {
@@ -52,34 +52,31 @@ public:
     static constexpr float MAX_LED_SIZE_RATIO = 2.5f;         // Maximum LED size ratio
     static constexpr float PHYSICAL_LED_DIAMETER = 3.8f;      // Physical diameter of each LED in mm
     static constexpr float PHYSICAL_FACE_EDGE = 107.3f;       // Physical edge length of each face in mm
-    static constexpr float DEFAULT_BLOOM_INTENSITY = 1.2f;    // Default bloom effect intensity
+    static constexpr float DEFAULT_ATMOSPHERE_INTENSITY = 1.2f; // Default atmospheric glow intensity
+    static constexpr float MIN_ATMOSPHERE_INTENSITY = 0.0f;    // Minimum atmospheric effect
+    static constexpr float MAX_ATMOSPHERE_INTENSITY = 3.0f;    // Maximum atmospheric effect
     static constexpr float DEFAULT_LED_SPACING = 5.0f;        // Spacing between LEDs
     static constexpr uint8_t DEFAULT_BRIGHTNESS = 180;        // Initial brightness (0-255)
     
     // Camera Settings
-    static constexpr float CAMERA_CLOSE_DISTANCE = 2.0f;       // Camera distance for close zoom
-    static constexpr float CAMERA_NORMAL_DISTANCE = 3.0f;      // Camera distance for normal zoom
-    static constexpr float CAMERA_FAR_DISTANCE = 4.0f;         // Camera distance for far zoom
-    static constexpr float CAMERA_FOV_DEGREES = 30.0f;         // Field of view in degrees
+    static constexpr float CAMERA_CLOSE_DISTANCE = 18.0f;      // Close zoom (increased from 12.0f)
+    static constexpr float CAMERA_NORMAL_DISTANCE = 30.0f;     // Medium distance (increased from 20.0f)
+    static constexpr float CAMERA_FAR_DISTANCE = 45.0f;        // Far zoom (increased from 35.0f)
+    static constexpr float CAMERA_FOV_DEGREES = 40.0f;         // Field of view in degrees
     static constexpr float CAMERA_NEAR_PLANE = 0.1f;           // Near clipping plane
-    static constexpr float CAMERA_FAR_PLANE = 80.0f;          // Far clipping plane
+    static constexpr float CAMERA_FAR_PLANE = 100.0f;          // Far clipping plane
     
     // Rotation Settings
-    static constexpr float ROTATION_SCALE = 0.0015f;           // Scale factor for mouse/touch rotation
+    static constexpr float ROTATION_SCALE = 0.005f;            // Rotation scale for mouse movement (reduced for smoother turntable)
     static constexpr float MAX_VERTICAL_ROTATION = 1.5f;       // Maximum vertical rotation (about 85 degrees)
-    static constexpr float DEFAULT_AUTO_ROTATION_SPEED = 0.7f; // Default auto-rotation speed
-    static constexpr float AUTO_ROTATION_TIME_SCALE = 0.15f;   // Time scaling for auto-rotation
+    static constexpr float DEFAULT_AUTO_ROTATION_SPEED = 0.5f;  // Default to slow speed
+    static constexpr float AUTO_ROTATION_TIME_SCALE = 1.0f;     // No additional scaling needed
     
     // Shader Effects
     static constexpr float COLOR_BRIGHTNESS_BOOST = 1.0f;      // Multiplier for LED color brightness
     static constexpr float MIN_LED_BRIGHTNESS = 0.05f;         // Minimum brightness for visible LEDs
     static constexpr float MAX_DEPTH_FADE = 6.0f;              // Maximum depth for LED visibility fade
     static constexpr float MIN_DEPTH_FADE = 0.4f;              // Minimum depth fade value
-    
-    // View Presets (in radians)
-    static constexpr float TOP_VIEW_X_ROTATION = -1.57f;       // Top view X rotation (about -90 degrees)
-    static constexpr float ANGLE_VIEW_X_ROTATION = -0.6f;      // Angle view X rotation (about -35 degrees)
-    static constexpr float ANGLE_VIEW_Y_ROTATION = 0.6f;       // Angle view Y rotation (about 35 degrees)
     
     explicit WebPlatform(uint16_t num_leds);
     ~WebPlatform() override;
@@ -106,214 +103,95 @@ public:
     // WebGL-specific methods - only available in web builds
     void setLEDSize(float size);
     float getLEDSize() const;
-    void setBloomIntensity(float intensity);
-    float getBloomIntensity() const;
+    void setAtmosphereIntensity(float intensity);
+    float getAtmosphereIntensity() const;
     void setLEDSpacing(float spacing);
-    void setLEDArrangement(const float* positions, uint16_t count);
+    
+    // Mesh visualization methods
+    void setShowMesh(bool show);
+    bool getShowMesh() const;
+    void setMeshOpacity(float opacity);
+    float getMeshOpacity() const;
     
     // Set a callback to provide 3D coordinates for each LED
-    void setCoordinateProvider(CoordinateProviderCallback callback) {
-        _coordinate_provider = callback;
-    }
+    void setCoordinateProvider(std::function<void(uint16_t, float&, float&, float&)> callback);
     
-    // Legacy rotation methods (kept for compatibility)
-    void updateRotation(float deltaX, float deltaY) {
-        // Convert pixel movement to radians (scale down for smoother rotation)
-        
-        // Apply rotation directly to model (not camera)
-        // For model rotation, we need to invert the direction compared to camera rotation
-        _rotation_y -= deltaX * ROTATION_SCALE; // Inverted for natural model rotation
-        _rotation_x -= deltaY * ROTATION_SCALE; // Inverted for natural model rotation
-        
-        // Limit vertical rotation to avoid flipping
-        if (_rotation_x > MAX_VERTICAL_ROTATION) _rotation_x = MAX_VERTICAL_ROTATION;
-        if (_rotation_x < -MAX_VERTICAL_ROTATION) _rotation_x = -MAX_VERTICAL_ROTATION;
-        
-        // Normalize horizontal rotation to keep it within reasonable bounds
-        while (_rotation_y > 6.28318f) _rotation_y -= 6.28318f; // 2*PI
-        while (_rotation_y < -6.28318f) _rotation_y += 6.28318f;
-    }
+    // Rotation and view control
+    void updateRotation(float deltaX, float deltaY);
+    void resetRotation();
+    void setAutoRotation(bool enabled, float speed = DEFAULT_AUTO_ROTATION_SPEED);
+    void setPresetView(int preset_index);
+    void setZoomLevel(int zoom_level);
     
-    void resetRotation() {
-        _rotation_x = 0.0f;
-        _rotation_y = 0.0f;
-        _auto_rotation = false;
-    }
-    
-    // New rotation and view methods
-    void setAutoRotation(bool enabled, float speed) {
-        _auto_rotation = enabled;
-        _auto_rotation_speed = speed;
-    }
-    
-    void setPresetView(int preset_index) {
-        // Don't reset auto-rotation when changing views
-        // Store current auto-rotation state
-        bool was_auto_rotating = _auto_rotation;
-        float rotation_speed = _auto_rotation_speed;
-        
-        // Set rotation based on preset
-        switch (static_cast<PresetView>(preset_index)) {
-            case PresetView::SIDE:
-                _rotation_x = 0.0f;
-                _rotation_y = 0.0f;
-                break;
-            case PresetView::TOP:
-                _rotation_x = TOP_VIEW_X_ROTATION; // About 90 degrees (π/2) - look directly from above
-                _rotation_y = 0.0f;
-                break;
-            case PresetView::ANGLE:
-                _rotation_x = ANGLE_VIEW_X_ROTATION; // About 35 degrees
-                _rotation_y = ANGLE_VIEW_Y_ROTATION; // About 35 degrees
-                break;
-            default:
-                // Default to side view
-                _rotation_x = 0.0f;
-                _rotation_y = 0.0f;
-                break;
-        }
-        
-        // Restore auto-rotation if it was enabled
-        if (was_auto_rotating) {
-            _auto_rotation = true;
-            _auto_rotation_speed = rotation_speed;
-        }
-    }
-    
-    void setZoomLevel(int zoom_level) {
-        switch (static_cast<ZoomLevel>(zoom_level)) {
-            case ZoomLevel::CLOSE:
-                _camera_distance = CAMERA_CLOSE_DISTANCE;
-                break;
-            case ZoomLevel::NORMAL:
-                _camera_distance = CAMERA_NORMAL_DISTANCE;
-                break;
-            case ZoomLevel::FAR:
-                _camera_distance = CAMERA_FAR_DISTANCE; // Reduced from 4.5f to maintain visibility
-                break;
-            default:
-                _camera_distance = CAMERA_NORMAL_DISTANCE; // Default to normal
-                break;
-        }
-    }
-    
-    // Method to update auto-rotation (called from show())
-    void updateAutoRotation() {
-        if (_auto_rotation) {
-            // Get the time since last frame to make rotation speed consistent
-            static double last_time = emscripten_get_now() / 1000.0;
-            double current_time = emscripten_get_now() / 1000.0;
-            double delta_time = current_time - last_time;
-            last_time = current_time;
-            
-            // Calculate rotation amount based on speed and time
-            float rotationAmount = _auto_rotation_speed * delta_time * AUTO_ROTATION_TIME_SCALE;
-            
-            // Apply rotation based on current view
-            if (std::abs(_rotation_x + 1.57f) < 0.1f) {
-                // We're in top view (looking down at -90 degrees)
-                // For top view, we need to rotate around the Y axis in world space
-                // but this appears as a rotation in the XZ plane from our perspective
-                _rotation_y += rotationAmount;
-            } else {
-                // For side and angle views, rotate around Y axis as normal
-                _rotation_y += rotationAmount;
-            }
-            
-            // Keep rotation within 0 to 2π range
-            while (_rotation_y > 6.28318f) _rotation_y -= 6.28318f; // 2*PI
-            while (_rotation_y < 0) _rotation_y += 6.28318f;
-        }
-    }
+    // JavaScript interface methods (called from JS)
+    void onCanvasResize(int width, int height);
+    void onMouseDown(int x, int y);
+    void onMouseMove(int x, int y, bool shift_key);
+    void onMouseUp();
+    void onMouseWheel(float delta);
+#endif
 
 private:
-    bool initWebGL();
+#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+    // WebGL renderer components
+    WebGLRenderer _renderer;
+    Camera _camera;
+    MeshGenerator _mesh_generator;
+    
+    // Helper methods
+    void initWebGL();
     void updateVertexBuffer();
-    void createViewMatrix(float* view_matrix);
-    void setupFramebuffers();
-    void firstPass();
-    void bloomPass();
-    GLuint createShaderProgram(const char* vertexSource, const char* fragmentSource);
+    void updateMesh();
+    void renderFrame();
+    void updateAutoRotation();
+#endif
 
+    // LED data
     CRGB* _leds{nullptr};
     uint16_t _num_leds{0};
-    uint8_t _brightness{255};
+    uint8_t _brightness{DEFAULT_BRIGHTNESS};
     uint8_t _max_refresh_rate{0};
     uint8_t _dither{0};
 
-    // WebGL resources
-    bool _gl_initialized{false};
-    GLuint _vbo{0};
-    GLuint _vao{0};
-    GLuint _shader_program{0};
-    GLuint _bloom_shader_program{0};
-    
-    // Framebuffer objects for multi-pass rendering
-    GLuint _scene_fbo{0};
-    GLuint _scene_texture{0};
-    GLuint _scene_depth_rbo{0};
-    GLuint _quad_vao{0};
-    GLuint _quad_vbo{0};
+#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+    // Canvas parameters
     int _canvas_width{800};
     int _canvas_height{600};
-
+    
     // WebGL rendering properties
     float _led_size{DEFAULT_LED_SIZE};
-    float _bloom_intensity{DEFAULT_BLOOM_INTENSITY};
+    float _atmosphere_intensity{DEFAULT_ATMOSPHERE_INTENSITY};
     float _led_spacing{DEFAULT_LED_SPACING};
-    float* _led_positions{nullptr};
-    bool _custom_arrangement{false};
-    
-    // Rotation state
-    float _rotation_x = 0.0f;
-    float _rotation_y = 0.0f;
-    
-    // Auto-rotation state
-    bool _auto_rotation = false;
-    float _auto_rotation_speed = DEFAULT_AUTO_ROTATION_SPEED;
+    bool _show_mesh{true};
+    float _mesh_opacity{0.3f};
     
     // Camera settings
-    float _camera_distance = CAMERA_NORMAL_DISTANCE;
+    float _camera_distance{CAMERA_NORMAL_DISTANCE};
     
-    // Coordinate provider callback
-    CoordinateProviderCallback _coordinate_provider{nullptr};
+    // Mouse interaction
+    bool _mouse_down{false};
+    int _last_mouse_x{0};
+    int _last_mouse_y{0};
     
-    // Frame counter for debugging
-    int frame_count{0};
+    // Auto-rotation
+    bool _auto_rotation{false};
+    float _auto_rotation_speed{DEFAULT_AUTO_ROTATION_SPEED};
     
-    // Uniform locations
-    int _projectionLoc{-1};
-    int _viewLoc{-1};
-    int _colorLoc{-1};
-    int _pointSizeLoc{-1};
-    int _timeLoc{-1};
-
-    // WebGL initialization and rendering methods
-    void renderLEDs();
-    void cleanupWebGL();
-    GLuint compileShader(unsigned int type, const char* source);
-#else
-    // Empty stub methods for non-web builds
-    void setLEDSize(float size) {}
-    float getLEDSize() const { return DEFAULT_LED_SIZE; }
-    void setBloomIntensity(float intensity) {}
-    float getBloomIntensity() const { return DEFAULT_BLOOM_INTENSITY; }
-    void setLEDSpacing(float spacing) {}
-    void setLEDArrangement(const float* positions, uint16_t count) {}
-    void setCoordinateProvider(CoordinateProviderCallback callback) {}
-    void updateRotation(float deltaX, float deltaY) {}
-    void resetRotation() {}
-    void setAutoRotation(bool enabled, float speed) {}
-    void setPresetView(int preset_index) {}
-    void setZoomLevel(int zoom_level) {}
-    void updateAutoRotation() {}
-
-private:
-    CRGB* _leds{nullptr};
-    uint16_t _num_leds{0};
-    uint8_t _brightness{255};
-    uint8_t _max_refresh_rate{0};
-    uint8_t _dither{0};
+    // Shader resources
+    uint32_t _shader_program{0};
+    uint32_t _mesh_shader_program{0};
+    uint32_t _glow_shader_program{0};
+    uint32_t _blur_shader_program{0};
+    uint32_t _composite_shader_program{0};
+    uint32_t _vertex_buffer{0};
+    
+    // Performance metrics
+    int _frame_count{0};
+    double _last_frame_time{0};
+    double _last_auto_rotation_time{0}; // For smooth auto-rotation timing
+    
+    // Coordinate provider
+    std::function<void(uint16_t, float&, float&, float&)> _coordinate_provider{nullptr};
 #endif
 };
 
