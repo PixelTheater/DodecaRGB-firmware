@@ -861,10 +861,10 @@ async function createWasm() {
 // === Body ===
 
 var ASM_CONSTS = {
-  123904: () => { return document.getElementById('canvas') ? document.getElementById('canvas').width : 800; },  
- 123998: () => { return document.getElementById('canvas') ? document.getElementById('canvas').height : 600; },  
- 124093: ($0) => { if (window.updateFPS) { window.updateFPS($0); } },  
- 124145: ($0) => { if (window.updateBrightnessUI) { window.updateBrightnessUI($0); } }
+  127168: () => { return document.getElementById('canvas') ? document.getElementById('canvas').width : 800; },  
+ 127262: () => { return document.getElementById('canvas') ? document.getElementById('canvas').height : 600; },  
+ 127357: ($0) => { if (window.updateFPS) { window.updateFPS($0); } },  
+ 127409: ($0) => { if (window.updateBrightnessUI) { window.updateBrightnessUI($0); } }
 };
 
 // end include: preamble.js

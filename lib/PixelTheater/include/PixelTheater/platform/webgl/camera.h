@@ -22,7 +22,7 @@ public:
     };
     
     // Auto-rotation speeds (in radians/second)
-    static constexpr float SLOW_ROTATION_SPEED = 0.209f;  // 2 RPM
+    static constexpr float SLOW_ROTATION_SPEED = 0.146f;  // 1.4 RPM
     static constexpr float FAST_ROTATION_SPEED = 1.047f;  // 10 RPM
     
     // Constructor

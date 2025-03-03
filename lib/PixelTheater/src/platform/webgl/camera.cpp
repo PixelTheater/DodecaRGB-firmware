@@ -87,9 +87,6 @@ void Camera::setPresetView(ViewPreset view) {
 }
 
 void Camera::setPresetView(ViewPreset view, DistancePreset distance) {
-    // Stop auto-rotation when setting a specific view
-    _autoRotate = false;
-    
     // Set camera position based on view and distance presets
     setCameraPosition(view, distance);
 }
