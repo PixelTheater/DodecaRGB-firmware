@@ -21,6 +21,12 @@ Import("env")
 # Get the project directory
 PROJECT_DIR = os.getcwd()
 
+# Remove the web build artifact to force PlatformIO to rebuild
+web_artifact = os.path.join(PROJECT_DIR, ".pio", "build", "web", "program")
+if os.path.exists(web_artifact):
+    print(f"Removing web build artifact: {web_artifact}")
+    os.remove(web_artifact)
+
 # Print debug info
 print("Current CLI targets", COMMAND_LINE_TARGETS)
 print("Current Build targets", BUILD_TARGETS)
@@ -116,7 +122,8 @@ def post_program_action(source, target, env):
     
     # Force a rebuild or not based on environment variables or command line targets
     # If "no-clean" is in the command-line targets, don't run clean
-    skip_clean = "no-clean" in COMMAND_LINE_TARGETS
+    # skip_clean = "no-clean" in COMMAND_LINE_TARGETS
+    skip_clean = True
     
     # Build the web application
     try:

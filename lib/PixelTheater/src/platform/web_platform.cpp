@@ -1,301 +1,81 @@
 #include "PixelTheater/platform/web_platform.h"
-#include "PixelTheater/core/color.h"
+#include "PixelTheater/platform/webgl/renderer.h"
+#include "PixelTheater/platform/webgl/mesh.h"
+#include "PixelTheater/platform/webgl/camera.h"
+#include "PixelTheater/platform/webgl/shaders.h"
+#include "PixelTheater/platform/webgl/math.h"
+#include <emscripten.h>
+#include <cmath>
+#include <cstdio>
+#include <algorithm>
 
 #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
-// =========================================================================
-// FULL WEB PLATFORM IMPLEMENTATION (Only compiled in web builds)
-// =========================================================================
-
-#include <emscripten.h>
+#include <GLES3/gl3.h>
 #include <emscripten/html5.h>
-#include <iostream>
-#include <cmath>
-#include <numeric>
+#endif
 
-// External declaration of debug mode flag
-extern bool g_debug_mode;
-
-// Forward declaration for the model
-namespace PixelTheater {
-    template<typename ModelDef>
-    class Model;
+// External C functions for JavaScript interop
+extern "C" {
+    EMSCRIPTEN_KEEPALIVE int get_canvas_width();
+    EMSCRIPTEN_KEEPALIVE int get_canvas_height();
+    EMSCRIPTEN_KEEPALIVE double get_current_time();
+    EMSCRIPTEN_KEEPALIVE void update_ui_fps(int fps);
+    EMSCRIPTEN_KEEPALIVE void update_ui_brightness(float brightness);
 }
-
-// External model reference - defined in web_simulator.cpp
-extern void* g_model_ptr;
 
 namespace PixelTheater {
 
-// Vertex shader source with 3D projection - First pass
-const char* vertex_shader_source = R"(#version 300 es
-precision mediump float;
-layout(location = 0) in vec3 position;
-layout(location = 1) in vec3 color;
-out vec3 fragColor;
-out float depth;
-out float occlusion; // Pass occlusion to fragment shader
-uniform float ledSizeRatio;  // User-controlled size ratio (0.2 to 2.5)
-uniform float physicalLedSize; // Physical LED size in model units
-uniform float cameraDistance;  // Current camera distance
-uniform mat4 projection;  // Projection matrix
-uniform mat4 view;        // View matrix
-uniform float time;       // Time for animation
-uniform float canvasHeight; // Height of the canvas in pixels
-
-void main() {
-    // Apply transformations
-    vec4 viewPos = view * vec4(position, 1.0);
-    gl_Position = projection * viewPos;
-    
-    // Calculate depth for fragment shader (to fade distant points)
-    depth = -viewPos.z;
-    
-    // The occlusion is determined by the color sum:
-    // If all color components are very near zero, the LED is occluded
-    occlusion = (color.r + color.g + color.b) < 0.01 ? 0.0 : 1.0;
-    
-    // Calculate physically-based LED size
-    // 1. Base physical size calculation
-    float physicalSize = physicalLedSize;
-    
-    // 2. Apply perspective division to get size in screen space
-    // The negative viewPos.z is the distance to the camera in view space
-    float distanceToCamera = -viewPos.z;
-    
-    // 3. Calculate a size that scales properly with distance
-    // This is based on similar triangles principle in a perspective projection
-    float fieldOfViewFactor = canvasHeight / (2.0 * distanceToCamera * tan(radians(15.0))); // 15 degrees is half the FOV
-    float baseScreenSize = physicalSize * fieldOfViewFactor;
-    
-    // 4. Apply user's size ratio
-    float finalSize = baseScreenSize * ledSizeRatio;
-    
-    // 5. Ensure a minimum visible size and apply very subtle distance-based scaling
-    float distanceScale = 1.0 - gl_Position.z * 0.05; // Gentler scaling factor
-    gl_PointSize = max(finalSize * distanceScale, 3.0); // Minimum visible size
-    
-    fragColor = color;
-}
-)";
-
-// Fragment shader source - First pass (LED rendering)
-const char* fragment_shader_source = R"(#version 300 es
-precision mediump float;
-in vec3 fragColor;
-in float depth;
-in float occlusion; // Receive occlusion from vertex shader
-out vec4 outColor;
-uniform float brightness;
-
-void main() {
-    // If the LED is occluded, discard the fragment immediately
-    if (occlusion < 0.1) {
-        discard;
+// Constructor / Destructor
+WebPlatform::WebPlatform(uint16_t num_leds) : 
+    _leds(new CRGB[num_leds]),
+    _num_leds(num_leds),
+    _brightness(DEFAULT_BRIGHTNESS),
+    _max_refresh_rate(0),
+    _dither(0),
+    _shader_program(0),
+    _mesh_shader_program(0),
+    _glow_shader_program(0),
+    _blur_shader_program(0),
+    _composite_shader_program(0),
+    _vertex_buffer(0),
+    _atmosphere_intensity(DEFAULT_ATMOSPHERE_INTENSITY),
+    _led_size(DEFAULT_LED_SIZE),
+    _show_mesh(true),
+    _mesh_opacity(0.3f),
+    _camera_distance(CAMERA_NORMAL_DISTANCE),
+    _mouse_down(false),
+    _last_mouse_x(0),
+    _last_mouse_y(0),
+    _auto_rotation(true),
+    _auto_rotation_speed(DEFAULT_AUTO_ROTATION_SPEED),
+    _frame_count(0),
+    _last_frame_time(0),
+    _last_auto_rotation_time(get_current_time()),
+    _coordinate_provider(nullptr),
+    _mesh_generator([](uint16_t index, float& x, float& y, float& z) {
+        // Default to a circle layout
+        float angle = 2.0f * M_PI * static_cast<float>(index) / 100.0f;
+        x = cos(angle);
+        y = sin(angle);
+        z = 0.0f;
+    }, num_leds)
+{
+    // Initialize LEDs to black
+    for (uint16_t i = 0; i < num_leds; i++) {
+        _leds[i] = CRGB(0, 0, 0);
     }
     
-    // Distance from center of the point
-    float dist = distance(gl_PointCoord, vec2(0.5, 0.5));
-    
-    // Simple LED with a bright core and smooth falloff
-    if (dist > 0.5) {
-        discard; // Outside the LED's circle
-    }
-    
-    // Calculate normalized brightness (0.0-1.0)
-    float normalizedBrightness = brightness / 255.0;
-    
-    // Calculate overall brightness of the color
-    float colorBrightness = max(max(fragColor.r, fragColor.g), fragColor.b);
-    
-    // For lit LEDs
-    vec3 baseColor;
-    float alpha;
-    
-    if (colorBrightness > 0.01) {
-        // Core brightness with sharper center
-        float coreBrightness = 1.0 - pow(dist * 1.8, 2.0);
-        
-        // Apply color with more moderate intensity
-        // Scale down with brightness to preserve dynamic range
-        baseColor = fragColor * 2.5 * coreBrightness;
-        
-        // Add white highlight at center for extra brightness
-        float centerHighlight = 1.0 - dist * 3.5;
-        centerHighlight = max(0.0, centerHighlight);
-        baseColor = mix(baseColor, vec3(1.0), centerHighlight * 0.2);
-        
-        // Use higher alpha for brighter LEDs
-        alpha = coreBrightness;
-    } 
-    // For unlit LEDs - show model structure at very high brightness or when brightness is 0
-    else {
-        if (normalizedBrightness > 0.90) {
-            // Make unlit LEDs faintly visible at high brightness to see model structure
-            float modelVisibility = (normalizedBrightness - 0.90) * 10.0; // Ramp up from 90% to 100%
-            baseColor = vec3(0.15, 0.15, 0.2) * modelVisibility;
-            alpha = modelVisibility * 0.5;
-        } 
-        else if (normalizedBrightness < 0.01) {
-            // When brightness is essentially zero, ensure LEDs are completely dark
-            baseColor = vec3(0.0);
-            alpha = 0.0;
-            discard; // Skip rendering at zero brightness
-        }
-        else {
-            // Otherwise discard unlit LEDs
-            discard;
-        }
-    }
-    
-    // Apply depth fading
-    float depthFade = 1.0;
-    if (depth < 0.0) {
-        discard; // Behind the camera
-    } else {
-        depthFade = clamp(1.0 - (depth / 8.0), 0.3, 1.0);
-        if (depthFade < 0.1) {
-            discard; // Too far away
-        }
-    }
-    
-    // Apply depth fade and occlusion to color (not just alpha)
-    // This preserves more brightness while still applying falloff
-    baseColor *= depthFade * occlusion;
-    
-    // No additional boost needed with additive blending
-    
-    // Clamp color values
-    baseColor = clamp(baseColor, 0.0, 1.0);
-    
-    // Output color with full alpha for bright pixels, partial for dim ones
-    // This preserves brightness better with the blending mode we'll use
-    alpha = clamp(max(max(baseColor.r, baseColor.g), baseColor.b), 0.0, 1.0);
-    outColor = vec4(baseColor, alpha);
-}
-)";
-
-// Vertex shader for post-processing (screen quad)
-const char* quad_vertex_shader_source = R"(#version 300 es
-precision mediump float;
-layout(location = 0) in vec2 position;
-layout(location = 1) in vec2 texCoord;
-out vec2 fragTexCoord;
-
-void main() {
-    gl_Position = vec4(position, 0.0, 1.0);
-    fragTexCoord = texCoord;
-}
-)";
-
-// Fragment shader for bloom post-processing
-const char* bloom_fragment_shader_source = R"(#version 300 es
-precision mediump float;
-in vec2 fragTexCoord;
-out vec4 outColor;
-uniform sampler2D sceneTex;
-uniform float bloomIntensity;
-
-void main() {
-    // Sample the original scene
-    vec4 originalColor = texture(sceneTex, fragTexCoord);
-    
-    // Always preserve the original brightness
-    vec3 baseColor = originalColor.rgb;
-    
-    // Skip bloom processing for very low bloom settings
-    if (bloomIntensity <= 0.05) {
-        outColor = vec4(baseColor, originalColor.a);
-        return;
-    }
-    
-    // Use a larger sampling area for higher bloom settings
-    // Scale up for extended range (max is now 3.0)
-    float bloomRadius = max(0.5, bloomIntensity * 1.5);
-    vec4 bloomAccumulator = vec4(0.0);
-    float totalWeight = 0.0;
-    
-    // Sample in a larger radius for bloom effect
-    const int SAMPLES = 16;
-    for (int i = 0; i < SAMPLES; i++) {
-        float angle = float(i) * (3.14159 * 2.0) / float(SAMPLES);
-        vec2 offset = vec2(cos(angle), sin(angle)) * bloomRadius / vec2(textureSize(sceneTex, 0));
-        
-        // Weight based on distance from center
-        float weight = 1.0 - float(i) / float(SAMPLES);
-        vec4 sampleColor = texture(sceneTex, fragTexCoord + offset);
-        
-        // Add weighted sample to accumulator
-        bloomAccumulator += sampleColor * weight;
-        totalWeight += weight;
-    }
-    
-    // Normalize the bloom color
-    vec4 bloomColor = bloomAccumulator / max(totalWeight, 0.001);
-    
-    // Apply bloom with intensity scaling that allows for higher values
-    // Scale up for the extended slider range (0-3.0)
-    float scaledIntensity = bloomIntensity * 0.7;
-    vec3 bloomResult = bloomColor.rgb * scaledIntensity;
-    
-    // Combine original scene with bloom (additive)
-    vec3 finalColor = baseColor + bloomResult;
-    
-    // Preserve alpha from original scene
-    outColor = vec4(finalColor, originalColor.a);
-}
-)";
-
-WebPlatform::WebPlatform(uint16_t num_leds)
-    : _num_leds(num_leds), _leds(nullptr), _brightness(DEFAULT_BRIGHTNESS), 
-      _led_size(DEFAULT_LED_SIZE), _bloom_intensity(DEFAULT_BLOOM_INTENSITY), _gl_initialized(false) {
-    
-    try {
-        // Allocate memory for LEDs
-        _leds = new CRGB[num_leds];
-        
-        // Initialize all LEDs to bright colors for testing
-        for (uint16_t i = 0; i < num_leds; i++) {
-            // Create a rainbow pattern for initial testing
-            uint8_t hue = (i * 255) / num_leds;
-            _leds[i] = CRGB(hue, 255, 255); // Use HSV to RGB conversion internally
-        }
-        
-        if (g_debug_mode) {
-            std::cout << "WebPlatform initialized with " << num_leds << " LEDs" << std::endl;
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "Error in WebPlatform constructor: " << e.what() << std::endl;
-        _leds = nullptr;
-        _num_leds = 0;
-    } catch (...) {
-        std::cerr << "Unknown error in WebPlatform constructor" << std::endl;
-        _leds = nullptr;
-        _num_leds = 0;
-    }
+#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+    // Generate the mesh with default coordinates
+    _mesh_generator.generateDodecahedronMesh();
+#endif
 }
 
 WebPlatform::~WebPlatform() {
     delete[] _leds;
-    delete[] _led_positions;
-    
-    // Clean up WebGL resources
-    if (_gl_initialized) {
-        glDeleteVertexArrays(1, &_vao);
-        glDeleteBuffers(1, &_vbo);
-        glDeleteProgram(_shader_program);
-        glDeleteProgram(_bloom_shader_program);
-        
-        // Delete framebuffer resources
-        glDeleteFramebuffers(1, &_scene_fbo);
-        glDeleteTextures(1, &_scene_texture);
-        glDeleteRenderbuffers(1, &_scene_depth_rbo);
-        
-        // Delete quad resources
-        glDeleteVertexArrays(1, &_quad_vao);
-        glDeleteBuffers(1, &_quad_vbo);
-    }
 }
 
+// Core LED array management
 CRGB* WebPlatform::getLEDs() {
     return _leds;
 }
@@ -304,640 +84,78 @@ uint16_t WebPlatform::getNumLEDs() const {
     return _num_leds;
 }
 
-bool WebPlatform::initWebGL() {
-    if (g_debug_mode) {
-        std::cout << "Initializing WebGL..." << std::endl;
-    }
-    
-    EmscriptenWebGLContextAttributes attrs;
-    emscripten_webgl_init_context_attributes(&attrs);
-    attrs.majorVersion = 2;
-    attrs.minorVersion = 0;
-    attrs.antialias = true;
-    attrs.premultipliedAlpha = false;
-    attrs.preserveDrawingBuffer = true;
-    attrs.powerPreference = EM_WEBGL_POWER_PREFERENCE_HIGH_PERFORMANCE;
-    attrs.failIfMajorPerformanceCaveat = false;
-    
-    if (g_debug_mode) {
-        std::cout << "Creating WebGL context..." << std::endl;
-    }
-    EMSCRIPTEN_WEBGL_CONTEXT_HANDLE context = emscripten_webgl_create_context("#canvas", &attrs);
-    if (context <= 0) {
-        std::cerr << "Failed to create WebGL context! Error code: " << context << std::endl;
-        return false;
-    }
-    
-    if (g_debug_mode) {
-        std::cout << "Making WebGL context current..." << std::endl;
-    }
-    EMSCRIPTEN_RESULT result = emscripten_webgl_make_context_current(context);
-    if (result != EMSCRIPTEN_RESULT_SUCCESS) {
-        std::cerr << "Failed to make WebGL context current! Error code: " << result << std::endl;
-        return false;
-    }
-    
-    // Get canvas dimensions for framebuffer setup
-    emscripten_get_canvas_element_size("#canvas", &_canvas_width, &_canvas_height);
-    
-    // Create and compile main shader program (LED rendering)
-    _shader_program = createShaderProgram(vertex_shader_source, fragment_shader_source);
-    if (!_shader_program) {
-        return false;
-    }
-    
-    // Create and compile bloom shader program (post-processing)
-    _bloom_shader_program = createShaderProgram(quad_vertex_shader_source, bloom_fragment_shader_source);
-    if (!_bloom_shader_program) {
-        return false;
-    }
-    
-    // Get uniform locations for main shader
-    _projectionLoc = glGetUniformLocation(_shader_program, "projection");
-    _viewLoc = glGetUniformLocation(_shader_program, "view");
-    _timeLoc = glGetUniformLocation(_shader_program, "time");
-    
-    // Create VAO and VBO for LEDs
-    glGenVertexArrays(1, &_vao);
-    glGenBuffers(1, &_vbo);
-    
-    // Bind VAO first, then bind and set VBO
-    glBindVertexArray(_vao);
-    
-    // Set up initial buffer data (will be updated each frame)
-    struct Vertex {
-        float x, y, z;  // 3D coordinates
-        float r, g, b;  // Color
-    };
-    
-    std::vector<Vertex> vertices(_num_leds);
-    for (uint16_t i = 0; i < _num_leds; i++) {
-        float angle = 2.0f * 3.14159f * i / _num_leds;
-        float radius = 0.8f;
-        vertices[i].x = radius * cos(angle);
-        vertices[i].y = radius * sin(angle);
-        vertices[i].z = 0.0f;
-        vertices[i].r = 0.0f;
-        vertices[i].g = 0.0f;
-        vertices[i].b = 0.0f;
-    }
-    
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_DYNAMIC_DRAW);
-    
-    // Position attribute (3D)
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-    glEnableVertexAttribArray(0);
-    
-    // Color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    
-    // Create a screen-aligned quad for the post-processing pass
-    glGenVertexArrays(1, &_quad_vao);
-    glGenBuffers(1, &_quad_vbo);
-    
-    glBindVertexArray(_quad_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, _quad_vbo);
-    
-    // Define the quad vertices (full screen)
-    float quadVertices[] = {
-        // positions   // texture coords
-        -1.0f,  1.0f,  0.0f, 1.0f,
-        -1.0f, -1.0f,  0.0f, 0.0f,
-         1.0f, -1.0f,  1.0f, 0.0f,
-        
-        -1.0f,  1.0f,  0.0f, 1.0f,
-         1.0f, -1.0f,  1.0f, 0.0f,
-         1.0f,  1.0f,  1.0f, 1.0f
-    };
-    
-    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
-    
-    // Position attribute
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    
-    // Texture coordinates attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    
-    // Set up framebuffers for multi-pass rendering
-    setupFramebuffers();
-    
-    // Enable depth testing and blending
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    
-    // Use additive blending for LED points - much brighter results
-    // Source color is added to destination color (GL_ONE, GL_ONE)
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    
-    return true;
-}
-
-GLuint WebPlatform::createShaderProgram(const char* vertexSource, const char* fragmentSource) {
-    // Compile vertex shader
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexSource, nullptr);
-    glCompileShader(vertexShader);
-    
-    // Check vertex shader compilation
-    GLint success;
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        char infoLog[512];
-        glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-        std::cerr << "Vertex shader compilation failed: " << infoLog << std::endl;
-        return 0;
-    }
-    
-    // Compile fragment shader
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentSource, nullptr);
-    glCompileShader(fragmentShader);
-    
-    // Check fragment shader compilation
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        char infoLog[512];
-        glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
-        std::cerr << "Fragment shader compilation failed: " << infoLog << std::endl;
-        return 0;
-    }
-    
-    // Create and link shader program
-    GLuint program = glCreateProgram();
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
-    glLinkProgram(program);
-    
-    // Check program linking
-    glGetProgramiv(program, GL_LINK_STATUS, &success);
-    if (!success) {
-        char infoLog[512];
-        glGetProgramInfoLog(program, 512, nullptr, infoLog);
-        std::cerr << "Shader program linking failed: " << infoLog << std::endl;
-        return 0;
-    }
-    
-    // Clean up shaders
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-    
-    return program;
-}
-
-void WebPlatform::setupFramebuffers() {
-    // Create framebuffer for the scene render
-    glGenFramebuffers(1, &_scene_fbo);
-    glBindFramebuffer(GL_FRAMEBUFFER, _scene_fbo);
-    
-    // Create texture for color attachment
-    glGenTextures(1, &_scene_texture);
-    glBindTexture(GL_TEXTURE_2D, _scene_texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _canvas_width, _canvas_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _scene_texture, 0);
-    
-    // Create renderbuffer for depth attachment
-    glGenRenderbuffers(1, &_scene_depth_rbo);
-    glBindRenderbuffer(GL_RENDERBUFFER, _scene_depth_rbo);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, _canvas_width, _canvas_height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _scene_depth_rbo);
-    
-    // Check framebuffer completeness
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        std::cerr << "Framebuffer is not complete!" << std::endl;
-    }
-    
-    // Unbind the framebuffer
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void WebPlatform::updateVertexBuffer() {
-    struct Vertex {
-        float x, y, z;  // Now using 3D coordinates
-        float r, g, b;
-    };
-    
-    // Make sure we have a valid buffer before updating
-    if (!_leds || _num_leds <= 0) {
-        std::cerr << "Invalid LED buffer or count in WebPlatform::updateVertexBuffer()" << std::endl;
-        return;
-    }
-    
-    // Create rotation matrices for model rotation
-    float cos_x = cos(_rotation_x);
-    float sin_x = sin(_rotation_x);
-    float cos_y = cos(_rotation_y);
-    float sin_y = sin(_rotation_y);
-    
-    std::vector<Vertex> vertices(_num_leds);
-    
-    // First, collect all coordinates to calculate the model center
-    std::vector<float> x_coords, y_coords, z_coords;
-    x_coords.reserve(_num_leds);
-    y_coords.reserve(_num_leds);
-    z_coords.reserve(_num_leds);
-    
-    // Collect all LED coordinates
-    for (uint16_t i = 0; i < _num_leds; i++) {
-        // Default to circle arrangement
-        float angle = 2.0f * 3.14159f * i / _num_leds;
-        float radius = 0.8f;  // Keep points within the visible area (-1 to 1)
-        
-        float x = 0.0f, y = 0.0f, z = 0.0f;
-        
-        if (_coordinate_provider) {
-            // Use the coordinate provider to get 3D coordinates
-            _coordinate_provider(i, x, y, z);
-            
-            // Scale down to fit in the visible area (-1 to 1)
-            float scale = 0.0018f;  // Smaller scale to make the model more compact
-            x *= scale;
-            y *= scale;
-            z *= scale;
-        } else {
-            // Fallback to circle if no coordinate provider
-            x = radius * cos(angle);
-            y = radius * sin(angle);
-            z = 0.0f;
-        }
-        
-        x_coords.push_back(x);
-        y_coords.push_back(y);
-        z_coords.push_back(z);
-    }
-    
-    // Calculate model center (average of all LED positions)
-    float center_x = 0.0f, center_y = 0.0f, center_z = 0.0f;
-    if (!x_coords.empty()) {
-        center_x = std::accumulate(x_coords.begin(), x_coords.end(), 0.0f) / x_coords.size();
-        center_y = std::accumulate(y_coords.begin(), y_coords.end(), 0.0f) / y_coords.size();
-        center_z = std::accumulate(z_coords.begin(), z_coords.end(), 0.0f) / z_coords.size();
-    }
-    
-    if (g_debug_mode && frame_count % 600 == 0) {
-        std::cout << "Model center: " << center_x << ", " << center_y << ", " << center_z << std::endl;
-    }
-    
-    // For each LED, position it based on its index
-    for (uint16_t i = 0; i < _num_leds; i++) {
-        float x = x_coords[i];
-        float y = y_coords[i];
-        float z = z_coords[i];
-        
-        // Apply model rotation consistently regardless of view
-        // First rotate around Y axis (horizontal rotation)
-        float x_rotated = x * cos_y + z * sin_y;
-        float z_rotated = -x * sin_y + z * cos_y;
-        
-        // Then rotate around X axis (vertical rotation)
-        float y_final = y * cos_x - z_rotated * sin_x;
-        float z_final = y * sin_x + z_rotated * cos_x;
-        
-        // Also rotate the center point
-        float center_x_rotated = center_x * cos_y + center_z * sin_y;
-        float center_z_rotated = -center_x * sin_y + center_z * cos_y;
-        float center_y_final = center_y * cos_x - center_z_rotated * sin_x;
-        float center_z_final = center_y * sin_x + center_z_rotated * cos_x;
-        
-        // Store rotated coordinates
-        vertices[i].x = x_rotated;
-        vertices[i].y = y_final;
-        vertices[i].z = z_final;
-        
-        // Check if this LED is visible from the camera viewpoint
-        // Camera is at (0, 0, -_camera_distance) looking at the origin
-        
-        // Vector from camera to center of model
-        float cam_to_center_x = center_x_rotated;
-        float cam_to_center_y = center_y_final;
-        float cam_to_center_z = center_z_final + _camera_distance; // Camera is at -_camera_distance
-        
-        // Vector from camera to this LED
-        float cam_to_led_x = x_rotated;
-        float cam_to_led_y = y_final;
-        float cam_to_led_z = z_final + _camera_distance;
-        
-        // Vector from center to this LED
-        float center_to_led_x = x_rotated - center_x_rotated;
-        float center_to_led_y = y_final - center_y_final;
-        float center_to_led_z = z_final - center_z_final;
-        
-        // Dot product of camera-to-center and center-to-LED
-        // If positive, LED is on the far side of the center from the camera's viewpoint
-        float dot_product = (cam_to_center_x * center_to_led_x +
-                             cam_to_center_y * center_to_led_y +
-                             cam_to_center_z * center_to_led_z);
-        
-        // Distance from center to LED
-        float center_to_led_distance = std::sqrt(
-            center_to_led_x * center_to_led_x +
-            center_to_led_y * center_to_led_y +
-            center_to_led_z * center_to_led_z
-        );
-        
-        // Calculate occlusion factor (0=hidden, 1=fully visible)
-        float occlusion_factor = 1.0f;
-        
-        // If the LED is on the far side from the camera (using the center as reference),
-        // then apply occlusion. A negative dot product means the LED is on the opposite
-        // side of the center from the camera's viewpoint.
-        if (dot_product < 0 && center_to_led_distance > 0.03f) {
-            // Apply a smooth transition near the edge of visibility
-            // The more negative the dot product, the more it's hidden
-            float hide_threshold = -0.2f * center_to_led_distance;
-            if (dot_product < hide_threshold) {
-                occlusion_factor = 0.0f; // Completely hidden
-            } else {
-                // Smooth transition at the edges
-                occlusion_factor = 1.0f - (dot_product / hide_threshold);
-            }
-        }
-        
-        // Make sure we're not accessing out of bounds
-        if (i < _num_leds) {
-            // Get base RGB values
-            float r = _leds[i].r / 255.0f;
-            float g = _leds[i].g / 255.0f;
-            float b = _leds[i].b / 255.0f;
-            
-            // Check for zero brightness to avoid white LEDs at brightness=0
-            if (_brightness < 2) {
-                vertices[i].r = 0.0f;
-                vertices[i].g = 0.0f;
-                vertices[i].b = 0.0f;
-            } else {
-                // Apply enhanced brightness scaling with better dynamic range preservation
-                float brightness_scale = _brightness / 255.0f;
-                
-                // Use a more moderate multiplier for better dynamic range
-                float multiplier = 1.5f;
-                float boost = brightness_scale * 0.05f; // Very small boost
-                
-                vertices[i].r = std::min(r * brightness_scale * multiplier + boost, 1.0f);
-                vertices[i].g = std::min(g * brightness_scale * multiplier + boost, 1.0f);
-                vertices[i].b = std::min(b * brightness_scale * multiplier + boost, 1.0f);
-                
-                // Apply occlusion factor (0=hidden, 1=fully visible)
-                vertices[i].r *= occlusion_factor;
-                vertices[i].g *= occlusion_factor;
-                vertices[i].b *= occlusion_factor;
-                
-                // Ensure colors are visible (minimum brightness)
-                if ((r > 0 || g > 0 || b > 0) && occlusion_factor > 0.0f) {
-                    // Only apply minimum brightness if the LED is not completely off and not occluded
-                    float max_component = std::max(std::max(vertices[i].r, vertices[i].g), vertices[i].b);
-                    float min_brightness = MIN_LED_BRIGHTNESS;
-                    
-                    if (max_component < min_brightness) {
-                        // Scale up all components proportionally
-                        float scale_factor = min_brightness / max_component;
-                        vertices[i].r *= scale_factor;
-                        vertices[i].g *= scale_factor;
-                        vertices[i].b *= scale_factor;
-                    }
-                    
-                    // Enhance color saturation by reducing the minimum component
-                    float min_component = std::min(std::min(vertices[i].r, vertices[i].g), vertices[i].b);
-                    if (min_component > 0.0f) {
-                        // Reduce the minimum component to increase saturation
-                        float saturation_factor = 0.3f; // Lower value preserves more accurate colors
-                        vertices[i].r -= min_component * saturation_factor;
-                        vertices[i].g -= min_component * saturation_factor;
-                        vertices[i].b -= min_component * saturation_factor;
-                        
-                        // Ensure values remain positive
-                        vertices[i].r = std::max(vertices[i].r, 0.0f);
-                        vertices[i].g = std::max(vertices[i].g, 0.0f);
-                        vertices[i].b = std::max(vertices[i].b, 0.0f);
-                    }
-                } 
-                // For unlit LEDs
-                else if (occlusion_factor > 0.0f && _brightness > 230) {
-                    // At very high brightness, visualize unlit LEDs to see the model structure
-                    float visibility = (_brightness - 230.0f) / 25.0f; // Ramp up from 230-255
-                    vertices[i].r = 0.03f * visibility * occlusion_factor;
-                    vertices[i].g = 0.03f * visibility * occlusion_factor;
-                    vertices[i].b = 0.05f * visibility * occlusion_factor; // Slightly blue tint
-                } else {
-                    // Completely off LEDs or occluded LEDs are invisible
-                    vertices[i].r = 0.0f;
-                    vertices[i].g = 0.0f;
-                    vertices[i].b = 0.0f;
-                }
-            }
-        } else {
-            // Default color if out of bounds
-            vertices[i].r = 1.0f;  // Bright red for error indication
-            vertices[i].g = 0.0f;
-            vertices[i].b = 0.0f;
-        }
-    }
-    
-    // Make sure WebGL is initialized before updating buffer
-    if (!_gl_initialized) {
-        std::cerr << "WebGL not initialized in WebPlatform::updateVertexBuffer()" << std::endl;
-        return;
-    }
-    
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), vertices.data());
-}
-
-void WebPlatform::createViewMatrix(float* view_matrix) {
-    // Start with identity matrix
-    for (int i = 0; i < 16; i++) {
-        view_matrix[i] = 0.0f;
-    }
-    view_matrix[0] = 1.0f;
-    view_matrix[5] = 1.0f;
-    view_matrix[10] = 1.0f;
-    view_matrix[15] = 1.0f;
-    
-    // Create a fixed camera view matrix (looking at origin from a distance)
-    // Position camera at a fixed distance on the Z axis
-    float translation[16] = {
-        1.0f, 0.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, -_camera_distance, 1.0f
-    };
-    
-    // Copy the translation matrix to the view matrix
-    for (int i = 0; i < 16; i++) {
-        view_matrix[i] = translation[i];
-    }
-    
-    // Print rotation values for debugging
-    if (g_debug_mode && (_rotation_x != 0.0f || _rotation_y != 0.0f)) {
-        // Only print occasionally to reduce spam
-        static uint32_t last_rotation_debug_time = 0;
-        uint32_t current_time = emscripten_get_now();
-        if (current_time - last_rotation_debug_time > 5000) { // Only print every 5 seconds
-            std::cout << "Rotation: X=" << _rotation_x << ", Y=" << _rotation_y << std::endl;
-            last_rotation_debug_time = current_time;
-        }
-    }
-}
-
-void WebPlatform::firstPass() {
-    // Render scene to framebuffer
-    glBindFramebuffer(GL_FRAMEBUFFER, _scene_fbo);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // Clear with transparent black
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    // Use the main shader for LED rendering
-    glUseProgram(_shader_program);
-    
-    // Calculate and set projection matrix
-    float fov = CAMERA_FOV_DEGREES * 3.14159f / 180.0f;
-    float aspect = static_cast<float>(_canvas_width) / static_cast<float>(_canvas_height);
-    float f = 1.0f / tan(fov / 2.0f);
-    float projection[16] = {
-        f / aspect, 0.0f, 0.0f, 0.0f,
-        0.0f, f, 0.0f, 0.0f,
-        0.0f, 0.0f, (CAMERA_FAR_PLANE + CAMERA_NEAR_PLANE) / (CAMERA_NEAR_PLANE - CAMERA_FAR_PLANE), -1.0f,
-        0.0f, 0.0f, (2.0f * CAMERA_FAR_PLANE * CAMERA_NEAR_PLANE) / (CAMERA_NEAR_PLANE - CAMERA_FAR_PLANE), 0.0f
-    };
-    
-    // Create and set view matrix
-    float view[16];
-    createViewMatrix(view);
-    
-    // Set uniforms
-    glUniformMatrix4fv(_projectionLoc, 1, GL_FALSE, projection);
-    glUniformMatrix4fv(_viewLoc, 1, GL_FALSE, view);
-    
-    // Set new physically-based LED size uniforms
-    GLint ledSizeRatioLoc = glGetUniformLocation(_shader_program, "ledSizeRatio");
-    if (ledSizeRatioLoc != -1) {
-        glUniform1f(ledSizeRatioLoc, _led_size);
-    }
-    
-    // The physical LED size in model units
-    // Convert from mm to model units based on the scaling factor used in the model
-    // Scaling factor is 0.0018f, as used in updateVertexBuffer
-    GLint physicalLedSizeLoc = glGetUniformLocation(_shader_program, "physicalLedSize");
-    if (physicalLedSizeLoc != -1) {
-        // Calculate physical LED size relative to model scale
-        float ledSizeInModelUnits = PHYSICAL_LED_DIAMETER / PHYSICAL_FACE_EDGE * 0.5f;
-        glUniform1f(physicalLedSizeLoc, ledSizeInModelUnits);
-    }
-    
-    // Pass camera distance for size calculation
-    GLint cameraDistanceLoc = glGetUniformLocation(_shader_program, "cameraDistance");
-    if (cameraDistanceLoc != -1) {
-        glUniform1f(cameraDistanceLoc, _camera_distance);
-    }
-    
-    // Pass canvas height for FOV calculation
-    GLint canvasHeightLoc = glGetUniformLocation(_shader_program, "canvasHeight");
-    if (canvasHeightLoc != -1) {
-        glUniform1f(canvasHeightLoc, static_cast<float>(_canvas_height));
-    }
-    
-    // Pass brightness uniform
-    GLint brightnessLoc = glGetUniformLocation(_shader_program, "brightness");
-    if (brightnessLoc != -1) {
-        glUniform1f(brightnessLoc, static_cast<float>(_brightness));
-    }
-    
-    // Draw the LEDs
-    glBindVertexArray(_vao);
-    glDrawArrays(GL_POINTS, 0, _num_leds);
-    
-    // Unbind
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void WebPlatform::bloomPass() {
-    // Render to default framebuffer (screen)
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    // Use bloom shader for post-processing
-    glUseProgram(_bloom_shader_program);
-    
-    // Bind the scene texture
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, _scene_texture);
-    
-    // Set uniforms for bloom shader
-    GLint sceneTexLoc = glGetUniformLocation(_bloom_shader_program, "sceneTex");
-    if (sceneTexLoc != -1) {
-        glUniform1i(sceneTexLoc, 0); // Texture unit 0
-    }
-    
-    GLint bloomIntensityLoc = glGetUniformLocation(_bloom_shader_program, "bloomIntensity");
-    if (bloomIntensityLoc != -1) {
-        glUniform1f(bloomIntensityLoc, _bloom_intensity);
-    }
-    
-    // Switch to additive blending for the bloom pass
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    
-    // Draw the full-screen quad
-    glBindVertexArray(_quad_vao);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-}
-
+// Hardware control operations
 void WebPlatform::show() {
+#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
     // Initialize WebGL if not already done
-    if (!_gl_initialized) {
-        if (g_debug_mode) {
-            std::cout << "First call to show(), initializing WebGL..." << std::endl;
-        }
-        if (!initWebGL()) {
-            std::cerr << "Failed to initialize WebGL!" << std::endl;
+    if (_shader_program == 0) {
+        // Initialize WebGL renderer
+        try {
+            // Get canvas dimensions
+            _canvas_width = get_canvas_width();
+            _canvas_height = get_canvas_height();
+            
+            // Initialize WebGL renderer
+            if (!_renderer.initialize(_canvas_width, _canvas_height)) {
+                fprintf(stderr, "Failed to initialize WebGL renderer\n");
+                return;
+            }
+            
+            // Create shader programs
+            _shader_program = _renderer.createShaderProgram(
+                vertex_shader_source, fragment_shader_source);
+            
+            _mesh_shader_program = _renderer.createShaderProgram(
+                mesh_vertex_shader_source, mesh_fragment_shader_source);
+            
+            // Create glow shader programs
+            _glow_shader_program = _renderer.createShaderProgram(
+                glow_vertex_shader_source, glow_fragment_shader_source);
+            
+            _blur_shader_program = _renderer.createShaderProgram(
+                blur_vertex_shader_source, blur_fragment_shader_source);
+            
+            _composite_shader_program = _renderer.createShaderProgram(
+                quad_vertex_shader_source, composite_fragment_shader_source);
+            
+            // Initialize camera
+            _camera = Camera();
+            
+            printf("WebGL initialized successfully\n");
+        } catch (const std::exception& e) {
+            fprintf(stderr, "WebGL initialization error: %s\n", e.what());
             return;
         }
-        _gl_initialized = true;
-        if (g_debug_mode) {
-            std::cout << "WebGL initialized successfully!" << std::endl;
-        }
     }
     
-    // Increment frame counter
-    frame_count++;
+    // Update vertex buffer with current LED colors
+    updateVertexBuffer();
+    
+    // Render the frame
+    renderFrame();
+    
+    // Update FPS counter
+    double current_time = get_current_time();
+    _frame_count++;
+    
+    if (current_time - _last_frame_time >= 1.0) {
+        int fps = static_cast<int>(_frame_count / (current_time - _last_frame_time));
+        update_ui_fps(fps);
+        _frame_count = 0;
+        _last_frame_time = current_time;
+    }
     
     // Update auto-rotation if enabled
     updateAutoRotation();
-    
-    // Update vertex buffer with LED colors
-    updateVertexBuffer();
-    
-    // Check if canvas size has changed
-    int width, height;
-    emscripten_get_canvas_element_size("#canvas", &width, &height);
-    if (width != _canvas_width || height != _canvas_height) {
-        _canvas_width = width;
-        _canvas_height = height;
-        
-        // Resize framebuffer textures
-        glBindTexture(GL_TEXTURE_2D, _scene_texture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _canvas_width, _canvas_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        
-        glBindRenderbuffer(GL_RENDERBUFFER, _scene_depth_rbo);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, _canvas_width, _canvas_height);
-    }
-    
-    // First pass: render LEDs to framebuffer
-    firstPass();
-    
-    // Second pass: apply bloom and render to screen
-    bloomPass();
+#endif
 }
 
 void WebPlatform::setBrightness(uint8_t brightness) {
-    if (_brightness != brightness && g_debug_mode) {
-        std::cout << "Brightness changed from " << (int)_brightness << " to " << (int)brightness << std::endl;
-    }
     _brightness = brightness;
+#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+    // Update UI if available
+    update_ui_brightness(static_cast<float>(brightness) / 255.0f);
+#endif
 }
 
 uint8_t WebPlatform::getBrightness() const {
@@ -950,6 +168,7 @@ void WebPlatform::clear() {
     }
 }
 
+// Performance settings
 void WebPlatform::setMaxRefreshRate(uint8_t fps) {
     _max_refresh_rate = fps;
 }
@@ -958,95 +177,358 @@ void WebPlatform::setDither(uint8_t dither) {
     _dither = dither;
 }
 
+#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+// WebGL-specific methods
 void WebPlatform::setLEDSize(float size) {
-    _led_size = size;
+    // Clamp size between min and max values
+    _led_size = std::max(MIN_LED_SIZE_RATIO, std::min(MAX_LED_SIZE_RATIO, size));
 }
 
 float WebPlatform::getLEDSize() const {
     return _led_size;
 }
 
-void WebPlatform::setBloomIntensity(float intensity) {
-    _bloom_intensity = intensity;
+void WebPlatform::setAtmosphereIntensity(float intensity) {
+    _atmosphere_intensity = std::clamp(intensity, MIN_ATMOSPHERE_INTENSITY, MAX_ATMOSPHERE_INTENSITY);
 }
 
-float WebPlatform::getBloomIntensity() const {
-    return _bloom_intensity;
+float WebPlatform::getAtmosphereIntensity() const {
+    return _atmosphere_intensity;
 }
 
 void WebPlatform::setLEDSpacing(float spacing) {
     _led_spacing = spacing;
 }
 
-void WebPlatform::setLEDArrangement(const float* positions, uint16_t count) {
-    if (positions == nullptr || count == 0) {
-        _custom_arrangement = false;
-        return;
+// Mesh visualization methods
+void WebPlatform::setShowMesh(bool show) {
+    _show_mesh = show;
+}
+
+bool WebPlatform::getShowMesh() const {
+    return _show_mesh;
+}
+
+void WebPlatform::setMeshOpacity(float opacity) {
+    // Clamp opacity between 0 and 1
+    _mesh_opacity = std::max(0.0f, std::min(1.0f, opacity));
+}
+
+float WebPlatform::getMeshOpacity() const {
+    return _mesh_opacity;
+}
+
+// Set a callback to provide 3D coordinates for each LED
+void WebPlatform::setCoordinateProvider(std::function<void(uint16_t, float&, float&, float&)> callback) {
+    _coordinate_provider = callback;
+    
+    // If we already have a renderer initialized, update the mesh
+    if (_coordinate_provider) {
+        _mesh_generator = MeshGenerator(_coordinate_provider, _num_leds);
+        _mesh_generator.generateDodecahedronMesh();
     }
+}
+
+// Helper methods
+void WebPlatform::updateVertexBuffer() {
+    // Structure for each vertex (position + color)
+    struct Vertex {
+        float x, y, z;  // 3D coordinates
+        float r, g, b;  // Color
+    };
     
-    _custom_arrangement = true;
+    // Create vertex data
+    std::vector<Vertex> vertices(_num_leds);
     
-    // Clean up existing positions if any
-    delete[] _led_positions;
+    // Scale factor to fit LEDs in scene
+    constexpr float POSITION_SCALE = 0.03f;
+    constexpr float Z_CORRECTION = 1.0f;
     
-    // Allocate and copy new positions
-    _led_positions = new float[count * 3]; // x, y, z for each LED
-    std::memcpy(_led_positions, positions, count * 3 * sizeof(float));
-}
-
-} // namespace PixelTheater
-
-#else
-// =========================================================================
-// MINIMAL STUB IMPLEMENTATION FOR NON-WEB BUILDS
-// =========================================================================
-
-#include <iostream>
-
-namespace PixelTheater {
-
-WebPlatform::WebPlatform(uint16_t num_leds) : _num_leds(num_leds) {
-    _leds = new CRGB[num_leds]();  // Initialize to zero
-    _brightness = DEFAULT_BRIGHTNESS;
-    _led_size = DEFAULT_LED_SIZE;
-    _bloom_intensity = DEFAULT_BLOOM_INTENSITY;
-    std::cout << "Created stub WebPlatform with " << num_leds << " LEDs (non-web build)" << std::endl;
-}
-
-WebPlatform::~WebPlatform() {
-    delete[] _leds;
-}
-
-CRGB* WebPlatform::getLEDs() {
-    return _leds;
-}
-
-uint16_t WebPlatform::getNumLEDs() const {
-    return _num_leds;
-}
-
-void WebPlatform::show() {
-    // Do nothing in non-web builds
-}
-
-void WebPlatform::setBrightness(uint8_t brightness) {
-    _brightness = brightness;
-}
-
-void WebPlatform::clear() {
+    // Use coordinate provider if available, otherwise fall back to default circle layout
     for (uint16_t i = 0; i < _num_leds; i++) {
-        _leds[i] = CRGB(0, 0, 0);
+        float x = 0.0f, y = 0.0f, z = 0.0f;
+        
+        // If coordinate provider is available, use it
+        if (_coordinate_provider) {
+            _coordinate_provider(i, x, y, z);
+            
+            // Scale positions to fit in scene with equal scaling for all axes
+            x *= POSITION_SCALE;
+            y *= POSITION_SCALE;
+            z *= POSITION_SCALE * Z_CORRECTION;
+        } else {
+            float angle = 2.0f * M_PI * static_cast<float>(i) / static_cast<float>(_num_leds);
+            x = cos(angle);
+            y = sin(angle);
+            z = 0.0f;
+        }
+        
+        // Convert LED color from 0-255 to 0-1 range and apply brightness
+        float brightness = static_cast<float>(_brightness) / 255.0f;
+        vertices[i].x = x;
+        vertices[i].y = y;
+        vertices[i].z = z;
+        vertices[i].r = static_cast<float>(_leds[i].r) / 255.0f * brightness;
+        vertices[i].g = static_cast<float>(_leds[i].g) / 255.0f * brightness;
+        vertices[i].b = static_cast<float>(_leds[i].b) / 255.0f * brightness;
+    }
+    
+    // Create or update the vertex buffer
+    if (_vertex_buffer == 0) {
+        _vertex_buffer = _renderer.createBuffer();
+    }
+    
+    // Update the vertex buffer
+    _renderer.bindArrayBuffer(_vertex_buffer, vertices.data(), vertices.size() * sizeof(Vertex), true);
+}
+
+void WebPlatform::renderFrame() {
+    // Begin render pass
+    _renderer.beginRenderPass();
+    
+    // Calculate projection and view matrices
+    float projection[16];
+    float view[16];
+    float modelRotation[16];
+    
+    // Update camera distance from platform setting
+    _camera.setDistance(_camera_distance);
+    
+    // Setup perspective projection
+    float aspect = static_cast<float>(_canvas_width) / static_cast<float>(_canvas_height);
+    float fovRadians = CAMERA_FOV_DEGREES * (M_PI / 180.0f);
+    
+    // Calculate perspective projection matrix
+    Math::perspective(projection, fovRadians, aspect, CAMERA_NEAR_PLANE, CAMERA_FAR_PLANE);
+    
+    // Get camera view matrix and model rotation matrix separately
+    _camera.calculateViewMatrix(view);
+    _camera.getModelRotationMatrix(modelRotation);
+    
+    // Render mesh if enabled
+    if (_show_mesh) {
+        glUseProgram(_mesh_shader_program);
+        
+        // Set uniforms
+        GLint projMatrixLoc = glGetUniformLocation(_mesh_shader_program, "projection");
+        GLint viewMatrixLoc = glGetUniformLocation(_mesh_shader_program, "view");
+        GLint modelMatrixLoc = glGetUniformLocation(_mesh_shader_program, "model");
+        GLint opacityLoc = glGetUniformLocation(_mesh_shader_program, "mesh_opacity");
+        
+        glUniformMatrix4fv(projMatrixLoc, 1, GL_FALSE, projection);
+        glUniformMatrix4fv(viewMatrixLoc, 1, GL_FALSE, view);
+        glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, modelRotation);
+        glUniform1f(opacityLoc, _mesh_opacity);
+        
+        // Draw mesh using vertex attributes setup by the renderer
+        const auto& vertices = _mesh_generator.getVertices();
+        const auto& indices = _mesh_generator.getIndices();
+        
+        if (!vertices.empty() && !indices.empty()) {
+            // Create temporary VAO and VBO for the mesh
+            uint32_t mesh_vao = _renderer.createVertexArray();
+            uint32_t mesh_vbo = _renderer.createBuffer();
+            uint32_t mesh_ebo = _renderer.createBuffer();
+            
+            // Bind and set mesh data
+            _renderer.bindArrayBuffer(mesh_vbo, vertices.data(), vertices.size() * sizeof(float));
+            _renderer.configureVertexAttributes(mesh_vao, mesh_vbo, true);
+            
+            // Use the renderer's bindElementBuffer method
+            _renderer.bindElementBuffer(mesh_ebo, indices.data(), indices.size() * sizeof(uint16_t));
+            
+            // Draw mesh
+            glBindVertexArray(mesh_vao);
+            glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), 
+                          GL_UNSIGNED_SHORT, 0);
+            
+            // Clean up
+            glDeleteBuffers(1, &mesh_ebo);
+            glDeleteBuffers(1, &mesh_vbo);
+            glDeleteVertexArrays(1, &mesh_vao);
+        }
+    }
+    
+    // Enable depth testing for proper depth sorting
+    glEnable(GL_DEPTH_TEST);
+    // Enable additive blending for LED points to create a glowing effect
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+    glUseProgram(_shader_program);
+    
+    // Set uniforms for LED rendering
+    GLint projLoc = glGetUniformLocation(_shader_program, "projection");
+    GLint viewLoc = glGetUniformLocation(_shader_program, "view");
+    GLint modelLoc = glGetUniformLocation(_shader_program, "model");
+    GLint sizeLoc = glGetUniformLocation(_shader_program, "led_size");
+    GLint distanceLoc = glGetUniformLocation(_shader_program, "camera_distance");
+    GLint heightLoc = glGetUniformLocation(_shader_program, "canvas_height");
+    
+    // Add brightness uniform
+    GLint brightnessLoc = glGetUniformLocation(_shader_program, "brightness");
+    
+    glUniformMatrix4fv(projLoc, 1, GL_FALSE, projection);
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view);
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, modelRotation);
+    glUniform1f(sizeLoc, _led_size * PHYSICAL_LED_DIAMETER);
+    glUniform1f(distanceLoc, _camera_distance);
+    glUniform1f(heightLoc, static_cast<float>(_canvas_height));
+    
+    // Only set brightness if the location is valid
+    if (brightnessLoc >= 0) {
+        glUniform1f(brightnessLoc, static_cast<float>(_brightness) / 255.0f);
+    }
+    
+    // Configure vertex attributes specifically for LEDs
+    uint32_t led_vao = _renderer.createVertexArray();
+    _renderer.configureVertexAttributes(led_vao, _vertex_buffer);
+    
+    // Draw points for each LED
+    glBindVertexArray(led_vao);
+    glDrawArrays(GL_POINTS, 0, _num_leds);
+    
+    // Restore default blending
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    // Clean up
+    glDeleteVertexArrays(1, &led_vao);
+    
+    // End render pass
+    _renderer.endRenderPass();
+    
+    // Apply post-processing
+    _renderer.applyPostProcessing(_glow_shader_program, _atmosphere_intensity);
+}
+
+void WebPlatform::updateAutoRotation() {
+    if (_auto_rotation) {
+        // Get the current time and calculate delta time properly
+        double current_time = get_current_time();
+        float delta_time = static_cast<float>(current_time - _last_auto_rotation_time);
+        
+        // Update the timestamp for next frame
+        _last_auto_rotation_time = current_time;
+        
+        // Use camera's built-in auto-rotation method
+        _camera.updateAutoRotation(delta_time);
     }
 }
 
-void WebPlatform::setMaxRefreshRate(uint8_t fps) {
-    _max_refresh_rate = fps;
+// Rotation and view control
+void WebPlatform::updateRotation(float deltaX, float deltaY) {
+    // Convert mouse movement to rotation angles
+    // Scale the movement for smoother control
+    float rotationScale = ROTATION_SCALE;
+    _camera.updateModelRotation(deltaX * rotationScale, deltaY * rotationScale);
 }
 
-void WebPlatform::setDither(uint8_t dither) {
-    _dither = dither;
+void WebPlatform::resetRotation() {
+    // Reset model rotation to 0
+    _camera.resetModelRotation();
 }
 
-} // namespace PixelTheater
+void WebPlatform::setAutoRotation(bool enabled, float speed) {
+    _auto_rotation = enabled;
+    
+    // Update the camera's auto-rotation state
+    _camera.setAutoRotation(enabled);
+    
+    // Set the appropriate speed based on the input parameter
+    // speed == 1 means slow, speed == 3 means fast
+    if (enabled) {
+        float rotation_speed = (speed == 1.0f) ? Camera::SLOW_ROTATION_SPEED : Camera::FAST_ROTATION_SPEED;
+        _camera.setAutoRotationSpeed(rotation_speed);
+    }
+    
+    // Reset the auto rotation timer to now
+    _last_auto_rotation_time = get_current_time();
+}
 
-#endif // PLATFORM_WEB || EMSCRIPTEN 
+void WebPlatform::setPresetView(int preset_index) {
+    // Set camera to a preset view
+    switch (preset_index) {
+        case 0: // Side view
+            _camera.setPresetView(Camera::ViewPreset::SIDE);
+            break;
+        case 1: // Top view
+            _camera.setPresetView(Camera::ViewPreset::TOP);
+            break;
+        case 2: // Angled view
+            _camera.setPresetView(Camera::ViewPreset::ANGLE);
+            break;
+        default:
+            _camera.setPresetView(Camera::ViewPreset::SIDE);
+            break;
+    }
+}
+
+void WebPlatform::setZoomLevel(int zoom_level) {
+    // Set camera zoom level
+    switch (static_cast<ZoomLevel>(zoom_level)) {
+        case ZoomLevel::CLOSE:
+            _camera_distance = CAMERA_CLOSE_DISTANCE;
+            break;
+        case ZoomLevel::NORMAL:
+            _camera_distance = CAMERA_NORMAL_DISTANCE;
+            break;
+        case ZoomLevel::FAR:
+            _camera_distance = CAMERA_FAR_DISTANCE;
+            break;
+        default:
+            _camera_distance = CAMERA_NORMAL_DISTANCE;
+            break;
+    }
+    
+    // Update the camera
+    _camera.setDistance(_camera_distance);
+}
+
+// JavaScript interface methods
+void WebPlatform::onCanvasResize(int width, int height) {
+    _canvas_width = width;
+    _canvas_height = height;
+    
+    // Update renderer viewport
+    _renderer.updateViewport(width, height);
+}
+
+void WebPlatform::onMouseDown(int x, int y) {
+    _mouse_down = true;
+    _last_mouse_x = x;
+    _last_mouse_y = y;
+    
+    // Disable auto-rotation when user interacts with mouse
+    if (_auto_rotation) {
+        _auto_rotation = false;
+        _camera.setAutoRotation(false);
+    }
+}
+
+void WebPlatform::onMouseMove(int x, int y, bool shift_key) {
+    if (_mouse_down) {
+        float deltaX = static_cast<float>(x - _last_mouse_x);
+        float deltaY = static_cast<float>(y - _last_mouse_y);
+        
+        // Update rotation based on mouse movement
+        updateRotation(deltaX, deltaY);
+        
+        _last_mouse_x = x;
+        _last_mouse_y = y;
+    }
+}
+
+void WebPlatform::onMouseUp() {
+    _mouse_down = false;
+}
+
+void WebPlatform::onMouseWheel(float delta) {
+    // Adjust camera distance based on wheel delta
+    _camera_distance = std::max(CAMERA_CLOSE_DISTANCE, 
+                               std::min(CAMERA_FAR_DISTANCE, 
+                                      _camera_distance - delta * 0.1f));
+    _camera.setDistance(_camera_distance);
+}
+#endif
+
+} // namespace PixelTheater 

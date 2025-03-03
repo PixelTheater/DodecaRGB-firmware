@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DodecaRGB Web Simulator</title>
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .checkbox-container {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 8px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -75,8 +85,17 @@
                 </div>
                 
                 <div class="slider-container">
-                    <label>Bloom Intensity: <span id="glow-intensity-value">1.2</span></label>
+                    <label>Atmosphere Intensity: <span id="glow-intensity-value">1.2</span></label>
                     <input type="range" id="glow-intensity" min="0" max="30" value="12">
+                </div>
+                
+                <div class="slider-container">
+                    <label>Mesh Opacity: <span id="mesh-opacity-value">0.3</span></label>
+                    <input type="range" id="mesh-opacity" min="0" max="1" step="0.05" value="0.3">
+                </div>
+                
+                <div class="checkbox-container">
+                    <label><input type="checkbox" id="show-mesh" checked> Show Structure</label>
                 </div>
             </div>
             

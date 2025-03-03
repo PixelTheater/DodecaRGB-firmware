@@ -11,8 +11,11 @@ class DodecaSimulator {
         this.brightnessValue = document.getElementById('brightness-value');
         this.ledSizeSlider = document.getElementById('led-size');
         this.ledSizeValue = document.getElementById('led-size-value');
-        this.bloomSlider = document.getElementById('glow-intensity');
-        this.bloomValue = document.getElementById('glow-intensity-value');
+        this.atmosphereSlider = document.getElementById('glow-intensity');
+        this.atmosphereValue = document.getElementById('glow-intensity-value');
+        this.meshOpacitySlider = document.getElementById('mesh-opacity');
+        this.meshOpacityValue = document.getElementById('mesh-opacity-value');
+        this.showMeshCheckbox = document.getElementById('show-mesh');
         this.ledCountElement = document.getElementById('led-count');
         this.fpsElement = document.getElementById('fps');
         
@@ -231,26 +234,60 @@ class DodecaSimulator {
             console.log(`Fallback LED size: ${initialLedSize.toFixed(1)}x`);
         }
         
-        // Bloom intensity - get the actual value
+        // Atmosphere intensity - get the actual value
         try {
-            const actualBloomIntensity = this.callModule('get_bloom_intensity');
-            if (actualBloomIntensity !== null) {
+            const actualAtmosphereIntensity = this.callModule('get_atmosphere_intensity');
+            if (actualAtmosphereIntensity !== null) {
                 // Convert from internal range (typically 0.0-3.0) to slider range (0-30)
-                const bloomSliderValue = Math.round(actualBloomIntensity * 10);
-                this.bloomSlider.value = bloomSliderValue;
-                this.bloomValue.textContent = actualBloomIntensity.toFixed(1);
-                console.log(`Setting initial bloom intensity: value=${actualBloomIntensity.toFixed(1)}, slider=${bloomSliderValue}`);
+                const atmosphereSliderValue = Math.round(actualAtmosphereIntensity * 10);
+                this.atmosphereSlider.value = atmosphereSliderValue;
+                this.atmosphereValue.textContent = actualAtmosphereIntensity.toFixed(1);
+                console.log(`Setting initial atmosphere intensity: value=${actualAtmosphereIntensity.toFixed(1)}, slider=${atmosphereSliderValue}`);
             } else {
-                throw new Error("Could not get bloom intensity");
+                throw new Error("Could not get atmosphere intensity");
             }
         } catch (error) {
             // Fallback to slider default - but make sure we use the slider's actual value
-            const bloomSliderValue = parseInt(this.bloomSlider.value);
+            const atmosphereSliderValue = parseInt(this.atmosphereSlider.value);
             // Convert range 0-30 to 0.0-3.0
-            const initialBloom = bloomSliderValue / 10.0;
-            this.bloomValue.textContent = initialBloom.toFixed(1);
-            this.callModule('set_bloom_intensity', initialBloom);
-            console.log(`Fallback bloom intensity: value=${initialBloom.toFixed(1)}, slider=${bloomSliderValue}`);
+            const initialAtmosphere = atmosphereSliderValue / 10.0;
+            this.atmosphereValue.textContent = initialAtmosphere.toFixed(1);
+            this.callModule('set_atmosphere_intensity', initialAtmosphere);
+            console.log(`Fallback atmosphere intensity: value=${initialAtmosphere.toFixed(1)}, slider=${atmosphereSliderValue}`);
+        }
+        
+        // Mesh opacity - get the actual value
+        try {
+            const actualMeshOpacity = this.callModule('get_mesh_opacity');
+            if (actualMeshOpacity !== null) {
+                this.meshOpacitySlider.value = actualMeshOpacity;
+                this.meshOpacityValue.textContent = actualMeshOpacity.toFixed(1);
+                console.log(`Setting initial mesh opacity: ${actualMeshOpacity.toFixed(1)}`);
+            } else {
+                throw new Error("Could not get mesh opacity");
+            }
+        } catch (error) {
+            // Fallback to slider default
+            const initialMeshOpacity = parseFloat(this.meshOpacitySlider.value);
+            this.meshOpacityValue.textContent = initialMeshOpacity.toFixed(1);
+            this.callModule('set_mesh_opacity', initialMeshOpacity);
+            console.log(`Fallback mesh opacity: ${initialMeshOpacity.toFixed(1)}`);
+        }
+        
+        // Show mesh checkbox - get the actual value
+        try {
+            const showMesh = this.callModule('get_show_mesh');
+            if (showMesh !== null) {
+                this.showMeshCheckbox.checked = showMesh;
+                console.log(`Setting initial show mesh: ${showMesh ? 'ON' : 'OFF'}`);
+            } else {
+                throw new Error("Could not get show mesh state");
+            }
+        } catch (error) {
+            // Fallback to checkbox default
+            const initialShowMesh = this.showMeshCheckbox.checked;
+            this.callModule('set_show_mesh', initialShowMesh);
+            console.log(`Fallback show mesh: ${initialShowMesh ? 'ON' : 'OFF'}`);
         }
         
         // Set initial view
@@ -264,6 +301,21 @@ class DodecaSimulator {
         // Start with rotation off
         this.callModule('set_auto_rotation', false, 0);
         this.setActiveRotationButton(this.rotationOffBtn);
+        
+        // Set up atmosphere intensity slider
+        if (this.atmosphereSlider) {
+            this.atmosphereSlider.addEventListener('input', (e) => this.handleAtmosphereChange(e));
+        }
+        
+        // Set up mesh opacity slider
+        if (this.meshOpacitySlider) {
+            this.meshOpacitySlider.addEventListener('input', (e) => this.handleMeshOpacityChange(e));
+        }
+        
+        // Set up show mesh checkbox
+        if (this.showMeshCheckbox) {
+            this.showMeshCheckbox.addEventListener('change', (e) => this.handleShowMeshChange(e));
+        }
     }
     
     /**
@@ -280,9 +332,19 @@ class DodecaSimulator {
             this.ledSizeSlider.addEventListener('input', (e) => this.handleLEDSizeChange(e));
         }
         
-        // Set up bloom intensity slider
-        if (this.bloomSlider) {
-            this.bloomSlider.addEventListener('input', (e) => this.handleBloomChange(e));
+        // Set up atmosphere intensity slider
+        if (this.atmosphereSlider) {
+            this.atmosphereSlider.addEventListener('input', (e) => this.handleAtmosphereChange(e));
+        }
+        
+        // Set up mesh opacity slider
+        if (this.meshOpacitySlider) {
+            this.meshOpacitySlider.addEventListener('input', (e) => this.handleMeshOpacityChange(e));
+        }
+        
+        // Set up show mesh checkbox
+        if (this.showMeshCheckbox) {
+            this.showMeshCheckbox.addEventListener('change', (e) => this.handleShowMeshChange(e));
         }
         
         // Set up debug buttons
@@ -512,16 +574,37 @@ class DodecaSimulator {
     }
     
     /**
-     * Handle bloom intensity slider change
+     * Handle atmosphere intensity slider change
      * @param {Event} event - Input event
      */
-    handleBloomChange(event) {
+    handleAtmosphereChange(event) {
         const rawValue = parseFloat(event.target.value);
         // Convert range 0-30 to 0.0-3.0
         const intensity = rawValue / 10.0;
-        this.bloomValue.textContent = intensity.toFixed(1);
-        console.log(`Setting bloom intensity to: ${intensity.toFixed(1)}`);
-        this.callModule('set_bloom_intensity', intensity);
+        this.atmosphereValue.textContent = intensity.toFixed(1);
+        console.log(`Setting atmosphere intensity to: ${intensity.toFixed(1)}`);
+        this.callModule('set_atmosphere_intensity', intensity);
+    }
+    
+    /**
+     * Handle mesh opacity slider change
+     * @param {Event} event - Input event
+     */
+    handleMeshOpacityChange(event) {
+        const value = parseFloat(event.target.value);
+        this.meshOpacityValue.textContent = value.toFixed(1);
+        console.log(`Setting mesh opacity to: ${value.toFixed(1)}`);
+        this.callModule('set_mesh_opacity', value);
+    }
+    
+    /**
+     * Handle show mesh checkbox change
+     * @param {Event} event - Change event
+     */
+    handleShowMeshChange(event) {
+        const enabled = event.target.checked;
+        console.log(`Setting show mesh: ${enabled ? 'ON' : 'OFF'}`);
+        this.callModule('set_show_mesh', enabled);
     }
     
     /**

@@ -30,7 +30,12 @@ SOURCES = $(SRC_DIR)/web_simulator.cpp \
           $(PIXELTHEATER_DIR)/src/platform/web_platform.cpp \
           $(PIXELTHEATER_DIR)/src/settings.cpp \
           $(PIXELTHEATER_DIR)/src/stage.cpp \
-          $(SRC_DIR)/model.cpp
+          $(SRC_DIR)/model.cpp \
+          $(PIXELTHEATER_DIR)/src/platform/webgl/util.cpp \
+          $(PIXELTHEATER_DIR)/src/platform/webgl/camera.cpp \
+          $(PIXELTHEATER_DIR)/src/platform/webgl/mesh.cpp \
+          $(PIXELTHEATER_DIR)/src/platform/webgl/shaders.cpp \
+          $(PIXELTHEATER_DIR)/src/platform/webgl/renderer.cpp
 
 # Emscripten flags
 EMCC_FLAGS = -std=c++17 \

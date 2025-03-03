@@ -8,6 +8,7 @@
 #include <string>
 #include <memory>
 #include <sstream>
+#include <cstdio>
 #include "PixelTheater/stage.h"
 #include "PixelTheater/platform/web_platform.h"
 #include "PixelTheater/model/model.h"
@@ -415,30 +416,80 @@ public:
         return 0.0f;
     }
     
-    void setBloomIntensity(float intensity) {
+    // Atmosphere effect control
+    void setAtmosphereIntensity(float intensity) {
         if (stage) {
-            std::cout << "Setting bloom intensity to: " << intensity << std::endl;
+            std::cout << "Setting atmosphere intensity to: " << intensity << std::endl;
+            auto* platform = dynamic_cast<PixelTheater::WebPlatform*>(stage->getPlatform());
+            if (platform) {
+                platform->setAtmosphereIntensity(intensity);
+            } else {
+                std::cerr << "Platform not initialized for atmosphere setting" << std::endl;
+            }
+        }
+    }
+    
+    float getAtmosphereIntensity() const {
+        if (stage) {
+            auto* platform = dynamic_cast<PixelTheater::WebPlatform*>(stage->getPlatform());
+            if (platform) {
+                return platform->getAtmosphereIntensity();
+            }
+        }
+        return PixelTheater::WebPlatform::DEFAULT_ATMOSPHERE_INTENSITY;
+    }
+    
+    // Mesh visualization controls
+    void setShowMesh(bool show) {
+        if (stage) {
             auto* platform = stage->getPlatform();
             if (platform) {
                 auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
                 if (web_platform) {
-                    web_platform->setBloomIntensity(intensity);
+                    web_platform->setShowMesh(show);
+                    std::cout << "Set mesh visibility: " << (show ? "ON" : "OFF") << std::endl;
                 }
             }
         }
     }
     
-    float getBloomIntensity() const {
+    bool getShowMesh() const {
         if (stage) {
             auto* platform = stage->getPlatform();
             if (platform) {
                 auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
                 if (web_platform) {
-                    return web_platform->getBloomIntensity();
+                    return web_platform->getShowMesh();
                 }
             }
         }
-        return 0.0f;
+        return false;
+    }
+    
+    void setMeshOpacity(float opacity) {
+        if (stage) {
+            auto* platform = stage->getPlatform();
+            if (platform) {
+                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+                if (web_platform) {
+                    web_platform->setMeshOpacity(opacity);
+                    std::cout << "Set mesh opacity: " << opacity << std::endl;
+                }
+            }
+        }
+    }
+    
+    float getMeshOpacity() const {
+        if (stage) {
+            auto* platform = stage->getPlatform();
+            if (platform) {
+                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+                if (web_platform) {
+                    return web_platform->getMeshOpacity();
+                }
+            }
+        }
+        return 0.3f; // Default value
     }
     
     // LED count
@@ -464,8 +515,52 @@ void main_loop() {
     g_simulator.update();
 }
 
-// JavaScript callback for changing scenes
+// Implement the external C functions used by WebPlatform
 extern "C" {
+    EMSCRIPTEN_KEEPALIVE
+    int get_canvas_width() {
+        // Return the canvas width, or a default value if not available
+        // In a real implementation, this would query the actual canvas element
+        return EM_ASM_INT({
+            return document.getElementById('canvas') ? document.getElementById('canvas').width : 800;
+        });
+    }
+
+    EMSCRIPTEN_KEEPALIVE
+    int get_canvas_height() {
+        // Return the canvas height, or a default value if not available
+        return EM_ASM_INT({
+            return document.getElementById('canvas') ? document.getElementById('canvas').height : 600;
+        });
+    }
+
+    EMSCRIPTEN_KEEPALIVE
+    double get_current_time() {
+        // Return the current time in seconds
+        return emscripten_get_now() / 1000.0;
+    }
+
+    EMSCRIPTEN_KEEPALIVE
+    void update_ui_fps(int fps) {
+        // Update the FPS display in the UI
+        EM_ASM_({
+            if (window.updateFPS) {
+                window.updateFPS($0);
+            }
+        }, fps);
+    }
+
+    EMSCRIPTEN_KEEPALIVE
+    void update_ui_brightness(float brightness) {
+        // Update the brightness slider in the UI
+        EM_ASM_({
+            if (window.updateBrightnessUI) {
+                window.updateBrightnessUI($0);
+            }
+        }, brightness);
+    }
+
+    // JavaScript callback for changing scenes
     EMSCRIPTEN_KEEPALIVE
     void change_scene(int scene_index) {
         g_simulator.setScene(scene_index);
@@ -539,7 +634,7 @@ extern "C" {
         g_simulator.setScene(scene_index);
     }
     
-    // LED size and bloom intensity controls
+    // LED size and atmosphere intensity controls
     EMSCRIPTEN_KEEPALIVE
     void set_led_size(float size) {
         g_simulator.setLEDSize(size);
@@ -551,13 +646,34 @@ extern "C" {
     }
     
     EMSCRIPTEN_KEEPALIVE
-    void set_bloom_intensity(float intensity) {
-        g_simulator.setBloomIntensity(intensity);
+    void set_atmosphere_intensity(float intensity) {
+        g_simulator.setAtmosphereIntensity(intensity);
     }
     
     EMSCRIPTEN_KEEPALIVE
-    float get_bloom_intensity() {
-        return g_simulator.getBloomIntensity();
+    float get_atmosphere_intensity() {
+        return g_simulator.getAtmosphereIntensity();
+    }
+    
+    // Mesh visualization controls
+    EMSCRIPTEN_KEEPALIVE
+    void set_show_mesh(bool show) {
+        g_simulator.setShowMesh(show);
+    }
+    
+    EMSCRIPTEN_KEEPALIVE
+    bool get_show_mesh() {
+        return g_simulator.getShowMesh();
+    }
+    
+    EMSCRIPTEN_KEEPALIVE
+    void set_mesh_opacity(float opacity) {
+        g_simulator.setMeshOpacity(opacity);
+    }
+    
+    EMSCRIPTEN_KEEPALIVE
+    float get_mesh_opacity() {
+        return g_simulator.getMeshOpacity();
     }
     
     // Add functions for model stats
@@ -599,5 +715,5 @@ int main() {
     
     // This code will never be reached in Emscripten
     return 0;
-}
+} 
 #endif 
