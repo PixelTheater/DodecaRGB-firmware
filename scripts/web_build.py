@@ -123,7 +123,7 @@ def post_program_action(source, target, env):
     # Force a rebuild or not based on environment variables or command line targets
     # If "no-clean" is in the command-line targets, don't run clean
     # skip_clean = "no-clean" in COMMAND_LINE_TARGETS
-    skip_clean = True
+    skip_clean = False
     
     # Build the web application
     try:
