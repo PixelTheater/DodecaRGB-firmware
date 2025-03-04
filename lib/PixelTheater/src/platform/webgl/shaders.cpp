@@ -408,10 +408,12 @@ layout(location = 1) in vec3 aNormal;
 
 uniform mat4 projection;
 uniform mat4 view;
-uniform mat4 model;  // Add model matrix uniform
+uniform mat4 model;
+uniform float mesh_opacity;
 
 out vec3 Normal;
 out vec3 FragPos;
+out float Opacity;
 
 void main() {
     // Transform vertex position with model matrix first
@@ -420,7 +422,10 @@ void main() {
     
     // Transform normal with model matrix (ignoring translation)
     mat3 normalMatrix = mat3(transpose(inverse(model)));
-    Normal = normalMatrix * aNormal;
+    Normal = normalize(normalMatrix * aNormal);
+    
+    // Pass opacity to fragment shader
+    Opacity = mesh_opacity;
     
     // Final position in clip space
     gl_Position = projection * view * worldPos;
@@ -433,30 +438,41 @@ precision highp float;
 
 in vec3 Normal;
 in vec3 FragPos;
+in float Opacity;
 
 uniform vec3 mesh_color;
-uniform float opacity;
 uniform vec3 light_position;
 
 out vec4 FragColor;
 
 void main() {
-    // Base darker color for mesh
-    vec3 color = mesh_color * 0.4;
+    // Base color for PCB-like matte surface
+    vec3 color = mesh_color * vec3(0.55, 0.95, 0.65); // Slightly lighter base
     
-    // Ambient component
+    // Stronger ambient for matte look
     float ambient = 0.5;
     
-    // Diffuse lighting
+    // Diffuse lighting with softer falloff
     vec3 norm = normalize(Normal);
     vec3 lightDir = normalize(light_position - FragPos);
-    float diff = max(dot(norm, lightDir), 0.0);
+    float diff = pow(max(dot(norm, lightDir), 0.0), 1.2) * 0.7; // Softer diffuse with slight power curve
     
-    // Combine lighting
-    vec3 result = (ambient + diff) * color;
+    // Minimal specular for matte appearance
+    vec3 viewDir = normalize(-FragPos);
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0) * 0.1; // Much lower specular with wider spread
     
-    // Apply opacity
-    FragColor = vec4(result, opacity);
+    // Fresnel-like edge darkening for depth
+    float fresnel = pow(1.0 - max(dot(norm, viewDir), 0.0), 2.0) * 0.3;
+    
+    // Combine lighting with PCB-like characteristics
+    vec3 result = (ambient + diff + spec - fresnel) * color;
+    
+    // Apply opacity with subtle edge enhancement
+    float edge_factor = 1.0 - pow(abs(dot(norm, viewDir)), 3.0);
+    float final_opacity = Opacity * (0.85 + 0.15 * edge_factor);
+    
+    FragColor = vec4(result, final_opacity);
 }
 )";
 

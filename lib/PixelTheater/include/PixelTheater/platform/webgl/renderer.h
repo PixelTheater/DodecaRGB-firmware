@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+
 #include <cstdint>
 #include <cstddef>
 #include <vector>
@@ -74,3 +76,5 @@ private:
 };
 
 } // namespace PixelTheater 
+
+#endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 

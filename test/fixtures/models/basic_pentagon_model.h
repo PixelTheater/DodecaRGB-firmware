@@ -18,19 +18,53 @@ struct BasicPentagonModel : public ModelDefinition<15, 3> {  // 15 total LEDs (5
 
     // Face type definitions - each face has 5 LEDs
     static constexpr std::array<FaceTypeData, 1> FACE_TYPES{{
-        {
-            .id = 0,
-            .type = FaceType::Pentagon,
-            .num_leds = 5,  // Reduced from 20 to 5
-            .edge_length_mm = 50.0f
-        }
+        {.id = 0, .type = FaceType::Pentagon, .num_leds = 5, .edge_length_mm = 50.0f}
     }};
 
     // Face instances
     static constexpr std::array<FaceData, FACE_COUNT> FACES{{
-        {.id = 0, .type_id = 0},  // Face 0: LEDs 0-4
-        {.id = 1, .type_id = 0},  // Face 1: LEDs 5-9
-        {.id = 2, .type_id = 0}   // Face 2: LEDs 10-14
+        {   // Face 0: LEDs 0-4
+            .id = 0, .type_id = 0, .rotation = 0,
+            .x = 0.0f, .y = 0.0f, .z = 1.0f,
+            .vertices = {
+                {.x = 0.0f,  .y = 0.0f,  .z = 1.0f},   // Center
+                {.x = 1.0f,  .y = 0.0f,  .z = 1.0f},   // Right
+                {.x = 0.5f,  .y = 0.87f, .z = 1.0f},   // Top right
+                {.x = -0.5f, .y = 0.87f, .z = 1.0f},   // Top left
+                {.x = -1.0f, .y = 0.0f,  .z = 1.0f},   // Left
+                {.x = 0.0f,  .y = 0.0f,  .z = 1.0f},   // Additional vertices
+                {.x = 0.0f,  .y = 0.0f,  .z = 1.0f},
+                {.x = 0.0f,  .y = 0.0f,  .z = 1.0f}
+            }
+        },
+        {   // Face 1: LEDs 5-9
+            .id = 1, .type_id = 0, .rotation = 0,
+            .x = 0.0f, .y = 0.0f, .z = 0.0f,
+            .vertices = {
+                {.x = 0.0f,  .y = 0.0f,  .z = 0.0f},
+                {.x = 1.0f,  .y = 0.0f,  .z = 0.0f},
+                {.x = 0.5f,  .y = 0.87f, .z = 0.0f},
+                {.x = -0.5f, .y = 0.87f, .z = 0.0f},
+                {.x = -1.0f, .y = 0.0f,  .z = 0.0f},
+                {.x = 0.0f,  .y = 0.0f,  .z = 0.0f},
+                {.x = 0.0f,  .y = 0.0f,  .z = 0.0f},
+                {.x = 0.0f,  .y = 0.0f,  .z = 0.0f}
+            }
+        },
+        {   // Face 2: LEDs 10-14
+            .id = 2, .type_id = 0, .rotation = 0,
+            .x = 0.0f, .y = 0.0f, .z = -1.0f,
+            .vertices = {
+                {.x = 0.0f,  .y = 0.0f,  .z = -1.0f},
+                {.x = 1.0f,  .y = 0.0f,  .z = -1.0f},
+                {.x = 0.5f,  .y = 0.87f, .z = -1.0f},
+                {.x = -0.5f, .y = 0.87f, .z = -1.0f},
+                {.x = -1.0f, .y = 0.0f,  .z = -1.0f},
+                {.x = 0.0f,  .y = 0.0f,  .z = -1.0f},
+                {.x = 0.0f,  .y = 0.0f,  .z = -1.0f},
+                {.x = 0.0f,  .y = 0.0f,  .z = -1.0f}
+            }
+        }
     }};
 
     // Point geometry - define all points with correct face assignments

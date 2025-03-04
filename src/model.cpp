@@ -2,7 +2,7 @@
 #include "PixelTheater/model_def.h"
 #include "PixelTheater/model/face_type.h"
 
-// Generated on: 2025-02-28 16:40:50
+// Generated on: 2025-03-04 07:54:13
 
 namespace PixelTheater {
 namespace Fixtures {
@@ -15,12 +15,12 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
     static constexpr const char* VERSION = "2.0.0";
     static constexpr const char* DESCRIPTION = "Dodecahedron with 12 pentagon PCBs, 1248 LEDs";
     static constexpr const char* MODEL_TYPE = "Dodecahedron";
-    static constexpr const char* GENERATED_DATE = "2025-02-28 16:40:50";
+    static constexpr const char* GENERATED_DATE = "2025-03-04 07:54:13";
 
     static constexpr size_t LED_COUNT = 1248;
     static constexpr size_t FACE_COUNT = 12;
 
-    // Face type definitions
+    // Face type definitions with vertex geometry
     static constexpr std::array<FaceTypeData, 1> FACE_TYPES{{
         {
             .id = 0,
@@ -30,20 +30,116 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
         }
     }};
 
-    // Face instances
+    // Face instances with transformed vertices
     static constexpr std::array<FaceData, FACE_COUNT> FACES{{
-        {.id = 0, .type_id = 0, .rotation = 1},
-        {.id = 1, .type_id = 0, .rotation = 2},
-        {.id = 2, .type_id = 0, .rotation = 1},
-        {.id = 3, .type_id = 0, .rotation = 3},
-        {.id = 4, .type_id = 0, .rotation = 2},
-        {.id = 5, .type_id = 0, .rotation = 1},
-        {.id = 6, .type_id = 0, .rotation = 2},
-        {.id = 7, .type_id = 0, .rotation = 3},
-        {.id = 8, .type_id = 0, .rotation = 1},
-        {.id = 9, .type_id = 0, .rotation = 2},
-        {.id = 10, .type_id = 0, .rotation = 1},
-        {.id = 11, .type_id = 0, .rotation = 3}
+        {.id = 0, .type_id = 0, .rotation = 1,
+            .vertices = {
+                {.x = -200.000f, .y = 0.000f, .z = 262.000f},
+                {.x = -61.803f, .y = -190.211f, .z = 262.000f},
+                {.x = 161.803f, .y = -117.557f, .z = 262.000f},
+                {.x = 161.803f, .y = 117.557f, .z = 262.000f},
+                {.x = -61.803f, .y = 190.211f, .z = 262.000f}
+            }
+        },
+        {.id = 1, .type_id = 0, .rotation = 2,
+            .vertices = {
+                {.x = -99.947f, .y = -307.933f, .z = 61.904f},
+                {.x = 100.055f, .y = -307.938f, .z = -61.700f},
+                {.x = 261.857f, .y = -190.376f, .z = 61.904f},
+                {.x = 161.854f, .y = -117.712f, .z = 261.899f},
+                {.x = -61.753f, .y = -190.366f, .z = 261.899f}
+            }
+        },
+        {.id = 2, .type_id = 0, .rotation = 1,
+            .vertices = {
+                {.x = 323.786f, .y = -0.000f, .z = -61.700f},
+                {.x = 261.976f, .y = 190.211f, .z = 61.904f},
+                {.x = 161.966f, .y = 117.557f, .z = 261.899f},
+                {.x = 161.966f, .y = -117.557f, .z = 261.899f},
+                {.x = 261.976f, .y = -190.211f, .z = 61.904f}
+            }
+        },
+        {.id = 3, .type_id = 0, .rotation = 3,
+            .vertices = {
+                {.x = 100.055f, .y = 307.938f, .z = -61.700f},
+                {.x = -99.947f, .y = 307.933f, .z = 61.904f},
+                {.x = -61.753f, .y = 190.366f, .z = 261.899f},
+                {.x = 161.854f, .y = 117.712f, .z = 261.899f},
+                {.x = 261.857f, .y = 190.376f, .z = 61.904f}
+            }
+        },
+        {.id = 4, .type_id = 0, .rotation = 2,
+            .vertices = {
+                {.x = -261.948f, .y = 190.316f, .z = -61.700f},
+                {.x = -323.747f, .y = 0.102f, .z = 61.904f},
+                {.x = -200.132f, .y = 0.096f, .z = 261.899f},
+                {.x = -61.935f, .y = 190.307f, .z = 261.899f},
+                {.x = -100.140f, .y = 307.870f, .z = 61.904f}
+            }
+        },
+        {.id = 5, .type_id = 0, .rotation = 1,
+            .vertices = {
+                {.x = -261.948f, .y = -190.316f, .z = -61.700f},
+                {.x = -100.140f, .y = -307.870f, .z = 61.904f},
+                {.x = -61.935f, .y = -190.307f, .z = 261.899f},
+                {.x = -200.132f, .y = -0.096f, .z = 261.899f},
+                {.x = -323.747f, .y = -0.102f, .z = 61.904f}
+            }
+        },
+        {.id = 6, .type_id = 0, .rotation = 2,
+            .vertices = {
+                {.x = -261.976f, .y = 190.211f, .z = -61.904f},
+                {.x = -161.966f, .y = 117.557f, .z = -261.899f},
+                {.x = -161.966f, .y = -117.557f, .z = -261.899f},
+                {.x = -261.976f, .y = -190.211f, .z = -61.904f},
+                {.x = -323.786f, .y = 0.000f, .z = 61.700f}
+            }
+        },
+        {.id = 7, .type_id = 0, .rotation = 3,
+            .vertices = {
+                {.x = -261.857f, .y = -190.376f, .z = -61.904f},
+                {.x = -161.854f, .y = -117.712f, .z = -261.899f},
+                {.x = 61.753f, .y = -190.366f, .z = -261.899f},
+                {.x = 99.947f, .y = -307.933f, .z = -61.904f},
+                {.x = -100.055f, .y = -307.938f, .z = 61.700f}
+            }
+        },
+        {.id = 8, .type_id = 0, .rotation = 1,
+            .vertices = {
+                {.x = 100.140f, .y = -307.870f, .z = -61.904f},
+                {.x = 61.935f, .y = -190.307f, .z = -261.899f},
+                {.x = 200.132f, .y = -0.096f, .z = -261.899f},
+                {.x = 323.747f, .y = -0.102f, .z = -61.904f},
+                {.x = 261.948f, .y = -190.316f, .z = 61.700f}
+            }
+        },
+        {.id = 9, .type_id = 0, .rotation = 2,
+            .vertices = {
+                {.x = 323.747f, .y = 0.102f, .z = -61.904f},
+                {.x = 200.132f, .y = 0.096f, .z = -261.899f},
+                {.x = 61.935f, .y = 190.307f, .z = -261.899f},
+                {.x = 100.140f, .y = 307.870f, .z = -61.904f},
+                {.x = 261.948f, .y = 190.316f, .z = 61.700f}
+            }
+        },
+        {.id = 10, .type_id = 0, .rotation = 1,
+            .vertices = {
+                {.x = 99.947f, .y = 307.933f, .z = -61.904f},
+                {.x = 61.753f, .y = 190.366f, .z = -261.899f},
+                {.x = -161.854f, .y = 117.712f, .z = -261.899f},
+                {.x = -261.857f, .y = 190.376f, .z = -61.904f},
+                {.x = -100.055f, .y = 307.938f, .z = 61.700f}
+            }
+        },
+        {.id = 11, .type_id = 0, .rotation = 3,
+            .vertices = {
+                {.x = 200.000f, .y = -0.000f, .z = -262.000f},
+                {.x = 61.803f, .y = -190.211f, .z = -262.000f},
+                {.x = -161.803f, .y = -117.557f, .z = -262.000f},
+                {.x = -161.803f, .y = 117.557f, .z = -262.000f},
+                {.x = 61.803f, .y = 190.211f, .z = -262.000f}
+            }
+        }
     }};
 
     // Point geometry - define all points with correct face assignments
@@ -1300,14982 +1396,3750 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
 
     // Define neighbor relationships
     static constexpr NeighborData NEIGHBORS[] = {
-        {
-            .point_id = 0,
-            .neighbors = {
-                {.id = 1, .distance = 25.256f},
-                {.id = 3, .distance = 25.653f},
-                {.id = 2, .distance = 25.660f},
-                {.id = 5, .distance = 26.237f},
-                {.id = 4, .distance = 26.780f},
-                {.id = 7, .distance = 53.251f},
-                {.id = 11, .distance = 53.584f}
-            }
-        },
-        {
-            .point_id = 1,
-            .neighbors = {
-                {.id = 0, .distance = 25.256f},
-                {.id = 7, .distance = 27.996f},
-                {.id = 5, .distance = 30.406f},
-                {.id = 2, .distance = 30.746f},
-                {.id = 8, .distance = 36.902f},
-                {.id = 6, .distance = 36.902f},
-                {.id = 3, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 2,
-            .neighbors = {
-                {.id = 0, .distance = 25.660f},
-                {.id = 9, .distance = 28.138f},
-                {.id = 3, .distance = 30.016f},
-                {.id = 1, .distance = 30.746f},
-                {.id = 10, .distance = 35.779f},
-                {.id = 8, .distance = 37.730f},
-                {.id = 4, .distance = 49.623f}
-            }
-        },
-        {
-            .point_id = 3,
-            .neighbors = {
-                {.id = 0, .distance = 25.653f},
-                {.id = 11, .distance = 27.950f},
-                {.id = 2, .distance = 30.016f},
-                {.id = 4, .distance = 30.334f},
-                {.id = 12, .distance = 36.663f},
-                {.id = 10, .distance = 36.917f},
-                {.id = 1, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 4,
-            .neighbors = {
-                {.id = 0, .distance = 26.780f},
-                {.id = 13, .distance = 28.148f},
-                {.id = 3, .distance = 30.334f},
-                {.id = 5, .distance = 30.829f},
-                {.id = 12, .distance = 36.041f},
-                {.id = 14, .distance = 36.581f},
-                {.id = 1, .distance = 49.415f}
-            }
-        },
-        {
-            .point_id = 5,
-            .neighbors = {
-                {.id = 0, .distance = 26.237f},
-                {.id = 15, .distance = 28.784f},
-                {.id = 1, .distance = 30.406f},
-                {.id = 4, .distance = 30.829f},
-                {.id = 6, .distance = 36.136f},
-                {.id = 14, .distance = 36.663f},
-                {.id = 3, .distance = 49.028f}
-            }
-        },
-        {
-            .point_id = 6,
-            .neighbors = {
-                {.id = 17, .distance = 29.943f},
-                {.id = 15, .distance = 32.709f},
-                {.id = 7, .distance = 33.241f},
-                {.id = 16, .distance = 35.999f},
-                {.id = 5, .distance = 36.136f},
-                {.id = 1, .distance = 36.902f},
-                {.id = 18, .distance = 43.146f}
-            }
-        },
-        {
-            .point_id = 7,
-            .neighbors = {
-                {.id = 1, .distance = 27.996f},
-                {.id = 18, .distance = 31.091f},
-                {.id = 6, .distance = 33.241f},
-                {.id = 8, .distance = 33.489f},
-                {.id = 19, .distance = 33.997f},
-                {.id = 17, .distance = 46.465f},
-                {.id = 20, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 8,
-            .neighbors = {
-                {.id = 20, .distance = 28.795f},
-                {.id = 7, .distance = 33.489f},
-                {.id = 9, .distance = 34.526f},
-                {.id = 1, .distance = 36.902f},
-                {.id = 2, .distance = 37.730f},
-                {.id = 19, .distance = 39.001f},
-                {.id = 21, .distance = 39.043f}
-            }
-        },
-        {
-            .point_id = 9,
-            .neighbors = {
-                {.id = 2, .distance = 28.138f},
-                {.id = 22, .distance = 30.119f},
-                {.id = 10, .distance = 32.862f},
-                {.id = 21, .distance = 33.326f},
-                {.id = 8, .distance = 34.526f},
-                {.id = 23, .distance = 46.032f},
-                {.id = 20, .distance = 51.953f}
-            }
-        },
-        {
-            .point_id = 10,
-            .neighbors = {
-                {.id = 23, .distance = 29.271f},
-                {.id = 9, .distance = 32.862f},
-                {.id = 11, .distance = 32.910f},
-                {.id = 24, .distance = 35.475f},
-                {.id = 2, .distance = 35.779f},
-                {.id = 3, .distance = 36.917f},
-                {.id = 22, .distance = 42.036f}
-            }
-        },
-        {
-            .point_id = 11,
-            .neighbors = {
-                {.id = 3, .distance = 27.950f},
-                {.id = 25, .distance = 30.515f},
-                {.id = 10, .distance = 32.910f},
-                {.id = 12, .distance = 34.288f},
-                {.id = 24, .distance = 35.680f},
-                {.id = 26, .distance = 43.747f},
-                {.id = 2, .distance = 50.881f}
-            }
-        },
-        {
-            .point_id = 12,
-            .neighbors = {
-                {.id = 26, .distance = 30.713f},
-                {.id = 27, .distance = 32.961f},
-                {.id = 11, .distance = 34.288f},
-                {.id = 13, .distance = 34.333f},
-                {.id = 4, .distance = 36.041f},
-                {.id = 3, .distance = 36.663f},
-                {.id = 25, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 13,
-            .neighbors = {
-                {.id = 4, .distance = 28.148f},
-                {.id = 28, .distance = 28.795f},
-                {.id = 14, .distance = 32.474f},
-                {.id = 12, .distance = 34.333f},
-                {.id = 29, .distance = 37.853f},
-                {.id = 27, .distance = 39.529f},
-                {.id = 5, .distance = 52.029f}
-            }
-        },
-        {
-            .point_id = 14,
-            .neighbors = {
-                {.id = 30, .distance = 30.978f},
-                {.id = 13, .distance = 32.474f},
-                {.id = 29, .distance = 33.378f},
-                {.id = 15, .distance = 34.135f},
-                {.id = 4, .distance = 36.581f},
-                {.id = 5, .distance = 36.663f},
-                {.id = 31, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 15,
-            .neighbors = {
-                {.id = 5, .distance = 28.784f},
-                {.id = 31, .distance = 29.314f},
-                {.id = 6, .distance = 32.709f},
-                {.id = 14, .distance = 34.135f},
-                {.id = 16, .distance = 35.428f},
-                {.id = 30, .distance = 42.934f},
-                {.id = 1, .distance = 52.730f}
-            }
-        },
-        {
-            .point_id = 16,
-            .neighbors = {
-                {.id = 33, .distance = 31.937f},
-                {.id = 32, .distance = 31.964f},
-                {.id = 31, .distance = 32.088f},
-                {.id = 17, .distance = 32.704f},
-                {.id = 15, .distance = 35.428f},
-                {.id = 6, .distance = 35.999f},
-                {.id = 53, .distance = 49.921f}
-            }
-        },
-        {
-            .point_id = 17,
-            .neighbors = {
-                {.id = 34, .distance = 29.419f},
-                {.id = 6, .distance = 29.943f},
-                {.id = 18, .distance = 32.468f},
-                {.id = 16, .distance = 32.704f},
-                {.id = 33, .distance = 37.491f},
-                {.id = 35, .distance = 41.947f},
-                {.id = 7, .distance = 46.465f}
-            }
-        },
-        {
-            .point_id = 18,
-            .neighbors = {
-                {.id = 35, .distance = 29.848f},
-                {.id = 7, .distance = 31.091f},
-                {.id = 19, .distance = 31.917f},
-                {.id = 17, .distance = 32.468f},
-                {.id = 36, .distance = 35.426f},
-                {.id = 6, .distance = 43.146f},
-                {.id = 34, .distance = 44.568f}
-            }
-        },
-        {
-            .point_id = 19,
-            .neighbors = {
-                {.id = 37, .distance = 30.775f},
-                {.id = 18, .distance = 31.917f},
-                {.id = 20, .distance = 32.089f},
-                {.id = 36, .distance = 33.457f},
-                {.id = 7, .distance = 33.997f},
-                {.id = 8, .distance = 39.001f},
-                {.id = 38, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 20,
-            .neighbors = {
-                {.id = 38, .distance = 28.126f},
-                {.id = 8, .distance = 28.795f},
-                {.id = 19, .distance = 32.089f},
-                {.id = 21, .distance = 33.350f},
-                {.id = 37, .distance = 38.606f},
-                {.id = 39, .distance = 40.686f},
-                {.id = 7, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 21,
-            .neighbors = {
-                {.id = 39, .distance = 30.745f},
-                {.id = 22, .distance = 32.585f},
-                {.id = 9, .distance = 33.326f},
-                {.id = 20, .distance = 33.350f},
-                {.id = 40, .distance = 33.990f},
-                {.id = 8, .distance = 39.043f},
-                {.id = 38, .distance = 47.230f}
-            }
-        },
-        {
-            .point_id = 22,
-            .neighbors = {
-                {.id = 41, .distance = 30.088f},
-                {.id = 9, .distance = 30.119f},
-                {.id = 23, .distance = 32.298f},
-                {.id = 21, .distance = 32.585f},
-                {.id = 40, .distance = 35.628f},
-                {.id = 10, .distance = 42.036f},
-                {.id = 42, .distance = 44.864f}
-            }
-        },
-        {
-            .point_id = 23,
-            .neighbors = {
-                {.id = 42, .distance = 28.726f},
-                {.id = 10, .distance = 29.271f},
-                {.id = 24, .distance = 31.916f},
-                {.id = 22, .distance = 32.298f},
-                {.id = 43, .distance = 37.444f},
-                {.id = 41, .distance = 42.067f},
-                {.id = 9, .distance = 46.032f}
-            }
-        },
-        {
-            .point_id = 24,
-            .neighbors = {
-                {.id = 43, .distance = 31.889f},
-                {.id = 23, .distance = 31.916f},
-                {.id = 44, .distance = 32.458f},
-                {.id = 25, .distance = 32.605f},
-                {.id = 10, .distance = 35.475f},
-                {.id = 11, .distance = 35.680f},
-                {.id = 42, .distance = 49.358f}
-            }
-        },
-        {
-            .point_id = 25,
-            .neighbors = {
-                {.id = 45, .distance = 28.557f},
-                {.id = 11, .distance = 30.515f},
-                {.id = 24, .distance = 32.605f},
-                {.id = 26, .distance = 33.386f},
-                {.id = 44, .distance = 36.707f},
-                {.id = 46, .distance = 42.276f},
-                {.id = 12, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 26,
-            .neighbors = {
-                {.id = 46, .distance = 29.283f},
-                {.id = 12, .distance = 30.713f},
-                {.id = 27, .distance = 32.395f},
-                {.id = 25, .distance = 33.386f},
-                {.id = 47, .distance = 35.383f},
-                {.id = 11, .distance = 43.747f},
-                {.id = 45, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 27,
-            .neighbors = {
-                {.id = 48, .distance = 30.492f},
-                {.id = 26, .distance = 32.395f},
-                {.id = 28, .distance = 32.492f},
-                {.id = 12, .distance = 32.961f},
-                {.id = 47, .distance = 33.774f},
-                {.id = 13, .distance = 39.529f},
-                {.id = 49, .distance = 46.947f}
-            }
-        },
-        {
-            .point_id = 28,
-            .neighbors = {
-                {.id = 13, .distance = 28.795f},
-                {.id = 49, .distance = 28.796f},
-                {.id = 29, .distance = 31.301f},
-                {.id = 27, .distance = 32.492f},
-                {.id = 50, .distance = 39.130f},
-                {.id = 48, .distance = 39.658f},
-                {.id = 14, .distance = 50.236f}
-            }
-        },
-        {
-            .point_id = 29,
-            .neighbors = {
-                {.id = 50, .distance = 30.076f},
-                {.id = 28, .distance = 31.301f},
-                {.id = 30, .distance = 33.324f},
-                {.id = 14, .distance = 33.378f},
-                {.id = 51, .distance = 33.386f},
-                {.id = 13, .distance = 37.853f},
-                {.id = 49, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 30,
-            .neighbors = {
-                {.id = 52, .distance = 29.653f},
-                {.id = 14, .distance = 30.978f},
-                {.id = 31, .distance = 32.852f},
-                {.id = 29, .distance = 33.324f},
-                {.id = 51, .distance = 35.446f},
-                {.id = 15, .distance = 42.934f},
-                {.id = 53, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 31,
-            .neighbors = {
-                {.id = 53, .distance = 28.776f},
-                {.id = 15, .distance = 29.314f},
-                {.id = 16, .distance = 32.088f},
-                {.id = 30, .distance = 32.852f},
-                {.id = 32, .distance = 36.954f},
-                {.id = 52, .distance = 42.498f},
-                {.id = 14, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 32,
-            .neighbors = {
-                {.id = 54, .distance = 23.617f},
-                {.id = 53, .distance = 31.442f},
-                {.id = 16, .distance = 31.964f},
-                {.id = 33, .distance = 32.703f},
-                {.id = 31, .distance = 36.954f},
-                {.id = 101, .distance = 41.259f},
-                {.id = 103, .distance = 45.103f}
-            }
-        },
-        {
-            .point_id = 33,
-            .neighbors = {
-                {.id = 16, .distance = 31.937f},
-                {.id = 32, .distance = 32.703f},
-                {.id = 34, .distance = 32.725f},
-                {.id = 55, .distance = 36.068f},
-                {.id = 17, .distance = 37.491f},
-                {.id = 56, .distance = 39.068f},
-                {.id = 54, .distance = 41.895f}
-            }
-        },
-        {
-            .point_id = 34,
-            .neighbors = {
-                {.id = 17, .distance = 29.419f},
-                {.id = 35, .distance = 30.638f},
-                {.id = 33, .distance = 32.725f},
-                {.id = 56, .distance = 35.794f},
-                {.id = 57, .distance = 36.665f},
-                {.id = 18, .distance = 44.568f},
-                {.id = 58, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 35,
-            .neighbors = {
-                {.id = 58, .distance = 24.191f},
-                {.id = 18, .distance = 29.848f},
-                {.id = 34, .distance = 30.638f},
-                {.id = 36, .distance = 31.516f},
-                {.id = 17, .distance = 41.947f},
-                {.id = 59, .distance = 44.167f},
-                {.id = 57, .distance = 44.460f}
-            }
-        },
-        {
-            .point_id = 36,
-            .neighbors = {
-                {.id = 63, .distance = 27.519f},
-                {.id = 35, .distance = 31.516f},
-                {.id = 37, .distance = 33.096f},
-                {.id = 19, .distance = 33.457f},
-                {.id = 18, .distance = 35.426f},
-                {.id = 60, .distance = 35.506f},
-                {.id = 58, .distance = 36.051f}
-            }
-        },
-        {
-            .point_id = 37,
-            .neighbors = {
-                {.id = 19, .distance = 30.775f},
-                {.id = 38, .distance = 30.943f},
-                {.id = 63, .distance = 31.347f},
-                {.id = 36, .distance = 33.096f},
-                {.id = 65, .distance = 37.393f},
-                {.id = 20, .distance = 38.606f},
-                {.id = 64, .distance = 45.102f}
-            }
-        },
-        {
-            .point_id = 38,
-            .neighbors = {
-                {.id = 20, .distance = 28.126f},
-                {.id = 37, .distance = 30.943f},
-                {.id = 39, .distance = 32.322f},
-                {.id = 66, .distance = 33.115f},
-                {.id = 65, .distance = 43.474f},
-                {.id = 67, .distance = 44.048f},
-                {.id = 19, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 39,
-            .neighbors = {
-                {.id = 69, .distance = 30.540f},
-                {.id = 21, .distance = 30.745f},
-                {.id = 38, .distance = 32.322f},
-                {.id = 40, .distance = 32.441f},
-                {.id = 67, .distance = 37.153f},
-                {.id = 20, .distance = 40.686f},
-                {.id = 68, .distance = 45.279f}
-            }
-        },
-        {
-            .point_id = 40,
-            .neighbors = {
-                {.id = 69, .distance = 27.373f},
-                {.id = 41, .distance = 31.563f},
-                {.id = 39, .distance = 32.441f},
-                {.id = 21, .distance = 33.990f},
-                {.id = 71, .distance = 35.618f},
-                {.id = 22, .distance = 35.628f},
-                {.id = 73, .distance = 36.566f}
-            }
-        },
-        {
-            .point_id = 41,
-            .neighbors = {
-                {.id = 73, .distance = 24.293f},
-                {.id = 22, .distance = 30.088f},
-                {.id = 40, .distance = 31.563f},
-                {.id = 42, .distance = 31.793f},
-                {.id = 23, .distance = 42.067f},
-                {.id = 74, .distance = 43.775f},
-                {.id = 75, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 42,
-            .neighbors = {
-                {.id = 23, .distance = 28.726f},
-                {.id = 43, .distance = 31.427f},
-                {.id = 41, .distance = 31.793f},
-                {.id = 76, .distance = 35.922f},
-                {.id = 75, .distance = 37.333f},
-                {.id = 22, .distance = 44.864f},
-                {.id = 73, .distance = 47.704f}
-            }
-        },
-        {
-            .point_id = 43,
-            .neighbors = {
-                {.id = 42, .distance = 31.427f},
-                {.id = 24, .distance = 31.889f},
-                {.id = 44, .distance = 32.342f},
-                {.id = 77, .distance = 35.562f},
-                {.id = 23, .distance = 37.444f},
-                {.id = 76, .distance = 39.243f},
-                {.id = 79, .distance = 41.982f}
-            }
-        },
-        {
-            .point_id = 44,
-            .neighbors = {
-                {.id = 79, .distance = 23.803f},
-                {.id = 45, .distance = 31.693f},
-                {.id = 43, .distance = 32.342f},
-                {.id = 24, .distance = 32.458f},
-                {.id = 25, .distance = 36.707f},
-                {.id = 81, .distance = 41.333f},
-                {.id = 78, .distance = 44.974f}
-            }
-        },
-        {
-            .point_id = 45,
-            .neighbors = {
-                {.id = 83, .distance = 24.410f},
-                {.id = 25, .distance = 28.557f},
-                {.id = 44, .distance = 31.693f},
-                {.id = 46, .distance = 32.138f},
-                {.id = 81, .distance = 38.124f},
-                {.id = 79, .distance = 43.096f},
-                {.id = 26, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 46,
-            .neighbors = {
-                {.id = 26, .distance = 29.283f},
-                {.id = 47, .distance = 31.589f},
-                {.id = 45, .distance = 32.138f},
-                {.id = 85, .distance = 36.174f},
-                {.id = 83, .distance = 36.927f},
-                {.id = 25, .distance = 42.276f},
-                {.id = 86, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 47,
-            .neighbors = {
-                {.id = 46, .distance = 31.589f},
-                {.id = 48, .distance = 32.185f},
-                {.id = 86, .distance = 33.528f},
-                {.id = 27, .distance = 33.774f},
-                {.id = 26, .distance = 35.383f},
-                {.id = 87, .distance = 39.292f},
-                {.id = 85, .distance = 48.151f}
-            }
-        },
-        {
-            .point_id = 48,
-            .neighbors = {
-                {.id = 89, .distance = 26.800f},
-                {.id = 27, .distance = 30.492f},
-                {.id = 49, .distance = 31.085f},
-                {.id = 47, .distance = 32.185f},
-                {.id = 28, .distance = 39.658f},
-                {.id = 87, .distance = 40.843f},
-                {.id = 88, .distance = 44.297f}
-            }
-        },
-        {
-            .point_id = 49,
-            .neighbors = {
-                {.id = 28, .distance = 28.796f},
-                {.id = 48, .distance = 31.085f},
-                {.id = 89, .distance = 31.165f},
-                {.id = 50, .distance = 31.748f},
-                {.id = 93, .distance = 32.025f},
-                {.id = 91, .distance = 35.484f},
-                {.id = 29, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 50,
-            .neighbors = {
-                {.id = 93, .distance = 26.974f},
-                {.id = 29, .distance = 30.076f},
-                {.id = 51, .distance = 31.574f},
-                {.id = 49, .distance = 31.748f},
-                {.id = 28, .distance = 39.130f},
-                {.id = 95, .distance = 40.759f},
-                {.id = 94, .distance = 44.255f}
-            }
-        },
-        {
-            .point_id = 51,
-            .neighbors = {
-                {.id = 50, .distance = 31.574f},
-                {.id = 52, .distance = 32.495f},
-                {.id = 29, .distance = 33.386f},
-                {.id = 96, .distance = 34.006f},
-                {.id = 30, .distance = 35.446f},
-                {.id = 95, .distance = 40.058f},
-                {.id = 97, .distance = 48.765f}
-            }
-        },
-        {
-            .point_id = 52,
-            .neighbors = {
-                {.id = 30, .distance = 29.653f},
-                {.id = 53, .distance = 31.761f},
-                {.id = 51, .distance = 32.495f},
-                {.id = 97, .distance = 35.652f},
-                {.id = 99, .distance = 35.973f},
-                {.id = 31, .distance = 42.498f},
-                {.id = 96, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 53,
-            .neighbors = {
-                {.id = 99, .distance = 24.656f},
-                {.id = 31, .distance = 28.776f},
-                {.id = 32, .distance = 31.442f},
-                {.id = 52, .distance = 31.761f},
-                {.id = 101, .distance = 38.273f},
-                {.id = 54, .distance = 43.129f},
-                {.id = 30, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 54,
-            .neighbors = {
-                {.id = 103, .distance = 22.863f},
-                {.id = 32, .distance = 23.617f},
-                {.id = 101, .distance = 27.856f},
-                {.id = 102, .distance = 35.561f},
-                {.id = 55, .distance = 37.917f},
-                {.id = 33, .distance = 41.895f},
-                {.id = 53, .distance = 43.129f}
-            }
-        },
-        {
-            .point_id = 55,
-            .neighbors = {
-                {.id = 103, .distance = 28.096f},
-                {.id = 56, .distance = 29.153f},
-                {.id = 265, .distance = 30.837f},
-                {.id = 33, .distance = 36.068f},
-                {.id = 54, .distance = 37.917f},
-                {.id = 267, .distance = 41.896f},
-                {.id = 264, .distance = 42.604f}
-            }
-        },
-        {
-            .point_id = 56,
-            .neighbors = {
-                {.id = 57, .distance = 28.265f},
-                {.id = 55, .distance = 29.153f},
-                {.id = 264, .distance = 31.737f},
-                {.id = 34, .distance = 35.794f},
-                {.id = 33, .distance = 39.068f},
-                {.id = 265, .distance = 42.312f},
-                {.id = 263, .distance = 42.604f}
-            }
-        },
-        {
-            .point_id = 57,
-            .neighbors = {
-                {.id = 56, .distance = 28.265f},
-                {.id = 59, .distance = 28.989f},
-                {.id = 263, .distance = 30.837f},
-                {.id = 34, .distance = 36.665f},
-                {.id = 58, .distance = 38.712f},
-                {.id = 311, .distance = 42.288f},
-                {.id = 264, .distance = 42.312f}
-            }
-        },
-        {
-            .point_id = 58,
-            .neighbors = {
-                {.id = 59, .distance = 23.607f},
-                {.id = 35, .distance = 24.191f},
-                {.id = 60, .distance = 27.455f},
-                {.id = 61, .distance = 35.536f},
-                {.id = 36, .distance = 36.051f},
-                {.id = 57, .distance = 38.712f},
-                {.id = 34, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 59,
-            .neighbors = {
-                {.id = 58, .distance = 23.607f},
-                {.id = 61, .distance = 28.500f},
-                {.id = 57, .distance = 28.989f},
-                {.id = 311, .distance = 31.044f},
-                {.id = 60, .distance = 38.998f},
-                {.id = 263, .distance = 41.896f},
-                {.id = 310, .distance = 42.722f}
-            }
-        },
-        {
-            .point_id = 60,
-            .neighbors = {
-                {.id = 61, .distance = 25.823f},
-                {.id = 62, .distance = 26.007f},
-                {.id = 63, .distance = 27.304f},
-                {.id = 58, .distance = 27.455f},
-                {.id = 36, .distance = 35.506f},
-                {.id = 59, .distance = 38.998f},
-                {.id = 64, .distance = 39.242f}
-            }
-        },
-        {
-            .point_id = 61,
-            .neighbors = {
-                {.id = 60, .distance = 25.823f},
-                {.id = 59, .distance = 28.500f},
-                {.id = 62, .distance = 30.900f},
-                {.id = 310, .distance = 31.323f},
-                {.id = 58, .distance = 35.536f},
-                {.id = 311, .distance = 42.426f},
-                {.id = 63, .distance = 52.152f}
-            }
-        },
-        {
-            .point_id = 62,
-            .neighbors = {
-                {.id = 60, .distance = 26.007f},
-                {.id = 204, .distance = 29.050f},
-                {.id = 64, .distance = 29.614f},
-                {.id = 61, .distance = 30.900f},
-                {.id = 63, .distance = 35.963f},
-                {.id = 202, .distance = 41.538f},
-                {.id = 206, .distance = 51.839f}
-            }
-        },
-        {
-            .point_id = 63,
-            .neighbors = {
-                {.id = 64, .distance = 23.404f},
-                {.id = 60, .distance = 27.304f},
-                {.id = 36, .distance = 27.519f},
-                {.id = 37, .distance = 31.347f},
-                {.id = 62, .distance = 35.963f},
-                {.id = 65, .distance = 38.924f},
-                {.id = 58, .distance = 47.034f}
-            }
-        },
-        {
-            .point_id = 64,
-            .neighbors = {
-                {.id = 63, .distance = 23.404f},
-                {.id = 65, .distance = 28.584f},
-                {.id = 62, .distance = 29.614f},
-                {.id = 202, .distance = 29.699f},
-                {.id = 60, .distance = 39.242f},
-                {.id = 201, .distance = 41.093f},
-                {.id = 204, .distance = 41.569f}
-            }
-        },
-        {
-            .point_id = 65,
-            .neighbors = {
-                {.id = 66, .distance = 28.069f},
-                {.id = 64, .distance = 28.584f},
-                {.id = 201, .distance = 29.681f},
-                {.id = 37, .distance = 37.393f},
-                {.id = 63, .distance = 38.924f},
-                {.id = 200, .distance = 41.139f},
-                {.id = 202, .distance = 41.301f}
-            }
-        },
-        {
-            .point_id = 66,
-            .neighbors = {
-                {.id = 65, .distance = 28.069f},
-                {.id = 67, .distance = 28.840f},
-                {.id = 200, .distance = 29.791f},
-                {.id = 38, .distance = 33.115f},
-                {.id = 201, .distance = 41.276f},
-                {.id = 199, .distance = 41.688f},
-                {.id = 37, .distance = 48.228f}
-            }
-        },
-        {
-            .point_id = 67,
-            .neighbors = {
-                {.id = 66, .distance = 28.840f},
-                {.id = 68, .distance = 29.097f},
-                {.id = 199, .distance = 29.681f},
-                {.id = 39, .distance = 37.153f},
-                {.id = 69, .distance = 38.371f},
-                {.id = 200, .distance = 41.088f},
-                {.id = 198, .distance = 41.797f}
-            }
-        },
-        {
-            .point_id = 68,
-            .neighbors = {
-                {.id = 69, .distance = 23.468f},
-                {.id = 70, .distance = 28.067f},
-                {.id = 67, .distance = 29.097f},
-                {.id = 198, .distance = 29.876f},
-                {.id = 71, .distance = 37.859f},
-                {.id = 196, .distance = 41.018f},
-                {.id = 199, .distance = 41.259f}
-            }
-        },
-        {
-            .point_id = 69,
-            .neighbors = {
-                {.id = 68, .distance = 23.468f},
-                {.id = 71, .distance = 26.995f},
-                {.id = 40, .distance = 27.373f},
-                {.id = 39, .distance = 30.540f},
-                {.id = 70, .distance = 35.584f},
-                {.id = 67, .distance = 38.371f},
-                {.id = 73, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 70,
-            .neighbors = {
-                {.id = 71, .distance = 25.235f},
-                {.id = 68, .distance = 28.067f},
-                {.id = 196, .distance = 29.688f},
-                {.id = 72, .distance = 31.314f},
-                {.id = 69, .distance = 35.584f},
-                {.id = 198, .distance = 40.900f},
-                {.id = 581, .distance = 51.969f}
-            }
-        },
-        {
-            .point_id = 71,
-            .neighbors = {
-                {.id = 70, .distance = 25.235f},
-                {.id = 72, .distance = 25.959f},
-                {.id = 69, .distance = 26.995f},
-                {.id = 73, .distance = 28.280f},
-                {.id = 40, .distance = 35.618f},
-                {.id = 68, .distance = 37.859f},
-                {.id = 74, .distance = 39.348f}
-            }
-        },
-        {
-            .point_id = 72,
-            .neighbors = {
-                {.id = 71, .distance = 25.959f},
-                {.id = 74, .distance = 28.175f},
-                {.id = 581, .distance = 29.549f},
-                {.id = 70, .distance = 31.314f},
-                {.id = 73, .distance = 35.099f},
-                {.id = 579, .distance = 40.243f},
-                {.id = 69, .distance = 52.245f}
-            }
-        },
-        {
-            .point_id = 73,
-            .neighbors = {
-                {.id = 74, .distance = 22.858f},
-                {.id = 41, .distance = 24.293f},
-                {.id = 71, .distance = 28.280f},
-                {.id = 72, .distance = 35.099f},
-                {.id = 40, .distance = 36.566f},
-                {.id = 75, .distance = 37.718f},
-                {.id = 69, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 74,
-            .neighbors = {
-                {.id = 73, .distance = 22.858f},
-                {.id = 72, .distance = 28.175f},
-                {.id = 75, .distance = 28.665f},
-                {.id = 579, .distance = 29.310f},
-                {.id = 71, .distance = 39.348f},
-                {.id = 577, .distance = 40.738f},
-                {.id = 581, .distance = 41.456f}
-            }
-        },
-        {
-            .point_id = 75,
-            .neighbors = {
-                {.id = 74, .distance = 28.665f},
-                {.id = 76, .distance = 28.744f},
-                {.id = 577, .distance = 29.345f},
-                {.id = 42, .distance = 37.333f},
-                {.id = 73, .distance = 37.718f},
-                {.id = 576, .distance = 40.851f},
-                {.id = 579, .distance = 41.503f}
-            }
-        },
-        {
-            .point_id = 76,
-            .neighbors = {
-                {.id = 77, .distance = 28.665f},
-                {.id = 75, .distance = 28.744f},
-                {.id = 576, .distance = 29.691f},
-                {.id = 42, .distance = 35.922f},
-                {.id = 43, .distance = 39.243f},
-                {.id = 575, .distance = 40.703f},
-                {.id = 577, .distance = 41.214f}
-            }
-        },
-        {
-            .point_id = 77,
-            .neighbors = {
-                {.id = 76, .distance = 28.665f},
-                {.id = 78, .distance = 28.989f},
-                {.id = 575, .distance = 29.296f},
-                {.id = 43, .distance = 35.562f},
-                {.id = 79, .distance = 37.946f},
-                {.id = 623, .distance = 40.496f},
-                {.id = 576, .distance = 41.883f}
-            }
-        },
-        {
-            .point_id = 78,
-            .neighbors = {
-                {.id = 79, .distance = 22.522f},
-                {.id = 80, .distance = 28.989f},
-                {.id = 77, .distance = 28.989f},
-                {.id = 623, .distance = 29.440f},
-                {.id = 81, .distance = 38.748f},
-                {.id = 622, .distance = 40.864f},
-                {.id = 575, .distance = 41.400f}
-            }
-        },
-        {
-            .point_id = 79,
-            .neighbors = {
-                {.id = 78, .distance = 22.522f},
-                {.id = 44, .distance = 23.803f},
-                {.id = 81, .distance = 27.573f},
-                {.id = 80, .distance = 35.430f},
-                {.id = 77, .distance = 37.946f},
-                {.id = 43, .distance = 41.982f},
-                {.id = 45, .distance = 43.096f}
-            }
-        },
-        {
-            .point_id = 80,
-            .neighbors = {
-                {.id = 81, .distance = 25.732f},
-                {.id = 78, .distance = 28.989f},
-                {.id = 622, .distance = 29.465f},
-                {.id = 82, .distance = 30.699f},
-                {.id = 79, .distance = 35.430f},
-                {.id = 623, .distance = 42.121f},
-                {.id = 83, .distance = 51.677f}
-            }
-        },
-        {
-            .point_id = 81,
-            .neighbors = {
-                {.id = 82, .distance = 25.715f},
-                {.id = 80, .distance = 25.732f},
-                {.id = 83, .distance = 27.009f},
-                {.id = 79, .distance = 27.573f},
-                {.id = 45, .distance = 38.124f},
-                {.id = 78, .distance = 38.748f},
-                {.id = 84, .distance = 38.795f}
-            }
-        },
-        {
-            .point_id = 82,
-            .neighbors = {
-                {.id = 81, .distance = 25.715f},
-                {.id = 84, .distance = 28.587f},
-                {.id = 477, .distance = 29.341f},
-                {.id = 80, .distance = 30.699f},
-                {.id = 83, .distance = 35.180f},
-                {.id = 475, .distance = 41.271f},
-                {.id = 478, .distance = 51.855f}
-            }
-        },
-        {
-            .point_id = 83,
-            .neighbors = {
-                {.id = 84, .distance = 23.318f},
-                {.id = 45, .distance = 24.410f},
-                {.id = 81, .distance = 27.009f},
-                {.id = 82, .distance = 35.180f},
-                {.id = 46, .distance = 36.927f},
-                {.id = 85, .distance = 38.625f},
-                {.id = 79, .distance = 47.229f}
-            }
-        },
-        {
-            .point_id = 84,
-            .neighbors = {
-                {.id = 83, .distance = 23.318f},
-                {.id = 82, .distance = 28.587f},
-                {.id = 85, .distance = 28.648f},
-                {.id = 475, .distance = 29.217f},
-                {.id = 81, .distance = 38.795f},
-                {.id = 477, .distance = 40.505f},
-                {.id = 473, .distance = 41.569f}
-            }
-        },
-        {
-            .point_id = 85,
-            .neighbors = {
-                {.id = 84, .distance = 28.648f},
-                {.id = 86, .distance = 28.678f},
-                {.id = 473, .distance = 29.175f},
-                {.id = 46, .distance = 36.174f},
-                {.id = 83, .distance = 38.625f},
-                {.id = 475, .distance = 40.470f},
-                {.id = 472, .distance = 41.613f}
-            }
-        },
-        {
-            .point_id = 86,
-            .neighbors = {
-                {.id = 87, .distance = 28.019f},
-                {.id = 85, .distance = 28.678f},
-                {.id = 472, .distance = 29.580f},
-                {.id = 47, .distance = 33.528f},
-                {.id = 473, .distance = 40.192f},
-                {.id = 471, .distance = 41.584f},
-                {.id = 46, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 87,
-            .neighbors = {
-                {.id = 86, .distance = 28.019f},
-                {.id = 471, .distance = 29.135f},
-                {.id = 88, .distance = 29.666f},
-                {.id = 89, .distance = 39.143f},
-                {.id = 47, .distance = 39.292f},
-                {.id = 472, .distance = 40.348f},
-                {.id = 48, .distance = 40.843f}
-            }
-        },
-        {
-            .point_id = 88,
-            .neighbors = {
-                {.id = 89, .distance = 23.574f},
-                {.id = 90, .distance = 28.796f},
-                {.id = 519, .distance = 29.181f},
-                {.id = 87, .distance = 29.666f},
-                {.id = 91, .distance = 38.536f},
-                {.id = 471, .distance = 40.304f},
-                {.id = 518, .distance = 41.626f}
-            }
-        },
-        {
-            .point_id = 89,
-            .neighbors = {
-                {.id = 88, .distance = 23.574f},
-                {.id = 48, .distance = 26.800f},
-                {.id = 91, .distance = 27.295f},
-                {.id = 49, .distance = 31.165f},
-                {.id = 90, .distance = 35.726f},
-                {.id = 87, .distance = 39.143f},
-                {.id = 93, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 90,
-            .neighbors = {
-                {.id = 91, .distance = 25.236f},
-                {.id = 88, .distance = 28.796f},
-                {.id = 518, .distance = 29.473f},
-                {.id = 92, .distance = 30.643f},
-                {.id = 89, .distance = 35.726f},
-                {.id = 519, .distance = 41.051f},
-                {.id = 93, .distance = 51.793f}
-            }
-        },
-        {
-            .point_id = 91,
-            .neighbors = {
-                {.id = 90, .distance = 25.236f},
-                {.id = 92, .distance = 25.701f},
-                {.id = 89, .distance = 27.295f},
-                {.id = 93, .distance = 27.601f},
-                {.id = 49, .distance = 35.484f},
-                {.id = 88, .distance = 38.536f},
-                {.id = 94, .distance = 38.536f}
-            }
-        },
-        {
-            .point_id = 92,
-            .neighbors = {
-                {.id = 91, .distance = 25.701f},
-                {.id = 94, .distance = 28.171f},
-                {.id = 373, .distance = 30.385f},
-                {.id = 90, .distance = 30.643f},
-                {.id = 93, .distance = 35.416f},
-                {.id = 371, .distance = 42.484f},
-                {.id = 518, .distance = 51.460f}
-            }
-        },
-        {
-            .point_id = 93,
-            .neighbors = {
-                {.id = 94, .distance = 23.046f},
-                {.id = 50, .distance = 26.974f},
-                {.id = 91, .distance = 27.601f},
-                {.id = 49, .distance = 32.025f},
-                {.id = 92, .distance = 35.416f},
-                {.id = 95, .distance = 38.124f},
-                {.id = 89, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 94,
-            .neighbors = {
-                {.id = 93, .distance = 23.046f},
-                {.id = 92, .distance = 28.171f},
-                {.id = 95, .distance = 28.796f},
-                {.id = 371, .distance = 30.403f},
-                {.id = 91, .distance = 38.536f},
-                {.id = 373, .distance = 40.601f},
-                {.id = 369, .distance = 43.161f}
-            }
-        },
-        {
-            .point_id = 95,
-            .neighbors = {
-                {.id = 96, .distance = 28.739f},
-                {.id = 94, .distance = 28.796f},
-                {.id = 369, .distance = 30.170f},
-                {.id = 93, .distance = 38.124f},
-                {.id = 51, .distance = 40.058f},
-                {.id = 371, .distance = 40.512f},
-                {.id = 50, .distance = 40.759f}
-            }
-        },
-        {
-            .point_id = 96,
-            .neighbors = {
-                {.id = 95, .distance = 28.739f},
-                {.id = 97, .distance = 28.996f},
-                {.id = 368, .distance = 30.696f},
-                {.id = 51, .distance = 34.006f},
-                {.id = 369, .distance = 40.388f},
-                {.id = 367, .distance = 42.992f},
-                {.id = 52, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 97,
-            .neighbors = {
-                {.id = 98, .distance = 28.539f},
-                {.id = 96, .distance = 28.996f},
-                {.id = 367, .distance = 30.344f},
-                {.id = 52, .distance = 35.652f},
-                {.id = 99, .distance = 38.072f},
-                {.id = 368, .distance = 41.292f},
-                {.id = 415, .distance = 42.554f}
-            }
-        },
-        {
-            .point_id = 98,
-            .neighbors = {
-                {.id = 99, .distance = 23.229f},
-                {.id = 97, .distance = 28.539f},
-                {.id = 100, .distance = 29.175f},
-                {.id = 415, .distance = 30.291f},
-                {.id = 101, .distance = 38.795f},
-                {.id = 367, .distance = 40.387f},
-                {.id = 414, .distance = 43.137f}
-            }
-        },
-        {
-            .point_id = 99,
-            .neighbors = {
-                {.id = 98, .distance = 23.229f},
-                {.id = 53, .distance = 24.656f},
-                {.id = 101, .distance = 27.373f},
-                {.id = 52, .distance = 35.973f},
-                {.id = 100, .distance = 36.131f},
-                {.id = 97, .distance = 38.072f},
-                {.id = 54, .distance = 47.750f}
-            }
-        },
-        {
-            .point_id = 100,
-            .neighbors = {
-                {.id = 101, .distance = 26.133f},
-                {.id = 98, .distance = 29.175f},
-                {.id = 414, .distance = 29.970f},
-                {.id = 102, .distance = 30.723f},
-                {.id = 99, .distance = 36.131f},
-                {.id = 415, .distance = 40.924f},
-                {.id = 54, .distance = 52.753f}
-            }
-        },
-        {
-            .point_id = 101,
-            .neighbors = {
-                {.id = 102, .distance = 25.813f},
-                {.id = 100, .distance = 26.133f},
-                {.id = 99, .distance = 27.373f},
-                {.id = 54, .distance = 27.856f},
-                {.id = 53, .distance = 38.273f},
-                {.id = 98, .distance = 38.795f},
-                {.id = 103, .distance = 39.458f}
-            }
-        },
-        {
-            .point_id = 102,
-            .neighbors = {
-                {.id = 101, .distance = 25.813f},
-                {.id = 103, .distance = 29.479f},
-                {.id = 100, .distance = 30.723f},
-                {.id = 269, .distance = 31.323f},
-                {.id = 54, .distance = 35.561f},
-                {.id = 267, .distance = 42.722f},
-                {.id = 414, .distance = 51.870f}
-            }
-        },
-        {
-            .point_id = 103,
-            .neighbors = {
-                {.id = 54, .distance = 22.863f},
-                {.id = 55, .distance = 28.096f},
-                {.id = 102, .distance = 29.479f},
-                {.id = 267, .distance = 31.044f},
-                {.id = 101, .distance = 39.458f},
-                {.id = 265, .distance = 42.288f},
-                {.id = 269, .distance = 42.426f}
-            }
-        },
-        {
-            .point_id = 104,
-            .neighbors = {
-                {.id = 105, .distance = 25.256f},
-                {.id = 107, .distance = 25.653f},
-                {.id = 106, .distance = 25.660f},
-                {.id = 109, .distance = 26.237f},
-                {.id = 108, .distance = 26.780f},
-                {.id = 111, .distance = 53.251f},
-                {.id = 115, .distance = 53.584f}
-            }
-        },
-        {
-            .point_id = 105,
-            .neighbors = {
-                {.id = 104, .distance = 25.256f},
-                {.id = 111, .distance = 27.996f},
-                {.id = 109, .distance = 30.406f},
-                {.id = 106, .distance = 30.745f},
-                {.id = 112, .distance = 36.902f},
-                {.id = 110, .distance = 36.902f},
-                {.id = 107, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 106,
-            .neighbors = {
-                {.id = 104, .distance = 25.660f},
-                {.id = 113, .distance = 28.138f},
-                {.id = 107, .distance = 30.016f},
-                {.id = 105, .distance = 30.745f},
-                {.id = 114, .distance = 35.779f},
-                {.id = 112, .distance = 37.730f},
-                {.id = 108, .distance = 49.623f}
-            }
-        },
-        {
-            .point_id = 107,
-            .neighbors = {
-                {.id = 104, .distance = 25.653f},
-                {.id = 115, .distance = 27.950f},
-                {.id = 106, .distance = 30.016f},
-                {.id = 108, .distance = 30.334f},
-                {.id = 116, .distance = 36.663f},
-                {.id = 114, .distance = 36.917f},
-                {.id = 105, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 108,
-            .neighbors = {
-                {.id = 104, .distance = 26.780f},
-                {.id = 117, .distance = 28.148f},
-                {.id = 107, .distance = 30.334f},
-                {.id = 109, .distance = 30.829f},
-                {.id = 116, .distance = 36.041f},
-                {.id = 118, .distance = 36.581f},
-                {.id = 105, .distance = 49.415f}
-            }
-        },
-        {
-            .point_id = 109,
-            .neighbors = {
-                {.id = 104, .distance = 26.237f},
-                {.id = 119, .distance = 28.784f},
-                {.id = 105, .distance = 30.406f},
-                {.id = 108, .distance = 30.829f},
-                {.id = 110, .distance = 36.136f},
-                {.id = 118, .distance = 36.663f},
-                {.id = 107, .distance = 49.028f}
-            }
-        },
-        {
-            .point_id = 110,
-            .neighbors = {
-                {.id = 121, .distance = 29.943f},
-                {.id = 119, .distance = 32.709f},
-                {.id = 111, .distance = 33.241f},
-                {.id = 120, .distance = 35.999f},
-                {.id = 109, .distance = 36.136f},
-                {.id = 105, .distance = 36.902f},
-                {.id = 122, .distance = 43.146f}
-            }
-        },
-        {
-            .point_id = 111,
-            .neighbors = {
-                {.id = 105, .distance = 27.996f},
-                {.id = 122, .distance = 31.091f},
-                {.id = 110, .distance = 33.241f},
-                {.id = 112, .distance = 33.489f},
-                {.id = 123, .distance = 33.997f},
-                {.id = 121, .distance = 46.465f},
-                {.id = 124, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 112,
-            .neighbors = {
-                {.id = 124, .distance = 28.795f},
-                {.id = 111, .distance = 33.489f},
-                {.id = 113, .distance = 34.526f},
-                {.id = 105, .distance = 36.902f},
-                {.id = 106, .distance = 37.730f},
-                {.id = 123, .distance = 39.001f},
-                {.id = 125, .distance = 39.043f}
-            }
-        },
-        {
-            .point_id = 113,
-            .neighbors = {
-                {.id = 106, .distance = 28.138f},
-                {.id = 126, .distance = 30.119f},
-                {.id = 114, .distance = 32.862f},
-                {.id = 125, .distance = 33.326f},
-                {.id = 112, .distance = 34.526f},
-                {.id = 127, .distance = 46.032f},
-                {.id = 124, .distance = 51.953f}
-            }
-        },
-        {
-            .point_id = 114,
-            .neighbors = {
-                {.id = 127, .distance = 29.271f},
-                {.id = 113, .distance = 32.862f},
-                {.id = 115, .distance = 32.910f},
-                {.id = 128, .distance = 35.475f},
-                {.id = 106, .distance = 35.779f},
-                {.id = 107, .distance = 36.917f},
-                {.id = 126, .distance = 42.036f}
-            }
-        },
-        {
-            .point_id = 115,
-            .neighbors = {
-                {.id = 107, .distance = 27.950f},
-                {.id = 129, .distance = 30.515f},
-                {.id = 114, .distance = 32.910f},
-                {.id = 116, .distance = 34.288f},
-                {.id = 128, .distance = 35.680f},
-                {.id = 130, .distance = 43.747f},
-                {.id = 106, .distance = 50.881f}
-            }
-        },
-        {
-            .point_id = 116,
-            .neighbors = {
-                {.id = 130, .distance = 30.713f},
-                {.id = 131, .distance = 32.961f},
-                {.id = 115, .distance = 34.288f},
-                {.id = 117, .distance = 34.333f},
-                {.id = 108, .distance = 36.041f},
-                {.id = 107, .distance = 36.663f},
-                {.id = 129, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 117,
-            .neighbors = {
-                {.id = 108, .distance = 28.148f},
-                {.id = 132, .distance = 28.795f},
-                {.id = 118, .distance = 32.474f},
-                {.id = 116, .distance = 34.333f},
-                {.id = 133, .distance = 37.853f},
-                {.id = 131, .distance = 39.529f},
-                {.id = 109, .distance = 52.029f}
-            }
-        },
-        {
-            .point_id = 118,
-            .neighbors = {
-                {.id = 134, .distance = 30.978f},
-                {.id = 117, .distance = 32.474f},
-                {.id = 133, .distance = 33.378f},
-                {.id = 119, .distance = 34.135f},
-                {.id = 108, .distance = 36.581f},
-                {.id = 109, .distance = 36.663f},
-                {.id = 135, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 119,
-            .neighbors = {
-                {.id = 109, .distance = 28.784f},
-                {.id = 135, .distance = 29.314f},
-                {.id = 110, .distance = 32.709f},
-                {.id = 118, .distance = 34.135f},
-                {.id = 120, .distance = 35.428f},
-                {.id = 134, .distance = 42.934f},
-                {.id = 105, .distance = 52.730f}
-            }
-        },
-        {
-            .point_id = 120,
-            .neighbors = {
-                {.id = 137, .distance = 31.937f},
-                {.id = 136, .distance = 31.964f},
-                {.id = 135, .distance = 32.088f},
-                {.id = 121, .distance = 32.704f},
-                {.id = 119, .distance = 35.428f},
-                {.id = 110, .distance = 35.999f},
-                {.id = 157, .distance = 49.921f}
-            }
-        },
-        {
-            .point_id = 121,
-            .neighbors = {
-                {.id = 138, .distance = 29.419f},
-                {.id = 110, .distance = 29.943f},
-                {.id = 122, .distance = 32.468f},
-                {.id = 120, .distance = 32.704f},
-                {.id = 137, .distance = 37.491f},
-                {.id = 139, .distance = 41.947f},
-                {.id = 111, .distance = 46.465f}
-            }
-        },
-        {
-            .point_id = 122,
-            .neighbors = {
-                {.id = 139, .distance = 29.848f},
-                {.id = 111, .distance = 31.091f},
-                {.id = 123, .distance = 31.917f},
-                {.id = 121, .distance = 32.468f},
-                {.id = 140, .distance = 35.426f},
-                {.id = 110, .distance = 43.146f},
-                {.id = 138, .distance = 44.568f}
-            }
-        },
-        {
-            .point_id = 123,
-            .neighbors = {
-                {.id = 141, .distance = 30.775f},
-                {.id = 122, .distance = 31.917f},
-                {.id = 124, .distance = 32.089f},
-                {.id = 140, .distance = 33.457f},
-                {.id = 111, .distance = 33.997f},
-                {.id = 112, .distance = 39.001f},
-                {.id = 142, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 124,
-            .neighbors = {
-                {.id = 142, .distance = 28.126f},
-                {.id = 112, .distance = 28.795f},
-                {.id = 123, .distance = 32.089f},
-                {.id = 125, .distance = 33.350f},
-                {.id = 141, .distance = 38.606f},
-                {.id = 143, .distance = 40.686f},
-                {.id = 111, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 125,
-            .neighbors = {
-                {.id = 143, .distance = 30.745f},
-                {.id = 126, .distance = 32.585f},
-                {.id = 113, .distance = 33.326f},
-                {.id = 124, .distance = 33.350f},
-                {.id = 144, .distance = 33.990f},
-                {.id = 112, .distance = 39.043f},
-                {.id = 142, .distance = 47.230f}
-            }
-        },
-        {
-            .point_id = 126,
-            .neighbors = {
-                {.id = 145, .distance = 30.088f},
-                {.id = 113, .distance = 30.119f},
-                {.id = 127, .distance = 32.298f},
-                {.id = 125, .distance = 32.585f},
-                {.id = 144, .distance = 35.628f},
-                {.id = 114, .distance = 42.036f},
-                {.id = 146, .distance = 44.864f}
-            }
-        },
-        {
-            .point_id = 127,
-            .neighbors = {
-                {.id = 146, .distance = 28.726f},
-                {.id = 114, .distance = 29.271f},
-                {.id = 128, .distance = 31.916f},
-                {.id = 126, .distance = 32.298f},
-                {.id = 147, .distance = 37.444f},
-                {.id = 145, .distance = 42.067f},
-                {.id = 113, .distance = 46.032f}
-            }
-        },
-        {
-            .point_id = 128,
-            .neighbors = {
-                {.id = 147, .distance = 31.889f},
-                {.id = 127, .distance = 31.916f},
-                {.id = 148, .distance = 32.458f},
-                {.id = 129, .distance = 32.605f},
-                {.id = 114, .distance = 35.475f},
-                {.id = 115, .distance = 35.680f},
-                {.id = 146, .distance = 49.358f}
-            }
-        },
-        {
-            .point_id = 129,
-            .neighbors = {
-                {.id = 149, .distance = 28.557f},
-                {.id = 115, .distance = 30.515f},
-                {.id = 128, .distance = 32.605f},
-                {.id = 130, .distance = 33.386f},
-                {.id = 148, .distance = 36.707f},
-                {.id = 150, .distance = 42.276f},
-                {.id = 116, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 130,
-            .neighbors = {
-                {.id = 150, .distance = 29.283f},
-                {.id = 116, .distance = 30.713f},
-                {.id = 131, .distance = 32.395f},
-                {.id = 129, .distance = 33.386f},
-                {.id = 151, .distance = 35.383f},
-                {.id = 115, .distance = 43.747f},
-                {.id = 149, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 131,
-            .neighbors = {
-                {.id = 152, .distance = 30.492f},
-                {.id = 130, .distance = 32.395f},
-                {.id = 132, .distance = 32.492f},
-                {.id = 116, .distance = 32.961f},
-                {.id = 151, .distance = 33.774f},
-                {.id = 117, .distance = 39.529f},
-                {.id = 153, .distance = 46.947f}
-            }
-        },
-        {
-            .point_id = 132,
-            .neighbors = {
-                {.id = 117, .distance = 28.795f},
-                {.id = 153, .distance = 28.796f},
-                {.id = 133, .distance = 31.301f},
-                {.id = 131, .distance = 32.492f},
-                {.id = 154, .distance = 39.130f},
-                {.id = 152, .distance = 39.658f},
-                {.id = 118, .distance = 50.236f}
-            }
-        },
-        {
-            .point_id = 133,
-            .neighbors = {
-                {.id = 154, .distance = 30.076f},
-                {.id = 132, .distance = 31.301f},
-                {.id = 134, .distance = 33.324f},
-                {.id = 118, .distance = 33.378f},
-                {.id = 155, .distance = 33.386f},
-                {.id = 117, .distance = 37.853f},
-                {.id = 153, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 134,
-            .neighbors = {
-                {.id = 156, .distance = 29.653f},
-                {.id = 118, .distance = 30.978f},
-                {.id = 135, .distance = 32.852f},
-                {.id = 133, .distance = 33.324f},
-                {.id = 155, .distance = 35.446f},
-                {.id = 119, .distance = 42.934f},
-                {.id = 157, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 135,
-            .neighbors = {
-                {.id = 157, .distance = 28.776f},
-                {.id = 119, .distance = 29.314f},
-                {.id = 120, .distance = 32.088f},
-                {.id = 134, .distance = 32.852f},
-                {.id = 136, .distance = 36.954f},
-                {.id = 156, .distance = 42.498f},
-                {.id = 118, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 136,
-            .neighbors = {
-                {.id = 158, .distance = 23.617f},
-                {.id = 157, .distance = 31.442f},
-                {.id = 120, .distance = 31.964f},
-                {.id = 137, .distance = 32.702f},
-                {.id = 135, .distance = 36.954f},
-                {.id = 205, .distance = 41.259f},
-                {.id = 207, .distance = 45.103f}
-            }
-        },
-        {
-            .point_id = 137,
-            .neighbors = {
-                {.id = 120, .distance = 31.937f},
-                {.id = 136, .distance = 32.702f},
-                {.id = 138, .distance = 32.725f},
-                {.id = 159, .distance = 36.068f},
-                {.id = 121, .distance = 37.491f},
-                {.id = 160, .distance = 39.068f},
-                {.id = 158, .distance = 41.895f}
-            }
-        },
-        {
-            .point_id = 138,
-            .neighbors = {
-                {.id = 121, .distance = 29.419f},
-                {.id = 139, .distance = 30.638f},
-                {.id = 137, .distance = 32.725f},
-                {.id = 160, .distance = 35.794f},
-                {.id = 161, .distance = 36.665f},
-                {.id = 122, .distance = 44.568f},
-                {.id = 162, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 139,
-            .neighbors = {
-                {.id = 162, .distance = 24.191f},
-                {.id = 122, .distance = 29.848f},
-                {.id = 138, .distance = 30.638f},
-                {.id = 140, .distance = 31.516f},
-                {.id = 121, .distance = 41.947f},
-                {.id = 163, .distance = 44.167f},
-                {.id = 161, .distance = 44.460f}
-            }
-        },
-        {
-            .point_id = 140,
-            .neighbors = {
-                {.id = 167, .distance = 27.519f},
-                {.id = 139, .distance = 31.516f},
-                {.id = 141, .distance = 33.096f},
-                {.id = 123, .distance = 33.457f},
-                {.id = 122, .distance = 35.426f},
-                {.id = 164, .distance = 35.506f},
-                {.id = 162, .distance = 36.051f}
-            }
-        },
-        {
-            .point_id = 141,
-            .neighbors = {
-                {.id = 123, .distance = 30.775f},
-                {.id = 142, .distance = 30.943f},
-                {.id = 167, .distance = 31.347f},
-                {.id = 140, .distance = 33.096f},
-                {.id = 169, .distance = 37.393f},
-                {.id = 124, .distance = 38.606f},
-                {.id = 168, .distance = 45.102f}
-            }
-        },
-        {
-            .point_id = 142,
-            .neighbors = {
-                {.id = 124, .distance = 28.126f},
-                {.id = 141, .distance = 30.943f},
-                {.id = 143, .distance = 32.322f},
-                {.id = 170, .distance = 33.115f},
-                {.id = 169, .distance = 43.474f},
-                {.id = 171, .distance = 44.048f},
-                {.id = 123, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 143,
-            .neighbors = {
-                {.id = 173, .distance = 30.540f},
-                {.id = 125, .distance = 30.745f},
-                {.id = 142, .distance = 32.322f},
-                {.id = 144, .distance = 32.441f},
-                {.id = 171, .distance = 37.153f},
-                {.id = 124, .distance = 40.686f},
-                {.id = 172, .distance = 45.279f}
-            }
-        },
-        {
-            .point_id = 144,
-            .neighbors = {
-                {.id = 173, .distance = 27.373f},
-                {.id = 145, .distance = 31.563f},
-                {.id = 143, .distance = 32.441f},
-                {.id = 125, .distance = 33.990f},
-                {.id = 175, .distance = 35.618f},
-                {.id = 126, .distance = 35.628f},
-                {.id = 177, .distance = 36.566f}
-            }
-        },
-        {
-            .point_id = 145,
-            .neighbors = {
-                {.id = 177, .distance = 24.293f},
-                {.id = 126, .distance = 30.088f},
-                {.id = 144, .distance = 31.563f},
-                {.id = 146, .distance = 31.793f},
-                {.id = 127, .distance = 42.067f},
-                {.id = 178, .distance = 43.775f},
-                {.id = 179, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 146,
-            .neighbors = {
-                {.id = 127, .distance = 28.726f},
-                {.id = 147, .distance = 31.427f},
-                {.id = 145, .distance = 31.793f},
-                {.id = 180, .distance = 35.922f},
-                {.id = 179, .distance = 37.333f},
-                {.id = 126, .distance = 44.864f},
-                {.id = 177, .distance = 47.704f}
-            }
-        },
-        {
-            .point_id = 147,
-            .neighbors = {
-                {.id = 146, .distance = 31.427f},
-                {.id = 128, .distance = 31.889f},
-                {.id = 148, .distance = 32.342f},
-                {.id = 181, .distance = 35.562f},
-                {.id = 127, .distance = 37.444f},
-                {.id = 180, .distance = 39.243f},
-                {.id = 183, .distance = 41.982f}
-            }
-        },
-        {
-            .point_id = 148,
-            .neighbors = {
-                {.id = 183, .distance = 23.803f},
-                {.id = 149, .distance = 31.693f},
-                {.id = 147, .distance = 32.342f},
-                {.id = 128, .distance = 32.458f},
-                {.id = 129, .distance = 36.707f},
-                {.id = 185, .distance = 41.333f},
-                {.id = 182, .distance = 44.974f}
-            }
-        },
-        {
-            .point_id = 149,
-            .neighbors = {
-                {.id = 187, .distance = 24.410f},
-                {.id = 129, .distance = 28.557f},
-                {.id = 148, .distance = 31.693f},
-                {.id = 150, .distance = 32.138f},
-                {.id = 185, .distance = 38.124f},
-                {.id = 183, .distance = 43.096f},
-                {.id = 130, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 150,
-            .neighbors = {
-                {.id = 130, .distance = 29.283f},
-                {.id = 151, .distance = 31.589f},
-                {.id = 149, .distance = 32.138f},
-                {.id = 189, .distance = 36.174f},
-                {.id = 187, .distance = 36.927f},
-                {.id = 129, .distance = 42.276f},
-                {.id = 190, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 151,
-            .neighbors = {
-                {.id = 150, .distance = 31.589f},
-                {.id = 152, .distance = 32.185f},
-                {.id = 190, .distance = 33.528f},
-                {.id = 131, .distance = 33.774f},
-                {.id = 130, .distance = 35.383f},
-                {.id = 191, .distance = 39.292f},
-                {.id = 189, .distance = 48.151f}
-            }
-        },
-        {
-            .point_id = 152,
-            .neighbors = {
-                {.id = 193, .distance = 26.800f},
-                {.id = 131, .distance = 30.492f},
-                {.id = 153, .distance = 31.085f},
-                {.id = 151, .distance = 32.185f},
-                {.id = 132, .distance = 39.658f},
-                {.id = 191, .distance = 40.843f},
-                {.id = 192, .distance = 44.297f}
-            }
-        },
-        {
-            .point_id = 153,
-            .neighbors = {
-                {.id = 132, .distance = 28.796f},
-                {.id = 152, .distance = 31.085f},
-                {.id = 193, .distance = 31.165f},
-                {.id = 154, .distance = 31.748f},
-                {.id = 197, .distance = 32.025f},
-                {.id = 195, .distance = 35.484f},
-                {.id = 133, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 154,
-            .neighbors = {
-                {.id = 197, .distance = 26.974f},
-                {.id = 133, .distance = 30.076f},
-                {.id = 155, .distance = 31.574f},
-                {.id = 153, .distance = 31.748f},
-                {.id = 132, .distance = 39.130f},
-                {.id = 199, .distance = 40.759f},
-                {.id = 198, .distance = 44.255f}
-            }
-        },
-        {
-            .point_id = 155,
-            .neighbors = {
-                {.id = 154, .distance = 31.574f},
-                {.id = 156, .distance = 32.495f},
-                {.id = 133, .distance = 33.386f},
-                {.id = 200, .distance = 34.006f},
-                {.id = 134, .distance = 35.446f},
-                {.id = 199, .distance = 40.058f},
-                {.id = 201, .distance = 48.765f}
-            }
-        },
-        {
-            .point_id = 156,
-            .neighbors = {
-                {.id = 134, .distance = 29.653f},
-                {.id = 157, .distance = 31.761f},
-                {.id = 155, .distance = 32.495f},
-                {.id = 201, .distance = 35.652f},
-                {.id = 203, .distance = 35.973f},
-                {.id = 135, .distance = 42.498f},
-                {.id = 200, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 157,
-            .neighbors = {
-                {.id = 203, .distance = 24.656f},
-                {.id = 135, .distance = 28.776f},
-                {.id = 136, .distance = 31.442f},
-                {.id = 156, .distance = 31.761f},
-                {.id = 205, .distance = 38.273f},
-                {.id = 158, .distance = 43.129f},
-                {.id = 134, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 158,
-            .neighbors = {
-                {.id = 207, .distance = 22.863f},
-                {.id = 136, .distance = 23.617f},
-                {.id = 205, .distance = 27.856f},
-                {.id = 206, .distance = 35.561f},
-                {.id = 159, .distance = 37.917f},
-                {.id = 137, .distance = 41.895f},
-                {.id = 157, .distance = 43.129f}
-            }
-        },
-        {
-            .point_id = 159,
-            .neighbors = {
-                {.id = 207, .distance = 28.096f},
-                {.id = 160, .distance = 29.153f},
-                {.id = 305, .distance = 30.348f},
-                {.id = 137, .distance = 36.068f},
-                {.id = 158, .distance = 37.917f},
-                {.id = 306, .distance = 40.389f},
-                {.id = 304, .distance = 42.996f}
-            }
-        },
-        {
-            .point_id = 160,
-            .neighbors = {
-                {.id = 161, .distance = 28.265f},
-                {.id = 159, .distance = 29.153f},
-                {.id = 304, .distance = 30.701f},
-                {.id = 138, .distance = 35.794f},
-                {.id = 137, .distance = 39.068f},
-                {.id = 305, .distance = 41.296f},
-                {.id = 303, .distance = 42.964f}
-            }
-        },
-        {
-            .point_id = 161,
-            .neighbors = {
-                {.id = 160, .distance = 28.265f},
-                {.id = 163, .distance = 28.989f},
-                {.id = 303, .distance = 30.177f},
-                {.id = 138, .distance = 36.665f},
-                {.id = 162, .distance = 38.712f},
-                {.id = 304, .distance = 40.393f},
-                {.id = 302, .distance = 43.166f}
-            }
-        },
-        {
-            .point_id = 162,
-            .neighbors = {
-                {.id = 163, .distance = 23.607f},
-                {.id = 139, .distance = 24.191f},
-                {.id = 164, .distance = 27.455f},
-                {.id = 165, .distance = 35.536f},
-                {.id = 140, .distance = 36.051f},
-                {.id = 161, .distance = 38.712f},
-                {.id = 138, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 163,
-            .neighbors = {
-                {.id = 162, .distance = 23.607f},
-                {.id = 165, .distance = 28.500f},
-                {.id = 161, .distance = 28.989f},
-                {.id = 302, .distance = 30.411f},
-                {.id = 164, .distance = 38.998f},
-                {.id = 303, .distance = 40.517f},
-                {.id = 300, .distance = 42.490f}
-            }
-        },
-        {
-            .point_id = 164,
-            .neighbors = {
-                {.id = 165, .distance = 25.823f},
-                {.id = 166, .distance = 26.007f},
-                {.id = 167, .distance = 27.304f},
-                {.id = 162, .distance = 27.455f},
-                {.id = 140, .distance = 35.506f},
-                {.id = 163, .distance = 38.998f},
-                {.id = 168, .distance = 39.242f}
-            }
-        },
-        {
-            .point_id = 165,
-            .neighbors = {
-                {.id = 164, .distance = 25.823f},
-                {.id = 163, .distance = 28.500f},
-                {.id = 300, .distance = 30.395f},
-                {.id = 166, .distance = 30.900f},
-                {.id = 162, .distance = 35.536f},
-                {.id = 302, .distance = 40.607f},
-                {.id = 922, .distance = 51.576f}
-            }
-        },
-        {
-            .point_id = 166,
-            .neighbors = {
-                {.id = 164, .distance = 26.007f},
-                {.id = 922, .distance = 28.617f},
-                {.id = 168, .distance = 29.614f},
-                {.id = 165, .distance = 30.900f},
-                {.id = 167, .distance = 35.963f},
-                {.id = 920, .distance = 40.055f},
-                {.id = 924, .distance = 51.485f}
-            }
-        },
-        {
-            .point_id = 167,
-            .neighbors = {
-                {.id = 168, .distance = 23.404f},
-                {.id = 164, .distance = 27.304f},
-                {.id = 140, .distance = 27.519f},
-                {.id = 141, .distance = 31.347f},
-                {.id = 166, .distance = 35.963f},
-                {.id = 169, .distance = 38.924f},
-                {.id = 162, .distance = 47.034f}
-            }
-        },
-        {
-            .point_id = 168,
-            .neighbors = {
-                {.id = 167, .distance = 23.404f},
-                {.id = 169, .distance = 28.584f},
-                {.id = 920, .distance = 28.673f},
-                {.id = 166, .distance = 29.614f},
-                {.id = 164, .distance = 39.242f},
-                {.id = 919, .distance = 40.304f},
-                {.id = 922, .distance = 41.739f}
-            }
-        },
-        {
-            .point_id = 169,
-            .neighbors = {
-                {.id = 170, .distance = 28.069f},
-                {.id = 919, .distance = 28.493f},
-                {.id = 168, .distance = 28.584f},
-                {.id = 141, .distance = 37.393f},
-                {.id = 167, .distance = 38.924f},
-                {.id = 918, .distance = 39.759f},
-                {.id = 920, .distance = 41.297f}
-            }
-        },
-        {
-            .point_id = 170,
-            .neighbors = {
-                {.id = 169, .distance = 28.069f},
-                {.id = 918, .distance = 28.727f},
-                {.id = 171, .distance = 28.840f},
-                {.id = 142, .distance = 33.115f},
-                {.id = 919, .distance = 40.363f},
-                {.id = 917, .distance = 40.371f},
-                {.id = 141, .distance = 48.228f}
-            }
-        },
-        {
-            .point_id = 171,
-            .neighbors = {
-                {.id = 917, .distance = 28.767f},
-                {.id = 170, .distance = 28.840f},
-                {.id = 172, .distance = 29.098f},
-                {.id = 143, .distance = 37.153f},
-                {.id = 173, .distance = 38.371f},
-                {.id = 916, .distance = 40.238f},
-                {.id = 918, .distance = 40.952f}
-            }
-        },
-        {
-            .point_id = 172,
-            .neighbors = {
-                {.id = 173, .distance = 23.468f},
-                {.id = 174, .distance = 28.067f},
-                {.id = 916, .distance = 28.780f},
-                {.id = 171, .distance = 29.098f},
-                {.id = 175, .distance = 37.859f},
-                {.id = 914, .distance = 39.833f},
-                {.id = 917, .distance = 41.278f}
-            }
-        },
-        {
-            .point_id = 173,
-            .neighbors = {
-                {.id = 172, .distance = 23.468f},
-                {.id = 175, .distance = 26.995f},
-                {.id = 144, .distance = 27.373f},
-                {.id = 143, .distance = 30.540f},
-                {.id = 174, .distance = 35.584f},
-                {.id = 171, .distance = 38.371f},
-                {.id = 177, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 174,
-            .neighbors = {
-                {.id = 175, .distance = 25.235f},
-                {.id = 172, .distance = 28.067f},
-                {.id = 914, .distance = 28.700f},
-                {.id = 176, .distance = 31.314f},
-                {.id = 173, .distance = 35.584f},
-                {.id = 916, .distance = 40.865f},
-                {.id = 912, .distance = 50.956f}
-            }
-        },
-        {
-            .point_id = 175,
-            .neighbors = {
-                {.id = 174, .distance = 25.235f},
-                {.id = 176, .distance = 25.959f},
-                {.id = 173, .distance = 26.995f},
-                {.id = 177, .distance = 28.280f},
-                {.id = 144, .distance = 35.618f},
-                {.id = 172, .distance = 37.859f},
-                {.id = 178, .distance = 39.348f}
-            }
-        },
-        {
-            .point_id = 176,
-            .neighbors = {
-                {.id = 175, .distance = 25.959f},
-                {.id = 828, .distance = 28.160f},
-                {.id = 178, .distance = 28.175f},
-                {.id = 174, .distance = 31.314f},
-                {.id = 177, .distance = 35.099f},
-                {.id = 826, .distance = 40.663f},
-                {.id = 830, .distance = 51.351f}
-            }
-        },
-        {
-            .point_id = 177,
-            .neighbors = {
-                {.id = 178, .distance = 22.858f},
-                {.id = 145, .distance = 24.293f},
-                {.id = 175, .distance = 28.280f},
-                {.id = 176, .distance = 35.099f},
-                {.id = 144, .distance = 36.566f},
-                {.id = 179, .distance = 37.718f},
-                {.id = 173, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 178,
-            .neighbors = {
-                {.id = 177, .distance = 22.858f},
-                {.id = 176, .distance = 28.175f},
-                {.id = 826, .distance = 28.558f},
-                {.id = 179, .distance = 28.665f},
-                {.id = 175, .distance = 39.348f},
-                {.id = 828, .distance = 39.985f},
-                {.id = 825, .distance = 41.035f}
-            }
-        },
-        {
-            .point_id = 179,
-            .neighbors = {
-                {.id = 178, .distance = 28.665f},
-                {.id = 180, .distance = 28.744f},
-                {.id = 825, .distance = 28.849f},
-                {.id = 146, .distance = 37.333f},
-                {.id = 177, .distance = 37.718f},
-                {.id = 826, .distance = 40.001f},
-                {.id = 824, .distance = 41.256f}
-            }
-        },
-        {
-            .point_id = 180,
-            .neighbors = {
-                {.id = 824, .distance = 28.628f},
-                {.id = 181, .distance = 28.665f},
-                {.id = 179, .distance = 28.744f},
-                {.id = 146, .distance = 35.922f},
-                {.id = 147, .distance = 39.243f},
-                {.id = 825, .distance = 40.208f},
-                {.id = 823, .distance = 41.096f}
-            }
-        },
-        {
-            .point_id = 181,
-            .neighbors = {
-                {.id = 823, .distance = 28.612f},
-                {.id = 180, .distance = 28.665f},
-                {.id = 182, .distance = 28.989f},
-                {.id = 147, .distance = 35.562f},
-                {.id = 183, .distance = 37.946f},
-                {.id = 824, .distance = 39.961f},
-                {.id = 822, .distance = 41.392f}
-            }
-        },
-        {
-            .point_id = 182,
-            .neighbors = {
-                {.id = 183, .distance = 22.522f},
-                {.id = 822, .distance = 28.758f},
-                {.id = 181, .distance = 28.989f},
-                {.id = 184, .distance = 28.989f},
-                {.id = 185, .distance = 38.748f},
-                {.id = 823, .distance = 40.023f},
-                {.id = 820, .distance = 40.640f}
-            }
-        },
-        {
-            .point_id = 183,
-            .neighbors = {
-                {.id = 182, .distance = 22.522f},
-                {.id = 148, .distance = 23.803f},
-                {.id = 185, .distance = 27.573f},
-                {.id = 184, .distance = 35.430f},
-                {.id = 181, .distance = 37.946f},
-                {.id = 147, .distance = 41.982f},
-                {.id = 149, .distance = 43.096f}
-            }
-        },
-        {
-            .point_id = 184,
-            .neighbors = {
-                {.id = 185, .distance = 25.732f},
-                {.id = 820, .distance = 28.509f},
-                {.id = 182, .distance = 28.989f},
-                {.id = 186, .distance = 30.699f},
-                {.id = 183, .distance = 35.430f},
-                {.id = 822, .distance = 40.267f},
-                {.id = 590, .distance = 50.925f}
-            }
-        },
-        {
-            .point_id = 185,
-            .neighbors = {
-                {.id = 186, .distance = 25.715f},
-                {.id = 184, .distance = 25.732f},
-                {.id = 187, .distance = 27.009f},
-                {.id = 183, .distance = 27.573f},
-                {.id = 149, .distance = 38.124f},
-                {.id = 182, .distance = 38.748f},
-                {.id = 188, .distance = 38.795f}
-            }
-        },
-        {
-            .point_id = 186,
-            .neighbors = {
-                {.id = 185, .distance = 25.715f},
-                {.id = 188, .distance = 28.587f},
-                {.id = 590, .distance = 28.672f},
-                {.id = 184, .distance = 30.699f},
-                {.id = 187, .distance = 35.180f},
-                {.id = 588, .distance = 39.803f},
-                {.id = 820, .distance = 51.337f}
-            }
-        },
-        {
-            .point_id = 187,
-            .neighbors = {
-                {.id = 188, .distance = 23.318f},
-                {.id = 149, .distance = 24.410f},
-                {.id = 185, .distance = 27.009f},
-                {.id = 186, .distance = 35.180f},
-                {.id = 150, .distance = 36.927f},
-                {.id = 189, .distance = 38.625f},
-                {.id = 183, .distance = 47.229f}
-            }
-        },
-        {
-            .point_id = 188,
-            .neighbors = {
-                {.id = 187, .distance = 23.318f},
-                {.id = 186, .distance = 28.587f},
-                {.id = 189, .distance = 28.648f},
-                {.id = 588, .distance = 28.751f},
-                {.id = 185, .distance = 38.795f},
-                {.id = 587, .distance = 40.206f},
-                {.id = 590, .distance = 40.855f}
-            }
-        },
-        {
-            .point_id = 189,
-            .neighbors = {
-                {.id = 188, .distance = 28.648f},
-                {.id = 190, .distance = 28.678f},
-                {.id = 587, .distance = 28.736f},
-                {.id = 150, .distance = 36.174f},
-                {.id = 187, .distance = 38.625f},
-                {.id = 586, .distance = 40.338f},
-                {.id = 588, .distance = 41.267f}
-            }
-        },
-        {
-            .point_id = 190,
-            .neighbors = {
-                {.id = 191, .distance = 28.019f},
-                {.id = 189, .distance = 28.678f},
-                {.id = 586, .distance = 28.695f},
-                {.id = 151, .distance = 33.528f},
-                {.id = 585, .distance = 39.725f},
-                {.id = 587, .distance = 40.940f},
-                {.id = 150, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 191,
-            .neighbors = {
-                {.id = 190, .distance = 28.019f},
-                {.id = 585, .distance = 28.459f},
-                {.id = 192, .distance = 29.666f},
-                {.id = 193, .distance = 39.143f},
-                {.id = 151, .distance = 39.292f},
-                {.id = 584, .distance = 40.269f},
-                {.id = 586, .distance = 40.350f}
-            }
-        },
-        {
-            .point_id = 192,
-            .neighbors = {
-                {.id = 193, .distance = 23.574f},
-                {.id = 584, .distance = 28.638f},
-                {.id = 194, .distance = 28.796f},
-                {.id = 191, .distance = 29.666f},
-                {.id = 195, .distance = 38.536f},
-                {.id = 582, .distance = 40.019f},
-                {.id = 585, .distance = 41.284f}
-            }
-        },
-        {
-            .point_id = 193,
-            .neighbors = {
-                {.id = 192, .distance = 23.574f},
-                {.id = 152, .distance = 26.800f},
-                {.id = 195, .distance = 27.295f},
-                {.id = 153, .distance = 31.165f},
-                {.id = 194, .distance = 35.726f},
-                {.id = 191, .distance = 39.143f},
-                {.id = 197, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 194,
-            .neighbors = {
-                {.id = 195, .distance = 25.236f},
-                {.id = 582, .distance = 28.580f},
-                {.id = 192, .distance = 28.796f},
-                {.id = 196, .distance = 30.643f},
-                {.id = 193, .distance = 35.726f},
-                {.id = 584, .distance = 41.724f},
-                {.id = 581, .distance = 51.536f}
-            }
-        },
-        {
-            .point_id = 195,
-            .neighbors = {
-                {.id = 194, .distance = 25.236f},
-                {.id = 196, .distance = 25.701f},
-                {.id = 193, .distance = 27.295f},
-                {.id = 197, .distance = 27.601f},
-                {.id = 153, .distance = 35.484f},
-                {.id = 192, .distance = 38.536f},
-                {.id = 198, .distance = 38.536f}
-            }
-        },
-        {
-            .point_id = 196,
-            .neighbors = {
-                {.id = 195, .distance = 25.701f},
-                {.id = 198, .distance = 28.171f},
-                {.id = 70, .distance = 29.688f},
-                {.id = 194, .distance = 30.643f},
-                {.id = 197, .distance = 35.416f},
-                {.id = 68, .distance = 41.018f},
-                {.id = 582, .distance = 51.461f}
-            }
-        },
-        {
-            .point_id = 197,
-            .neighbors = {
-                {.id = 198, .distance = 23.046f},
-                {.id = 154, .distance = 26.974f},
-                {.id = 195, .distance = 27.601f},
-                {.id = 153, .distance = 32.025f},
-                {.id = 196, .distance = 35.416f},
-                {.id = 199, .distance = 38.124f},
-                {.id = 193, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 198,
-            .neighbors = {
-                {.id = 197, .distance = 23.046f},
-                {.id = 196, .distance = 28.171f},
-                {.id = 199, .distance = 28.796f},
-                {.id = 68, .distance = 29.876f},
-                {.id = 195, .distance = 38.536f},
-                {.id = 70, .distance = 40.900f},
-                {.id = 67, .distance = 41.797f}
-            }
-        },
-        {
-            .point_id = 199,
-            .neighbors = {
-                {.id = 200, .distance = 28.739f},
-                {.id = 198, .distance = 28.796f},
-                {.id = 67, .distance = 29.681f},
-                {.id = 197, .distance = 38.124f},
-                {.id = 155, .distance = 40.058f},
-                {.id = 154, .distance = 40.759f},
-                {.id = 68, .distance = 41.259f}
-            }
-        },
-        {
-            .point_id = 200,
-            .neighbors = {
-                {.id = 199, .distance = 28.739f},
-                {.id = 201, .distance = 28.996f},
-                {.id = 66, .distance = 29.791f},
-                {.id = 155, .distance = 34.006f},
-                {.id = 67, .distance = 41.088f},
-                {.id = 65, .distance = 41.139f},
-                {.id = 156, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 201,
-            .neighbors = {
-                {.id = 202, .distance = 28.539f},
-                {.id = 200, .distance = 28.996f},
-                {.id = 65, .distance = 29.681f},
-                {.id = 156, .distance = 35.652f},
-                {.id = 203, .distance = 38.072f},
-                {.id = 64, .distance = 41.093f},
-                {.id = 66, .distance = 41.276f}
-            }
-        },
-        {
-            .point_id = 202,
-            .neighbors = {
-                {.id = 203, .distance = 23.229f},
-                {.id = 201, .distance = 28.539f},
-                {.id = 204, .distance = 29.175f},
-                {.id = 64, .distance = 29.699f},
-                {.id = 205, .distance = 38.795f},
-                {.id = 65, .distance = 41.301f},
-                {.id = 62, .distance = 41.538f}
-            }
-        },
-        {
-            .point_id = 203,
-            .neighbors = {
-                {.id = 202, .distance = 23.229f},
-                {.id = 157, .distance = 24.656f},
-                {.id = 205, .distance = 27.373f},
-                {.id = 156, .distance = 35.973f},
-                {.id = 204, .distance = 36.131f},
-                {.id = 201, .distance = 38.072f},
-                {.id = 158, .distance = 47.750f}
-            }
-        },
-        {
-            .point_id = 204,
-            .neighbors = {
-                {.id = 205, .distance = 26.133f},
-                {.id = 62, .distance = 29.050f},
-                {.id = 202, .distance = 29.175f},
-                {.id = 206, .distance = 30.723f},
-                {.id = 203, .distance = 36.131f},
-                {.id = 64, .distance = 41.569f},
-                {.id = 61, .distance = 52.210f}
-            }
-        },
-        {
-            .point_id = 205,
-            .neighbors = {
-                {.id = 206, .distance = 25.813f},
-                {.id = 204, .distance = 26.133f},
-                {.id = 203, .distance = 27.373f},
-                {.id = 158, .distance = 27.856f},
-                {.id = 157, .distance = 38.273f},
-                {.id = 202, .distance = 38.795f},
-                {.id = 207, .distance = 39.458f}
-            }
-        },
-        {
-            .point_id = 206,
-            .neighbors = {
-                {.id = 205, .distance = 25.813f},
-                {.id = 207, .distance = 29.479f},
-                {.id = 308, .distance = 29.971f},
-                {.id = 204, .distance = 30.723f},
-                {.id = 158, .distance = 35.561f},
-                {.id = 306, .distance = 43.139f},
-                {.id = 62, .distance = 51.839f}
-            }
-        },
-        {
-            .point_id = 207,
-            .neighbors = {
-                {.id = 158, .distance = 22.863f},
-                {.id = 159, .distance = 28.096f},
-                {.id = 206, .distance = 29.479f},
-                {.id = 306, .distance = 30.294f},
-                {.id = 205, .distance = 39.458f},
-                {.id = 308, .distance = 40.925f},
-                {.id = 305, .distance = 42.556f}
-            }
-        },
-        {
-            .point_id = 208,
-            .neighbors = {
-                {.id = 209, .distance = 25.256f},
-                {.id = 211, .distance = 25.653f},
-                {.id = 210, .distance = 25.660f},
-                {.id = 213, .distance = 26.237f},
-                {.id = 212, .distance = 26.780f},
-                {.id = 215, .distance = 53.251f},
-                {.id = 219, .distance = 53.584f}
-            }
-        },
-        {
-            .point_id = 209,
-            .neighbors = {
-                {.id = 208, .distance = 25.256f},
-                {.id = 215, .distance = 27.996f},
-                {.id = 213, .distance = 30.406f},
-                {.id = 210, .distance = 30.745f},
-                {.id = 216, .distance = 36.902f},
-                {.id = 214, .distance = 36.902f},
-                {.id = 211, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 210,
-            .neighbors = {
-                {.id = 208, .distance = 25.660f},
-                {.id = 217, .distance = 28.138f},
-                {.id = 211, .distance = 30.016f},
-                {.id = 209, .distance = 30.745f},
-                {.id = 218, .distance = 35.779f},
-                {.id = 216, .distance = 37.730f},
-                {.id = 212, .distance = 49.623f}
-            }
-        },
-        {
-            .point_id = 211,
-            .neighbors = {
-                {.id = 208, .distance = 25.653f},
-                {.id = 219, .distance = 27.950f},
-                {.id = 210, .distance = 30.016f},
-                {.id = 212, .distance = 30.334f},
-                {.id = 220, .distance = 36.663f},
-                {.id = 218, .distance = 36.917f},
-                {.id = 209, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 212,
-            .neighbors = {
-                {.id = 208, .distance = 26.780f},
-                {.id = 221, .distance = 28.148f},
-                {.id = 211, .distance = 30.334f},
-                {.id = 213, .distance = 30.829f},
-                {.id = 220, .distance = 36.041f},
-                {.id = 222, .distance = 36.581f},
-                {.id = 209, .distance = 49.415f}
-            }
-        },
-        {
-            .point_id = 213,
-            .neighbors = {
-                {.id = 208, .distance = 26.237f},
-                {.id = 223, .distance = 28.784f},
-                {.id = 209, .distance = 30.406f},
-                {.id = 212, .distance = 30.829f},
-                {.id = 214, .distance = 36.136f},
-                {.id = 222, .distance = 36.663f},
-                {.id = 211, .distance = 49.028f}
-            }
-        },
-        {
-            .point_id = 214,
-            .neighbors = {
-                {.id = 225, .distance = 29.943f},
-                {.id = 223, .distance = 32.709f},
-                {.id = 215, .distance = 33.241f},
-                {.id = 224, .distance = 35.999f},
-                {.id = 213, .distance = 36.136f},
-                {.id = 209, .distance = 36.902f},
-                {.id = 226, .distance = 43.146f}
-            }
-        },
-        {
-            .point_id = 215,
-            .neighbors = {
-                {.id = 209, .distance = 27.996f},
-                {.id = 226, .distance = 31.091f},
-                {.id = 214, .distance = 33.241f},
-                {.id = 216, .distance = 33.489f},
-                {.id = 227, .distance = 33.997f},
-                {.id = 225, .distance = 46.465f},
-                {.id = 228, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 216,
-            .neighbors = {
-                {.id = 228, .distance = 28.795f},
-                {.id = 215, .distance = 33.489f},
-                {.id = 217, .distance = 34.526f},
-                {.id = 209, .distance = 36.902f},
-                {.id = 210, .distance = 37.730f},
-                {.id = 227, .distance = 39.001f},
-                {.id = 229, .distance = 39.043f}
-            }
-        },
-        {
-            .point_id = 217,
-            .neighbors = {
-                {.id = 210, .distance = 28.138f},
-                {.id = 230, .distance = 30.119f},
-                {.id = 218, .distance = 32.862f},
-                {.id = 229, .distance = 33.326f},
-                {.id = 216, .distance = 34.526f},
-                {.id = 231, .distance = 46.032f},
-                {.id = 228, .distance = 51.953f}
-            }
-        },
-        {
-            .point_id = 218,
-            .neighbors = {
-                {.id = 231, .distance = 29.271f},
-                {.id = 217, .distance = 32.862f},
-                {.id = 219, .distance = 32.910f},
-                {.id = 232, .distance = 35.475f},
-                {.id = 210, .distance = 35.779f},
-                {.id = 211, .distance = 36.917f},
-                {.id = 230, .distance = 42.036f}
-            }
-        },
-        {
-            .point_id = 219,
-            .neighbors = {
-                {.id = 211, .distance = 27.950f},
-                {.id = 233, .distance = 30.515f},
-                {.id = 218, .distance = 32.910f},
-                {.id = 220, .distance = 34.288f},
-                {.id = 232, .distance = 35.680f},
-                {.id = 234, .distance = 43.747f},
-                {.id = 210, .distance = 50.881f}
-            }
-        },
-        {
-            .point_id = 220,
-            .neighbors = {
-                {.id = 234, .distance = 30.713f},
-                {.id = 235, .distance = 32.961f},
-                {.id = 219, .distance = 34.288f},
-                {.id = 221, .distance = 34.333f},
-                {.id = 212, .distance = 36.041f},
-                {.id = 211, .distance = 36.663f},
-                {.id = 233, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 221,
-            .neighbors = {
-                {.id = 212, .distance = 28.148f},
-                {.id = 236, .distance = 28.795f},
-                {.id = 222, .distance = 32.474f},
-                {.id = 220, .distance = 34.333f},
-                {.id = 237, .distance = 37.853f},
-                {.id = 235, .distance = 39.529f},
-                {.id = 213, .distance = 52.029f}
-            }
-        },
-        {
-            .point_id = 222,
-            .neighbors = {
-                {.id = 238, .distance = 30.978f},
-                {.id = 221, .distance = 32.474f},
-                {.id = 237, .distance = 33.378f},
-                {.id = 223, .distance = 34.135f},
-                {.id = 212, .distance = 36.581f},
-                {.id = 213, .distance = 36.663f},
-                {.id = 239, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 223,
-            .neighbors = {
-                {.id = 213, .distance = 28.784f},
-                {.id = 239, .distance = 29.314f},
-                {.id = 214, .distance = 32.709f},
-                {.id = 222, .distance = 34.135f},
-                {.id = 224, .distance = 35.428f},
-                {.id = 238, .distance = 42.934f},
-                {.id = 209, .distance = 52.730f}
-            }
-        },
-        {
-            .point_id = 224,
-            .neighbors = {
-                {.id = 241, .distance = 31.937f},
-                {.id = 240, .distance = 31.964f},
-                {.id = 239, .distance = 32.088f},
-                {.id = 225, .distance = 32.704f},
-                {.id = 223, .distance = 35.428f},
-                {.id = 214, .distance = 35.999f},
-                {.id = 261, .distance = 49.921f}
-            }
-        },
-        {
-            .point_id = 225,
-            .neighbors = {
-                {.id = 242, .distance = 29.419f},
-                {.id = 214, .distance = 29.943f},
-                {.id = 226, .distance = 32.468f},
-                {.id = 224, .distance = 32.704f},
-                {.id = 241, .distance = 37.491f},
-                {.id = 243, .distance = 41.947f},
-                {.id = 215, .distance = 46.465f}
-            }
-        },
-        {
-            .point_id = 226,
-            .neighbors = {
-                {.id = 243, .distance = 29.848f},
-                {.id = 215, .distance = 31.091f},
-                {.id = 227, .distance = 31.917f},
-                {.id = 225, .distance = 32.468f},
-                {.id = 244, .distance = 35.426f},
-                {.id = 214, .distance = 43.146f},
-                {.id = 242, .distance = 44.568f}
-            }
-        },
-        {
-            .point_id = 227,
-            .neighbors = {
-                {.id = 245, .distance = 30.775f},
-                {.id = 226, .distance = 31.917f},
-                {.id = 228, .distance = 32.089f},
-                {.id = 244, .distance = 33.457f},
-                {.id = 215, .distance = 33.997f},
-                {.id = 216, .distance = 39.001f},
-                {.id = 246, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 228,
-            .neighbors = {
-                {.id = 246, .distance = 28.126f},
-                {.id = 216, .distance = 28.795f},
-                {.id = 227, .distance = 32.089f},
-                {.id = 229, .distance = 33.350f},
-                {.id = 245, .distance = 38.606f},
-                {.id = 247, .distance = 40.686f},
-                {.id = 215, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 229,
-            .neighbors = {
-                {.id = 247, .distance = 30.745f},
-                {.id = 230, .distance = 32.585f},
-                {.id = 217, .distance = 33.326f},
-                {.id = 228, .distance = 33.350f},
-                {.id = 248, .distance = 33.990f},
-                {.id = 216, .distance = 39.043f},
-                {.id = 246, .distance = 47.230f}
-            }
-        },
-        {
-            .point_id = 230,
-            .neighbors = {
-                {.id = 249, .distance = 30.088f},
-                {.id = 217, .distance = 30.119f},
-                {.id = 231, .distance = 32.298f},
-                {.id = 229, .distance = 32.585f},
-                {.id = 248, .distance = 35.628f},
-                {.id = 218, .distance = 42.036f},
-                {.id = 250, .distance = 44.864f}
-            }
-        },
-        {
-            .point_id = 231,
-            .neighbors = {
-                {.id = 250, .distance = 28.726f},
-                {.id = 218, .distance = 29.271f},
-                {.id = 232, .distance = 31.916f},
-                {.id = 230, .distance = 32.298f},
-                {.id = 251, .distance = 37.444f},
-                {.id = 249, .distance = 42.067f},
-                {.id = 217, .distance = 46.032f}
-            }
-        },
-        {
-            .point_id = 232,
-            .neighbors = {
-                {.id = 251, .distance = 31.889f},
-                {.id = 231, .distance = 31.916f},
-                {.id = 252, .distance = 32.458f},
-                {.id = 233, .distance = 32.605f},
-                {.id = 218, .distance = 35.475f},
-                {.id = 219, .distance = 35.680f},
-                {.id = 250, .distance = 49.358f}
-            }
-        },
-        {
-            .point_id = 233,
-            .neighbors = {
-                {.id = 253, .distance = 28.557f},
-                {.id = 219, .distance = 30.515f},
-                {.id = 232, .distance = 32.605f},
-                {.id = 234, .distance = 33.386f},
-                {.id = 252, .distance = 36.707f},
-                {.id = 254, .distance = 42.276f},
-                {.id = 220, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 234,
-            .neighbors = {
-                {.id = 254, .distance = 29.283f},
-                {.id = 220, .distance = 30.713f},
-                {.id = 235, .distance = 32.395f},
-                {.id = 233, .distance = 33.386f},
-                {.id = 255, .distance = 35.383f},
-                {.id = 219, .distance = 43.747f},
-                {.id = 253, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 235,
-            .neighbors = {
-                {.id = 256, .distance = 30.492f},
-                {.id = 234, .distance = 32.395f},
-                {.id = 236, .distance = 32.492f},
-                {.id = 220, .distance = 32.961f},
-                {.id = 255, .distance = 33.774f},
-                {.id = 221, .distance = 39.529f},
-                {.id = 257, .distance = 46.947f}
-            }
-        },
-        {
-            .point_id = 236,
-            .neighbors = {
-                {.id = 221, .distance = 28.795f},
-                {.id = 257, .distance = 28.796f},
-                {.id = 237, .distance = 31.301f},
-                {.id = 235, .distance = 32.492f},
-                {.id = 258, .distance = 39.130f},
-                {.id = 256, .distance = 39.658f},
-                {.id = 222, .distance = 50.236f}
-            }
-        },
-        {
-            .point_id = 237,
-            .neighbors = {
-                {.id = 258, .distance = 30.076f},
-                {.id = 236, .distance = 31.301f},
-                {.id = 238, .distance = 33.324f},
-                {.id = 222, .distance = 33.378f},
-                {.id = 259, .distance = 33.386f},
-                {.id = 221, .distance = 37.853f},
-                {.id = 257, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 238,
-            .neighbors = {
-                {.id = 260, .distance = 29.653f},
-                {.id = 222, .distance = 30.978f},
-                {.id = 239, .distance = 32.852f},
-                {.id = 237, .distance = 33.324f},
-                {.id = 259, .distance = 35.446f},
-                {.id = 223, .distance = 42.934f},
-                {.id = 261, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 239,
-            .neighbors = {
-                {.id = 261, .distance = 28.776f},
-                {.id = 223, .distance = 29.314f},
-                {.id = 224, .distance = 32.088f},
-                {.id = 238, .distance = 32.852f},
-                {.id = 240, .distance = 36.954f},
-                {.id = 260, .distance = 42.498f},
-                {.id = 222, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 240,
-            .neighbors = {
-                {.id = 262, .distance = 23.617f},
-                {.id = 261, .distance = 31.442f},
-                {.id = 224, .distance = 31.964f},
-                {.id = 241, .distance = 32.703f},
-                {.id = 239, .distance = 36.954f},
-                {.id = 309, .distance = 41.259f},
-                {.id = 311, .distance = 45.103f}
-            }
-        },
-        {
-            .point_id = 241,
-            .neighbors = {
-                {.id = 224, .distance = 31.937f},
-                {.id = 240, .distance = 32.703f},
-                {.id = 242, .distance = 32.725f},
-                {.id = 263, .distance = 36.068f},
-                {.id = 225, .distance = 37.491f},
-                {.id = 264, .distance = 39.068f},
-                {.id = 262, .distance = 41.895f}
-            }
-        },
-        {
-            .point_id = 242,
-            .neighbors = {
-                {.id = 225, .distance = 29.419f},
-                {.id = 243, .distance = 30.638f},
-                {.id = 241, .distance = 32.725f},
-                {.id = 264, .distance = 35.794f},
-                {.id = 265, .distance = 36.665f},
-                {.id = 226, .distance = 44.568f},
-                {.id = 266, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 243,
-            .neighbors = {
-                {.id = 266, .distance = 24.191f},
-                {.id = 226, .distance = 29.848f},
-                {.id = 242, .distance = 30.638f},
-                {.id = 244, .distance = 31.516f},
-                {.id = 225, .distance = 41.947f},
-                {.id = 267, .distance = 44.167f},
-                {.id = 265, .distance = 44.460f}
-            }
-        },
-        {
-            .point_id = 244,
-            .neighbors = {
-                {.id = 271, .distance = 27.519f},
-                {.id = 243, .distance = 31.516f},
-                {.id = 245, .distance = 33.096f},
-                {.id = 227, .distance = 33.457f},
-                {.id = 226, .distance = 35.426f},
-                {.id = 268, .distance = 35.506f},
-                {.id = 266, .distance = 36.051f}
-            }
-        },
-        {
-            .point_id = 245,
-            .neighbors = {
-                {.id = 227, .distance = 30.775f},
-                {.id = 246, .distance = 30.943f},
-                {.id = 271, .distance = 31.347f},
-                {.id = 244, .distance = 33.096f},
-                {.id = 273, .distance = 37.393f},
-                {.id = 228, .distance = 38.606f},
-                {.id = 272, .distance = 45.102f}
-            }
-        },
-        {
-            .point_id = 246,
-            .neighbors = {
-                {.id = 228, .distance = 28.126f},
-                {.id = 245, .distance = 30.943f},
-                {.id = 247, .distance = 32.322f},
-                {.id = 274, .distance = 33.115f},
-                {.id = 273, .distance = 43.474f},
-                {.id = 275, .distance = 44.048f},
-                {.id = 227, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 247,
-            .neighbors = {
-                {.id = 277, .distance = 30.540f},
-                {.id = 229, .distance = 30.745f},
-                {.id = 246, .distance = 32.322f},
-                {.id = 248, .distance = 32.441f},
-                {.id = 275, .distance = 37.153f},
-                {.id = 228, .distance = 40.686f},
-                {.id = 276, .distance = 45.279f}
-            }
-        },
-        {
-            .point_id = 248,
-            .neighbors = {
-                {.id = 277, .distance = 27.373f},
-                {.id = 249, .distance = 31.563f},
-                {.id = 247, .distance = 32.441f},
-                {.id = 229, .distance = 33.990f},
-                {.id = 279, .distance = 35.618f},
-                {.id = 230, .distance = 35.628f},
-                {.id = 281, .distance = 36.566f}
-            }
-        },
-        {
-            .point_id = 249,
-            .neighbors = {
-                {.id = 281, .distance = 24.293f},
-                {.id = 230, .distance = 30.088f},
-                {.id = 248, .distance = 31.563f},
-                {.id = 250, .distance = 31.793f},
-                {.id = 231, .distance = 42.067f},
-                {.id = 282, .distance = 43.775f},
-                {.id = 283, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 250,
-            .neighbors = {
-                {.id = 231, .distance = 28.726f},
-                {.id = 251, .distance = 31.427f},
-                {.id = 249, .distance = 31.793f},
-                {.id = 284, .distance = 35.922f},
-                {.id = 283, .distance = 37.333f},
-                {.id = 230, .distance = 44.864f},
-                {.id = 281, .distance = 47.704f}
-            }
-        },
-        {
-            .point_id = 251,
-            .neighbors = {
-                {.id = 250, .distance = 31.427f},
-                {.id = 232, .distance = 31.889f},
-                {.id = 252, .distance = 32.342f},
-                {.id = 285, .distance = 35.562f},
-                {.id = 231, .distance = 37.444f},
-                {.id = 284, .distance = 39.243f},
-                {.id = 287, .distance = 41.982f}
-            }
-        },
-        {
-            .point_id = 252,
-            .neighbors = {
-                {.id = 287, .distance = 23.803f},
-                {.id = 253, .distance = 31.693f},
-                {.id = 251, .distance = 32.342f},
-                {.id = 232, .distance = 32.458f},
-                {.id = 233, .distance = 36.707f},
-                {.id = 289, .distance = 41.333f},
-                {.id = 286, .distance = 44.974f}
-            }
-        },
-        {
-            .point_id = 253,
-            .neighbors = {
-                {.id = 291, .distance = 24.410f},
-                {.id = 233, .distance = 28.557f},
-                {.id = 252, .distance = 31.693f},
-                {.id = 254, .distance = 32.138f},
-                {.id = 289, .distance = 38.124f},
-                {.id = 287, .distance = 43.096f},
-                {.id = 234, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 254,
-            .neighbors = {
-                {.id = 234, .distance = 29.283f},
-                {.id = 255, .distance = 31.589f},
-                {.id = 253, .distance = 32.138f},
-                {.id = 293, .distance = 36.174f},
-                {.id = 291, .distance = 36.927f},
-                {.id = 233, .distance = 42.276f},
-                {.id = 294, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 255,
-            .neighbors = {
-                {.id = 254, .distance = 31.589f},
-                {.id = 256, .distance = 32.185f},
-                {.id = 294, .distance = 33.528f},
-                {.id = 235, .distance = 33.774f},
-                {.id = 234, .distance = 35.383f},
-                {.id = 295, .distance = 39.292f},
-                {.id = 293, .distance = 48.151f}
-            }
-        },
-        {
-            .point_id = 256,
-            .neighbors = {
-                {.id = 297, .distance = 26.800f},
-                {.id = 235, .distance = 30.492f},
-                {.id = 257, .distance = 31.085f},
-                {.id = 255, .distance = 32.185f},
-                {.id = 236, .distance = 39.658f},
-                {.id = 295, .distance = 40.843f},
-                {.id = 296, .distance = 44.297f}
-            }
-        },
-        {
-            .point_id = 257,
-            .neighbors = {
-                {.id = 236, .distance = 28.796f},
-                {.id = 256, .distance = 31.085f},
-                {.id = 297, .distance = 31.165f},
-                {.id = 258, .distance = 31.748f},
-                {.id = 301, .distance = 32.025f},
-                {.id = 299, .distance = 35.484f},
-                {.id = 237, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 258,
-            .neighbors = {
-                {.id = 301, .distance = 26.974f},
-                {.id = 237, .distance = 30.076f},
-                {.id = 259, .distance = 31.574f},
-                {.id = 257, .distance = 31.748f},
-                {.id = 236, .distance = 39.130f},
-                {.id = 303, .distance = 40.759f},
-                {.id = 302, .distance = 44.255f}
-            }
-        },
-        {
-            .point_id = 259,
-            .neighbors = {
-                {.id = 258, .distance = 31.574f},
-                {.id = 260, .distance = 32.495f},
-                {.id = 237, .distance = 33.386f},
-                {.id = 304, .distance = 34.006f},
-                {.id = 238, .distance = 35.446f},
-                {.id = 303, .distance = 40.058f},
-                {.id = 305, .distance = 48.765f}
-            }
-        },
-        {
-            .point_id = 260,
-            .neighbors = {
-                {.id = 238, .distance = 29.653f},
-                {.id = 261, .distance = 31.761f},
-                {.id = 259, .distance = 32.495f},
-                {.id = 305, .distance = 35.652f},
-                {.id = 307, .distance = 35.973f},
-                {.id = 239, .distance = 42.498f},
-                {.id = 304, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 261,
-            .neighbors = {
-                {.id = 307, .distance = 24.656f},
-                {.id = 239, .distance = 28.776f},
-                {.id = 240, .distance = 31.442f},
-                {.id = 260, .distance = 31.761f},
-                {.id = 309, .distance = 38.273f},
-                {.id = 262, .distance = 43.129f},
-                {.id = 238, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 262,
-            .neighbors = {
-                {.id = 311, .distance = 22.863f},
-                {.id = 240, .distance = 23.617f},
-                {.id = 309, .distance = 27.856f},
-                {.id = 310, .distance = 35.561f},
-                {.id = 263, .distance = 37.917f},
-                {.id = 241, .distance = 41.895f},
-                {.id = 261, .distance = 43.129f}
-            }
-        },
-        {
-            .point_id = 263,
-            .neighbors = {
-                {.id = 311, .distance = 28.096f},
-                {.id = 264, .distance = 29.153f},
-                {.id = 57, .distance = 30.837f},
-                {.id = 241, .distance = 36.068f},
-                {.id = 262, .distance = 37.917f},
-                {.id = 59, .distance = 41.896f},
-                {.id = 56, .distance = 42.604f}
-            }
-        },
-        {
-            .point_id = 264,
-            .neighbors = {
-                {.id = 265, .distance = 28.265f},
-                {.id = 263, .distance = 29.153f},
-                {.id = 56, .distance = 31.737f},
-                {.id = 242, .distance = 35.794f},
-                {.id = 241, .distance = 39.068f},
-                {.id = 57, .distance = 42.312f},
-                {.id = 55, .distance = 42.604f}
-            }
-        },
-        {
-            .point_id = 265,
-            .neighbors = {
-                {.id = 264, .distance = 28.265f},
-                {.id = 267, .distance = 28.989f},
-                {.id = 55, .distance = 30.837f},
-                {.id = 242, .distance = 36.665f},
-                {.id = 266, .distance = 38.712f},
-                {.id = 103, .distance = 42.288f},
-                {.id = 56, .distance = 42.312f}
-            }
-        },
-        {
-            .point_id = 266,
-            .neighbors = {
-                {.id = 267, .distance = 23.607f},
-                {.id = 243, .distance = 24.191f},
-                {.id = 268, .distance = 27.455f},
-                {.id = 269, .distance = 35.536f},
-                {.id = 244, .distance = 36.051f},
-                {.id = 265, .distance = 38.712f},
-                {.id = 242, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 267,
-            .neighbors = {
-                {.id = 266, .distance = 23.607f},
-                {.id = 269, .distance = 28.500f},
-                {.id = 265, .distance = 28.989f},
-                {.id = 103, .distance = 31.044f},
-                {.id = 268, .distance = 38.998f},
-                {.id = 55, .distance = 41.896f},
-                {.id = 102, .distance = 42.722f}
-            }
-        },
-        {
-            .point_id = 268,
-            .neighbors = {
-                {.id = 269, .distance = 25.823f},
-                {.id = 270, .distance = 26.007f},
-                {.id = 271, .distance = 27.304f},
-                {.id = 266, .distance = 27.455f},
-                {.id = 244, .distance = 35.506f},
-                {.id = 267, .distance = 38.998f},
-                {.id = 272, .distance = 39.242f}
-            }
-        },
-        {
-            .point_id = 269,
-            .neighbors = {
-                {.id = 268, .distance = 25.823f},
-                {.id = 267, .distance = 28.500f},
-                {.id = 270, .distance = 30.900f},
-                {.id = 102, .distance = 31.323f},
-                {.id = 266, .distance = 35.536f},
-                {.id = 103, .distance = 42.426f},
-                {.id = 271, .distance = 52.152f}
-            }
-        },
-        {
-            .point_id = 270,
-            .neighbors = {
-                {.id = 268, .distance = 26.007f},
-                {.id = 412, .distance = 29.051f},
-                {.id = 272, .distance = 29.614f},
-                {.id = 269, .distance = 30.900f},
-                {.id = 271, .distance = 35.963f},
-                {.id = 410, .distance = 41.540f},
-                {.id = 414, .distance = 51.840f}
-            }
-        },
-        {
-            .point_id = 271,
-            .neighbors = {
-                {.id = 272, .distance = 23.404f},
-                {.id = 268, .distance = 27.304f},
-                {.id = 244, .distance = 27.519f},
-                {.id = 245, .distance = 31.347f},
-                {.id = 270, .distance = 35.963f},
-                {.id = 273, .distance = 38.924f},
-                {.id = 266, .distance = 47.034f}
-            }
-        },
-        {
-            .point_id = 272,
-            .neighbors = {
-                {.id = 271, .distance = 23.404f},
-                {.id = 273, .distance = 28.584f},
-                {.id = 270, .distance = 29.614f},
-                {.id = 410, .distance = 29.702f},
-                {.id = 268, .distance = 39.242f},
-                {.id = 409, .distance = 41.095f},
-                {.id = 412, .distance = 41.571f}
-            }
-        },
-        {
-            .point_id = 273,
-            .neighbors = {
-                {.id = 274, .distance = 28.069f},
-                {.id = 272, .distance = 28.584f},
-                {.id = 409, .distance = 29.685f},
-                {.id = 245, .distance = 37.393f},
-                {.id = 271, .distance = 38.924f},
-                {.id = 408, .distance = 41.143f},
-                {.id = 410, .distance = 41.304f}
-            }
-        },
-        {
-            .point_id = 274,
-            .neighbors = {
-                {.id = 273, .distance = 28.069f},
-                {.id = 275, .distance = 28.840f},
-                {.id = 408, .distance = 29.797f},
-                {.id = 246, .distance = 33.115f},
-                {.id = 409, .distance = 41.280f},
-                {.id = 407, .distance = 41.692f},
-                {.id = 245, .distance = 48.228f}
-            }
-        },
-        {
-            .point_id = 275,
-            .neighbors = {
-                {.id = 274, .distance = 28.840f},
-                {.id = 276, .distance = 29.097f},
-                {.id = 407, .distance = 29.688f},
-                {.id = 247, .distance = 37.153f},
-                {.id = 277, .distance = 38.371f},
-                {.id = 408, .distance = 41.093f},
-                {.id = 406, .distance = 41.803f}
-            }
-        },
-        {
-            .point_id = 276,
-            .neighbors = {
-                {.id = 277, .distance = 23.468f},
-                {.id = 278, .distance = 28.068f},
-                {.id = 275, .distance = 29.097f},
-                {.id = 406, .distance = 29.884f},
-                {.id = 279, .distance = 37.859f},
-                {.id = 404, .distance = 41.024f},
-                {.id = 407, .distance = 41.264f}
-            }
-        },
-        {
-            .point_id = 277,
-            .neighbors = {
-                {.id = 276, .distance = 23.468f},
-                {.id = 279, .distance = 26.995f},
-                {.id = 248, .distance = 27.373f},
-                {.id = 247, .distance = 30.540f},
-                {.id = 278, .distance = 35.584f},
-                {.id = 275, .distance = 38.371f},
-                {.id = 281, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 278,
-            .neighbors = {
-                {.id = 279, .distance = 25.235f},
-                {.id = 276, .distance = 28.068f},
-                {.id = 404, .distance = 29.698f},
-                {.id = 280, .distance = 31.314f},
-                {.id = 277, .distance = 35.584f},
-                {.id = 406, .distance = 40.907f},
-                {.id = 1026, .distance = 50.621f}
-            }
-        },
-        {
-            .point_id = 279,
-            .neighbors = {
-                {.id = 278, .distance = 25.235f},
-                {.id = 280, .distance = 25.959f},
-                {.id = 277, .distance = 26.995f},
-                {.id = 281, .distance = 28.280f},
-                {.id = 248, .distance = 35.618f},
-                {.id = 276, .distance = 37.859f},
-                {.id = 282, .distance = 39.348f}
-            }
-        },
-        {
-            .point_id = 280,
-            .neighbors = {
-                {.id = 279, .distance = 25.959f},
-                {.id = 1026, .distance = 27.690f},
-                {.id = 282, .distance = 28.175f},
-                {.id = 278, .distance = 31.314f},
-                {.id = 281, .distance = 35.099f},
-                {.id = 1024, .distance = 39.154f},
-                {.id = 1027, .distance = 50.900f}
-            }
-        },
-        {
-            .point_id = 281,
-            .neighbors = {
-                {.id = 282, .distance = 22.858f},
-                {.id = 249, .distance = 24.293f},
-                {.id = 279, .distance = 28.280f},
-                {.id = 280, .distance = 35.099f},
-                {.id = 248, .distance = 36.566f},
-                {.id = 283, .distance = 37.718f},
-                {.id = 277, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 282,
-            .neighbors = {
-                {.id = 281, .distance = 22.858f},
-                {.id = 1024, .distance = 27.436f},
-                {.id = 280, .distance = 28.175f},
-                {.id = 283, .distance = 28.665f},
-                {.id = 279, .distance = 39.348f},
-                {.id = 1026, .distance = 40.114f},
-                {.id = 1023, .distance = 40.252f}
-            }
-        },
-        {
-            .point_id = 283,
-            .neighbors = {
-                {.id = 1023, .distance = 27.613f},
-                {.id = 282, .distance = 28.665f},
-                {.id = 284, .distance = 28.744f},
-                {.id = 250, .distance = 37.333f},
-                {.id = 281, .distance = 37.718f},
-                {.id = 1022, .distance = 39.855f},
-                {.id = 1024, .distance = 39.947f}
-            }
-        },
-        {
-            .point_id = 284,
-            .neighbors = {
-                {.id = 1022, .distance = 27.498f},
-                {.id = 285, .distance = 28.665f},
-                {.id = 283, .distance = 28.744f},
-                {.id = 250, .distance = 35.922f},
-                {.id = 251, .distance = 39.243f},
-                {.id = 1023, .distance = 39.255f},
-                {.id = 1021, .distance = 39.752f}
-            }
-        },
-        {
-            .point_id = 285,
-            .neighbors = {
-                {.id = 1021, .distance = 27.628f},
-                {.id = 284, .distance = 28.665f},
-                {.id = 286, .distance = 28.989f},
-                {.id = 251, .distance = 35.562f},
-                {.id = 287, .distance = 37.946f},
-                {.id = 1022, .distance = 39.790f},
-                {.id = 1020, .distance = 39.805f}
-            }
-        },
-        {
-            .point_id = 286,
-            .neighbors = {
-                {.id = 287, .distance = 22.522f},
-                {.id = 1020, .distance = 27.583f},
-                {.id = 288, .distance = 28.989f},
-                {.id = 285, .distance = 28.989f},
-                {.id = 289, .distance = 38.748f},
-                {.id = 1018, .distance = 39.435f},
-                {.id = 1021, .distance = 40.007f}
-            }
-        },
-        {
-            .point_id = 287,
-            .neighbors = {
-                {.id = 286, .distance = 22.522f},
-                {.id = 252, .distance = 23.803f},
-                {.id = 289, .distance = 27.573f},
-                {.id = 288, .distance = 35.430f},
-                {.id = 285, .distance = 37.946f},
-                {.id = 251, .distance = 41.982f},
-                {.id = 253, .distance = 43.096f}
-            }
-        },
-        {
-            .point_id = 288,
-            .neighbors = {
-                {.id = 289, .distance = 25.732f},
-                {.id = 1018, .distance = 27.473f},
-                {.id = 286, .distance = 28.989f},
-                {.id = 290, .distance = 30.699f},
-                {.id = 287, .distance = 35.430f},
-                {.id = 1020, .distance = 40.223f},
-                {.id = 1016, .distance = 49.900f}
-            }
-        },
-        {
-            .point_id = 289,
-            .neighbors = {
-                {.id = 290, .distance = 25.715f},
-                {.id = 288, .distance = 25.732f},
-                {.id = 291, .distance = 27.009f},
-                {.id = 287, .distance = 27.573f},
-                {.id = 253, .distance = 38.124f},
-                {.id = 286, .distance = 38.748f},
-                {.id = 292, .distance = 38.795f}
-            }
-        },
-        {
-            .point_id = 290,
-            .neighbors = {
-                {.id = 289, .distance = 25.715f},
-                {.id = 932, .distance = 27.990f},
-                {.id = 292, .distance = 28.587f},
-                {.id = 288, .distance = 30.699f},
-                {.id = 291, .distance = 35.180f},
-                {.id = 930, .distance = 41.739f},
-                {.id = 934, .distance = 50.403f}
-            }
-        },
-        {
-            .point_id = 291,
-            .neighbors = {
-                {.id = 292, .distance = 23.318f},
-                {.id = 253, .distance = 24.410f},
-                {.id = 289, .distance = 27.009f},
-                {.id = 290, .distance = 35.180f},
-                {.id = 254, .distance = 36.927f},
-                {.id = 293, .distance = 38.625f},
-                {.id = 287, .distance = 47.229f}
-            }
-        },
-        {
-            .point_id = 292,
-            .neighbors = {
-                {.id = 291, .distance = 23.318f},
-                {.id = 930, .distance = 28.526f},
-                {.id = 290, .distance = 28.587f},
-                {.id = 293, .distance = 28.648f},
-                {.id = 289, .distance = 38.795f},
-                {.id = 932, .distance = 39.023f},
-                {.id = 929, .distance = 41.888f}
-            }
-        },
-        {
-            .point_id = 293,
-            .neighbors = {
-                {.id = 292, .distance = 28.648f},
-                {.id = 294, .distance = 28.678f},
-                {.id = 929, .distance = 28.720f},
-                {.id = 254, .distance = 36.174f},
-                {.id = 291, .distance = 38.625f},
-                {.id = 930, .distance = 38.975f},
-                {.id = 928, .distance = 42.065f}
-            }
-        },
-        {
-            .point_id = 294,
-            .neighbors = {
-                {.id = 295, .distance = 28.019f},
-                {.id = 928, .distance = 28.593f},
-                {.id = 293, .distance = 28.678f},
-                {.id = 255, .distance = 33.528f},
-                {.id = 929, .distance = 39.193f},
-                {.id = 927, .distance = 42.010f},
-                {.id = 254, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 295,
-            .neighbors = {
-                {.id = 294, .distance = 28.019f},
-                {.id = 927, .distance = 28.538f},
-                {.id = 296, .distance = 29.666f},
-                {.id = 928, .distance = 38.440f},
-                {.id = 297, .distance = 39.143f},
-                {.id = 255, .distance = 39.292f},
-                {.id = 256, .distance = 40.843f}
-            }
-        },
-        {
-            .point_id = 296,
-            .neighbors = {
-                {.id = 297, .distance = 23.574f},
-                {.id = 926, .distance = 28.586f},
-                {.id = 298, .distance = 28.796f},
-                {.id = 295, .distance = 29.666f},
-                {.id = 299, .distance = 38.536f},
-                {.id = 927, .distance = 38.933f},
-                {.id = 924, .distance = 41.429f}
-            }
-        },
-        {
-            .point_id = 297,
-            .neighbors = {
-                {.id = 296, .distance = 23.574f},
-                {.id = 256, .distance = 26.800f},
-                {.id = 299, .distance = 27.295f},
-                {.id = 257, .distance = 31.165f},
-                {.id = 298, .distance = 35.726f},
-                {.id = 295, .distance = 39.143f},
-                {.id = 301, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 298,
-            .neighbors = {
-                {.id = 299, .distance = 25.236f},
-                {.id = 924, .distance = 28.551f},
-                {.id = 296, .distance = 28.796f},
-                {.id = 300, .distance = 30.642f},
-                {.id = 297, .distance = 35.726f},
-                {.id = 926, .distance = 39.222f},
-                {.id = 301, .distance = 51.793f}
-            }
-        },
-        {
-            .point_id = 299,
-            .neighbors = {
-                {.id = 298, .distance = 25.236f},
-                {.id = 300, .distance = 25.701f},
-                {.id = 297, .distance = 27.295f},
-                {.id = 301, .distance = 27.601f},
-                {.id = 257, .distance = 35.484f},
-                {.id = 296, .distance = 38.536f},
-                {.id = 302, .distance = 38.536f}
-            }
-        },
-        {
-            .point_id = 300,
-            .neighbors = {
-                {.id = 299, .distance = 25.701f},
-                {.id = 302, .distance = 28.171f},
-                {.id = 165, .distance = 30.395f},
-                {.id = 298, .distance = 30.642f},
-                {.id = 301, .distance = 35.416f},
-                {.id = 163, .distance = 42.490f},
-                {.id = 924, .distance = 50.454f}
-            }
-        },
-        {
-            .point_id = 301,
-            .neighbors = {
-                {.id = 302, .distance = 23.046f},
-                {.id = 258, .distance = 26.974f},
-                {.id = 299, .distance = 27.601f},
-                {.id = 257, .distance = 32.025f},
-                {.id = 300, .distance = 35.416f},
-                {.id = 303, .distance = 38.124f},
-                {.id = 297, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 302,
-            .neighbors = {
-                {.id = 301, .distance = 23.046f},
-                {.id = 300, .distance = 28.171f},
-                {.id = 303, .distance = 28.796f},
-                {.id = 163, .distance = 30.411f},
-                {.id = 299, .distance = 38.536f},
-                {.id = 165, .distance = 40.607f},
-                {.id = 161, .distance = 43.166f}
-            }
-        },
-        {
-            .point_id = 303,
-            .neighbors = {
-                {.id = 304, .distance = 28.739f},
-                {.id = 302, .distance = 28.796f},
-                {.id = 161, .distance = 30.177f},
-                {.id = 301, .distance = 38.124f},
-                {.id = 259, .distance = 40.058f},
-                {.id = 163, .distance = 40.517f},
-                {.id = 258, .distance = 40.759f}
-            }
-        },
-        {
-            .point_id = 304,
-            .neighbors = {
-                {.id = 303, .distance = 28.739f},
-                {.id = 305, .distance = 28.996f},
-                {.id = 160, .distance = 30.701f},
-                {.id = 259, .distance = 34.006f},
-                {.id = 161, .distance = 40.393f},
-                {.id = 159, .distance = 42.996f},
-                {.id = 260, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 305,
-            .neighbors = {
-                {.id = 306, .distance = 28.539f},
-                {.id = 304, .distance = 28.996f},
-                {.id = 159, .distance = 30.348f},
-                {.id = 260, .distance = 35.652f},
-                {.id = 307, .distance = 38.072f},
-                {.id = 160, .distance = 41.296f},
-                {.id = 207, .distance = 42.556f}
-            }
-        },
-        {
-            .point_id = 306,
-            .neighbors = {
-                {.id = 307, .distance = 23.229f},
-                {.id = 305, .distance = 28.539f},
-                {.id = 308, .distance = 29.175f},
-                {.id = 207, .distance = 30.294f},
-                {.id = 309, .distance = 38.795f},
-                {.id = 159, .distance = 40.389f},
-                {.id = 206, .distance = 43.139f}
-            }
-        },
-        {
-            .point_id = 307,
-            .neighbors = {
-                {.id = 306, .distance = 23.229f},
-                {.id = 261, .distance = 24.656f},
-                {.id = 309, .distance = 27.373f},
-                {.id = 260, .distance = 35.973f},
-                {.id = 308, .distance = 36.131f},
-                {.id = 305, .distance = 38.072f},
-                {.id = 262, .distance = 47.750f}
-            }
-        },
-        {
-            .point_id = 308,
-            .neighbors = {
-                {.id = 309, .distance = 26.133f},
-                {.id = 306, .distance = 29.175f},
-                {.id = 206, .distance = 29.971f},
-                {.id = 310, .distance = 30.723f},
-                {.id = 307, .distance = 36.131f},
-                {.id = 207, .distance = 40.925f},
-                {.id = 262, .distance = 52.753f}
-            }
-        },
-        {
-            .point_id = 309,
-            .neighbors = {
-                {.id = 310, .distance = 25.813f},
-                {.id = 308, .distance = 26.133f},
-                {.id = 307, .distance = 27.373f},
-                {.id = 262, .distance = 27.856f},
-                {.id = 261, .distance = 38.273f},
-                {.id = 306, .distance = 38.795f},
-                {.id = 311, .distance = 39.458f}
-            }
-        },
-        {
-            .point_id = 310,
-            .neighbors = {
-                {.id = 309, .distance = 25.813f},
-                {.id = 311, .distance = 29.479f},
-                {.id = 308, .distance = 30.723f},
-                {.id = 61, .distance = 31.323f},
-                {.id = 262, .distance = 35.561f},
-                {.id = 59, .distance = 42.722f},
-                {.id = 206, .distance = 51.871f}
-            }
-        },
-        {
-            .point_id = 311,
-            .neighbors = {
-                {.id = 262, .distance = 22.863f},
-                {.id = 263, .distance = 28.096f},
-                {.id = 310, .distance = 29.479f},
-                {.id = 59, .distance = 31.044f},
-                {.id = 309, .distance = 39.458f},
-                {.id = 57, .distance = 42.288f},
-                {.id = 61, .distance = 42.426f}
-            }
-        },
-        {
-            .point_id = 312,
-            .neighbors = {
-                {.id = 313, .distance = 25.256f},
-                {.id = 315, .distance = 25.653f},
-                {.id = 314, .distance = 25.660f},
-                {.id = 317, .distance = 26.237f},
-                {.id = 316, .distance = 26.780f},
-                {.id = 319, .distance = 53.251f},
-                {.id = 323, .distance = 53.584f}
-            }
-        },
-        {
-            .point_id = 313,
-            .neighbors = {
-                {.id = 312, .distance = 25.256f},
-                {.id = 319, .distance = 27.996f},
-                {.id = 317, .distance = 30.406f},
-                {.id = 314, .distance = 30.746f},
-                {.id = 320, .distance = 36.902f},
-                {.id = 318, .distance = 36.902f},
-                {.id = 315, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 314,
-            .neighbors = {
-                {.id = 312, .distance = 25.660f},
-                {.id = 321, .distance = 28.138f},
-                {.id = 315, .distance = 30.016f},
-                {.id = 313, .distance = 30.746f},
-                {.id = 322, .distance = 35.779f},
-                {.id = 320, .distance = 37.730f},
-                {.id = 316, .distance = 49.623f}
-            }
-        },
-        {
-            .point_id = 315,
-            .neighbors = {
-                {.id = 312, .distance = 25.653f},
-                {.id = 323, .distance = 27.950f},
-                {.id = 314, .distance = 30.016f},
-                {.id = 316, .distance = 30.334f},
-                {.id = 324, .distance = 36.663f},
-                {.id = 322, .distance = 36.917f},
-                {.id = 313, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 316,
-            .neighbors = {
-                {.id = 312, .distance = 26.780f},
-                {.id = 325, .distance = 28.148f},
-                {.id = 315, .distance = 30.334f},
-                {.id = 317, .distance = 30.829f},
-                {.id = 324, .distance = 36.041f},
-                {.id = 326, .distance = 36.581f},
-                {.id = 313, .distance = 49.415f}
-            }
-        },
-        {
-            .point_id = 317,
-            .neighbors = {
-                {.id = 312, .distance = 26.237f},
-                {.id = 327, .distance = 28.784f},
-                {.id = 313, .distance = 30.406f},
-                {.id = 316, .distance = 30.829f},
-                {.id = 318, .distance = 36.136f},
-                {.id = 326, .distance = 36.663f},
-                {.id = 315, .distance = 49.028f}
-            }
-        },
-        {
-            .point_id = 318,
-            .neighbors = {
-                {.id = 329, .distance = 29.943f},
-                {.id = 327, .distance = 32.709f},
-                {.id = 319, .distance = 33.241f},
-                {.id = 328, .distance = 35.999f},
-                {.id = 317, .distance = 36.136f},
-                {.id = 313, .distance = 36.902f},
-                {.id = 330, .distance = 43.146f}
-            }
-        },
-        {
-            .point_id = 319,
-            .neighbors = {
-                {.id = 313, .distance = 27.996f},
-                {.id = 330, .distance = 31.091f},
-                {.id = 318, .distance = 33.241f},
-                {.id = 320, .distance = 33.489f},
-                {.id = 331, .distance = 33.997f},
-                {.id = 329, .distance = 46.465f},
-                {.id = 332, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 320,
-            .neighbors = {
-                {.id = 332, .distance = 28.795f},
-                {.id = 319, .distance = 33.489f},
-                {.id = 321, .distance = 34.526f},
-                {.id = 313, .distance = 36.902f},
-                {.id = 314, .distance = 37.730f},
-                {.id = 331, .distance = 39.001f},
-                {.id = 333, .distance = 39.043f}
-            }
-        },
-        {
-            .point_id = 321,
-            .neighbors = {
-                {.id = 314, .distance = 28.138f},
-                {.id = 334, .distance = 30.119f},
-                {.id = 322, .distance = 32.862f},
-                {.id = 333, .distance = 33.326f},
-                {.id = 320, .distance = 34.526f},
-                {.id = 335, .distance = 46.032f},
-                {.id = 332, .distance = 51.953f}
-            }
-        },
-        {
-            .point_id = 322,
-            .neighbors = {
-                {.id = 335, .distance = 29.271f},
-                {.id = 321, .distance = 32.862f},
-                {.id = 323, .distance = 32.910f},
-                {.id = 336, .distance = 35.475f},
-                {.id = 314, .distance = 35.779f},
-                {.id = 315, .distance = 36.917f},
-                {.id = 334, .distance = 42.036f}
-            }
-        },
-        {
-            .point_id = 323,
-            .neighbors = {
-                {.id = 315, .distance = 27.950f},
-                {.id = 337, .distance = 30.515f},
-                {.id = 322, .distance = 32.910f},
-                {.id = 324, .distance = 34.288f},
-                {.id = 336, .distance = 35.680f},
-                {.id = 338, .distance = 43.747f},
-                {.id = 314, .distance = 50.881f}
-            }
-        },
-        {
-            .point_id = 324,
-            .neighbors = {
-                {.id = 338, .distance = 30.713f},
-                {.id = 339, .distance = 32.961f},
-                {.id = 323, .distance = 34.288f},
-                {.id = 325, .distance = 34.333f},
-                {.id = 316, .distance = 36.041f},
-                {.id = 315, .distance = 36.663f},
-                {.id = 337, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 325,
-            .neighbors = {
-                {.id = 316, .distance = 28.148f},
-                {.id = 340, .distance = 28.795f},
-                {.id = 326, .distance = 32.474f},
-                {.id = 324, .distance = 34.333f},
-                {.id = 341, .distance = 37.853f},
-                {.id = 339, .distance = 39.529f},
-                {.id = 317, .distance = 52.029f}
-            }
-        },
-        {
-            .point_id = 326,
-            .neighbors = {
-                {.id = 342, .distance = 30.978f},
-                {.id = 325, .distance = 32.474f},
-                {.id = 341, .distance = 33.378f},
-                {.id = 327, .distance = 34.135f},
-                {.id = 316, .distance = 36.581f},
-                {.id = 317, .distance = 36.663f},
-                {.id = 343, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 327,
-            .neighbors = {
-                {.id = 317, .distance = 28.784f},
-                {.id = 343, .distance = 29.314f},
-                {.id = 318, .distance = 32.709f},
-                {.id = 326, .distance = 34.135f},
-                {.id = 328, .distance = 35.428f},
-                {.id = 342, .distance = 42.934f},
-                {.id = 313, .distance = 52.730f}
-            }
-        },
-        {
-            .point_id = 328,
-            .neighbors = {
-                {.id = 345, .distance = 31.937f},
-                {.id = 344, .distance = 31.964f},
-                {.id = 343, .distance = 32.088f},
-                {.id = 329, .distance = 32.704f},
-                {.id = 327, .distance = 35.428f},
-                {.id = 318, .distance = 35.999f},
-                {.id = 365, .distance = 49.921f}
-            }
-        },
-        {
-            .point_id = 329,
-            .neighbors = {
-                {.id = 346, .distance = 29.419f},
-                {.id = 318, .distance = 29.943f},
-                {.id = 330, .distance = 32.468f},
-                {.id = 328, .distance = 32.704f},
-                {.id = 345, .distance = 37.491f},
-                {.id = 347, .distance = 41.947f},
-                {.id = 319, .distance = 46.465f}
-            }
-        },
-        {
-            .point_id = 330,
-            .neighbors = {
-                {.id = 347, .distance = 29.848f},
-                {.id = 319, .distance = 31.091f},
-                {.id = 331, .distance = 31.917f},
-                {.id = 329, .distance = 32.468f},
-                {.id = 348, .distance = 35.426f},
-                {.id = 318, .distance = 43.146f},
-                {.id = 346, .distance = 44.568f}
-            }
-        },
-        {
-            .point_id = 331,
-            .neighbors = {
-                {.id = 349, .distance = 30.775f},
-                {.id = 330, .distance = 31.917f},
-                {.id = 332, .distance = 32.089f},
-                {.id = 348, .distance = 33.457f},
-                {.id = 319, .distance = 33.997f},
-                {.id = 320, .distance = 39.001f},
-                {.id = 350, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 332,
-            .neighbors = {
-                {.id = 350, .distance = 28.126f},
-                {.id = 320, .distance = 28.795f},
-                {.id = 331, .distance = 32.089f},
-                {.id = 333, .distance = 33.350f},
-                {.id = 349, .distance = 38.606f},
-                {.id = 351, .distance = 40.686f},
-                {.id = 319, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 333,
-            .neighbors = {
-                {.id = 351, .distance = 30.745f},
-                {.id = 334, .distance = 32.585f},
-                {.id = 321, .distance = 33.326f},
-                {.id = 332, .distance = 33.350f},
-                {.id = 352, .distance = 33.990f},
-                {.id = 320, .distance = 39.043f},
-                {.id = 350, .distance = 47.230f}
-            }
-        },
-        {
-            .point_id = 334,
-            .neighbors = {
-                {.id = 353, .distance = 30.088f},
-                {.id = 321, .distance = 30.119f},
-                {.id = 335, .distance = 32.298f},
-                {.id = 333, .distance = 32.585f},
-                {.id = 352, .distance = 35.628f},
-                {.id = 322, .distance = 42.036f},
-                {.id = 354, .distance = 44.864f}
-            }
-        },
-        {
-            .point_id = 335,
-            .neighbors = {
-                {.id = 354, .distance = 28.726f},
-                {.id = 322, .distance = 29.271f},
-                {.id = 336, .distance = 31.916f},
-                {.id = 334, .distance = 32.298f},
-                {.id = 355, .distance = 37.444f},
-                {.id = 353, .distance = 42.067f},
-                {.id = 321, .distance = 46.032f}
-            }
-        },
-        {
-            .point_id = 336,
-            .neighbors = {
-                {.id = 355, .distance = 31.889f},
-                {.id = 335, .distance = 31.916f},
-                {.id = 356, .distance = 32.458f},
-                {.id = 337, .distance = 32.605f},
-                {.id = 322, .distance = 35.475f},
-                {.id = 323, .distance = 35.680f},
-                {.id = 354, .distance = 49.358f}
-            }
-        },
-        {
-            .point_id = 337,
-            .neighbors = {
-                {.id = 357, .distance = 28.557f},
-                {.id = 323, .distance = 30.515f},
-                {.id = 336, .distance = 32.605f},
-                {.id = 338, .distance = 33.386f},
-                {.id = 356, .distance = 36.707f},
-                {.id = 358, .distance = 42.276f},
-                {.id = 324, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 338,
-            .neighbors = {
-                {.id = 358, .distance = 29.283f},
-                {.id = 324, .distance = 30.713f},
-                {.id = 339, .distance = 32.395f},
-                {.id = 337, .distance = 33.386f},
-                {.id = 359, .distance = 35.383f},
-                {.id = 323, .distance = 43.747f},
-                {.id = 357, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 339,
-            .neighbors = {
-                {.id = 360, .distance = 30.492f},
-                {.id = 338, .distance = 32.395f},
-                {.id = 340, .distance = 32.492f},
-                {.id = 324, .distance = 32.961f},
-                {.id = 359, .distance = 33.774f},
-                {.id = 325, .distance = 39.529f},
-                {.id = 361, .distance = 46.947f}
-            }
-        },
-        {
-            .point_id = 340,
-            .neighbors = {
-                {.id = 325, .distance = 28.795f},
-                {.id = 361, .distance = 28.796f},
-                {.id = 341, .distance = 31.301f},
-                {.id = 339, .distance = 32.492f},
-                {.id = 362, .distance = 39.130f},
-                {.id = 360, .distance = 39.658f},
-                {.id = 326, .distance = 50.236f}
-            }
-        },
-        {
-            .point_id = 341,
-            .neighbors = {
-                {.id = 362, .distance = 30.076f},
-                {.id = 340, .distance = 31.301f},
-                {.id = 342, .distance = 33.324f},
-                {.id = 326, .distance = 33.378f},
-                {.id = 363, .distance = 33.386f},
-                {.id = 325, .distance = 37.853f},
-                {.id = 361, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 342,
-            .neighbors = {
-                {.id = 364, .distance = 29.653f},
-                {.id = 326, .distance = 30.978f},
-                {.id = 343, .distance = 32.852f},
-                {.id = 341, .distance = 33.324f},
-                {.id = 363, .distance = 35.446f},
-                {.id = 327, .distance = 42.934f},
-                {.id = 365, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 343,
-            .neighbors = {
-                {.id = 365, .distance = 28.776f},
-                {.id = 327, .distance = 29.314f},
-                {.id = 328, .distance = 32.088f},
-                {.id = 342, .distance = 32.852f},
-                {.id = 344, .distance = 36.954f},
-                {.id = 364, .distance = 42.498f},
-                {.id = 326, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 344,
-            .neighbors = {
-                {.id = 366, .distance = 23.617f},
-                {.id = 365, .distance = 31.442f},
-                {.id = 328, .distance = 31.964f},
-                {.id = 345, .distance = 32.703f},
-                {.id = 343, .distance = 36.954f},
-                {.id = 413, .distance = 41.259f},
-                {.id = 415, .distance = 45.103f}
-            }
-        },
-        {
-            .point_id = 345,
-            .neighbors = {
-                {.id = 328, .distance = 31.937f},
-                {.id = 344, .distance = 32.703f},
-                {.id = 346, .distance = 32.725f},
-                {.id = 367, .distance = 36.068f},
-                {.id = 329, .distance = 37.491f},
-                {.id = 368, .distance = 39.068f},
-                {.id = 366, .distance = 41.895f}
-            }
-        },
-        {
-            .point_id = 346,
-            .neighbors = {
-                {.id = 329, .distance = 29.419f},
-                {.id = 347, .distance = 30.638f},
-                {.id = 345, .distance = 32.725f},
-                {.id = 368, .distance = 35.794f},
-                {.id = 369, .distance = 36.665f},
-                {.id = 330, .distance = 44.568f},
-                {.id = 370, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 347,
-            .neighbors = {
-                {.id = 370, .distance = 24.191f},
-                {.id = 330, .distance = 29.848f},
-                {.id = 346, .distance = 30.638f},
-                {.id = 348, .distance = 31.516f},
-                {.id = 329, .distance = 41.947f},
-                {.id = 371, .distance = 44.167f},
-                {.id = 369, .distance = 44.460f}
-            }
-        },
-        {
-            .point_id = 348,
-            .neighbors = {
-                {.id = 375, .distance = 27.519f},
-                {.id = 347, .distance = 31.516f},
-                {.id = 349, .distance = 33.096f},
-                {.id = 331, .distance = 33.457f},
-                {.id = 330, .distance = 35.426f},
-                {.id = 372, .distance = 35.506f},
-                {.id = 370, .distance = 36.051f}
-            }
-        },
-        {
-            .point_id = 349,
-            .neighbors = {
-                {.id = 331, .distance = 30.775f},
-                {.id = 350, .distance = 30.943f},
-                {.id = 375, .distance = 31.347f},
-                {.id = 348, .distance = 33.096f},
-                {.id = 377, .distance = 37.393f},
-                {.id = 332, .distance = 38.606f},
-                {.id = 376, .distance = 45.102f}
-            }
-        },
-        {
-            .point_id = 350,
-            .neighbors = {
-                {.id = 332, .distance = 28.126f},
-                {.id = 349, .distance = 30.943f},
-                {.id = 351, .distance = 32.322f},
-                {.id = 378, .distance = 33.115f},
-                {.id = 377, .distance = 43.474f},
-                {.id = 379, .distance = 44.048f},
-                {.id = 331, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 351,
-            .neighbors = {
-                {.id = 381, .distance = 30.540f},
-                {.id = 333, .distance = 30.745f},
-                {.id = 350, .distance = 32.322f},
-                {.id = 352, .distance = 32.441f},
-                {.id = 379, .distance = 37.153f},
-                {.id = 332, .distance = 40.686f},
-                {.id = 380, .distance = 45.279f}
-            }
-        },
-        {
-            .point_id = 352,
-            .neighbors = {
-                {.id = 381, .distance = 27.373f},
-                {.id = 353, .distance = 31.563f},
-                {.id = 351, .distance = 32.441f},
-                {.id = 333, .distance = 33.990f},
-                {.id = 383, .distance = 35.618f},
-                {.id = 334, .distance = 35.628f},
-                {.id = 385, .distance = 36.566f}
-            }
-        },
-        {
-            .point_id = 353,
-            .neighbors = {
-                {.id = 385, .distance = 24.293f},
-                {.id = 334, .distance = 30.088f},
-                {.id = 352, .distance = 31.563f},
-                {.id = 354, .distance = 31.793f},
-                {.id = 335, .distance = 42.067f},
-                {.id = 386, .distance = 43.775f},
-                {.id = 387, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 354,
-            .neighbors = {
-                {.id = 335, .distance = 28.726f},
-                {.id = 355, .distance = 31.427f},
-                {.id = 353, .distance = 31.793f},
-                {.id = 388, .distance = 35.922f},
-                {.id = 387, .distance = 37.333f},
-                {.id = 334, .distance = 44.864f},
-                {.id = 385, .distance = 47.704f}
-            }
-        },
-        {
-            .point_id = 355,
-            .neighbors = {
-                {.id = 354, .distance = 31.427f},
-                {.id = 336, .distance = 31.889f},
-                {.id = 356, .distance = 32.342f},
-                {.id = 389, .distance = 35.562f},
-                {.id = 335, .distance = 37.444f},
-                {.id = 388, .distance = 39.243f},
-                {.id = 391, .distance = 41.982f}
-            }
-        },
-        {
-            .point_id = 356,
-            .neighbors = {
-                {.id = 391, .distance = 23.803f},
-                {.id = 357, .distance = 31.693f},
-                {.id = 355, .distance = 32.342f},
-                {.id = 336, .distance = 32.458f},
-                {.id = 337, .distance = 36.707f},
-                {.id = 393, .distance = 41.333f},
-                {.id = 390, .distance = 44.974f}
-            }
-        },
-        {
-            .point_id = 357,
-            .neighbors = {
-                {.id = 395, .distance = 24.410f},
-                {.id = 337, .distance = 28.557f},
-                {.id = 356, .distance = 31.693f},
-                {.id = 358, .distance = 32.138f},
-                {.id = 393, .distance = 38.124f},
-                {.id = 391, .distance = 43.096f},
-                {.id = 338, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 358,
-            .neighbors = {
-                {.id = 338, .distance = 29.283f},
-                {.id = 359, .distance = 31.589f},
-                {.id = 357, .distance = 32.138f},
-                {.id = 397, .distance = 36.174f},
-                {.id = 395, .distance = 36.927f},
-                {.id = 337, .distance = 42.276f},
-                {.id = 398, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 359,
-            .neighbors = {
-                {.id = 358, .distance = 31.589f},
-                {.id = 360, .distance = 32.185f},
-                {.id = 398, .distance = 33.528f},
-                {.id = 339, .distance = 33.774f},
-                {.id = 338, .distance = 35.383f},
-                {.id = 399, .distance = 39.292f},
-                {.id = 397, .distance = 48.151f}
-            }
-        },
-        {
-            .point_id = 360,
-            .neighbors = {
-                {.id = 401, .distance = 26.800f},
-                {.id = 339, .distance = 30.492f},
-                {.id = 361, .distance = 31.085f},
-                {.id = 359, .distance = 32.185f},
-                {.id = 340, .distance = 39.658f},
-                {.id = 399, .distance = 40.843f},
-                {.id = 400, .distance = 44.297f}
-            }
-        },
-        {
-            .point_id = 361,
-            .neighbors = {
-                {.id = 340, .distance = 28.796f},
-                {.id = 360, .distance = 31.085f},
-                {.id = 401, .distance = 31.165f},
-                {.id = 362, .distance = 31.748f},
-                {.id = 405, .distance = 32.025f},
-                {.id = 403, .distance = 35.484f},
-                {.id = 341, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 362,
-            .neighbors = {
-                {.id = 405, .distance = 26.974f},
-                {.id = 341, .distance = 30.076f},
-                {.id = 363, .distance = 31.574f},
-                {.id = 361, .distance = 31.748f},
-                {.id = 340, .distance = 39.130f},
-                {.id = 407, .distance = 40.759f},
-                {.id = 406, .distance = 44.255f}
-            }
-        },
-        {
-            .point_id = 363,
-            .neighbors = {
-                {.id = 362, .distance = 31.574f},
-                {.id = 364, .distance = 32.495f},
-                {.id = 341, .distance = 33.386f},
-                {.id = 408, .distance = 34.006f},
-                {.id = 342, .distance = 35.446f},
-                {.id = 407, .distance = 40.058f},
-                {.id = 409, .distance = 48.765f}
-            }
-        },
-        {
-            .point_id = 364,
-            .neighbors = {
-                {.id = 342, .distance = 29.653f},
-                {.id = 365, .distance = 31.761f},
-                {.id = 363, .distance = 32.495f},
-                {.id = 409, .distance = 35.652f},
-                {.id = 411, .distance = 35.973f},
-                {.id = 343, .distance = 42.498f},
-                {.id = 408, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 365,
-            .neighbors = {
-                {.id = 411, .distance = 24.656f},
-                {.id = 343, .distance = 28.776f},
-                {.id = 344, .distance = 31.442f},
-                {.id = 364, .distance = 31.761f},
-                {.id = 413, .distance = 38.273f},
-                {.id = 366, .distance = 43.129f},
-                {.id = 342, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 366,
-            .neighbors = {
-                {.id = 415, .distance = 22.863f},
-                {.id = 344, .distance = 23.617f},
-                {.id = 413, .distance = 27.856f},
-                {.id = 414, .distance = 35.561f},
-                {.id = 367, .distance = 37.917f},
-                {.id = 345, .distance = 41.895f},
-                {.id = 365, .distance = 43.129f}
-            }
-        },
-        {
-            .point_id = 367,
-            .neighbors = {
-                {.id = 415, .distance = 28.096f},
-                {.id = 368, .distance = 29.153f},
-                {.id = 97, .distance = 30.344f},
-                {.id = 345, .distance = 36.068f},
-                {.id = 366, .distance = 37.917f},
-                {.id = 98, .distance = 40.387f},
-                {.id = 96, .distance = 42.992f}
-            }
-        },
-        {
-            .point_id = 368,
-            .neighbors = {
-                {.id = 369, .distance = 28.265f},
-                {.id = 367, .distance = 29.153f},
-                {.id = 96, .distance = 30.696f},
-                {.id = 346, .distance = 35.794f},
-                {.id = 345, .distance = 39.068f},
-                {.id = 97, .distance = 41.292f},
-                {.id = 95, .distance = 42.959f}
-            }
-        },
-        {
-            .point_id = 369,
-            .neighbors = {
-                {.id = 368, .distance = 28.265f},
-                {.id = 371, .distance = 28.989f},
-                {.id = 95, .distance = 30.170f},
-                {.id = 346, .distance = 36.665f},
-                {.id = 370, .distance = 38.712f},
-                {.id = 96, .distance = 40.388f},
-                {.id = 94, .distance = 43.161f}
-            }
-        },
-        {
-            .point_id = 370,
-            .neighbors = {
-                {.id = 371, .distance = 23.607f},
-                {.id = 347, .distance = 24.191f},
-                {.id = 372, .distance = 27.455f},
-                {.id = 373, .distance = 35.536f},
-                {.id = 348, .distance = 36.051f},
-                {.id = 369, .distance = 38.712f},
-                {.id = 346, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 371,
-            .neighbors = {
-                {.id = 370, .distance = 23.607f},
-                {.id = 373, .distance = 28.500f},
-                {.id = 369, .distance = 28.989f},
-                {.id = 94, .distance = 30.403f},
-                {.id = 372, .distance = 38.998f},
-                {.id = 95, .distance = 40.512f},
-                {.id = 92, .distance = 42.484f}
-            }
-        },
-        {
-            .point_id = 372,
-            .neighbors = {
-                {.id = 373, .distance = 25.823f},
-                {.id = 374, .distance = 26.007f},
-                {.id = 375, .distance = 27.304f},
-                {.id = 370, .distance = 27.455f},
-                {.id = 348, .distance = 35.506f},
-                {.id = 371, .distance = 38.998f},
-                {.id = 376, .distance = 39.242f}
-            }
-        },
-        {
-            .point_id = 373,
-            .neighbors = {
-                {.id = 372, .distance = 25.823f},
-                {.id = 371, .distance = 28.500f},
-                {.id = 92, .distance = 30.385f},
-                {.id = 374, .distance = 30.900f},
-                {.id = 370, .distance = 35.536f},
-                {.id = 94, .distance = 40.601f},
-                {.id = 375, .distance = 52.152f}
-            }
-        },
-        {
-            .point_id = 374,
-            .neighbors = {
-                {.id = 372, .distance = 26.007f},
-                {.id = 516, .distance = 29.051f},
-                {.id = 376, .distance = 29.614f},
-                {.id = 373, .distance = 30.900f},
-                {.id = 375, .distance = 35.963f},
-                {.id = 514, .distance = 41.540f},
-                {.id = 518, .distance = 51.840f}
-            }
-        },
-        {
-            .point_id = 375,
-            .neighbors = {
-                {.id = 376, .distance = 23.404f},
-                {.id = 372, .distance = 27.304f},
-                {.id = 348, .distance = 27.519f},
-                {.id = 349, .distance = 31.347f},
-                {.id = 374, .distance = 35.963f},
-                {.id = 377, .distance = 38.924f},
-                {.id = 370, .distance = 47.034f}
-            }
-        },
-        {
-            .point_id = 376,
-            .neighbors = {
-                {.id = 375, .distance = 23.404f},
-                {.id = 377, .distance = 28.584f},
-                {.id = 374, .distance = 29.614f},
-                {.id = 514, .distance = 29.702f},
-                {.id = 372, .distance = 39.242f},
-                {.id = 513, .distance = 41.095f},
-                {.id = 516, .distance = 41.571f}
-            }
-        },
-        {
-            .point_id = 377,
-            .neighbors = {
-                {.id = 378, .distance = 28.069f},
-                {.id = 376, .distance = 28.584f},
-                {.id = 513, .distance = 29.685f},
-                {.id = 349, .distance = 37.393f},
-                {.id = 375, .distance = 38.924f},
-                {.id = 512, .distance = 41.143f},
-                {.id = 514, .distance = 41.304f}
-            }
-        },
-        {
-            .point_id = 378,
-            .neighbors = {
-                {.id = 377, .distance = 28.069f},
-                {.id = 379, .distance = 28.840f},
-                {.id = 512, .distance = 29.797f},
-                {.id = 350, .distance = 33.115f},
-                {.id = 513, .distance = 41.280f},
-                {.id = 511, .distance = 41.692f},
-                {.id = 349, .distance = 48.228f}
-            }
-        },
-        {
-            .point_id = 379,
-            .neighbors = {
-                {.id = 378, .distance = 28.840f},
-                {.id = 380, .distance = 29.098f},
-                {.id = 511, .distance = 29.688f},
-                {.id = 351, .distance = 37.153f},
-                {.id = 381, .distance = 38.371f},
-                {.id = 512, .distance = 41.093f},
-                {.id = 510, .distance = 41.803f}
-            }
-        },
-        {
-            .point_id = 380,
-            .neighbors = {
-                {.id = 381, .distance = 23.468f},
-                {.id = 382, .distance = 28.067f},
-                {.id = 379, .distance = 29.098f},
-                {.id = 510, .distance = 29.884f},
-                {.id = 383, .distance = 37.859f},
-                {.id = 508, .distance = 41.024f},
-                {.id = 511, .distance = 41.264f}
-            }
-        },
-        {
-            .point_id = 381,
-            .neighbors = {
-                {.id = 380, .distance = 23.468f},
-                {.id = 383, .distance = 26.995f},
-                {.id = 352, .distance = 27.373f},
-                {.id = 351, .distance = 30.540f},
-                {.id = 382, .distance = 35.584f},
-                {.id = 379, .distance = 38.371f},
-                {.id = 385, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 382,
-            .neighbors = {
-                {.id = 383, .distance = 25.235f},
-                {.id = 380, .distance = 28.067f},
-                {.id = 508, .distance = 29.698f},
-                {.id = 384, .distance = 31.314f},
-                {.id = 381, .distance = 35.584f},
-                {.id = 510, .distance = 40.907f},
-                {.id = 1130, .distance = 50.621f}
-            }
-        },
-        {
-            .point_id = 383,
-            .neighbors = {
-                {.id = 382, .distance = 25.235f},
-                {.id = 384, .distance = 25.959f},
-                {.id = 381, .distance = 26.995f},
-                {.id = 385, .distance = 28.280f},
-                {.id = 352, .distance = 35.618f},
-                {.id = 380, .distance = 37.859f},
-                {.id = 386, .distance = 39.348f}
-            }
-        },
-        {
-            .point_id = 384,
-            .neighbors = {
-                {.id = 383, .distance = 25.959f},
-                {.id = 1130, .distance = 27.690f},
-                {.id = 386, .distance = 28.175f},
-                {.id = 382, .distance = 31.314f},
-                {.id = 385, .distance = 35.099f},
-                {.id = 1128, .distance = 39.154f},
-                {.id = 1131, .distance = 50.900f}
-            }
-        },
-        {
-            .point_id = 385,
-            .neighbors = {
-                {.id = 386, .distance = 22.858f},
-                {.id = 353, .distance = 24.293f},
-                {.id = 383, .distance = 28.280f},
-                {.id = 384, .distance = 35.099f},
-                {.id = 352, .distance = 36.566f},
-                {.id = 387, .distance = 37.718f},
-                {.id = 381, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 386,
-            .neighbors = {
-                {.id = 385, .distance = 22.858f},
-                {.id = 1128, .distance = 27.436f},
-                {.id = 384, .distance = 28.175f},
-                {.id = 387, .distance = 28.665f},
-                {.id = 383, .distance = 39.348f},
-                {.id = 1130, .distance = 40.114f},
-                {.id = 1127, .distance = 40.252f}
-            }
-        },
-        {
-            .point_id = 387,
-            .neighbors = {
-                {.id = 1127, .distance = 27.613f},
-                {.id = 386, .distance = 28.665f},
-                {.id = 388, .distance = 28.744f},
-                {.id = 354, .distance = 37.333f},
-                {.id = 385, .distance = 37.718f},
-                {.id = 1126, .distance = 39.855f},
-                {.id = 1128, .distance = 39.947f}
-            }
-        },
-        {
-            .point_id = 388,
-            .neighbors = {
-                {.id = 1126, .distance = 27.498f},
-                {.id = 389, .distance = 28.665f},
-                {.id = 387, .distance = 28.744f},
-                {.id = 354, .distance = 35.922f},
-                {.id = 355, .distance = 39.243f},
-                {.id = 1127, .distance = 39.255f},
-                {.id = 1125, .distance = 39.752f}
-            }
-        },
-        {
-            .point_id = 389,
-            .neighbors = {
-                {.id = 1125, .distance = 27.628f},
-                {.id = 388, .distance = 28.665f},
-                {.id = 390, .distance = 28.989f},
-                {.id = 355, .distance = 35.562f},
-                {.id = 391, .distance = 37.946f},
-                {.id = 1126, .distance = 39.790f},
-                {.id = 1124, .distance = 39.805f}
-            }
-        },
-        {
-            .point_id = 390,
-            .neighbors = {
-                {.id = 391, .distance = 22.522f},
-                {.id = 1124, .distance = 27.583f},
-                {.id = 392, .distance = 28.989f},
-                {.id = 389, .distance = 28.989f},
-                {.id = 393, .distance = 38.748f},
-                {.id = 1122, .distance = 39.435f},
-                {.id = 1125, .distance = 40.007f}
-            }
-        },
-        {
-            .point_id = 391,
-            .neighbors = {
-                {.id = 390, .distance = 22.522f},
-                {.id = 356, .distance = 23.803f},
-                {.id = 393, .distance = 27.573f},
-                {.id = 392, .distance = 35.430f},
-                {.id = 389, .distance = 37.946f},
-                {.id = 355, .distance = 41.982f},
-                {.id = 357, .distance = 43.096f}
-            }
-        },
-        {
-            .point_id = 392,
-            .neighbors = {
-                {.id = 393, .distance = 25.732f},
-                {.id = 1122, .distance = 27.473f},
-                {.id = 390, .distance = 28.989f},
-                {.id = 394, .distance = 30.699f},
-                {.id = 391, .distance = 35.430f},
-                {.id = 1124, .distance = 40.223f},
-                {.id = 1120, .distance = 49.900f}
-            }
-        },
-        {
-            .point_id = 393,
-            .neighbors = {
-                {.id = 394, .distance = 25.715f},
-                {.id = 392, .distance = 25.732f},
-                {.id = 395, .distance = 27.009f},
-                {.id = 391, .distance = 27.573f},
-                {.id = 357, .distance = 38.124f},
-                {.id = 390, .distance = 38.748f},
-                {.id = 396, .distance = 38.795f}
-            }
-        },
-        {
-            .point_id = 394,
-            .neighbors = {
-                {.id = 393, .distance = 25.715f},
-                {.id = 1036, .distance = 27.990f},
-                {.id = 396, .distance = 28.587f},
-                {.id = 392, .distance = 30.699f},
-                {.id = 395, .distance = 35.180f},
-                {.id = 1034, .distance = 41.739f},
-                {.id = 1038, .distance = 50.403f}
-            }
-        },
-        {
-            .point_id = 395,
-            .neighbors = {
-                {.id = 396, .distance = 23.318f},
-                {.id = 357, .distance = 24.410f},
-                {.id = 393, .distance = 27.009f},
-                {.id = 394, .distance = 35.180f},
-                {.id = 358, .distance = 36.927f},
-                {.id = 397, .distance = 38.625f},
-                {.id = 391, .distance = 47.229f}
-            }
-        },
-        {
-            .point_id = 396,
-            .neighbors = {
-                {.id = 395, .distance = 23.318f},
-                {.id = 1034, .distance = 28.526f},
-                {.id = 394, .distance = 28.587f},
-                {.id = 397, .distance = 28.648f},
-                {.id = 393, .distance = 38.795f},
-                {.id = 1036, .distance = 39.023f},
-                {.id = 1033, .distance = 41.888f}
-            }
-        },
-        {
-            .point_id = 397,
-            .neighbors = {
-                {.id = 396, .distance = 28.648f},
-                {.id = 398, .distance = 28.678f},
-                {.id = 1033, .distance = 28.720f},
-                {.id = 358, .distance = 36.174f},
-                {.id = 395, .distance = 38.625f},
-                {.id = 1034, .distance = 38.975f},
-                {.id = 1032, .distance = 42.065f}
-            }
-        },
-        {
-            .point_id = 398,
-            .neighbors = {
-                {.id = 399, .distance = 28.019f},
-                {.id = 1032, .distance = 28.593f},
-                {.id = 397, .distance = 28.678f},
-                {.id = 359, .distance = 33.528f},
-                {.id = 1033, .distance = 39.193f},
-                {.id = 1031, .distance = 42.010f},
-                {.id = 358, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 399,
-            .neighbors = {
-                {.id = 398, .distance = 28.019f},
-                {.id = 1031, .distance = 28.538f},
-                {.id = 400, .distance = 29.666f},
-                {.id = 1032, .distance = 38.440f},
-                {.id = 401, .distance = 39.143f},
-                {.id = 359, .distance = 39.292f},
-                {.id = 360, .distance = 40.843f}
-            }
-        },
-        {
-            .point_id = 400,
-            .neighbors = {
-                {.id = 401, .distance = 23.574f},
-                {.id = 1030, .distance = 28.586f},
-                {.id = 402, .distance = 28.796f},
-                {.id = 399, .distance = 29.666f},
-                {.id = 403, .distance = 38.536f},
-                {.id = 1031, .distance = 38.933f},
-                {.id = 1028, .distance = 41.429f}
-            }
-        },
-        {
-            .point_id = 401,
-            .neighbors = {
-                {.id = 400, .distance = 23.574f},
-                {.id = 360, .distance = 26.800f},
-                {.id = 403, .distance = 27.295f},
-                {.id = 361, .distance = 31.165f},
-                {.id = 402, .distance = 35.726f},
-                {.id = 399, .distance = 39.143f},
-                {.id = 405, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 402,
-            .neighbors = {
-                {.id = 403, .distance = 25.236f},
-                {.id = 1028, .distance = 28.551f},
-                {.id = 400, .distance = 28.796f},
-                {.id = 404, .distance = 30.642f},
-                {.id = 401, .distance = 35.726f},
-                {.id = 1030, .distance = 39.222f},
-                {.id = 405, .distance = 51.793f}
-            }
-        },
-        {
-            .point_id = 403,
-            .neighbors = {
-                {.id = 402, .distance = 25.236f},
-                {.id = 404, .distance = 25.701f},
-                {.id = 401, .distance = 27.295f},
-                {.id = 405, .distance = 27.601f},
-                {.id = 361, .distance = 35.484f},
-                {.id = 400, .distance = 38.536f},
-                {.id = 406, .distance = 38.536f}
-            }
-        },
-        {
-            .point_id = 404,
-            .neighbors = {
-                {.id = 403, .distance = 25.701f},
-                {.id = 406, .distance = 28.171f},
-                {.id = 278, .distance = 29.698f},
-                {.id = 402, .distance = 30.642f},
-                {.id = 405, .distance = 35.416f},
-                {.id = 276, .distance = 41.024f},
-                {.id = 1028, .distance = 50.454f}
-            }
-        },
-        {
-            .point_id = 405,
-            .neighbors = {
-                {.id = 406, .distance = 23.046f},
-                {.id = 362, .distance = 26.974f},
-                {.id = 403, .distance = 27.601f},
-                {.id = 361, .distance = 32.025f},
-                {.id = 404, .distance = 35.416f},
-                {.id = 407, .distance = 38.124f},
-                {.id = 401, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 406,
-            .neighbors = {
-                {.id = 405, .distance = 23.046f},
-                {.id = 404, .distance = 28.171f},
-                {.id = 407, .distance = 28.796f},
-                {.id = 276, .distance = 29.884f},
-                {.id = 403, .distance = 38.536f},
-                {.id = 278, .distance = 40.907f},
-                {.id = 275, .distance = 41.803f}
-            }
-        },
-        {
-            .point_id = 407,
-            .neighbors = {
-                {.id = 408, .distance = 28.739f},
-                {.id = 406, .distance = 28.796f},
-                {.id = 275, .distance = 29.688f},
-                {.id = 405, .distance = 38.124f},
-                {.id = 363, .distance = 40.058f},
-                {.id = 362, .distance = 40.759f},
-                {.id = 276, .distance = 41.264f}
-            }
-        },
-        {
-            .point_id = 408,
-            .neighbors = {
-                {.id = 407, .distance = 28.739f},
-                {.id = 409, .distance = 28.996f},
-                {.id = 274, .distance = 29.797f},
-                {.id = 363, .distance = 34.006f},
-                {.id = 275, .distance = 41.093f},
-                {.id = 273, .distance = 41.143f},
-                {.id = 364, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 409,
-            .neighbors = {
-                {.id = 410, .distance = 28.539f},
-                {.id = 408, .distance = 28.996f},
-                {.id = 273, .distance = 29.685f},
-                {.id = 364, .distance = 35.652f},
-                {.id = 411, .distance = 38.072f},
-                {.id = 272, .distance = 41.095f},
-                {.id = 274, .distance = 41.280f}
-            }
-        },
-        {
-            .point_id = 410,
-            .neighbors = {
-                {.id = 411, .distance = 23.229f},
-                {.id = 409, .distance = 28.539f},
-                {.id = 412, .distance = 29.175f},
-                {.id = 272, .distance = 29.702f},
-                {.id = 413, .distance = 38.795f},
-                {.id = 273, .distance = 41.304f},
-                {.id = 270, .distance = 41.540f}
-            }
-        },
-        {
-            .point_id = 411,
-            .neighbors = {
-                {.id = 410, .distance = 23.229f},
-                {.id = 365, .distance = 24.656f},
-                {.id = 413, .distance = 27.373f},
-                {.id = 364, .distance = 35.973f},
-                {.id = 412, .distance = 36.131f},
-                {.id = 409, .distance = 38.072f},
-                {.id = 366, .distance = 47.750f}
-            }
-        },
-        {
-            .point_id = 412,
-            .neighbors = {
-                {.id = 413, .distance = 26.133f},
-                {.id = 270, .distance = 29.051f},
-                {.id = 410, .distance = 29.175f},
-                {.id = 414, .distance = 30.723f},
-                {.id = 411, .distance = 36.131f},
-                {.id = 272, .distance = 41.571f},
-                {.id = 269, .distance = 52.211f}
-            }
-        },
-        {
-            .point_id = 413,
-            .neighbors = {
-                {.id = 414, .distance = 25.813f},
-                {.id = 412, .distance = 26.133f},
-                {.id = 411, .distance = 27.373f},
-                {.id = 366, .distance = 27.856f},
-                {.id = 365, .distance = 38.273f},
-                {.id = 410, .distance = 38.795f},
-                {.id = 415, .distance = 39.458f}
-            }
-        },
-        {
-            .point_id = 414,
-            .neighbors = {
-                {.id = 413, .distance = 25.813f},
-                {.id = 415, .distance = 29.479f},
-                {.id = 100, .distance = 29.970f},
-                {.id = 412, .distance = 30.723f},
-                {.id = 366, .distance = 35.561f},
-                {.id = 98, .distance = 43.137f},
-                {.id = 270, .distance = 51.840f}
-            }
-        },
-        {
-            .point_id = 415,
-            .neighbors = {
-                {.id = 366, .distance = 22.863f},
-                {.id = 367, .distance = 28.096f},
-                {.id = 414, .distance = 29.479f},
-                {.id = 98, .distance = 30.291f},
-                {.id = 413, .distance = 39.458f},
-                {.id = 100, .distance = 40.924f},
-                {.id = 97, .distance = 42.554f}
-            }
-        },
-        {
-            .point_id = 416,
-            .neighbors = {
-                {.id = 417, .distance = 25.256f},
-                {.id = 419, .distance = 25.653f},
-                {.id = 418, .distance = 25.660f},
-                {.id = 421, .distance = 26.237f},
-                {.id = 420, .distance = 26.780f},
-                {.id = 423, .distance = 53.251f},
-                {.id = 427, .distance = 53.584f}
-            }
-        },
-        {
-            .point_id = 417,
-            .neighbors = {
-                {.id = 416, .distance = 25.256f},
-                {.id = 423, .distance = 27.996f},
-                {.id = 421, .distance = 30.406f},
-                {.id = 418, .distance = 30.746f},
-                {.id = 424, .distance = 36.902f},
-                {.id = 422, .distance = 36.902f},
-                {.id = 419, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 418,
-            .neighbors = {
-                {.id = 416, .distance = 25.660f},
-                {.id = 425, .distance = 28.138f},
-                {.id = 419, .distance = 30.016f},
-                {.id = 417, .distance = 30.746f},
-                {.id = 426, .distance = 35.779f},
-                {.id = 424, .distance = 37.730f},
-                {.id = 420, .distance = 49.623f}
-            }
-        },
-        {
-            .point_id = 419,
-            .neighbors = {
-                {.id = 416, .distance = 25.653f},
-                {.id = 427, .distance = 27.950f},
-                {.id = 418, .distance = 30.016f},
-                {.id = 420, .distance = 30.334f},
-                {.id = 428, .distance = 36.663f},
-                {.id = 426, .distance = 36.917f},
-                {.id = 417, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 420,
-            .neighbors = {
-                {.id = 416, .distance = 26.780f},
-                {.id = 429, .distance = 28.148f},
-                {.id = 419, .distance = 30.334f},
-                {.id = 421, .distance = 30.829f},
-                {.id = 428, .distance = 36.041f},
-                {.id = 430, .distance = 36.581f},
-                {.id = 417, .distance = 49.415f}
-            }
-        },
-        {
-            .point_id = 421,
-            .neighbors = {
-                {.id = 416, .distance = 26.237f},
-                {.id = 431, .distance = 28.784f},
-                {.id = 417, .distance = 30.406f},
-                {.id = 420, .distance = 30.829f},
-                {.id = 422, .distance = 36.136f},
-                {.id = 430, .distance = 36.663f},
-                {.id = 419, .distance = 49.028f}
-            }
-        },
-        {
-            .point_id = 422,
-            .neighbors = {
-                {.id = 433, .distance = 29.943f},
-                {.id = 431, .distance = 32.709f},
-                {.id = 423, .distance = 33.241f},
-                {.id = 432, .distance = 35.999f},
-                {.id = 421, .distance = 36.136f},
-                {.id = 417, .distance = 36.902f},
-                {.id = 434, .distance = 43.146f}
-            }
-        },
-        {
-            .point_id = 423,
-            .neighbors = {
-                {.id = 417, .distance = 27.996f},
-                {.id = 434, .distance = 31.091f},
-                {.id = 422, .distance = 33.241f},
-                {.id = 424, .distance = 33.489f},
-                {.id = 435, .distance = 33.997f},
-                {.id = 433, .distance = 46.465f},
-                {.id = 436, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 424,
-            .neighbors = {
-                {.id = 436, .distance = 28.795f},
-                {.id = 423, .distance = 33.489f},
-                {.id = 425, .distance = 34.526f},
-                {.id = 417, .distance = 36.902f},
-                {.id = 418, .distance = 37.730f},
-                {.id = 435, .distance = 39.001f},
-                {.id = 437, .distance = 39.043f}
-            }
-        },
-        {
-            .point_id = 425,
-            .neighbors = {
-                {.id = 418, .distance = 28.138f},
-                {.id = 438, .distance = 30.119f},
-                {.id = 426, .distance = 32.862f},
-                {.id = 437, .distance = 33.326f},
-                {.id = 424, .distance = 34.526f},
-                {.id = 439, .distance = 46.032f},
-                {.id = 436, .distance = 51.953f}
-            }
-        },
-        {
-            .point_id = 426,
-            .neighbors = {
-                {.id = 439, .distance = 29.271f},
-                {.id = 425, .distance = 32.862f},
-                {.id = 427, .distance = 32.910f},
-                {.id = 440, .distance = 35.475f},
-                {.id = 418, .distance = 35.779f},
-                {.id = 419, .distance = 36.917f},
-                {.id = 438, .distance = 42.036f}
-            }
-        },
-        {
-            .point_id = 427,
-            .neighbors = {
-                {.id = 419, .distance = 27.950f},
-                {.id = 441, .distance = 30.515f},
-                {.id = 426, .distance = 32.910f},
-                {.id = 428, .distance = 34.288f},
-                {.id = 440, .distance = 35.680f},
-                {.id = 442, .distance = 43.747f},
-                {.id = 418, .distance = 50.881f}
-            }
-        },
-        {
-            .point_id = 428,
-            .neighbors = {
-                {.id = 442, .distance = 30.713f},
-                {.id = 443, .distance = 32.961f},
-                {.id = 427, .distance = 34.288f},
-                {.id = 429, .distance = 34.333f},
-                {.id = 420, .distance = 36.041f},
-                {.id = 419, .distance = 36.663f},
-                {.id = 441, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 429,
-            .neighbors = {
-                {.id = 420, .distance = 28.148f},
-                {.id = 444, .distance = 28.795f},
-                {.id = 430, .distance = 32.474f},
-                {.id = 428, .distance = 34.333f},
-                {.id = 445, .distance = 37.853f},
-                {.id = 443, .distance = 39.529f},
-                {.id = 421, .distance = 52.029f}
-            }
-        },
-        {
-            .point_id = 430,
-            .neighbors = {
-                {.id = 446, .distance = 30.978f},
-                {.id = 429, .distance = 32.474f},
-                {.id = 445, .distance = 33.378f},
-                {.id = 431, .distance = 34.135f},
-                {.id = 420, .distance = 36.581f},
-                {.id = 421, .distance = 36.663f},
-                {.id = 447, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 431,
-            .neighbors = {
-                {.id = 421, .distance = 28.784f},
-                {.id = 447, .distance = 29.314f},
-                {.id = 422, .distance = 32.709f},
-                {.id = 430, .distance = 34.135f},
-                {.id = 432, .distance = 35.428f},
-                {.id = 446, .distance = 42.934f},
-                {.id = 417, .distance = 52.730f}
-            }
-        },
-        {
-            .point_id = 432,
-            .neighbors = {
-                {.id = 449, .distance = 31.937f},
-                {.id = 448, .distance = 31.964f},
-                {.id = 447, .distance = 32.088f},
-                {.id = 433, .distance = 32.704f},
-                {.id = 431, .distance = 35.428f},
-                {.id = 422, .distance = 35.999f},
-                {.id = 469, .distance = 49.921f}
-            }
-        },
-        {
-            .point_id = 433,
-            .neighbors = {
-                {.id = 450, .distance = 29.419f},
-                {.id = 422, .distance = 29.943f},
-                {.id = 434, .distance = 32.468f},
-                {.id = 432, .distance = 32.704f},
-                {.id = 449, .distance = 37.491f},
-                {.id = 451, .distance = 41.947f},
-                {.id = 423, .distance = 46.465f}
-            }
-        },
-        {
-            .point_id = 434,
-            .neighbors = {
-                {.id = 451, .distance = 29.848f},
-                {.id = 423, .distance = 31.091f},
-                {.id = 435, .distance = 31.917f},
-                {.id = 433, .distance = 32.468f},
-                {.id = 452, .distance = 35.426f},
-                {.id = 422, .distance = 43.146f},
-                {.id = 450, .distance = 44.568f}
-            }
-        },
-        {
-            .point_id = 435,
-            .neighbors = {
-                {.id = 453, .distance = 30.775f},
-                {.id = 434, .distance = 31.917f},
-                {.id = 436, .distance = 32.089f},
-                {.id = 452, .distance = 33.457f},
-                {.id = 423, .distance = 33.997f},
-                {.id = 424, .distance = 39.001f},
-                {.id = 454, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 436,
-            .neighbors = {
-                {.id = 454, .distance = 28.126f},
-                {.id = 424, .distance = 28.795f},
-                {.id = 435, .distance = 32.089f},
-                {.id = 437, .distance = 33.350f},
-                {.id = 453, .distance = 38.606f},
-                {.id = 455, .distance = 40.686f},
-                {.id = 423, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 437,
-            .neighbors = {
-                {.id = 455, .distance = 30.745f},
-                {.id = 438, .distance = 32.585f},
-                {.id = 425, .distance = 33.326f},
-                {.id = 436, .distance = 33.350f},
-                {.id = 456, .distance = 33.990f},
-                {.id = 424, .distance = 39.043f},
-                {.id = 454, .distance = 47.230f}
-            }
-        },
-        {
-            .point_id = 438,
-            .neighbors = {
-                {.id = 457, .distance = 30.088f},
-                {.id = 425, .distance = 30.119f},
-                {.id = 439, .distance = 32.298f},
-                {.id = 437, .distance = 32.585f},
-                {.id = 456, .distance = 35.628f},
-                {.id = 426, .distance = 42.036f},
-                {.id = 458, .distance = 44.864f}
-            }
-        },
-        {
-            .point_id = 439,
-            .neighbors = {
-                {.id = 458, .distance = 28.726f},
-                {.id = 426, .distance = 29.271f},
-                {.id = 440, .distance = 31.916f},
-                {.id = 438, .distance = 32.298f},
-                {.id = 459, .distance = 37.444f},
-                {.id = 457, .distance = 42.067f},
-                {.id = 425, .distance = 46.032f}
-            }
-        },
-        {
-            .point_id = 440,
-            .neighbors = {
-                {.id = 459, .distance = 31.889f},
-                {.id = 439, .distance = 31.916f},
-                {.id = 460, .distance = 32.458f},
-                {.id = 441, .distance = 32.605f},
-                {.id = 426, .distance = 35.475f},
-                {.id = 427, .distance = 35.680f},
-                {.id = 458, .distance = 49.358f}
-            }
-        },
-        {
-            .point_id = 441,
-            .neighbors = {
-                {.id = 461, .distance = 28.557f},
-                {.id = 427, .distance = 30.515f},
-                {.id = 440, .distance = 32.605f},
-                {.id = 442, .distance = 33.386f},
-                {.id = 460, .distance = 36.707f},
-                {.id = 462, .distance = 42.276f},
-                {.id = 428, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 442,
-            .neighbors = {
-                {.id = 462, .distance = 29.283f},
-                {.id = 428, .distance = 30.713f},
-                {.id = 443, .distance = 32.395f},
-                {.id = 441, .distance = 33.386f},
-                {.id = 463, .distance = 35.383f},
-                {.id = 427, .distance = 43.747f},
-                {.id = 461, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 443,
-            .neighbors = {
-                {.id = 464, .distance = 30.492f},
-                {.id = 442, .distance = 32.395f},
-                {.id = 444, .distance = 32.492f},
-                {.id = 428, .distance = 32.961f},
-                {.id = 463, .distance = 33.774f},
-                {.id = 429, .distance = 39.529f},
-                {.id = 465, .distance = 46.947f}
-            }
-        },
-        {
-            .point_id = 444,
-            .neighbors = {
-                {.id = 429, .distance = 28.795f},
-                {.id = 465, .distance = 28.796f},
-                {.id = 445, .distance = 31.301f},
-                {.id = 443, .distance = 32.492f},
-                {.id = 466, .distance = 39.130f},
-                {.id = 464, .distance = 39.658f},
-                {.id = 430, .distance = 50.236f}
-            }
-        },
-        {
-            .point_id = 445,
-            .neighbors = {
-                {.id = 466, .distance = 30.076f},
-                {.id = 444, .distance = 31.301f},
-                {.id = 446, .distance = 33.324f},
-                {.id = 430, .distance = 33.378f},
-                {.id = 467, .distance = 33.386f},
-                {.id = 429, .distance = 37.853f},
-                {.id = 465, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 446,
-            .neighbors = {
-                {.id = 468, .distance = 29.653f},
-                {.id = 430, .distance = 30.978f},
-                {.id = 447, .distance = 32.852f},
-                {.id = 445, .distance = 33.324f},
-                {.id = 467, .distance = 35.446f},
-                {.id = 431, .distance = 42.934f},
-                {.id = 469, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 447,
-            .neighbors = {
-                {.id = 469, .distance = 28.776f},
-                {.id = 431, .distance = 29.314f},
-                {.id = 432, .distance = 32.088f},
-                {.id = 446, .distance = 32.852f},
-                {.id = 448, .distance = 36.954f},
-                {.id = 468, .distance = 42.498f},
-                {.id = 430, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 448,
-            .neighbors = {
-                {.id = 470, .distance = 23.617f},
-                {.id = 469, .distance = 31.442f},
-                {.id = 432, .distance = 31.964f},
-                {.id = 449, .distance = 32.703f},
-                {.id = 447, .distance = 36.954f},
-                {.id = 517, .distance = 41.259f},
-                {.id = 519, .distance = 45.103f}
-            }
-        },
-        {
-            .point_id = 449,
-            .neighbors = {
-                {.id = 432, .distance = 31.937f},
-                {.id = 448, .distance = 32.703f},
-                {.id = 450, .distance = 32.725f},
-                {.id = 471, .distance = 36.068f},
-                {.id = 433, .distance = 37.491f},
-                {.id = 472, .distance = 39.068f},
-                {.id = 470, .distance = 41.895f}
-            }
-        },
-        {
-            .point_id = 450,
-            .neighbors = {
-                {.id = 433, .distance = 29.419f},
-                {.id = 451, .distance = 30.638f},
-                {.id = 449, .distance = 32.725f},
-                {.id = 472, .distance = 35.794f},
-                {.id = 473, .distance = 36.665f},
-                {.id = 434, .distance = 44.568f},
-                {.id = 474, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 451,
-            .neighbors = {
-                {.id = 474, .distance = 24.191f},
-                {.id = 434, .distance = 29.848f},
-                {.id = 450, .distance = 30.638f},
-                {.id = 452, .distance = 31.516f},
-                {.id = 433, .distance = 41.947f},
-                {.id = 475, .distance = 44.167f},
-                {.id = 473, .distance = 44.460f}
-            }
-        },
-        {
-            .point_id = 452,
-            .neighbors = {
-                {.id = 479, .distance = 27.519f},
-                {.id = 451, .distance = 31.516f},
-                {.id = 453, .distance = 33.096f},
-                {.id = 435, .distance = 33.457f},
-                {.id = 434, .distance = 35.426f},
-                {.id = 476, .distance = 35.506f},
-                {.id = 474, .distance = 36.051f}
-            }
-        },
-        {
-            .point_id = 453,
-            .neighbors = {
-                {.id = 435, .distance = 30.775f},
-                {.id = 454, .distance = 30.943f},
-                {.id = 479, .distance = 31.347f},
-                {.id = 452, .distance = 33.096f},
-                {.id = 481, .distance = 37.393f},
-                {.id = 436, .distance = 38.606f},
-                {.id = 480, .distance = 45.102f}
-            }
-        },
-        {
-            .point_id = 454,
-            .neighbors = {
-                {.id = 436, .distance = 28.126f},
-                {.id = 453, .distance = 30.943f},
-                {.id = 455, .distance = 32.322f},
-                {.id = 482, .distance = 33.115f},
-                {.id = 481, .distance = 43.474f},
-                {.id = 483, .distance = 44.048f},
-                {.id = 435, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 455,
-            .neighbors = {
-                {.id = 485, .distance = 30.540f},
-                {.id = 437, .distance = 30.745f},
-                {.id = 454, .distance = 32.322f},
-                {.id = 456, .distance = 32.441f},
-                {.id = 483, .distance = 37.153f},
-                {.id = 436, .distance = 40.686f},
-                {.id = 484, .distance = 45.279f}
-            }
-        },
-        {
-            .point_id = 456,
-            .neighbors = {
-                {.id = 485, .distance = 27.373f},
-                {.id = 457, .distance = 31.563f},
-                {.id = 455, .distance = 32.441f},
-                {.id = 437, .distance = 33.990f},
-                {.id = 487, .distance = 35.618f},
-                {.id = 438, .distance = 35.628f},
-                {.id = 489, .distance = 36.566f}
-            }
-        },
-        {
-            .point_id = 457,
-            .neighbors = {
-                {.id = 489, .distance = 24.293f},
-                {.id = 438, .distance = 30.088f},
-                {.id = 456, .distance = 31.563f},
-                {.id = 458, .distance = 31.793f},
-                {.id = 439, .distance = 42.067f},
-                {.id = 490, .distance = 43.775f},
-                {.id = 491, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 458,
-            .neighbors = {
-                {.id = 439, .distance = 28.726f},
-                {.id = 459, .distance = 31.427f},
-                {.id = 457, .distance = 31.793f},
-                {.id = 492, .distance = 35.922f},
-                {.id = 491, .distance = 37.333f},
-                {.id = 438, .distance = 44.864f},
-                {.id = 489, .distance = 47.704f}
-            }
-        },
-        {
-            .point_id = 459,
-            .neighbors = {
-                {.id = 458, .distance = 31.427f},
-                {.id = 440, .distance = 31.889f},
-                {.id = 460, .distance = 32.342f},
-                {.id = 493, .distance = 35.562f},
-                {.id = 439, .distance = 37.444f},
-                {.id = 492, .distance = 39.243f},
-                {.id = 495, .distance = 41.982f}
-            }
-        },
-        {
-            .point_id = 460,
-            .neighbors = {
-                {.id = 495, .distance = 23.803f},
-                {.id = 461, .distance = 31.693f},
-                {.id = 459, .distance = 32.342f},
-                {.id = 440, .distance = 32.458f},
-                {.id = 441, .distance = 36.707f},
-                {.id = 497, .distance = 41.333f},
-                {.id = 494, .distance = 44.974f}
-            }
-        },
-        {
-            .point_id = 461,
-            .neighbors = {
-                {.id = 499, .distance = 24.410f},
-                {.id = 441, .distance = 28.557f},
-                {.id = 460, .distance = 31.693f},
-                {.id = 462, .distance = 32.138f},
-                {.id = 497, .distance = 38.124f},
-                {.id = 495, .distance = 43.096f},
-                {.id = 442, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 462,
-            .neighbors = {
-                {.id = 442, .distance = 29.283f},
-                {.id = 463, .distance = 31.589f},
-                {.id = 461, .distance = 32.138f},
-                {.id = 501, .distance = 36.174f},
-                {.id = 499, .distance = 36.927f},
-                {.id = 441, .distance = 42.276f},
-                {.id = 502, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 463,
-            .neighbors = {
-                {.id = 462, .distance = 31.589f},
-                {.id = 464, .distance = 32.185f},
-                {.id = 502, .distance = 33.528f},
-                {.id = 443, .distance = 33.774f},
-                {.id = 442, .distance = 35.383f},
-                {.id = 503, .distance = 39.292f},
-                {.id = 501, .distance = 48.151f}
-            }
-        },
-        {
-            .point_id = 464,
-            .neighbors = {
-                {.id = 505, .distance = 26.800f},
-                {.id = 443, .distance = 30.492f},
-                {.id = 465, .distance = 31.085f},
-                {.id = 463, .distance = 32.185f},
-                {.id = 444, .distance = 39.658f},
-                {.id = 503, .distance = 40.843f},
-                {.id = 504, .distance = 44.297f}
-            }
-        },
-        {
-            .point_id = 465,
-            .neighbors = {
-                {.id = 444, .distance = 28.796f},
-                {.id = 464, .distance = 31.085f},
-                {.id = 505, .distance = 31.165f},
-                {.id = 466, .distance = 31.748f},
-                {.id = 509, .distance = 32.025f},
-                {.id = 507, .distance = 35.484f},
-                {.id = 445, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 466,
-            .neighbors = {
-                {.id = 509, .distance = 26.974f},
-                {.id = 445, .distance = 30.076f},
-                {.id = 467, .distance = 31.574f},
-                {.id = 465, .distance = 31.748f},
-                {.id = 444, .distance = 39.130f},
-                {.id = 511, .distance = 40.759f},
-                {.id = 510, .distance = 44.255f}
-            }
-        },
-        {
-            .point_id = 467,
-            .neighbors = {
-                {.id = 466, .distance = 31.574f},
-                {.id = 468, .distance = 32.495f},
-                {.id = 445, .distance = 33.386f},
-                {.id = 512, .distance = 34.006f},
-                {.id = 446, .distance = 35.446f},
-                {.id = 511, .distance = 40.058f},
-                {.id = 513, .distance = 48.765f}
-            }
-        },
-        {
-            .point_id = 468,
-            .neighbors = {
-                {.id = 446, .distance = 29.653f},
-                {.id = 469, .distance = 31.761f},
-                {.id = 467, .distance = 32.495f},
-                {.id = 513, .distance = 35.652f},
-                {.id = 515, .distance = 35.973f},
-                {.id = 447, .distance = 42.498f},
-                {.id = 512, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 469,
-            .neighbors = {
-                {.id = 515, .distance = 24.656f},
-                {.id = 447, .distance = 28.776f},
-                {.id = 448, .distance = 31.442f},
-                {.id = 468, .distance = 31.761f},
-                {.id = 517, .distance = 38.273f},
-                {.id = 470, .distance = 43.129f},
-                {.id = 446, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 470,
-            .neighbors = {
-                {.id = 519, .distance = 22.863f},
-                {.id = 448, .distance = 23.617f},
-                {.id = 517, .distance = 27.856f},
-                {.id = 518, .distance = 35.561f},
-                {.id = 471, .distance = 37.917f},
-                {.id = 449, .distance = 41.895f},
-                {.id = 469, .distance = 43.129f}
-            }
-        },
-        {
-            .point_id = 471,
-            .neighbors = {
-                {.id = 519, .distance = 28.096f},
-                {.id = 87, .distance = 29.135f},
-                {.id = 472, .distance = 29.153f},
-                {.id = 449, .distance = 36.068f},
-                {.id = 470, .distance = 37.917f},
-                {.id = 88, .distance = 40.304f},
-                {.id = 86, .distance = 41.584f}
-            }
-        },
-        {
-            .point_id = 472,
-            .neighbors = {
-                {.id = 473, .distance = 28.265f},
-                {.id = 471, .distance = 29.153f},
-                {.id = 86, .distance = 29.580f},
-                {.id = 450, .distance = 35.794f},
-                {.id = 449, .distance = 39.068f},
-                {.id = 87, .distance = 40.348f},
-                {.id = 85, .distance = 41.613f}
-            }
-        },
-        {
-            .point_id = 473,
-            .neighbors = {
-                {.id = 472, .distance = 28.265f},
-                {.id = 475, .distance = 28.989f},
-                {.id = 85, .distance = 29.175f},
-                {.id = 450, .distance = 36.665f},
-                {.id = 474, .distance = 38.712f},
-                {.id = 86, .distance = 40.192f},
-                {.id = 84, .distance = 41.569f}
-            }
-        },
-        {
-            .point_id = 474,
-            .neighbors = {
-                {.id = 475, .distance = 23.607f},
-                {.id = 451, .distance = 24.191f},
-                {.id = 476, .distance = 27.455f},
-                {.id = 477, .distance = 35.536f},
-                {.id = 452, .distance = 36.051f},
-                {.id = 473, .distance = 38.712f},
-                {.id = 450, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 475,
-            .neighbors = {
-                {.id = 474, .distance = 23.607f},
-                {.id = 477, .distance = 28.500f},
-                {.id = 473, .distance = 28.989f},
-                {.id = 84, .distance = 29.217f},
-                {.id = 476, .distance = 38.998f},
-                {.id = 85, .distance = 40.470f},
-                {.id = 82, .distance = 41.271f}
-            }
-        },
-        {
-            .point_id = 476,
-            .neighbors = {
-                {.id = 477, .distance = 25.823f},
-                {.id = 478, .distance = 26.007f},
-                {.id = 479, .distance = 27.304f},
-                {.id = 474, .distance = 27.455f},
-                {.id = 452, .distance = 35.506f},
-                {.id = 475, .distance = 38.998f},
-                {.id = 480, .distance = 39.242f}
-            }
-        },
-        {
-            .point_id = 477,
-            .neighbors = {
-                {.id = 476, .distance = 25.823f},
-                {.id = 475, .distance = 28.500f},
-                {.id = 82, .distance = 29.341f},
-                {.id = 478, .distance = 30.900f},
-                {.id = 474, .distance = 35.536f},
-                {.id = 84, .distance = 40.505f},
-                {.id = 80, .distance = 51.992f}
-            }
-        },
-        {
-            .point_id = 478,
-            .neighbors = {
-                {.id = 476, .distance = 26.007f},
-                {.id = 620, .distance = 29.051f},
-                {.id = 480, .distance = 29.614f},
-                {.id = 477, .distance = 30.900f},
-                {.id = 479, .distance = 35.963f},
-                {.id = 618, .distance = 41.540f},
-                {.id = 622, .distance = 51.840f}
-            }
-        },
-        {
-            .point_id = 479,
-            .neighbors = {
-                {.id = 480, .distance = 23.404f},
-                {.id = 476, .distance = 27.304f},
-                {.id = 452, .distance = 27.519f},
-                {.id = 453, .distance = 31.347f},
-                {.id = 478, .distance = 35.963f},
-                {.id = 481, .distance = 38.924f},
-                {.id = 474, .distance = 47.034f}
-            }
-        },
-        {
-            .point_id = 480,
-            .neighbors = {
-                {.id = 479, .distance = 23.404f},
-                {.id = 481, .distance = 28.584f},
-                {.id = 478, .distance = 29.614f},
-                {.id = 618, .distance = 29.702f},
-                {.id = 476, .distance = 39.242f},
-                {.id = 617, .distance = 41.095f},
-                {.id = 620, .distance = 41.571f}
-            }
-        },
-        {
-            .point_id = 481,
-            .neighbors = {
-                {.id = 482, .distance = 28.069f},
-                {.id = 480, .distance = 28.584f},
-                {.id = 617, .distance = 29.685f},
-                {.id = 453, .distance = 37.393f},
-                {.id = 479, .distance = 38.924f},
-                {.id = 616, .distance = 41.143f},
-                {.id = 618, .distance = 41.304f}
-            }
-        },
-        {
-            .point_id = 482,
-            .neighbors = {
-                {.id = 481, .distance = 28.069f},
-                {.id = 483, .distance = 28.840f},
-                {.id = 616, .distance = 29.797f},
-                {.id = 454, .distance = 33.115f},
-                {.id = 617, .distance = 41.280f},
-                {.id = 615, .distance = 41.692f},
-                {.id = 453, .distance = 48.228f}
-            }
-        },
-        {
-            .point_id = 483,
-            .neighbors = {
-                {.id = 482, .distance = 28.840f},
-                {.id = 484, .distance = 29.097f},
-                {.id = 615, .distance = 29.688f},
-                {.id = 455, .distance = 37.153f},
-                {.id = 485, .distance = 38.371f},
-                {.id = 616, .distance = 41.093f},
-                {.id = 614, .distance = 41.803f}
-            }
-        },
-        {
-            .point_id = 484,
-            .neighbors = {
-                {.id = 485, .distance = 23.468f},
-                {.id = 486, .distance = 28.068f},
-                {.id = 483, .distance = 29.097f},
-                {.id = 614, .distance = 29.884f},
-                {.id = 487, .distance = 37.859f},
-                {.id = 612, .distance = 41.024f},
-                {.id = 615, .distance = 41.264f}
-            }
-        },
-        {
-            .point_id = 485,
-            .neighbors = {
-                {.id = 484, .distance = 23.468f},
-                {.id = 487, .distance = 26.995f},
-                {.id = 456, .distance = 27.373f},
-                {.id = 455, .distance = 30.540f},
-                {.id = 486, .distance = 35.584f},
-                {.id = 483, .distance = 38.371f},
-                {.id = 489, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 486,
-            .neighbors = {
-                {.id = 487, .distance = 25.235f},
-                {.id = 484, .distance = 28.068f},
-                {.id = 612, .distance = 29.698f},
-                {.id = 488, .distance = 31.314f},
-                {.id = 485, .distance = 35.584f},
-                {.id = 614, .distance = 40.907f},
-                {.id = 714, .distance = 50.621f}
-            }
-        },
-        {
-            .point_id = 487,
-            .neighbors = {
-                {.id = 486, .distance = 25.235f},
-                {.id = 488, .distance = 25.959f},
-                {.id = 485, .distance = 26.995f},
-                {.id = 489, .distance = 28.280f},
-                {.id = 456, .distance = 35.618f},
-                {.id = 484, .distance = 37.859f},
-                {.id = 490, .distance = 39.348f}
-            }
-        },
-        {
-            .point_id = 488,
-            .neighbors = {
-                {.id = 487, .distance = 25.959f},
-                {.id = 714, .distance = 27.690f},
-                {.id = 490, .distance = 28.175f},
-                {.id = 486, .distance = 31.314f},
-                {.id = 489, .distance = 35.099f},
-                {.id = 712, .distance = 39.154f},
-                {.id = 715, .distance = 50.900f}
-            }
-        },
-        {
-            .point_id = 489,
-            .neighbors = {
-                {.id = 490, .distance = 22.858f},
-                {.id = 457, .distance = 24.293f},
-                {.id = 487, .distance = 28.280f},
-                {.id = 488, .distance = 35.099f},
-                {.id = 456, .distance = 36.566f},
-                {.id = 491, .distance = 37.718f},
-                {.id = 485, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 490,
-            .neighbors = {
-                {.id = 489, .distance = 22.858f},
-                {.id = 712, .distance = 27.436f},
-                {.id = 488, .distance = 28.175f},
-                {.id = 491, .distance = 28.665f},
-                {.id = 487, .distance = 39.348f},
-                {.id = 714, .distance = 40.114f},
-                {.id = 711, .distance = 40.252f}
-            }
-        },
-        {
-            .point_id = 491,
-            .neighbors = {
-                {.id = 711, .distance = 27.613f},
-                {.id = 490, .distance = 28.665f},
-                {.id = 492, .distance = 28.744f},
-                {.id = 458, .distance = 37.333f},
-                {.id = 489, .distance = 37.718f},
-                {.id = 710, .distance = 39.855f},
-                {.id = 712, .distance = 39.947f}
-            }
-        },
-        {
-            .point_id = 492,
-            .neighbors = {
-                {.id = 710, .distance = 27.498f},
-                {.id = 493, .distance = 28.665f},
-                {.id = 491, .distance = 28.744f},
-                {.id = 458, .distance = 35.922f},
-                {.id = 459, .distance = 39.243f},
-                {.id = 711, .distance = 39.255f},
-                {.id = 709, .distance = 39.752f}
-            }
-        },
-        {
-            .point_id = 493,
-            .neighbors = {
-                {.id = 709, .distance = 27.628f},
-                {.id = 492, .distance = 28.665f},
-                {.id = 494, .distance = 28.989f},
-                {.id = 459, .distance = 35.562f},
-                {.id = 495, .distance = 37.946f},
-                {.id = 710, .distance = 39.790f},
-                {.id = 708, .distance = 39.805f}
-            }
-        },
-        {
-            .point_id = 494,
-            .neighbors = {
-                {.id = 495, .distance = 22.522f},
-                {.id = 708, .distance = 27.583f},
-                {.id = 493, .distance = 28.989f},
-                {.id = 496, .distance = 28.989f},
-                {.id = 497, .distance = 38.748f},
-                {.id = 706, .distance = 39.435f},
-                {.id = 709, .distance = 40.007f}
-            }
-        },
-        {
-            .point_id = 495,
-            .neighbors = {
-                {.id = 494, .distance = 22.522f},
-                {.id = 460, .distance = 23.803f},
-                {.id = 497, .distance = 27.573f},
-                {.id = 496, .distance = 35.430f},
-                {.id = 493, .distance = 37.946f},
-                {.id = 459, .distance = 41.982f},
-                {.id = 461, .distance = 43.096f}
-            }
-        },
-        {
-            .point_id = 496,
-            .neighbors = {
-                {.id = 497, .distance = 25.732f},
-                {.id = 706, .distance = 27.473f},
-                {.id = 494, .distance = 28.989f},
-                {.id = 498, .distance = 30.699f},
-                {.id = 495, .distance = 35.430f},
-                {.id = 708, .distance = 40.223f},
-                {.id = 704, .distance = 49.900f}
-            }
-        },
-        {
-            .point_id = 497,
-            .neighbors = {
-                {.id = 498, .distance = 25.715f},
-                {.id = 496, .distance = 25.732f},
-                {.id = 499, .distance = 27.009f},
-                {.id = 495, .distance = 27.573f},
-                {.id = 461, .distance = 38.124f},
-                {.id = 494, .distance = 38.748f},
-                {.id = 500, .distance = 38.795f}
-            }
-        },
-        {
-            .point_id = 498,
-            .neighbors = {
-                {.id = 497, .distance = 25.715f},
-                {.id = 1140, .distance = 27.990f},
-                {.id = 500, .distance = 28.587f},
-                {.id = 496, .distance = 30.699f},
-                {.id = 499, .distance = 35.180f},
-                {.id = 1138, .distance = 41.739f},
-                {.id = 1142, .distance = 50.403f}
-            }
-        },
-        {
-            .point_id = 499,
-            .neighbors = {
-                {.id = 500, .distance = 23.318f},
-                {.id = 461, .distance = 24.410f},
-                {.id = 497, .distance = 27.009f},
-                {.id = 498, .distance = 35.180f},
-                {.id = 462, .distance = 36.927f},
-                {.id = 501, .distance = 38.625f},
-                {.id = 495, .distance = 47.229f}
-            }
-        },
-        {
-            .point_id = 500,
-            .neighbors = {
-                {.id = 499, .distance = 23.318f},
-                {.id = 1138, .distance = 28.526f},
-                {.id = 498, .distance = 28.587f},
-                {.id = 501, .distance = 28.648f},
-                {.id = 497, .distance = 38.795f},
-                {.id = 1140, .distance = 39.023f},
-                {.id = 1137, .distance = 41.888f}
-            }
-        },
-        {
-            .point_id = 501,
-            .neighbors = {
-                {.id = 500, .distance = 28.648f},
-                {.id = 502, .distance = 28.678f},
-                {.id = 1137, .distance = 28.720f},
-                {.id = 462, .distance = 36.174f},
-                {.id = 499, .distance = 38.625f},
-                {.id = 1138, .distance = 38.975f},
-                {.id = 1136, .distance = 42.065f}
-            }
-        },
-        {
-            .point_id = 502,
-            .neighbors = {
-                {.id = 503, .distance = 28.019f},
-                {.id = 1136, .distance = 28.593f},
-                {.id = 501, .distance = 28.678f},
-                {.id = 463, .distance = 33.528f},
-                {.id = 1137, .distance = 39.193f},
-                {.id = 1135, .distance = 42.010f},
-                {.id = 462, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 503,
-            .neighbors = {
-                {.id = 502, .distance = 28.019f},
-                {.id = 1135, .distance = 28.538f},
-                {.id = 504, .distance = 29.666f},
-                {.id = 1136, .distance = 38.440f},
-                {.id = 505, .distance = 39.143f},
-                {.id = 463, .distance = 39.292f},
-                {.id = 464, .distance = 40.843f}
-            }
-        },
-        {
-            .point_id = 504,
-            .neighbors = {
-                {.id = 505, .distance = 23.574f},
-                {.id = 1134, .distance = 28.586f},
-                {.id = 506, .distance = 28.796f},
-                {.id = 503, .distance = 29.666f},
-                {.id = 507, .distance = 38.536f},
-                {.id = 1135, .distance = 38.933f},
-                {.id = 1132, .distance = 41.429f}
-            }
-        },
-        {
-            .point_id = 505,
-            .neighbors = {
-                {.id = 504, .distance = 23.574f},
-                {.id = 464, .distance = 26.800f},
-                {.id = 507, .distance = 27.295f},
-                {.id = 465, .distance = 31.165f},
-                {.id = 506, .distance = 35.726f},
-                {.id = 503, .distance = 39.143f},
-                {.id = 509, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 506,
-            .neighbors = {
-                {.id = 507, .distance = 25.236f},
-                {.id = 1132, .distance = 28.551f},
-                {.id = 504, .distance = 28.796f},
-                {.id = 508, .distance = 30.643f},
-                {.id = 505, .distance = 35.726f},
-                {.id = 1134, .distance = 39.222f},
-                {.id = 509, .distance = 51.793f}
-            }
-        },
-        {
-            .point_id = 507,
-            .neighbors = {
-                {.id = 506, .distance = 25.236f},
-                {.id = 508, .distance = 25.701f},
-                {.id = 505, .distance = 27.295f},
-                {.id = 509, .distance = 27.601f},
-                {.id = 465, .distance = 35.484f},
-                {.id = 504, .distance = 38.536f},
-                {.id = 510, .distance = 38.536f}
-            }
-        },
-        {
-            .point_id = 508,
-            .neighbors = {
-                {.id = 507, .distance = 25.701f},
-                {.id = 510, .distance = 28.171f},
-                {.id = 382, .distance = 29.698f},
-                {.id = 506, .distance = 30.643f},
-                {.id = 509, .distance = 35.416f},
-                {.id = 380, .distance = 41.024f},
-                {.id = 1132, .distance = 50.454f}
-            }
-        },
-        {
-            .point_id = 509,
-            .neighbors = {
-                {.id = 510, .distance = 23.046f},
-                {.id = 466, .distance = 26.974f},
-                {.id = 507, .distance = 27.601f},
-                {.id = 465, .distance = 32.025f},
-                {.id = 508, .distance = 35.416f},
-                {.id = 511, .distance = 38.124f},
-                {.id = 505, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 510,
-            .neighbors = {
-                {.id = 509, .distance = 23.046f},
-                {.id = 508, .distance = 28.171f},
-                {.id = 511, .distance = 28.796f},
-                {.id = 380, .distance = 29.884f},
-                {.id = 507, .distance = 38.536f},
-                {.id = 382, .distance = 40.907f},
-                {.id = 379, .distance = 41.803f}
-            }
-        },
-        {
-            .point_id = 511,
-            .neighbors = {
-                {.id = 512, .distance = 28.739f},
-                {.id = 510, .distance = 28.796f},
-                {.id = 379, .distance = 29.688f},
-                {.id = 509, .distance = 38.124f},
-                {.id = 467, .distance = 40.058f},
-                {.id = 466, .distance = 40.759f},
-                {.id = 380, .distance = 41.264f}
-            }
-        },
-        {
-            .point_id = 512,
-            .neighbors = {
-                {.id = 511, .distance = 28.739f},
-                {.id = 513, .distance = 28.996f},
-                {.id = 378, .distance = 29.797f},
-                {.id = 467, .distance = 34.006f},
-                {.id = 379, .distance = 41.093f},
-                {.id = 377, .distance = 41.143f},
-                {.id = 468, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 513,
-            .neighbors = {
-                {.id = 514, .distance = 28.539f},
-                {.id = 512, .distance = 28.996f},
-                {.id = 377, .distance = 29.685f},
-                {.id = 468, .distance = 35.652f},
-                {.id = 515, .distance = 38.072f},
-                {.id = 376, .distance = 41.095f},
-                {.id = 378, .distance = 41.280f}
-            }
-        },
-        {
-            .point_id = 514,
-            .neighbors = {
-                {.id = 515, .distance = 23.229f},
-                {.id = 513, .distance = 28.539f},
-                {.id = 516, .distance = 29.175f},
-                {.id = 376, .distance = 29.702f},
-                {.id = 517, .distance = 38.795f},
-                {.id = 377, .distance = 41.304f},
-                {.id = 374, .distance = 41.540f}
-            }
-        },
-        {
-            .point_id = 515,
-            .neighbors = {
-                {.id = 514, .distance = 23.229f},
-                {.id = 469, .distance = 24.656f},
-                {.id = 517, .distance = 27.373f},
-                {.id = 468, .distance = 35.973f},
-                {.id = 516, .distance = 36.131f},
-                {.id = 513, .distance = 38.072f},
-                {.id = 470, .distance = 47.750f}
-            }
-        },
-        {
-            .point_id = 516,
-            .neighbors = {
-                {.id = 517, .distance = 26.133f},
-                {.id = 374, .distance = 29.051f},
-                {.id = 514, .distance = 29.175f},
-                {.id = 518, .distance = 30.723f},
-                {.id = 515, .distance = 36.131f},
-                {.id = 376, .distance = 41.571f},
-                {.id = 373, .distance = 52.211f}
-            }
-        },
-        {
-            .point_id = 517,
-            .neighbors = {
-                {.id = 518, .distance = 25.813f},
-                {.id = 516, .distance = 26.133f},
-                {.id = 515, .distance = 27.373f},
-                {.id = 470, .distance = 27.856f},
-                {.id = 469, .distance = 38.273f},
-                {.id = 514, .distance = 38.795f},
-                {.id = 519, .distance = 39.458f}
-            }
-        },
-        {
-            .point_id = 518,
-            .neighbors = {
-                {.id = 517, .distance = 25.813f},
-                {.id = 90, .distance = 29.473f},
-                {.id = 519, .distance = 29.479f},
-                {.id = 516, .distance = 30.723f},
-                {.id = 470, .distance = 35.561f},
-                {.id = 88, .distance = 41.626f},
-                {.id = 92, .distance = 51.460f}
-            }
-        },
-        {
-            .point_id = 519,
-            .neighbors = {
-                {.id = 470, .distance = 22.863f},
-                {.id = 471, .distance = 28.096f},
-                {.id = 88, .distance = 29.181f},
-                {.id = 518, .distance = 29.479f},
-                {.id = 517, .distance = 39.458f},
-                {.id = 90, .distance = 41.051f},
-                {.id = 87, .distance = 41.749f}
-            }
-        },
-        {
-            .point_id = 520,
-            .neighbors = {
-                {.id = 521, .distance = 25.256f},
-                {.id = 523, .distance = 25.653f},
-                {.id = 522, .distance = 25.660f},
-                {.id = 525, .distance = 26.237f},
-                {.id = 524, .distance = 26.780f},
-                {.id = 527, .distance = 53.251f},
-                {.id = 531, .distance = 53.584f}
-            }
-        },
-        {
-            .point_id = 521,
-            .neighbors = {
-                {.id = 520, .distance = 25.256f},
-                {.id = 527, .distance = 27.996f},
-                {.id = 525, .distance = 30.406f},
-                {.id = 522, .distance = 30.745f},
-                {.id = 528, .distance = 36.902f},
-                {.id = 526, .distance = 36.902f},
-                {.id = 523, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 522,
-            .neighbors = {
-                {.id = 520, .distance = 25.660f},
-                {.id = 529, .distance = 28.138f},
-                {.id = 523, .distance = 30.016f},
-                {.id = 521, .distance = 30.745f},
-                {.id = 530, .distance = 35.779f},
-                {.id = 528, .distance = 37.730f},
-                {.id = 524, .distance = 49.623f}
-            }
-        },
-        {
-            .point_id = 523,
-            .neighbors = {
-                {.id = 520, .distance = 25.653f},
-                {.id = 531, .distance = 27.950f},
-                {.id = 522, .distance = 30.016f},
-                {.id = 524, .distance = 30.334f},
-                {.id = 532, .distance = 36.663f},
-                {.id = 530, .distance = 36.917f},
-                {.id = 521, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 524,
-            .neighbors = {
-                {.id = 520, .distance = 26.780f},
-                {.id = 533, .distance = 28.148f},
-                {.id = 523, .distance = 30.334f},
-                {.id = 525, .distance = 30.829f},
-                {.id = 532, .distance = 36.041f},
-                {.id = 534, .distance = 36.581f},
-                {.id = 521, .distance = 49.415f}
-            }
-        },
-        {
-            .point_id = 525,
-            .neighbors = {
-                {.id = 520, .distance = 26.237f},
-                {.id = 535, .distance = 28.784f},
-                {.id = 521, .distance = 30.406f},
-                {.id = 524, .distance = 30.829f},
-                {.id = 526, .distance = 36.136f},
-                {.id = 534, .distance = 36.663f},
-                {.id = 523, .distance = 49.028f}
-            }
-        },
-        {
-            .point_id = 526,
-            .neighbors = {
-                {.id = 537, .distance = 29.943f},
-                {.id = 535, .distance = 32.709f},
-                {.id = 527, .distance = 33.241f},
-                {.id = 536, .distance = 35.999f},
-                {.id = 525, .distance = 36.136f},
-                {.id = 521, .distance = 36.902f},
-                {.id = 538, .distance = 43.146f}
-            }
-        },
-        {
-            .point_id = 527,
-            .neighbors = {
-                {.id = 521, .distance = 27.996f},
-                {.id = 538, .distance = 31.091f},
-                {.id = 526, .distance = 33.241f},
-                {.id = 528, .distance = 33.489f},
-                {.id = 539, .distance = 33.997f},
-                {.id = 537, .distance = 46.465f},
-                {.id = 540, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 528,
-            .neighbors = {
-                {.id = 540, .distance = 28.795f},
-                {.id = 527, .distance = 33.489f},
-                {.id = 529, .distance = 34.526f},
-                {.id = 521, .distance = 36.902f},
-                {.id = 522, .distance = 37.730f},
-                {.id = 539, .distance = 39.001f},
-                {.id = 541, .distance = 39.043f}
-            }
-        },
-        {
-            .point_id = 529,
-            .neighbors = {
-                {.id = 522, .distance = 28.138f},
-                {.id = 542, .distance = 30.119f},
-                {.id = 530, .distance = 32.862f},
-                {.id = 541, .distance = 33.326f},
-                {.id = 528, .distance = 34.526f},
-                {.id = 543, .distance = 46.032f},
-                {.id = 540, .distance = 51.953f}
-            }
-        },
-        {
-            .point_id = 530,
-            .neighbors = {
-                {.id = 543, .distance = 29.271f},
-                {.id = 529, .distance = 32.862f},
-                {.id = 531, .distance = 32.910f},
-                {.id = 544, .distance = 35.475f},
-                {.id = 522, .distance = 35.779f},
-                {.id = 523, .distance = 36.917f},
-                {.id = 542, .distance = 42.036f}
-            }
-        },
-        {
-            .point_id = 531,
-            .neighbors = {
-                {.id = 523, .distance = 27.950f},
-                {.id = 545, .distance = 30.515f},
-                {.id = 530, .distance = 32.910f},
-                {.id = 532, .distance = 34.288f},
-                {.id = 544, .distance = 35.680f},
-                {.id = 546, .distance = 43.747f},
-                {.id = 522, .distance = 50.881f}
-            }
-        },
-        {
-            .point_id = 532,
-            .neighbors = {
-                {.id = 546, .distance = 30.713f},
-                {.id = 547, .distance = 32.961f},
-                {.id = 531, .distance = 34.288f},
-                {.id = 533, .distance = 34.333f},
-                {.id = 524, .distance = 36.041f},
-                {.id = 523, .distance = 36.663f},
-                {.id = 545, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 533,
-            .neighbors = {
-                {.id = 524, .distance = 28.148f},
-                {.id = 548, .distance = 28.795f},
-                {.id = 534, .distance = 32.474f},
-                {.id = 532, .distance = 34.333f},
-                {.id = 549, .distance = 37.853f},
-                {.id = 547, .distance = 39.529f},
-                {.id = 525, .distance = 52.029f}
-            }
-        },
-        {
-            .point_id = 534,
-            .neighbors = {
-                {.id = 550, .distance = 30.978f},
-                {.id = 533, .distance = 32.474f},
-                {.id = 549, .distance = 33.378f},
-                {.id = 535, .distance = 34.135f},
-                {.id = 524, .distance = 36.581f},
-                {.id = 525, .distance = 36.663f},
-                {.id = 551, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 535,
-            .neighbors = {
-                {.id = 525, .distance = 28.784f},
-                {.id = 551, .distance = 29.314f},
-                {.id = 526, .distance = 32.709f},
-                {.id = 534, .distance = 34.135f},
-                {.id = 536, .distance = 35.428f},
-                {.id = 550, .distance = 42.934f},
-                {.id = 521, .distance = 52.730f}
-            }
-        },
-        {
-            .point_id = 536,
-            .neighbors = {
-                {.id = 553, .distance = 31.937f},
-                {.id = 552, .distance = 31.964f},
-                {.id = 551, .distance = 32.088f},
-                {.id = 537, .distance = 32.704f},
-                {.id = 535, .distance = 35.428f},
-                {.id = 526, .distance = 35.999f},
-                {.id = 573, .distance = 49.921f}
-            }
-        },
-        {
-            .point_id = 537,
-            .neighbors = {
-                {.id = 554, .distance = 29.419f},
-                {.id = 526, .distance = 29.943f},
-                {.id = 538, .distance = 32.468f},
-                {.id = 536, .distance = 32.704f},
-                {.id = 553, .distance = 37.491f},
-                {.id = 555, .distance = 41.947f},
-                {.id = 527, .distance = 46.465f}
-            }
-        },
-        {
-            .point_id = 538,
-            .neighbors = {
-                {.id = 555, .distance = 29.848f},
-                {.id = 527, .distance = 31.091f},
-                {.id = 539, .distance = 31.917f},
-                {.id = 537, .distance = 32.468f},
-                {.id = 556, .distance = 35.426f},
-                {.id = 526, .distance = 43.146f},
-                {.id = 554, .distance = 44.568f}
-            }
-        },
-        {
-            .point_id = 539,
-            .neighbors = {
-                {.id = 557, .distance = 30.775f},
-                {.id = 538, .distance = 31.917f},
-                {.id = 540, .distance = 32.089f},
-                {.id = 556, .distance = 33.457f},
-                {.id = 527, .distance = 33.997f},
-                {.id = 528, .distance = 39.001f},
-                {.id = 558, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 540,
-            .neighbors = {
-                {.id = 558, .distance = 28.126f},
-                {.id = 528, .distance = 28.795f},
-                {.id = 539, .distance = 32.089f},
-                {.id = 541, .distance = 33.350f},
-                {.id = 557, .distance = 38.606f},
-                {.id = 559, .distance = 40.686f},
-                {.id = 527, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 541,
-            .neighbors = {
-                {.id = 559, .distance = 30.745f},
-                {.id = 542, .distance = 32.585f},
-                {.id = 529, .distance = 33.326f},
-                {.id = 540, .distance = 33.350f},
-                {.id = 560, .distance = 33.990f},
-                {.id = 528, .distance = 39.043f},
-                {.id = 558, .distance = 47.230f}
-            }
-        },
-        {
-            .point_id = 542,
-            .neighbors = {
-                {.id = 561, .distance = 30.088f},
-                {.id = 529, .distance = 30.119f},
-                {.id = 543, .distance = 32.298f},
-                {.id = 541, .distance = 32.585f},
-                {.id = 560, .distance = 35.628f},
-                {.id = 530, .distance = 42.036f},
-                {.id = 562, .distance = 44.864f}
-            }
-        },
-        {
-            .point_id = 543,
-            .neighbors = {
-                {.id = 562, .distance = 28.726f},
-                {.id = 530, .distance = 29.271f},
-                {.id = 544, .distance = 31.916f},
-                {.id = 542, .distance = 32.298f},
-                {.id = 563, .distance = 37.444f},
-                {.id = 561, .distance = 42.067f},
-                {.id = 529, .distance = 46.032f}
-            }
-        },
-        {
-            .point_id = 544,
-            .neighbors = {
-                {.id = 563, .distance = 31.889f},
-                {.id = 543, .distance = 31.916f},
-                {.id = 564, .distance = 32.458f},
-                {.id = 545, .distance = 32.605f},
-                {.id = 530, .distance = 35.475f},
-                {.id = 531, .distance = 35.680f},
-                {.id = 562, .distance = 49.358f}
-            }
-        },
-        {
-            .point_id = 545,
-            .neighbors = {
-                {.id = 565, .distance = 28.557f},
-                {.id = 531, .distance = 30.515f},
-                {.id = 544, .distance = 32.605f},
-                {.id = 546, .distance = 33.386f},
-                {.id = 564, .distance = 36.707f},
-                {.id = 566, .distance = 42.276f},
-                {.id = 532, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 546,
-            .neighbors = {
-                {.id = 566, .distance = 29.283f},
-                {.id = 532, .distance = 30.713f},
-                {.id = 547, .distance = 32.395f},
-                {.id = 545, .distance = 33.386f},
-                {.id = 567, .distance = 35.383f},
-                {.id = 531, .distance = 43.747f},
-                {.id = 565, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 547,
-            .neighbors = {
-                {.id = 568, .distance = 30.492f},
-                {.id = 546, .distance = 32.395f},
-                {.id = 548, .distance = 32.492f},
-                {.id = 532, .distance = 32.961f},
-                {.id = 567, .distance = 33.774f},
-                {.id = 533, .distance = 39.529f},
-                {.id = 569, .distance = 46.947f}
-            }
-        },
-        {
-            .point_id = 548,
-            .neighbors = {
-                {.id = 533, .distance = 28.795f},
-                {.id = 569, .distance = 28.796f},
-                {.id = 549, .distance = 31.301f},
-                {.id = 547, .distance = 32.492f},
-                {.id = 570, .distance = 39.130f},
-                {.id = 568, .distance = 39.658f},
-                {.id = 534, .distance = 50.236f}
-            }
-        },
-        {
-            .point_id = 549,
-            .neighbors = {
-                {.id = 570, .distance = 30.076f},
-                {.id = 548, .distance = 31.301f},
-                {.id = 550, .distance = 33.324f},
-                {.id = 534, .distance = 33.378f},
-                {.id = 571, .distance = 33.386f},
-                {.id = 533, .distance = 37.853f},
-                {.id = 569, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 550,
-            .neighbors = {
-                {.id = 572, .distance = 29.653f},
-                {.id = 534, .distance = 30.978f},
-                {.id = 551, .distance = 32.852f},
-                {.id = 549, .distance = 33.324f},
-                {.id = 571, .distance = 35.446f},
-                {.id = 535, .distance = 42.934f},
-                {.id = 573, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 551,
-            .neighbors = {
-                {.id = 573, .distance = 28.776f},
-                {.id = 535, .distance = 29.314f},
-                {.id = 536, .distance = 32.088f},
-                {.id = 550, .distance = 32.852f},
-                {.id = 552, .distance = 36.954f},
-                {.id = 572, .distance = 42.498f},
-                {.id = 534, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 552,
-            .neighbors = {
-                {.id = 574, .distance = 23.617f},
-                {.id = 573, .distance = 31.442f},
-                {.id = 536, .distance = 31.964f},
-                {.id = 553, .distance = 32.703f},
-                {.id = 551, .distance = 36.954f},
-                {.id = 621, .distance = 41.259f},
-                {.id = 623, .distance = 45.103f}
-            }
-        },
-        {
-            .point_id = 553,
-            .neighbors = {
-                {.id = 536, .distance = 31.937f},
-                {.id = 552, .distance = 32.703f},
-                {.id = 554, .distance = 32.725f},
-                {.id = 575, .distance = 36.068f},
-                {.id = 537, .distance = 37.491f},
-                {.id = 576, .distance = 39.068f},
-                {.id = 574, .distance = 41.895f}
-            }
-        },
-        {
-            .point_id = 554,
-            .neighbors = {
-                {.id = 537, .distance = 29.419f},
-                {.id = 555, .distance = 30.638f},
-                {.id = 553, .distance = 32.725f},
-                {.id = 576, .distance = 35.794f},
-                {.id = 577, .distance = 36.665f},
-                {.id = 538, .distance = 44.568f},
-                {.id = 578, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 555,
-            .neighbors = {
-                {.id = 578, .distance = 24.191f},
-                {.id = 538, .distance = 29.848f},
-                {.id = 554, .distance = 30.638f},
-                {.id = 556, .distance = 31.516f},
-                {.id = 537, .distance = 41.947f},
-                {.id = 579, .distance = 44.167f},
-                {.id = 577, .distance = 44.460f}
-            }
-        },
-        {
-            .point_id = 556,
-            .neighbors = {
-                {.id = 583, .distance = 27.519f},
-                {.id = 555, .distance = 31.516f},
-                {.id = 557, .distance = 33.096f},
-                {.id = 539, .distance = 33.457f},
-                {.id = 538, .distance = 35.426f},
-                {.id = 580, .distance = 35.506f},
-                {.id = 578, .distance = 36.051f}
-            }
-        },
-        {
-            .point_id = 557,
-            .neighbors = {
-                {.id = 539, .distance = 30.775f},
-                {.id = 558, .distance = 30.943f},
-                {.id = 583, .distance = 31.347f},
-                {.id = 556, .distance = 33.096f},
-                {.id = 585, .distance = 37.393f},
-                {.id = 540, .distance = 38.606f},
-                {.id = 584, .distance = 45.102f}
-            }
-        },
-        {
-            .point_id = 558,
-            .neighbors = {
-                {.id = 540, .distance = 28.126f},
-                {.id = 557, .distance = 30.943f},
-                {.id = 559, .distance = 32.322f},
-                {.id = 586, .distance = 33.115f},
-                {.id = 585, .distance = 43.474f},
-                {.id = 587, .distance = 44.048f},
-                {.id = 539, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 559,
-            .neighbors = {
-                {.id = 589, .distance = 30.540f},
-                {.id = 541, .distance = 30.745f},
-                {.id = 558, .distance = 32.322f},
-                {.id = 560, .distance = 32.441f},
-                {.id = 587, .distance = 37.153f},
-                {.id = 540, .distance = 40.686f},
-                {.id = 588, .distance = 45.279f}
-            }
-        },
-        {
-            .point_id = 560,
-            .neighbors = {
-                {.id = 589, .distance = 27.373f},
-                {.id = 561, .distance = 31.563f},
-                {.id = 559, .distance = 32.441f},
-                {.id = 541, .distance = 33.990f},
-                {.id = 591, .distance = 35.618f},
-                {.id = 542, .distance = 35.628f},
-                {.id = 593, .distance = 36.566f}
-            }
-        },
-        {
-            .point_id = 561,
-            .neighbors = {
-                {.id = 593, .distance = 24.293f},
-                {.id = 542, .distance = 30.088f},
-                {.id = 560, .distance = 31.563f},
-                {.id = 562, .distance = 31.793f},
-                {.id = 543, .distance = 42.067f},
-                {.id = 594, .distance = 43.775f},
-                {.id = 595, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 562,
-            .neighbors = {
-                {.id = 543, .distance = 28.726f},
-                {.id = 563, .distance = 31.427f},
-                {.id = 561, .distance = 31.793f},
-                {.id = 596, .distance = 35.922f},
-                {.id = 595, .distance = 37.333f},
-                {.id = 542, .distance = 44.864f},
-                {.id = 593, .distance = 47.704f}
-            }
-        },
-        {
-            .point_id = 563,
-            .neighbors = {
-                {.id = 562, .distance = 31.427f},
-                {.id = 544, .distance = 31.889f},
-                {.id = 564, .distance = 32.342f},
-                {.id = 597, .distance = 35.562f},
-                {.id = 543, .distance = 37.444f},
-                {.id = 596, .distance = 39.243f},
-                {.id = 599, .distance = 41.982f}
-            }
-        },
-        {
-            .point_id = 564,
-            .neighbors = {
-                {.id = 599, .distance = 23.803f},
-                {.id = 565, .distance = 31.693f},
-                {.id = 563, .distance = 32.342f},
-                {.id = 544, .distance = 32.458f},
-                {.id = 545, .distance = 36.707f},
-                {.id = 601, .distance = 41.333f},
-                {.id = 598, .distance = 44.974f}
-            }
-        },
-        {
-            .point_id = 565,
-            .neighbors = {
-                {.id = 603, .distance = 24.410f},
-                {.id = 545, .distance = 28.557f},
-                {.id = 564, .distance = 31.693f},
-                {.id = 566, .distance = 32.138f},
-                {.id = 601, .distance = 38.124f},
-                {.id = 599, .distance = 43.096f},
-                {.id = 546, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 566,
-            .neighbors = {
-                {.id = 546, .distance = 29.283f},
-                {.id = 567, .distance = 31.589f},
-                {.id = 565, .distance = 32.138f},
-                {.id = 605, .distance = 36.174f},
-                {.id = 603, .distance = 36.927f},
-                {.id = 545, .distance = 42.276f},
-                {.id = 606, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 567,
-            .neighbors = {
-                {.id = 566, .distance = 31.589f},
-                {.id = 568, .distance = 32.185f},
-                {.id = 606, .distance = 33.528f},
-                {.id = 547, .distance = 33.774f},
-                {.id = 546, .distance = 35.383f},
-                {.id = 607, .distance = 39.292f},
-                {.id = 605, .distance = 48.151f}
-            }
-        },
-        {
-            .point_id = 568,
-            .neighbors = {
-                {.id = 609, .distance = 26.800f},
-                {.id = 547, .distance = 30.492f},
-                {.id = 569, .distance = 31.085f},
-                {.id = 567, .distance = 32.185f},
-                {.id = 548, .distance = 39.658f},
-                {.id = 607, .distance = 40.843f},
-                {.id = 608, .distance = 44.297f}
-            }
-        },
-        {
-            .point_id = 569,
-            .neighbors = {
-                {.id = 548, .distance = 28.796f},
-                {.id = 568, .distance = 31.085f},
-                {.id = 609, .distance = 31.165f},
-                {.id = 570, .distance = 31.748f},
-                {.id = 613, .distance = 32.025f},
-                {.id = 611, .distance = 35.484f},
-                {.id = 549, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 570,
-            .neighbors = {
-                {.id = 613, .distance = 26.974f},
-                {.id = 549, .distance = 30.076f},
-                {.id = 571, .distance = 31.574f},
-                {.id = 569, .distance = 31.748f},
-                {.id = 548, .distance = 39.130f},
-                {.id = 615, .distance = 40.759f},
-                {.id = 614, .distance = 44.255f}
-            }
-        },
-        {
-            .point_id = 571,
-            .neighbors = {
-                {.id = 570, .distance = 31.574f},
-                {.id = 572, .distance = 32.495f},
-                {.id = 549, .distance = 33.386f},
-                {.id = 616, .distance = 34.006f},
-                {.id = 550, .distance = 35.446f},
-                {.id = 615, .distance = 40.058f},
-                {.id = 617, .distance = 48.765f}
-            }
-        },
-        {
-            .point_id = 572,
-            .neighbors = {
-                {.id = 550, .distance = 29.653f},
-                {.id = 573, .distance = 31.761f},
-                {.id = 571, .distance = 32.495f},
-                {.id = 617, .distance = 35.652f},
-                {.id = 619, .distance = 35.973f},
-                {.id = 551, .distance = 42.498f},
-                {.id = 616, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 573,
-            .neighbors = {
-                {.id = 619, .distance = 24.656f},
-                {.id = 551, .distance = 28.776f},
-                {.id = 552, .distance = 31.442f},
-                {.id = 572, .distance = 31.761f},
-                {.id = 621, .distance = 38.273f},
-                {.id = 574, .distance = 43.129f},
-                {.id = 550, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 574,
-            .neighbors = {
-                {.id = 623, .distance = 22.863f},
-                {.id = 552, .distance = 23.617f},
-                {.id = 621, .distance = 27.856f},
-                {.id = 622, .distance = 35.561f},
-                {.id = 575, .distance = 37.917f},
-                {.id = 553, .distance = 41.895f},
-                {.id = 573, .distance = 43.129f}
-            }
-        },
-        {
-            .point_id = 575,
-            .neighbors = {
-                {.id = 623, .distance = 28.096f},
-                {.id = 576, .distance = 29.153f},
-                {.id = 77, .distance = 29.296f},
-                {.id = 553, .distance = 36.068f},
-                {.id = 574, .distance = 37.917f},
-                {.id = 76, .distance = 40.703f},
-                {.id = 78, .distance = 41.400f}
-            }
-        },
-        {
-            .point_id = 576,
-            .neighbors = {
-                {.id = 577, .distance = 28.265f},
-                {.id = 575, .distance = 29.153f},
-                {.id = 76, .distance = 29.691f},
-                {.id = 554, .distance = 35.794f},
-                {.id = 553, .distance = 39.068f},
-                {.id = 75, .distance = 40.851f},
-                {.id = 77, .distance = 41.883f}
-            }
-        },
-        {
-            .point_id = 577,
-            .neighbors = {
-                {.id = 576, .distance = 28.265f},
-                {.id = 579, .distance = 28.989f},
-                {.id = 75, .distance = 29.345f},
-                {.id = 554, .distance = 36.665f},
-                {.id = 578, .distance = 38.712f},
-                {.id = 74, .distance = 40.738f},
-                {.id = 76, .distance = 41.214f}
-            }
-        },
-        {
-            .point_id = 578,
-            .neighbors = {
-                {.id = 579, .distance = 23.607f},
-                {.id = 555, .distance = 24.191f},
-                {.id = 580, .distance = 27.455f},
-                {.id = 581, .distance = 35.536f},
-                {.id = 556, .distance = 36.051f},
-                {.id = 577, .distance = 38.712f},
-                {.id = 554, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 579,
-            .neighbors = {
-                {.id = 578, .distance = 23.607f},
-                {.id = 581, .distance = 28.500f},
-                {.id = 577, .distance = 28.989f},
-                {.id = 74, .distance = 29.310f},
-                {.id = 580, .distance = 38.998f},
-                {.id = 72, .distance = 40.243f},
-                {.id = 75, .distance = 41.503f}
-            }
-        },
-        {
-            .point_id = 580,
-            .neighbors = {
-                {.id = 581, .distance = 25.823f},
-                {.id = 582, .distance = 26.007f},
-                {.id = 583, .distance = 27.304f},
-                {.id = 578, .distance = 27.455f},
-                {.id = 556, .distance = 35.506f},
-                {.id = 579, .distance = 38.998f},
-                {.id = 584, .distance = 39.242f}
-            }
-        },
-        {
-            .point_id = 581,
-            .neighbors = {
-                {.id = 580, .distance = 25.823f},
-                {.id = 579, .distance = 28.500f},
-                {.id = 72, .distance = 29.549f},
-                {.id = 582, .distance = 30.900f},
-                {.id = 578, .distance = 35.536f},
-                {.id = 74, .distance = 41.456f},
-                {.id = 194, .distance = 51.536f}
-            }
-        },
-        {
-            .point_id = 582,
-            .neighbors = {
-                {.id = 580, .distance = 26.007f},
-                {.id = 194, .distance = 28.580f},
-                {.id = 584, .distance = 29.614f},
-                {.id = 581, .distance = 30.900f},
-                {.id = 583, .distance = 35.963f},
-                {.id = 192, .distance = 40.019f},
-                {.id = 196, .distance = 51.461f}
-            }
-        },
-        {
-            .point_id = 583,
-            .neighbors = {
-                {.id = 584, .distance = 23.404f},
-                {.id = 580, .distance = 27.304f},
-                {.id = 556, .distance = 27.519f},
-                {.id = 557, .distance = 31.347f},
-                {.id = 582, .distance = 35.963f},
-                {.id = 585, .distance = 38.924f},
-                {.id = 578, .distance = 47.034f}
-            }
-        },
-        {
-            .point_id = 584,
-            .neighbors = {
-                {.id = 583, .distance = 23.404f},
-                {.id = 585, .distance = 28.584f},
-                {.id = 192, .distance = 28.638f},
-                {.id = 582, .distance = 29.614f},
-                {.id = 580, .distance = 39.242f},
-                {.id = 191, .distance = 40.269f},
-                {.id = 194, .distance = 41.724f}
-            }
-        },
-        {
-            .point_id = 585,
-            .neighbors = {
-                {.id = 586, .distance = 28.069f},
-                {.id = 191, .distance = 28.459f},
-                {.id = 584, .distance = 28.584f},
-                {.id = 557, .distance = 37.393f},
-                {.id = 583, .distance = 38.924f},
-                {.id = 190, .distance = 39.725f},
-                {.id = 192, .distance = 41.284f}
-            }
-        },
-        {
-            .point_id = 586,
-            .neighbors = {
-                {.id = 585, .distance = 28.069f},
-                {.id = 190, .distance = 28.695f},
-                {.id = 587, .distance = 28.840f},
-                {.id = 558, .distance = 33.115f},
-                {.id = 189, .distance = 40.338f},
-                {.id = 191, .distance = 40.350f},
-                {.id = 557, .distance = 48.228f}
-            }
-        },
-        {
-            .point_id = 587,
-            .neighbors = {
-                {.id = 189, .distance = 28.736f},
-                {.id = 586, .distance = 28.840f},
-                {.id = 588, .distance = 29.098f},
-                {.id = 559, .distance = 37.153f},
-                {.id = 589, .distance = 38.371f},
-                {.id = 188, .distance = 40.206f},
-                {.id = 190, .distance = 40.940f}
-            }
-        },
-        {
-            .point_id = 588,
-            .neighbors = {
-                {.id = 589, .distance = 23.468f},
-                {.id = 590, .distance = 28.067f},
-                {.id = 188, .distance = 28.751f},
-                {.id = 587, .distance = 29.098f},
-                {.id = 591, .distance = 37.859f},
-                {.id = 186, .distance = 39.803f},
-                {.id = 189, .distance = 41.267f}
-            }
-        },
-        {
-            .point_id = 589,
-            .neighbors = {
-                {.id = 588, .distance = 23.468f},
-                {.id = 591, .distance = 26.995f},
-                {.id = 560, .distance = 27.373f},
-                {.id = 559, .distance = 30.540f},
-                {.id = 590, .distance = 35.584f},
-                {.id = 587, .distance = 38.371f},
-                {.id = 593, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 590,
-            .neighbors = {
-                {.id = 591, .distance = 25.235f},
-                {.id = 588, .distance = 28.067f},
-                {.id = 186, .distance = 28.672f},
-                {.id = 592, .distance = 31.314f},
-                {.id = 589, .distance = 35.584f},
-                {.id = 188, .distance = 40.855f},
-                {.id = 818, .distance = 50.621f}
-            }
-        },
-        {
-            .point_id = 591,
-            .neighbors = {
-                {.id = 590, .distance = 25.235f},
-                {.id = 592, .distance = 25.959f},
-                {.id = 589, .distance = 26.995f},
-                {.id = 593, .distance = 28.280f},
-                {.id = 560, .distance = 35.618f},
-                {.id = 588, .distance = 37.859f},
-                {.id = 594, .distance = 39.348f}
-            }
-        },
-        {
-            .point_id = 592,
-            .neighbors = {
-                {.id = 591, .distance = 25.959f},
-                {.id = 818, .distance = 27.690f},
-                {.id = 594, .distance = 28.175f},
-                {.id = 590, .distance = 31.314f},
-                {.id = 593, .distance = 35.099f},
-                {.id = 816, .distance = 39.154f},
-                {.id = 819, .distance = 50.900f}
-            }
-        },
-        {
-            .point_id = 593,
-            .neighbors = {
-                {.id = 594, .distance = 22.858f},
-                {.id = 561, .distance = 24.293f},
-                {.id = 591, .distance = 28.280f},
-                {.id = 592, .distance = 35.099f},
-                {.id = 560, .distance = 36.566f},
-                {.id = 595, .distance = 37.718f},
-                {.id = 589, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 594,
-            .neighbors = {
-                {.id = 593, .distance = 22.858f},
-                {.id = 816, .distance = 27.436f},
-                {.id = 592, .distance = 28.175f},
-                {.id = 595, .distance = 28.665f},
-                {.id = 591, .distance = 39.348f},
-                {.id = 818, .distance = 40.114f},
-                {.id = 815, .distance = 40.252f}
-            }
-        },
-        {
-            .point_id = 595,
-            .neighbors = {
-                {.id = 815, .distance = 27.613f},
-                {.id = 594, .distance = 28.665f},
-                {.id = 596, .distance = 28.744f},
-                {.id = 562, .distance = 37.333f},
-                {.id = 593, .distance = 37.718f},
-                {.id = 814, .distance = 39.855f},
-                {.id = 816, .distance = 39.947f}
-            }
-        },
-        {
-            .point_id = 596,
-            .neighbors = {
-                {.id = 814, .distance = 27.498f},
-                {.id = 597, .distance = 28.665f},
-                {.id = 595, .distance = 28.744f},
-                {.id = 562, .distance = 35.922f},
-                {.id = 563, .distance = 39.243f},
-                {.id = 815, .distance = 39.255f},
-                {.id = 813, .distance = 39.752f}
-            }
-        },
-        {
-            .point_id = 597,
-            .neighbors = {
-                {.id = 813, .distance = 27.628f},
-                {.id = 596, .distance = 28.665f},
-                {.id = 598, .distance = 28.989f},
-                {.id = 563, .distance = 35.562f},
-                {.id = 599, .distance = 37.946f},
-                {.id = 814, .distance = 39.790f},
-                {.id = 812, .distance = 39.805f}
-            }
-        },
-        {
-            .point_id = 598,
-            .neighbors = {
-                {.id = 599, .distance = 22.522f},
-                {.id = 812, .distance = 27.583f},
-                {.id = 597, .distance = 28.989f},
-                {.id = 600, .distance = 28.989f},
-                {.id = 601, .distance = 38.748f},
-                {.id = 810, .distance = 39.435f},
-                {.id = 813, .distance = 40.007f}
-            }
-        },
-        {
-            .point_id = 599,
-            .neighbors = {
-                {.id = 598, .distance = 22.522f},
-                {.id = 564, .distance = 23.803f},
-                {.id = 601, .distance = 27.573f},
-                {.id = 600, .distance = 35.430f},
-                {.id = 597, .distance = 37.946f},
-                {.id = 563, .distance = 41.982f},
-                {.id = 565, .distance = 43.096f}
-            }
-        },
-        {
-            .point_id = 600,
-            .neighbors = {
-                {.id = 601, .distance = 25.732f},
-                {.id = 810, .distance = 27.473f},
-                {.id = 598, .distance = 28.989f},
-                {.id = 602, .distance = 30.699f},
-                {.id = 599, .distance = 35.430f},
-                {.id = 812, .distance = 40.223f},
-                {.id = 808, .distance = 49.900f}
-            }
-        },
-        {
-            .point_id = 601,
-            .neighbors = {
-                {.id = 602, .distance = 25.715f},
-                {.id = 600, .distance = 25.732f},
-                {.id = 603, .distance = 27.009f},
-                {.id = 599, .distance = 27.573f},
-                {.id = 565, .distance = 38.124f},
-                {.id = 598, .distance = 38.748f},
-                {.id = 604, .distance = 38.795f}
-            }
-        },
-        {
-            .point_id = 602,
-            .neighbors = {
-                {.id = 601, .distance = 25.715f},
-                {.id = 724, .distance = 27.990f},
-                {.id = 604, .distance = 28.587f},
-                {.id = 600, .distance = 30.699f},
-                {.id = 603, .distance = 35.180f},
-                {.id = 722, .distance = 41.739f},
-                {.id = 726, .distance = 50.403f}
-            }
-        },
-        {
-            .point_id = 603,
-            .neighbors = {
-                {.id = 604, .distance = 23.318f},
-                {.id = 565, .distance = 24.410f},
-                {.id = 601, .distance = 27.009f},
-                {.id = 602, .distance = 35.180f},
-                {.id = 566, .distance = 36.927f},
-                {.id = 605, .distance = 38.625f},
-                {.id = 599, .distance = 47.229f}
-            }
-        },
-        {
-            .point_id = 604,
-            .neighbors = {
-                {.id = 603, .distance = 23.318f},
-                {.id = 722, .distance = 28.526f},
-                {.id = 602, .distance = 28.587f},
-                {.id = 605, .distance = 28.648f},
-                {.id = 601, .distance = 38.795f},
-                {.id = 724, .distance = 39.023f},
-                {.id = 721, .distance = 41.888f}
-            }
-        },
-        {
-            .point_id = 605,
-            .neighbors = {
-                {.id = 604, .distance = 28.648f},
-                {.id = 606, .distance = 28.678f},
-                {.id = 721, .distance = 28.720f},
-                {.id = 566, .distance = 36.174f},
-                {.id = 603, .distance = 38.625f},
-                {.id = 722, .distance = 38.975f},
-                {.id = 720, .distance = 42.065f}
-            }
-        },
-        {
-            .point_id = 606,
-            .neighbors = {
-                {.id = 607, .distance = 28.019f},
-                {.id = 720, .distance = 28.593f},
-                {.id = 605, .distance = 28.678f},
-                {.id = 567, .distance = 33.528f},
-                {.id = 721, .distance = 39.193f},
-                {.id = 719, .distance = 42.010f},
-                {.id = 566, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 607,
-            .neighbors = {
-                {.id = 606, .distance = 28.019f},
-                {.id = 719, .distance = 28.538f},
-                {.id = 608, .distance = 29.666f},
-                {.id = 720, .distance = 38.440f},
-                {.id = 609, .distance = 39.143f},
-                {.id = 567, .distance = 39.292f},
-                {.id = 568, .distance = 40.843f}
-            }
-        },
-        {
-            .point_id = 608,
-            .neighbors = {
-                {.id = 609, .distance = 23.574f},
-                {.id = 718, .distance = 28.586f},
-                {.id = 610, .distance = 28.796f},
-                {.id = 607, .distance = 29.666f},
-                {.id = 611, .distance = 38.536f},
-                {.id = 719, .distance = 38.933f},
-                {.id = 716, .distance = 41.429f}
-            }
-        },
-        {
-            .point_id = 609,
-            .neighbors = {
-                {.id = 608, .distance = 23.574f},
-                {.id = 568, .distance = 26.800f},
-                {.id = 611, .distance = 27.295f},
-                {.id = 569, .distance = 31.165f},
-                {.id = 610, .distance = 35.726f},
-                {.id = 607, .distance = 39.143f},
-                {.id = 613, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 610,
-            .neighbors = {
-                {.id = 611, .distance = 25.236f},
-                {.id = 716, .distance = 28.551f},
-                {.id = 608, .distance = 28.796f},
-                {.id = 612, .distance = 30.643f},
-                {.id = 609, .distance = 35.726f},
-                {.id = 718, .distance = 39.222f},
-                {.id = 613, .distance = 51.793f}
-            }
-        },
-        {
-            .point_id = 611,
-            .neighbors = {
-                {.id = 610, .distance = 25.236f},
-                {.id = 612, .distance = 25.701f},
-                {.id = 609, .distance = 27.295f},
-                {.id = 613, .distance = 27.601f},
-                {.id = 569, .distance = 35.484f},
-                {.id = 608, .distance = 38.536f},
-                {.id = 614, .distance = 38.536f}
-            }
-        },
-        {
-            .point_id = 612,
-            .neighbors = {
-                {.id = 611, .distance = 25.701f},
-                {.id = 614, .distance = 28.171f},
-                {.id = 486, .distance = 29.698f},
-                {.id = 610, .distance = 30.643f},
-                {.id = 613, .distance = 35.416f},
-                {.id = 484, .distance = 41.024f},
-                {.id = 716, .distance = 50.454f}
-            }
-        },
-        {
-            .point_id = 613,
-            .neighbors = {
-                {.id = 614, .distance = 23.046f},
-                {.id = 570, .distance = 26.974f},
-                {.id = 611, .distance = 27.601f},
-                {.id = 569, .distance = 32.025f},
-                {.id = 612, .distance = 35.416f},
-                {.id = 615, .distance = 38.124f},
-                {.id = 609, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 614,
-            .neighbors = {
-                {.id = 613, .distance = 23.046f},
-                {.id = 612, .distance = 28.171f},
-                {.id = 615, .distance = 28.796f},
-                {.id = 484, .distance = 29.884f},
-                {.id = 611, .distance = 38.536f},
-                {.id = 486, .distance = 40.907f},
-                {.id = 483, .distance = 41.803f}
-            }
-        },
-        {
-            .point_id = 615,
-            .neighbors = {
-                {.id = 616, .distance = 28.739f},
-                {.id = 614, .distance = 28.796f},
-                {.id = 483, .distance = 29.688f},
-                {.id = 613, .distance = 38.124f},
-                {.id = 571, .distance = 40.058f},
-                {.id = 570, .distance = 40.759f},
-                {.id = 484, .distance = 41.264f}
-            }
-        },
-        {
-            .point_id = 616,
-            .neighbors = {
-                {.id = 615, .distance = 28.739f},
-                {.id = 617, .distance = 28.996f},
-                {.id = 482, .distance = 29.797f},
-                {.id = 571, .distance = 34.006f},
-                {.id = 483, .distance = 41.093f},
-                {.id = 481, .distance = 41.143f},
-                {.id = 572, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 617,
-            .neighbors = {
-                {.id = 618, .distance = 28.539f},
-                {.id = 616, .distance = 28.996f},
-                {.id = 481, .distance = 29.685f},
-                {.id = 572, .distance = 35.652f},
-                {.id = 619, .distance = 38.072f},
-                {.id = 480, .distance = 41.095f},
-                {.id = 482, .distance = 41.280f}
-            }
-        },
-        {
-            .point_id = 618,
-            .neighbors = {
-                {.id = 619, .distance = 23.229f},
-                {.id = 617, .distance = 28.539f},
-                {.id = 620, .distance = 29.175f},
-                {.id = 480, .distance = 29.702f},
-                {.id = 621, .distance = 38.795f},
-                {.id = 481, .distance = 41.304f},
-                {.id = 478, .distance = 41.540f}
-            }
-        },
-        {
-            .point_id = 619,
-            .neighbors = {
-                {.id = 618, .distance = 23.229f},
-                {.id = 573, .distance = 24.656f},
-                {.id = 621, .distance = 27.373f},
-                {.id = 572, .distance = 35.973f},
-                {.id = 620, .distance = 36.131f},
-                {.id = 617, .distance = 38.072f},
-                {.id = 574, .distance = 47.750f}
-            }
-        },
-        {
-            .point_id = 620,
-            .neighbors = {
-                {.id = 621, .distance = 26.133f},
-                {.id = 478, .distance = 29.051f},
-                {.id = 618, .distance = 29.175f},
-                {.id = 622, .distance = 30.723f},
-                {.id = 619, .distance = 36.131f},
-                {.id = 480, .distance = 41.571f},
-                {.id = 80, .distance = 51.803f}
-            }
-        },
-        {
-            .point_id = 621,
-            .neighbors = {
-                {.id = 622, .distance = 25.813f},
-                {.id = 620, .distance = 26.133f},
-                {.id = 619, .distance = 27.373f},
-                {.id = 574, .distance = 27.856f},
-                {.id = 573, .distance = 38.273f},
-                {.id = 618, .distance = 38.795f},
-                {.id = 623, .distance = 39.458f}
-            }
-        },
-        {
-            .point_id = 622,
-            .neighbors = {
-                {.id = 621, .distance = 25.813f},
-                {.id = 80, .distance = 29.465f},
-                {.id = 623, .distance = 29.479f},
-                {.id = 620, .distance = 30.723f},
-                {.id = 574, .distance = 35.561f},
-                {.id = 78, .distance = 40.864f},
-                {.id = 478, .distance = 51.840f}
-            }
-        },
-        {
-            .point_id = 623,
-            .neighbors = {
-                {.id = 574, .distance = 22.863f},
-                {.id = 575, .distance = 28.096f},
-                {.id = 78, .distance = 29.440f},
-                {.id = 622, .distance = 29.479f},
-                {.id = 621, .distance = 39.458f},
-                {.id = 77, .distance = 40.496f},
-                {.id = 80, .distance = 42.121f}
-            }
-        },
-        {
-            .point_id = 624,
-            .neighbors = {
-                {.id = 625, .distance = 25.256f},
-                {.id = 627, .distance = 25.653f},
-                {.id = 626, .distance = 25.660f},
-                {.id = 629, .distance = 26.237f},
-                {.id = 628, .distance = 26.780f},
-                {.id = 631, .distance = 53.251f},
-                {.id = 635, .distance = 53.584f}
-            }
-        },
-        {
-            .point_id = 625,
-            .neighbors = {
-                {.id = 624, .distance = 25.256f},
-                {.id = 631, .distance = 27.996f},
-                {.id = 629, .distance = 30.406f},
-                {.id = 626, .distance = 30.745f},
-                {.id = 632, .distance = 36.902f},
-                {.id = 630, .distance = 36.902f},
-                {.id = 627, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 626,
-            .neighbors = {
-                {.id = 624, .distance = 25.660f},
-                {.id = 633, .distance = 28.138f},
-                {.id = 627, .distance = 30.016f},
-                {.id = 625, .distance = 30.745f},
-                {.id = 634, .distance = 35.779f},
-                {.id = 632, .distance = 37.730f},
-                {.id = 628, .distance = 49.623f}
-            }
-        },
-        {
-            .point_id = 627,
-            .neighbors = {
-                {.id = 624, .distance = 25.653f},
-                {.id = 635, .distance = 27.950f},
-                {.id = 626, .distance = 30.016f},
-                {.id = 628, .distance = 30.334f},
-                {.id = 636, .distance = 36.663f},
-                {.id = 634, .distance = 36.917f},
-                {.id = 625, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 628,
-            .neighbors = {
-                {.id = 624, .distance = 26.780f},
-                {.id = 637, .distance = 28.148f},
-                {.id = 627, .distance = 30.334f},
-                {.id = 629, .distance = 30.829f},
-                {.id = 636, .distance = 36.041f},
-                {.id = 638, .distance = 36.581f},
-                {.id = 625, .distance = 49.415f}
-            }
-        },
-        {
-            .point_id = 629,
-            .neighbors = {
-                {.id = 624, .distance = 26.237f},
-                {.id = 639, .distance = 28.784f},
-                {.id = 625, .distance = 30.406f},
-                {.id = 628, .distance = 30.829f},
-                {.id = 630, .distance = 36.136f},
-                {.id = 638, .distance = 36.663f},
-                {.id = 627, .distance = 49.028f}
-            }
-        },
-        {
-            .point_id = 630,
-            .neighbors = {
-                {.id = 641, .distance = 29.943f},
-                {.id = 639, .distance = 32.709f},
-                {.id = 631, .distance = 33.241f},
-                {.id = 640, .distance = 35.999f},
-                {.id = 629, .distance = 36.136f},
-                {.id = 625, .distance = 36.902f},
-                {.id = 642, .distance = 43.146f}
-            }
-        },
-        {
-            .point_id = 631,
-            .neighbors = {
-                {.id = 625, .distance = 27.996f},
-                {.id = 642, .distance = 31.091f},
-                {.id = 630, .distance = 33.241f},
-                {.id = 632, .distance = 33.489f},
-                {.id = 643, .distance = 33.997f},
-                {.id = 641, .distance = 46.465f},
-                {.id = 644, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 632,
-            .neighbors = {
-                {.id = 644, .distance = 28.795f},
-                {.id = 631, .distance = 33.489f},
-                {.id = 633, .distance = 34.526f},
-                {.id = 625, .distance = 36.902f},
-                {.id = 626, .distance = 37.730f},
-                {.id = 643, .distance = 39.001f},
-                {.id = 645, .distance = 39.043f}
-            }
-        },
-        {
-            .point_id = 633,
-            .neighbors = {
-                {.id = 626, .distance = 28.138f},
-                {.id = 646, .distance = 30.119f},
-                {.id = 634, .distance = 32.862f},
-                {.id = 645, .distance = 33.326f},
-                {.id = 632, .distance = 34.526f},
-                {.id = 647, .distance = 46.032f},
-                {.id = 644, .distance = 51.953f}
-            }
-        },
-        {
-            .point_id = 634,
-            .neighbors = {
-                {.id = 647, .distance = 29.271f},
-                {.id = 633, .distance = 32.862f},
-                {.id = 635, .distance = 32.910f},
-                {.id = 648, .distance = 35.475f},
-                {.id = 626, .distance = 35.779f},
-                {.id = 627, .distance = 36.917f},
-                {.id = 646, .distance = 42.036f}
-            }
-        },
-        {
-            .point_id = 635,
-            .neighbors = {
-                {.id = 627, .distance = 27.950f},
-                {.id = 649, .distance = 30.515f},
-                {.id = 634, .distance = 32.910f},
-                {.id = 636, .distance = 34.288f},
-                {.id = 648, .distance = 35.680f},
-                {.id = 650, .distance = 43.747f},
-                {.id = 626, .distance = 50.881f}
-            }
-        },
-        {
-            .point_id = 636,
-            .neighbors = {
-                {.id = 650, .distance = 30.713f},
-                {.id = 651, .distance = 32.961f},
-                {.id = 635, .distance = 34.288f},
-                {.id = 637, .distance = 34.333f},
-                {.id = 628, .distance = 36.041f},
-                {.id = 627, .distance = 36.663f},
-                {.id = 649, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 637,
-            .neighbors = {
-                {.id = 628, .distance = 28.148f},
-                {.id = 652, .distance = 28.795f},
-                {.id = 638, .distance = 32.474f},
-                {.id = 636, .distance = 34.333f},
-                {.id = 653, .distance = 37.853f},
-                {.id = 651, .distance = 39.529f},
-                {.id = 629, .distance = 52.029f}
-            }
-        },
-        {
-            .point_id = 638,
-            .neighbors = {
-                {.id = 654, .distance = 30.978f},
-                {.id = 637, .distance = 32.474f},
-                {.id = 653, .distance = 33.378f},
-                {.id = 639, .distance = 34.135f},
-                {.id = 628, .distance = 36.581f},
-                {.id = 629, .distance = 36.663f},
-                {.id = 655, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 639,
-            .neighbors = {
-                {.id = 629, .distance = 28.784f},
-                {.id = 655, .distance = 29.314f},
-                {.id = 630, .distance = 32.709f},
-                {.id = 638, .distance = 34.135f},
-                {.id = 640, .distance = 35.428f},
-                {.id = 654, .distance = 42.934f},
-                {.id = 625, .distance = 52.730f}
-            }
-        },
-        {
-            .point_id = 640,
-            .neighbors = {
-                {.id = 657, .distance = 31.937f},
-                {.id = 656, .distance = 31.964f},
-                {.id = 655, .distance = 32.088f},
-                {.id = 641, .distance = 32.704f},
-                {.id = 639, .distance = 35.428f},
-                {.id = 630, .distance = 35.999f},
-                {.id = 677, .distance = 49.921f}
-            }
-        },
-        {
-            .point_id = 641,
-            .neighbors = {
-                {.id = 658, .distance = 29.419f},
-                {.id = 630, .distance = 29.943f},
-                {.id = 642, .distance = 32.468f},
-                {.id = 640, .distance = 32.704f},
-                {.id = 657, .distance = 37.491f},
-                {.id = 659, .distance = 41.947f},
-                {.id = 631, .distance = 46.465f}
-            }
-        },
-        {
-            .point_id = 642,
-            .neighbors = {
-                {.id = 659, .distance = 29.848f},
-                {.id = 631, .distance = 31.091f},
-                {.id = 643, .distance = 31.917f},
-                {.id = 641, .distance = 32.468f},
-                {.id = 660, .distance = 35.426f},
-                {.id = 630, .distance = 43.146f},
-                {.id = 658, .distance = 44.568f}
-            }
-        },
-        {
-            .point_id = 643,
-            .neighbors = {
-                {.id = 661, .distance = 30.775f},
-                {.id = 642, .distance = 31.917f},
-                {.id = 644, .distance = 32.089f},
-                {.id = 660, .distance = 33.457f},
-                {.id = 631, .distance = 33.997f},
-                {.id = 632, .distance = 39.001f},
-                {.id = 662, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 644,
-            .neighbors = {
-                {.id = 662, .distance = 28.126f},
-                {.id = 632, .distance = 28.795f},
-                {.id = 643, .distance = 32.089f},
-                {.id = 645, .distance = 33.350f},
-                {.id = 661, .distance = 38.606f},
-                {.id = 663, .distance = 40.686f},
-                {.id = 631, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 645,
-            .neighbors = {
-                {.id = 663, .distance = 30.745f},
-                {.id = 646, .distance = 32.585f},
-                {.id = 633, .distance = 33.326f},
-                {.id = 644, .distance = 33.350f},
-                {.id = 664, .distance = 33.990f},
-                {.id = 632, .distance = 39.043f},
-                {.id = 662, .distance = 47.230f}
-            }
-        },
-        {
-            .point_id = 646,
-            .neighbors = {
-                {.id = 665, .distance = 30.088f},
-                {.id = 633, .distance = 30.119f},
-                {.id = 647, .distance = 32.298f},
-                {.id = 645, .distance = 32.585f},
-                {.id = 664, .distance = 35.628f},
-                {.id = 634, .distance = 42.036f},
-                {.id = 666, .distance = 44.864f}
-            }
-        },
-        {
-            .point_id = 647,
-            .neighbors = {
-                {.id = 666, .distance = 28.726f},
-                {.id = 634, .distance = 29.271f},
-                {.id = 648, .distance = 31.916f},
-                {.id = 646, .distance = 32.298f},
-                {.id = 667, .distance = 37.444f},
-                {.id = 665, .distance = 42.067f},
-                {.id = 633, .distance = 46.032f}
-            }
-        },
-        {
-            .point_id = 648,
-            .neighbors = {
-                {.id = 667, .distance = 31.889f},
-                {.id = 647, .distance = 31.916f},
-                {.id = 668, .distance = 32.458f},
-                {.id = 649, .distance = 32.605f},
-                {.id = 634, .distance = 35.475f},
-                {.id = 635, .distance = 35.680f},
-                {.id = 666, .distance = 49.358f}
-            }
-        },
-        {
-            .point_id = 649,
-            .neighbors = {
-                {.id = 669, .distance = 28.557f},
-                {.id = 635, .distance = 30.515f},
-                {.id = 648, .distance = 32.605f},
-                {.id = 650, .distance = 33.386f},
-                {.id = 668, .distance = 36.707f},
-                {.id = 670, .distance = 42.276f},
-                {.id = 636, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 650,
-            .neighbors = {
-                {.id = 670, .distance = 29.283f},
-                {.id = 636, .distance = 30.713f},
-                {.id = 651, .distance = 32.395f},
-                {.id = 649, .distance = 33.386f},
-                {.id = 671, .distance = 35.383f},
-                {.id = 635, .distance = 43.747f},
-                {.id = 669, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 651,
-            .neighbors = {
-                {.id = 672, .distance = 30.492f},
-                {.id = 650, .distance = 32.395f},
-                {.id = 652, .distance = 32.492f},
-                {.id = 636, .distance = 32.961f},
-                {.id = 671, .distance = 33.774f},
-                {.id = 637, .distance = 39.529f},
-                {.id = 673, .distance = 46.947f}
-            }
-        },
-        {
-            .point_id = 652,
-            .neighbors = {
-                {.id = 637, .distance = 28.795f},
-                {.id = 673, .distance = 28.796f},
-                {.id = 653, .distance = 31.301f},
-                {.id = 651, .distance = 32.492f},
-                {.id = 674, .distance = 39.130f},
-                {.id = 672, .distance = 39.658f},
-                {.id = 638, .distance = 50.236f}
-            }
-        },
-        {
-            .point_id = 653,
-            .neighbors = {
-                {.id = 674, .distance = 30.076f},
-                {.id = 652, .distance = 31.301f},
-                {.id = 654, .distance = 33.324f},
-                {.id = 638, .distance = 33.378f},
-                {.id = 675, .distance = 33.386f},
-                {.id = 637, .distance = 37.853f},
-                {.id = 673, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 654,
-            .neighbors = {
-                {.id = 676, .distance = 29.653f},
-                {.id = 638, .distance = 30.978f},
-                {.id = 655, .distance = 32.852f},
-                {.id = 653, .distance = 33.324f},
-                {.id = 675, .distance = 35.446f},
-                {.id = 639, .distance = 42.934f},
-                {.id = 677, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 655,
-            .neighbors = {
-                {.id = 677, .distance = 28.776f},
-                {.id = 639, .distance = 29.314f},
-                {.id = 640, .distance = 32.088f},
-                {.id = 654, .distance = 32.852f},
-                {.id = 656, .distance = 36.954f},
-                {.id = 676, .distance = 42.498f},
-                {.id = 638, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 656,
-            .neighbors = {
-                {.id = 678, .distance = 23.617f},
-                {.id = 677, .distance = 31.442f},
-                {.id = 640, .distance = 31.964f},
-                {.id = 657, .distance = 32.703f},
-                {.id = 655, .distance = 36.954f},
-                {.id = 725, .distance = 41.259f},
-                {.id = 727, .distance = 45.103f}
-            }
-        },
-        {
-            .point_id = 657,
-            .neighbors = {
-                {.id = 640, .distance = 31.937f},
-                {.id = 656, .distance = 32.703f},
-                {.id = 658, .distance = 32.725f},
-                {.id = 679, .distance = 36.068f},
-                {.id = 641, .distance = 37.491f},
-                {.id = 680, .distance = 39.068f},
-                {.id = 678, .distance = 41.895f}
-            }
-        },
-        {
-            .point_id = 658,
-            .neighbors = {
-                {.id = 641, .distance = 29.419f},
-                {.id = 659, .distance = 30.638f},
-                {.id = 657, .distance = 32.725f},
-                {.id = 680, .distance = 35.794f},
-                {.id = 681, .distance = 36.665f},
-                {.id = 642, .distance = 44.568f},
-                {.id = 682, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 659,
-            .neighbors = {
-                {.id = 682, .distance = 24.191f},
-                {.id = 642, .distance = 29.848f},
-                {.id = 658, .distance = 30.638f},
-                {.id = 660, .distance = 31.516f},
-                {.id = 641, .distance = 41.947f},
-                {.id = 683, .distance = 44.167f},
-                {.id = 681, .distance = 44.460f}
-            }
-        },
-        {
-            .point_id = 660,
-            .neighbors = {
-                {.id = 687, .distance = 27.519f},
-                {.id = 659, .distance = 31.516f},
-                {.id = 661, .distance = 33.096f},
-                {.id = 643, .distance = 33.457f},
-                {.id = 642, .distance = 35.426f},
-                {.id = 684, .distance = 35.506f},
-                {.id = 682, .distance = 36.051f}
-            }
-        },
-        {
-            .point_id = 661,
-            .neighbors = {
-                {.id = 643, .distance = 30.775f},
-                {.id = 662, .distance = 30.943f},
-                {.id = 687, .distance = 31.347f},
-                {.id = 660, .distance = 33.096f},
-                {.id = 689, .distance = 37.393f},
-                {.id = 644, .distance = 38.606f},
-                {.id = 688, .distance = 45.102f}
-            }
-        },
-        {
-            .point_id = 662,
-            .neighbors = {
-                {.id = 644, .distance = 28.126f},
-                {.id = 661, .distance = 30.943f},
-                {.id = 663, .distance = 32.322f},
-                {.id = 690, .distance = 33.115f},
-                {.id = 689, .distance = 43.474f},
-                {.id = 691, .distance = 44.048f},
-                {.id = 643, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 663,
-            .neighbors = {
-                {.id = 693, .distance = 30.540f},
-                {.id = 645, .distance = 30.745f},
-                {.id = 662, .distance = 32.322f},
-                {.id = 664, .distance = 32.441f},
-                {.id = 691, .distance = 37.153f},
-                {.id = 644, .distance = 40.686f},
-                {.id = 692, .distance = 45.279f}
-            }
-        },
-        {
-            .point_id = 664,
-            .neighbors = {
-                {.id = 693, .distance = 27.373f},
-                {.id = 665, .distance = 31.563f},
-                {.id = 663, .distance = 32.441f},
-                {.id = 645, .distance = 33.990f},
-                {.id = 695, .distance = 35.618f},
-                {.id = 646, .distance = 35.628f},
-                {.id = 697, .distance = 36.566f}
-            }
-        },
-        {
-            .point_id = 665,
-            .neighbors = {
-                {.id = 697, .distance = 24.293f},
-                {.id = 646, .distance = 30.088f},
-                {.id = 664, .distance = 31.563f},
-                {.id = 666, .distance = 31.793f},
-                {.id = 647, .distance = 42.067f},
-                {.id = 698, .distance = 43.775f},
-                {.id = 699, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 666,
-            .neighbors = {
-                {.id = 647, .distance = 28.726f},
-                {.id = 667, .distance = 31.427f},
-                {.id = 665, .distance = 31.793f},
-                {.id = 700, .distance = 35.922f},
-                {.id = 699, .distance = 37.333f},
-                {.id = 646, .distance = 44.864f},
-                {.id = 697, .distance = 47.704f}
-            }
-        },
-        {
-            .point_id = 667,
-            .neighbors = {
-                {.id = 666, .distance = 31.427f},
-                {.id = 648, .distance = 31.889f},
-                {.id = 668, .distance = 32.342f},
-                {.id = 701, .distance = 35.562f},
-                {.id = 647, .distance = 37.444f},
-                {.id = 700, .distance = 39.243f},
-                {.id = 703, .distance = 41.982f}
-            }
-        },
-        {
-            .point_id = 668,
-            .neighbors = {
-                {.id = 703, .distance = 23.803f},
-                {.id = 669, .distance = 31.693f},
-                {.id = 667, .distance = 32.342f},
-                {.id = 648, .distance = 32.458f},
-                {.id = 649, .distance = 36.707f},
-                {.id = 705, .distance = 41.333f},
-                {.id = 702, .distance = 44.974f}
-            }
-        },
-        {
-            .point_id = 669,
-            .neighbors = {
-                {.id = 707, .distance = 24.410f},
-                {.id = 649, .distance = 28.557f},
-                {.id = 668, .distance = 31.693f},
-                {.id = 670, .distance = 32.138f},
-                {.id = 705, .distance = 38.124f},
-                {.id = 703, .distance = 43.096f},
-                {.id = 650, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 670,
-            .neighbors = {
-                {.id = 650, .distance = 29.283f},
-                {.id = 671, .distance = 31.589f},
-                {.id = 669, .distance = 32.138f},
-                {.id = 709, .distance = 36.174f},
-                {.id = 707, .distance = 36.927f},
-                {.id = 649, .distance = 42.276f},
-                {.id = 710, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 671,
-            .neighbors = {
-                {.id = 670, .distance = 31.589f},
-                {.id = 672, .distance = 32.185f},
-                {.id = 710, .distance = 33.528f},
-                {.id = 651, .distance = 33.774f},
-                {.id = 650, .distance = 35.383f},
-                {.id = 711, .distance = 39.292f},
-                {.id = 709, .distance = 48.151f}
-            }
-        },
-        {
-            .point_id = 672,
-            .neighbors = {
-                {.id = 713, .distance = 26.800f},
-                {.id = 651, .distance = 30.492f},
-                {.id = 673, .distance = 31.085f},
-                {.id = 671, .distance = 32.185f},
-                {.id = 652, .distance = 39.658f},
-                {.id = 711, .distance = 40.843f},
-                {.id = 712, .distance = 44.297f}
-            }
-        },
-        {
-            .point_id = 673,
-            .neighbors = {
-                {.id = 652, .distance = 28.796f},
-                {.id = 672, .distance = 31.085f},
-                {.id = 713, .distance = 31.165f},
-                {.id = 674, .distance = 31.748f},
-                {.id = 717, .distance = 32.025f},
-                {.id = 715, .distance = 35.484f},
-                {.id = 653, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 674,
-            .neighbors = {
-                {.id = 717, .distance = 26.974f},
-                {.id = 653, .distance = 30.076f},
-                {.id = 675, .distance = 31.574f},
-                {.id = 673, .distance = 31.748f},
-                {.id = 652, .distance = 39.130f},
-                {.id = 719, .distance = 40.759f},
-                {.id = 718, .distance = 44.255f}
-            }
-        },
-        {
-            .point_id = 675,
-            .neighbors = {
-                {.id = 674, .distance = 31.574f},
-                {.id = 676, .distance = 32.495f},
-                {.id = 653, .distance = 33.386f},
-                {.id = 720, .distance = 34.006f},
-                {.id = 654, .distance = 35.446f},
-                {.id = 719, .distance = 40.058f},
-                {.id = 721, .distance = 48.765f}
-            }
-        },
-        {
-            .point_id = 676,
-            .neighbors = {
-                {.id = 654, .distance = 29.653f},
-                {.id = 677, .distance = 31.761f},
-                {.id = 675, .distance = 32.495f},
-                {.id = 721, .distance = 35.652f},
-                {.id = 723, .distance = 35.973f},
-                {.id = 655, .distance = 42.498f},
-                {.id = 720, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 677,
-            .neighbors = {
-                {.id = 723, .distance = 24.656f},
-                {.id = 655, .distance = 28.776f},
-                {.id = 656, .distance = 31.442f},
-                {.id = 676, .distance = 31.761f},
-                {.id = 725, .distance = 38.273f},
-                {.id = 678, .distance = 43.129f},
-                {.id = 654, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 678,
-            .neighbors = {
-                {.id = 727, .distance = 22.863f},
-                {.id = 656, .distance = 23.617f},
-                {.id = 725, .distance = 27.856f},
-                {.id = 726, .distance = 35.561f},
-                {.id = 679, .distance = 37.917f},
-                {.id = 657, .distance = 41.895f},
-                {.id = 677, .distance = 43.129f}
-            }
-        },
-        {
-            .point_id = 679,
-            .neighbors = {
-                {.id = 727, .distance = 28.096f},
-                {.id = 680, .distance = 29.153f},
-                {.id = 805, .distance = 29.303f},
-                {.id = 657, .distance = 36.068f},
-                {.id = 678, .distance = 37.917f},
-                {.id = 804, .distance = 40.708f},
-                {.id = 806, .distance = 41.405f}
-            }
-        },
-        {
-            .point_id = 680,
-            .neighbors = {
-                {.id = 681, .distance = 28.265f},
-                {.id = 679, .distance = 29.153f},
-                {.id = 804, .distance = 29.697f},
-                {.id = 658, .distance = 35.794f},
-                {.id = 657, .distance = 39.068f},
-                {.id = 803, .distance = 40.854f},
-                {.id = 805, .distance = 41.887f}
-            }
-        },
-        {
-            .point_id = 681,
-            .neighbors = {
-                {.id = 680, .distance = 28.265f},
-                {.id = 683, .distance = 28.989f},
-                {.id = 803, .distance = 29.349f},
-                {.id = 658, .distance = 36.665f},
-                {.id = 682, .distance = 38.712f},
-                {.id = 802, .distance = 40.741f},
-                {.id = 804, .distance = 41.218f}
-            }
-        },
-        {
-            .point_id = 682,
-            .neighbors = {
-                {.id = 683, .distance = 23.607f},
-                {.id = 659, .distance = 24.191f},
-                {.id = 684, .distance = 27.455f},
-                {.id = 685, .distance = 35.536f},
-                {.id = 660, .distance = 36.051f},
-                {.id = 681, .distance = 38.712f},
-                {.id = 658, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 683,
-            .neighbors = {
-                {.id = 682, .distance = 23.607f},
-                {.id = 685, .distance = 28.500f},
-                {.id = 681, .distance = 28.989f},
-                {.id = 802, .distance = 29.313f},
-                {.id = 684, .distance = 38.998f},
-                {.id = 800, .distance = 40.245f},
-                {.id = 803, .distance = 41.506f}
-            }
-        },
-        {
-            .point_id = 684,
-            .neighbors = {
-                {.id = 685, .distance = 25.823f},
-                {.id = 686, .distance = 26.007f},
-                {.id = 687, .distance = 27.304f},
-                {.id = 682, .distance = 27.455f},
-                {.id = 660, .distance = 35.506f},
-                {.id = 683, .distance = 38.998f},
-                {.id = 688, .distance = 39.242f}
-            }
-        },
-        {
-            .point_id = 685,
-            .neighbors = {
-                {.id = 684, .distance = 25.823f},
-                {.id = 683, .distance = 28.500f},
-                {.id = 800, .distance = 29.551f},
-                {.id = 686, .distance = 30.900f},
-                {.id = 682, .distance = 35.536f},
-                {.id = 802, .distance = 41.458f},
-                {.id = 798, .distance = 51.969f}
-            }
-        },
-        {
-            .point_id = 686,
-            .neighbors = {
-                {.id = 684, .distance = 26.007f},
-                {.id = 688, .distance = 29.614f},
-                {.id = 1205, .distance = 30.452f},
-                {.id = 685, .distance = 30.900f},
-                {.id = 687, .distance = 35.963f},
-                {.id = 1203, .distance = 41.143f},
-                {.id = 682, .distance = 52.371f}
-            }
-        },
-        {
-            .point_id = 687,
-            .neighbors = {
-                {.id = 688, .distance = 23.404f},
-                {.id = 684, .distance = 27.304f},
-                {.id = 660, .distance = 27.519f},
-                {.id = 661, .distance = 31.347f},
-                {.id = 686, .distance = 35.963f},
-                {.id = 689, .distance = 38.924f},
-                {.id = 682, .distance = 47.034f}
-            }
-        },
-        {
-            .point_id = 688,
-            .neighbors = {
-                {.id = 687, .distance = 23.404f},
-                {.id = 689, .distance = 28.584f},
-                {.id = 686, .distance = 29.614f},
-                {.id = 1203, .distance = 30.527f},
-                {.id = 684, .distance = 39.242f},
-                {.id = 1201, .distance = 40.848f},
-                {.id = 1205, .distance = 43.063f}
-            }
-        },
-        {
-            .point_id = 689,
-            .neighbors = {
-                {.id = 690, .distance = 28.069f},
-                {.id = 688, .distance = 28.584f},
-                {.id = 1201, .distance = 30.240f},
-                {.id = 661, .distance = 37.393f},
-                {.id = 687, .distance = 38.924f},
-                {.id = 1200, .distance = 40.805f},
-                {.id = 1203, .distance = 42.836f}
-            }
-        },
-        {
-            .point_id = 690,
-            .neighbors = {
-                {.id = 689, .distance = 28.069f},
-                {.id = 691, .distance = 28.840f},
-                {.id = 1200, .distance = 30.894f},
-                {.id = 662, .distance = 33.115f},
-                {.id = 1199, .distance = 41.340f},
-                {.id = 1201, .distance = 42.310f},
-                {.id = 661, .distance = 48.228f}
-            }
-        },
-        {
-            .point_id = 691,
-            .neighbors = {
-                {.id = 690, .distance = 28.840f},
-                {.id = 692, .distance = 29.098f},
-                {.id = 1199, .distance = 30.415f},
-                {.id = 663, .distance = 37.153f},
-                {.id = 693, .distance = 38.371f},
-                {.id = 1247, .distance = 40.963f},
-                {.id = 1200, .distance = 43.032f}
-            }
-        },
-        {
-            .point_id = 692,
-            .neighbors = {
-                {.id = 693, .distance = 23.468f},
-                {.id = 694, .distance = 28.067f},
-                {.id = 691, .distance = 29.098f},
-                {.id = 1247, .distance = 30.625f},
-                {.id = 695, .distance = 37.859f},
-                {.id = 1246, .distance = 41.283f},
-                {.id = 1199, .distance = 42.661f}
-            }
-        },
-        {
-            .point_id = 693,
-            .neighbors = {
-                {.id = 692, .distance = 23.468f},
-                {.id = 695, .distance = 26.995f},
-                {.id = 664, .distance = 27.373f},
-                {.id = 663, .distance = 30.540f},
-                {.id = 694, .distance = 35.584f},
-                {.id = 691, .distance = 38.371f},
-                {.id = 697, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 694,
-            .neighbors = {
-                {.id = 695, .distance = 25.235f},
-                {.id = 692, .distance = 28.067f},
-                {.id = 1246, .distance = 30.660f},
-                {.id = 696, .distance = 31.314f},
-                {.id = 693, .distance = 35.584f},
-                {.id = 1247, .distance = 42.761f},
-                {.id = 1101, .distance = 51.969f}
-            }
-        },
-        {
-            .point_id = 695,
-            .neighbors = {
-                {.id = 694, .distance = 25.235f},
-                {.id = 696, .distance = 25.959f},
-                {.id = 693, .distance = 26.995f},
-                {.id = 697, .distance = 28.280f},
-                {.id = 664, .distance = 35.618f},
-                {.id = 692, .distance = 37.859f},
-                {.id = 698, .distance = 39.348f}
-            }
-        },
-        {
-            .point_id = 696,
-            .neighbors = {
-                {.id = 695, .distance = 25.959f},
-                {.id = 698, .distance = 28.175f},
-                {.id = 1101, .distance = 29.551f},
-                {.id = 694, .distance = 31.314f},
-                {.id = 697, .distance = 35.099f},
-                {.id = 1099, .distance = 40.245f},
-                {.id = 693, .distance = 52.245f}
-            }
-        },
-        {
-            .point_id = 697,
-            .neighbors = {
-                {.id = 698, .distance = 22.858f},
-                {.id = 665, .distance = 24.293f},
-                {.id = 695, .distance = 28.280f},
-                {.id = 696, .distance = 35.099f},
-                {.id = 664, .distance = 36.566f},
-                {.id = 699, .distance = 37.718f},
-                {.id = 693, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 698,
-            .neighbors = {
-                {.id = 697, .distance = 22.858f},
-                {.id = 696, .distance = 28.175f},
-                {.id = 699, .distance = 28.665f},
-                {.id = 1099, .distance = 29.313f},
-                {.id = 695, .distance = 39.348f},
-                {.id = 1097, .distance = 40.741f},
-                {.id = 1101, .distance = 41.458f}
-            }
-        },
-        {
-            .point_id = 699,
-            .neighbors = {
-                {.id = 698, .distance = 28.665f},
-                {.id = 700, .distance = 28.744f},
-                {.id = 1097, .distance = 29.349f},
-                {.id = 666, .distance = 37.333f},
-                {.id = 697, .distance = 37.718f},
-                {.id = 1096, .distance = 40.854f},
-                {.id = 1099, .distance = 41.506f}
-            }
-        },
-        {
-            .point_id = 700,
-            .neighbors = {
-                {.id = 701, .distance = 28.665f},
-                {.id = 699, .distance = 28.744f},
-                {.id = 1096, .distance = 29.697f},
-                {.id = 666, .distance = 35.922f},
-                {.id = 667, .distance = 39.243f},
-                {.id = 1095, .distance = 40.708f},
-                {.id = 1097, .distance = 41.218f}
-            }
-        },
-        {
-            .point_id = 701,
-            .neighbors = {
-                {.id = 700, .distance = 28.665f},
-                {.id = 702, .distance = 28.989f},
-                {.id = 1095, .distance = 29.303f},
-                {.id = 667, .distance = 35.562f},
-                {.id = 703, .distance = 37.946f},
-                {.id = 1143, .distance = 40.502f},
-                {.id = 1096, .distance = 41.887f}
-            }
-        },
-        {
-            .point_id = 702,
-            .neighbors = {
-                {.id = 703, .distance = 22.522f},
-                {.id = 701, .distance = 28.989f},
-                {.id = 704, .distance = 28.989f},
-                {.id = 1143, .distance = 29.448f},
-                {.id = 705, .distance = 38.748f},
-                {.id = 1142, .distance = 40.870f},
-                {.id = 1095, .distance = 41.405f}
-            }
-        },
-        {
-            .point_id = 703,
-            .neighbors = {
-                {.id = 702, .distance = 22.522f},
-                {.id = 668, .distance = 23.803f},
-                {.id = 705, .distance = 27.573f},
-                {.id = 704, .distance = 35.430f},
-                {.id = 701, .distance = 37.946f},
-                {.id = 667, .distance = 41.982f},
-                {.id = 669, .distance = 43.096f}
-            }
-        },
-        {
-            .point_id = 704,
-            .neighbors = {
-                {.id = 705, .distance = 25.732f},
-                {.id = 702, .distance = 28.989f},
-                {.id = 1142, .distance = 29.475f},
-                {.id = 706, .distance = 30.699f},
-                {.id = 703, .distance = 35.430f},
-                {.id = 1143, .distance = 42.128f},
-                {.id = 496, .distance = 49.900f}
-            }
-        },
-        {
-            .point_id = 705,
-            .neighbors = {
-                {.id = 706, .distance = 25.715f},
-                {.id = 704, .distance = 25.732f},
-                {.id = 707, .distance = 27.009f},
-                {.id = 703, .distance = 27.573f},
-                {.id = 669, .distance = 38.124f},
-                {.id = 702, .distance = 38.748f},
-                {.id = 708, .distance = 38.795f}
-            }
-        },
-        {
-            .point_id = 706,
-            .neighbors = {
-                {.id = 705, .distance = 25.715f},
-                {.id = 496, .distance = 27.473f},
-                {.id = 708, .distance = 28.587f},
-                {.id = 704, .distance = 30.699f},
-                {.id = 707, .distance = 35.180f},
-                {.id = 494, .distance = 39.435f},
-                {.id = 498, .distance = 50.891f}
-            }
-        },
-        {
-            .point_id = 707,
-            .neighbors = {
-                {.id = 708, .distance = 23.318f},
-                {.id = 669, .distance = 24.410f},
-                {.id = 705, .distance = 27.009f},
-                {.id = 706, .distance = 35.180f},
-                {.id = 670, .distance = 36.927f},
-                {.id = 709, .distance = 38.625f},
-                {.id = 703, .distance = 47.229f}
-            }
-        },
-        {
-            .point_id = 708,
-            .neighbors = {
-                {.id = 707, .distance = 23.318f},
-                {.id = 494, .distance = 27.583f},
-                {.id = 706, .distance = 28.587f},
-                {.id = 709, .distance = 28.648f},
-                {.id = 705, .distance = 38.795f},
-                {.id = 493, .distance = 39.805f},
-                {.id = 496, .distance = 40.223f}
-            }
-        },
-        {
-            .point_id = 709,
-            .neighbors = {
-                {.id = 493, .distance = 27.628f},
-                {.id = 708, .distance = 28.648f},
-                {.id = 710, .distance = 28.678f},
-                {.id = 670, .distance = 36.174f},
-                {.id = 707, .distance = 38.625f},
-                {.id = 492, .distance = 39.752f},
-                {.id = 494, .distance = 40.007f}
-            }
-        },
-        {
-            .point_id = 710,
-            .neighbors = {
-                {.id = 492, .distance = 27.498f},
-                {.id = 711, .distance = 28.019f},
-                {.id = 709, .distance = 28.678f},
-                {.id = 671, .distance = 33.528f},
-                {.id = 493, .distance = 39.790f},
-                {.id = 491, .distance = 39.855f},
-                {.id = 670, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 711,
-            .neighbors = {
-                {.id = 491, .distance = 27.613f},
-                {.id = 710, .distance = 28.019f},
-                {.id = 712, .distance = 29.666f},
-                {.id = 713, .distance = 39.143f},
-                {.id = 492, .distance = 39.255f},
-                {.id = 671, .distance = 39.292f},
-                {.id = 490, .distance = 40.252f}
-            }
-        },
-        {
-            .point_id = 712,
-            .neighbors = {
-                {.id = 713, .distance = 23.574f},
-                {.id = 490, .distance = 27.436f},
-                {.id = 714, .distance = 28.796f},
-                {.id = 711, .distance = 29.666f},
-                {.id = 715, .distance = 38.536f},
-                {.id = 488, .distance = 39.154f},
-                {.id = 491, .distance = 39.947f}
-            }
-        },
-        {
-            .point_id = 713,
-            .neighbors = {
-                {.id = 712, .distance = 23.574f},
-                {.id = 672, .distance = 26.800f},
-                {.id = 715, .distance = 27.295f},
-                {.id = 673, .distance = 31.165f},
-                {.id = 714, .distance = 35.726f},
-                {.id = 711, .distance = 39.143f},
-                {.id = 717, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 714,
-            .neighbors = {
-                {.id = 715, .distance = 25.236f},
-                {.id = 488, .distance = 27.690f},
-                {.id = 712, .distance = 28.796f},
-                {.id = 716, .distance = 30.642f},
-                {.id = 713, .distance = 35.726f},
-                {.id = 490, .distance = 40.114f},
-                {.id = 486, .distance = 50.621f}
-            }
-        },
-        {
-            .point_id = 715,
-            .neighbors = {
-                {.id = 714, .distance = 25.236f},
-                {.id = 716, .distance = 25.701f},
-                {.id = 713, .distance = 27.295f},
-                {.id = 717, .distance = 27.601f},
-                {.id = 673, .distance = 35.484f},
-                {.id = 712, .distance = 38.536f},
-                {.id = 718, .distance = 38.536f}
-            }
-        },
-        {
-            .point_id = 716,
-            .neighbors = {
-                {.id = 715, .distance = 25.701f},
-                {.id = 718, .distance = 28.171f},
-                {.id = 610, .distance = 28.551f},
-                {.id = 714, .distance = 30.642f},
-                {.id = 717, .distance = 35.416f},
-                {.id = 608, .distance = 41.429f},
-                {.id = 612, .distance = 50.454f}
-            }
-        },
-        {
-            .point_id = 717,
-            .neighbors = {
-                {.id = 718, .distance = 23.046f},
-                {.id = 674, .distance = 26.974f},
-                {.id = 715, .distance = 27.601f},
-                {.id = 673, .distance = 32.025f},
-                {.id = 716, .distance = 35.416f},
-                {.id = 719, .distance = 38.124f},
-                {.id = 713, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 718,
-            .neighbors = {
-                {.id = 717, .distance = 23.046f},
-                {.id = 716, .distance = 28.171f},
-                {.id = 608, .distance = 28.586f},
-                {.id = 719, .distance = 28.796f},
-                {.id = 715, .distance = 38.536f},
-                {.id = 610, .distance = 39.222f},
-                {.id = 607, .distance = 42.712f}
-            }
-        },
-        {
-            .point_id = 719,
-            .neighbors = {
-                {.id = 607, .distance = 28.538f},
-                {.id = 720, .distance = 28.739f},
-                {.id = 718, .distance = 28.796f},
-                {.id = 717, .distance = 38.124f},
-                {.id = 608, .distance = 38.933f},
-                {.id = 675, .distance = 40.058f},
-                {.id = 674, .distance = 40.759f}
-            }
-        },
-        {
-            .point_id = 720,
-            .neighbors = {
-                {.id = 606, .distance = 28.593f},
-                {.id = 719, .distance = 28.739f},
-                {.id = 721, .distance = 28.996f},
-                {.id = 675, .distance = 34.006f},
-                {.id = 607, .distance = 38.440f},
-                {.id = 605, .distance = 42.065f},
-                {.id = 676, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 721,
-            .neighbors = {
-                {.id = 722, .distance = 28.539f},
-                {.id = 605, .distance = 28.720f},
-                {.id = 720, .distance = 28.996f},
-                {.id = 676, .distance = 35.652f},
-                {.id = 723, .distance = 38.072f},
-                {.id = 606, .distance = 39.193f},
-                {.id = 604, .distance = 41.888f}
-            }
-        },
-        {
-            .point_id = 722,
-            .neighbors = {
-                {.id = 723, .distance = 23.229f},
-                {.id = 604, .distance = 28.526f},
-                {.id = 721, .distance = 28.539f},
-                {.id = 724, .distance = 29.175f},
-                {.id = 725, .distance = 38.795f},
-                {.id = 605, .distance = 38.975f},
-                {.id = 602, .distance = 41.739f}
-            }
-        },
-        {
-            .point_id = 723,
-            .neighbors = {
-                {.id = 722, .distance = 23.229f},
-                {.id = 677, .distance = 24.656f},
-                {.id = 725, .distance = 27.373f},
-                {.id = 676, .distance = 35.973f},
-                {.id = 724, .distance = 36.131f},
-                {.id = 721, .distance = 38.072f},
-                {.id = 678, .distance = 47.750f}
-            }
-        },
-        {
-            .point_id = 724,
-            .neighbors = {
-                {.id = 725, .distance = 26.133f},
-                {.id = 602, .distance = 27.990f},
-                {.id = 722, .distance = 29.175f},
-                {.id = 726, .distance = 30.723f},
-                {.id = 723, .distance = 36.131f},
-                {.id = 604, .distance = 39.023f},
-                {.id = 600, .distance = 51.341f}
-            }
-        },
-        {
-            .point_id = 725,
-            .neighbors = {
-                {.id = 726, .distance = 25.813f},
-                {.id = 724, .distance = 26.133f},
-                {.id = 723, .distance = 27.373f},
-                {.id = 678, .distance = 27.856f},
-                {.id = 677, .distance = 38.273f},
-                {.id = 722, .distance = 38.795f},
-                {.id = 727, .distance = 39.458f}
-            }
-        },
-        {
-            .point_id = 726,
-            .neighbors = {
-                {.id = 725, .distance = 25.813f},
-                {.id = 808, .distance = 29.475f},
-                {.id = 727, .distance = 29.479f},
-                {.id = 724, .distance = 30.723f},
-                {.id = 678, .distance = 35.561f},
-                {.id = 806, .distance = 40.870f},
-                {.id = 602, .distance = 50.403f}
-            }
-        },
-        {
-            .point_id = 727,
-            .neighbors = {
-                {.id = 678, .distance = 22.863f},
-                {.id = 679, .distance = 28.096f},
-                {.id = 806, .distance = 29.448f},
-                {.id = 726, .distance = 29.479f},
-                {.id = 725, .distance = 39.458f},
-                {.id = 805, .distance = 40.502f},
-                {.id = 808, .distance = 42.128f}
-            }
-        },
-        {
-            .point_id = 728,
-            .neighbors = {
-                {.id = 729, .distance = 25.256f},
-                {.id = 731, .distance = 25.653f},
-                {.id = 730, .distance = 25.660f},
-                {.id = 733, .distance = 26.237f},
-                {.id = 732, .distance = 26.780f},
-                {.id = 735, .distance = 53.251f},
-                {.id = 739, .distance = 53.584f}
-            }
-        },
-        {
-            .point_id = 729,
-            .neighbors = {
-                {.id = 728, .distance = 25.256f},
-                {.id = 735, .distance = 27.996f},
-                {.id = 733, .distance = 30.406f},
-                {.id = 730, .distance = 30.745f},
-                {.id = 736, .distance = 36.902f},
-                {.id = 734, .distance = 36.902f},
-                {.id = 731, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 730,
-            .neighbors = {
-                {.id = 728, .distance = 25.660f},
-                {.id = 737, .distance = 28.138f},
-                {.id = 731, .distance = 30.016f},
-                {.id = 729, .distance = 30.745f},
-                {.id = 738, .distance = 35.779f},
-                {.id = 736, .distance = 37.730f},
-                {.id = 732, .distance = 49.623f}
-            }
-        },
-        {
-            .point_id = 731,
-            .neighbors = {
-                {.id = 728, .distance = 25.653f},
-                {.id = 739, .distance = 27.950f},
-                {.id = 730, .distance = 30.016f},
-                {.id = 732, .distance = 30.334f},
-                {.id = 740, .distance = 36.663f},
-                {.id = 738, .distance = 36.917f},
-                {.id = 729, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 732,
-            .neighbors = {
-                {.id = 728, .distance = 26.780f},
-                {.id = 741, .distance = 28.148f},
-                {.id = 731, .distance = 30.334f},
-                {.id = 733, .distance = 30.829f},
-                {.id = 740, .distance = 36.041f},
-                {.id = 742, .distance = 36.581f},
-                {.id = 729, .distance = 49.415f}
-            }
-        },
-        {
-            .point_id = 733,
-            .neighbors = {
-                {.id = 728, .distance = 26.237f},
-                {.id = 743, .distance = 28.784f},
-                {.id = 729, .distance = 30.406f},
-                {.id = 732, .distance = 30.829f},
-                {.id = 734, .distance = 36.136f},
-                {.id = 742, .distance = 36.663f},
-                {.id = 731, .distance = 49.028f}
-            }
-        },
-        {
-            .point_id = 734,
-            .neighbors = {
-                {.id = 745, .distance = 29.943f},
-                {.id = 743, .distance = 32.709f},
-                {.id = 735, .distance = 33.241f},
-                {.id = 744, .distance = 35.999f},
-                {.id = 733, .distance = 36.136f},
-                {.id = 729, .distance = 36.902f},
-                {.id = 746, .distance = 43.146f}
-            }
-        },
-        {
-            .point_id = 735,
-            .neighbors = {
-                {.id = 729, .distance = 27.996f},
-                {.id = 746, .distance = 31.091f},
-                {.id = 734, .distance = 33.241f},
-                {.id = 736, .distance = 33.489f},
-                {.id = 747, .distance = 33.997f},
-                {.id = 745, .distance = 46.465f},
-                {.id = 748, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 736,
-            .neighbors = {
-                {.id = 748, .distance = 28.795f},
-                {.id = 735, .distance = 33.489f},
-                {.id = 737, .distance = 34.526f},
-                {.id = 729, .distance = 36.902f},
-                {.id = 730, .distance = 37.730f},
-                {.id = 747, .distance = 39.001f},
-                {.id = 749, .distance = 39.043f}
-            }
-        },
-        {
-            .point_id = 737,
-            .neighbors = {
-                {.id = 730, .distance = 28.138f},
-                {.id = 750, .distance = 30.119f},
-                {.id = 738, .distance = 32.862f},
-                {.id = 749, .distance = 33.326f},
-                {.id = 736, .distance = 34.526f},
-                {.id = 751, .distance = 46.032f},
-                {.id = 748, .distance = 51.953f}
-            }
-        },
-        {
-            .point_id = 738,
-            .neighbors = {
-                {.id = 751, .distance = 29.271f},
-                {.id = 737, .distance = 32.862f},
-                {.id = 739, .distance = 32.910f},
-                {.id = 752, .distance = 35.475f},
-                {.id = 730, .distance = 35.779f},
-                {.id = 731, .distance = 36.917f},
-                {.id = 750, .distance = 42.036f}
-            }
-        },
-        {
-            .point_id = 739,
-            .neighbors = {
-                {.id = 731, .distance = 27.950f},
-                {.id = 753, .distance = 30.515f},
-                {.id = 738, .distance = 32.910f},
-                {.id = 740, .distance = 34.288f},
-                {.id = 752, .distance = 35.680f},
-                {.id = 754, .distance = 43.747f},
-                {.id = 730, .distance = 50.881f}
-            }
-        },
-        {
-            .point_id = 740,
-            .neighbors = {
-                {.id = 754, .distance = 30.713f},
-                {.id = 755, .distance = 32.961f},
-                {.id = 739, .distance = 34.288f},
-                {.id = 741, .distance = 34.333f},
-                {.id = 732, .distance = 36.041f},
-                {.id = 731, .distance = 36.663f},
-                {.id = 753, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 741,
-            .neighbors = {
-                {.id = 732, .distance = 28.148f},
-                {.id = 756, .distance = 28.795f},
-                {.id = 742, .distance = 32.474f},
-                {.id = 740, .distance = 34.333f},
-                {.id = 757, .distance = 37.853f},
-                {.id = 755, .distance = 39.529f},
-                {.id = 733, .distance = 52.029f}
-            }
-        },
-        {
-            .point_id = 742,
-            .neighbors = {
-                {.id = 758, .distance = 30.978f},
-                {.id = 741, .distance = 32.474f},
-                {.id = 757, .distance = 33.378f},
-                {.id = 743, .distance = 34.135f},
-                {.id = 732, .distance = 36.581f},
-                {.id = 733, .distance = 36.663f},
-                {.id = 759, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 743,
-            .neighbors = {
-                {.id = 733, .distance = 28.784f},
-                {.id = 759, .distance = 29.314f},
-                {.id = 734, .distance = 32.709f},
-                {.id = 742, .distance = 34.135f},
-                {.id = 744, .distance = 35.428f},
-                {.id = 758, .distance = 42.934f},
-                {.id = 729, .distance = 52.730f}
-            }
-        },
-        {
-            .point_id = 744,
-            .neighbors = {
-                {.id = 761, .distance = 31.937f},
-                {.id = 760, .distance = 31.964f},
-                {.id = 759, .distance = 32.088f},
-                {.id = 745, .distance = 32.704f},
-                {.id = 743, .distance = 35.428f},
-                {.id = 734, .distance = 35.999f},
-                {.id = 781, .distance = 49.921f}
-            }
-        },
-        {
-            .point_id = 745,
-            .neighbors = {
-                {.id = 762, .distance = 29.419f},
-                {.id = 734, .distance = 29.943f},
-                {.id = 746, .distance = 32.468f},
-                {.id = 744, .distance = 32.704f},
-                {.id = 761, .distance = 37.491f},
-                {.id = 763, .distance = 41.947f},
-                {.id = 735, .distance = 46.465f}
-            }
-        },
-        {
-            .point_id = 746,
-            .neighbors = {
-                {.id = 763, .distance = 29.848f},
-                {.id = 735, .distance = 31.091f},
-                {.id = 747, .distance = 31.917f},
-                {.id = 745, .distance = 32.468f},
-                {.id = 764, .distance = 35.426f},
-                {.id = 734, .distance = 43.146f},
-                {.id = 762, .distance = 44.568f}
-            }
-        },
-        {
-            .point_id = 747,
-            .neighbors = {
-                {.id = 765, .distance = 30.775f},
-                {.id = 746, .distance = 31.917f},
-                {.id = 748, .distance = 32.089f},
-                {.id = 764, .distance = 33.457f},
-                {.id = 735, .distance = 33.997f},
-                {.id = 736, .distance = 39.001f},
-                {.id = 766, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 748,
-            .neighbors = {
-                {.id = 766, .distance = 28.126f},
-                {.id = 736, .distance = 28.795f},
-                {.id = 747, .distance = 32.089f},
-                {.id = 749, .distance = 33.350f},
-                {.id = 765, .distance = 38.606f},
-                {.id = 767, .distance = 40.686f},
-                {.id = 735, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 749,
-            .neighbors = {
-                {.id = 767, .distance = 30.745f},
-                {.id = 750, .distance = 32.585f},
-                {.id = 737, .distance = 33.326f},
-                {.id = 748, .distance = 33.350f},
-                {.id = 768, .distance = 33.990f},
-                {.id = 736, .distance = 39.043f},
-                {.id = 766, .distance = 47.230f}
-            }
-        },
-        {
-            .point_id = 750,
-            .neighbors = {
-                {.id = 769, .distance = 30.088f},
-                {.id = 737, .distance = 30.119f},
-                {.id = 751, .distance = 32.298f},
-                {.id = 749, .distance = 32.585f},
-                {.id = 768, .distance = 35.628f},
-                {.id = 738, .distance = 42.036f},
-                {.id = 770, .distance = 44.864f}
-            }
-        },
-        {
-            .point_id = 751,
-            .neighbors = {
-                {.id = 770, .distance = 28.726f},
-                {.id = 738, .distance = 29.271f},
-                {.id = 752, .distance = 31.916f},
-                {.id = 750, .distance = 32.298f},
-                {.id = 771, .distance = 37.444f},
-                {.id = 769, .distance = 42.067f},
-                {.id = 737, .distance = 46.032f}
-            }
-        },
-        {
-            .point_id = 752,
-            .neighbors = {
-                {.id = 771, .distance = 31.889f},
-                {.id = 751, .distance = 31.916f},
-                {.id = 772, .distance = 32.458f},
-                {.id = 753, .distance = 32.605f},
-                {.id = 738, .distance = 35.475f},
-                {.id = 739, .distance = 35.680f},
-                {.id = 770, .distance = 49.358f}
-            }
-        },
-        {
-            .point_id = 753,
-            .neighbors = {
-                {.id = 773, .distance = 28.557f},
-                {.id = 739, .distance = 30.515f},
-                {.id = 752, .distance = 32.605f},
-                {.id = 754, .distance = 33.386f},
-                {.id = 772, .distance = 36.707f},
-                {.id = 774, .distance = 42.276f},
-                {.id = 740, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 754,
-            .neighbors = {
-                {.id = 774, .distance = 29.283f},
-                {.id = 740, .distance = 30.713f},
-                {.id = 755, .distance = 32.395f},
-                {.id = 753, .distance = 33.386f},
-                {.id = 775, .distance = 35.383f},
-                {.id = 739, .distance = 43.747f},
-                {.id = 773, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 755,
-            .neighbors = {
-                {.id = 776, .distance = 30.492f},
-                {.id = 754, .distance = 32.395f},
-                {.id = 756, .distance = 32.492f},
-                {.id = 740, .distance = 32.961f},
-                {.id = 775, .distance = 33.774f},
-                {.id = 741, .distance = 39.529f},
-                {.id = 777, .distance = 46.947f}
-            }
-        },
-        {
-            .point_id = 756,
-            .neighbors = {
-                {.id = 741, .distance = 28.795f},
-                {.id = 777, .distance = 28.796f},
-                {.id = 757, .distance = 31.301f},
-                {.id = 755, .distance = 32.492f},
-                {.id = 778, .distance = 39.130f},
-                {.id = 776, .distance = 39.658f},
-                {.id = 742, .distance = 50.236f}
-            }
-        },
-        {
-            .point_id = 757,
-            .neighbors = {
-                {.id = 778, .distance = 30.076f},
-                {.id = 756, .distance = 31.301f},
-                {.id = 758, .distance = 33.324f},
-                {.id = 742, .distance = 33.378f},
-                {.id = 779, .distance = 33.386f},
-                {.id = 741, .distance = 37.853f},
-                {.id = 777, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 758,
-            .neighbors = {
-                {.id = 780, .distance = 29.653f},
-                {.id = 742, .distance = 30.978f},
-                {.id = 759, .distance = 32.852f},
-                {.id = 757, .distance = 33.324f},
-                {.id = 779, .distance = 35.446f},
-                {.id = 743, .distance = 42.934f},
-                {.id = 781, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 759,
-            .neighbors = {
-                {.id = 781, .distance = 28.776f},
-                {.id = 743, .distance = 29.314f},
-                {.id = 744, .distance = 32.088f},
-                {.id = 758, .distance = 32.852f},
-                {.id = 760, .distance = 36.954f},
-                {.id = 780, .distance = 42.498f},
-                {.id = 742, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 760,
-            .neighbors = {
-                {.id = 782, .distance = 23.617f},
-                {.id = 781, .distance = 31.442f},
-                {.id = 744, .distance = 31.964f},
-                {.id = 761, .distance = 32.703f},
-                {.id = 759, .distance = 36.954f},
-                {.id = 829, .distance = 41.259f},
-                {.id = 831, .distance = 45.103f}
-            }
-        },
-        {
-            .point_id = 761,
-            .neighbors = {
-                {.id = 744, .distance = 31.937f},
-                {.id = 760, .distance = 32.703f},
-                {.id = 762, .distance = 32.725f},
-                {.id = 783, .distance = 36.068f},
-                {.id = 745, .distance = 37.491f},
-                {.id = 784, .distance = 39.068f},
-                {.id = 782, .distance = 41.895f}
-            }
-        },
-        {
-            .point_id = 762,
-            .neighbors = {
-                {.id = 745, .distance = 29.419f},
-                {.id = 763, .distance = 30.638f},
-                {.id = 761, .distance = 32.725f},
-                {.id = 784, .distance = 35.794f},
-                {.id = 785, .distance = 36.665f},
-                {.id = 746, .distance = 44.568f},
-                {.id = 786, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 763,
-            .neighbors = {
-                {.id = 786, .distance = 24.191f},
-                {.id = 746, .distance = 29.848f},
-                {.id = 762, .distance = 30.638f},
-                {.id = 764, .distance = 31.516f},
-                {.id = 745, .distance = 41.947f},
-                {.id = 787, .distance = 44.167f},
-                {.id = 785, .distance = 44.460f}
-            }
-        },
-        {
-            .point_id = 764,
-            .neighbors = {
-                {.id = 791, .distance = 27.519f},
-                {.id = 763, .distance = 31.516f},
-                {.id = 765, .distance = 33.096f},
-                {.id = 747, .distance = 33.457f},
-                {.id = 746, .distance = 35.426f},
-                {.id = 788, .distance = 35.506f},
-                {.id = 786, .distance = 36.051f}
-            }
-        },
-        {
-            .point_id = 765,
-            .neighbors = {
-                {.id = 747, .distance = 30.775f},
-                {.id = 766, .distance = 30.943f},
-                {.id = 791, .distance = 31.347f},
-                {.id = 764, .distance = 33.096f},
-                {.id = 793, .distance = 37.393f},
-                {.id = 748, .distance = 38.606f},
-                {.id = 792, .distance = 45.102f}
-            }
-        },
-        {
-            .point_id = 766,
-            .neighbors = {
-                {.id = 748, .distance = 28.126f},
-                {.id = 765, .distance = 30.943f},
-                {.id = 767, .distance = 32.322f},
-                {.id = 794, .distance = 33.115f},
-                {.id = 793, .distance = 43.474f},
-                {.id = 795, .distance = 44.048f},
-                {.id = 747, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 767,
-            .neighbors = {
-                {.id = 797, .distance = 30.540f},
-                {.id = 749, .distance = 30.745f},
-                {.id = 766, .distance = 32.322f},
-                {.id = 768, .distance = 32.441f},
-                {.id = 795, .distance = 37.153f},
-                {.id = 748, .distance = 40.686f},
-                {.id = 796, .distance = 45.279f}
-            }
-        },
-        {
-            .point_id = 768,
-            .neighbors = {
-                {.id = 797, .distance = 27.373f},
-                {.id = 769, .distance = 31.563f},
-                {.id = 767, .distance = 32.441f},
-                {.id = 749, .distance = 33.990f},
-                {.id = 799, .distance = 35.618f},
-                {.id = 750, .distance = 35.628f},
-                {.id = 801, .distance = 36.566f}
-            }
-        },
-        {
-            .point_id = 769,
-            .neighbors = {
-                {.id = 801, .distance = 24.293f},
-                {.id = 750, .distance = 30.088f},
-                {.id = 768, .distance = 31.563f},
-                {.id = 770, .distance = 31.793f},
-                {.id = 751, .distance = 42.067f},
-                {.id = 802, .distance = 43.775f},
-                {.id = 803, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 770,
-            .neighbors = {
-                {.id = 751, .distance = 28.726f},
-                {.id = 771, .distance = 31.427f},
-                {.id = 769, .distance = 31.793f},
-                {.id = 804, .distance = 35.922f},
-                {.id = 803, .distance = 37.333f},
-                {.id = 750, .distance = 44.864f},
-                {.id = 801, .distance = 47.704f}
-            }
-        },
-        {
-            .point_id = 771,
-            .neighbors = {
-                {.id = 770, .distance = 31.427f},
-                {.id = 752, .distance = 31.889f},
-                {.id = 772, .distance = 32.342f},
-                {.id = 805, .distance = 35.562f},
-                {.id = 751, .distance = 37.444f},
-                {.id = 804, .distance = 39.243f},
-                {.id = 807, .distance = 41.982f}
-            }
-        },
-        {
-            .point_id = 772,
-            .neighbors = {
-                {.id = 807, .distance = 23.803f},
-                {.id = 773, .distance = 31.693f},
-                {.id = 771, .distance = 32.342f},
-                {.id = 752, .distance = 32.458f},
-                {.id = 753, .distance = 36.707f},
-                {.id = 809, .distance = 41.333f},
-                {.id = 806, .distance = 44.974f}
-            }
-        },
-        {
-            .point_id = 773,
-            .neighbors = {
-                {.id = 811, .distance = 24.410f},
-                {.id = 753, .distance = 28.557f},
-                {.id = 772, .distance = 31.693f},
-                {.id = 774, .distance = 32.138f},
-                {.id = 809, .distance = 38.124f},
-                {.id = 807, .distance = 43.096f},
-                {.id = 754, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 774,
-            .neighbors = {
-                {.id = 754, .distance = 29.283f},
-                {.id = 775, .distance = 31.589f},
-                {.id = 773, .distance = 32.138f},
-                {.id = 813, .distance = 36.174f},
-                {.id = 811, .distance = 36.927f},
-                {.id = 753, .distance = 42.276f},
-                {.id = 814, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 775,
-            .neighbors = {
-                {.id = 774, .distance = 31.589f},
-                {.id = 776, .distance = 32.185f},
-                {.id = 814, .distance = 33.528f},
-                {.id = 755, .distance = 33.774f},
-                {.id = 754, .distance = 35.383f},
-                {.id = 815, .distance = 39.292f},
-                {.id = 813, .distance = 48.151f}
-            }
-        },
-        {
-            .point_id = 776,
-            .neighbors = {
-                {.id = 817, .distance = 26.800f},
-                {.id = 755, .distance = 30.492f},
-                {.id = 777, .distance = 31.085f},
-                {.id = 775, .distance = 32.185f},
-                {.id = 756, .distance = 39.658f},
-                {.id = 815, .distance = 40.843f},
-                {.id = 816, .distance = 44.297f}
-            }
-        },
-        {
-            .point_id = 777,
-            .neighbors = {
-                {.id = 756, .distance = 28.796f},
-                {.id = 776, .distance = 31.085f},
-                {.id = 817, .distance = 31.165f},
-                {.id = 778, .distance = 31.748f},
-                {.id = 821, .distance = 32.025f},
-                {.id = 819, .distance = 35.484f},
-                {.id = 757, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 778,
-            .neighbors = {
-                {.id = 821, .distance = 26.974f},
-                {.id = 757, .distance = 30.076f},
-                {.id = 779, .distance = 31.574f},
-                {.id = 777, .distance = 31.748f},
-                {.id = 756, .distance = 39.130f},
-                {.id = 823, .distance = 40.759f},
-                {.id = 822, .distance = 44.255f}
-            }
-        },
-        {
-            .point_id = 779,
-            .neighbors = {
-                {.id = 778, .distance = 31.574f},
-                {.id = 780, .distance = 32.495f},
-                {.id = 757, .distance = 33.386f},
-                {.id = 824, .distance = 34.006f},
-                {.id = 758, .distance = 35.446f},
-                {.id = 823, .distance = 40.058f},
-                {.id = 825, .distance = 48.765f}
-            }
-        },
-        {
-            .point_id = 780,
-            .neighbors = {
-                {.id = 758, .distance = 29.653f},
-                {.id = 781, .distance = 31.761f},
-                {.id = 779, .distance = 32.495f},
-                {.id = 825, .distance = 35.652f},
-                {.id = 827, .distance = 35.973f},
-                {.id = 759, .distance = 42.498f},
-                {.id = 824, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 781,
-            .neighbors = {
-                {.id = 827, .distance = 24.656f},
-                {.id = 759, .distance = 28.776f},
-                {.id = 760, .distance = 31.442f},
-                {.id = 780, .distance = 31.761f},
-                {.id = 829, .distance = 38.273f},
-                {.id = 782, .distance = 43.129f},
-                {.id = 758, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 782,
-            .neighbors = {
-                {.id = 831, .distance = 22.863f},
-                {.id = 760, .distance = 23.617f},
-                {.id = 829, .distance = 27.856f},
-                {.id = 830, .distance = 35.561f},
-                {.id = 783, .distance = 37.917f},
-                {.id = 761, .distance = 41.895f},
-                {.id = 781, .distance = 43.129f}
-            }
-        },
-        {
-            .point_id = 783,
-            .neighbors = {
-                {.id = 831, .distance = 28.096f},
-                {.id = 784, .distance = 29.153f},
-                {.id = 909, .distance = 29.303f},
-                {.id = 761, .distance = 36.068f},
-                {.id = 782, .distance = 37.917f},
-                {.id = 908, .distance = 40.708f},
-                {.id = 910, .distance = 41.405f}
-            }
-        },
-        {
-            .point_id = 784,
-            .neighbors = {
-                {.id = 785, .distance = 28.265f},
-                {.id = 783, .distance = 29.153f},
-                {.id = 908, .distance = 29.697f},
-                {.id = 762, .distance = 35.794f},
-                {.id = 761, .distance = 39.068f},
-                {.id = 907, .distance = 40.854f},
-                {.id = 909, .distance = 41.887f}
-            }
-        },
-        {
-            .point_id = 785,
-            .neighbors = {
-                {.id = 784, .distance = 28.265f},
-                {.id = 787, .distance = 28.989f},
-                {.id = 907, .distance = 29.349f},
-                {.id = 762, .distance = 36.665f},
-                {.id = 786, .distance = 38.712f},
-                {.id = 906, .distance = 40.741f},
-                {.id = 908, .distance = 41.218f}
-            }
-        },
-        {
-            .point_id = 786,
-            .neighbors = {
-                {.id = 787, .distance = 23.607f},
-                {.id = 763, .distance = 24.191f},
-                {.id = 788, .distance = 27.455f},
-                {.id = 789, .distance = 35.536f},
-                {.id = 764, .distance = 36.051f},
-                {.id = 785, .distance = 38.712f},
-                {.id = 762, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 787,
-            .neighbors = {
-                {.id = 786, .distance = 23.607f},
-                {.id = 789, .distance = 28.500f},
-                {.id = 785, .distance = 28.989f},
-                {.id = 906, .distance = 29.313f},
-                {.id = 788, .distance = 38.998f},
-                {.id = 904, .distance = 40.245f},
-                {.id = 907, .distance = 41.506f}
-            }
-        },
-        {
-            .point_id = 788,
-            .neighbors = {
-                {.id = 789, .distance = 25.823f},
-                {.id = 790, .distance = 26.007f},
-                {.id = 791, .distance = 27.304f},
-                {.id = 786, .distance = 27.455f},
-                {.id = 764, .distance = 35.506f},
-                {.id = 787, .distance = 38.998f},
-                {.id = 792, .distance = 39.242f}
-            }
-        },
-        {
-            .point_id = 789,
-            .neighbors = {
-                {.id = 788, .distance = 25.823f},
-                {.id = 787, .distance = 28.500f},
-                {.id = 904, .distance = 29.551f},
-                {.id = 790, .distance = 30.900f},
-                {.id = 786, .distance = 35.536f},
-                {.id = 906, .distance = 41.458f},
-                {.id = 1214, .distance = 51.891f}
-            }
-        },
-        {
-            .point_id = 790,
-            .neighbors = {
-                {.id = 788, .distance = 26.007f},
-                {.id = 792, .distance = 29.614f},
-                {.id = 1214, .distance = 29.836f},
-                {.id = 789, .distance = 30.900f},
-                {.id = 791, .distance = 35.963f},
-                {.id = 1212, .distance = 39.709f},
-                {.id = 786, .distance = 52.371f}
-            }
-        },
-        {
-            .point_id = 791,
-            .neighbors = {
-                {.id = 792, .distance = 23.404f},
-                {.id = 788, .distance = 27.304f},
-                {.id = 764, .distance = 27.519f},
-                {.id = 765, .distance = 31.347f},
-                {.id = 790, .distance = 35.963f},
-                {.id = 793, .distance = 38.924f},
-                {.id = 786, .distance = 47.034f}
-            }
-        },
-        {
-            .point_id = 792,
-            .neighbors = {
-                {.id = 791, .distance = 23.404f},
-                {.id = 793, .distance = 28.584f},
-                {.id = 790, .distance = 29.614f},
-                {.id = 1212, .distance = 30.187f},
-                {.id = 788, .distance = 39.242f},
-                {.id = 1211, .distance = 39.536f},
-                {.id = 1214, .distance = 43.439f}
-            }
-        },
-        {
-            .point_id = 793,
-            .neighbors = {
-                {.id = 794, .distance = 28.069f},
-                {.id = 792, .distance = 28.584f},
-                {.id = 1211, .distance = 29.916f},
-                {.id = 765, .distance = 37.393f},
-                {.id = 791, .distance = 38.924f},
-                {.id = 1210, .distance = 39.539f},
-                {.id = 766, .distance = 43.474f}
-            }
-        },
-        {
-            .point_id = 794,
-            .neighbors = {
-                {.id = 793, .distance = 28.069f},
-                {.id = 795, .distance = 28.840f},
-                {.id = 1210, .distance = 30.071f},
-                {.id = 766, .distance = 33.115f},
-                {.id = 1209, .distance = 39.539f},
-                {.id = 1211, .distance = 43.068f},
-                {.id = 765, .distance = 48.228f}
-            }
-        },
-        {
-            .point_id = 795,
-            .neighbors = {
-                {.id = 794, .distance = 28.840f},
-                {.id = 796, .distance = 29.098f},
-                {.id = 1209, .distance = 29.916f},
-                {.id = 767, .distance = 37.153f},
-                {.id = 797, .distance = 38.371f},
-                {.id = 1208, .distance = 39.536f},
-                {.id = 1210, .distance = 43.068f}
-            }
-        },
-        {
-            .point_id = 796,
-            .neighbors = {
-                {.id = 797, .distance = 23.468f},
-                {.id = 798, .distance = 28.067f},
-                {.id = 795, .distance = 29.098f},
-                {.id = 1208, .distance = 30.187f},
-                {.id = 799, .distance = 37.859f},
-                {.id = 1206, .distance = 39.709f},
-                {.id = 1209, .distance = 43.663f}
-            }
-        },
-        {
-            .point_id = 797,
-            .neighbors = {
-                {.id = 796, .distance = 23.468f},
-                {.id = 799, .distance = 26.995f},
-                {.id = 768, .distance = 27.373f},
-                {.id = 767, .distance = 30.540f},
-                {.id = 798, .distance = 35.584f},
-                {.id = 795, .distance = 38.371f},
-                {.id = 801, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 798,
-            .neighbors = {
-                {.id = 799, .distance = 25.235f},
-                {.id = 796, .distance = 28.067f},
-                {.id = 1206, .distance = 29.836f},
-                {.id = 800, .distance = 31.314f},
-                {.id = 797, .distance = 35.584f},
-                {.id = 1208, .distance = 43.439f},
-                {.id = 1205, .distance = 51.891f}
-            }
-        },
-        {
-            .point_id = 799,
-            .neighbors = {
-                {.id = 798, .distance = 25.235f},
-                {.id = 800, .distance = 25.959f},
-                {.id = 797, .distance = 26.995f},
-                {.id = 801, .distance = 28.280f},
-                {.id = 768, .distance = 35.618f},
-                {.id = 796, .distance = 37.859f},
-                {.id = 802, .distance = 39.348f}
-            }
-        },
-        {
-            .point_id = 800,
-            .neighbors = {
-                {.id = 799, .distance = 25.959f},
-                {.id = 802, .distance = 28.175f},
-                {.id = 685, .distance = 29.551f},
-                {.id = 798, .distance = 31.314f},
-                {.id = 801, .distance = 35.099f},
-                {.id = 683, .distance = 40.245f},
-                {.id = 797, .distance = 52.245f}
-            }
-        },
-        {
-            .point_id = 801,
-            .neighbors = {
-                {.id = 802, .distance = 22.858f},
-                {.id = 769, .distance = 24.293f},
-                {.id = 799, .distance = 28.280f},
-                {.id = 800, .distance = 35.099f},
-                {.id = 768, .distance = 36.566f},
-                {.id = 803, .distance = 37.718f},
-                {.id = 797, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 802,
-            .neighbors = {
-                {.id = 801, .distance = 22.858f},
-                {.id = 800, .distance = 28.175f},
-                {.id = 803, .distance = 28.665f},
-                {.id = 683, .distance = 29.313f},
-                {.id = 799, .distance = 39.348f},
-                {.id = 681, .distance = 40.741f},
-                {.id = 685, .distance = 41.458f}
-            }
-        },
-        {
-            .point_id = 803,
-            .neighbors = {
-                {.id = 802, .distance = 28.665f},
-                {.id = 804, .distance = 28.744f},
-                {.id = 681, .distance = 29.349f},
-                {.id = 770, .distance = 37.333f},
-                {.id = 801, .distance = 37.718f},
-                {.id = 680, .distance = 40.854f},
-                {.id = 683, .distance = 41.506f}
-            }
-        },
-        {
-            .point_id = 804,
-            .neighbors = {
-                {.id = 805, .distance = 28.665f},
-                {.id = 803, .distance = 28.744f},
-                {.id = 680, .distance = 29.697f},
-                {.id = 770, .distance = 35.922f},
-                {.id = 771, .distance = 39.243f},
-                {.id = 679, .distance = 40.708f},
-                {.id = 681, .distance = 41.218f}
-            }
-        },
-        {
-            .point_id = 805,
-            .neighbors = {
-                {.id = 804, .distance = 28.665f},
-                {.id = 806, .distance = 28.989f},
-                {.id = 679, .distance = 29.303f},
-                {.id = 771, .distance = 35.562f},
-                {.id = 807, .distance = 37.946f},
-                {.id = 727, .distance = 40.502f},
-                {.id = 680, .distance = 41.887f}
-            }
-        },
-        {
-            .point_id = 806,
-            .neighbors = {
-                {.id = 807, .distance = 22.522f},
-                {.id = 805, .distance = 28.989f},
-                {.id = 808, .distance = 28.989f},
-                {.id = 727, .distance = 29.448f},
-                {.id = 809, .distance = 38.748f},
-                {.id = 726, .distance = 40.870f},
-                {.id = 679, .distance = 41.405f}
-            }
-        },
-        {
-            .point_id = 807,
-            .neighbors = {
-                {.id = 806, .distance = 22.522f},
-                {.id = 772, .distance = 23.803f},
-                {.id = 809, .distance = 27.573f},
-                {.id = 808, .distance = 35.430f},
-                {.id = 805, .distance = 37.946f},
-                {.id = 771, .distance = 41.982f},
-                {.id = 773, .distance = 43.096f}
-            }
-        },
-        {
-            .point_id = 808,
-            .neighbors = {
-                {.id = 809, .distance = 25.732f},
-                {.id = 806, .distance = 28.989f},
-                {.id = 726, .distance = 29.475f},
-                {.id = 810, .distance = 30.699f},
-                {.id = 807, .distance = 35.430f},
-                {.id = 727, .distance = 42.128f},
-                {.id = 600, .distance = 49.900f}
-            }
-        },
-        {
-            .point_id = 809,
-            .neighbors = {
-                {.id = 810, .distance = 25.715f},
-                {.id = 808, .distance = 25.732f},
-                {.id = 811, .distance = 27.009f},
-                {.id = 807, .distance = 27.573f},
-                {.id = 773, .distance = 38.124f},
-                {.id = 806, .distance = 38.748f},
-                {.id = 812, .distance = 38.795f}
-            }
-        },
-        {
-            .point_id = 810,
-            .neighbors = {
-                {.id = 809, .distance = 25.715f},
-                {.id = 600, .distance = 27.473f},
-                {.id = 812, .distance = 28.587f},
-                {.id = 808, .distance = 30.699f},
-                {.id = 811, .distance = 35.180f},
-                {.id = 598, .distance = 39.435f},
-                {.id = 602, .distance = 50.891f}
-            }
-        },
-        {
-            .point_id = 811,
-            .neighbors = {
-                {.id = 812, .distance = 23.318f},
-                {.id = 773, .distance = 24.410f},
-                {.id = 809, .distance = 27.009f},
-                {.id = 810, .distance = 35.180f},
-                {.id = 774, .distance = 36.927f},
-                {.id = 813, .distance = 38.625f},
-                {.id = 807, .distance = 47.229f}
-            }
-        },
-        {
-            .point_id = 812,
-            .neighbors = {
-                {.id = 811, .distance = 23.318f},
-                {.id = 598, .distance = 27.583f},
-                {.id = 810, .distance = 28.587f},
-                {.id = 813, .distance = 28.648f},
-                {.id = 809, .distance = 38.795f},
-                {.id = 597, .distance = 39.805f},
-                {.id = 600, .distance = 40.223f}
-            }
-        },
-        {
-            .point_id = 813,
-            .neighbors = {
-                {.id = 597, .distance = 27.628f},
-                {.id = 812, .distance = 28.648f},
-                {.id = 814, .distance = 28.678f},
-                {.id = 774, .distance = 36.174f},
-                {.id = 811, .distance = 38.625f},
-                {.id = 596, .distance = 39.752f},
-                {.id = 598, .distance = 40.007f}
-            }
-        },
-        {
-            .point_id = 814,
-            .neighbors = {
-                {.id = 596, .distance = 27.498f},
-                {.id = 815, .distance = 28.019f},
-                {.id = 813, .distance = 28.678f},
-                {.id = 775, .distance = 33.528f},
-                {.id = 597, .distance = 39.790f},
-                {.id = 595, .distance = 39.855f},
-                {.id = 774, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 815,
-            .neighbors = {
-                {.id = 595, .distance = 27.613f},
-                {.id = 814, .distance = 28.019f},
-                {.id = 816, .distance = 29.666f},
-                {.id = 817, .distance = 39.143f},
-                {.id = 596, .distance = 39.255f},
-                {.id = 775, .distance = 39.292f},
-                {.id = 594, .distance = 40.252f}
-            }
-        },
-        {
-            .point_id = 816,
-            .neighbors = {
-                {.id = 817, .distance = 23.574f},
-                {.id = 594, .distance = 27.436f},
-                {.id = 818, .distance = 28.796f},
-                {.id = 815, .distance = 29.666f},
-                {.id = 819, .distance = 38.536f},
-                {.id = 592, .distance = 39.154f},
-                {.id = 595, .distance = 39.947f}
-            }
-        },
-        {
-            .point_id = 817,
-            .neighbors = {
-                {.id = 816, .distance = 23.574f},
-                {.id = 776, .distance = 26.800f},
-                {.id = 819, .distance = 27.295f},
-                {.id = 777, .distance = 31.165f},
-                {.id = 818, .distance = 35.726f},
-                {.id = 815, .distance = 39.143f},
-                {.id = 821, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 818,
-            .neighbors = {
-                {.id = 819, .distance = 25.236f},
-                {.id = 592, .distance = 27.690f},
-                {.id = 816, .distance = 28.796f},
-                {.id = 820, .distance = 30.642f},
-                {.id = 817, .distance = 35.726f},
-                {.id = 594, .distance = 40.114f},
-                {.id = 590, .distance = 50.621f}
-            }
-        },
-        {
-            .point_id = 819,
-            .neighbors = {
-                {.id = 818, .distance = 25.236f},
-                {.id = 820, .distance = 25.701f},
-                {.id = 817, .distance = 27.295f},
-                {.id = 821, .distance = 27.601f},
-                {.id = 777, .distance = 35.484f},
-                {.id = 822, .distance = 38.536f},
-                {.id = 816, .distance = 38.536f}
-            }
-        },
-        {
-            .point_id = 820,
-            .neighbors = {
-                {.id = 819, .distance = 25.701f},
-                {.id = 822, .distance = 28.171f},
-                {.id = 184, .distance = 28.509f},
-                {.id = 818, .distance = 30.642f},
-                {.id = 821, .distance = 35.416f},
-                {.id = 182, .distance = 40.640f},
-                {.id = 592, .distance = 50.968f}
-            }
-        },
-        {
-            .point_id = 821,
-            .neighbors = {
-                {.id = 822, .distance = 23.046f},
-                {.id = 778, .distance = 26.974f},
-                {.id = 819, .distance = 27.601f},
-                {.id = 777, .distance = 32.025f},
-                {.id = 820, .distance = 35.416f},
-                {.id = 823, .distance = 38.124f},
-                {.id = 817, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 822,
-            .neighbors = {
-                {.id = 821, .distance = 23.046f},
-                {.id = 820, .distance = 28.171f},
-                {.id = 182, .distance = 28.758f},
-                {.id = 823, .distance = 28.796f},
-                {.id = 819, .distance = 38.536f},
-                {.id = 184, .distance = 40.267f},
-                {.id = 181, .distance = 41.392f}
-            }
-        },
-        {
-            .point_id = 823,
-            .neighbors = {
-                {.id = 181, .distance = 28.612f},
-                {.id = 824, .distance = 28.739f},
-                {.id = 822, .distance = 28.796f},
-                {.id = 821, .distance = 38.124f},
-                {.id = 182, .distance = 40.023f},
-                {.id = 779, .distance = 40.058f},
-                {.id = 778, .distance = 40.759f}
-            }
-        },
-        {
-            .point_id = 824,
-            .neighbors = {
-                {.id = 180, .distance = 28.628f},
-                {.id = 823, .distance = 28.739f},
-                {.id = 825, .distance = 28.996f},
-                {.id = 779, .distance = 34.006f},
-                {.id = 181, .distance = 39.961f},
-                {.id = 179, .distance = 41.256f},
-                {.id = 780, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 825,
-            .neighbors = {
-                {.id = 826, .distance = 28.539f},
-                {.id = 179, .distance = 28.849f},
-                {.id = 824, .distance = 28.996f},
-                {.id = 780, .distance = 35.652f},
-                {.id = 827, .distance = 38.072f},
-                {.id = 180, .distance = 40.208f},
-                {.id = 178, .distance = 41.035f}
-            }
-        },
-        {
-            .point_id = 826,
-            .neighbors = {
-                {.id = 827, .distance = 23.229f},
-                {.id = 825, .distance = 28.539f},
-                {.id = 178, .distance = 28.558f},
-                {.id = 828, .distance = 29.175f},
-                {.id = 829, .distance = 38.795f},
-                {.id = 179, .distance = 40.001f},
-                {.id = 176, .distance = 40.663f}
-            }
-        },
-        {
-            .point_id = 827,
-            .neighbors = {
-                {.id = 826, .distance = 23.229f},
-                {.id = 781, .distance = 24.656f},
-                {.id = 829, .distance = 27.373f},
-                {.id = 780, .distance = 35.973f},
-                {.id = 828, .distance = 36.131f},
-                {.id = 825, .distance = 38.072f},
-                {.id = 782, .distance = 47.750f}
-            }
-        },
-        {
-            .point_id = 828,
-            .neighbors = {
-                {.id = 829, .distance = 26.133f},
-                {.id = 176, .distance = 28.160f},
-                {.id = 826, .distance = 29.175f},
-                {.id = 830, .distance = 30.723f},
-                {.id = 827, .distance = 36.131f},
-                {.id = 178, .distance = 39.985f},
-                {.id = 174, .distance = 51.290f}
-            }
-        },
-        {
-            .point_id = 829,
-            .neighbors = {
-                {.id = 830, .distance = 25.813f},
-                {.id = 828, .distance = 26.133f},
-                {.id = 827, .distance = 27.373f},
-                {.id = 782, .distance = 27.856f},
-                {.id = 781, .distance = 38.273f},
-                {.id = 826, .distance = 38.795f},
-                {.id = 831, .distance = 39.458f}
-            }
-        },
-        {
-            .point_id = 830,
-            .neighbors = {
-                {.id = 829, .distance = 25.813f},
-                {.id = 912, .distance = 29.475f},
-                {.id = 831, .distance = 29.479f},
-                {.id = 828, .distance = 30.723f},
-                {.id = 782, .distance = 35.561f},
-                {.id = 910, .distance = 40.870f},
-                {.id = 176, .distance = 51.351f}
-            }
-        },
-        {
-            .point_id = 831,
-            .neighbors = {
-                {.id = 782, .distance = 22.863f},
-                {.id = 783, .distance = 28.096f},
-                {.id = 910, .distance = 29.448f},
-                {.id = 830, .distance = 29.479f},
-                {.id = 829, .distance = 39.458f},
-                {.id = 909, .distance = 40.502f},
-                {.id = 912, .distance = 42.128f}
-            }
-        },
-        {
-            .point_id = 832,
-            .neighbors = {
-                {.id = 833, .distance = 25.256f},
-                {.id = 835, .distance = 25.653f},
-                {.id = 834, .distance = 25.660f},
-                {.id = 837, .distance = 26.237f},
-                {.id = 836, .distance = 26.780f},
-                {.id = 839, .distance = 53.251f},
-                {.id = 843, .distance = 53.584f}
-            }
-        },
-        {
-            .point_id = 833,
-            .neighbors = {
-                {.id = 832, .distance = 25.256f},
-                {.id = 839, .distance = 27.996f},
-                {.id = 837, .distance = 30.406f},
-                {.id = 834, .distance = 30.746f},
-                {.id = 840, .distance = 36.902f},
-                {.id = 838, .distance = 36.902f},
-                {.id = 835, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 834,
-            .neighbors = {
-                {.id = 832, .distance = 25.660f},
-                {.id = 841, .distance = 28.138f},
-                {.id = 835, .distance = 30.016f},
-                {.id = 833, .distance = 30.746f},
-                {.id = 842, .distance = 35.779f},
-                {.id = 840, .distance = 37.730f},
-                {.id = 836, .distance = 49.623f}
-            }
-        },
-        {
-            .point_id = 835,
-            .neighbors = {
-                {.id = 832, .distance = 25.653f},
-                {.id = 843, .distance = 27.950f},
-                {.id = 834, .distance = 30.016f},
-                {.id = 836, .distance = 30.334f},
-                {.id = 844, .distance = 36.663f},
-                {.id = 842, .distance = 36.917f},
-                {.id = 833, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 836,
-            .neighbors = {
-                {.id = 832, .distance = 26.780f},
-                {.id = 845, .distance = 28.148f},
-                {.id = 835, .distance = 30.334f},
-                {.id = 837, .distance = 30.829f},
-                {.id = 844, .distance = 36.041f},
-                {.id = 846, .distance = 36.581f},
-                {.id = 833, .distance = 49.415f}
-            }
-        },
-        {
-            .point_id = 837,
-            .neighbors = {
-                {.id = 832, .distance = 26.237f},
-                {.id = 847, .distance = 28.784f},
-                {.id = 833, .distance = 30.406f},
-                {.id = 836, .distance = 30.829f},
-                {.id = 838, .distance = 36.136f},
-                {.id = 846, .distance = 36.663f},
-                {.id = 835, .distance = 49.028f}
-            }
-        },
-        {
-            .point_id = 838,
-            .neighbors = {
-                {.id = 849, .distance = 29.943f},
-                {.id = 847, .distance = 32.709f},
-                {.id = 839, .distance = 33.241f},
-                {.id = 848, .distance = 35.999f},
-                {.id = 837, .distance = 36.136f},
-                {.id = 833, .distance = 36.902f},
-                {.id = 850, .distance = 43.146f}
-            }
-        },
-        {
-            .point_id = 839,
-            .neighbors = {
-                {.id = 833, .distance = 27.996f},
-                {.id = 850, .distance = 31.091f},
-                {.id = 838, .distance = 33.241f},
-                {.id = 840, .distance = 33.489f},
-                {.id = 851, .distance = 33.997f},
-                {.id = 849, .distance = 46.465f},
-                {.id = 852, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 840,
-            .neighbors = {
-                {.id = 852, .distance = 28.795f},
-                {.id = 839, .distance = 33.489f},
-                {.id = 841, .distance = 34.526f},
-                {.id = 833, .distance = 36.902f},
-                {.id = 834, .distance = 37.730f},
-                {.id = 851, .distance = 39.001f},
-                {.id = 853, .distance = 39.043f}
-            }
-        },
-        {
-            .point_id = 841,
-            .neighbors = {
-                {.id = 834, .distance = 28.138f},
-                {.id = 854, .distance = 30.119f},
-                {.id = 842, .distance = 32.862f},
-                {.id = 853, .distance = 33.326f},
-                {.id = 840, .distance = 34.526f},
-                {.id = 855, .distance = 46.032f},
-                {.id = 852, .distance = 51.953f}
-            }
-        },
-        {
-            .point_id = 842,
-            .neighbors = {
-                {.id = 855, .distance = 29.271f},
-                {.id = 841, .distance = 32.862f},
-                {.id = 843, .distance = 32.910f},
-                {.id = 856, .distance = 35.475f},
-                {.id = 834, .distance = 35.779f},
-                {.id = 835, .distance = 36.917f},
-                {.id = 854, .distance = 42.036f}
-            }
-        },
-        {
-            .point_id = 843,
-            .neighbors = {
-                {.id = 835, .distance = 27.950f},
-                {.id = 857, .distance = 30.515f},
-                {.id = 842, .distance = 32.910f},
-                {.id = 844, .distance = 34.288f},
-                {.id = 856, .distance = 35.680f},
-                {.id = 858, .distance = 43.747f},
-                {.id = 834, .distance = 50.881f}
-            }
-        },
-        {
-            .point_id = 844,
-            .neighbors = {
-                {.id = 858, .distance = 30.713f},
-                {.id = 859, .distance = 32.961f},
-                {.id = 843, .distance = 34.288f},
-                {.id = 845, .distance = 34.333f},
-                {.id = 836, .distance = 36.041f},
-                {.id = 835, .distance = 36.663f},
-                {.id = 857, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 845,
-            .neighbors = {
-                {.id = 836, .distance = 28.148f},
-                {.id = 860, .distance = 28.795f},
-                {.id = 846, .distance = 32.474f},
-                {.id = 844, .distance = 34.333f},
-                {.id = 861, .distance = 37.853f},
-                {.id = 859, .distance = 39.529f},
-                {.id = 837, .distance = 52.029f}
-            }
-        },
-        {
-            .point_id = 846,
-            .neighbors = {
-                {.id = 862, .distance = 30.978f},
-                {.id = 845, .distance = 32.474f},
-                {.id = 861, .distance = 33.378f},
-                {.id = 847, .distance = 34.135f},
-                {.id = 836, .distance = 36.581f},
-                {.id = 837, .distance = 36.663f},
-                {.id = 863, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 847,
-            .neighbors = {
-                {.id = 837, .distance = 28.784f},
-                {.id = 863, .distance = 29.314f},
-                {.id = 838, .distance = 32.709f},
-                {.id = 846, .distance = 34.135f},
-                {.id = 848, .distance = 35.428f},
-                {.id = 862, .distance = 42.934f},
-                {.id = 833, .distance = 52.730f}
-            }
-        },
-        {
-            .point_id = 848,
-            .neighbors = {
-                {.id = 865, .distance = 31.937f},
-                {.id = 864, .distance = 31.964f},
-                {.id = 863, .distance = 32.088f},
-                {.id = 849, .distance = 32.704f},
-                {.id = 847, .distance = 35.428f},
-                {.id = 838, .distance = 35.999f},
-                {.id = 885, .distance = 49.921f}
-            }
-        },
-        {
-            .point_id = 849,
-            .neighbors = {
-                {.id = 866, .distance = 29.419f},
-                {.id = 838, .distance = 29.943f},
-                {.id = 850, .distance = 32.468f},
-                {.id = 848, .distance = 32.704f},
-                {.id = 865, .distance = 37.491f},
-                {.id = 867, .distance = 41.947f},
-                {.id = 839, .distance = 46.465f}
-            }
-        },
-        {
-            .point_id = 850,
-            .neighbors = {
-                {.id = 867, .distance = 29.848f},
-                {.id = 839, .distance = 31.091f},
-                {.id = 851, .distance = 31.917f},
-                {.id = 849, .distance = 32.468f},
-                {.id = 868, .distance = 35.426f},
-                {.id = 838, .distance = 43.146f},
-                {.id = 866, .distance = 44.568f}
-            }
-        },
-        {
-            .point_id = 851,
-            .neighbors = {
-                {.id = 869, .distance = 30.775f},
-                {.id = 850, .distance = 31.917f},
-                {.id = 852, .distance = 32.089f},
-                {.id = 868, .distance = 33.457f},
-                {.id = 839, .distance = 33.997f},
-                {.id = 840, .distance = 39.001f},
-                {.id = 870, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 852,
-            .neighbors = {
-                {.id = 870, .distance = 28.126f},
-                {.id = 840, .distance = 28.795f},
-                {.id = 851, .distance = 32.089f},
-                {.id = 853, .distance = 33.350f},
-                {.id = 869, .distance = 38.606f},
-                {.id = 871, .distance = 40.686f},
-                {.id = 839, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 853,
-            .neighbors = {
-                {.id = 871, .distance = 30.745f},
-                {.id = 854, .distance = 32.585f},
-                {.id = 841, .distance = 33.326f},
-                {.id = 852, .distance = 33.350f},
-                {.id = 872, .distance = 33.990f},
-                {.id = 840, .distance = 39.043f},
-                {.id = 870, .distance = 47.230f}
-            }
-        },
-        {
-            .point_id = 854,
-            .neighbors = {
-                {.id = 873, .distance = 30.088f},
-                {.id = 841, .distance = 30.119f},
-                {.id = 855, .distance = 32.298f},
-                {.id = 853, .distance = 32.585f},
-                {.id = 872, .distance = 35.628f},
-                {.id = 842, .distance = 42.036f},
-                {.id = 874, .distance = 44.864f}
-            }
-        },
-        {
-            .point_id = 855,
-            .neighbors = {
-                {.id = 874, .distance = 28.726f},
-                {.id = 842, .distance = 29.271f},
-                {.id = 856, .distance = 31.916f},
-                {.id = 854, .distance = 32.298f},
-                {.id = 875, .distance = 37.444f},
-                {.id = 873, .distance = 42.067f},
-                {.id = 841, .distance = 46.032f}
-            }
-        },
-        {
-            .point_id = 856,
-            .neighbors = {
-                {.id = 875, .distance = 31.889f},
-                {.id = 855, .distance = 31.916f},
-                {.id = 876, .distance = 32.458f},
-                {.id = 857, .distance = 32.605f},
-                {.id = 842, .distance = 35.475f},
-                {.id = 843, .distance = 35.680f},
-                {.id = 874, .distance = 49.358f}
-            }
-        },
-        {
-            .point_id = 857,
-            .neighbors = {
-                {.id = 877, .distance = 28.557f},
-                {.id = 843, .distance = 30.515f},
-                {.id = 856, .distance = 32.605f},
-                {.id = 858, .distance = 33.386f},
-                {.id = 876, .distance = 36.707f},
-                {.id = 878, .distance = 42.276f},
-                {.id = 844, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 858,
-            .neighbors = {
-                {.id = 878, .distance = 29.283f},
-                {.id = 844, .distance = 30.713f},
-                {.id = 859, .distance = 32.395f},
-                {.id = 857, .distance = 33.386f},
-                {.id = 879, .distance = 35.383f},
-                {.id = 843, .distance = 43.747f},
-                {.id = 877, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 859,
-            .neighbors = {
-                {.id = 880, .distance = 30.492f},
-                {.id = 858, .distance = 32.395f},
-                {.id = 860, .distance = 32.492f},
-                {.id = 844, .distance = 32.961f},
-                {.id = 879, .distance = 33.774f},
-                {.id = 845, .distance = 39.529f},
-                {.id = 881, .distance = 46.947f}
-            }
-        },
-        {
-            .point_id = 860,
-            .neighbors = {
-                {.id = 845, .distance = 28.795f},
-                {.id = 881, .distance = 28.796f},
-                {.id = 861, .distance = 31.301f},
-                {.id = 859, .distance = 32.492f},
-                {.id = 882, .distance = 39.130f},
-                {.id = 880, .distance = 39.658f},
-                {.id = 846, .distance = 50.236f}
-            }
-        },
-        {
-            .point_id = 861,
-            .neighbors = {
-                {.id = 882, .distance = 30.076f},
-                {.id = 860, .distance = 31.301f},
-                {.id = 862, .distance = 33.324f},
-                {.id = 846, .distance = 33.378f},
-                {.id = 883, .distance = 33.386f},
-                {.id = 845, .distance = 37.853f},
-                {.id = 881, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 862,
-            .neighbors = {
-                {.id = 884, .distance = 29.653f},
-                {.id = 846, .distance = 30.978f},
-                {.id = 863, .distance = 32.852f},
-                {.id = 861, .distance = 33.324f},
-                {.id = 883, .distance = 35.446f},
-                {.id = 847, .distance = 42.934f},
-                {.id = 885, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 863,
-            .neighbors = {
-                {.id = 885, .distance = 28.776f},
-                {.id = 847, .distance = 29.314f},
-                {.id = 848, .distance = 32.088f},
-                {.id = 862, .distance = 32.852f},
-                {.id = 864, .distance = 36.954f},
-                {.id = 884, .distance = 42.498f},
-                {.id = 846, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 864,
-            .neighbors = {
-                {.id = 886, .distance = 23.617f},
-                {.id = 885, .distance = 31.442f},
-                {.id = 848, .distance = 31.964f},
-                {.id = 865, .distance = 32.702f},
-                {.id = 863, .distance = 36.954f},
-                {.id = 933, .distance = 41.259f},
-                {.id = 935, .distance = 45.103f}
-            }
-        },
-        {
-            .point_id = 865,
-            .neighbors = {
-                {.id = 848, .distance = 31.937f},
-                {.id = 864, .distance = 32.702f},
-                {.id = 866, .distance = 32.725f},
-                {.id = 887, .distance = 36.068f},
-                {.id = 849, .distance = 37.491f},
-                {.id = 888, .distance = 39.068f},
-                {.id = 886, .distance = 41.895f}
-            }
-        },
-        {
-            .point_id = 866,
-            .neighbors = {
-                {.id = 849, .distance = 29.419f},
-                {.id = 867, .distance = 30.638f},
-                {.id = 865, .distance = 32.725f},
-                {.id = 888, .distance = 35.794f},
-                {.id = 889, .distance = 36.665f},
-                {.id = 850, .distance = 44.568f},
-                {.id = 890, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 867,
-            .neighbors = {
-                {.id = 890, .distance = 24.191f},
-                {.id = 850, .distance = 29.848f},
-                {.id = 866, .distance = 30.638f},
-                {.id = 868, .distance = 31.516f},
-                {.id = 849, .distance = 41.947f},
-                {.id = 891, .distance = 44.167f},
-                {.id = 889, .distance = 44.460f}
-            }
-        },
-        {
-            .point_id = 868,
-            .neighbors = {
-                {.id = 895, .distance = 27.519f},
-                {.id = 867, .distance = 31.516f},
-                {.id = 869, .distance = 33.096f},
-                {.id = 851, .distance = 33.457f},
-                {.id = 850, .distance = 35.426f},
-                {.id = 892, .distance = 35.506f},
-                {.id = 890, .distance = 36.051f}
-            }
-        },
-        {
-            .point_id = 869,
-            .neighbors = {
-                {.id = 851, .distance = 30.775f},
-                {.id = 870, .distance = 30.943f},
-                {.id = 895, .distance = 31.347f},
-                {.id = 868, .distance = 33.096f},
-                {.id = 897, .distance = 37.393f},
-                {.id = 852, .distance = 38.606f},
-                {.id = 896, .distance = 45.102f}
-            }
-        },
-        {
-            .point_id = 870,
-            .neighbors = {
-                {.id = 852, .distance = 28.126f},
-                {.id = 869, .distance = 30.943f},
-                {.id = 871, .distance = 32.322f},
-                {.id = 898, .distance = 33.115f},
-                {.id = 897, .distance = 43.474f},
-                {.id = 899, .distance = 44.048f},
-                {.id = 851, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 871,
-            .neighbors = {
-                {.id = 901, .distance = 30.540f},
-                {.id = 853, .distance = 30.745f},
-                {.id = 870, .distance = 32.322f},
-                {.id = 872, .distance = 32.441f},
-                {.id = 899, .distance = 37.153f},
-                {.id = 852, .distance = 40.686f},
-                {.id = 900, .distance = 45.279f}
-            }
-        },
-        {
-            .point_id = 872,
-            .neighbors = {
-                {.id = 901, .distance = 27.373f},
-                {.id = 873, .distance = 31.563f},
-                {.id = 871, .distance = 32.441f},
-                {.id = 853, .distance = 33.990f},
-                {.id = 903, .distance = 35.618f},
-                {.id = 854, .distance = 35.628f},
-                {.id = 905, .distance = 36.566f}
-            }
-        },
-        {
-            .point_id = 873,
-            .neighbors = {
-                {.id = 905, .distance = 24.293f},
-                {.id = 854, .distance = 30.088f},
-                {.id = 872, .distance = 31.563f},
-                {.id = 874, .distance = 31.793f},
-                {.id = 855, .distance = 42.067f},
-                {.id = 906, .distance = 43.775f},
-                {.id = 907, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 874,
-            .neighbors = {
-                {.id = 855, .distance = 28.726f},
-                {.id = 875, .distance = 31.427f},
-                {.id = 873, .distance = 31.793f},
-                {.id = 908, .distance = 35.922f},
-                {.id = 907, .distance = 37.333f},
-                {.id = 854, .distance = 44.864f},
-                {.id = 905, .distance = 47.704f}
-            }
-        },
-        {
-            .point_id = 875,
-            .neighbors = {
-                {.id = 874, .distance = 31.427f},
-                {.id = 856, .distance = 31.889f},
-                {.id = 876, .distance = 32.342f},
-                {.id = 909, .distance = 35.562f},
-                {.id = 855, .distance = 37.444f},
-                {.id = 908, .distance = 39.243f},
-                {.id = 911, .distance = 41.982f}
-            }
-        },
-        {
-            .point_id = 876,
-            .neighbors = {
-                {.id = 911, .distance = 23.803f},
-                {.id = 877, .distance = 31.693f},
-                {.id = 875, .distance = 32.342f},
-                {.id = 856, .distance = 32.458f},
-                {.id = 857, .distance = 36.707f},
-                {.id = 913, .distance = 41.333f},
-                {.id = 910, .distance = 44.974f}
-            }
-        },
-        {
-            .point_id = 877,
-            .neighbors = {
-                {.id = 915, .distance = 24.410f},
-                {.id = 857, .distance = 28.557f},
-                {.id = 876, .distance = 31.693f},
-                {.id = 878, .distance = 32.138f},
-                {.id = 913, .distance = 38.124f},
-                {.id = 911, .distance = 43.096f},
-                {.id = 858, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 878,
-            .neighbors = {
-                {.id = 858, .distance = 29.283f},
-                {.id = 879, .distance = 31.589f},
-                {.id = 877, .distance = 32.138f},
-                {.id = 917, .distance = 36.174f},
-                {.id = 915, .distance = 36.927f},
-                {.id = 857, .distance = 42.276f},
-                {.id = 918, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 879,
-            .neighbors = {
-                {.id = 878, .distance = 31.589f},
-                {.id = 880, .distance = 32.185f},
-                {.id = 918, .distance = 33.528f},
-                {.id = 859, .distance = 33.774f},
-                {.id = 858, .distance = 35.383f},
-                {.id = 919, .distance = 39.292f},
-                {.id = 917, .distance = 48.151f}
-            }
-        },
-        {
-            .point_id = 880,
-            .neighbors = {
-                {.id = 921, .distance = 26.800f},
-                {.id = 859, .distance = 30.492f},
-                {.id = 881, .distance = 31.085f},
-                {.id = 879, .distance = 32.185f},
-                {.id = 860, .distance = 39.658f},
-                {.id = 919, .distance = 40.843f},
-                {.id = 920, .distance = 44.297f}
-            }
-        },
-        {
-            .point_id = 881,
-            .neighbors = {
-                {.id = 860, .distance = 28.796f},
-                {.id = 880, .distance = 31.085f},
-                {.id = 921, .distance = 31.165f},
-                {.id = 882, .distance = 31.748f},
-                {.id = 925, .distance = 32.025f},
-                {.id = 923, .distance = 35.484f},
-                {.id = 861, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 882,
-            .neighbors = {
-                {.id = 925, .distance = 26.974f},
-                {.id = 861, .distance = 30.076f},
-                {.id = 883, .distance = 31.574f},
-                {.id = 881, .distance = 31.748f},
-                {.id = 860, .distance = 39.130f},
-                {.id = 927, .distance = 40.759f},
-                {.id = 926, .distance = 44.255f}
-            }
-        },
-        {
-            .point_id = 883,
-            .neighbors = {
-                {.id = 882, .distance = 31.574f},
-                {.id = 884, .distance = 32.495f},
-                {.id = 861, .distance = 33.386f},
-                {.id = 928, .distance = 34.006f},
-                {.id = 862, .distance = 35.446f},
-                {.id = 927, .distance = 40.058f},
-                {.id = 929, .distance = 48.765f}
-            }
-        },
-        {
-            .point_id = 884,
-            .neighbors = {
-                {.id = 862, .distance = 29.653f},
-                {.id = 885, .distance = 31.761f},
-                {.id = 883, .distance = 32.495f},
-                {.id = 929, .distance = 35.652f},
-                {.id = 931, .distance = 35.973f},
-                {.id = 863, .distance = 42.498f},
-                {.id = 928, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 885,
-            .neighbors = {
-                {.id = 931, .distance = 24.656f},
-                {.id = 863, .distance = 28.776f},
-                {.id = 864, .distance = 31.442f},
-                {.id = 884, .distance = 31.761f},
-                {.id = 933, .distance = 38.273f},
-                {.id = 886, .distance = 43.129f},
-                {.id = 862, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 886,
-            .neighbors = {
-                {.id = 935, .distance = 22.863f},
-                {.id = 864, .distance = 23.617f},
-                {.id = 933, .distance = 27.856f},
-                {.id = 934, .distance = 35.561f},
-                {.id = 887, .distance = 37.917f},
-                {.id = 865, .distance = 41.895f},
-                {.id = 885, .distance = 43.129f}
-            }
-        },
-        {
-            .point_id = 887,
-            .neighbors = {
-                {.id = 935, .distance = 28.096f},
-                {.id = 888, .distance = 29.153f},
-                {.id = 1013, .distance = 29.303f},
-                {.id = 865, .distance = 36.068f},
-                {.id = 886, .distance = 37.917f},
-                {.id = 1012, .distance = 40.708f},
-                {.id = 1014, .distance = 41.405f}
-            }
-        },
-        {
-            .point_id = 888,
-            .neighbors = {
-                {.id = 889, .distance = 28.265f},
-                {.id = 887, .distance = 29.153f},
-                {.id = 1012, .distance = 29.697f},
-                {.id = 866, .distance = 35.794f},
-                {.id = 865, .distance = 39.068f},
-                {.id = 1011, .distance = 40.854f},
-                {.id = 1013, .distance = 41.887f}
-            }
-        },
-        {
-            .point_id = 889,
-            .neighbors = {
-                {.id = 888, .distance = 28.265f},
-                {.id = 891, .distance = 28.989f},
-                {.id = 1011, .distance = 29.349f},
-                {.id = 866, .distance = 36.665f},
-                {.id = 890, .distance = 38.712f},
-                {.id = 1010, .distance = 40.741f},
-                {.id = 1012, .distance = 41.218f}
-            }
-        },
-        {
-            .point_id = 890,
-            .neighbors = {
-                {.id = 891, .distance = 23.607f},
-                {.id = 867, .distance = 24.191f},
-                {.id = 892, .distance = 27.455f},
-                {.id = 893, .distance = 35.536f},
-                {.id = 868, .distance = 36.051f},
-                {.id = 889, .distance = 38.712f},
-                {.id = 866, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 891,
-            .neighbors = {
-                {.id = 890, .distance = 23.607f},
-                {.id = 893, .distance = 28.500f},
-                {.id = 889, .distance = 28.989f},
-                {.id = 1010, .distance = 29.313f},
-                {.id = 892, .distance = 38.998f},
-                {.id = 1008, .distance = 40.245f},
-                {.id = 1011, .distance = 41.506f}
-            }
-        },
-        {
-            .point_id = 892,
-            .neighbors = {
-                {.id = 893, .distance = 25.823f},
-                {.id = 894, .distance = 26.007f},
-                {.id = 895, .distance = 27.304f},
-                {.id = 890, .distance = 27.455f},
-                {.id = 868, .distance = 35.506f},
-                {.id = 891, .distance = 38.998f},
-                {.id = 896, .distance = 39.242f}
-            }
-        },
-        {
-            .point_id = 893,
-            .neighbors = {
-                {.id = 892, .distance = 25.823f},
-                {.id = 891, .distance = 28.500f},
-                {.id = 1008, .distance = 29.551f},
-                {.id = 894, .distance = 30.900f},
-                {.id = 890, .distance = 35.536f},
-                {.id = 1010, .distance = 41.458f},
-                {.id = 1224, .distance = 50.838f}
-            }
-        },
-        {
-            .point_id = 894,
-            .neighbors = {
-                {.id = 892, .distance = 26.007f},
-                {.id = 1224, .distance = 28.644f},
-                {.id = 896, .distance = 29.614f},
-                {.id = 893, .distance = 30.900f},
-                {.id = 895, .distance = 35.963f},
-                {.id = 1222, .distance = 39.268f},
-                {.id = 1225, .distance = 52.119f}
-            }
-        },
-        {
-            .point_id = 895,
-            .neighbors = {
-                {.id = 896, .distance = 23.404f},
-                {.id = 892, .distance = 27.304f},
-                {.id = 868, .distance = 27.519f},
-                {.id = 869, .distance = 31.347f},
-                {.id = 894, .distance = 35.963f},
-                {.id = 897, .distance = 38.924f},
-                {.id = 890, .distance = 47.034f}
-            }
-        },
-        {
-            .point_id = 896,
-            .neighbors = {
-                {.id = 895, .distance = 23.404f},
-                {.id = 897, .distance = 28.584f},
-                {.id = 1222, .distance = 28.966f},
-                {.id = 894, .distance = 29.614f},
-                {.id = 1221, .distance = 39.043f},
-                {.id = 892, .distance = 39.242f},
-                {.id = 1224, .distance = 42.830f}
-            }
-        },
-        {
-            .point_id = 897,
-            .neighbors = {
-                {.id = 898, .distance = 28.069f},
-                {.id = 896, .distance = 28.584f},
-                {.id = 1221, .distance = 28.757f},
-                {.id = 869, .distance = 37.393f},
-                {.id = 1220, .distance = 38.867f},
-                {.id = 895, .distance = 38.924f},
-                {.id = 1222, .distance = 42.413f}
-            }
-        },
-        {
-            .point_id = 898,
-            .neighbors = {
-                {.id = 897, .distance = 28.069f},
-                {.id = 899, .distance = 28.840f},
-                {.id = 1220, .distance = 28.846f},
-                {.id = 870, .distance = 33.115f},
-                {.id = 1219, .distance = 39.574f},
-                {.id = 1221, .distance = 41.923f},
-                {.id = 869, .distance = 48.228f}
-            }
-        },
-        {
-            .point_id = 899,
-            .neighbors = {
-                {.id = 898, .distance = 28.840f},
-                {.id = 1219, .distance = 28.966f},
-                {.id = 900, .distance = 29.098f},
-                {.id = 871, .distance = 37.153f},
-                {.id = 901, .distance = 38.371f},
-                {.id = 1218, .distance = 39.389f},
-                {.id = 1220, .distance = 41.988f}
-            }
-        },
-        {
-            .point_id = 900,
-            .neighbors = {
-                {.id = 901, .distance = 23.468f},
-                {.id = 902, .distance = 28.068f},
-                {.id = 1218, .distance = 28.906f},
-                {.id = 899, .distance = 29.098f},
-                {.id = 903, .distance = 37.859f},
-                {.id = 1216, .distance = 38.797f},
-                {.id = 1219, .distance = 42.324f}
-            }
-        },
-        {
-            .point_id = 901,
-            .neighbors = {
-                {.id = 900, .distance = 23.468f},
-                {.id = 903, .distance = 26.995f},
-                {.id = 872, .distance = 27.373f},
-                {.id = 871, .distance = 30.540f},
-                {.id = 902, .distance = 35.584f},
-                {.id = 899, .distance = 38.371f},
-                {.id = 905, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 902,
-            .neighbors = {
-                {.id = 903, .distance = 25.235f},
-                {.id = 900, .distance = 28.068f},
-                {.id = 1216, .distance = 28.941f},
-                {.id = 904, .distance = 31.314f},
-                {.id = 901, .distance = 35.584f},
-                {.id = 1218, .distance = 41.827f},
-                {.id = 1214, .distance = 50.917f}
-            }
-        },
-        {
-            .point_id = 903,
-            .neighbors = {
-                {.id = 902, .distance = 25.235f},
-                {.id = 904, .distance = 25.959f},
-                {.id = 901, .distance = 26.995f},
-                {.id = 905, .distance = 28.280f},
-                {.id = 872, .distance = 35.618f},
-                {.id = 900, .distance = 37.859f},
-                {.id = 906, .distance = 39.348f}
-            }
-        },
-        {
-            .point_id = 904,
-            .neighbors = {
-                {.id = 903, .distance = 25.959f},
-                {.id = 906, .distance = 28.175f},
-                {.id = 789, .distance = 29.551f},
-                {.id = 902, .distance = 31.314f},
-                {.id = 905, .distance = 35.099f},
-                {.id = 787, .distance = 40.245f},
-                {.id = 901, .distance = 52.245f}
-            }
-        },
-        {
-            .point_id = 905,
-            .neighbors = {
-                {.id = 906, .distance = 22.858f},
-                {.id = 873, .distance = 24.293f},
-                {.id = 903, .distance = 28.280f},
-                {.id = 904, .distance = 35.099f},
-                {.id = 872, .distance = 36.566f},
-                {.id = 907, .distance = 37.718f},
-                {.id = 901, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 906,
-            .neighbors = {
-                {.id = 905, .distance = 22.858f},
-                {.id = 904, .distance = 28.175f},
-                {.id = 907, .distance = 28.665f},
-                {.id = 787, .distance = 29.313f},
-                {.id = 903, .distance = 39.348f},
-                {.id = 785, .distance = 40.741f},
-                {.id = 789, .distance = 41.458f}
-            }
-        },
-        {
-            .point_id = 907,
-            .neighbors = {
-                {.id = 906, .distance = 28.665f},
-                {.id = 908, .distance = 28.744f},
-                {.id = 785, .distance = 29.349f},
-                {.id = 874, .distance = 37.333f},
-                {.id = 905, .distance = 37.718f},
-                {.id = 784, .distance = 40.854f},
-                {.id = 787, .distance = 41.506f}
-            }
-        },
-        {
-            .point_id = 908,
-            .neighbors = {
-                {.id = 909, .distance = 28.665f},
-                {.id = 907, .distance = 28.744f},
-                {.id = 784, .distance = 29.697f},
-                {.id = 874, .distance = 35.922f},
-                {.id = 875, .distance = 39.243f},
-                {.id = 783, .distance = 40.708f},
-                {.id = 785, .distance = 41.218f}
-            }
-        },
-        {
-            .point_id = 909,
-            .neighbors = {
-                {.id = 908, .distance = 28.665f},
-                {.id = 910, .distance = 28.989f},
-                {.id = 783, .distance = 29.303f},
-                {.id = 875, .distance = 35.562f},
-                {.id = 911, .distance = 37.946f},
-                {.id = 831, .distance = 40.502f},
-                {.id = 784, .distance = 41.887f}
-            }
-        },
-        {
-            .point_id = 910,
-            .neighbors = {
-                {.id = 911, .distance = 22.522f},
-                {.id = 912, .distance = 28.989f},
-                {.id = 909, .distance = 28.989f},
-                {.id = 831, .distance = 29.448f},
-                {.id = 913, .distance = 38.748f},
-                {.id = 830, .distance = 40.870f},
-                {.id = 783, .distance = 41.405f}
-            }
-        },
-        {
-            .point_id = 911,
-            .neighbors = {
-                {.id = 910, .distance = 22.522f},
-                {.id = 876, .distance = 23.803f},
-                {.id = 913, .distance = 27.573f},
-                {.id = 912, .distance = 35.430f},
-                {.id = 909, .distance = 37.946f},
-                {.id = 875, .distance = 41.982f},
-                {.id = 877, .distance = 43.096f}
-            }
-        },
-        {
-            .point_id = 912,
-            .neighbors = {
-                {.id = 913, .distance = 25.732f},
-                {.id = 910, .distance = 28.989f},
-                {.id = 830, .distance = 29.475f},
-                {.id = 914, .distance = 30.699f},
-                {.id = 911, .distance = 35.430f},
-                {.id = 831, .distance = 42.128f},
-                {.id = 174, .distance = 50.956f}
-            }
-        },
-        {
-            .point_id = 913,
-            .neighbors = {
-                {.id = 914, .distance = 25.715f},
-                {.id = 912, .distance = 25.732f},
-                {.id = 915, .distance = 27.009f},
-                {.id = 911, .distance = 27.573f},
-                {.id = 877, .distance = 38.124f},
-                {.id = 910, .distance = 38.748f},
-                {.id = 916, .distance = 38.795f}
-            }
-        },
-        {
-            .point_id = 914,
-            .neighbors = {
-                {.id = 913, .distance = 25.715f},
-                {.id = 916, .distance = 28.587f},
-                {.id = 174, .distance = 28.700f},
-                {.id = 912, .distance = 30.699f},
-                {.id = 915, .distance = 35.180f},
-                {.id = 172, .distance = 39.833f},
-                {.id = 175, .distance = 52.098f}
-            }
-        },
-        {
-            .point_id = 915,
-            .neighbors = {
-                {.id = 916, .distance = 23.318f},
-                {.id = 877, .distance = 24.410f},
-                {.id = 913, .distance = 27.009f},
-                {.id = 914, .distance = 35.180f},
-                {.id = 878, .distance = 36.927f},
-                {.id = 917, .distance = 38.625f},
-                {.id = 911, .distance = 47.229f}
-            }
-        },
-        {
-            .point_id = 916,
-            .neighbors = {
-                {.id = 915, .distance = 23.318f},
-                {.id = 914, .distance = 28.587f},
-                {.id = 917, .distance = 28.648f},
-                {.id = 172, .distance = 28.780f},
-                {.id = 913, .distance = 38.795f},
-                {.id = 171, .distance = 40.238f},
-                {.id = 174, .distance = 40.865f}
-            }
-        },
-        {
-            .point_id = 917,
-            .neighbors = {
-                {.id = 916, .distance = 28.648f},
-                {.id = 918, .distance = 28.678f},
-                {.id = 171, .distance = 28.767f},
-                {.id = 878, .distance = 36.174f},
-                {.id = 915, .distance = 38.625f},
-                {.id = 170, .distance = 40.371f},
-                {.id = 172, .distance = 41.278f}
-            }
-        },
-        {
-            .point_id = 918,
-            .neighbors = {
-                {.id = 919, .distance = 28.019f},
-                {.id = 917, .distance = 28.678f},
-                {.id = 170, .distance = 28.727f},
-                {.id = 879, .distance = 33.528f},
-                {.id = 169, .distance = 39.759f},
-                {.id = 171, .distance = 40.952f},
-                {.id = 878, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 919,
-            .neighbors = {
-                {.id = 918, .distance = 28.019f},
-                {.id = 169, .distance = 28.493f},
-                {.id = 920, .distance = 29.666f},
-                {.id = 921, .distance = 39.143f},
-                {.id = 879, .distance = 39.292f},
-                {.id = 168, .distance = 40.304f},
-                {.id = 170, .distance = 40.363f}
-            }
-        },
-        {
-            .point_id = 920,
-            .neighbors = {
-                {.id = 921, .distance = 23.574f},
-                {.id = 168, .distance = 28.673f},
-                {.id = 922, .distance = 28.796f},
-                {.id = 919, .distance = 29.666f},
-                {.id = 923, .distance = 38.536f},
-                {.id = 166, .distance = 40.055f},
-                {.id = 169, .distance = 41.297f}
-            }
-        },
-        {
-            .point_id = 921,
-            .neighbors = {
-                {.id = 920, .distance = 23.574f},
-                {.id = 880, .distance = 26.800f},
-                {.id = 923, .distance = 27.295f},
-                {.id = 881, .distance = 31.165f},
-                {.id = 922, .distance = 35.726f},
-                {.id = 919, .distance = 39.143f},
-                {.id = 925, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 922,
-            .neighbors = {
-                {.id = 923, .distance = 25.236f},
-                {.id = 166, .distance = 28.617f},
-                {.id = 920, .distance = 28.796f},
-                {.id = 924, .distance = 30.642f},
-                {.id = 921, .distance = 35.726f},
-                {.id = 168, .distance = 41.739f},
-                {.id = 165, .distance = 51.576f}
-            }
-        },
-        {
-            .point_id = 923,
-            .neighbors = {
-                {.id = 922, .distance = 25.236f},
-                {.id = 924, .distance = 25.701f},
-                {.id = 921, .distance = 27.295f},
-                {.id = 925, .distance = 27.601f},
-                {.id = 881, .distance = 35.484f},
-                {.id = 920, .distance = 38.536f},
-                {.id = 926, .distance = 38.536f}
-            }
-        },
-        {
-            .point_id = 924,
-            .neighbors = {
-                {.id = 923, .distance = 25.701f},
-                {.id = 926, .distance = 28.171f},
-                {.id = 298, .distance = 28.551f},
-                {.id = 922, .distance = 30.642f},
-                {.id = 925, .distance = 35.416f},
-                {.id = 296, .distance = 41.429f},
-                {.id = 300, .distance = 50.454f}
-            }
-        },
-        {
-            .point_id = 925,
-            .neighbors = {
-                {.id = 926, .distance = 23.046f},
-                {.id = 882, .distance = 26.974f},
-                {.id = 923, .distance = 27.601f},
-                {.id = 881, .distance = 32.025f},
-                {.id = 924, .distance = 35.416f},
-                {.id = 927, .distance = 38.124f},
-                {.id = 921, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 926,
-            .neighbors = {
-                {.id = 925, .distance = 23.046f},
-                {.id = 924, .distance = 28.171f},
-                {.id = 296, .distance = 28.586f},
-                {.id = 927, .distance = 28.796f},
-                {.id = 923, .distance = 38.536f},
-                {.id = 298, .distance = 39.222f},
-                {.id = 295, .distance = 42.712f}
-            }
-        },
-        {
-            .point_id = 927,
-            .neighbors = {
-                {.id = 295, .distance = 28.538f},
-                {.id = 928, .distance = 28.739f},
-                {.id = 926, .distance = 28.796f},
-                {.id = 925, .distance = 38.124f},
-                {.id = 296, .distance = 38.933f},
-                {.id = 883, .distance = 40.058f},
-                {.id = 882, .distance = 40.759f}
-            }
-        },
-        {
-            .point_id = 928,
-            .neighbors = {
-                {.id = 294, .distance = 28.593f},
-                {.id = 927, .distance = 28.739f},
-                {.id = 929, .distance = 28.996f},
-                {.id = 883, .distance = 34.006f},
-                {.id = 295, .distance = 38.440f},
-                {.id = 293, .distance = 42.065f},
-                {.id = 884, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 929,
-            .neighbors = {
-                {.id = 930, .distance = 28.539f},
-                {.id = 293, .distance = 28.720f},
-                {.id = 928, .distance = 28.996f},
-                {.id = 884, .distance = 35.652f},
-                {.id = 931, .distance = 38.072f},
-                {.id = 294, .distance = 39.193f},
-                {.id = 292, .distance = 41.888f}
-            }
-        },
-        {
-            .point_id = 930,
-            .neighbors = {
-                {.id = 931, .distance = 23.229f},
-                {.id = 292, .distance = 28.526f},
-                {.id = 929, .distance = 28.539f},
-                {.id = 932, .distance = 29.175f},
-                {.id = 933, .distance = 38.795f},
-                {.id = 293, .distance = 38.975f},
-                {.id = 290, .distance = 41.739f}
-            }
-        },
-        {
-            .point_id = 931,
-            .neighbors = {
-                {.id = 930, .distance = 23.229f},
-                {.id = 885, .distance = 24.656f},
-                {.id = 933, .distance = 27.373f},
-                {.id = 884, .distance = 35.973f},
-                {.id = 932, .distance = 36.131f},
-                {.id = 929, .distance = 38.072f},
-                {.id = 886, .distance = 47.750f}
-            }
-        },
-        {
-            .point_id = 932,
-            .neighbors = {
-                {.id = 933, .distance = 26.133f},
-                {.id = 290, .distance = 27.990f},
-                {.id = 930, .distance = 29.175f},
-                {.id = 934, .distance = 30.723f},
-                {.id = 931, .distance = 36.131f},
-                {.id = 292, .distance = 39.023f},
-                {.id = 288, .distance = 51.341f}
-            }
-        },
-        {
-            .point_id = 933,
-            .neighbors = {
-                {.id = 934, .distance = 25.813f},
-                {.id = 932, .distance = 26.133f},
-                {.id = 931, .distance = 27.373f},
-                {.id = 886, .distance = 27.856f},
-                {.id = 885, .distance = 38.273f},
-                {.id = 930, .distance = 38.795f},
-                {.id = 935, .distance = 39.458f}
-            }
-        },
-        {
-            .point_id = 934,
-            .neighbors = {
-                {.id = 933, .distance = 25.813f},
-                {.id = 1016, .distance = 29.475f},
-                {.id = 935, .distance = 29.479f},
-                {.id = 932, .distance = 30.723f},
-                {.id = 886, .distance = 35.561f},
-                {.id = 1014, .distance = 40.870f},
-                {.id = 290, .distance = 50.403f}
-            }
-        },
-        {
-            .point_id = 935,
-            .neighbors = {
-                {.id = 886, .distance = 22.863f},
-                {.id = 887, .distance = 28.096f},
-                {.id = 1014, .distance = 29.448f},
-                {.id = 934, .distance = 29.479f},
-                {.id = 933, .distance = 39.458f},
-                {.id = 1013, .distance = 40.502f},
-                {.id = 1016, .distance = 42.128f}
-            }
-        },
-        {
-            .point_id = 936,
-            .neighbors = {
-                {.id = 937, .distance = 25.256f},
-                {.id = 939, .distance = 25.653f},
-                {.id = 938, .distance = 25.660f},
-                {.id = 941, .distance = 26.237f},
-                {.id = 940, .distance = 26.780f},
-                {.id = 943, .distance = 53.251f},
-                {.id = 947, .distance = 53.584f}
-            }
-        },
-        {
-            .point_id = 937,
-            .neighbors = {
-                {.id = 936, .distance = 25.256f},
-                {.id = 943, .distance = 27.996f},
-                {.id = 941, .distance = 30.406f},
-                {.id = 938, .distance = 30.745f},
-                {.id = 944, .distance = 36.902f},
-                {.id = 942, .distance = 36.902f},
-                {.id = 939, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 938,
-            .neighbors = {
-                {.id = 936, .distance = 25.660f},
-                {.id = 945, .distance = 28.138f},
-                {.id = 939, .distance = 30.016f},
-                {.id = 937, .distance = 30.745f},
-                {.id = 946, .distance = 35.779f},
-                {.id = 944, .distance = 37.730f},
-                {.id = 940, .distance = 49.623f}
-            }
-        },
-        {
-            .point_id = 939,
-            .neighbors = {
-                {.id = 936, .distance = 25.653f},
-                {.id = 947, .distance = 27.950f},
-                {.id = 938, .distance = 30.016f},
-                {.id = 940, .distance = 30.334f},
-                {.id = 948, .distance = 36.663f},
-                {.id = 946, .distance = 36.917f},
-                {.id = 937, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 940,
-            .neighbors = {
-                {.id = 936, .distance = 26.780f},
-                {.id = 949, .distance = 28.148f},
-                {.id = 939, .distance = 30.334f},
-                {.id = 941, .distance = 30.829f},
-                {.id = 948, .distance = 36.041f},
-                {.id = 950, .distance = 36.581f},
-                {.id = 937, .distance = 49.415f}
-            }
-        },
-        {
-            .point_id = 941,
-            .neighbors = {
-                {.id = 936, .distance = 26.237f},
-                {.id = 951, .distance = 28.784f},
-                {.id = 937, .distance = 30.406f},
-                {.id = 940, .distance = 30.829f},
-                {.id = 942, .distance = 36.136f},
-                {.id = 950, .distance = 36.663f},
-                {.id = 939, .distance = 49.028f}
-            }
-        },
-        {
-            .point_id = 942,
-            .neighbors = {
-                {.id = 953, .distance = 29.943f},
-                {.id = 951, .distance = 32.709f},
-                {.id = 943, .distance = 33.241f},
-                {.id = 952, .distance = 35.999f},
-                {.id = 941, .distance = 36.136f},
-                {.id = 937, .distance = 36.902f},
-                {.id = 954, .distance = 43.146f}
-            }
-        },
-        {
-            .point_id = 943,
-            .neighbors = {
-                {.id = 937, .distance = 27.996f},
-                {.id = 954, .distance = 31.091f},
-                {.id = 942, .distance = 33.241f},
-                {.id = 944, .distance = 33.489f},
-                {.id = 955, .distance = 33.997f},
-                {.id = 953, .distance = 46.465f},
-                {.id = 956, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 944,
-            .neighbors = {
-                {.id = 956, .distance = 28.795f},
-                {.id = 943, .distance = 33.489f},
-                {.id = 945, .distance = 34.526f},
-                {.id = 937, .distance = 36.902f},
-                {.id = 938, .distance = 37.730f},
-                {.id = 955, .distance = 39.001f},
-                {.id = 957, .distance = 39.043f}
-            }
-        },
-        {
-            .point_id = 945,
-            .neighbors = {
-                {.id = 938, .distance = 28.138f},
-                {.id = 958, .distance = 30.119f},
-                {.id = 946, .distance = 32.862f},
-                {.id = 957, .distance = 33.326f},
-                {.id = 944, .distance = 34.526f},
-                {.id = 959, .distance = 46.032f},
-                {.id = 956, .distance = 51.953f}
-            }
-        },
-        {
-            .point_id = 946,
-            .neighbors = {
-                {.id = 959, .distance = 29.271f},
-                {.id = 945, .distance = 32.862f},
-                {.id = 947, .distance = 32.910f},
-                {.id = 960, .distance = 35.475f},
-                {.id = 938, .distance = 35.779f},
-                {.id = 939, .distance = 36.917f},
-                {.id = 958, .distance = 42.036f}
-            }
-        },
-        {
-            .point_id = 947,
-            .neighbors = {
-                {.id = 939, .distance = 27.950f},
-                {.id = 961, .distance = 30.515f},
-                {.id = 946, .distance = 32.910f},
-                {.id = 948, .distance = 34.288f},
-                {.id = 960, .distance = 35.680f},
-                {.id = 962, .distance = 43.747f},
-                {.id = 938, .distance = 50.881f}
-            }
-        },
-        {
-            .point_id = 948,
-            .neighbors = {
-                {.id = 962, .distance = 30.713f},
-                {.id = 963, .distance = 32.961f},
-                {.id = 947, .distance = 34.288f},
-                {.id = 949, .distance = 34.333f},
-                {.id = 940, .distance = 36.041f},
-                {.id = 939, .distance = 36.663f},
-                {.id = 961, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 949,
-            .neighbors = {
-                {.id = 940, .distance = 28.148f},
-                {.id = 964, .distance = 28.795f},
-                {.id = 950, .distance = 32.474f},
-                {.id = 948, .distance = 34.333f},
-                {.id = 965, .distance = 37.853f},
-                {.id = 963, .distance = 39.529f},
-                {.id = 941, .distance = 52.029f}
-            }
-        },
-        {
-            .point_id = 950,
-            .neighbors = {
-                {.id = 966, .distance = 30.978f},
-                {.id = 949, .distance = 32.474f},
-                {.id = 965, .distance = 33.378f},
-                {.id = 951, .distance = 34.135f},
-                {.id = 940, .distance = 36.581f},
-                {.id = 941, .distance = 36.663f},
-                {.id = 967, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 951,
-            .neighbors = {
-                {.id = 941, .distance = 28.784f},
-                {.id = 967, .distance = 29.314f},
-                {.id = 942, .distance = 32.709f},
-                {.id = 950, .distance = 34.135f},
-                {.id = 952, .distance = 35.428f},
-                {.id = 966, .distance = 42.934f},
-                {.id = 937, .distance = 52.730f}
-            }
-        },
-        {
-            .point_id = 952,
-            .neighbors = {
-                {.id = 969, .distance = 31.937f},
-                {.id = 968, .distance = 31.964f},
-                {.id = 967, .distance = 32.088f},
-                {.id = 953, .distance = 32.704f},
-                {.id = 951, .distance = 35.428f},
-                {.id = 942, .distance = 35.999f},
-                {.id = 989, .distance = 49.921f}
-            }
-        },
-        {
-            .point_id = 953,
-            .neighbors = {
-                {.id = 970, .distance = 29.419f},
-                {.id = 942, .distance = 29.943f},
-                {.id = 954, .distance = 32.468f},
-                {.id = 952, .distance = 32.704f},
-                {.id = 969, .distance = 37.491f},
-                {.id = 971, .distance = 41.947f},
-                {.id = 943, .distance = 46.465f}
-            }
-        },
-        {
-            .point_id = 954,
-            .neighbors = {
-                {.id = 971, .distance = 29.848f},
-                {.id = 943, .distance = 31.091f},
-                {.id = 955, .distance = 31.917f},
-                {.id = 953, .distance = 32.468f},
-                {.id = 972, .distance = 35.426f},
-                {.id = 942, .distance = 43.146f},
-                {.id = 970, .distance = 44.568f}
-            }
-        },
-        {
-            .point_id = 955,
-            .neighbors = {
-                {.id = 973, .distance = 30.775f},
-                {.id = 954, .distance = 31.917f},
-                {.id = 956, .distance = 32.089f},
-                {.id = 972, .distance = 33.457f},
-                {.id = 943, .distance = 33.997f},
-                {.id = 944, .distance = 39.001f},
-                {.id = 974, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 956,
-            .neighbors = {
-                {.id = 974, .distance = 28.126f},
-                {.id = 944, .distance = 28.795f},
-                {.id = 955, .distance = 32.089f},
-                {.id = 957, .distance = 33.350f},
-                {.id = 973, .distance = 38.606f},
-                {.id = 975, .distance = 40.686f},
-                {.id = 943, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 957,
-            .neighbors = {
-                {.id = 975, .distance = 30.745f},
-                {.id = 958, .distance = 32.585f},
-                {.id = 945, .distance = 33.326f},
-                {.id = 956, .distance = 33.350f},
-                {.id = 976, .distance = 33.990f},
-                {.id = 944, .distance = 39.043f},
-                {.id = 974, .distance = 47.230f}
-            }
-        },
-        {
-            .point_id = 958,
-            .neighbors = {
-                {.id = 977, .distance = 30.088f},
-                {.id = 945, .distance = 30.119f},
-                {.id = 959, .distance = 32.298f},
-                {.id = 957, .distance = 32.585f},
-                {.id = 976, .distance = 35.628f},
-                {.id = 946, .distance = 42.036f},
-                {.id = 978, .distance = 44.864f}
-            }
-        },
-        {
-            .point_id = 959,
-            .neighbors = {
-                {.id = 978, .distance = 28.726f},
-                {.id = 946, .distance = 29.271f},
-                {.id = 960, .distance = 31.916f},
-                {.id = 958, .distance = 32.298f},
-                {.id = 979, .distance = 37.444f},
-                {.id = 977, .distance = 42.067f},
-                {.id = 945, .distance = 46.032f}
-            }
-        },
-        {
-            .point_id = 960,
-            .neighbors = {
-                {.id = 979, .distance = 31.889f},
-                {.id = 959, .distance = 31.916f},
-                {.id = 980, .distance = 32.458f},
-                {.id = 961, .distance = 32.605f},
-                {.id = 946, .distance = 35.475f},
-                {.id = 947, .distance = 35.680f},
-                {.id = 978, .distance = 49.358f}
-            }
-        },
-        {
-            .point_id = 961,
-            .neighbors = {
-                {.id = 981, .distance = 28.557f},
-                {.id = 947, .distance = 30.515f},
-                {.id = 960, .distance = 32.605f},
-                {.id = 962, .distance = 33.386f},
-                {.id = 980, .distance = 36.707f},
-                {.id = 982, .distance = 42.276f},
-                {.id = 948, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 962,
-            .neighbors = {
-                {.id = 982, .distance = 29.283f},
-                {.id = 948, .distance = 30.713f},
-                {.id = 963, .distance = 32.395f},
-                {.id = 961, .distance = 33.386f},
-                {.id = 983, .distance = 35.383f},
-                {.id = 947, .distance = 43.747f},
-                {.id = 981, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 963,
-            .neighbors = {
-                {.id = 984, .distance = 30.492f},
-                {.id = 962, .distance = 32.395f},
-                {.id = 964, .distance = 32.492f},
-                {.id = 948, .distance = 32.961f},
-                {.id = 983, .distance = 33.774f},
-                {.id = 949, .distance = 39.529f},
-                {.id = 985, .distance = 46.947f}
-            }
-        },
-        {
-            .point_id = 964,
-            .neighbors = {
-                {.id = 949, .distance = 28.795f},
-                {.id = 985, .distance = 28.796f},
-                {.id = 965, .distance = 31.301f},
-                {.id = 963, .distance = 32.492f},
-                {.id = 986, .distance = 39.130f},
-                {.id = 984, .distance = 39.658f},
-                {.id = 950, .distance = 50.236f}
-            }
-        },
-        {
-            .point_id = 965,
-            .neighbors = {
-                {.id = 986, .distance = 30.076f},
-                {.id = 964, .distance = 31.301f},
-                {.id = 966, .distance = 33.324f},
-                {.id = 950, .distance = 33.378f},
-                {.id = 987, .distance = 33.386f},
-                {.id = 949, .distance = 37.853f},
-                {.id = 985, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 966,
-            .neighbors = {
-                {.id = 988, .distance = 29.653f},
-                {.id = 950, .distance = 30.978f},
-                {.id = 967, .distance = 32.852f},
-                {.id = 965, .distance = 33.324f},
-                {.id = 987, .distance = 35.446f},
-                {.id = 951, .distance = 42.934f},
-                {.id = 989, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 967,
-            .neighbors = {
-                {.id = 989, .distance = 28.776f},
-                {.id = 951, .distance = 29.314f},
-                {.id = 952, .distance = 32.088f},
-                {.id = 966, .distance = 32.852f},
-                {.id = 968, .distance = 36.954f},
-                {.id = 988, .distance = 42.498f},
-                {.id = 950, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 968,
-            .neighbors = {
-                {.id = 990, .distance = 23.617f},
-                {.id = 989, .distance = 31.442f},
-                {.id = 952, .distance = 31.964f},
-                {.id = 969, .distance = 32.703f},
-                {.id = 967, .distance = 36.954f},
-                {.id = 1037, .distance = 41.259f},
-                {.id = 1039, .distance = 45.103f}
-            }
-        },
-        {
-            .point_id = 969,
-            .neighbors = {
-                {.id = 952, .distance = 31.937f},
-                {.id = 968, .distance = 32.703f},
-                {.id = 970, .distance = 32.725f},
-                {.id = 991, .distance = 36.068f},
-                {.id = 953, .distance = 37.491f},
-                {.id = 992, .distance = 39.068f},
-                {.id = 990, .distance = 41.895f}
-            }
-        },
-        {
-            .point_id = 970,
-            .neighbors = {
-                {.id = 953, .distance = 29.419f},
-                {.id = 971, .distance = 30.638f},
-                {.id = 969, .distance = 32.725f},
-                {.id = 992, .distance = 35.794f},
-                {.id = 993, .distance = 36.665f},
-                {.id = 954, .distance = 44.568f},
-                {.id = 994, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 971,
-            .neighbors = {
-                {.id = 994, .distance = 24.191f},
-                {.id = 954, .distance = 29.848f},
-                {.id = 970, .distance = 30.638f},
-                {.id = 972, .distance = 31.516f},
-                {.id = 953, .distance = 41.947f},
-                {.id = 995, .distance = 44.167f},
-                {.id = 993, .distance = 44.460f}
-            }
-        },
-        {
-            .point_id = 972,
-            .neighbors = {
-                {.id = 999, .distance = 27.519f},
-                {.id = 971, .distance = 31.516f},
-                {.id = 973, .distance = 33.096f},
-                {.id = 955, .distance = 33.457f},
-                {.id = 954, .distance = 35.426f},
-                {.id = 996, .distance = 35.506f},
-                {.id = 994, .distance = 36.051f}
-            }
-        },
-        {
-            .point_id = 973,
-            .neighbors = {
-                {.id = 955, .distance = 30.775f},
-                {.id = 974, .distance = 30.943f},
-                {.id = 999, .distance = 31.347f},
-                {.id = 972, .distance = 33.096f},
-                {.id = 1001, .distance = 37.393f},
-                {.id = 956, .distance = 38.606f},
-                {.id = 1000, .distance = 45.102f}
-            }
-        },
-        {
-            .point_id = 974,
-            .neighbors = {
-                {.id = 956, .distance = 28.126f},
-                {.id = 973, .distance = 30.943f},
-                {.id = 975, .distance = 32.322f},
-                {.id = 1002, .distance = 33.115f},
-                {.id = 1001, .distance = 43.474f},
-                {.id = 1003, .distance = 44.048f},
-                {.id = 955, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 975,
-            .neighbors = {
-                {.id = 1005, .distance = 30.540f},
-                {.id = 957, .distance = 30.745f},
-                {.id = 974, .distance = 32.322f},
-                {.id = 976, .distance = 32.441f},
-                {.id = 1003, .distance = 37.153f},
-                {.id = 956, .distance = 40.686f},
-                {.id = 1004, .distance = 45.279f}
-            }
-        },
-        {
-            .point_id = 976,
-            .neighbors = {
-                {.id = 1005, .distance = 27.373f},
-                {.id = 977, .distance = 31.563f},
-                {.id = 975, .distance = 32.441f},
-                {.id = 957, .distance = 33.990f},
-                {.id = 1007, .distance = 35.618f},
-                {.id = 958, .distance = 35.628f},
-                {.id = 1009, .distance = 36.566f}
-            }
-        },
-        {
-            .point_id = 977,
-            .neighbors = {
-                {.id = 1009, .distance = 24.293f},
-                {.id = 958, .distance = 30.088f},
-                {.id = 976, .distance = 31.563f},
-                {.id = 978, .distance = 31.793f},
-                {.id = 959, .distance = 42.067f},
-                {.id = 1010, .distance = 43.775f},
-                {.id = 1011, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 978,
-            .neighbors = {
-                {.id = 959, .distance = 28.726f},
-                {.id = 979, .distance = 31.427f},
-                {.id = 977, .distance = 31.793f},
-                {.id = 1012, .distance = 35.922f},
-                {.id = 1011, .distance = 37.333f},
-                {.id = 958, .distance = 44.864f},
-                {.id = 1009, .distance = 47.704f}
-            }
-        },
-        {
-            .point_id = 979,
-            .neighbors = {
-                {.id = 978, .distance = 31.427f},
-                {.id = 960, .distance = 31.889f},
-                {.id = 980, .distance = 32.342f},
-                {.id = 1013, .distance = 35.562f},
-                {.id = 959, .distance = 37.444f},
-                {.id = 1012, .distance = 39.243f},
-                {.id = 1015, .distance = 41.982f}
-            }
-        },
-        {
-            .point_id = 980,
-            .neighbors = {
-                {.id = 1015, .distance = 23.803f},
-                {.id = 981, .distance = 31.693f},
-                {.id = 979, .distance = 32.342f},
-                {.id = 960, .distance = 32.458f},
-                {.id = 961, .distance = 36.707f},
-                {.id = 1017, .distance = 41.333f},
-                {.id = 1014, .distance = 44.974f}
-            }
-        },
-        {
-            .point_id = 981,
-            .neighbors = {
-                {.id = 1019, .distance = 24.410f},
-                {.id = 961, .distance = 28.557f},
-                {.id = 980, .distance = 31.693f},
-                {.id = 982, .distance = 32.138f},
-                {.id = 1017, .distance = 38.124f},
-                {.id = 1015, .distance = 43.096f},
-                {.id = 962, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 982,
-            .neighbors = {
-                {.id = 962, .distance = 29.283f},
-                {.id = 983, .distance = 31.589f},
-                {.id = 981, .distance = 32.138f},
-                {.id = 1021, .distance = 36.174f},
-                {.id = 1019, .distance = 36.927f},
-                {.id = 961, .distance = 42.276f},
-                {.id = 1022, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 983,
-            .neighbors = {
-                {.id = 982, .distance = 31.589f},
-                {.id = 984, .distance = 32.185f},
-                {.id = 1022, .distance = 33.528f},
-                {.id = 963, .distance = 33.774f},
-                {.id = 962, .distance = 35.383f},
-                {.id = 1023, .distance = 39.292f},
-                {.id = 1021, .distance = 48.151f}
-            }
-        },
-        {
-            .point_id = 984,
-            .neighbors = {
-                {.id = 1025, .distance = 26.800f},
-                {.id = 963, .distance = 30.492f},
-                {.id = 985, .distance = 31.085f},
-                {.id = 983, .distance = 32.185f},
-                {.id = 964, .distance = 39.658f},
-                {.id = 1023, .distance = 40.843f},
-                {.id = 1024, .distance = 44.297f}
-            }
-        },
-        {
-            .point_id = 985,
-            .neighbors = {
-                {.id = 964, .distance = 28.796f},
-                {.id = 984, .distance = 31.085f},
-                {.id = 1025, .distance = 31.165f},
-                {.id = 986, .distance = 31.748f},
-                {.id = 1029, .distance = 32.025f},
-                {.id = 1027, .distance = 35.484f},
-                {.id = 965, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 986,
-            .neighbors = {
-                {.id = 1029, .distance = 26.974f},
-                {.id = 965, .distance = 30.076f},
-                {.id = 987, .distance = 31.574f},
-                {.id = 985, .distance = 31.748f},
-                {.id = 964, .distance = 39.130f},
-                {.id = 1031, .distance = 40.759f},
-                {.id = 1030, .distance = 44.255f}
-            }
-        },
-        {
-            .point_id = 987,
-            .neighbors = {
-                {.id = 986, .distance = 31.574f},
-                {.id = 988, .distance = 32.495f},
-                {.id = 965, .distance = 33.386f},
-                {.id = 1032, .distance = 34.006f},
-                {.id = 966, .distance = 35.446f},
-                {.id = 1031, .distance = 40.058f},
-                {.id = 1033, .distance = 48.765f}
-            }
-        },
-        {
-            .point_id = 988,
-            .neighbors = {
-                {.id = 966, .distance = 29.653f},
-                {.id = 989, .distance = 31.761f},
-                {.id = 987, .distance = 32.495f},
-                {.id = 1033, .distance = 35.652f},
-                {.id = 1035, .distance = 35.973f},
-                {.id = 967, .distance = 42.498f},
-                {.id = 1032, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 989,
-            .neighbors = {
-                {.id = 1035, .distance = 24.656f},
-                {.id = 967, .distance = 28.776f},
-                {.id = 968, .distance = 31.442f},
-                {.id = 988, .distance = 31.761f},
-                {.id = 1037, .distance = 38.273f},
-                {.id = 990, .distance = 43.129f},
-                {.id = 966, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 990,
-            .neighbors = {
-                {.id = 1039, .distance = 22.863f},
-                {.id = 968, .distance = 23.617f},
-                {.id = 1037, .distance = 27.856f},
-                {.id = 1038, .distance = 35.561f},
-                {.id = 991, .distance = 37.917f},
-                {.id = 969, .distance = 41.895f},
-                {.id = 989, .distance = 43.129f}
-            }
-        },
-        {
-            .point_id = 991,
-            .neighbors = {
-                {.id = 1039, .distance = 28.096f},
-                {.id = 992, .distance = 29.153f},
-                {.id = 1117, .distance = 29.303f},
-                {.id = 969, .distance = 36.068f},
-                {.id = 990, .distance = 37.917f},
-                {.id = 1116, .distance = 40.708f},
-                {.id = 1118, .distance = 41.405f}
-            }
-        },
-        {
-            .point_id = 992,
-            .neighbors = {
-                {.id = 993, .distance = 28.265f},
-                {.id = 991, .distance = 29.153f},
-                {.id = 1116, .distance = 29.697f},
-                {.id = 970, .distance = 35.794f},
-                {.id = 969, .distance = 39.068f},
-                {.id = 1115, .distance = 40.854f},
-                {.id = 1117, .distance = 41.887f}
-            }
-        },
-        {
-            .point_id = 993,
-            .neighbors = {
-                {.id = 992, .distance = 28.265f},
-                {.id = 995, .distance = 28.989f},
-                {.id = 1115, .distance = 29.349f},
-                {.id = 970, .distance = 36.665f},
-                {.id = 994, .distance = 38.712f},
-                {.id = 1114, .distance = 40.741f},
-                {.id = 1116, .distance = 41.218f}
-            }
-        },
-        {
-            .point_id = 994,
-            .neighbors = {
-                {.id = 995, .distance = 23.607f},
-                {.id = 971, .distance = 24.191f},
-                {.id = 996, .distance = 27.455f},
-                {.id = 997, .distance = 35.536f},
-                {.id = 972, .distance = 36.051f},
-                {.id = 993, .distance = 38.712f},
-                {.id = 970, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 995,
-            .neighbors = {
-                {.id = 994, .distance = 23.607f},
-                {.id = 997, .distance = 28.500f},
-                {.id = 993, .distance = 28.989f},
-                {.id = 1114, .distance = 29.313f},
-                {.id = 996, .distance = 38.998f},
-                {.id = 1112, .distance = 40.245f},
-                {.id = 1115, .distance = 41.506f}
-            }
-        },
-        {
-            .point_id = 996,
-            .neighbors = {
-                {.id = 997, .distance = 25.823f},
-                {.id = 998, .distance = 26.008f},
-                {.id = 999, .distance = 27.304f},
-                {.id = 994, .distance = 27.455f},
-                {.id = 972, .distance = 35.506f},
-                {.id = 995, .distance = 38.998f},
-                {.id = 1000, .distance = 39.242f}
-            }
-        },
-        {
-            .point_id = 997,
-            .neighbors = {
-                {.id = 996, .distance = 25.823f},
-                {.id = 995, .distance = 28.500f},
-                {.id = 1112, .distance = 29.551f},
-                {.id = 998, .distance = 30.900f},
-                {.id = 994, .distance = 35.536f},
-                {.id = 1114, .distance = 41.458f},
-                {.id = 1234, .distance = 51.535f}
-            }
-        },
-        {
-            .point_id = 998,
-            .neighbors = {
-                {.id = 996, .distance = 26.008f},
-                {.id = 1234, .distance = 28.579f},
-                {.id = 1000, .distance = 29.614f},
-                {.id = 997, .distance = 30.900f},
-                {.id = 999, .distance = 35.963f},
-                {.id = 1232, .distance = 40.017f},
-                {.id = 1236, .distance = 51.461f}
-            }
-        },
-        {
-            .point_id = 999,
-            .neighbors = {
-                {.id = 1000, .distance = 23.404f},
-                {.id = 996, .distance = 27.304f},
-                {.id = 972, .distance = 27.519f},
-                {.id = 973, .distance = 31.347f},
-                {.id = 998, .distance = 35.963f},
-                {.id = 1001, .distance = 38.924f},
-                {.id = 994, .distance = 47.034f}
-            }
-        },
-        {
-            .point_id = 1000,
-            .neighbors = {
-                {.id = 999, .distance = 23.404f},
-                {.id = 1001, .distance = 28.584f},
-                {.id = 1232, .distance = 28.635f},
-                {.id = 998, .distance = 29.614f},
-                {.id = 996, .distance = 39.242f},
-                {.id = 1231, .distance = 40.267f},
-                {.id = 1234, .distance = 41.723f}
-            }
-        },
-        {
-            .point_id = 1001,
-            .neighbors = {
-                {.id = 1002, .distance = 28.069f},
-                {.id = 1231, .distance = 28.455f},
-                {.id = 1000, .distance = 28.584f},
-                {.id = 973, .distance = 37.393f},
-                {.id = 999, .distance = 38.924f},
-                {.id = 1230, .distance = 39.721f},
-                {.id = 1232, .distance = 41.281f}
-            }
-        },
-        {
-            .point_id = 1002,
-            .neighbors = {
-                {.id = 1001, .distance = 28.069f},
-                {.id = 1230, .distance = 28.689f},
-                {.id = 1003, .distance = 28.840f},
-                {.id = 974, .distance = 33.115f},
-                {.id = 1229, .distance = 40.334f},
-                {.id = 1231, .distance = 40.347f},
-                {.id = 973, .distance = 48.228f}
-            }
-        },
-        {
-            .point_id = 1003,
-            .neighbors = {
-                {.id = 1229, .distance = 28.729f},
-                {.id = 1002, .distance = 28.840f},
-                {.id = 1004, .distance = 29.098f},
-                {.id = 975, .distance = 37.153f},
-                {.id = 1005, .distance = 38.371f},
-                {.id = 1228, .distance = 40.200f},
-                {.id = 1230, .distance = 40.936f}
-            }
-        },
-        {
-            .point_id = 1004,
-            .neighbors = {
-                {.id = 1005, .distance = 23.468f},
-                {.id = 1006, .distance = 28.067f},
-                {.id = 1228, .distance = 28.742f},
-                {.id = 1003, .distance = 29.098f},
-                {.id = 1007, .distance = 37.859f},
-                {.id = 1226, .distance = 39.796f},
-                {.id = 1229, .distance = 41.262f}
-            }
-        },
-        {
-            .point_id = 1005,
-            .neighbors = {
-                {.id = 1004, .distance = 23.468f},
-                {.id = 1007, .distance = 26.995f},
-                {.id = 976, .distance = 27.373f},
-                {.id = 975, .distance = 30.540f},
-                {.id = 1006, .distance = 35.584f},
-                {.id = 1003, .distance = 38.371f},
-                {.id = 1009, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 1006,
-            .neighbors = {
-                {.id = 1007, .distance = 25.235f},
-                {.id = 1004, .distance = 28.067f},
-                {.id = 1226, .distance = 28.662f},
-                {.id = 1008, .distance = 31.314f},
-                {.id = 1005, .distance = 35.584f},
-                {.id = 1228, .distance = 40.849f},
-                {.id = 1224, .distance = 50.916f}
-            }
-        },
-        {
-            .point_id = 1007,
-            .neighbors = {
-                {.id = 1006, .distance = 25.235f},
-                {.id = 1008, .distance = 25.959f},
-                {.id = 1005, .distance = 26.995f},
-                {.id = 1009, .distance = 28.280f},
-                {.id = 976, .distance = 35.618f},
-                {.id = 1004, .distance = 37.859f},
-                {.id = 1010, .distance = 39.348f}
-            }
-        },
-        {
-            .point_id = 1008,
-            .neighbors = {
-                {.id = 1007, .distance = 25.959f},
-                {.id = 1010, .distance = 28.175f},
-                {.id = 893, .distance = 29.551f},
-                {.id = 1006, .distance = 31.314f},
-                {.id = 1009, .distance = 35.099f},
-                {.id = 891, .distance = 40.245f},
-                {.id = 1005, .distance = 52.245f}
-            }
-        },
-        {
-            .point_id = 1009,
-            .neighbors = {
-                {.id = 1010, .distance = 22.858f},
-                {.id = 977, .distance = 24.293f},
-                {.id = 1007, .distance = 28.280f},
-                {.id = 1008, .distance = 35.099f},
-                {.id = 976, .distance = 36.566f},
-                {.id = 1011, .distance = 37.718f},
-                {.id = 1005, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 1010,
-            .neighbors = {
-                {.id = 1009, .distance = 22.858f},
-                {.id = 1008, .distance = 28.175f},
-                {.id = 1011, .distance = 28.665f},
-                {.id = 891, .distance = 29.313f},
-                {.id = 1007, .distance = 39.348f},
-                {.id = 889, .distance = 40.741f},
-                {.id = 893, .distance = 41.458f}
-            }
-        },
-        {
-            .point_id = 1011,
-            .neighbors = {
-                {.id = 1010, .distance = 28.665f},
-                {.id = 1012, .distance = 28.744f},
-                {.id = 889, .distance = 29.349f},
-                {.id = 978, .distance = 37.333f},
-                {.id = 1009, .distance = 37.718f},
-                {.id = 888, .distance = 40.854f},
-                {.id = 891, .distance = 41.506f}
-            }
-        },
-        {
-            .point_id = 1012,
-            .neighbors = {
-                {.id = 1013, .distance = 28.665f},
-                {.id = 1011, .distance = 28.744f},
-                {.id = 888, .distance = 29.697f},
-                {.id = 978, .distance = 35.922f},
-                {.id = 979, .distance = 39.243f},
-                {.id = 887, .distance = 40.708f},
-                {.id = 889, .distance = 41.218f}
-            }
-        },
-        {
-            .point_id = 1013,
-            .neighbors = {
-                {.id = 1012, .distance = 28.665f},
-                {.id = 1014, .distance = 28.989f},
-                {.id = 887, .distance = 29.303f},
-                {.id = 979, .distance = 35.562f},
-                {.id = 1015, .distance = 37.946f},
-                {.id = 935, .distance = 40.502f},
-                {.id = 888, .distance = 41.887f}
-            }
-        },
-        {
-            .point_id = 1014,
-            .neighbors = {
-                {.id = 1015, .distance = 22.522f},
-                {.id = 1016, .distance = 28.989f},
-                {.id = 1013, .distance = 28.989f},
-                {.id = 935, .distance = 29.448f},
-                {.id = 1017, .distance = 38.748f},
-                {.id = 934, .distance = 40.870f},
-                {.id = 887, .distance = 41.405f}
-            }
-        },
-        {
-            .point_id = 1015,
-            .neighbors = {
-                {.id = 1014, .distance = 22.522f},
-                {.id = 980, .distance = 23.803f},
-                {.id = 1017, .distance = 27.573f},
-                {.id = 1016, .distance = 35.430f},
-                {.id = 1013, .distance = 37.946f},
-                {.id = 979, .distance = 41.982f},
-                {.id = 981, .distance = 43.096f}
-            }
-        },
-        {
-            .point_id = 1016,
-            .neighbors = {
-                {.id = 1017, .distance = 25.732f},
-                {.id = 1014, .distance = 28.989f},
-                {.id = 934, .distance = 29.475f},
-                {.id = 1018, .distance = 30.699f},
-                {.id = 1015, .distance = 35.430f},
-                {.id = 935, .distance = 42.128f},
-                {.id = 288, .distance = 49.900f}
-            }
-        },
-        {
-            .point_id = 1017,
-            .neighbors = {
-                {.id = 1018, .distance = 25.715f},
-                {.id = 1016, .distance = 25.732f},
-                {.id = 1019, .distance = 27.009f},
-                {.id = 1015, .distance = 27.573f},
-                {.id = 981, .distance = 38.124f},
-                {.id = 1014, .distance = 38.748f},
-                {.id = 1020, .distance = 38.795f}
-            }
-        },
-        {
-            .point_id = 1018,
-            .neighbors = {
-                {.id = 1017, .distance = 25.715f},
-                {.id = 288, .distance = 27.473f},
-                {.id = 1020, .distance = 28.587f},
-                {.id = 1016, .distance = 30.699f},
-                {.id = 1019, .distance = 35.180f},
-                {.id = 286, .distance = 39.435f},
-                {.id = 290, .distance = 50.891f}
-            }
-        },
-        {
-            .point_id = 1019,
-            .neighbors = {
-                {.id = 1020, .distance = 23.318f},
-                {.id = 981, .distance = 24.410f},
-                {.id = 1017, .distance = 27.009f},
-                {.id = 1018, .distance = 35.180f},
-                {.id = 982, .distance = 36.927f},
-                {.id = 1021, .distance = 38.625f},
-                {.id = 1015, .distance = 47.229f}
-            }
-        },
-        {
-            .point_id = 1020,
-            .neighbors = {
-                {.id = 1019, .distance = 23.318f},
-                {.id = 286, .distance = 27.583f},
-                {.id = 1018, .distance = 28.587f},
-                {.id = 1021, .distance = 28.648f},
-                {.id = 1017, .distance = 38.795f},
-                {.id = 285, .distance = 39.805f},
-                {.id = 288, .distance = 40.223f}
-            }
-        },
-        {
-            .point_id = 1021,
-            .neighbors = {
-                {.id = 285, .distance = 27.628f},
-                {.id = 1020, .distance = 28.648f},
-                {.id = 1022, .distance = 28.678f},
-                {.id = 982, .distance = 36.174f},
-                {.id = 1019, .distance = 38.625f},
-                {.id = 284, .distance = 39.752f},
-                {.id = 286, .distance = 40.007f}
-            }
-        },
-        {
-            .point_id = 1022,
-            .neighbors = {
-                {.id = 284, .distance = 27.498f},
-                {.id = 1023, .distance = 28.019f},
-                {.id = 1021, .distance = 28.678f},
-                {.id = 983, .distance = 33.528f},
-                {.id = 285, .distance = 39.790f},
-                {.id = 283, .distance = 39.855f},
-                {.id = 982, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 1023,
-            .neighbors = {
-                {.id = 283, .distance = 27.613f},
-                {.id = 1022, .distance = 28.019f},
-                {.id = 1024, .distance = 29.666f},
-                {.id = 1025, .distance = 39.143f},
-                {.id = 284, .distance = 39.255f},
-                {.id = 983, .distance = 39.292f},
-                {.id = 282, .distance = 40.252f}
-            }
-        },
-        {
-            .point_id = 1024,
-            .neighbors = {
-                {.id = 1025, .distance = 23.574f},
-                {.id = 282, .distance = 27.436f},
-                {.id = 1026, .distance = 28.796f},
-                {.id = 1023, .distance = 29.666f},
-                {.id = 1027, .distance = 38.536f},
-                {.id = 280, .distance = 39.154f},
-                {.id = 283, .distance = 39.947f}
-            }
-        },
-        {
-            .point_id = 1025,
-            .neighbors = {
-                {.id = 1024, .distance = 23.574f},
-                {.id = 984, .distance = 26.800f},
-                {.id = 1027, .distance = 27.295f},
-                {.id = 985, .distance = 31.165f},
-                {.id = 1026, .distance = 35.726f},
-                {.id = 1023, .distance = 39.143f},
-                {.id = 1029, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 1026,
-            .neighbors = {
-                {.id = 1027, .distance = 25.236f},
-                {.id = 280, .distance = 27.690f},
-                {.id = 1024, .distance = 28.796f},
-                {.id = 1028, .distance = 30.642f},
-                {.id = 1025, .distance = 35.726f},
-                {.id = 282, .distance = 40.114f},
-                {.id = 278, .distance = 50.621f}
-            }
-        },
-        {
-            .point_id = 1027,
-            .neighbors = {
-                {.id = 1026, .distance = 25.236f},
-                {.id = 1028, .distance = 25.701f},
-                {.id = 1025, .distance = 27.295f},
-                {.id = 1029, .distance = 27.601f},
-                {.id = 985, .distance = 35.484f},
-                {.id = 1030, .distance = 38.536f},
-                {.id = 1024, .distance = 38.536f}
-            }
-        },
-        {
-            .point_id = 1028,
-            .neighbors = {
-                {.id = 1027, .distance = 25.701f},
-                {.id = 1030, .distance = 28.171f},
-                {.id = 402, .distance = 28.551f},
-                {.id = 1026, .distance = 30.642f},
-                {.id = 1029, .distance = 35.416f},
-                {.id = 400, .distance = 41.429f},
-                {.id = 404, .distance = 50.454f}
-            }
-        },
-        {
-            .point_id = 1029,
-            .neighbors = {
-                {.id = 1030, .distance = 23.046f},
-                {.id = 986, .distance = 26.974f},
-                {.id = 1027, .distance = 27.601f},
-                {.id = 985, .distance = 32.025f},
-                {.id = 1028, .distance = 35.416f},
-                {.id = 1031, .distance = 38.124f},
-                {.id = 1025, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 1030,
-            .neighbors = {
-                {.id = 1029, .distance = 23.046f},
-                {.id = 1028, .distance = 28.171f},
-                {.id = 400, .distance = 28.586f},
-                {.id = 1031, .distance = 28.796f},
-                {.id = 1027, .distance = 38.536f},
-                {.id = 402, .distance = 39.222f},
-                {.id = 399, .distance = 42.712f}
-            }
-        },
-        {
-            .point_id = 1031,
-            .neighbors = {
-                {.id = 399, .distance = 28.538f},
-                {.id = 1032, .distance = 28.739f},
-                {.id = 1030, .distance = 28.796f},
-                {.id = 1029, .distance = 38.124f},
-                {.id = 400, .distance = 38.933f},
-                {.id = 987, .distance = 40.058f},
-                {.id = 986, .distance = 40.759f}
-            }
-        },
-        {
-            .point_id = 1032,
-            .neighbors = {
-                {.id = 398, .distance = 28.593f},
-                {.id = 1031, .distance = 28.739f},
-                {.id = 1033, .distance = 28.996f},
-                {.id = 987, .distance = 34.006f},
-                {.id = 399, .distance = 38.440f},
-                {.id = 397, .distance = 42.065f},
-                {.id = 988, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 1033,
-            .neighbors = {
-                {.id = 1034, .distance = 28.539f},
-                {.id = 397, .distance = 28.720f},
-                {.id = 1032, .distance = 28.996f},
-                {.id = 988, .distance = 35.652f},
-                {.id = 1035, .distance = 38.072f},
-                {.id = 398, .distance = 39.193f},
-                {.id = 396, .distance = 41.888f}
-            }
-        },
-        {
-            .point_id = 1034,
-            .neighbors = {
-                {.id = 1035, .distance = 23.229f},
-                {.id = 396, .distance = 28.526f},
-                {.id = 1033, .distance = 28.539f},
-                {.id = 1036, .distance = 29.175f},
-                {.id = 1037, .distance = 38.795f},
-                {.id = 397, .distance = 38.975f},
-                {.id = 394, .distance = 41.739f}
-            }
-        },
-        {
-            .point_id = 1035,
-            .neighbors = {
-                {.id = 1034, .distance = 23.229f},
-                {.id = 989, .distance = 24.656f},
-                {.id = 1037, .distance = 27.373f},
-                {.id = 988, .distance = 35.973f},
-                {.id = 1036, .distance = 36.131f},
-                {.id = 1033, .distance = 38.072f},
-                {.id = 990, .distance = 47.750f}
-            }
-        },
-        {
-            .point_id = 1036,
-            .neighbors = {
-                {.id = 1037, .distance = 26.133f},
-                {.id = 394, .distance = 27.990f},
-                {.id = 1034, .distance = 29.175f},
-                {.id = 1038, .distance = 30.723f},
-                {.id = 1035, .distance = 36.131f},
-                {.id = 396, .distance = 39.023f},
-                {.id = 392, .distance = 51.341f}
-            }
-        },
-        {
-            .point_id = 1037,
-            .neighbors = {
-                {.id = 1038, .distance = 25.813f},
-                {.id = 1036, .distance = 26.133f},
-                {.id = 1035, .distance = 27.373f},
-                {.id = 990, .distance = 27.856f},
-                {.id = 989, .distance = 38.273f},
-                {.id = 1034, .distance = 38.795f},
-                {.id = 1039, .distance = 39.458f}
-            }
-        },
-        {
-            .point_id = 1038,
-            .neighbors = {
-                {.id = 1037, .distance = 25.813f},
-                {.id = 1120, .distance = 29.475f},
-                {.id = 1039, .distance = 29.479f},
-                {.id = 1036, .distance = 30.723f},
-                {.id = 990, .distance = 35.561f},
-                {.id = 1118, .distance = 40.870f},
-                {.id = 394, .distance = 50.403f}
-            }
-        },
-        {
-            .point_id = 1039,
-            .neighbors = {
-                {.id = 990, .distance = 22.863f},
-                {.id = 991, .distance = 28.096f},
-                {.id = 1118, .distance = 29.448f},
-                {.id = 1038, .distance = 29.479f},
-                {.id = 1037, .distance = 39.458f},
-                {.id = 1117, .distance = 40.502f},
-                {.id = 1120, .distance = 42.128f}
-            }
-        },
-        {
-            .point_id = 1040,
-            .neighbors = {
-                {.id = 1041, .distance = 25.256f},
-                {.id = 1043, .distance = 25.653f},
-                {.id = 1042, .distance = 25.660f},
-                {.id = 1045, .distance = 26.237f},
-                {.id = 1044, .distance = 26.780f},
-                {.id = 1047, .distance = 53.251f},
-                {.id = 1051, .distance = 53.584f}
-            }
-        },
-        {
-            .point_id = 1041,
-            .neighbors = {
-                {.id = 1040, .distance = 25.256f},
-                {.id = 1047, .distance = 27.996f},
-                {.id = 1045, .distance = 30.406f},
-                {.id = 1042, .distance = 30.746f},
-                {.id = 1048, .distance = 36.902f},
-                {.id = 1046, .distance = 36.902f},
-                {.id = 1043, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 1042,
-            .neighbors = {
-                {.id = 1040, .distance = 25.660f},
-                {.id = 1049, .distance = 28.138f},
-                {.id = 1043, .distance = 30.016f},
-                {.id = 1041, .distance = 30.746f},
-                {.id = 1050, .distance = 35.779f},
-                {.id = 1048, .distance = 37.730f},
-                {.id = 1044, .distance = 49.623f}
-            }
-        },
-        {
-            .point_id = 1043,
-            .neighbors = {
-                {.id = 1040, .distance = 25.653f},
-                {.id = 1051, .distance = 27.950f},
-                {.id = 1042, .distance = 30.016f},
-                {.id = 1044, .distance = 30.334f},
-                {.id = 1052, .distance = 36.663f},
-                {.id = 1050, .distance = 36.917f},
-                {.id = 1041, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 1044,
-            .neighbors = {
-                {.id = 1040, .distance = 26.780f},
-                {.id = 1053, .distance = 28.148f},
-                {.id = 1043, .distance = 30.334f},
-                {.id = 1045, .distance = 30.829f},
-                {.id = 1052, .distance = 36.041f},
-                {.id = 1054, .distance = 36.581f},
-                {.id = 1041, .distance = 49.415f}
-            }
-        },
-        {
-            .point_id = 1045,
-            .neighbors = {
-                {.id = 1040, .distance = 26.237f},
-                {.id = 1055, .distance = 28.784f},
-                {.id = 1041, .distance = 30.406f},
-                {.id = 1044, .distance = 30.829f},
-                {.id = 1046, .distance = 36.136f},
-                {.id = 1054, .distance = 36.663f},
-                {.id = 1043, .distance = 49.028f}
-            }
-        },
-        {
-            .point_id = 1046,
-            .neighbors = {
-                {.id = 1057, .distance = 29.943f},
-                {.id = 1055, .distance = 32.709f},
-                {.id = 1047, .distance = 33.241f},
-                {.id = 1056, .distance = 35.999f},
-                {.id = 1045, .distance = 36.136f},
-                {.id = 1041, .distance = 36.902f},
-                {.id = 1058, .distance = 43.146f}
-            }
-        },
-        {
-            .point_id = 1047,
-            .neighbors = {
-                {.id = 1041, .distance = 27.996f},
-                {.id = 1058, .distance = 31.091f},
-                {.id = 1046, .distance = 33.241f},
-                {.id = 1048, .distance = 33.489f},
-                {.id = 1059, .distance = 33.997f},
-                {.id = 1057, .distance = 46.465f},
-                {.id = 1060, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 1048,
-            .neighbors = {
-                {.id = 1060, .distance = 28.795f},
-                {.id = 1047, .distance = 33.489f},
-                {.id = 1049, .distance = 34.526f},
-                {.id = 1041, .distance = 36.902f},
-                {.id = 1042, .distance = 37.730f},
-                {.id = 1059, .distance = 39.001f},
-                {.id = 1061, .distance = 39.043f}
-            }
-        },
-        {
-            .point_id = 1049,
-            .neighbors = {
-                {.id = 1042, .distance = 28.138f},
-                {.id = 1062, .distance = 30.119f},
-                {.id = 1050, .distance = 32.862f},
-                {.id = 1061, .distance = 33.326f},
-                {.id = 1048, .distance = 34.526f},
-                {.id = 1063, .distance = 46.032f},
-                {.id = 1060, .distance = 51.953f}
-            }
-        },
-        {
-            .point_id = 1050,
-            .neighbors = {
-                {.id = 1063, .distance = 29.271f},
-                {.id = 1049, .distance = 32.862f},
-                {.id = 1051, .distance = 32.910f},
-                {.id = 1064, .distance = 35.475f},
-                {.id = 1042, .distance = 35.779f},
-                {.id = 1043, .distance = 36.917f},
-                {.id = 1062, .distance = 42.036f}
-            }
-        },
-        {
-            .point_id = 1051,
-            .neighbors = {
-                {.id = 1043, .distance = 27.950f},
-                {.id = 1065, .distance = 30.515f},
-                {.id = 1050, .distance = 32.910f},
-                {.id = 1052, .distance = 34.288f},
-                {.id = 1064, .distance = 35.680f},
-                {.id = 1066, .distance = 43.747f},
-                {.id = 1042, .distance = 50.881f}
-            }
-        },
-        {
-            .point_id = 1052,
-            .neighbors = {
-                {.id = 1066, .distance = 30.713f},
-                {.id = 1067, .distance = 32.961f},
-                {.id = 1051, .distance = 34.288f},
-                {.id = 1053, .distance = 34.333f},
-                {.id = 1044, .distance = 36.041f},
-                {.id = 1043, .distance = 36.663f},
-                {.id = 1065, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 1053,
-            .neighbors = {
-                {.id = 1044, .distance = 28.148f},
-                {.id = 1068, .distance = 28.795f},
-                {.id = 1054, .distance = 32.474f},
-                {.id = 1052, .distance = 34.333f},
-                {.id = 1069, .distance = 37.853f},
-                {.id = 1067, .distance = 39.529f},
-                {.id = 1045, .distance = 52.029f}
-            }
-        },
-        {
-            .point_id = 1054,
-            .neighbors = {
-                {.id = 1070, .distance = 30.978f},
-                {.id = 1053, .distance = 32.474f},
-                {.id = 1069, .distance = 33.378f},
-                {.id = 1055, .distance = 34.135f},
-                {.id = 1044, .distance = 36.581f},
-                {.id = 1045, .distance = 36.663f},
-                {.id = 1071, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 1055,
-            .neighbors = {
-                {.id = 1045, .distance = 28.784f},
-                {.id = 1071, .distance = 29.314f},
-                {.id = 1046, .distance = 32.709f},
-                {.id = 1054, .distance = 34.135f},
-                {.id = 1056, .distance = 35.428f},
-                {.id = 1070, .distance = 42.934f},
-                {.id = 1041, .distance = 52.730f}
-            }
-        },
-        {
-            .point_id = 1056,
-            .neighbors = {
-                {.id = 1073, .distance = 31.937f},
-                {.id = 1072, .distance = 31.964f},
-                {.id = 1071, .distance = 32.088f},
-                {.id = 1057, .distance = 32.704f},
-                {.id = 1055, .distance = 35.428f},
-                {.id = 1046, .distance = 35.999f},
-                {.id = 1093, .distance = 49.921f}
-            }
-        },
-        {
-            .point_id = 1057,
-            .neighbors = {
-                {.id = 1074, .distance = 29.419f},
-                {.id = 1046, .distance = 29.943f},
-                {.id = 1058, .distance = 32.468f},
-                {.id = 1056, .distance = 32.704f},
-                {.id = 1073, .distance = 37.491f},
-                {.id = 1075, .distance = 41.947f},
-                {.id = 1047, .distance = 46.465f}
-            }
-        },
-        {
-            .point_id = 1058,
-            .neighbors = {
-                {.id = 1075, .distance = 29.848f},
-                {.id = 1047, .distance = 31.091f},
-                {.id = 1059, .distance = 31.917f},
-                {.id = 1057, .distance = 32.468f},
-                {.id = 1076, .distance = 35.426f},
-                {.id = 1046, .distance = 43.146f},
-                {.id = 1074, .distance = 44.568f}
-            }
-        },
-        {
-            .point_id = 1059,
-            .neighbors = {
-                {.id = 1077, .distance = 30.775f},
-                {.id = 1058, .distance = 31.917f},
-                {.id = 1060, .distance = 32.089f},
-                {.id = 1076, .distance = 33.457f},
-                {.id = 1047, .distance = 33.997f},
-                {.id = 1048, .distance = 39.001f},
-                {.id = 1078, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 1060,
-            .neighbors = {
-                {.id = 1078, .distance = 28.126f},
-                {.id = 1048, .distance = 28.795f},
-                {.id = 1059, .distance = 32.089f},
-                {.id = 1061, .distance = 33.350f},
-                {.id = 1077, .distance = 38.606f},
-                {.id = 1079, .distance = 40.686f},
-                {.id = 1047, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 1061,
-            .neighbors = {
-                {.id = 1079, .distance = 30.745f},
-                {.id = 1062, .distance = 32.585f},
-                {.id = 1049, .distance = 33.326f},
-                {.id = 1060, .distance = 33.350f},
-                {.id = 1080, .distance = 33.990f},
-                {.id = 1048, .distance = 39.043f},
-                {.id = 1078, .distance = 47.230f}
-            }
-        },
-        {
-            .point_id = 1062,
-            .neighbors = {
-                {.id = 1081, .distance = 30.088f},
-                {.id = 1049, .distance = 30.119f},
-                {.id = 1063, .distance = 32.298f},
-                {.id = 1061, .distance = 32.585f},
-                {.id = 1080, .distance = 35.628f},
-                {.id = 1050, .distance = 42.036f},
-                {.id = 1082, .distance = 44.864f}
-            }
-        },
-        {
-            .point_id = 1063,
-            .neighbors = {
-                {.id = 1082, .distance = 28.726f},
-                {.id = 1050, .distance = 29.271f},
-                {.id = 1064, .distance = 31.916f},
-                {.id = 1062, .distance = 32.298f},
-                {.id = 1083, .distance = 37.444f},
-                {.id = 1081, .distance = 42.067f},
-                {.id = 1049, .distance = 46.032f}
-            }
-        },
-        {
-            .point_id = 1064,
-            .neighbors = {
-                {.id = 1083, .distance = 31.889f},
-                {.id = 1063, .distance = 31.916f},
-                {.id = 1084, .distance = 32.458f},
-                {.id = 1065, .distance = 32.605f},
-                {.id = 1050, .distance = 35.475f},
-                {.id = 1051, .distance = 35.680f},
-                {.id = 1082, .distance = 49.358f}
-            }
-        },
-        {
-            .point_id = 1065,
-            .neighbors = {
-                {.id = 1085, .distance = 28.557f},
-                {.id = 1051, .distance = 30.515f},
-                {.id = 1064, .distance = 32.605f},
-                {.id = 1066, .distance = 33.386f},
-                {.id = 1084, .distance = 36.707f},
-                {.id = 1086, .distance = 42.276f},
-                {.id = 1052, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 1066,
-            .neighbors = {
-                {.id = 1086, .distance = 29.283f},
-                {.id = 1052, .distance = 30.713f},
-                {.id = 1067, .distance = 32.395f},
-                {.id = 1065, .distance = 33.386f},
-                {.id = 1087, .distance = 35.383f},
-                {.id = 1051, .distance = 43.747f},
-                {.id = 1085, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 1067,
-            .neighbors = {
-                {.id = 1088, .distance = 30.492f},
-                {.id = 1066, .distance = 32.395f},
-                {.id = 1068, .distance = 32.492f},
-                {.id = 1052, .distance = 32.961f},
-                {.id = 1087, .distance = 33.774f},
-                {.id = 1053, .distance = 39.529f},
-                {.id = 1089, .distance = 46.947f}
-            }
-        },
-        {
-            .point_id = 1068,
-            .neighbors = {
-                {.id = 1053, .distance = 28.795f},
-                {.id = 1089, .distance = 28.796f},
-                {.id = 1069, .distance = 31.301f},
-                {.id = 1067, .distance = 32.492f},
-                {.id = 1090, .distance = 39.130f},
-                {.id = 1088, .distance = 39.658f},
-                {.id = 1054, .distance = 50.236f}
-            }
-        },
-        {
-            .point_id = 1069,
-            .neighbors = {
-                {.id = 1090, .distance = 30.076f},
-                {.id = 1068, .distance = 31.301f},
-                {.id = 1070, .distance = 33.324f},
-                {.id = 1054, .distance = 33.378f},
-                {.id = 1091, .distance = 33.386f},
-                {.id = 1053, .distance = 37.853f},
-                {.id = 1089, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 1070,
-            .neighbors = {
-                {.id = 1092, .distance = 29.653f},
-                {.id = 1054, .distance = 30.978f},
-                {.id = 1071, .distance = 32.852f},
-                {.id = 1069, .distance = 33.324f},
-                {.id = 1091, .distance = 35.446f},
-                {.id = 1055, .distance = 42.934f},
-                {.id = 1093, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 1071,
-            .neighbors = {
-                {.id = 1093, .distance = 28.776f},
-                {.id = 1055, .distance = 29.314f},
-                {.id = 1056, .distance = 32.088f},
-                {.id = 1070, .distance = 32.852f},
-                {.id = 1072, .distance = 36.954f},
-                {.id = 1092, .distance = 42.498f},
-                {.id = 1054, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 1072,
-            .neighbors = {
-                {.id = 1094, .distance = 23.617f},
-                {.id = 1093, .distance = 31.442f},
-                {.id = 1056, .distance = 31.964f},
-                {.id = 1073, .distance = 32.703f},
-                {.id = 1071, .distance = 36.954f},
-                {.id = 1141, .distance = 41.259f},
-                {.id = 1143, .distance = 45.103f}
-            }
-        },
-        {
-            .point_id = 1073,
-            .neighbors = {
-                {.id = 1056, .distance = 31.937f},
-                {.id = 1072, .distance = 32.703f},
-                {.id = 1074, .distance = 32.725f},
-                {.id = 1095, .distance = 36.068f},
-                {.id = 1057, .distance = 37.491f},
-                {.id = 1096, .distance = 39.068f},
-                {.id = 1094, .distance = 41.895f}
-            }
-        },
-        {
-            .point_id = 1074,
-            .neighbors = {
-                {.id = 1057, .distance = 29.419f},
-                {.id = 1075, .distance = 30.638f},
-                {.id = 1073, .distance = 32.725f},
-                {.id = 1096, .distance = 35.794f},
-                {.id = 1097, .distance = 36.665f},
-                {.id = 1058, .distance = 44.568f},
-                {.id = 1098, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 1075,
-            .neighbors = {
-                {.id = 1098, .distance = 24.191f},
-                {.id = 1058, .distance = 29.848f},
-                {.id = 1074, .distance = 30.638f},
-                {.id = 1076, .distance = 31.516f},
-                {.id = 1057, .distance = 41.947f},
-                {.id = 1099, .distance = 44.167f},
-                {.id = 1097, .distance = 44.460f}
-            }
-        },
-        {
-            .point_id = 1076,
-            .neighbors = {
-                {.id = 1103, .distance = 27.519f},
-                {.id = 1075, .distance = 31.516f},
-                {.id = 1077, .distance = 33.096f},
-                {.id = 1059, .distance = 33.457f},
-                {.id = 1058, .distance = 35.426f},
-                {.id = 1100, .distance = 35.506f},
-                {.id = 1098, .distance = 36.051f}
-            }
-        },
-        {
-            .point_id = 1077,
-            .neighbors = {
-                {.id = 1059, .distance = 30.775f},
-                {.id = 1078, .distance = 30.943f},
-                {.id = 1103, .distance = 31.347f},
-                {.id = 1076, .distance = 33.096f},
-                {.id = 1105, .distance = 37.393f},
-                {.id = 1060, .distance = 38.606f},
-                {.id = 1104, .distance = 45.102f}
-            }
-        },
-        {
-            .point_id = 1078,
-            .neighbors = {
-                {.id = 1060, .distance = 28.126f},
-                {.id = 1077, .distance = 30.943f},
-                {.id = 1079, .distance = 32.322f},
-                {.id = 1106, .distance = 33.115f},
-                {.id = 1105, .distance = 43.474f},
-                {.id = 1107, .distance = 44.048f},
-                {.id = 1059, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 1079,
-            .neighbors = {
-                {.id = 1109, .distance = 30.540f},
-                {.id = 1061, .distance = 30.745f},
-                {.id = 1078, .distance = 32.322f},
-                {.id = 1080, .distance = 32.441f},
-                {.id = 1107, .distance = 37.153f},
-                {.id = 1060, .distance = 40.686f},
-                {.id = 1108, .distance = 45.279f}
-            }
-        },
-        {
-            .point_id = 1080,
-            .neighbors = {
-                {.id = 1109, .distance = 27.373f},
-                {.id = 1081, .distance = 31.563f},
-                {.id = 1079, .distance = 32.441f},
-                {.id = 1061, .distance = 33.990f},
-                {.id = 1111, .distance = 35.618f},
-                {.id = 1062, .distance = 35.628f},
-                {.id = 1113, .distance = 36.566f}
-            }
-        },
-        {
-            .point_id = 1081,
-            .neighbors = {
-                {.id = 1113, .distance = 24.293f},
-                {.id = 1062, .distance = 30.088f},
-                {.id = 1080, .distance = 31.563f},
-                {.id = 1082, .distance = 31.793f},
-                {.id = 1063, .distance = 42.067f},
-                {.id = 1114, .distance = 43.775f},
-                {.id = 1115, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 1082,
-            .neighbors = {
-                {.id = 1063, .distance = 28.726f},
-                {.id = 1083, .distance = 31.427f},
-                {.id = 1081, .distance = 31.793f},
-                {.id = 1116, .distance = 35.922f},
-                {.id = 1115, .distance = 37.333f},
-                {.id = 1062, .distance = 44.864f},
-                {.id = 1113, .distance = 47.704f}
-            }
-        },
-        {
-            .point_id = 1083,
-            .neighbors = {
-                {.id = 1082, .distance = 31.427f},
-                {.id = 1064, .distance = 31.889f},
-                {.id = 1084, .distance = 32.342f},
-                {.id = 1117, .distance = 35.562f},
-                {.id = 1063, .distance = 37.444f},
-                {.id = 1116, .distance = 39.243f},
-                {.id = 1119, .distance = 41.982f}
-            }
-        },
-        {
-            .point_id = 1084,
-            .neighbors = {
-                {.id = 1119, .distance = 23.803f},
-                {.id = 1085, .distance = 31.693f},
-                {.id = 1083, .distance = 32.342f},
-                {.id = 1064, .distance = 32.458f},
-                {.id = 1065, .distance = 36.707f},
-                {.id = 1121, .distance = 41.333f},
-                {.id = 1118, .distance = 44.974f}
-            }
-        },
-        {
-            .point_id = 1085,
-            .neighbors = {
-                {.id = 1123, .distance = 24.410f},
-                {.id = 1065, .distance = 28.557f},
-                {.id = 1084, .distance = 31.693f},
-                {.id = 1086, .distance = 32.138f},
-                {.id = 1121, .distance = 38.124f},
-                {.id = 1119, .distance = 43.096f},
-                {.id = 1066, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 1086,
-            .neighbors = {
-                {.id = 1066, .distance = 29.283f},
-                {.id = 1087, .distance = 31.589f},
-                {.id = 1085, .distance = 32.138f},
-                {.id = 1125, .distance = 36.174f},
-                {.id = 1123, .distance = 36.927f},
-                {.id = 1065, .distance = 42.276f},
-                {.id = 1126, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 1087,
-            .neighbors = {
-                {.id = 1086, .distance = 31.589f},
-                {.id = 1088, .distance = 32.185f},
-                {.id = 1126, .distance = 33.528f},
-                {.id = 1067, .distance = 33.774f},
-                {.id = 1066, .distance = 35.383f},
-                {.id = 1127, .distance = 39.292f},
-                {.id = 1125, .distance = 48.151f}
-            }
-        },
-        {
-            .point_id = 1088,
-            .neighbors = {
-                {.id = 1129, .distance = 26.800f},
-                {.id = 1067, .distance = 30.492f},
-                {.id = 1089, .distance = 31.085f},
-                {.id = 1087, .distance = 32.185f},
-                {.id = 1068, .distance = 39.658f},
-                {.id = 1127, .distance = 40.843f},
-                {.id = 1128, .distance = 44.297f}
-            }
-        },
-        {
-            .point_id = 1089,
-            .neighbors = {
-                {.id = 1068, .distance = 28.796f},
-                {.id = 1088, .distance = 31.085f},
-                {.id = 1129, .distance = 31.165f},
-                {.id = 1090, .distance = 31.748f},
-                {.id = 1133, .distance = 32.025f},
-                {.id = 1131, .distance = 35.484f},
-                {.id = 1069, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 1090,
-            .neighbors = {
-                {.id = 1133, .distance = 26.974f},
-                {.id = 1069, .distance = 30.076f},
-                {.id = 1091, .distance = 31.574f},
-                {.id = 1089, .distance = 31.748f},
-                {.id = 1068, .distance = 39.130f},
-                {.id = 1135, .distance = 40.759f},
-                {.id = 1134, .distance = 44.255f}
-            }
-        },
-        {
-            .point_id = 1091,
-            .neighbors = {
-                {.id = 1090, .distance = 31.574f},
-                {.id = 1092, .distance = 32.495f},
-                {.id = 1069, .distance = 33.386f},
-                {.id = 1136, .distance = 34.006f},
-                {.id = 1070, .distance = 35.446f},
-                {.id = 1135, .distance = 40.058f},
-                {.id = 1137, .distance = 48.765f}
-            }
-        },
-        {
-            .point_id = 1092,
-            .neighbors = {
-                {.id = 1070, .distance = 29.653f},
-                {.id = 1093, .distance = 31.761f},
-                {.id = 1091, .distance = 32.495f},
-                {.id = 1137, .distance = 35.652f},
-                {.id = 1139, .distance = 35.973f},
-                {.id = 1071, .distance = 42.498f},
-                {.id = 1136, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 1093,
-            .neighbors = {
-                {.id = 1139, .distance = 24.656f},
-                {.id = 1071, .distance = 28.776f},
-                {.id = 1072, .distance = 31.442f},
-                {.id = 1092, .distance = 31.761f},
-                {.id = 1141, .distance = 38.273f},
-                {.id = 1094, .distance = 43.129f},
-                {.id = 1070, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 1094,
-            .neighbors = {
-                {.id = 1143, .distance = 22.863f},
-                {.id = 1072, .distance = 23.617f},
-                {.id = 1141, .distance = 27.856f},
-                {.id = 1142, .distance = 35.561f},
-                {.id = 1095, .distance = 37.917f},
-                {.id = 1073, .distance = 41.895f},
-                {.id = 1093, .distance = 43.129f}
-            }
-        },
-        {
-            .point_id = 1095,
-            .neighbors = {
-                {.id = 1143, .distance = 28.096f},
-                {.id = 1096, .distance = 29.153f},
-                {.id = 701, .distance = 29.303f},
-                {.id = 1073, .distance = 36.068f},
-                {.id = 1094, .distance = 37.917f},
-                {.id = 700, .distance = 40.708f},
-                {.id = 702, .distance = 41.405f}
-            }
-        },
-        {
-            .point_id = 1096,
-            .neighbors = {
-                {.id = 1097, .distance = 28.265f},
-                {.id = 1095, .distance = 29.153f},
-                {.id = 700, .distance = 29.697f},
-                {.id = 1074, .distance = 35.794f},
-                {.id = 1073, .distance = 39.068f},
-                {.id = 699, .distance = 40.854f},
-                {.id = 701, .distance = 41.887f}
-            }
-        },
-        {
-            .point_id = 1097,
-            .neighbors = {
-                {.id = 1096, .distance = 28.265f},
-                {.id = 1099, .distance = 28.989f},
-                {.id = 699, .distance = 29.349f},
-                {.id = 1074, .distance = 36.665f},
-                {.id = 1098, .distance = 38.712f},
-                {.id = 698, .distance = 40.741f},
-                {.id = 700, .distance = 41.218f}
-            }
-        },
-        {
-            .point_id = 1098,
-            .neighbors = {
-                {.id = 1099, .distance = 23.607f},
-                {.id = 1075, .distance = 24.191f},
-                {.id = 1100, .distance = 27.455f},
-                {.id = 1101, .distance = 35.536f},
-                {.id = 1076, .distance = 36.051f},
-                {.id = 1097, .distance = 38.712f},
-                {.id = 1074, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 1099,
-            .neighbors = {
-                {.id = 1098, .distance = 23.607f},
-                {.id = 1101, .distance = 28.500f},
-                {.id = 1097, .distance = 28.989f},
-                {.id = 698, .distance = 29.313f},
-                {.id = 1100, .distance = 38.998f},
-                {.id = 696, .distance = 40.245f},
-                {.id = 699, .distance = 41.506f}
-            }
-        },
-        {
-            .point_id = 1100,
-            .neighbors = {
-                {.id = 1101, .distance = 25.823f},
-                {.id = 1102, .distance = 26.007f},
-                {.id = 1103, .distance = 27.304f},
-                {.id = 1098, .distance = 27.455f},
-                {.id = 1076, .distance = 35.506f},
-                {.id = 1099, .distance = 38.998f},
-                {.id = 1104, .distance = 39.242f}
-            }
-        },
-        {
-            .point_id = 1101,
-            .neighbors = {
-                {.id = 1100, .distance = 25.823f},
-                {.id = 1099, .distance = 28.500f},
-                {.id = 696, .distance = 29.551f},
-                {.id = 1102, .distance = 30.900f},
-                {.id = 1098, .distance = 35.536f},
-                {.id = 698, .distance = 41.458f},
-                {.id = 694, .distance = 51.969f}
-            }
-        },
-        {
-            .point_id = 1102,
-            .neighbors = {
-                {.id = 1100, .distance = 26.007f},
-                {.id = 1244, .distance = 29.050f},
-                {.id = 1104, .distance = 29.614f},
-                {.id = 1101, .distance = 30.900f},
-                {.id = 1103, .distance = 35.963f},
-                {.id = 1242, .distance = 41.538f},
-                {.id = 1246, .distance = 51.839f}
-            }
-        },
-        {
-            .point_id = 1103,
-            .neighbors = {
-                {.id = 1104, .distance = 23.404f},
-                {.id = 1100, .distance = 27.304f},
-                {.id = 1076, .distance = 27.519f},
-                {.id = 1077, .distance = 31.347f},
-                {.id = 1102, .distance = 35.963f},
-                {.id = 1105, .distance = 38.924f},
-                {.id = 1098, .distance = 47.034f}
-            }
-        },
-        {
-            .point_id = 1104,
-            .neighbors = {
-                {.id = 1103, .distance = 23.404f},
-                {.id = 1105, .distance = 28.584f},
-                {.id = 1102, .distance = 29.614f},
-                {.id = 1242, .distance = 29.699f},
-                {.id = 1100, .distance = 39.242f},
-                {.id = 1241, .distance = 41.093f},
-                {.id = 1244, .distance = 41.569f}
-            }
-        },
-        {
-            .point_id = 1105,
-            .neighbors = {
-                {.id = 1106, .distance = 28.069f},
-                {.id = 1104, .distance = 28.584f},
-                {.id = 1241, .distance = 29.681f},
-                {.id = 1077, .distance = 37.393f},
-                {.id = 1103, .distance = 38.924f},
-                {.id = 1240, .distance = 41.139f},
-                {.id = 1242, .distance = 41.301f}
-            }
-        },
-        {
-            .point_id = 1106,
-            .neighbors = {
-                {.id = 1105, .distance = 28.069f},
-                {.id = 1107, .distance = 28.840f},
-                {.id = 1240, .distance = 29.791f},
-                {.id = 1078, .distance = 33.115f},
-                {.id = 1241, .distance = 41.276f},
-                {.id = 1239, .distance = 41.688f},
-                {.id = 1077, .distance = 48.228f}
-            }
-        },
-        {
-            .point_id = 1107,
-            .neighbors = {
-                {.id = 1106, .distance = 28.840f},
-                {.id = 1108, .distance = 29.098f},
-                {.id = 1239, .distance = 29.681f},
-                {.id = 1079, .distance = 37.153f},
-                {.id = 1109, .distance = 38.371f},
-                {.id = 1240, .distance = 41.088f},
-                {.id = 1238, .distance = 41.797f}
-            }
-        },
-        {
-            .point_id = 1108,
-            .neighbors = {
-                {.id = 1109, .distance = 23.468f},
-                {.id = 1110, .distance = 28.067f},
-                {.id = 1107, .distance = 29.098f},
-                {.id = 1238, .distance = 29.876f},
-                {.id = 1111, .distance = 37.859f},
-                {.id = 1236, .distance = 41.018f},
-                {.id = 1239, .distance = 41.259f}
-            }
-        },
-        {
-            .point_id = 1109,
-            .neighbors = {
-                {.id = 1108, .distance = 23.468f},
-                {.id = 1111, .distance = 26.995f},
-                {.id = 1080, .distance = 27.373f},
-                {.id = 1079, .distance = 30.540f},
-                {.id = 1110, .distance = 35.584f},
-                {.id = 1107, .distance = 38.371f},
-                {.id = 1113, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 1110,
-            .neighbors = {
-                {.id = 1111, .distance = 25.235f},
-                {.id = 1108, .distance = 28.067f},
-                {.id = 1236, .distance = 29.688f},
-                {.id = 1112, .distance = 31.314f},
-                {.id = 1109, .distance = 35.584f},
-                {.id = 1238, .distance = 40.900f},
-                {.id = 997, .distance = 51.969f}
-            }
-        },
-        {
-            .point_id = 1111,
-            .neighbors = {
-                {.id = 1110, .distance = 25.235f},
-                {.id = 1112, .distance = 25.959f},
-                {.id = 1109, .distance = 26.995f},
-                {.id = 1113, .distance = 28.280f},
-                {.id = 1080, .distance = 35.618f},
-                {.id = 1108, .distance = 37.859f},
-                {.id = 1114, .distance = 39.348f}
-            }
-        },
-        {
-            .point_id = 1112,
-            .neighbors = {
-                {.id = 1111, .distance = 25.959f},
-                {.id = 1114, .distance = 28.175f},
-                {.id = 997, .distance = 29.551f},
-                {.id = 1110, .distance = 31.314f},
-                {.id = 1113, .distance = 35.099f},
-                {.id = 995, .distance = 40.245f},
-                {.id = 1109, .distance = 52.245f}
-            }
-        },
-        {
-            .point_id = 1113,
-            .neighbors = {
-                {.id = 1114, .distance = 22.858f},
-                {.id = 1081, .distance = 24.293f},
-                {.id = 1111, .distance = 28.280f},
-                {.id = 1112, .distance = 35.099f},
-                {.id = 1080, .distance = 36.566f},
-                {.id = 1115, .distance = 37.718f},
-                {.id = 1109, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 1114,
-            .neighbors = {
-                {.id = 1113, .distance = 22.858f},
-                {.id = 1112, .distance = 28.175f},
-                {.id = 1115, .distance = 28.665f},
-                {.id = 995, .distance = 29.313f},
-                {.id = 1111, .distance = 39.348f},
-                {.id = 993, .distance = 40.741f},
-                {.id = 997, .distance = 41.458f}
-            }
-        },
-        {
-            .point_id = 1115,
-            .neighbors = {
-                {.id = 1114, .distance = 28.665f},
-                {.id = 1116, .distance = 28.744f},
-                {.id = 993, .distance = 29.349f},
-                {.id = 1082, .distance = 37.333f},
-                {.id = 1113, .distance = 37.718f},
-                {.id = 992, .distance = 40.854f},
-                {.id = 995, .distance = 41.506f}
-            }
-        },
-        {
-            .point_id = 1116,
-            .neighbors = {
-                {.id = 1117, .distance = 28.665f},
-                {.id = 1115, .distance = 28.744f},
-                {.id = 992, .distance = 29.697f},
-                {.id = 1082, .distance = 35.922f},
-                {.id = 1083, .distance = 39.243f},
-                {.id = 991, .distance = 40.708f},
-                {.id = 993, .distance = 41.218f}
-            }
-        },
-        {
-            .point_id = 1117,
-            .neighbors = {
-                {.id = 1116, .distance = 28.665f},
-                {.id = 1118, .distance = 28.989f},
-                {.id = 991, .distance = 29.303f},
-                {.id = 1083, .distance = 35.562f},
-                {.id = 1119, .distance = 37.946f},
-                {.id = 1039, .distance = 40.502f},
-                {.id = 992, .distance = 41.887f}
-            }
-        },
-        {
-            .point_id = 1118,
-            .neighbors = {
-                {.id = 1119, .distance = 22.522f},
-                {.id = 1117, .distance = 28.989f},
-                {.id = 1120, .distance = 28.989f},
-                {.id = 1039, .distance = 29.448f},
-                {.id = 1121, .distance = 38.748f},
-                {.id = 1038, .distance = 40.870f},
-                {.id = 991, .distance = 41.405f}
-            }
-        },
-        {
-            .point_id = 1119,
-            .neighbors = {
-                {.id = 1118, .distance = 22.522f},
-                {.id = 1084, .distance = 23.803f},
-                {.id = 1121, .distance = 27.573f},
-                {.id = 1120, .distance = 35.430f},
-                {.id = 1117, .distance = 37.946f},
-                {.id = 1083, .distance = 41.982f},
-                {.id = 1085, .distance = 43.096f}
-            }
-        },
-        {
-            .point_id = 1120,
-            .neighbors = {
-                {.id = 1121, .distance = 25.732f},
-                {.id = 1118, .distance = 28.989f},
-                {.id = 1038, .distance = 29.475f},
-                {.id = 1122, .distance = 30.699f},
-                {.id = 1119, .distance = 35.430f},
-                {.id = 1039, .distance = 42.128f},
-                {.id = 392, .distance = 49.900f}
-            }
-        },
-        {
-            .point_id = 1121,
-            .neighbors = {
-                {.id = 1122, .distance = 25.715f},
-                {.id = 1120, .distance = 25.732f},
-                {.id = 1123, .distance = 27.009f},
-                {.id = 1119, .distance = 27.573f},
-                {.id = 1085, .distance = 38.124f},
-                {.id = 1118, .distance = 38.748f},
-                {.id = 1124, .distance = 38.795f}
-            }
-        },
-        {
-            .point_id = 1122,
-            .neighbors = {
-                {.id = 1121, .distance = 25.715f},
-                {.id = 392, .distance = 27.473f},
-                {.id = 1124, .distance = 28.587f},
-                {.id = 1120, .distance = 30.699f},
-                {.id = 1123, .distance = 35.180f},
-                {.id = 390, .distance = 39.435f},
-                {.id = 394, .distance = 50.891f}
-            }
-        },
-        {
-            .point_id = 1123,
-            .neighbors = {
-                {.id = 1124, .distance = 23.318f},
-                {.id = 1085, .distance = 24.410f},
-                {.id = 1121, .distance = 27.009f},
-                {.id = 1122, .distance = 35.180f},
-                {.id = 1086, .distance = 36.927f},
-                {.id = 1125, .distance = 38.625f},
-                {.id = 1119, .distance = 47.229f}
-            }
-        },
-        {
-            .point_id = 1124,
-            .neighbors = {
-                {.id = 1123, .distance = 23.318f},
-                {.id = 390, .distance = 27.583f},
-                {.id = 1122, .distance = 28.587f},
-                {.id = 1125, .distance = 28.648f},
-                {.id = 1121, .distance = 38.795f},
-                {.id = 389, .distance = 39.805f},
-                {.id = 392, .distance = 40.223f}
-            }
-        },
-        {
-            .point_id = 1125,
-            .neighbors = {
-                {.id = 389, .distance = 27.628f},
-                {.id = 1124, .distance = 28.648f},
-                {.id = 1126, .distance = 28.678f},
-                {.id = 1086, .distance = 36.174f},
-                {.id = 1123, .distance = 38.625f},
-                {.id = 388, .distance = 39.752f},
-                {.id = 390, .distance = 40.007f}
-            }
-        },
-        {
-            .point_id = 1126,
-            .neighbors = {
-                {.id = 388, .distance = 27.498f},
-                {.id = 1127, .distance = 28.019f},
-                {.id = 1125, .distance = 28.678f},
-                {.id = 1087, .distance = 33.528f},
-                {.id = 389, .distance = 39.790f},
-                {.id = 387, .distance = 39.855f},
-                {.id = 1086, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 1127,
-            .neighbors = {
-                {.id = 387, .distance = 27.613f},
-                {.id = 1126, .distance = 28.019f},
-                {.id = 1128, .distance = 29.666f},
-                {.id = 1129, .distance = 39.143f},
-                {.id = 388, .distance = 39.255f},
-                {.id = 1087, .distance = 39.292f},
-                {.id = 386, .distance = 40.252f}
-            }
-        },
-        {
-            .point_id = 1128,
-            .neighbors = {
-                {.id = 1129, .distance = 23.574f},
-                {.id = 386, .distance = 27.436f},
-                {.id = 1130, .distance = 28.796f},
-                {.id = 1127, .distance = 29.666f},
-                {.id = 1131, .distance = 38.536f},
-                {.id = 384, .distance = 39.154f},
-                {.id = 387, .distance = 39.947f}
-            }
-        },
-        {
-            .point_id = 1129,
-            .neighbors = {
-                {.id = 1128, .distance = 23.574f},
-                {.id = 1088, .distance = 26.800f},
-                {.id = 1131, .distance = 27.295f},
-                {.id = 1089, .distance = 31.165f},
-                {.id = 1130, .distance = 35.726f},
-                {.id = 1127, .distance = 39.143f},
-                {.id = 1133, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 1130,
-            .neighbors = {
-                {.id = 1131, .distance = 25.236f},
-                {.id = 384, .distance = 27.690f},
-                {.id = 1128, .distance = 28.796f},
-                {.id = 1132, .distance = 30.642f},
-                {.id = 1129, .distance = 35.726f},
-                {.id = 386, .distance = 40.114f},
-                {.id = 382, .distance = 50.621f}
-            }
-        },
-        {
-            .point_id = 1131,
-            .neighbors = {
-                {.id = 1130, .distance = 25.236f},
-                {.id = 1132, .distance = 25.701f},
-                {.id = 1129, .distance = 27.295f},
-                {.id = 1133, .distance = 27.601f},
-                {.id = 1089, .distance = 35.484f},
-                {.id = 1128, .distance = 38.536f},
-                {.id = 1134, .distance = 38.536f}
-            }
-        },
-        {
-            .point_id = 1132,
-            .neighbors = {
-                {.id = 1131, .distance = 25.701f},
-                {.id = 1134, .distance = 28.171f},
-                {.id = 506, .distance = 28.551f},
-                {.id = 1130, .distance = 30.642f},
-                {.id = 1133, .distance = 35.416f},
-                {.id = 504, .distance = 41.429f},
-                {.id = 508, .distance = 50.454f}
-            }
-        },
-        {
-            .point_id = 1133,
-            .neighbors = {
-                {.id = 1134, .distance = 23.046f},
-                {.id = 1090, .distance = 26.974f},
-                {.id = 1131, .distance = 27.601f},
-                {.id = 1089, .distance = 32.025f},
-                {.id = 1132, .distance = 35.416f},
-                {.id = 1135, .distance = 38.124f},
-                {.id = 1129, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 1134,
-            .neighbors = {
-                {.id = 1133, .distance = 23.046f},
-                {.id = 1132, .distance = 28.171f},
-                {.id = 504, .distance = 28.586f},
-                {.id = 1135, .distance = 28.796f},
-                {.id = 1131, .distance = 38.536f},
-                {.id = 506, .distance = 39.222f},
-                {.id = 503, .distance = 42.712f}
-            }
-        },
-        {
-            .point_id = 1135,
-            .neighbors = {
-                {.id = 503, .distance = 28.538f},
-                {.id = 1136, .distance = 28.739f},
-                {.id = 1134, .distance = 28.796f},
-                {.id = 1133, .distance = 38.124f},
-                {.id = 504, .distance = 38.933f},
-                {.id = 1091, .distance = 40.058f},
-                {.id = 1090, .distance = 40.759f}
-            }
-        },
-        {
-            .point_id = 1136,
-            .neighbors = {
-                {.id = 502, .distance = 28.593f},
-                {.id = 1135, .distance = 28.739f},
-                {.id = 1137, .distance = 28.996f},
-                {.id = 1091, .distance = 34.006f},
-                {.id = 503, .distance = 38.440f},
-                {.id = 501, .distance = 42.065f},
-                {.id = 1092, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 1137,
-            .neighbors = {
-                {.id = 1138, .distance = 28.539f},
-                {.id = 501, .distance = 28.720f},
-                {.id = 1136, .distance = 28.996f},
-                {.id = 1092, .distance = 35.652f},
-                {.id = 1139, .distance = 38.072f},
-                {.id = 502, .distance = 39.193f},
-                {.id = 500, .distance = 41.888f}
-            }
-        },
-        {
-            .point_id = 1138,
-            .neighbors = {
-                {.id = 1139, .distance = 23.229f},
-                {.id = 500, .distance = 28.526f},
-                {.id = 1137, .distance = 28.539f},
-                {.id = 1140, .distance = 29.175f},
-                {.id = 1141, .distance = 38.795f},
-                {.id = 501, .distance = 38.975f},
-                {.id = 498, .distance = 41.739f}
-            }
-        },
-        {
-            .point_id = 1139,
-            .neighbors = {
-                {.id = 1138, .distance = 23.229f},
-                {.id = 1093, .distance = 24.656f},
-                {.id = 1141, .distance = 27.373f},
-                {.id = 1092, .distance = 35.973f},
-                {.id = 1140, .distance = 36.131f},
-                {.id = 1137, .distance = 38.072f},
-                {.id = 1094, .distance = 47.750f}
-            }
-        },
-        {
-            .point_id = 1140,
-            .neighbors = {
-                {.id = 1141, .distance = 26.133f},
-                {.id = 498, .distance = 27.990f},
-                {.id = 1138, .distance = 29.175f},
-                {.id = 1142, .distance = 30.723f},
-                {.id = 1139, .distance = 36.131f},
-                {.id = 500, .distance = 39.023f},
-                {.id = 496, .distance = 51.341f}
-            }
-        },
-        {
-            .point_id = 1141,
-            .neighbors = {
-                {.id = 1142, .distance = 25.813f},
-                {.id = 1140, .distance = 26.133f},
-                {.id = 1139, .distance = 27.373f},
-                {.id = 1094, .distance = 27.856f},
-                {.id = 1093, .distance = 38.273f},
-                {.id = 1138, .distance = 38.795f},
-                {.id = 1143, .distance = 39.458f}
-            }
-        },
-        {
-            .point_id = 1142,
-            .neighbors = {
-                {.id = 1141, .distance = 25.813f},
-                {.id = 704, .distance = 29.475f},
-                {.id = 1143, .distance = 29.479f},
-                {.id = 1140, .distance = 30.723f},
-                {.id = 1094, .distance = 35.561f},
-                {.id = 702, .distance = 40.870f},
-                {.id = 498, .distance = 50.403f}
-            }
-        },
-        {
-            .point_id = 1143,
-            .neighbors = {
-                {.id = 1094, .distance = 22.863f},
-                {.id = 1095, .distance = 28.096f},
-                {.id = 702, .distance = 29.448f},
-                {.id = 1142, .distance = 29.479f},
-                {.id = 1141, .distance = 39.458f},
-                {.id = 701, .distance = 40.502f},
-                {.id = 704, .distance = 42.128f}
-            }
-        },
-        {
-            .point_id = 1144,
-            .neighbors = {
-                {.id = 1145, .distance = 25.256f},
-                {.id = 1147, .distance = 25.653f},
-                {.id = 1146, .distance = 25.660f},
-                {.id = 1149, .distance = 26.237f},
-                {.id = 1148, .distance = 26.780f},
-                {.id = 1151, .distance = 53.251f},
-                {.id = 1155, .distance = 53.584f}
-            }
-        },
-        {
-            .point_id = 1145,
-            .neighbors = {
-                {.id = 1144, .distance = 25.256f},
-                {.id = 1151, .distance = 27.996f},
-                {.id = 1149, .distance = 30.406f},
-                {.id = 1146, .distance = 30.746f},
-                {.id = 1152, .distance = 36.902f},
-                {.id = 1150, .distance = 36.902f},
-                {.id = 1147, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 1146,
-            .neighbors = {
-                {.id = 1144, .distance = 25.660f},
-                {.id = 1153, .distance = 28.138f},
-                {.id = 1147, .distance = 30.016f},
-                {.id = 1145, .distance = 30.746f},
-                {.id = 1154, .distance = 35.779f},
-                {.id = 1152, .distance = 37.730f},
-                {.id = 1148, .distance = 49.623f}
-            }
-        },
-        {
-            .point_id = 1147,
-            .neighbors = {
-                {.id = 1144, .distance = 25.653f},
-                {.id = 1155, .distance = 27.950f},
-                {.id = 1146, .distance = 30.016f},
-                {.id = 1148, .distance = 30.334f},
-                {.id = 1156, .distance = 36.663f},
-                {.id = 1154, .distance = 36.917f},
-                {.id = 1145, .distance = 48.670f}
-            }
-        },
-        {
-            .point_id = 1148,
-            .neighbors = {
-                {.id = 1144, .distance = 26.780f},
-                {.id = 1157, .distance = 28.148f},
-                {.id = 1147, .distance = 30.334f},
-                {.id = 1149, .distance = 30.829f},
-                {.id = 1156, .distance = 36.041f},
-                {.id = 1158, .distance = 36.581f},
-                {.id = 1145, .distance = 49.415f}
-            }
-        },
-        {
-            .point_id = 1149,
-            .neighbors = {
-                {.id = 1144, .distance = 26.237f},
-                {.id = 1159, .distance = 28.784f},
-                {.id = 1145, .distance = 30.406f},
-                {.id = 1148, .distance = 30.829f},
-                {.id = 1150, .distance = 36.136f},
-                {.id = 1158, .distance = 36.663f},
-                {.id = 1147, .distance = 49.028f}
-            }
-        },
-        {
-            .point_id = 1150,
-            .neighbors = {
-                {.id = 1161, .distance = 29.943f},
-                {.id = 1159, .distance = 32.709f},
-                {.id = 1151, .distance = 33.241f},
-                {.id = 1160, .distance = 35.999f},
-                {.id = 1149, .distance = 36.136f},
-                {.id = 1145, .distance = 36.902f},
-                {.id = 1162, .distance = 43.146f}
-            }
-        },
-        {
-            .point_id = 1151,
-            .neighbors = {
-                {.id = 1145, .distance = 27.996f},
-                {.id = 1162, .distance = 31.091f},
-                {.id = 1150, .distance = 33.241f},
-                {.id = 1152, .distance = 33.489f},
-                {.id = 1163, .distance = 33.997f},
-                {.id = 1161, .distance = 46.465f},
-                {.id = 1164, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 1152,
-            .neighbors = {
-                {.id = 1164, .distance = 28.795f},
-                {.id = 1151, .distance = 33.489f},
-                {.id = 1153, .distance = 34.526f},
-                {.id = 1145, .distance = 36.902f},
-                {.id = 1146, .distance = 37.730f},
-                {.id = 1163, .distance = 39.001f},
-                {.id = 1165, .distance = 39.043f}
-            }
-        },
-        {
-            .point_id = 1153,
-            .neighbors = {
-                {.id = 1146, .distance = 28.138f},
-                {.id = 1166, .distance = 30.119f},
-                {.id = 1154, .distance = 32.862f},
-                {.id = 1165, .distance = 33.326f},
-                {.id = 1152, .distance = 34.526f},
-                {.id = 1167, .distance = 46.032f},
-                {.id = 1164, .distance = 51.953f}
-            }
-        },
-        {
-            .point_id = 1154,
-            .neighbors = {
-                {.id = 1167, .distance = 29.271f},
-                {.id = 1153, .distance = 32.862f},
-                {.id = 1155, .distance = 32.910f},
-                {.id = 1168, .distance = 35.475f},
-                {.id = 1146, .distance = 35.779f},
-                {.id = 1147, .distance = 36.917f},
-                {.id = 1166, .distance = 42.036f}
-            }
-        },
-        {
-            .point_id = 1155,
-            .neighbors = {
-                {.id = 1147, .distance = 27.950f},
-                {.id = 1169, .distance = 30.515f},
-                {.id = 1154, .distance = 32.910f},
-                {.id = 1156, .distance = 34.288f},
-                {.id = 1168, .distance = 35.680f},
-                {.id = 1170, .distance = 43.747f},
-                {.id = 1146, .distance = 50.881f}
-            }
-        },
-        {
-            .point_id = 1156,
-            .neighbors = {
-                {.id = 1170, .distance = 30.713f},
-                {.id = 1171, .distance = 32.961f},
-                {.id = 1155, .distance = 34.288f},
-                {.id = 1157, .distance = 34.333f},
-                {.id = 1148, .distance = 36.041f},
-                {.id = 1147, .distance = 36.663f},
-                {.id = 1169, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 1157,
-            .neighbors = {
-                {.id = 1148, .distance = 28.148f},
-                {.id = 1172, .distance = 28.795f},
-                {.id = 1158, .distance = 32.474f},
-                {.id = 1156, .distance = 34.333f},
-                {.id = 1173, .distance = 37.853f},
-                {.id = 1171, .distance = 39.529f},
-                {.id = 1149, .distance = 52.029f}
-            }
-        },
-        {
-            .point_id = 1158,
-            .neighbors = {
-                {.id = 1174, .distance = 30.978f},
-                {.id = 1157, .distance = 32.474f},
-                {.id = 1173, .distance = 33.378f},
-                {.id = 1159, .distance = 34.135f},
-                {.id = 1148, .distance = 36.581f},
-                {.id = 1149, .distance = 36.663f},
-                {.id = 1175, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 1159,
-            .neighbors = {
-                {.id = 1149, .distance = 28.784f},
-                {.id = 1175, .distance = 29.314f},
-                {.id = 1150, .distance = 32.709f},
-                {.id = 1158, .distance = 34.135f},
-                {.id = 1160, .distance = 35.428f},
-                {.id = 1174, .distance = 42.934f},
-                {.id = 1145, .distance = 52.730f}
-            }
-        },
-        {
-            .point_id = 1160,
-            .neighbors = {
-                {.id = 1177, .distance = 31.937f},
-                {.id = 1176, .distance = 31.964f},
-                {.id = 1175, .distance = 32.088f},
-                {.id = 1161, .distance = 32.704f},
-                {.id = 1159, .distance = 35.428f},
-                {.id = 1150, .distance = 35.999f},
-                {.id = 1197, .distance = 49.921f}
-            }
-        },
-        {
-            .point_id = 1161,
-            .neighbors = {
-                {.id = 1178, .distance = 29.419f},
-                {.id = 1150, .distance = 29.943f},
-                {.id = 1162, .distance = 32.468f},
-                {.id = 1160, .distance = 32.704f},
-                {.id = 1177, .distance = 37.491f},
-                {.id = 1179, .distance = 41.947f},
-                {.id = 1151, .distance = 46.465f}
-            }
-        },
-        {
-            .point_id = 1162,
-            .neighbors = {
-                {.id = 1179, .distance = 29.848f},
-                {.id = 1151, .distance = 31.091f},
-                {.id = 1163, .distance = 31.917f},
-                {.id = 1161, .distance = 32.468f},
-                {.id = 1180, .distance = 35.426f},
-                {.id = 1150, .distance = 43.146f},
-                {.id = 1178, .distance = 44.568f}
-            }
-        },
-        {
-            .point_id = 1163,
-            .neighbors = {
-                {.id = 1181, .distance = 30.775f},
-                {.id = 1162, .distance = 31.917f},
-                {.id = 1164, .distance = 32.089f},
-                {.id = 1180, .distance = 33.457f},
-                {.id = 1151, .distance = 33.997f},
-                {.id = 1152, .distance = 39.001f},
-                {.id = 1182, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 1164,
-            .neighbors = {
-                {.id = 1182, .distance = 28.126f},
-                {.id = 1152, .distance = 28.795f},
-                {.id = 1163, .distance = 32.089f},
-                {.id = 1165, .distance = 33.350f},
-                {.id = 1181, .distance = 38.606f},
-                {.id = 1183, .distance = 40.686f},
-                {.id = 1151, .distance = 50.872f}
-            }
-        },
-        {
-            .point_id = 1165,
-            .neighbors = {
-                {.id = 1183, .distance = 30.745f},
-                {.id = 1166, .distance = 32.585f},
-                {.id = 1153, .distance = 33.326f},
-                {.id = 1164, .distance = 33.350f},
-                {.id = 1184, .distance = 33.990f},
-                {.id = 1152, .distance = 39.043f},
-                {.id = 1182, .distance = 47.230f}
-            }
-        },
-        {
-            .point_id = 1166,
-            .neighbors = {
-                {.id = 1185, .distance = 30.088f},
-                {.id = 1153, .distance = 30.119f},
-                {.id = 1167, .distance = 32.298f},
-                {.id = 1165, .distance = 32.585f},
-                {.id = 1184, .distance = 35.628f},
-                {.id = 1154, .distance = 42.036f},
-                {.id = 1186, .distance = 44.864f}
-            }
-        },
-        {
-            .point_id = 1167,
-            .neighbors = {
-                {.id = 1186, .distance = 28.726f},
-                {.id = 1154, .distance = 29.271f},
-                {.id = 1168, .distance = 31.916f},
-                {.id = 1166, .distance = 32.298f},
-                {.id = 1187, .distance = 37.444f},
-                {.id = 1185, .distance = 42.067f},
-                {.id = 1153, .distance = 46.032f}
-            }
-        },
-        {
-            .point_id = 1168,
-            .neighbors = {
-                {.id = 1187, .distance = 31.889f},
-                {.id = 1167, .distance = 31.916f},
-                {.id = 1188, .distance = 32.458f},
-                {.id = 1169, .distance = 32.605f},
-                {.id = 1154, .distance = 35.475f},
-                {.id = 1155, .distance = 35.680f},
-                {.id = 1186, .distance = 49.358f}
-            }
-        },
-        {
-            .point_id = 1169,
-            .neighbors = {
-                {.id = 1189, .distance = 28.557f},
-                {.id = 1155, .distance = 30.515f},
-                {.id = 1168, .distance = 32.605f},
-                {.id = 1170, .distance = 33.386f},
-                {.id = 1188, .distance = 36.707f},
-                {.id = 1190, .distance = 42.276f},
-                {.id = 1156, .distance = 47.436f}
-            }
-        },
-        {
-            .point_id = 1170,
-            .neighbors = {
-                {.id = 1190, .distance = 29.283f},
-                {.id = 1156, .distance = 30.713f},
-                {.id = 1171, .distance = 32.395f},
-                {.id = 1169, .distance = 33.386f},
-                {.id = 1191, .distance = 35.383f},
-                {.id = 1155, .distance = 43.747f},
-                {.id = 1189, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 1171,
-            .neighbors = {
-                {.id = 1192, .distance = 30.492f},
-                {.id = 1170, .distance = 32.395f},
-                {.id = 1172, .distance = 32.492f},
-                {.id = 1156, .distance = 32.961f},
-                {.id = 1191, .distance = 33.774f},
-                {.id = 1157, .distance = 39.529f},
-                {.id = 1193, .distance = 46.947f}
-            }
-        },
-        {
-            .point_id = 1172,
-            .neighbors = {
-                {.id = 1157, .distance = 28.795f},
-                {.id = 1193, .distance = 28.796f},
-                {.id = 1173, .distance = 31.301f},
-                {.id = 1171, .distance = 32.492f},
-                {.id = 1194, .distance = 39.130f},
-                {.id = 1192, .distance = 39.658f},
-                {.id = 1158, .distance = 50.236f}
-            }
-        },
-        {
-            .point_id = 1173,
-            .neighbors = {
-                {.id = 1194, .distance = 30.076f},
-                {.id = 1172, .distance = 31.301f},
-                {.id = 1174, .distance = 33.324f},
-                {.id = 1158, .distance = 33.378f},
-                {.id = 1195, .distance = 33.386f},
-                {.id = 1157, .distance = 37.853f},
-                {.id = 1193, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 1174,
-            .neighbors = {
-                {.id = 1196, .distance = 29.653f},
-                {.id = 1158, .distance = 30.978f},
-                {.id = 1175, .distance = 32.852f},
-                {.id = 1173, .distance = 33.324f},
-                {.id = 1195, .distance = 35.446f},
-                {.id = 1159, .distance = 42.934f},
-                {.id = 1197, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 1175,
-            .neighbors = {
-                {.id = 1197, .distance = 28.776f},
-                {.id = 1159, .distance = 29.314f},
-                {.id = 1160, .distance = 32.088f},
-                {.id = 1174, .distance = 32.852f},
-                {.id = 1176, .distance = 36.954f},
-                {.id = 1196, .distance = 42.498f},
-                {.id = 1158, .distance = 47.075f}
-            }
-        },
-        {
-            .point_id = 1176,
-            .neighbors = {
-                {.id = 1198, .distance = 23.617f},
-                {.id = 1197, .distance = 31.442f},
-                {.id = 1160, .distance = 31.964f},
-                {.id = 1177, .distance = 32.703f},
-                {.id = 1175, .distance = 36.954f},
-                {.id = 1245, .distance = 41.259f},
-                {.id = 1247, .distance = 45.103f}
-            }
-        },
-        {
-            .point_id = 1177,
-            .neighbors = {
-                {.id = 1160, .distance = 31.937f},
-                {.id = 1176, .distance = 32.703f},
-                {.id = 1178, .distance = 32.725f},
-                {.id = 1199, .distance = 36.068f},
-                {.id = 1161, .distance = 37.491f},
-                {.id = 1200, .distance = 39.068f},
-                {.id = 1198, .distance = 41.895f}
-            }
-        },
-        {
-            .point_id = 1178,
-            .neighbors = {
-                {.id = 1161, .distance = 29.419f},
-                {.id = 1179, .distance = 30.638f},
-                {.id = 1177, .distance = 32.725f},
-                {.id = 1200, .distance = 35.794f},
-                {.id = 1201, .distance = 36.665f},
-                {.id = 1162, .distance = 44.568f},
-                {.id = 1202, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 1179,
-            .neighbors = {
-                {.id = 1202, .distance = 24.191f},
-                {.id = 1162, .distance = 29.848f},
-                {.id = 1178, .distance = 30.638f},
-                {.id = 1180, .distance = 31.516f},
-                {.id = 1161, .distance = 41.947f},
-                {.id = 1203, .distance = 44.167f},
-                {.id = 1201, .distance = 44.460f}
-            }
-        },
-        {
-            .point_id = 1180,
-            .neighbors = {
-                {.id = 1207, .distance = 27.519f},
-                {.id = 1179, .distance = 31.516f},
-                {.id = 1181, .distance = 33.096f},
-                {.id = 1163, .distance = 33.457f},
-                {.id = 1162, .distance = 35.426f},
-                {.id = 1204, .distance = 35.506f},
-                {.id = 1202, .distance = 36.051f}
-            }
-        },
-        {
-            .point_id = 1181,
-            .neighbors = {
-                {.id = 1163, .distance = 30.775f},
-                {.id = 1182, .distance = 30.943f},
-                {.id = 1207, .distance = 31.347f},
-                {.id = 1180, .distance = 33.096f},
-                {.id = 1209, .distance = 37.393f},
-                {.id = 1164, .distance = 38.606f},
-                {.id = 1208, .distance = 45.102f}
-            }
-        },
-        {
-            .point_id = 1182,
-            .neighbors = {
-                {.id = 1164, .distance = 28.126f},
-                {.id = 1181, .distance = 30.943f},
-                {.id = 1183, .distance = 32.322f},
-                {.id = 1210, .distance = 33.115f},
-                {.id = 1209, .distance = 43.474f},
-                {.id = 1211, .distance = 44.048f},
-                {.id = 1163, .distance = 47.195f}
-            }
-        },
-        {
-            .point_id = 1183,
-            .neighbors = {
-                {.id = 1213, .distance = 30.540f},
-                {.id = 1165, .distance = 30.745f},
-                {.id = 1182, .distance = 32.322f},
-                {.id = 1184, .distance = 32.441f},
-                {.id = 1211, .distance = 37.153f},
-                {.id = 1164, .distance = 40.686f},
-                {.id = 1212, .distance = 45.279f}
-            }
-        },
-        {
-            .point_id = 1184,
-            .neighbors = {
-                {.id = 1213, .distance = 27.373f},
-                {.id = 1185, .distance = 31.563f},
-                {.id = 1183, .distance = 32.441f},
-                {.id = 1165, .distance = 33.990f},
-                {.id = 1215, .distance = 35.618f},
-                {.id = 1166, .distance = 35.628f},
-                {.id = 1217, .distance = 36.566f}
-            }
-        },
-        {
-            .point_id = 1185,
-            .neighbors = {
-                {.id = 1217, .distance = 24.293f},
-                {.id = 1166, .distance = 30.088f},
-                {.id = 1184, .distance = 31.563f},
-                {.id = 1186, .distance = 31.793f},
-                {.id = 1167, .distance = 42.067f},
-                {.id = 1218, .distance = 43.775f},
-                {.id = 1219, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 1186,
-            .neighbors = {
-                {.id = 1167, .distance = 28.726f},
-                {.id = 1187, .distance = 31.427f},
-                {.id = 1185, .distance = 31.793f},
-                {.id = 1220, .distance = 35.922f},
-                {.id = 1219, .distance = 37.333f},
-                {.id = 1166, .distance = 44.864f},
-                {.id = 1217, .distance = 47.704f}
-            }
-        },
-        {
-            .point_id = 1187,
-            .neighbors = {
-                {.id = 1186, .distance = 31.427f},
-                {.id = 1168, .distance = 31.889f},
-                {.id = 1188, .distance = 32.342f},
-                {.id = 1221, .distance = 35.562f},
-                {.id = 1167, .distance = 37.444f},
-                {.id = 1220, .distance = 39.243f},
-                {.id = 1223, .distance = 41.982f}
-            }
-        },
-        {
-            .point_id = 1188,
-            .neighbors = {
-                {.id = 1223, .distance = 23.803f},
-                {.id = 1189, .distance = 31.693f},
-                {.id = 1187, .distance = 32.342f},
-                {.id = 1168, .distance = 32.458f},
-                {.id = 1169, .distance = 36.707f},
-                {.id = 1225, .distance = 41.333f},
-                {.id = 1222, .distance = 44.974f}
-            }
-        },
-        {
-            .point_id = 1189,
-            .neighbors = {
-                {.id = 1227, .distance = 24.410f},
-                {.id = 1169, .distance = 28.557f},
-                {.id = 1188, .distance = 31.693f},
-                {.id = 1190, .distance = 32.138f},
-                {.id = 1225, .distance = 38.124f},
-                {.id = 1223, .distance = 43.096f},
-                {.id = 1170, .distance = 45.069f}
-            }
-        },
-        {
-            .point_id = 1190,
-            .neighbors = {
-                {.id = 1170, .distance = 29.283f},
-                {.id = 1191, .distance = 31.589f},
-                {.id = 1189, .distance = 32.138f},
-                {.id = 1229, .distance = 36.174f},
-                {.id = 1227, .distance = 36.927f},
-                {.id = 1169, .distance = 42.276f},
-                {.id = 1230, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 1191,
-            .neighbors = {
-                {.id = 1190, .distance = 31.589f},
-                {.id = 1192, .distance = 32.185f},
-                {.id = 1230, .distance = 33.528f},
-                {.id = 1171, .distance = 33.774f},
-                {.id = 1170, .distance = 35.383f},
-                {.id = 1231, .distance = 39.292f},
-                {.id = 1229, .distance = 48.151f}
-            }
-        },
-        {
-            .point_id = 1192,
-            .neighbors = {
-                {.id = 1233, .distance = 26.800f},
-                {.id = 1171, .distance = 30.492f},
-                {.id = 1193, .distance = 31.085f},
-                {.id = 1191, .distance = 32.185f},
-                {.id = 1172, .distance = 39.658f},
-                {.id = 1231, .distance = 40.843f},
-                {.id = 1232, .distance = 44.297f}
-            }
-        },
-        {
-            .point_id = 1193,
-            .neighbors = {
-                {.id = 1172, .distance = 28.796f},
-                {.id = 1192, .distance = 31.085f},
-                {.id = 1233, .distance = 31.165f},
-                {.id = 1194, .distance = 31.748f},
-                {.id = 1237, .distance = 32.025f},
-                {.id = 1235, .distance = 35.484f},
-                {.id = 1173, .distance = 46.778f}
-            }
-        },
-        {
-            .point_id = 1194,
-            .neighbors = {
-                {.id = 1237, .distance = 26.974f},
-                {.id = 1173, .distance = 30.076f},
-                {.id = 1195, .distance = 31.574f},
-                {.id = 1193, .distance = 31.748f},
-                {.id = 1172, .distance = 39.130f},
-                {.id = 1239, .distance = 40.759f},
-                {.id = 1238, .distance = 44.255f}
-            }
-        },
-        {
-            .point_id = 1195,
-            .neighbors = {
-                {.id = 1194, .distance = 31.574f},
-                {.id = 1196, .distance = 32.495f},
-                {.id = 1173, .distance = 33.386f},
-                {.id = 1240, .distance = 34.006f},
-                {.id = 1174, .distance = 35.446f},
-                {.id = 1239, .distance = 40.058f},
-                {.id = 1241, .distance = 48.765f}
-            }
-        },
-        {
-            .point_id = 1196,
-            .neighbors = {
-                {.id = 1174, .distance = 29.653f},
-                {.id = 1197, .distance = 31.761f},
-                {.id = 1195, .distance = 32.495f},
-                {.id = 1241, .distance = 35.652f},
-                {.id = 1243, .distance = 35.973f},
-                {.id = 1175, .distance = 42.498f},
-                {.id = 1240, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 1197,
-            .neighbors = {
-                {.id = 1243, .distance = 24.656f},
-                {.id = 1175, .distance = 28.776f},
-                {.id = 1176, .distance = 31.442f},
-                {.id = 1196, .distance = 31.761f},
-                {.id = 1245, .distance = 38.273f},
-                {.id = 1198, .distance = 43.129f},
-                {.id = 1174, .distance = 44.581f}
-            }
-        },
-        {
-            .point_id = 1198,
-            .neighbors = {
-                {.id = 1247, .distance = 22.863f},
-                {.id = 1176, .distance = 23.617f},
-                {.id = 1245, .distance = 27.856f},
-                {.id = 1246, .distance = 35.561f},
-                {.id = 1199, .distance = 37.917f},
-                {.id = 1177, .distance = 41.895f},
-                {.id = 1197, .distance = 43.129f}
-            }
-        },
-        {
-            .point_id = 1199,
-            .neighbors = {
-                {.id = 1247, .distance = 28.096f},
-                {.id = 1200, .distance = 29.153f},
-                {.id = 691, .distance = 30.415f},
-                {.id = 1177, .distance = 36.068f},
-                {.id = 1198, .distance = 37.917f},
-                {.id = 690, .distance = 41.340f},
-                {.id = 692, .distance = 42.661f}
-            }
-        },
-        {
-            .point_id = 1200,
-            .neighbors = {
-                {.id = 1201, .distance = 28.265f},
-                {.id = 1199, .distance = 29.153f},
-                {.id = 690, .distance = 30.894f},
-                {.id = 1178, .distance = 35.794f},
-                {.id = 1177, .distance = 39.068f},
-                {.id = 689, .distance = 40.805f},
-                {.id = 691, .distance = 43.032f}
-            }
-        },
-        {
-            .point_id = 1201,
-            .neighbors = {
-                {.id = 1200, .distance = 28.265f},
-                {.id = 1203, .distance = 28.989f},
-                {.id = 689, .distance = 30.240f},
-                {.id = 1178, .distance = 36.665f},
-                {.id = 1202, .distance = 38.712f},
-                {.id = 688, .distance = 40.848f},
-                {.id = 690, .distance = 42.310f}
-            }
-        },
-        {
-            .point_id = 1202,
-            .neighbors = {
-                {.id = 1203, .distance = 23.607f},
-                {.id = 1179, .distance = 24.191f},
-                {.id = 1204, .distance = 27.455f},
-                {.id = 1205, .distance = 35.536f},
-                {.id = 1180, .distance = 36.051f},
-                {.id = 1201, .distance = 38.712f},
-                {.id = 1178, .distance = 46.412f}
-            }
-        },
-        {
-            .point_id = 1203,
-            .neighbors = {
-                {.id = 1202, .distance = 23.607f},
-                {.id = 1205, .distance = 28.500f},
-                {.id = 1201, .distance = 28.989f},
-                {.id = 688, .distance = 30.527f},
-                {.id = 1204, .distance = 38.998f},
-                {.id = 686, .distance = 41.143f},
-                {.id = 689, .distance = 42.836f}
-            }
-        },
-        {
-            .point_id = 1204,
-            .neighbors = {
-                {.id = 1205, .distance = 25.823f},
-                {.id = 1206, .distance = 26.007f},
-                {.id = 1207, .distance = 27.304f},
-                {.id = 1202, .distance = 27.455f},
-                {.id = 1180, .distance = 35.506f},
-                {.id = 1203, .distance = 38.998f},
-                {.id = 1208, .distance = 39.242f}
-            }
-        },
-        {
-            .point_id = 1205,
-            .neighbors = {
-                {.id = 1204, .distance = 25.823f},
-                {.id = 1203, .distance = 28.500f},
-                {.id = 686, .distance = 30.452f},
-                {.id = 1206, .distance = 30.900f},
-                {.id = 1202, .distance = 35.536f},
-                {.id = 688, .distance = 43.063f},
-                {.id = 798, .distance = 51.891f}
-            }
-        },
-        {
-            .point_id = 1206,
-            .neighbors = {
-                {.id = 1204, .distance = 26.007f},
-                {.id = 1208, .distance = 29.614f},
-                {.id = 798, .distance = 29.836f},
-                {.id = 1205, .distance = 30.900f},
-                {.id = 1207, .distance = 35.963f},
-                {.id = 796, .distance = 39.709f},
-                {.id = 1202, .distance = 52.371f}
-            }
-        },
-        {
-            .point_id = 1207,
-            .neighbors = {
-                {.id = 1208, .distance = 23.404f},
-                {.id = 1204, .distance = 27.304f},
-                {.id = 1180, .distance = 27.519f},
-                {.id = 1181, .distance = 31.347f},
-                {.id = 1206, .distance = 35.963f},
-                {.id = 1209, .distance = 38.924f},
-                {.id = 1202, .distance = 47.034f}
-            }
-        },
-        {
-            .point_id = 1208,
-            .neighbors = {
-                {.id = 1207, .distance = 23.404f},
-                {.id = 1209, .distance = 28.584f},
-                {.id = 1206, .distance = 29.614f},
-                {.id = 796, .distance = 30.187f},
-                {.id = 1204, .distance = 39.242f},
-                {.id = 795, .distance = 39.536f},
-                {.id = 798, .distance = 43.439f}
-            }
-        },
-        {
-            .point_id = 1209,
-            .neighbors = {
-                {.id = 1210, .distance = 28.069f},
-                {.id = 1208, .distance = 28.584f},
-                {.id = 795, .distance = 29.916f},
-                {.id = 1181, .distance = 37.393f},
-                {.id = 1207, .distance = 38.924f},
-                {.id = 794, .distance = 39.539f},
-                {.id = 1182, .distance = 43.474f}
-            }
-        },
-        {
-            .point_id = 1210,
-            .neighbors = {
-                {.id = 1209, .distance = 28.069f},
-                {.id = 1211, .distance = 28.840f},
-                {.id = 794, .distance = 30.071f},
-                {.id = 1182, .distance = 33.115f},
-                {.id = 793, .distance = 39.539f},
-                {.id = 795, .distance = 43.068f},
-                {.id = 1181, .distance = 48.228f}
-            }
-        },
-        {
-            .point_id = 1211,
-            .neighbors = {
-                {.id = 1210, .distance = 28.840f},
-                {.id = 1212, .distance = 29.097f},
-                {.id = 793, .distance = 29.916f},
-                {.id = 1183, .distance = 37.153f},
-                {.id = 1213, .distance = 38.371f},
-                {.id = 792, .distance = 39.536f},
-                {.id = 794, .distance = 43.068f}
-            }
-        },
-        {
-            .point_id = 1212,
-            .neighbors = {
-                {.id = 1213, .distance = 23.468f},
-                {.id = 1214, .distance = 28.067f},
-                {.id = 1211, .distance = 29.097f},
-                {.id = 792, .distance = 30.187f},
-                {.id = 1215, .distance = 37.859f},
-                {.id = 790, .distance = 39.709f},
-                {.id = 793, .distance = 43.663f}
-            }
-        },
-        {
-            .point_id = 1213,
-            .neighbors = {
-                {.id = 1212, .distance = 23.468f},
-                {.id = 1215, .distance = 26.995f},
-                {.id = 1184, .distance = 27.373f},
-                {.id = 1183, .distance = 30.540f},
-                {.id = 1214, .distance = 35.584f},
-                {.id = 1211, .distance = 38.371f},
-                {.id = 1217, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 1214,
-            .neighbors = {
-                {.id = 1215, .distance = 25.235f},
-                {.id = 1212, .distance = 28.067f},
-                {.id = 790, .distance = 29.836f},
-                {.id = 1216, .distance = 31.314f},
-                {.id = 1213, .distance = 35.584f},
-                {.id = 792, .distance = 43.439f},
-                {.id = 902, .distance = 50.917f}
-            }
-        },
-        {
-            .point_id = 1215,
-            .neighbors = {
-                {.id = 1214, .distance = 25.235f},
-                {.id = 1216, .distance = 25.959f},
-                {.id = 1213, .distance = 26.995f},
-                {.id = 1217, .distance = 28.280f},
-                {.id = 1184, .distance = 35.618f},
-                {.id = 1212, .distance = 37.859f},
-                {.id = 1218, .distance = 39.348f}
-            }
-        },
-        {
-            .point_id = 1216,
-            .neighbors = {
-                {.id = 1215, .distance = 25.959f},
-                {.id = 1218, .distance = 28.175f},
-                {.id = 902, .distance = 28.941f},
-                {.id = 1214, .distance = 31.314f},
-                {.id = 1217, .distance = 35.099f},
-                {.id = 900, .distance = 38.797f},
-                {.id = 1213, .distance = 52.245f}
-            }
-        },
-        {
-            .point_id = 1217,
-            .neighbors = {
-                {.id = 1218, .distance = 22.858f},
-                {.id = 1185, .distance = 24.293f},
-                {.id = 1215, .distance = 28.280f},
-                {.id = 1216, .distance = 35.099f},
-                {.id = 1184, .distance = 36.566f},
-                {.id = 1219, .distance = 37.718f},
-                {.id = 1213, .distance = 47.445f}
-            }
-        },
-        {
-            .point_id = 1218,
-            .neighbors = {
-                {.id = 1217, .distance = 22.858f},
-                {.id = 1216, .distance = 28.175f},
-                {.id = 1219, .distance = 28.665f},
-                {.id = 900, .distance = 28.906f},
-                {.id = 1215, .distance = 39.348f},
-                {.id = 899, .distance = 39.389f},
-                {.id = 902, .distance = 41.827f}
-            }
-        },
-        {
-            .point_id = 1219,
-            .neighbors = {
-                {.id = 1218, .distance = 28.665f},
-                {.id = 1220, .distance = 28.744f},
-                {.id = 899, .distance = 28.966f},
-                {.id = 1186, .distance = 37.333f},
-                {.id = 1217, .distance = 37.718f},
-                {.id = 898, .distance = 39.574f},
-                {.id = 900, .distance = 42.324f}
-            }
-        },
-        {
-            .point_id = 1220,
-            .neighbors = {
-                {.id = 1221, .distance = 28.665f},
-                {.id = 1219, .distance = 28.744f},
-                {.id = 898, .distance = 28.846f},
-                {.id = 1186, .distance = 35.922f},
-                {.id = 897, .distance = 38.867f},
-                {.id = 1187, .distance = 39.243f},
-                {.id = 899, .distance = 41.988f}
-            }
-        },
-        {
-            .point_id = 1221,
-            .neighbors = {
-                {.id = 1220, .distance = 28.665f},
-                {.id = 897, .distance = 28.757f},
-                {.id = 1222, .distance = 28.989f},
-                {.id = 1187, .distance = 35.562f},
-                {.id = 1223, .distance = 37.946f},
-                {.id = 896, .distance = 39.043f},
-                {.id = 898, .distance = 41.923f}
-            }
-        },
-        {
-            .point_id = 1222,
-            .neighbors = {
-                {.id = 1223, .distance = 22.522f},
-                {.id = 896, .distance = 28.966f},
-                {.id = 1221, .distance = 28.989f},
-                {.id = 1224, .distance = 28.989f},
-                {.id = 1225, .distance = 38.748f},
-                {.id = 894, .distance = 39.268f},
-                {.id = 897, .distance = 42.413f}
-            }
-        },
-        {
-            .point_id = 1223,
-            .neighbors = {
-                {.id = 1222, .distance = 22.522f},
-                {.id = 1188, .distance = 23.803f},
-                {.id = 1225, .distance = 27.573f},
-                {.id = 1224, .distance = 35.430f},
-                {.id = 1221, .distance = 37.946f},
-                {.id = 1187, .distance = 41.982f},
-                {.id = 1189, .distance = 43.096f}
-            }
-        },
-        {
-            .point_id = 1224,
-            .neighbors = {
-                {.id = 1225, .distance = 25.732f},
-                {.id = 894, .distance = 28.644f},
-                {.id = 1222, .distance = 28.989f},
-                {.id = 1226, .distance = 30.699f},
-                {.id = 1223, .distance = 35.430f},
-                {.id = 896, .distance = 42.830f},
-                {.id = 893, .distance = 50.838f}
-            }
-        },
-        {
-            .point_id = 1225,
-            .neighbors = {
-                {.id = 1226, .distance = 25.715f},
-                {.id = 1224, .distance = 25.732f},
-                {.id = 1227, .distance = 27.009f},
-                {.id = 1223, .distance = 27.573f},
-                {.id = 1189, .distance = 38.124f},
-                {.id = 1222, .distance = 38.748f},
-                {.id = 1228, .distance = 38.795f}
-            }
-        },
-        {
-            .point_id = 1226,
-            .neighbors = {
-                {.id = 1225, .distance = 25.715f},
-                {.id = 1228, .distance = 28.587f},
-                {.id = 1006, .distance = 28.662f},
-                {.id = 1224, .distance = 30.699f},
-                {.id = 1227, .distance = 35.180f},
-                {.id = 1004, .distance = 39.796f},
-                {.id = 1007, .distance = 52.063f}
-            }
-        },
-        {
-            .point_id = 1227,
-            .neighbors = {
-                {.id = 1228, .distance = 23.318f},
-                {.id = 1189, .distance = 24.410f},
-                {.id = 1225, .distance = 27.009f},
-                {.id = 1226, .distance = 35.180f},
-                {.id = 1190, .distance = 36.927f},
-                {.id = 1229, .distance = 38.625f},
-                {.id = 1223, .distance = 47.229f}
-            }
-        },
-        {
-            .point_id = 1228,
-            .neighbors = {
-                {.id = 1227, .distance = 23.318f},
-                {.id = 1226, .distance = 28.587f},
-                {.id = 1229, .distance = 28.648f},
-                {.id = 1004, .distance = 28.742f},
-                {.id = 1225, .distance = 38.795f},
-                {.id = 1003, .distance = 40.200f},
-                {.id = 1006, .distance = 40.849f}
-            }
-        },
-        {
-            .point_id = 1229,
-            .neighbors = {
-                {.id = 1228, .distance = 28.648f},
-                {.id = 1230, .distance = 28.678f},
-                {.id = 1003, .distance = 28.729f},
-                {.id = 1190, .distance = 36.174f},
-                {.id = 1227, .distance = 38.625f},
-                {.id = 1002, .distance = 40.334f},
-                {.id = 1004, .distance = 41.262f}
-            }
-        },
-        {
-            .point_id = 1230,
-            .neighbors = {
-                {.id = 1231, .distance = 28.019f},
-                {.id = 1229, .distance = 28.678f},
-                {.id = 1002, .distance = 28.689f},
-                {.id = 1191, .distance = 33.528f},
-                {.id = 1001, .distance = 39.721f},
-                {.id = 1003, .distance = 40.936f},
-                {.id = 1190, .distance = 43.787f}
-            }
-        },
-        {
-            .point_id = 1231,
-            .neighbors = {
-                {.id = 1230, .distance = 28.019f},
-                {.id = 1001, .distance = 28.455f},
-                {.id = 1232, .distance = 29.666f},
-                {.id = 1233, .distance = 39.143f},
-                {.id = 1191, .distance = 39.292f},
-                {.id = 1000, .distance = 40.267f},
-                {.id = 1002, .distance = 40.347f}
-            }
-        },
-        {
-            .point_id = 1232,
-            .neighbors = {
-                {.id = 1233, .distance = 23.574f},
-                {.id = 1000, .distance = 28.635f},
-                {.id = 1234, .distance = 28.796f},
-                {.id = 1231, .distance = 29.666f},
-                {.id = 1235, .distance = 38.536f},
-                {.id = 998, .distance = 40.017f},
-                {.id = 1001, .distance = 41.281f}
-            }
-        },
-        {
-            .point_id = 1233,
-            .neighbors = {
-                {.id = 1232, .distance = 23.574f},
-                {.id = 1192, .distance = 26.800f},
-                {.id = 1235, .distance = 27.295f},
-                {.id = 1193, .distance = 31.165f},
-                {.id = 1234, .distance = 35.726f},
-                {.id = 1231, .distance = 39.143f},
-                {.id = 1237, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 1234,
-            .neighbors = {
-                {.id = 1235, .distance = 25.236f},
-                {.id = 998, .distance = 28.579f},
-                {.id = 1232, .distance = 28.796f},
-                {.id = 1236, .distance = 30.643f},
-                {.id = 1233, .distance = 35.726f},
-                {.id = 1000, .distance = 41.723f},
-                {.id = 997, .distance = 51.535f}
-            }
-        },
-        {
-            .point_id = 1235,
-            .neighbors = {
-                {.id = 1234, .distance = 25.236f},
-                {.id = 1236, .distance = 25.701f},
-                {.id = 1233, .distance = 27.295f},
-                {.id = 1237, .distance = 27.601f},
-                {.id = 1193, .distance = 35.484f},
-                {.id = 1232, .distance = 38.536f},
-                {.id = 1238, .distance = 38.536f}
-            }
-        },
-        {
-            .point_id = 1236,
-            .neighbors = {
-                {.id = 1235, .distance = 25.701f},
-                {.id = 1238, .distance = 28.171f},
-                {.id = 1110, .distance = 29.688f},
-                {.id = 1234, .distance = 30.643f},
-                {.id = 1237, .distance = 35.416f},
-                {.id = 1108, .distance = 41.018f},
-                {.id = 998, .distance = 51.461f}
-            }
-        },
-        {
-            .point_id = 1237,
-            .neighbors = {
-                {.id = 1238, .distance = 23.046f},
-                {.id = 1194, .distance = 26.974f},
-                {.id = 1235, .distance = 27.601f},
-                {.id = 1193, .distance = 32.025f},
-                {.id = 1236, .distance = 35.416f},
-                {.id = 1239, .distance = 38.124f},
-                {.id = 1233, .distance = 46.866f}
-            }
-        },
-        {
-            .point_id = 1238,
-            .neighbors = {
-                {.id = 1237, .distance = 23.046f},
-                {.id = 1236, .distance = 28.171f},
-                {.id = 1239, .distance = 28.796f},
-                {.id = 1108, .distance = 29.876f},
-                {.id = 1235, .distance = 38.536f},
-                {.id = 1110, .distance = 40.900f},
-                {.id = 1107, .distance = 41.797f}
-            }
-        },
-        {
-            .point_id = 1239,
-            .neighbors = {
-                {.id = 1240, .distance = 28.739f},
-                {.id = 1238, .distance = 28.796f},
-                {.id = 1107, .distance = 29.681f},
-                {.id = 1237, .distance = 38.124f},
-                {.id = 1195, .distance = 40.058f},
-                {.id = 1194, .distance = 40.759f},
-                {.id = 1108, .distance = 41.259f}
-            }
-        },
-        {
-            .point_id = 1240,
-            .neighbors = {
-                {.id = 1239, .distance = 28.739f},
-                {.id = 1241, .distance = 28.996f},
-                {.id = 1106, .distance = 29.791f},
-                {.id = 1195, .distance = 34.006f},
-                {.id = 1107, .distance = 41.088f},
-                {.id = 1105, .distance = 41.139f},
-                {.id = 1196, .distance = 43.930f}
-            }
-        },
-        {
-            .point_id = 1241,
-            .neighbors = {
-                {.id = 1242, .distance = 28.539f},
-                {.id = 1240, .distance = 28.996f},
-                {.id = 1105, .distance = 29.681f},
-                {.id = 1196, .distance = 35.652f},
-                {.id = 1243, .distance = 38.072f},
-                {.id = 1104, .distance = 41.093f},
-                {.id = 1106, .distance = 41.276f}
-            }
-        },
-        {
-            .point_id = 1242,
-            .neighbors = {
-                {.id = 1243, .distance = 23.229f},
-                {.id = 1241, .distance = 28.539f},
-                {.id = 1244, .distance = 29.175f},
-                {.id = 1104, .distance = 29.699f},
-                {.id = 1245, .distance = 38.795f},
-                {.id = 1105, .distance = 41.301f},
-                {.id = 1102, .distance = 41.538f}
-            }
-        },
-        {
-            .point_id = 1243,
-            .neighbors = {
-                {.id = 1242, .distance = 23.229f},
-                {.id = 1197, .distance = 24.656f},
-                {.id = 1245, .distance = 27.373f},
-                {.id = 1196, .distance = 35.973f},
-                {.id = 1244, .distance = 36.131f},
-                {.id = 1241, .distance = 38.072f},
-                {.id = 1198, .distance = 47.750f}
-            }
-        },
-        {
-            .point_id = 1244,
-            .neighbors = {
-                {.id = 1245, .distance = 26.133f},
-                {.id = 1102, .distance = 29.050f},
-                {.id = 1242, .distance = 29.175f},
-                {.id = 1246, .distance = 30.723f},
-                {.id = 1243, .distance = 36.131f},
-                {.id = 1104, .distance = 41.569f},
-                {.id = 1101, .distance = 52.210f}
-            }
-        },
-        {
-            .point_id = 1245,
-            .neighbors = {
-                {.id = 1246, .distance = 25.813f},
-                {.id = 1244, .distance = 26.133f},
-                {.id = 1243, .distance = 27.373f},
-                {.id = 1198, .distance = 27.856f},
-                {.id = 1197, .distance = 38.273f},
-                {.id = 1242, .distance = 38.795f},
-                {.id = 1247, .distance = 39.458f}
-            }
-        },
-        {
-            .point_id = 1246,
-            .neighbors = {
-                {.id = 1245, .distance = 25.813f},
-                {.id = 1247, .distance = 29.479f},
-                {.id = 694, .distance = 30.660f},
-                {.id = 1244, .distance = 30.723f},
-                {.id = 1198, .distance = 35.561f},
-                {.id = 692, .distance = 41.283f},
-                {.id = 1102, .distance = 51.839f}
-            }
-        },
-        {
-            .point_id = 1247,
-            .neighbors = {
-                {.id = 1198, .distance = 22.863f},
-                {.id = 1199, .distance = 28.096f},
-                {.id = 1246, .distance = 29.479f},
-                {.id = 692, .distance = 30.625f},
-                {.id = 1245, .distance = 39.458f},
-                {.id = 691, .distance = 40.963f},
-                {.id = 694, .distance = 42.761f}
-            }
-        }
+        {0, {
+            {.id = 1, .distance = 25.256f}, {.id = 3, .distance = 25.653f}, {.id = 2, .distance = 25.660f}, {.id = 5, .distance = 26.237f}, {.id = 4, .distance = 26.780f}, {.id = 7, .distance = 53.251f}, {.id = 11, .distance = 53.584f}
+        }},
+        {1, {
+            {.id = 0, .distance = 25.256f}, {.id = 7, .distance = 27.996f}, {.id = 5, .distance = 30.406f}, {.id = 2, .distance = 30.746f}, {.id = 8, .distance = 36.902f}, {.id = 6, .distance = 36.902f}, {.id = 3, .distance = 48.670f}
+        }},
+        {2, {
+            {.id = 0, .distance = 25.660f}, {.id = 9, .distance = 28.138f}, {.id = 3, .distance = 30.016f}, {.id = 1, .distance = 30.746f}, {.id = 10, .distance = 35.779f}, {.id = 8, .distance = 37.730f}, {.id = 4, .distance = 49.623f}
+        }},
+        {3, {
+            {.id = 0, .distance = 25.653f}, {.id = 11, .distance = 27.950f}, {.id = 2, .distance = 30.016f}, {.id = 4, .distance = 30.334f}, {.id = 12, .distance = 36.663f}, {.id = 10, .distance = 36.917f}, {.id = 1, .distance = 48.670f}
+        }},
+        {4, {
+            {.id = 0, .distance = 26.780f}, {.id = 13, .distance = 28.148f}, {.id = 3, .distance = 30.334f}, {.id = 5, .distance = 30.829f}, {.id = 12, .distance = 36.041f}, {.id = 14, .distance = 36.581f}, {.id = 1, .distance = 49.415f}
+        }},
+        {5, {
+            {.id = 0, .distance = 26.237f}, {.id = 15, .distance = 28.784f}, {.id = 1, .distance = 30.406f}, {.id = 4, .distance = 30.829f}, {.id = 6, .distance = 36.136f}, {.id = 14, .distance = 36.663f}, {.id = 3, .distance = 49.028f}
+        }},
+        {6, {
+            {.id = 17, .distance = 29.943f}, {.id = 15, .distance = 32.709f}, {.id = 7, .distance = 33.241f}, {.id = 16, .distance = 35.999f}, {.id = 5, .distance = 36.136f}, {.id = 1, .distance = 36.902f}, {.id = 18, .distance = 43.146f}
+        }},
+        {7, {
+            {.id = 1, .distance = 27.996f}, {.id = 18, .distance = 31.091f}, {.id = 6, .distance = 33.241f}, {.id = 8, .distance = 33.489f}, {.id = 19, .distance = 33.997f}, {.id = 17, .distance = 46.465f}, {.id = 20, .distance = 50.872f}
+        }},
+        {8, {
+            {.id = 20, .distance = 28.795f}, {.id = 7, .distance = 33.489f}, {.id = 9, .distance = 34.526f}, {.id = 1, .distance = 36.902f}, {.id = 2, .distance = 37.730f}, {.id = 19, .distance = 39.001f}, {.id = 21, .distance = 39.043f}
+        }},
+        {9, {
+            {.id = 2, .distance = 28.138f}, {.id = 22, .distance = 30.119f}, {.id = 10, .distance = 32.862f}, {.id = 21, .distance = 33.326f}, {.id = 8, .distance = 34.526f}, {.id = 23, .distance = 46.032f}, {.id = 20, .distance = 51.953f}
+        }},
+        {10, {
+            {.id = 23, .distance = 29.271f}, {.id = 9, .distance = 32.862f}, {.id = 11, .distance = 32.910f}, {.id = 24, .distance = 35.475f}, {.id = 2, .distance = 35.779f}, {.id = 3, .distance = 36.917f}, {.id = 22, .distance = 42.036f}
+        }},
+        {11, {
+            {.id = 3, .distance = 27.950f}, {.id = 25, .distance = 30.515f}, {.id = 10, .distance = 32.910f}, {.id = 12, .distance = 34.288f}, {.id = 24, .distance = 35.680f}, {.id = 26, .distance = 43.747f}, {.id = 2, .distance = 50.881f}
+        }},
+        {12, {
+            {.id = 26, .distance = 30.713f}, {.id = 27, .distance = 32.961f}, {.id = 11, .distance = 34.288f}, {.id = 13, .distance = 34.333f}, {.id = 4, .distance = 36.041f}, {.id = 3, .distance = 36.663f}, {.id = 25, .distance = 47.436f}
+        }},
+        {13, {
+            {.id = 4, .distance = 28.148f}, {.id = 28, .distance = 28.795f}, {.id = 14, .distance = 32.474f}, {.id = 12, .distance = 34.333f}, {.id = 29, .distance = 37.853f}, {.id = 27, .distance = 39.529f}, {.id = 5, .distance = 52.029f}
+        }},
+        {14, {
+            {.id = 30, .distance = 30.978f}, {.id = 13, .distance = 32.474f}, {.id = 29, .distance = 33.378f}, {.id = 15, .distance = 34.135f}, {.id = 4, .distance = 36.581f}, {.id = 5, .distance = 36.663f}, {.id = 31, .distance = 47.075f}
+        }},
+        {15, {
+            {.id = 5, .distance = 28.784f}, {.id = 31, .distance = 29.314f}, {.id = 6, .distance = 32.709f}, {.id = 14, .distance = 34.135f}, {.id = 16, .distance = 35.428f}, {.id = 30, .distance = 42.934f}, {.id = 1, .distance = 52.730f}
+        }},
+        {16, {
+            {.id = 33, .distance = 31.937f}, {.id = 32, .distance = 31.964f}, {.id = 31, .distance = 32.088f}, {.id = 17, .distance = 32.704f}, {.id = 15, .distance = 35.428f}, {.id = 6, .distance = 35.999f}, {.id = 53, .distance = 49.921f}
+        }},
+        {17, {
+            {.id = 34, .distance = 29.419f}, {.id = 6, .distance = 29.943f}, {.id = 18, .distance = 32.468f}, {.id = 16, .distance = 32.704f}, {.id = 33, .distance = 37.491f}, {.id = 35, .distance = 41.947f}, {.id = 7, .distance = 46.465f}
+        }},
+        {18, {
+            {.id = 35, .distance = 29.848f}, {.id = 7, .distance = 31.091f}, {.id = 19, .distance = 31.917f}, {.id = 17, .distance = 32.468f}, {.id = 36, .distance = 35.426f}, {.id = 6, .distance = 43.146f}, {.id = 34, .distance = 44.568f}
+        }},
+        {19, {
+            {.id = 37, .distance = 30.775f}, {.id = 18, .distance = 31.917f}, {.id = 20, .distance = 32.089f}, {.id = 36, .distance = 33.457f}, {.id = 7, .distance = 33.997f}, {.id = 8, .distance = 39.001f}, {.id = 38, .distance = 47.195f}
+        }},
+        {20, {
+            {.id = 38, .distance = 28.126f}, {.id = 8, .distance = 28.795f}, {.id = 19, .distance = 32.089f}, {.id = 21, .distance = 33.350f}, {.id = 37, .distance = 38.606f}, {.id = 39, .distance = 40.686f}, {.id = 7, .distance = 50.872f}
+        }},
+        {21, {
+            {.id = 39, .distance = 30.745f}, {.id = 22, .distance = 32.585f}, {.id = 9, .distance = 33.326f}, {.id = 20, .distance = 33.350f}, {.id = 40, .distance = 33.990f}, {.id = 8, .distance = 39.043f}, {.id = 38, .distance = 47.230f}
+        }},
+        {22, {
+            {.id = 41, .distance = 30.088f}, {.id = 9, .distance = 30.119f}, {.id = 23, .distance = 32.298f}, {.id = 21, .distance = 32.585f}, {.id = 40, .distance = 35.628f}, {.id = 10, .distance = 42.036f}, {.id = 42, .distance = 44.864f}
+        }},
+        {23, {
+            {.id = 42, .distance = 28.726f}, {.id = 10, .distance = 29.271f}, {.id = 24, .distance = 31.916f}, {.id = 22, .distance = 32.298f}, {.id = 43, .distance = 37.444f}, {.id = 41, .distance = 42.067f}, {.id = 9, .distance = 46.032f}
+        }},
+        {24, {
+            {.id = 43, .distance = 31.889f}, {.id = 23, .distance = 31.916f}, {.id = 44, .distance = 32.458f}, {.id = 25, .distance = 32.605f}, {.id = 10, .distance = 35.475f}, {.id = 11, .distance = 35.680f}, {.id = 42, .distance = 49.358f}
+        }},
+        {25, {
+            {.id = 45, .distance = 28.557f}, {.id = 11, .distance = 30.515f}, {.id = 24, .distance = 32.605f}, {.id = 26, .distance = 33.386f}, {.id = 44, .distance = 36.707f}, {.id = 46, .distance = 42.276f}, {.id = 12, .distance = 47.436f}
+        }},
+        {26, {
+            {.id = 46, .distance = 29.283f}, {.id = 12, .distance = 30.713f}, {.id = 27, .distance = 32.395f}, {.id = 25, .distance = 33.386f}, {.id = 47, .distance = 35.383f}, {.id = 11, .distance = 43.747f}, {.id = 45, .distance = 45.069f}
+        }},
+        {27, {
+            {.id = 48, .distance = 30.492f}, {.id = 26, .distance = 32.395f}, {.id = 28, .distance = 32.492f}, {.id = 12, .distance = 32.961f}, {.id = 47, .distance = 33.774f}, {.id = 13, .distance = 39.529f}, {.id = 49, .distance = 46.947f}
+        }},
+        {28, {
+            {.id = 13, .distance = 28.795f}, {.id = 49, .distance = 28.796f}, {.id = 29, .distance = 31.301f}, {.id = 27, .distance = 32.492f}, {.id = 50, .distance = 39.130f}, {.id = 48, .distance = 39.658f}, {.id = 14, .distance = 50.236f}
+        }},
+        {29, {
+            {.id = 50, .distance = 30.076f}, {.id = 28, .distance = 31.301f}, {.id = 30, .distance = 33.324f}, {.id = 14, .distance = 33.378f}, {.id = 51, .distance = 33.386f}, {.id = 13, .distance = 37.853f}, {.id = 49, .distance = 46.778f}
+        }},
+        {30, {
+            {.id = 52, .distance = 29.653f}, {.id = 14, .distance = 30.978f}, {.id = 31, .distance = 32.852f}, {.id = 29, .distance = 33.324f}, {.id = 51, .distance = 35.446f}, {.id = 15, .distance = 42.934f}, {.id = 53, .distance = 44.581f}
+        }},
+        {31, {
+            {.id = 53, .distance = 28.776f}, {.id = 15, .distance = 29.314f}, {.id = 16, .distance = 32.088f}, {.id = 30, .distance = 32.852f}, {.id = 32, .distance = 36.954f}, {.id = 52, .distance = 42.498f}, {.id = 14, .distance = 47.075f}
+        }},
+        {32, {
+            {.id = 54, .distance = 23.617f}, {.id = 53, .distance = 31.442f}, {.id = 16, .distance = 31.964f}, {.id = 33, .distance = 32.703f}, {.id = 31, .distance = 36.954f}, {.id = 101, .distance = 41.259f}, {.id = 103, .distance = 45.103f}
+        }},
+        {33, {
+            {.id = 16, .distance = 31.937f}, {.id = 32, .distance = 32.703f}, {.id = 34, .distance = 32.725f}, {.id = 55, .distance = 36.068f}, {.id = 17, .distance = 37.491f}, {.id = 56, .distance = 39.068f}, {.id = 54, .distance = 41.895f}
+        }},
+        {34, {
+            {.id = 17, .distance = 29.419f}, {.id = 35, .distance = 30.638f}, {.id = 33, .distance = 32.725f}, {.id = 56, .distance = 35.794f}, {.id = 57, .distance = 36.665f}, {.id = 18, .distance = 44.568f}, {.id = 58, .distance = 46.412f}
+        }},
+        {35, {
+            {.id = 58, .distance = 24.191f}, {.id = 18, .distance = 29.848f}, {.id = 34, .distance = 30.638f}, {.id = 36, .distance = 31.516f}, {.id = 17, .distance = 41.947f}, {.id = 59, .distance = 44.167f}, {.id = 57, .distance = 44.460f}
+        }},
+        {36, {
+            {.id = 63, .distance = 27.519f}, {.id = 35, .distance = 31.516f}, {.id = 37, .distance = 33.096f}, {.id = 19, .distance = 33.457f}, {.id = 18, .distance = 35.426f}, {.id = 60, .distance = 35.506f}, {.id = 58, .distance = 36.051f}
+        }},
+        {37, {
+            {.id = 19, .distance = 30.775f}, {.id = 38, .distance = 30.943f}, {.id = 63, .distance = 31.347f}, {.id = 36, .distance = 33.096f}, {.id = 65, .distance = 37.393f}, {.id = 20, .distance = 38.606f}, {.id = 64, .distance = 45.102f}
+        }},
+        {38, {
+            {.id = 20, .distance = 28.126f}, {.id = 37, .distance = 30.943f}, {.id = 39, .distance = 32.322f}, {.id = 66, .distance = 33.115f}, {.id = 65, .distance = 43.474f}, {.id = 67, .distance = 44.048f}, {.id = 19, .distance = 47.195f}
+        }},
+        {39, {
+            {.id = 69, .distance = 30.540f}, {.id = 21, .distance = 30.745f}, {.id = 38, .distance = 32.322f}, {.id = 40, .distance = 32.441f}, {.id = 67, .distance = 37.153f}, {.id = 20, .distance = 40.686f}, {.id = 68, .distance = 45.279f}
+        }},
+        {40, {
+            {.id = 69, .distance = 27.373f}, {.id = 41, .distance = 31.563f}, {.id = 39, .distance = 32.441f}, {.id = 21, .distance = 33.990f}, {.id = 71, .distance = 35.618f}, {.id = 22, .distance = 35.628f}, {.id = 73, .distance = 36.566f}
+        }},
+        {41, {
+            {.id = 73, .distance = 24.293f}, {.id = 22, .distance = 30.088f}, {.id = 40, .distance = 31.563f}, {.id = 42, .distance = 31.793f}, {.id = 23, .distance = 42.067f}, {.id = 74, .distance = 43.775f}, {.id = 75, .distance = 43.787f}
+        }},
+        {42, {
+            {.id = 23, .distance = 28.726f}, {.id = 43, .distance = 31.427f}, {.id = 41, .distance = 31.793f}, {.id = 76, .distance = 35.922f}, {.id = 75, .distance = 37.333f}, {.id = 22, .distance = 44.864f}, {.id = 73, .distance = 47.704f}
+        }},
+        {43, {
+            {.id = 42, .distance = 31.427f}, {.id = 24, .distance = 31.889f}, {.id = 44, .distance = 32.342f}, {.id = 77, .distance = 35.562f}, {.id = 23, .distance = 37.444f}, {.id = 76, .distance = 39.243f}, {.id = 79, .distance = 41.982f}
+        }},
+        {44, {
+            {.id = 79, .distance = 23.803f}, {.id = 45, .distance = 31.693f}, {.id = 43, .distance = 32.342f}, {.id = 24, .distance = 32.458f}, {.id = 25, .distance = 36.707f}, {.id = 81, .distance = 41.333f}, {.id = 78, .distance = 44.974f}
+        }},
+        {45, {
+            {.id = 83, .distance = 24.410f}, {.id = 25, .distance = 28.557f}, {.id = 44, .distance = 31.693f}, {.id = 46, .distance = 32.138f}, {.id = 81, .distance = 38.124f}, {.id = 79, .distance = 43.096f}, {.id = 26, .distance = 45.069f}
+        }},
+        {46, {
+            {.id = 26, .distance = 29.283f}, {.id = 47, .distance = 31.589f}, {.id = 45, .distance = 32.138f}, {.id = 85, .distance = 36.174f}, {.id = 83, .distance = 36.927f}, {.id = 25, .distance = 42.276f}, {.id = 86, .distance = 43.787f}
+        }},
+        {47, {
+            {.id = 46, .distance = 31.589f}, {.id = 48, .distance = 32.185f}, {.id = 86, .distance = 33.528f}, {.id = 27, .distance = 33.774f}, {.id = 26, .distance = 35.383f}, {.id = 87, .distance = 39.292f}, {.id = 85, .distance = 48.151f}
+        }},
+        {48, {
+            {.id = 89, .distance = 26.800f}, {.id = 27, .distance = 30.492f}, {.id = 49, .distance = 31.085f}, {.id = 47, .distance = 32.185f}, {.id = 28, .distance = 39.658f}, {.id = 87, .distance = 40.843f}, {.id = 88, .distance = 44.297f}
+        }},
+        {49, {
+            {.id = 28, .distance = 28.796f}, {.id = 48, .distance = 31.085f}, {.id = 89, .distance = 31.165f}, {.id = 50, .distance = 31.748f}, {.id = 93, .distance = 32.025f}, {.id = 91, .distance = 35.484f}, {.id = 29, .distance = 46.778f}
+        }},
+        {50, {
+            {.id = 93, .distance = 26.974f}, {.id = 29, .distance = 30.076f}, {.id = 51, .distance = 31.574f}, {.id = 49, .distance = 31.748f}, {.id = 28, .distance = 39.130f}, {.id = 95, .distance = 40.759f}, {.id = 94, .distance = 44.255f}
+        }},
+        {51, {
+            {.id = 50, .distance = 31.574f}, {.id = 52, .distance = 32.495f}, {.id = 29, .distance = 33.386f}, {.id = 96, .distance = 34.006f}, {.id = 30, .distance = 35.446f}, {.id = 95, .distance = 40.058f}, {.id = 97, .distance = 48.765f}
+        }},
+        {52, {
+            {.id = 30, .distance = 29.653f}, {.id = 53, .distance = 31.761f}, {.id = 51, .distance = 32.495f}, {.id = 97, .distance = 35.652f}, {.id = 99, .distance = 35.973f}, {.id = 31, .distance = 42.498f}, {.id = 96, .distance = 43.930f}
+        }},
+        {53, {
+            {.id = 99, .distance = 24.656f}, {.id = 31, .distance = 28.776f}, {.id = 32, .distance = 31.442f}, {.id = 52, .distance = 31.761f}, {.id = 101, .distance = 38.273f}, {.id = 54, .distance = 43.129f}, {.id = 30, .distance = 44.581f}
+        }},
+        {54, {
+            {.id = 103, .distance = 22.863f}, {.id = 32, .distance = 23.617f}, {.id = 101, .distance = 27.856f}, {.id = 102, .distance = 35.561f}, {.id = 55, .distance = 37.917f}, {.id = 33, .distance = 41.895f}, {.id = 53, .distance = 43.129f}
+        }},
+        {55, {
+            {.id = 103, .distance = 28.096f}, {.id = 56, .distance = 29.153f}, {.id = 265, .distance = 30.837f}, {.id = 33, .distance = 36.068f}, {.id = 54, .distance = 37.917f}, {.id = 267, .distance = 41.896f}, {.id = 264, .distance = 42.604f}
+        }},
+        {56, {
+            {.id = 57, .distance = 28.265f}, {.id = 55, .distance = 29.153f}, {.id = 264, .distance = 31.737f}, {.id = 34, .distance = 35.794f}, {.id = 33, .distance = 39.068f}, {.id = 265, .distance = 42.312f}, {.id = 263, .distance = 42.604f}
+        }},
+        {57, {
+            {.id = 56, .distance = 28.265f}, {.id = 59, .distance = 28.989f}, {.id = 263, .distance = 30.837f}, {.id = 34, .distance = 36.665f}, {.id = 58, .distance = 38.712f}, {.id = 311, .distance = 42.288f}, {.id = 264, .distance = 42.312f}
+        }},
+        {58, {
+            {.id = 59, .distance = 23.607f}, {.id = 35, .distance = 24.191f}, {.id = 60, .distance = 27.455f}, {.id = 61, .distance = 35.536f}, {.id = 36, .distance = 36.051f}, {.id = 57, .distance = 38.712f}, {.id = 34, .distance = 46.412f}
+        }},
+        {59, {
+            {.id = 58, .distance = 23.607f}, {.id = 61, .distance = 28.500f}, {.id = 57, .distance = 28.989f}, {.id = 311, .distance = 31.044f}, {.id = 60, .distance = 38.998f}, {.id = 263, .distance = 41.896f}, {.id = 310, .distance = 42.722f}
+        }},
+        {60, {
+            {.id = 61, .distance = 25.823f}, {.id = 62, .distance = 26.007f}, {.id = 63, .distance = 27.304f}, {.id = 58, .distance = 27.455f}, {.id = 36, .distance = 35.506f}, {.id = 59, .distance = 38.998f}, {.id = 64, .distance = 39.242f}
+        }},
+        {61, {
+            {.id = 60, .distance = 25.823f}, {.id = 59, .distance = 28.500f}, {.id = 62, .distance = 30.900f}, {.id = 310, .distance = 31.323f}, {.id = 58, .distance = 35.536f}, {.id = 311, .distance = 42.426f}, {.id = 63, .distance = 52.152f}
+        }},
+        {62, {
+            {.id = 60, .distance = 26.007f}, {.id = 204, .distance = 29.050f}, {.id = 64, .distance = 29.614f}, {.id = 61, .distance = 30.900f}, {.id = 63, .distance = 35.963f}, {.id = 202, .distance = 41.538f}, {.id = 206, .distance = 51.839f}
+        }},
+        {63, {
+            {.id = 64, .distance = 23.404f}, {.id = 60, .distance = 27.304f}, {.id = 36, .distance = 27.519f}, {.id = 37, .distance = 31.347f}, {.id = 62, .distance = 35.963f}, {.id = 65, .distance = 38.924f}, {.id = 58, .distance = 47.034f}
+        }},
+        {64, {
+            {.id = 63, .distance = 23.404f}, {.id = 65, .distance = 28.584f}, {.id = 62, .distance = 29.614f}, {.id = 202, .distance = 29.699f}, {.id = 60, .distance = 39.242f}, {.id = 201, .distance = 41.093f}, {.id = 204, .distance = 41.569f}
+        }},
+        {65, {
+            {.id = 66, .distance = 28.069f}, {.id = 64, .distance = 28.584f}, {.id = 201, .distance = 29.681f}, {.id = 37, .distance = 37.393f}, {.id = 63, .distance = 38.924f}, {.id = 200, .distance = 41.139f}, {.id = 202, .distance = 41.301f}
+        }},
+        {66, {
+            {.id = 65, .distance = 28.069f}, {.id = 67, .distance = 28.840f}, {.id = 200, .distance = 29.791f}, {.id = 38, .distance = 33.115f}, {.id = 201, .distance = 41.276f}, {.id = 199, .distance = 41.688f}, {.id = 37, .distance = 48.228f}
+        }},
+        {67, {
+            {.id = 66, .distance = 28.840f}, {.id = 68, .distance = 29.097f}, {.id = 199, .distance = 29.681f}, {.id = 39, .distance = 37.153f}, {.id = 69, .distance = 38.371f}, {.id = 200, .distance = 41.088f}, {.id = 198, .distance = 41.797f}
+        }},
+        {68, {
+            {.id = 69, .distance = 23.468f}, {.id = 70, .distance = 28.067f}, {.id = 67, .distance = 29.097f}, {.id = 198, .distance = 29.876f}, {.id = 71, .distance = 37.859f}, {.id = 196, .distance = 41.018f}, {.id = 199, .distance = 41.259f}
+        }},
+        {69, {
+            {.id = 68, .distance = 23.468f}, {.id = 71, .distance = 26.995f}, {.id = 40, .distance = 27.373f}, {.id = 39, .distance = 30.540f}, {.id = 70, .distance = 35.584f}, {.id = 67, .distance = 38.371f}, {.id = 73, .distance = 47.445f}
+        }},
+        {70, {
+            {.id = 71, .distance = 25.235f}, {.id = 68, .distance = 28.067f}, {.id = 196, .distance = 29.688f}, {.id = 72, .distance = 31.314f}, {.id = 69, .distance = 35.584f}, {.id = 198, .distance = 40.900f}, {.id = 581, .distance = 51.969f}
+        }},
+        {71, {
+            {.id = 70, .distance = 25.235f}, {.id = 72, .distance = 25.959f}, {.id = 69, .distance = 26.995f}, {.id = 73, .distance = 28.280f}, {.id = 40, .distance = 35.618f}, {.id = 68, .distance = 37.859f}, {.id = 74, .distance = 39.348f}
+        }},
+        {72, {
+            {.id = 71, .distance = 25.959f}, {.id = 74, .distance = 28.175f}, {.id = 581, .distance = 29.549f}, {.id = 70, .distance = 31.314f}, {.id = 73, .distance = 35.099f}, {.id = 579, .distance = 40.243f}, {.id = 69, .distance = 52.245f}
+        }},
+        {73, {
+            {.id = 74, .distance = 22.858f}, {.id = 41, .distance = 24.293f}, {.id = 71, .distance = 28.280f}, {.id = 72, .distance = 35.099f}, {.id = 40, .distance = 36.566f}, {.id = 75, .distance = 37.718f}, {.id = 69, .distance = 47.445f}
+        }},
+        {74, {
+            {.id = 73, .distance = 22.858f}, {.id = 72, .distance = 28.175f}, {.id = 75, .distance = 28.665f}, {.id = 579, .distance = 29.310f}, {.id = 71, .distance = 39.348f}, {.id = 577, .distance = 40.738f}, {.id = 581, .distance = 41.456f}
+        }},
+        {75, {
+            {.id = 74, .distance = 28.665f}, {.id = 76, .distance = 28.744f}, {.id = 577, .distance = 29.345f}, {.id = 42, .distance = 37.333f}, {.id = 73, .distance = 37.718f}, {.id = 576, .distance = 40.851f}, {.id = 579, .distance = 41.503f}
+        }},
+        {76, {
+            {.id = 77, .distance = 28.665f}, {.id = 75, .distance = 28.744f}, {.id = 576, .distance = 29.691f}, {.id = 42, .distance = 35.922f}, {.id = 43, .distance = 39.243f}, {.id = 575, .distance = 40.703f}, {.id = 577, .distance = 41.214f}
+        }},
+        {77, {
+            {.id = 76, .distance = 28.665f}, {.id = 78, .distance = 28.989f}, {.id = 575, .distance = 29.296f}, {.id = 43, .distance = 35.562f}, {.id = 79, .distance = 37.946f}, {.id = 623, .distance = 40.496f}, {.id = 576, .distance = 41.883f}
+        }},
+        {78, {
+            {.id = 79, .distance = 22.522f}, {.id = 80, .distance = 28.989f}, {.id = 77, .distance = 28.989f}, {.id = 623, .distance = 29.440f}, {.id = 81, .distance = 38.748f}, {.id = 622, .distance = 40.864f}, {.id = 575, .distance = 41.400f}
+        }},
+        {79, {
+            {.id = 78, .distance = 22.522f}, {.id = 44, .distance = 23.803f}, {.id = 81, .distance = 27.573f}, {.id = 80, .distance = 35.430f}, {.id = 77, .distance = 37.946f}, {.id = 43, .distance = 41.982f}, {.id = 45, .distance = 43.096f}
+        }},
+        {80, {
+            {.id = 81, .distance = 25.732f}, {.id = 78, .distance = 28.989f}, {.id = 622, .distance = 29.465f}, {.id = 82, .distance = 30.699f}, {.id = 79, .distance = 35.430f}, {.id = 623, .distance = 42.121f}, {.id = 83, .distance = 51.677f}
+        }},
+        {81, {
+            {.id = 82, .distance = 25.715f}, {.id = 80, .distance = 25.732f}, {.id = 83, .distance = 27.009f}, {.id = 79, .distance = 27.573f}, {.id = 45, .distance = 38.124f}, {.id = 78, .distance = 38.748f}, {.id = 84, .distance = 38.795f}
+        }},
+        {82, {
+            {.id = 81, .distance = 25.715f}, {.id = 84, .distance = 28.587f}, {.id = 477, .distance = 29.341f}, {.id = 80, .distance = 30.699f}, {.id = 83, .distance = 35.180f}, {.id = 475, .distance = 41.271f}, {.id = 478, .distance = 51.855f}
+        }},
+        {83, {
+            {.id = 84, .distance = 23.318f}, {.id = 45, .distance = 24.410f}, {.id = 81, .distance = 27.009f}, {.id = 82, .distance = 35.180f}, {.id = 46, .distance = 36.927f}, {.id = 85, .distance = 38.625f}, {.id = 79, .distance = 47.229f}
+        }},
+        {84, {
+            {.id = 83, .distance = 23.318f}, {.id = 82, .distance = 28.587f}, {.id = 85, .distance = 28.648f}, {.id = 475, .distance = 29.217f}, {.id = 81, .distance = 38.795f}, {.id = 477, .distance = 40.505f}, {.id = 473, .distance = 41.569f}
+        }},
+        {85, {
+            {.id = 84, .distance = 28.648f}, {.id = 86, .distance = 28.678f}, {.id = 473, .distance = 29.175f}, {.id = 46, .distance = 36.174f}, {.id = 83, .distance = 38.625f}, {.id = 475, .distance = 40.470f}, {.id = 472, .distance = 41.613f}
+        }},
+        {86, {
+            {.id = 87, .distance = 28.019f}, {.id = 85, .distance = 28.678f}, {.id = 472, .distance = 29.580f}, {.id = 47, .distance = 33.528f}, {.id = 473, .distance = 40.192f}, {.id = 471, .distance = 41.584f}, {.id = 46, .distance = 43.787f}
+        }},
+        {87, {
+            {.id = 86, .distance = 28.019f}, {.id = 471, .distance = 29.135f}, {.id = 88, .distance = 29.666f}, {.id = 89, .distance = 39.143f}, {.id = 47, .distance = 39.292f}, {.id = 472, .distance = 40.348f}, {.id = 48, .distance = 40.843f}
+        }},
+        {88, {
+            {.id = 89, .distance = 23.574f}, {.id = 90, .distance = 28.796f}, {.id = 519, .distance = 29.181f}, {.id = 87, .distance = 29.666f}, {.id = 91, .distance = 38.536f}, {.id = 471, .distance = 40.304f}, {.id = 518, .distance = 41.626f}
+        }},
+        {89, {
+            {.id = 88, .distance = 23.574f}, {.id = 48, .distance = 26.800f}, {.id = 91, .distance = 27.295f}, {.id = 49, .distance = 31.165f}, {.id = 90, .distance = 35.726f}, {.id = 87, .distance = 39.143f}, {.id = 93, .distance = 46.866f}
+        }},
+        {90, {
+            {.id = 91, .distance = 25.236f}, {.id = 88, .distance = 28.796f}, {.id = 518, .distance = 29.473f}, {.id = 92, .distance = 30.643f}, {.id = 89, .distance = 35.726f}, {.id = 519, .distance = 41.051f}, {.id = 93, .distance = 51.793f}
+        }},
+        {91, {
+            {.id = 90, .distance = 25.236f}, {.id = 92, .distance = 25.701f}, {.id = 89, .distance = 27.295f}, {.id = 93, .distance = 27.601f}, {.id = 49, .distance = 35.484f}, {.id = 88, .distance = 38.536f}, {.id = 94, .distance = 38.536f}
+        }},
+        {92, {
+            {.id = 91, .distance = 25.701f}, {.id = 94, .distance = 28.171f}, {.id = 373, .distance = 30.385f}, {.id = 90, .distance = 30.643f}, {.id = 93, .distance = 35.416f}, {.id = 371, .distance = 42.484f}, {.id = 518, .distance = 51.460f}
+        }},
+        {93, {
+            {.id = 94, .distance = 23.046f}, {.id = 50, .distance = 26.974f}, {.id = 91, .distance = 27.601f}, {.id = 49, .distance = 32.025f}, {.id = 92, .distance = 35.416f}, {.id = 95, .distance = 38.124f}, {.id = 89, .distance = 46.866f}
+        }},
+        {94, {
+            {.id = 93, .distance = 23.046f}, {.id = 92, .distance = 28.171f}, {.id = 95, .distance = 28.796f}, {.id = 371, .distance = 30.403f}, {.id = 91, .distance = 38.536f}, {.id = 373, .distance = 40.601f}, {.id = 369, .distance = 43.161f}
+        }},
+        {95, {
+            {.id = 96, .distance = 28.739f}, {.id = 94, .distance = 28.796f}, {.id = 369, .distance = 30.170f}, {.id = 93, .distance = 38.124f}, {.id = 51, .distance = 40.058f}, {.id = 371, .distance = 40.512f}, {.id = 50, .distance = 40.759f}
+        }},
+        {96, {
+            {.id = 95, .distance = 28.739f}, {.id = 97, .distance = 28.996f}, {.id = 368, .distance = 30.696f}, {.id = 51, .distance = 34.006f}, {.id = 369, .distance = 40.388f}, {.id = 367, .distance = 42.992f}, {.id = 52, .distance = 43.930f}
+        }},
+        {97, {
+            {.id = 98, .distance = 28.539f}, {.id = 96, .distance = 28.996f}, {.id = 367, .distance = 30.344f}, {.id = 52, .distance = 35.652f}, {.id = 99, .distance = 38.072f}, {.id = 368, .distance = 41.292f}, {.id = 415, .distance = 42.554f}
+        }},
+        {98, {
+            {.id = 99, .distance = 23.229f}, {.id = 97, .distance = 28.539f}, {.id = 100, .distance = 29.175f}, {.id = 415, .distance = 30.291f}, {.id = 101, .distance = 38.795f}, {.id = 367, .distance = 40.387f}, {.id = 414, .distance = 43.137f}
+        }},
+        {99, {
+            {.id = 98, .distance = 23.229f}, {.id = 53, .distance = 24.656f}, {.id = 101, .distance = 27.373f}, {.id = 52, .distance = 35.973f}, {.id = 100, .distance = 36.131f}, {.id = 97, .distance = 38.072f}, {.id = 54, .distance = 47.750f}
+        }},
+        {100, {
+            {.id = 101, .distance = 26.133f}, {.id = 98, .distance = 29.175f}, {.id = 414, .distance = 29.970f}, {.id = 102, .distance = 30.723f}, {.id = 99, .distance = 36.131f}, {.id = 415, .distance = 40.924f}, {.id = 54, .distance = 52.753f}
+        }},
+        {101, {
+            {.id = 102, .distance = 25.813f}, {.id = 100, .distance = 26.133f}, {.id = 99, .distance = 27.373f}, {.id = 54, .distance = 27.856f}, {.id = 53, .distance = 38.273f}, {.id = 98, .distance = 38.795f}, {.id = 103, .distance = 39.458f}
+        }},
+        {102, {
+            {.id = 101, .distance = 25.813f}, {.id = 103, .distance = 29.479f}, {.id = 100, .distance = 30.723f}, {.id = 269, .distance = 31.323f}, {.id = 54, .distance = 35.561f}, {.id = 267, .distance = 42.722f}, {.id = 414, .distance = 51.870f}
+        }},
+        {103, {
+            {.id = 54, .distance = 22.863f}, {.id = 55, .distance = 28.096f}, {.id = 102, .distance = 29.479f}, {.id = 267, .distance = 31.044f}, {.id = 101, .distance = 39.458f}, {.id = 265, .distance = 42.288f}, {.id = 269, .distance = 42.426f}
+        }},
+        {104, {
+            {.id = 105, .distance = 25.256f}, {.id = 107, .distance = 25.653f}, {.id = 106, .distance = 25.660f}, {.id = 109, .distance = 26.237f}, {.id = 108, .distance = 26.780f}, {.id = 111, .distance = 53.251f}, {.id = 115, .distance = 53.584f}
+        }},
+        {105, {
+            {.id = 104, .distance = 25.256f}, {.id = 111, .distance = 27.996f}, {.id = 109, .distance = 30.406f}, {.id = 106, .distance = 30.745f}, {.id = 112, .distance = 36.902f}, {.id = 110, .distance = 36.902f}, {.id = 107, .distance = 48.670f}
+        }},
+        {106, {
+            {.id = 104, .distance = 25.660f}, {.id = 113, .distance = 28.138f}, {.id = 107, .distance = 30.016f}, {.id = 105, .distance = 30.745f}, {.id = 114, .distance = 35.779f}, {.id = 112, .distance = 37.730f}, {.id = 108, .distance = 49.623f}
+        }},
+        {107, {
+            {.id = 104, .distance = 25.653f}, {.id = 115, .distance = 27.950f}, {.id = 106, .distance = 30.016f}, {.id = 108, .distance = 30.334f}, {.id = 116, .distance = 36.663f}, {.id = 114, .distance = 36.917f}, {.id = 105, .distance = 48.670f}
+        }},
+        {108, {
+            {.id = 104, .distance = 26.780f}, {.id = 117, .distance = 28.148f}, {.id = 107, .distance = 30.334f}, {.id = 109, .distance = 30.829f}, {.id = 116, .distance = 36.041f}, {.id = 118, .distance = 36.581f}, {.id = 105, .distance = 49.415f}
+        }},
+        {109, {
+            {.id = 104, .distance = 26.237f}, {.id = 119, .distance = 28.784f}, {.id = 105, .distance = 30.406f}, {.id = 108, .distance = 30.829f}, {.id = 110, .distance = 36.136f}, {.id = 118, .distance = 36.663f}, {.id = 107, .distance = 49.028f}
+        }},
+        {110, {
+            {.id = 121, .distance = 29.943f}, {.id = 119, .distance = 32.709f}, {.id = 111, .distance = 33.241f}, {.id = 120, .distance = 35.999f}, {.id = 109, .distance = 36.136f}, {.id = 105, .distance = 36.902f}, {.id = 122, .distance = 43.146f}
+        }},
+        {111, {
+            {.id = 105, .distance = 27.996f}, {.id = 122, .distance = 31.091f}, {.id = 110, .distance = 33.241f}, {.id = 112, .distance = 33.489f}, {.id = 123, .distance = 33.997f}, {.id = 121, .distance = 46.465f}, {.id = 124, .distance = 50.872f}
+        }},
+        {112, {
+            {.id = 124, .distance = 28.795f}, {.id = 111, .distance = 33.489f}, {.id = 113, .distance = 34.526f}, {.id = 105, .distance = 36.902f}, {.id = 106, .distance = 37.730f}, {.id = 123, .distance = 39.001f}, {.id = 125, .distance = 39.043f}
+        }},
+        {113, {
+            {.id = 106, .distance = 28.138f}, {.id = 126, .distance = 30.119f}, {.id = 114, .distance = 32.862f}, {.id = 125, .distance = 33.326f}, {.id = 112, .distance = 34.526f}, {.id = 127, .distance = 46.032f}, {.id = 124, .distance = 51.953f}
+        }},
+        {114, {
+            {.id = 127, .distance = 29.271f}, {.id = 113, .distance = 32.862f}, {.id = 115, .distance = 32.910f}, {.id = 128, .distance = 35.475f}, {.id = 106, .distance = 35.779f}, {.id = 107, .distance = 36.917f}, {.id = 126, .distance = 42.036f}
+        }},
+        {115, {
+            {.id = 107, .distance = 27.950f}, {.id = 129, .distance = 30.515f}, {.id = 114, .distance = 32.910f}, {.id = 116, .distance = 34.288f}, {.id = 128, .distance = 35.680f}, {.id = 130, .distance = 43.747f}, {.id = 106, .distance = 50.881f}
+        }},
+        {116, {
+            {.id = 130, .distance = 30.713f}, {.id = 131, .distance = 32.961f}, {.id = 115, .distance = 34.288f}, {.id = 117, .distance = 34.333f}, {.id = 108, .distance = 36.041f}, {.id = 107, .distance = 36.663f}, {.id = 129, .distance = 47.436f}
+        }},
+        {117, {
+            {.id = 108, .distance = 28.148f}, {.id = 132, .distance = 28.795f}, {.id = 118, .distance = 32.474f}, {.id = 116, .distance = 34.333f}, {.id = 133, .distance = 37.853f}, {.id = 131, .distance = 39.529f}, {.id = 109, .distance = 52.029f}
+        }},
+        {118, {
+            {.id = 134, .distance = 30.978f}, {.id = 117, .distance = 32.474f}, {.id = 133, .distance = 33.378f}, {.id = 119, .distance = 34.135f}, {.id = 108, .distance = 36.581f}, {.id = 109, .distance = 36.663f}, {.id = 135, .distance = 47.075f}
+        }},
+        {119, {
+            {.id = 109, .distance = 28.784f}, {.id = 135, .distance = 29.314f}, {.id = 110, .distance = 32.709f}, {.id = 118, .distance = 34.135f}, {.id = 120, .distance = 35.428f}, {.id = 134, .distance = 42.934f}, {.id = 105, .distance = 52.730f}
+        }},
+        {120, {
+            {.id = 137, .distance = 31.937f}, {.id = 136, .distance = 31.964f}, {.id = 135, .distance = 32.088f}, {.id = 121, .distance = 32.704f}, {.id = 119, .distance = 35.428f}, {.id = 110, .distance = 35.999f}, {.id = 157, .distance = 49.921f}
+        }},
+        {121, {
+            {.id = 138, .distance = 29.419f}, {.id = 110, .distance = 29.943f}, {.id = 122, .distance = 32.468f}, {.id = 120, .distance = 32.704f}, {.id = 137, .distance = 37.491f}, {.id = 139, .distance = 41.947f}, {.id = 111, .distance = 46.465f}
+        }},
+        {122, {
+            {.id = 139, .distance = 29.848f}, {.id = 111, .distance = 31.091f}, {.id = 123, .distance = 31.917f}, {.id = 121, .distance = 32.468f}, {.id = 140, .distance = 35.426f}, {.id = 110, .distance = 43.146f}, {.id = 138, .distance = 44.568f}
+        }},
+        {123, {
+            {.id = 141, .distance = 30.775f}, {.id = 122, .distance = 31.917f}, {.id = 124, .distance = 32.089f}, {.id = 140, .distance = 33.457f}, {.id = 111, .distance = 33.997f}, {.id = 112, .distance = 39.001f}, {.id = 142, .distance = 47.195f}
+        }},
+        {124, {
+            {.id = 142, .distance = 28.126f}, {.id = 112, .distance = 28.795f}, {.id = 123, .distance = 32.089f}, {.id = 125, .distance = 33.350f}, {.id = 141, .distance = 38.606f}, {.id = 143, .distance = 40.686f}, {.id = 111, .distance = 50.872f}
+        }},
+        {125, {
+            {.id = 143, .distance = 30.745f}, {.id = 126, .distance = 32.585f}, {.id = 113, .distance = 33.326f}, {.id = 124, .distance = 33.350f}, {.id = 144, .distance = 33.990f}, {.id = 112, .distance = 39.043f}, {.id = 142, .distance = 47.230f}
+        }},
+        {126, {
+            {.id = 145, .distance = 30.088f}, {.id = 113, .distance = 30.119f}, {.id = 127, .distance = 32.298f}, {.id = 125, .distance = 32.585f}, {.id = 144, .distance = 35.628f}, {.id = 114, .distance = 42.036f}, {.id = 146, .distance = 44.864f}
+        }},
+        {127, {
+            {.id = 146, .distance = 28.726f}, {.id = 114, .distance = 29.271f}, {.id = 128, .distance = 31.916f}, {.id = 126, .distance = 32.298f}, {.id = 147, .distance = 37.444f}, {.id = 145, .distance = 42.067f}, {.id = 113, .distance = 46.032f}
+        }},
+        {128, {
+            {.id = 147, .distance = 31.889f}, {.id = 127, .distance = 31.916f}, {.id = 148, .distance = 32.458f}, {.id = 129, .distance = 32.605f}, {.id = 114, .distance = 35.475f}, {.id = 115, .distance = 35.680f}, {.id = 146, .distance = 49.358f}
+        }},
+        {129, {
+            {.id = 149, .distance = 28.557f}, {.id = 115, .distance = 30.515f}, {.id = 128, .distance = 32.605f}, {.id = 130, .distance = 33.386f}, {.id = 148, .distance = 36.707f}, {.id = 150, .distance = 42.276f}, {.id = 116, .distance = 47.436f}
+        }},
+        {130, {
+            {.id = 150, .distance = 29.283f}, {.id = 116, .distance = 30.713f}, {.id = 131, .distance = 32.395f}, {.id = 129, .distance = 33.386f}, {.id = 151, .distance = 35.383f}, {.id = 115, .distance = 43.747f}, {.id = 149, .distance = 45.069f}
+        }},
+        {131, {
+            {.id = 152, .distance = 30.492f}, {.id = 130, .distance = 32.395f}, {.id = 132, .distance = 32.492f}, {.id = 116, .distance = 32.961f}, {.id = 151, .distance = 33.774f}, {.id = 117, .distance = 39.529f}, {.id = 153, .distance = 46.947f}
+        }},
+        {132, {
+            {.id = 117, .distance = 28.795f}, {.id = 153, .distance = 28.796f}, {.id = 133, .distance = 31.301f}, {.id = 131, .distance = 32.492f}, {.id = 154, .distance = 39.130f}, {.id = 152, .distance = 39.658f}, {.id = 118, .distance = 50.236f}
+        }},
+        {133, {
+            {.id = 154, .distance = 30.076f}, {.id = 132, .distance = 31.301f}, {.id = 134, .distance = 33.324f}, {.id = 118, .distance = 33.378f}, {.id = 155, .distance = 33.386f}, {.id = 117, .distance = 37.853f}, {.id = 153, .distance = 46.778f}
+        }},
+        {134, {
+            {.id = 156, .distance = 29.653f}, {.id = 118, .distance = 30.978f}, {.id = 135, .distance = 32.852f}, {.id = 133, .distance = 33.324f}, {.id = 155, .distance = 35.446f}, {.id = 119, .distance = 42.934f}, {.id = 157, .distance = 44.581f}
+        }},
+        {135, {
+            {.id = 157, .distance = 28.776f}, {.id = 119, .distance = 29.314f}, {.id = 120, .distance = 32.088f}, {.id = 134, .distance = 32.852f}, {.id = 136, .distance = 36.954f}, {.id = 156, .distance = 42.498f}, {.id = 118, .distance = 47.075f}
+        }},
+        {136, {
+            {.id = 158, .distance = 23.617f}, {.id = 157, .distance = 31.442f}, {.id = 120, .distance = 31.964f}, {.id = 137, .distance = 32.702f}, {.id = 135, .distance = 36.954f}, {.id = 205, .distance = 41.259f}, {.id = 207, .distance = 45.103f}
+        }},
+        {137, {
+            {.id = 120, .distance = 31.937f}, {.id = 136, .distance = 32.702f}, {.id = 138, .distance = 32.725f}, {.id = 159, .distance = 36.068f}, {.id = 121, .distance = 37.491f}, {.id = 160, .distance = 39.068f}, {.id = 158, .distance = 41.895f}
+        }},
+        {138, {
+            {.id = 121, .distance = 29.419f}, {.id = 139, .distance = 30.638f}, {.id = 137, .distance = 32.725f}, {.id = 160, .distance = 35.794f}, {.id = 161, .distance = 36.665f}, {.id = 122, .distance = 44.568f}, {.id = 162, .distance = 46.412f}
+        }},
+        {139, {
+            {.id = 162, .distance = 24.191f}, {.id = 122, .distance = 29.848f}, {.id = 138, .distance = 30.638f}, {.id = 140, .distance = 31.516f}, {.id = 121, .distance = 41.947f}, {.id = 163, .distance = 44.167f}, {.id = 161, .distance = 44.460f}
+        }},
+        {140, {
+            {.id = 167, .distance = 27.519f}, {.id = 139, .distance = 31.516f}, {.id = 141, .distance = 33.096f}, {.id = 123, .distance = 33.457f}, {.id = 122, .distance = 35.426f}, {.id = 164, .distance = 35.506f}, {.id = 162, .distance = 36.051f}
+        }},
+        {141, {
+            {.id = 123, .distance = 30.775f}, {.id = 142, .distance = 30.943f}, {.id = 167, .distance = 31.347f}, {.id = 140, .distance = 33.096f}, {.id = 169, .distance = 37.393f}, {.id = 124, .distance = 38.606f}, {.id = 168, .distance = 45.102f}
+        }},
+        {142, {
+            {.id = 124, .distance = 28.126f}, {.id = 141, .distance = 30.943f}, {.id = 143, .distance = 32.322f}, {.id = 170, .distance = 33.115f}, {.id = 169, .distance = 43.474f}, {.id = 171, .distance = 44.048f}, {.id = 123, .distance = 47.195f}
+        }},
+        {143, {
+            {.id = 173, .distance = 30.540f}, {.id = 125, .distance = 30.745f}, {.id = 142, .distance = 32.322f}, {.id = 144, .distance = 32.441f}, {.id = 171, .distance = 37.153f}, {.id = 124, .distance = 40.686f}, {.id = 172, .distance = 45.279f}
+        }},
+        {144, {
+            {.id = 173, .distance = 27.373f}, {.id = 145, .distance = 31.563f}, {.id = 143, .distance = 32.441f}, {.id = 125, .distance = 33.990f}, {.id = 175, .distance = 35.618f}, {.id = 126, .distance = 35.628f}, {.id = 177, .distance = 36.566f}
+        }},
+        {145, {
+            {.id = 177, .distance = 24.293f}, {.id = 126, .distance = 30.088f}, {.id = 144, .distance = 31.563f}, {.id = 146, .distance = 31.793f}, {.id = 127, .distance = 42.067f}, {.id = 178, .distance = 43.775f}, {.id = 179, .distance = 43.787f}
+        }},
+        {146, {
+            {.id = 127, .distance = 28.726f}, {.id = 147, .distance = 31.427f}, {.id = 145, .distance = 31.793f}, {.id = 180, .distance = 35.922f}, {.id = 179, .distance = 37.333f}, {.id = 126, .distance = 44.864f}, {.id = 177, .distance = 47.704f}
+        }},
+        {147, {
+            {.id = 146, .distance = 31.427f}, {.id = 128, .distance = 31.889f}, {.id = 148, .distance = 32.342f}, {.id = 181, .distance = 35.562f}, {.id = 127, .distance = 37.444f}, {.id = 180, .distance = 39.243f}, {.id = 183, .distance = 41.982f}
+        }},
+        {148, {
+            {.id = 183, .distance = 23.803f}, {.id = 149, .distance = 31.693f}, {.id = 147, .distance = 32.342f}, {.id = 128, .distance = 32.458f}, {.id = 129, .distance = 36.707f}, {.id = 185, .distance = 41.333f}, {.id = 182, .distance = 44.974f}
+        }},
+        {149, {
+            {.id = 187, .distance = 24.410f}, {.id = 129, .distance = 28.557f}, {.id = 148, .distance = 31.693f}, {.id = 150, .distance = 32.138f}, {.id = 185, .distance = 38.124f}, {.id = 183, .distance = 43.096f}, {.id = 130, .distance = 45.069f}
+        }},
+        {150, {
+            {.id = 130, .distance = 29.283f}, {.id = 151, .distance = 31.589f}, {.id = 149, .distance = 32.138f}, {.id = 189, .distance = 36.174f}, {.id = 187, .distance = 36.927f}, {.id = 129, .distance = 42.276f}, {.id = 190, .distance = 43.787f}
+        }},
+        {151, {
+            {.id = 150, .distance = 31.589f}, {.id = 152, .distance = 32.185f}, {.id = 190, .distance = 33.528f}, {.id = 131, .distance = 33.774f}, {.id = 130, .distance = 35.383f}, {.id = 191, .distance = 39.292f}, {.id = 189, .distance = 48.151f}
+        }},
+        {152, {
+            {.id = 193, .distance = 26.800f}, {.id = 131, .distance = 30.492f}, {.id = 153, .distance = 31.085f}, {.id = 151, .distance = 32.185f}, {.id = 132, .distance = 39.658f}, {.id = 191, .distance = 40.843f}, {.id = 192, .distance = 44.297f}
+        }},
+        {153, {
+            {.id = 132, .distance = 28.796f}, {.id = 152, .distance = 31.085f}, {.id = 193, .distance = 31.165f}, {.id = 154, .distance = 31.748f}, {.id = 197, .distance = 32.025f}, {.id = 195, .distance = 35.484f}, {.id = 133, .distance = 46.778f}
+        }},
+        {154, {
+            {.id = 197, .distance = 26.974f}, {.id = 133, .distance = 30.076f}, {.id = 155, .distance = 31.574f}, {.id = 153, .distance = 31.748f}, {.id = 132, .distance = 39.130f}, {.id = 199, .distance = 40.759f}, {.id = 198, .distance = 44.255f}
+        }},
+        {155, {
+            {.id = 154, .distance = 31.574f}, {.id = 156, .distance = 32.495f}, {.id = 133, .distance = 33.386f}, {.id = 200, .distance = 34.006f}, {.id = 134, .distance = 35.446f}, {.id = 199, .distance = 40.058f}, {.id = 201, .distance = 48.765f}
+        }},
+        {156, {
+            {.id = 134, .distance = 29.653f}, {.id = 157, .distance = 31.761f}, {.id = 155, .distance = 32.495f}, {.id = 201, .distance = 35.652f}, {.id = 203, .distance = 35.973f}, {.id = 135, .distance = 42.498f}, {.id = 200, .distance = 43.930f}
+        }},
+        {157, {
+            {.id = 203, .distance = 24.656f}, {.id = 135, .distance = 28.776f}, {.id = 136, .distance = 31.442f}, {.id = 156, .distance = 31.761f}, {.id = 205, .distance = 38.273f}, {.id = 158, .distance = 43.129f}, {.id = 134, .distance = 44.581f}
+        }},
+        {158, {
+            {.id = 207, .distance = 22.863f}, {.id = 136, .distance = 23.617f}, {.id = 205, .distance = 27.856f}, {.id = 206, .distance = 35.561f}, {.id = 159, .distance = 37.917f}, {.id = 137, .distance = 41.895f}, {.id = 157, .distance = 43.129f}
+        }},
+        {159, {
+            {.id = 207, .distance = 28.096f}, {.id = 160, .distance = 29.153f}, {.id = 305, .distance = 30.348f}, {.id = 137, .distance = 36.068f}, {.id = 158, .distance = 37.917f}, {.id = 306, .distance = 40.389f}, {.id = 304, .distance = 42.996f}
+        }},
+        {160, {
+            {.id = 161, .distance = 28.265f}, {.id = 159, .distance = 29.153f}, {.id = 304, .distance = 30.701f}, {.id = 138, .distance = 35.794f}, {.id = 137, .distance = 39.068f}, {.id = 305, .distance = 41.296f}, {.id = 303, .distance = 42.964f}
+        }},
+        {161, {
+            {.id = 160, .distance = 28.265f}, {.id = 163, .distance = 28.989f}, {.id = 303, .distance = 30.177f}, {.id = 138, .distance = 36.665f}, {.id = 162, .distance = 38.712f}, {.id = 304, .distance = 40.393f}, {.id = 302, .distance = 43.166f}
+        }},
+        {162, {
+            {.id = 163, .distance = 23.607f}, {.id = 139, .distance = 24.191f}, {.id = 164, .distance = 27.455f}, {.id = 165, .distance = 35.536f}, {.id = 140, .distance = 36.051f}, {.id = 161, .distance = 38.712f}, {.id = 138, .distance = 46.412f}
+        }},
+        {163, {
+            {.id = 162, .distance = 23.607f}, {.id = 165, .distance = 28.500f}, {.id = 161, .distance = 28.989f}, {.id = 302, .distance = 30.411f}, {.id = 164, .distance = 38.998f}, {.id = 303, .distance = 40.517f}, {.id = 300, .distance = 42.490f}
+        }},
+        {164, {
+            {.id = 165, .distance = 25.823f}, {.id = 166, .distance = 26.007f}, {.id = 167, .distance = 27.304f}, {.id = 162, .distance = 27.455f}, {.id = 140, .distance = 35.506f}, {.id = 163, .distance = 38.998f}, {.id = 168, .distance = 39.242f}
+        }},
+        {165, {
+            {.id = 164, .distance = 25.823f}, {.id = 163, .distance = 28.500f}, {.id = 300, .distance = 30.395f}, {.id = 166, .distance = 30.900f}, {.id = 162, .distance = 35.536f}, {.id = 302, .distance = 40.607f}, {.id = 922, .distance = 51.576f}
+        }},
+        {166, {
+            {.id = 164, .distance = 26.007f}, {.id = 922, .distance = 28.617f}, {.id = 168, .distance = 29.614f}, {.id = 165, .distance = 30.900f}, {.id = 167, .distance = 35.963f}, {.id = 920, .distance = 40.055f}, {.id = 924, .distance = 51.485f}
+        }},
+        {167, {
+            {.id = 168, .distance = 23.404f}, {.id = 164, .distance = 27.304f}, {.id = 140, .distance = 27.519f}, {.id = 141, .distance = 31.347f}, {.id = 166, .distance = 35.963f}, {.id = 169, .distance = 38.924f}, {.id = 162, .distance = 47.034f}
+        }},
+        {168, {
+            {.id = 167, .distance = 23.404f}, {.id = 169, .distance = 28.584f}, {.id = 920, .distance = 28.673f}, {.id = 166, .distance = 29.614f}, {.id = 164, .distance = 39.242f}, {.id = 919, .distance = 40.304f}, {.id = 922, .distance = 41.739f}
+        }},
+        {169, {
+            {.id = 170, .distance = 28.069f}, {.id = 919, .distance = 28.493f}, {.id = 168, .distance = 28.584f}, {.id = 141, .distance = 37.393f}, {.id = 167, .distance = 38.924f}, {.id = 918, .distance = 39.759f}, {.id = 920, .distance = 41.297f}
+        }},
+        {170, {
+            {.id = 169, .distance = 28.069f}, {.id = 918, .distance = 28.727f}, {.id = 171, .distance = 28.840f}, {.id = 142, .distance = 33.115f}, {.id = 919, .distance = 40.363f}, {.id = 917, .distance = 40.371f}, {.id = 141, .distance = 48.228f}
+        }},
+        {171, {
+            {.id = 917, .distance = 28.767f}, {.id = 170, .distance = 28.840f}, {.id = 172, .distance = 29.098f}, {.id = 143, .distance = 37.153f}, {.id = 173, .distance = 38.371f}, {.id = 916, .distance = 40.238f}, {.id = 918, .distance = 40.952f}
+        }},
+        {172, {
+            {.id = 173, .distance = 23.468f}, {.id = 174, .distance = 28.067f}, {.id = 916, .distance = 28.780f}, {.id = 171, .distance = 29.098f}, {.id = 175, .distance = 37.859f}, {.id = 914, .distance = 39.833f}, {.id = 917, .distance = 41.278f}
+        }},
+        {173, {
+            {.id = 172, .distance = 23.468f}, {.id = 175, .distance = 26.995f}, {.id = 144, .distance = 27.373f}, {.id = 143, .distance = 30.540f}, {.id = 174, .distance = 35.584f}, {.id = 171, .distance = 38.371f}, {.id = 177, .distance = 47.445f}
+        }},
+        {174, {
+            {.id = 175, .distance = 25.235f}, {.id = 172, .distance = 28.067f}, {.id = 914, .distance = 28.700f}, {.id = 176, .distance = 31.314f}, {.id = 173, .distance = 35.584f}, {.id = 916, .distance = 40.865f}, {.id = 912, .distance = 50.956f}
+        }},
+        {175, {
+            {.id = 174, .distance = 25.235f}, {.id = 176, .distance = 25.959f}, {.id = 173, .distance = 26.995f}, {.id = 177, .distance = 28.280f}, {.id = 144, .distance = 35.618f}, {.id = 172, .distance = 37.859f}, {.id = 178, .distance = 39.348f}
+        }},
+        {176, {
+            {.id = 175, .distance = 25.959f}, {.id = 828, .distance = 28.160f}, {.id = 178, .distance = 28.175f}, {.id = 174, .distance = 31.314f}, {.id = 177, .distance = 35.099f}, {.id = 826, .distance = 40.663f}, {.id = 830, .distance = 51.351f}
+        }},
+        {177, {
+            {.id = 178, .distance = 22.858f}, {.id = 145, .distance = 24.293f}, {.id = 175, .distance = 28.280f}, {.id = 176, .distance = 35.099f}, {.id = 144, .distance = 36.566f}, {.id = 179, .distance = 37.718f}, {.id = 173, .distance = 47.445f}
+        }},
+        {178, {
+            {.id = 177, .distance = 22.858f}, {.id = 176, .distance = 28.175f}, {.id = 826, .distance = 28.558f}, {.id = 179, .distance = 28.665f}, {.id = 175, .distance = 39.348f}, {.id = 828, .distance = 39.985f}, {.id = 825, .distance = 41.035f}
+        }},
+        {179, {
+            {.id = 178, .distance = 28.665f}, {.id = 180, .distance = 28.744f}, {.id = 825, .distance = 28.849f}, {.id = 146, .distance = 37.333f}, {.id = 177, .distance = 37.718f}, {.id = 826, .distance = 40.001f}, {.id = 824, .distance = 41.256f}
+        }},
+        {180, {
+            {.id = 824, .distance = 28.628f}, {.id = 181, .distance = 28.665f}, {.id = 179, .distance = 28.744f}, {.id = 146, .distance = 35.922f}, {.id = 147, .distance = 39.243f}, {.id = 825, .distance = 40.208f}, {.id = 823, .distance = 41.096f}
+        }},
+        {181, {
+            {.id = 823, .distance = 28.612f}, {.id = 180, .distance = 28.665f}, {.id = 182, .distance = 28.989f}, {.id = 147, .distance = 35.562f}, {.id = 183, .distance = 37.946f}, {.id = 824, .distance = 39.961f}, {.id = 822, .distance = 41.392f}
+        }},
+        {182, {
+            {.id = 183, .distance = 22.522f}, {.id = 822, .distance = 28.758f}, {.id = 181, .distance = 28.989f}, {.id = 184, .distance = 28.989f}, {.id = 185, .distance = 38.748f}, {.id = 823, .distance = 40.023f}, {.id = 820, .distance = 40.640f}
+        }},
+        {183, {
+            {.id = 182, .distance = 22.522f}, {.id = 148, .distance = 23.803f}, {.id = 185, .distance = 27.573f}, {.id = 184, .distance = 35.430f}, {.id = 181, .distance = 37.946f}, {.id = 147, .distance = 41.982f}, {.id = 149, .distance = 43.096f}
+        }},
+        {184, {
+            {.id = 185, .distance = 25.732f}, {.id = 820, .distance = 28.509f}, {.id = 182, .distance = 28.989f}, {.id = 186, .distance = 30.699f}, {.id = 183, .distance = 35.430f}, {.id = 822, .distance = 40.267f}, {.id = 590, .distance = 50.925f}
+        }},
+        {185, {
+            {.id = 186, .distance = 25.715f}, {.id = 184, .distance = 25.732f}, {.id = 187, .distance = 27.009f}, {.id = 183, .distance = 27.573f}, {.id = 149, .distance = 38.124f}, {.id = 182, .distance = 38.748f}, {.id = 188, .distance = 38.795f}
+        }},
+        {186, {
+            {.id = 185, .distance = 25.715f}, {.id = 188, .distance = 28.587f}, {.id = 590, .distance = 28.672f}, {.id = 184, .distance = 30.699f}, {.id = 187, .distance = 35.180f}, {.id = 588, .distance = 39.803f}, {.id = 820, .distance = 51.337f}
+        }},
+        {187, {
+            {.id = 188, .distance = 23.318f}, {.id = 149, .distance = 24.410f}, {.id = 185, .distance = 27.009f}, {.id = 186, .distance = 35.180f}, {.id = 150, .distance = 36.927f}, {.id = 189, .distance = 38.625f}, {.id = 183, .distance = 47.229f}
+        }},
+        {188, {
+            {.id = 187, .distance = 23.318f}, {.id = 186, .distance = 28.587f}, {.id = 189, .distance = 28.648f}, {.id = 588, .distance = 28.751f}, {.id = 185, .distance = 38.795f}, {.id = 587, .distance = 40.206f}, {.id = 590, .distance = 40.855f}
+        }},
+        {189, {
+            {.id = 188, .distance = 28.648f}, {.id = 190, .distance = 28.678f}, {.id = 587, .distance = 28.736f}, {.id = 150, .distance = 36.174f}, {.id = 187, .distance = 38.625f}, {.id = 586, .distance = 40.338f}, {.id = 588, .distance = 41.267f}
+        }},
+        {190, {
+            {.id = 191, .distance = 28.019f}, {.id = 189, .distance = 28.678f}, {.id = 586, .distance = 28.695f}, {.id = 151, .distance = 33.528f}, {.id = 585, .distance = 39.725f}, {.id = 587, .distance = 40.940f}, {.id = 150, .distance = 43.787f}
+        }},
+        {191, {
+            {.id = 190, .distance = 28.019f}, {.id = 585, .distance = 28.459f}, {.id = 192, .distance = 29.666f}, {.id = 193, .distance = 39.143f}, {.id = 151, .distance = 39.292f}, {.id = 584, .distance = 40.269f}, {.id = 586, .distance = 40.350f}
+        }},
+        {192, {
+            {.id = 193, .distance = 23.574f}, {.id = 584, .distance = 28.638f}, {.id = 194, .distance = 28.796f}, {.id = 191, .distance = 29.666f}, {.id = 195, .distance = 38.536f}, {.id = 582, .distance = 40.019f}, {.id = 585, .distance = 41.284f}
+        }},
+        {193, {
+            {.id = 192, .distance = 23.574f}, {.id = 152, .distance = 26.800f}, {.id = 195, .distance = 27.295f}, {.id = 153, .distance = 31.165f}, {.id = 194, .distance = 35.726f}, {.id = 191, .distance = 39.143f}, {.id = 197, .distance = 46.866f}
+        }},
+        {194, {
+            {.id = 195, .distance = 25.236f}, {.id = 582, .distance = 28.580f}, {.id = 192, .distance = 28.796f}, {.id = 196, .distance = 30.643f}, {.id = 193, .distance = 35.726f}, {.id = 584, .distance = 41.724f}, {.id = 581, .distance = 51.536f}
+        }},
+        {195, {
+            {.id = 194, .distance = 25.236f}, {.id = 196, .distance = 25.701f}, {.id = 193, .distance = 27.295f}, {.id = 197, .distance = 27.601f}, {.id = 153, .distance = 35.484f}, {.id = 192, .distance = 38.536f}, {.id = 198, .distance = 38.536f}
+        }},
+        {196, {
+            {.id = 195, .distance = 25.701f}, {.id = 198, .distance = 28.171f}, {.id = 70, .distance = 29.688f}, {.id = 194, .distance = 30.643f}, {.id = 197, .distance = 35.416f}, {.id = 68, .distance = 41.018f}, {.id = 582, .distance = 51.461f}
+        }},
+        {197, {
+            {.id = 198, .distance = 23.046f}, {.id = 154, .distance = 26.974f}, {.id = 195, .distance = 27.601f}, {.id = 153, .distance = 32.025f}, {.id = 196, .distance = 35.416f}, {.id = 199, .distance = 38.124f}, {.id = 193, .distance = 46.866f}
+        }},
+        {198, {
+            {.id = 197, .distance = 23.046f}, {.id = 196, .distance = 28.171f}, {.id = 199, .distance = 28.796f}, {.id = 68, .distance = 29.876f}, {.id = 195, .distance = 38.536f}, {.id = 70, .distance = 40.900f}, {.id = 67, .distance = 41.797f}
+        }},
+        {199, {
+            {.id = 200, .distance = 28.739f}, {.id = 198, .distance = 28.796f}, {.id = 67, .distance = 29.681f}, {.id = 197, .distance = 38.124f}, {.id = 155, .distance = 40.058f}, {.id = 154, .distance = 40.759f}, {.id = 68, .distance = 41.259f}
+        }},
+        {200, {
+            {.id = 199, .distance = 28.739f}, {.id = 201, .distance = 28.996f}, {.id = 66, .distance = 29.791f}, {.id = 155, .distance = 34.006f}, {.id = 67, .distance = 41.088f}, {.id = 65, .distance = 41.139f}, {.id = 156, .distance = 43.930f}
+        }},
+        {201, {
+            {.id = 202, .distance = 28.539f}, {.id = 200, .distance = 28.996f}, {.id = 65, .distance = 29.681f}, {.id = 156, .distance = 35.652f}, {.id = 203, .distance = 38.072f}, {.id = 64, .distance = 41.093f}, {.id = 66, .distance = 41.276f}
+        }},
+        {202, {
+            {.id = 203, .distance = 23.229f}, {.id = 201, .distance = 28.539f}, {.id = 204, .distance = 29.175f}, {.id = 64, .distance = 29.699f}, {.id = 205, .distance = 38.795f}, {.id = 65, .distance = 41.301f}, {.id = 62, .distance = 41.538f}
+        }},
+        {203, {
+            {.id = 202, .distance = 23.229f}, {.id = 157, .distance = 24.656f}, {.id = 205, .distance = 27.373f}, {.id = 156, .distance = 35.973f}, {.id = 204, .distance = 36.131f}, {.id = 201, .distance = 38.072f}, {.id = 158, .distance = 47.750f}
+        }},
+        {204, {
+            {.id = 205, .distance = 26.133f}, {.id = 62, .distance = 29.050f}, {.id = 202, .distance = 29.175f}, {.id = 206, .distance = 30.723f}, {.id = 203, .distance = 36.131f}, {.id = 64, .distance = 41.569f}, {.id = 61, .distance = 52.210f}
+        }},
+        {205, {
+            {.id = 206, .distance = 25.813f}, {.id = 204, .distance = 26.133f}, {.id = 203, .distance = 27.373f}, {.id = 158, .distance = 27.856f}, {.id = 157, .distance = 38.273f}, {.id = 202, .distance = 38.795f}, {.id = 207, .distance = 39.458f}
+        }},
+        {206, {
+            {.id = 205, .distance = 25.813f}, {.id = 207, .distance = 29.479f}, {.id = 308, .distance = 29.971f}, {.id = 204, .distance = 30.723f}, {.id = 158, .distance = 35.561f}, {.id = 306, .distance = 43.139f}, {.id = 62, .distance = 51.839f}
+        }},
+        {207, {
+            {.id = 158, .distance = 22.863f}, {.id = 159, .distance = 28.096f}, {.id = 206, .distance = 29.479f}, {.id = 306, .distance = 30.294f}, {.id = 205, .distance = 39.458f}, {.id = 308, .distance = 40.925f}, {.id = 305, .distance = 42.556f}
+        }},
+        {208, {
+            {.id = 209, .distance = 25.256f}, {.id = 211, .distance = 25.653f}, {.id = 210, .distance = 25.660f}, {.id = 213, .distance = 26.237f}, {.id = 212, .distance = 26.780f}, {.id = 215, .distance = 53.251f}, {.id = 219, .distance = 53.584f}
+        }},
+        {209, {
+            {.id = 208, .distance = 25.256f}, {.id = 215, .distance = 27.996f}, {.id = 213, .distance = 30.406f}, {.id = 210, .distance = 30.745f}, {.id = 216, .distance = 36.902f}, {.id = 214, .distance = 36.902f}, {.id = 211, .distance = 48.670f}
+        }},
+        {210, {
+            {.id = 208, .distance = 25.660f}, {.id = 217, .distance = 28.138f}, {.id = 211, .distance = 30.016f}, {.id = 209, .distance = 30.745f}, {.id = 218, .distance = 35.779f}, {.id = 216, .distance = 37.730f}, {.id = 212, .distance = 49.623f}
+        }},
+        {211, {
+            {.id = 208, .distance = 25.653f}, {.id = 219, .distance = 27.950f}, {.id = 210, .distance = 30.016f}, {.id = 212, .distance = 30.334f}, {.id = 220, .distance = 36.663f}, {.id = 218, .distance = 36.917f}, {.id = 209, .distance = 48.670f}
+        }},
+        {212, {
+            {.id = 208, .distance = 26.780f}, {.id = 221, .distance = 28.148f}, {.id = 211, .distance = 30.334f}, {.id = 213, .distance = 30.829f}, {.id = 220, .distance = 36.041f}, {.id = 222, .distance = 36.581f}, {.id = 209, .distance = 49.415f}
+        }},
+        {213, {
+            {.id = 208, .distance = 26.237f}, {.id = 223, .distance = 28.784f}, {.id = 209, .distance = 30.406f}, {.id = 212, .distance = 30.829f}, {.id = 214, .distance = 36.136f}, {.id = 222, .distance = 36.663f}, {.id = 211, .distance = 49.028f}
+        }},
+        {214, {
+            {.id = 225, .distance = 29.943f}, {.id = 223, .distance = 32.709f}, {.id = 215, .distance = 33.241f}, {.id = 224, .distance = 35.999f}, {.id = 213, .distance = 36.136f}, {.id = 209, .distance = 36.902f}, {.id = 226, .distance = 43.146f}
+        }},
+        {215, {
+            {.id = 209, .distance = 27.996f}, {.id = 226, .distance = 31.091f}, {.id = 214, .distance = 33.241f}, {.id = 216, .distance = 33.489f}, {.id = 227, .distance = 33.997f}, {.id = 225, .distance = 46.465f}, {.id = 228, .distance = 50.872f}
+        }},
+        {216, {
+            {.id = 228, .distance = 28.795f}, {.id = 215, .distance = 33.489f}, {.id = 217, .distance = 34.526f}, {.id = 209, .distance = 36.902f}, {.id = 210, .distance = 37.730f}, {.id = 227, .distance = 39.001f}, {.id = 229, .distance = 39.043f}
+        }},
+        {217, {
+            {.id = 210, .distance = 28.138f}, {.id = 230, .distance = 30.119f}, {.id = 218, .distance = 32.862f}, {.id = 229, .distance = 33.326f}, {.id = 216, .distance = 34.526f}, {.id = 231, .distance = 46.032f}, {.id = 228, .distance = 51.953f}
+        }},
+        {218, {
+            {.id = 231, .distance = 29.271f}, {.id = 217, .distance = 32.862f}, {.id = 219, .distance = 32.910f}, {.id = 232, .distance = 35.475f}, {.id = 210, .distance = 35.779f}, {.id = 211, .distance = 36.917f}, {.id = 230, .distance = 42.036f}
+        }},
+        {219, {
+            {.id = 211, .distance = 27.950f}, {.id = 233, .distance = 30.515f}, {.id = 218, .distance = 32.910f}, {.id = 220, .distance = 34.288f}, {.id = 232, .distance = 35.680f}, {.id = 234, .distance = 43.747f}, {.id = 210, .distance = 50.881f}
+        }},
+        {220, {
+            {.id = 234, .distance = 30.713f}, {.id = 235, .distance = 32.961f}, {.id = 219, .distance = 34.288f}, {.id = 221, .distance = 34.333f}, {.id = 212, .distance = 36.041f}, {.id = 211, .distance = 36.663f}, {.id = 233, .distance = 47.436f}
+        }},
+        {221, {
+            {.id = 212, .distance = 28.148f}, {.id = 236, .distance = 28.795f}, {.id = 222, .distance = 32.474f}, {.id = 220, .distance = 34.333f}, {.id = 237, .distance = 37.853f}, {.id = 235, .distance = 39.529f}, {.id = 213, .distance = 52.029f}
+        }},
+        {222, {
+            {.id = 238, .distance = 30.978f}, {.id = 221, .distance = 32.474f}, {.id = 237, .distance = 33.378f}, {.id = 223, .distance = 34.135f}, {.id = 212, .distance = 36.581f}, {.id = 213, .distance = 36.663f}, {.id = 239, .distance = 47.075f}
+        }},
+        {223, {
+            {.id = 213, .distance = 28.784f}, {.id = 239, .distance = 29.314f}, {.id = 214, .distance = 32.709f}, {.id = 222, .distance = 34.135f}, {.id = 224, .distance = 35.428f}, {.id = 238, .distance = 42.934f}, {.id = 209, .distance = 52.730f}
+        }},
+        {224, {
+            {.id = 241, .distance = 31.937f}, {.id = 240, .distance = 31.964f}, {.id = 239, .distance = 32.088f}, {.id = 225, .distance = 32.704f}, {.id = 223, .distance = 35.428f}, {.id = 214, .distance = 35.999f}, {.id = 261, .distance = 49.921f}
+        }},
+        {225, {
+            {.id = 242, .distance = 29.419f}, {.id = 214, .distance = 29.943f}, {.id = 226, .distance = 32.468f}, {.id = 224, .distance = 32.704f}, {.id = 241, .distance = 37.491f}, {.id = 243, .distance = 41.947f}, {.id = 215, .distance = 46.465f}
+        }},
+        {226, {
+            {.id = 243, .distance = 29.848f}, {.id = 215, .distance = 31.091f}, {.id = 227, .distance = 31.917f}, {.id = 225, .distance = 32.468f}, {.id = 244, .distance = 35.426f}, {.id = 214, .distance = 43.146f}, {.id = 242, .distance = 44.568f}
+        }},
+        {227, {
+            {.id = 245, .distance = 30.775f}, {.id = 226, .distance = 31.917f}, {.id = 228, .distance = 32.089f}, {.id = 244, .distance = 33.457f}, {.id = 215, .distance = 33.997f}, {.id = 216, .distance = 39.001f}, {.id = 246, .distance = 47.195f}
+        }},
+        {228, {
+            {.id = 246, .distance = 28.126f}, {.id = 216, .distance = 28.795f}, {.id = 227, .distance = 32.089f}, {.id = 229, .distance = 33.350f}, {.id = 245, .distance = 38.606f}, {.id = 247, .distance = 40.686f}, {.id = 215, .distance = 50.872f}
+        }},
+        {229, {
+            {.id = 247, .distance = 30.745f}, {.id = 230, .distance = 32.585f}, {.id = 217, .distance = 33.326f}, {.id = 228, .distance = 33.350f}, {.id = 248, .distance = 33.990f}, {.id = 216, .distance = 39.043f}, {.id = 246, .distance = 47.230f}
+        }},
+        {230, {
+            {.id = 249, .distance = 30.088f}, {.id = 217, .distance = 30.119f}, {.id = 231, .distance = 32.298f}, {.id = 229, .distance = 32.585f}, {.id = 248, .distance = 35.628f}, {.id = 218, .distance = 42.036f}, {.id = 250, .distance = 44.864f}
+        }},
+        {231, {
+            {.id = 250, .distance = 28.726f}, {.id = 218, .distance = 29.271f}, {.id = 232, .distance = 31.916f}, {.id = 230, .distance = 32.298f}, {.id = 251, .distance = 37.444f}, {.id = 249, .distance = 42.067f}, {.id = 217, .distance = 46.032f}
+        }},
+        {232, {
+            {.id = 251, .distance = 31.889f}, {.id = 231, .distance = 31.916f}, {.id = 252, .distance = 32.458f}, {.id = 233, .distance = 32.605f}, {.id = 218, .distance = 35.475f}, {.id = 219, .distance = 35.680f}, {.id = 250, .distance = 49.358f}
+        }},
+        {233, {
+            {.id = 253, .distance = 28.557f}, {.id = 219, .distance = 30.515f}, {.id = 232, .distance = 32.605f}, {.id = 234, .distance = 33.386f}, {.id = 252, .distance = 36.707f}, {.id = 254, .distance = 42.276f}, {.id = 220, .distance = 47.436f}
+        }},
+        {234, {
+            {.id = 254, .distance = 29.283f}, {.id = 220, .distance = 30.713f}, {.id = 235, .distance = 32.395f}, {.id = 233, .distance = 33.386f}, {.id = 255, .distance = 35.383f}, {.id = 219, .distance = 43.747f}, {.id = 253, .distance = 45.069f}
+        }},
+        {235, {
+            {.id = 256, .distance = 30.492f}, {.id = 234, .distance = 32.395f}, {.id = 236, .distance = 32.492f}, {.id = 220, .distance = 32.961f}, {.id = 255, .distance = 33.774f}, {.id = 221, .distance = 39.529f}, {.id = 257, .distance = 46.947f}
+        }},
+        {236, {
+            {.id = 221, .distance = 28.795f}, {.id = 257, .distance = 28.796f}, {.id = 237, .distance = 31.301f}, {.id = 235, .distance = 32.492f}, {.id = 258, .distance = 39.130f}, {.id = 256, .distance = 39.658f}, {.id = 222, .distance = 50.236f}
+        }},
+        {237, {
+            {.id = 258, .distance = 30.076f}, {.id = 236, .distance = 31.301f}, {.id = 238, .distance = 33.324f}, {.id = 222, .distance = 33.378f}, {.id = 259, .distance = 33.386f}, {.id = 221, .distance = 37.853f}, {.id = 257, .distance = 46.778f}
+        }},
+        {238, {
+            {.id = 260, .distance = 29.653f}, {.id = 222, .distance = 30.978f}, {.id = 239, .distance = 32.852f}, {.id = 237, .distance = 33.324f}, {.id = 259, .distance = 35.446f}, {.id = 223, .distance = 42.934f}, {.id = 261, .distance = 44.581f}
+        }},
+        {239, {
+            {.id = 261, .distance = 28.776f}, {.id = 223, .distance = 29.314f}, {.id = 224, .distance = 32.088f}, {.id = 238, .distance = 32.852f}, {.id = 240, .distance = 36.954f}, {.id = 260, .distance = 42.498f}, {.id = 222, .distance = 47.075f}
+        }},
+        {240, {
+            {.id = 262, .distance = 23.617f}, {.id = 261, .distance = 31.442f}, {.id = 224, .distance = 31.964f}, {.id = 241, .distance = 32.703f}, {.id = 239, .distance = 36.954f}, {.id = 309, .distance = 41.259f}, {.id = 311, .distance = 45.103f}
+        }},
+        {241, {
+            {.id = 224, .distance = 31.937f}, {.id = 240, .distance = 32.703f}, {.id = 242, .distance = 32.725f}, {.id = 263, .distance = 36.068f}, {.id = 225, .distance = 37.491f}, {.id = 264, .distance = 39.068f}, {.id = 262, .distance = 41.895f}
+        }},
+        {242, {
+            {.id = 225, .distance = 29.419f}, {.id = 243, .distance = 30.638f}, {.id = 241, .distance = 32.725f}, {.id = 264, .distance = 35.794f}, {.id = 265, .distance = 36.665f}, {.id = 226, .distance = 44.568f}, {.id = 266, .distance = 46.412f}
+        }},
+        {243, {
+            {.id = 266, .distance = 24.191f}, {.id = 226, .distance = 29.848f}, {.id = 242, .distance = 30.638f}, {.id = 244, .distance = 31.516f}, {.id = 225, .distance = 41.947f}, {.id = 267, .distance = 44.167f}, {.id = 265, .distance = 44.460f}
+        }},
+        {244, {
+            {.id = 271, .distance = 27.519f}, {.id = 243, .distance = 31.516f}, {.id = 245, .distance = 33.096f}, {.id = 227, .distance = 33.457f}, {.id = 226, .distance = 35.426f}, {.id = 268, .distance = 35.506f}, {.id = 266, .distance = 36.051f}
+        }},
+        {245, {
+            {.id = 227, .distance = 30.775f}, {.id = 246, .distance = 30.943f}, {.id = 271, .distance = 31.347f}, {.id = 244, .distance = 33.096f}, {.id = 273, .distance = 37.393f}, {.id = 228, .distance = 38.606f}, {.id = 272, .distance = 45.102f}
+        }},
+        {246, {
+            {.id = 228, .distance = 28.126f}, {.id = 245, .distance = 30.943f}, {.id = 247, .distance = 32.322f}, {.id = 274, .distance = 33.115f}, {.id = 273, .distance = 43.474f}, {.id = 275, .distance = 44.048f}, {.id = 227, .distance = 47.195f}
+        }},
+        {247, {
+            {.id = 277, .distance = 30.540f}, {.id = 229, .distance = 30.745f}, {.id = 246, .distance = 32.322f}, {.id = 248, .distance = 32.441f}, {.id = 275, .distance = 37.153f}, {.id = 228, .distance = 40.686f}, {.id = 276, .distance = 45.279f}
+        }},
+        {248, {
+            {.id = 277, .distance = 27.373f}, {.id = 249, .distance = 31.563f}, {.id = 247, .distance = 32.441f}, {.id = 229, .distance = 33.990f}, {.id = 279, .distance = 35.618f}, {.id = 230, .distance = 35.628f}, {.id = 281, .distance = 36.566f}
+        }},
+        {249, {
+            {.id = 281, .distance = 24.293f}, {.id = 230, .distance = 30.088f}, {.id = 248, .distance = 31.563f}, {.id = 250, .distance = 31.793f}, {.id = 231, .distance = 42.067f}, {.id = 282, .distance = 43.775f}, {.id = 283, .distance = 43.787f}
+        }},
+        {250, {
+            {.id = 231, .distance = 28.726f}, {.id = 251, .distance = 31.427f}, {.id = 249, .distance = 31.793f}, {.id = 284, .distance = 35.922f}, {.id = 283, .distance = 37.333f}, {.id = 230, .distance = 44.864f}, {.id = 281, .distance = 47.704f}
+        }},
+        {251, {
+            {.id = 250, .distance = 31.427f}, {.id = 232, .distance = 31.889f}, {.id = 252, .distance = 32.342f}, {.id = 285, .distance = 35.562f}, {.id = 231, .distance = 37.444f}, {.id = 284, .distance = 39.243f}, {.id = 287, .distance = 41.982f}
+        }},
+        {252, {
+            {.id = 287, .distance = 23.803f}, {.id = 253, .distance = 31.693f}, {.id = 251, .distance = 32.342f}, {.id = 232, .distance = 32.458f}, {.id = 233, .distance = 36.707f}, {.id = 289, .distance = 41.333f}, {.id = 286, .distance = 44.974f}
+        }},
+        {253, {
+            {.id = 291, .distance = 24.410f}, {.id = 233, .distance = 28.557f}, {.id = 252, .distance = 31.693f}, {.id = 254, .distance = 32.138f}, {.id = 289, .distance = 38.124f}, {.id = 287, .distance = 43.096f}, {.id = 234, .distance = 45.069f}
+        }},
+        {254, {
+            {.id = 234, .distance = 29.283f}, {.id = 255, .distance = 31.589f}, {.id = 253, .distance = 32.138f}, {.id = 293, .distance = 36.174f}, {.id = 291, .distance = 36.927f}, {.id = 233, .distance = 42.276f}, {.id = 294, .distance = 43.787f}
+        }},
+        {255, {
+            {.id = 254, .distance = 31.589f}, {.id = 256, .distance = 32.185f}, {.id = 294, .distance = 33.528f}, {.id = 235, .distance = 33.774f}, {.id = 234, .distance = 35.383f}, {.id = 295, .distance = 39.292f}, {.id = 293, .distance = 48.151f}
+        }},
+        {256, {
+            {.id = 297, .distance = 26.800f}, {.id = 235, .distance = 30.492f}, {.id = 257, .distance = 31.085f}, {.id = 255, .distance = 32.185f}, {.id = 236, .distance = 39.658f}, {.id = 295, .distance = 40.843f}, {.id = 296, .distance = 44.297f}
+        }},
+        {257, {
+            {.id = 236, .distance = 28.796f}, {.id = 256, .distance = 31.085f}, {.id = 297, .distance = 31.165f}, {.id = 258, .distance = 31.748f}, {.id = 301, .distance = 32.025f}, {.id = 299, .distance = 35.484f}, {.id = 237, .distance = 46.778f}
+        }},
+        {258, {
+            {.id = 301, .distance = 26.974f}, {.id = 237, .distance = 30.076f}, {.id = 259, .distance = 31.574f}, {.id = 257, .distance = 31.748f}, {.id = 236, .distance = 39.130f}, {.id = 303, .distance = 40.759f}, {.id = 302, .distance = 44.255f}
+        }},
+        {259, {
+            {.id = 258, .distance = 31.574f}, {.id = 260, .distance = 32.495f}, {.id = 237, .distance = 33.386f}, {.id = 304, .distance = 34.006f}, {.id = 238, .distance = 35.446f}, {.id = 303, .distance = 40.058f}, {.id = 305, .distance = 48.765f}
+        }},
+        {260, {
+            {.id = 238, .distance = 29.653f}, {.id = 261, .distance = 31.761f}, {.id = 259, .distance = 32.495f}, {.id = 305, .distance = 35.652f}, {.id = 307, .distance = 35.973f}, {.id = 239, .distance = 42.498f}, {.id = 304, .distance = 43.930f}
+        }},
+        {261, {
+            {.id = 307, .distance = 24.656f}, {.id = 239, .distance = 28.776f}, {.id = 240, .distance = 31.442f}, {.id = 260, .distance = 31.761f}, {.id = 309, .distance = 38.273f}, {.id = 262, .distance = 43.129f}, {.id = 238, .distance = 44.581f}
+        }},
+        {262, {
+            {.id = 311, .distance = 22.863f}, {.id = 240, .distance = 23.617f}, {.id = 309, .distance = 27.856f}, {.id = 310, .distance = 35.561f}, {.id = 263, .distance = 37.917f}, {.id = 241, .distance = 41.895f}, {.id = 261, .distance = 43.129f}
+        }},
+        {263, {
+            {.id = 311, .distance = 28.096f}, {.id = 264, .distance = 29.153f}, {.id = 57, .distance = 30.837f}, {.id = 241, .distance = 36.068f}, {.id = 262, .distance = 37.917f}, {.id = 59, .distance = 41.896f}, {.id = 56, .distance = 42.604f}
+        }},
+        {264, {
+            {.id = 265, .distance = 28.265f}, {.id = 263, .distance = 29.153f}, {.id = 56, .distance = 31.737f}, {.id = 242, .distance = 35.794f}, {.id = 241, .distance = 39.068f}, {.id = 57, .distance = 42.312f}, {.id = 55, .distance = 42.604f}
+        }},
+        {265, {
+            {.id = 264, .distance = 28.265f}, {.id = 267, .distance = 28.989f}, {.id = 55, .distance = 30.837f}, {.id = 242, .distance = 36.665f}, {.id = 266, .distance = 38.712f}, {.id = 103, .distance = 42.288f}, {.id = 56, .distance = 42.312f}
+        }},
+        {266, {
+            {.id = 267, .distance = 23.607f}, {.id = 243, .distance = 24.191f}, {.id = 268, .distance = 27.455f}, {.id = 269, .distance = 35.536f}, {.id = 244, .distance = 36.051f}, {.id = 265, .distance = 38.712f}, {.id = 242, .distance = 46.412f}
+        }},
+        {267, {
+            {.id = 266, .distance = 23.607f}, {.id = 269, .distance = 28.500f}, {.id = 265, .distance = 28.989f}, {.id = 103, .distance = 31.044f}, {.id = 268, .distance = 38.998f}, {.id = 55, .distance = 41.896f}, {.id = 102, .distance = 42.722f}
+        }},
+        {268, {
+            {.id = 269, .distance = 25.823f}, {.id = 270, .distance = 26.007f}, {.id = 271, .distance = 27.304f}, {.id = 266, .distance = 27.455f}, {.id = 244, .distance = 35.506f}, {.id = 267, .distance = 38.998f}, {.id = 272, .distance = 39.242f}
+        }},
+        {269, {
+            {.id = 268, .distance = 25.823f}, {.id = 267, .distance = 28.500f}, {.id = 270, .distance = 30.900f}, {.id = 102, .distance = 31.323f}, {.id = 266, .distance = 35.536f}, {.id = 103, .distance = 42.426f}, {.id = 271, .distance = 52.152f}
+        }},
+        {270, {
+            {.id = 268, .distance = 26.007f}, {.id = 412, .distance = 29.051f}, {.id = 272, .distance = 29.614f}, {.id = 269, .distance = 30.900f}, {.id = 271, .distance = 35.963f}, {.id = 410, .distance = 41.540f}, {.id = 414, .distance = 51.840f}
+        }},
+        {271, {
+            {.id = 272, .distance = 23.404f}, {.id = 268, .distance = 27.304f}, {.id = 244, .distance = 27.519f}, {.id = 245, .distance = 31.347f}, {.id = 270, .distance = 35.963f}, {.id = 273, .distance = 38.924f}, {.id = 266, .distance = 47.034f}
+        }},
+        {272, {
+            {.id = 271, .distance = 23.404f}, {.id = 273, .distance = 28.584f}, {.id = 270, .distance = 29.614f}, {.id = 410, .distance = 29.702f}, {.id = 268, .distance = 39.242f}, {.id = 409, .distance = 41.095f}, {.id = 412, .distance = 41.571f}
+        }},
+        {273, {
+            {.id = 274, .distance = 28.069f}, {.id = 272, .distance = 28.584f}, {.id = 409, .distance = 29.685f}, {.id = 245, .distance = 37.393f}, {.id = 271, .distance = 38.924f}, {.id = 408, .distance = 41.143f}, {.id = 410, .distance = 41.304f}
+        }},
+        {274, {
+            {.id = 273, .distance = 28.069f}, {.id = 275, .distance = 28.840f}, {.id = 408, .distance = 29.797f}, {.id = 246, .distance = 33.115f}, {.id = 409, .distance = 41.280f}, {.id = 407, .distance = 41.692f}, {.id = 245, .distance = 48.228f}
+        }},
+        {275, {
+            {.id = 274, .distance = 28.840f}, {.id = 276, .distance = 29.097f}, {.id = 407, .distance = 29.688f}, {.id = 247, .distance = 37.153f}, {.id = 277, .distance = 38.371f}, {.id = 408, .distance = 41.093f}, {.id = 406, .distance = 41.803f}
+        }},
+        {276, {
+            {.id = 277, .distance = 23.468f}, {.id = 278, .distance = 28.068f}, {.id = 275, .distance = 29.097f}, {.id = 406, .distance = 29.884f}, {.id = 279, .distance = 37.859f}, {.id = 404, .distance = 41.024f}, {.id = 407, .distance = 41.264f}
+        }},
+        {277, {
+            {.id = 276, .distance = 23.468f}, {.id = 279, .distance = 26.995f}, {.id = 248, .distance = 27.373f}, {.id = 247, .distance = 30.540f}, {.id = 278, .distance = 35.584f}, {.id = 275, .distance = 38.371f}, {.id = 281, .distance = 47.445f}
+        }},
+        {278, {
+            {.id = 279, .distance = 25.235f}, {.id = 276, .distance = 28.068f}, {.id = 404, .distance = 29.698f}, {.id = 280, .distance = 31.314f}, {.id = 277, .distance = 35.584f}, {.id = 406, .distance = 40.907f}, {.id = 1026, .distance = 50.621f}
+        }},
+        {279, {
+            {.id = 278, .distance = 25.235f}, {.id = 280, .distance = 25.959f}, {.id = 277, .distance = 26.995f}, {.id = 281, .distance = 28.280f}, {.id = 248, .distance = 35.618f}, {.id = 276, .distance = 37.859f}, {.id = 282, .distance = 39.348f}
+        }},
+        {280, {
+            {.id = 279, .distance = 25.959f}, {.id = 1026, .distance = 27.690f}, {.id = 282, .distance = 28.175f}, {.id = 278, .distance = 31.314f}, {.id = 281, .distance = 35.099f}, {.id = 1024, .distance = 39.154f}, {.id = 1027, .distance = 50.900f}
+        }},
+        {281, {
+            {.id = 282, .distance = 22.858f}, {.id = 249, .distance = 24.293f}, {.id = 279, .distance = 28.280f}, {.id = 280, .distance = 35.099f}, {.id = 248, .distance = 36.566f}, {.id = 283, .distance = 37.718f}, {.id = 277, .distance = 47.445f}
+        }},
+        {282, {
+            {.id = 281, .distance = 22.858f}, {.id = 1024, .distance = 27.436f}, {.id = 280, .distance = 28.175f}, {.id = 283, .distance = 28.665f}, {.id = 279, .distance = 39.348f}, {.id = 1026, .distance = 40.114f}, {.id = 1023, .distance = 40.252f}
+        }},
+        {283, {
+            {.id = 1023, .distance = 27.613f}, {.id = 282, .distance = 28.665f}, {.id = 284, .distance = 28.744f}, {.id = 250, .distance = 37.333f}, {.id = 281, .distance = 37.718f}, {.id = 1022, .distance = 39.855f}, {.id = 1024, .distance = 39.947f}
+        }},
+        {284, {
+            {.id = 1022, .distance = 27.498f}, {.id = 285, .distance = 28.665f}, {.id = 283, .distance = 28.744f}, {.id = 250, .distance = 35.922f}, {.id = 251, .distance = 39.243f}, {.id = 1023, .distance = 39.255f}, {.id = 1021, .distance = 39.752f}
+        }},
+        {285, {
+            {.id = 1021, .distance = 27.628f}, {.id = 284, .distance = 28.665f}, {.id = 286, .distance = 28.989f}, {.id = 251, .distance = 35.562f}, {.id = 287, .distance = 37.946f}, {.id = 1022, .distance = 39.790f}, {.id = 1020, .distance = 39.805f}
+        }},
+        {286, {
+            {.id = 287, .distance = 22.522f}, {.id = 1020, .distance = 27.583f}, {.id = 288, .distance = 28.989f}, {.id = 285, .distance = 28.989f}, {.id = 289, .distance = 38.748f}, {.id = 1018, .distance = 39.435f}, {.id = 1021, .distance = 40.007f}
+        }},
+        {287, {
+            {.id = 286, .distance = 22.522f}, {.id = 252, .distance = 23.803f}, {.id = 289, .distance = 27.573f}, {.id = 288, .distance = 35.430f}, {.id = 285, .distance = 37.946f}, {.id = 251, .distance = 41.982f}, {.id = 253, .distance = 43.096f}
+        }},
+        {288, {
+            {.id = 289, .distance = 25.732f}, {.id = 1018, .distance = 27.473f}, {.id = 286, .distance = 28.989f}, {.id = 290, .distance = 30.699f}, {.id = 287, .distance = 35.430f}, {.id = 1020, .distance = 40.223f}, {.id = 1016, .distance = 49.900f}
+        }},
+        {289, {
+            {.id = 290, .distance = 25.715f}, {.id = 288, .distance = 25.732f}, {.id = 291, .distance = 27.009f}, {.id = 287, .distance = 27.573f}, {.id = 253, .distance = 38.124f}, {.id = 286, .distance = 38.748f}, {.id = 292, .distance = 38.795f}
+        }},
+        {290, {
+            {.id = 289, .distance = 25.715f}, {.id = 932, .distance = 27.990f}, {.id = 292, .distance = 28.587f}, {.id = 288, .distance = 30.699f}, {.id = 291, .distance = 35.180f}, {.id = 930, .distance = 41.739f}, {.id = 934, .distance = 50.403f}
+        }},
+        {291, {
+            {.id = 292, .distance = 23.318f}, {.id = 253, .distance = 24.410f}, {.id = 289, .distance = 27.009f}, {.id = 290, .distance = 35.180f}, {.id = 254, .distance = 36.927f}, {.id = 293, .distance = 38.625f}, {.id = 287, .distance = 47.229f}
+        }},
+        {292, {
+            {.id = 291, .distance = 23.318f}, {.id = 930, .distance = 28.526f}, {.id = 290, .distance = 28.587f}, {.id = 293, .distance = 28.648f}, {.id = 289, .distance = 38.795f}, {.id = 932, .distance = 39.023f}, {.id = 929, .distance = 41.888f}
+        }},
+        {293, {
+            {.id = 292, .distance = 28.648f}, {.id = 294, .distance = 28.678f}, {.id = 929, .distance = 28.720f}, {.id = 254, .distance = 36.174f}, {.id = 291, .distance = 38.625f}, {.id = 930, .distance = 38.975f}, {.id = 928, .distance = 42.065f}
+        }},
+        {294, {
+            {.id = 295, .distance = 28.019f}, {.id = 928, .distance = 28.593f}, {.id = 293, .distance = 28.678f}, {.id = 255, .distance = 33.528f}, {.id = 929, .distance = 39.193f}, {.id = 927, .distance = 42.010f}, {.id = 254, .distance = 43.787f}
+        }},
+        {295, {
+            {.id = 294, .distance = 28.019f}, {.id = 927, .distance = 28.538f}, {.id = 296, .distance = 29.666f}, {.id = 928, .distance = 38.440f}, {.id = 297, .distance = 39.143f}, {.id = 255, .distance = 39.292f}, {.id = 256, .distance = 40.843f}
+        }},
+        {296, {
+            {.id = 297, .distance = 23.574f}, {.id = 926, .distance = 28.586f}, {.id = 298, .distance = 28.796f}, {.id = 295, .distance = 29.666f}, {.id = 299, .distance = 38.536f}, {.id = 927, .distance = 38.933f}, {.id = 924, .distance = 41.429f}
+        }},
+        {297, {
+            {.id = 296, .distance = 23.574f}, {.id = 256, .distance = 26.800f}, {.id = 299, .distance = 27.295f}, {.id = 257, .distance = 31.165f}, {.id = 298, .distance = 35.726f}, {.id = 295, .distance = 39.143f}, {.id = 301, .distance = 46.866f}
+        }},
+        {298, {
+            {.id = 299, .distance = 25.236f}, {.id = 924, .distance = 28.551f}, {.id = 296, .distance = 28.796f}, {.id = 300, .distance = 30.642f}, {.id = 297, .distance = 35.726f}, {.id = 926, .distance = 39.222f}, {.id = 301, .distance = 51.793f}
+        }},
+        {299, {
+            {.id = 298, .distance = 25.236f}, {.id = 300, .distance = 25.701f}, {.id = 297, .distance = 27.295f}, {.id = 301, .distance = 27.601f}, {.id = 257, .distance = 35.484f}, {.id = 296, .distance = 38.536f}, {.id = 302, .distance = 38.536f}
+        }},
+        {300, {
+            {.id = 299, .distance = 25.701f}, {.id = 302, .distance = 28.171f}, {.id = 165, .distance = 30.395f}, {.id = 298, .distance = 30.642f}, {.id = 301, .distance = 35.416f}, {.id = 163, .distance = 42.490f}, {.id = 924, .distance = 50.454f}
+        }},
+        {301, {
+            {.id = 302, .distance = 23.046f}, {.id = 258, .distance = 26.974f}, {.id = 299, .distance = 27.601f}, {.id = 257, .distance = 32.025f}, {.id = 300, .distance = 35.416f}, {.id = 303, .distance = 38.124f}, {.id = 297, .distance = 46.866f}
+        }},
+        {302, {
+            {.id = 301, .distance = 23.046f}, {.id = 300, .distance = 28.171f}, {.id = 303, .distance = 28.796f}, {.id = 163, .distance = 30.411f}, {.id = 299, .distance = 38.536f}, {.id = 165, .distance = 40.607f}, {.id = 161, .distance = 43.166f}
+        }},
+        {303, {
+            {.id = 304, .distance = 28.739f}, {.id = 302, .distance = 28.796f}, {.id = 161, .distance = 30.177f}, {.id = 301, .distance = 38.124f}, {.id = 259, .distance = 40.058f}, {.id = 163, .distance = 40.517f}, {.id = 258, .distance = 40.759f}
+        }},
+        {304, {
+            {.id = 303, .distance = 28.739f}, {.id = 305, .distance = 28.996f}, {.id = 160, .distance = 30.701f}, {.id = 259, .distance = 34.006f}, {.id = 161, .distance = 40.393f}, {.id = 159, .distance = 42.996f}, {.id = 260, .distance = 43.930f}
+        }},
+        {305, {
+            {.id = 306, .distance = 28.539f}, {.id = 304, .distance = 28.996f}, {.id = 159, .distance = 30.348f}, {.id = 260, .distance = 35.652f}, {.id = 307, .distance = 38.072f}, {.id = 160, .distance = 41.296f}, {.id = 207, .distance = 42.556f}
+        }},
+        {306, {
+            {.id = 307, .distance = 23.229f}, {.id = 305, .distance = 28.539f}, {.id = 308, .distance = 29.175f}, {.id = 207, .distance = 30.294f}, {.id = 309, .distance = 38.795f}, {.id = 159, .distance = 40.389f}, {.id = 206, .distance = 43.139f}
+        }},
+        {307, {
+            {.id = 306, .distance = 23.229f}, {.id = 261, .distance = 24.656f}, {.id = 309, .distance = 27.373f}, {.id = 260, .distance = 35.973f}, {.id = 308, .distance = 36.131f}, {.id = 305, .distance = 38.072f}, {.id = 262, .distance = 47.750f}
+        }},
+        {308, {
+            {.id = 309, .distance = 26.133f}, {.id = 306, .distance = 29.175f}, {.id = 206, .distance = 29.971f}, {.id = 310, .distance = 30.723f}, {.id = 307, .distance = 36.131f}, {.id = 207, .distance = 40.925f}, {.id = 262, .distance = 52.753f}
+        }},
+        {309, {
+            {.id = 310, .distance = 25.813f}, {.id = 308, .distance = 26.133f}, {.id = 307, .distance = 27.373f}, {.id = 262, .distance = 27.856f}, {.id = 261, .distance = 38.273f}, {.id = 306, .distance = 38.795f}, {.id = 311, .distance = 39.458f}
+        }},
+        {310, {
+            {.id = 309, .distance = 25.813f}, {.id = 311, .distance = 29.479f}, {.id = 308, .distance = 30.723f}, {.id = 61, .distance = 31.323f}, {.id = 262, .distance = 35.561f}, {.id = 59, .distance = 42.722f}, {.id = 206, .distance = 51.871f}
+        }},
+        {311, {
+            {.id = 262, .distance = 22.863f}, {.id = 263, .distance = 28.096f}, {.id = 310, .distance = 29.479f}, {.id = 59, .distance = 31.044f}, {.id = 309, .distance = 39.458f}, {.id = 57, .distance = 42.288f}, {.id = 61, .distance = 42.426f}
+        }},
+        {312, {
+            {.id = 313, .distance = 25.256f}, {.id = 315, .distance = 25.653f}, {.id = 314, .distance = 25.660f}, {.id = 317, .distance = 26.237f}, {.id = 316, .distance = 26.780f}, {.id = 319, .distance = 53.251f}, {.id = 323, .distance = 53.584f}
+        }},
+        {313, {
+            {.id = 312, .distance = 25.256f}, {.id = 319, .distance = 27.996f}, {.id = 317, .distance = 30.406f}, {.id = 314, .distance = 30.746f}, {.id = 320, .distance = 36.902f}, {.id = 318, .distance = 36.902f}, {.id = 315, .distance = 48.670f}
+        }},
+        {314, {
+            {.id = 312, .distance = 25.660f}, {.id = 321, .distance = 28.138f}, {.id = 315, .distance = 30.016f}, {.id = 313, .distance = 30.746f}, {.id = 322, .distance = 35.779f}, {.id = 320, .distance = 37.730f}, {.id = 316, .distance = 49.623f}
+        }},
+        {315, {
+            {.id = 312, .distance = 25.653f}, {.id = 323, .distance = 27.950f}, {.id = 314, .distance = 30.016f}, {.id = 316, .distance = 30.334f}, {.id = 324, .distance = 36.663f}, {.id = 322, .distance = 36.917f}, {.id = 313, .distance = 48.670f}
+        }},
+        {316, {
+            {.id = 312, .distance = 26.780f}, {.id = 325, .distance = 28.148f}, {.id = 315, .distance = 30.334f}, {.id = 317, .distance = 30.829f}, {.id = 324, .distance = 36.041f}, {.id = 326, .distance = 36.581f}, {.id = 313, .distance = 49.415f}
+        }},
+        {317, {
+            {.id = 312, .distance = 26.237f}, {.id = 327, .distance = 28.784f}, {.id = 313, .distance = 30.406f}, {.id = 316, .distance = 30.829f}, {.id = 318, .distance = 36.136f}, {.id = 326, .distance = 36.663f}, {.id = 315, .distance = 49.028f}
+        }},
+        {318, {
+            {.id = 329, .distance = 29.943f}, {.id = 327, .distance = 32.709f}, {.id = 319, .distance = 33.241f}, {.id = 328, .distance = 35.999f}, {.id = 317, .distance = 36.136f}, {.id = 313, .distance = 36.902f}, {.id = 330, .distance = 43.146f}
+        }},
+        {319, {
+            {.id = 313, .distance = 27.996f}, {.id = 330, .distance = 31.091f}, {.id = 318, .distance = 33.241f}, {.id = 320, .distance = 33.489f}, {.id = 331, .distance = 33.997f}, {.id = 329, .distance = 46.465f}, {.id = 332, .distance = 50.872f}
+        }},
+        {320, {
+            {.id = 332, .distance = 28.795f}, {.id = 319, .distance = 33.489f}, {.id = 321, .distance = 34.526f}, {.id = 313, .distance = 36.902f}, {.id = 314, .distance = 37.730f}, {.id = 331, .distance = 39.001f}, {.id = 333, .distance = 39.043f}
+        }},
+        {321, {
+            {.id = 314, .distance = 28.138f}, {.id = 334, .distance = 30.119f}, {.id = 322, .distance = 32.862f}, {.id = 333, .distance = 33.326f}, {.id = 320, .distance = 34.526f}, {.id = 335, .distance = 46.032f}, {.id = 332, .distance = 51.953f}
+        }},
+        {322, {
+            {.id = 335, .distance = 29.271f}, {.id = 321, .distance = 32.862f}, {.id = 323, .distance = 32.910f}, {.id = 336, .distance = 35.475f}, {.id = 314, .distance = 35.779f}, {.id = 315, .distance = 36.917f}, {.id = 334, .distance = 42.036f}
+        }},
+        {323, {
+            {.id = 315, .distance = 27.950f}, {.id = 337, .distance = 30.515f}, {.id = 322, .distance = 32.910f}, {.id = 324, .distance = 34.288f}, {.id = 336, .distance = 35.680f}, {.id = 338, .distance = 43.747f}, {.id = 314, .distance = 50.881f}
+        }},
+        {324, {
+            {.id = 338, .distance = 30.713f}, {.id = 339, .distance = 32.961f}, {.id = 323, .distance = 34.288f}, {.id = 325, .distance = 34.333f}, {.id = 316, .distance = 36.041f}, {.id = 315, .distance = 36.663f}, {.id = 337, .distance = 47.436f}
+        }},
+        {325, {
+            {.id = 316, .distance = 28.148f}, {.id = 340, .distance = 28.795f}, {.id = 326, .distance = 32.474f}, {.id = 324, .distance = 34.333f}, {.id = 341, .distance = 37.853f}, {.id = 339, .distance = 39.529f}, {.id = 317, .distance = 52.029f}
+        }},
+        {326, {
+            {.id = 342, .distance = 30.978f}, {.id = 325, .distance = 32.474f}, {.id = 341, .distance = 33.378f}, {.id = 327, .distance = 34.135f}, {.id = 316, .distance = 36.581f}, {.id = 317, .distance = 36.663f}, {.id = 343, .distance = 47.075f}
+        }},
+        {327, {
+            {.id = 317, .distance = 28.784f}, {.id = 343, .distance = 29.314f}, {.id = 318, .distance = 32.709f}, {.id = 326, .distance = 34.135f}, {.id = 328, .distance = 35.428f}, {.id = 342, .distance = 42.934f}, {.id = 313, .distance = 52.730f}
+        }},
+        {328, {
+            {.id = 345, .distance = 31.937f}, {.id = 344, .distance = 31.964f}, {.id = 343, .distance = 32.088f}, {.id = 329, .distance = 32.704f}, {.id = 327, .distance = 35.428f}, {.id = 318, .distance = 35.999f}, {.id = 365, .distance = 49.921f}
+        }},
+        {329, {
+            {.id = 346, .distance = 29.419f}, {.id = 318, .distance = 29.943f}, {.id = 330, .distance = 32.468f}, {.id = 328, .distance = 32.704f}, {.id = 345, .distance = 37.491f}, {.id = 347, .distance = 41.947f}, {.id = 319, .distance = 46.465f}
+        }},
+        {330, {
+            {.id = 347, .distance = 29.848f}, {.id = 319, .distance = 31.091f}, {.id = 331, .distance = 31.917f}, {.id = 329, .distance = 32.468f}, {.id = 348, .distance = 35.426f}, {.id = 318, .distance = 43.146f}, {.id = 346, .distance = 44.568f}
+        }},
+        {331, {
+            {.id = 349, .distance = 30.775f}, {.id = 330, .distance = 31.917f}, {.id = 332, .distance = 32.089f}, {.id = 348, .distance = 33.457f}, {.id = 319, .distance = 33.997f}, {.id = 320, .distance = 39.001f}, {.id = 350, .distance = 47.195f}
+        }},
+        {332, {
+            {.id = 350, .distance = 28.126f}, {.id = 320, .distance = 28.795f}, {.id = 331, .distance = 32.089f}, {.id = 333, .distance = 33.350f}, {.id = 349, .distance = 38.606f}, {.id = 351, .distance = 40.686f}, {.id = 319, .distance = 50.872f}
+        }},
+        {333, {
+            {.id = 351, .distance = 30.745f}, {.id = 334, .distance = 32.585f}, {.id = 321, .distance = 33.326f}, {.id = 332, .distance = 33.350f}, {.id = 352, .distance = 33.990f}, {.id = 320, .distance = 39.043f}, {.id = 350, .distance = 47.230f}
+        }},
+        {334, {
+            {.id = 353, .distance = 30.088f}, {.id = 321, .distance = 30.119f}, {.id = 335, .distance = 32.298f}, {.id = 333, .distance = 32.585f}, {.id = 352, .distance = 35.628f}, {.id = 322, .distance = 42.036f}, {.id = 354, .distance = 44.864f}
+        }},
+        {335, {
+            {.id = 354, .distance = 28.726f}, {.id = 322, .distance = 29.271f}, {.id = 336, .distance = 31.916f}, {.id = 334, .distance = 32.298f}, {.id = 355, .distance = 37.444f}, {.id = 353, .distance = 42.067f}, {.id = 321, .distance = 46.032f}
+        }},
+        {336, {
+            {.id = 355, .distance = 31.889f}, {.id = 335, .distance = 31.916f}, {.id = 356, .distance = 32.458f}, {.id = 337, .distance = 32.605f}, {.id = 322, .distance = 35.475f}, {.id = 323, .distance = 35.680f}, {.id = 354, .distance = 49.358f}
+        }},
+        {337, {
+            {.id = 357, .distance = 28.557f}, {.id = 323, .distance = 30.515f}, {.id = 336, .distance = 32.605f}, {.id = 338, .distance = 33.386f}, {.id = 356, .distance = 36.707f}, {.id = 358, .distance = 42.276f}, {.id = 324, .distance = 47.436f}
+        }},
+        {338, {
+            {.id = 358, .distance = 29.283f}, {.id = 324, .distance = 30.713f}, {.id = 339, .distance = 32.395f}, {.id = 337, .distance = 33.386f}, {.id = 359, .distance = 35.383f}, {.id = 323, .distance = 43.747f}, {.id = 357, .distance = 45.069f}
+        }},
+        {339, {
+            {.id = 360, .distance = 30.492f}, {.id = 338, .distance = 32.395f}, {.id = 340, .distance = 32.492f}, {.id = 324, .distance = 32.961f}, {.id = 359, .distance = 33.774f}, {.id = 325, .distance = 39.529f}, {.id = 361, .distance = 46.947f}
+        }},
+        {340, {
+            {.id = 325, .distance = 28.795f}, {.id = 361, .distance = 28.796f}, {.id = 341, .distance = 31.301f}, {.id = 339, .distance = 32.492f}, {.id = 362, .distance = 39.130f}, {.id = 360, .distance = 39.658f}, {.id = 326, .distance = 50.236f}
+        }},
+        {341, {
+            {.id = 362, .distance = 30.076f}, {.id = 340, .distance = 31.301f}, {.id = 342, .distance = 33.324f}, {.id = 326, .distance = 33.378f}, {.id = 363, .distance = 33.386f}, {.id = 325, .distance = 37.853f}, {.id = 361, .distance = 46.778f}
+        }},
+        {342, {
+            {.id = 364, .distance = 29.653f}, {.id = 326, .distance = 30.978f}, {.id = 343, .distance = 32.852f}, {.id = 341, .distance = 33.324f}, {.id = 363, .distance = 35.446f}, {.id = 327, .distance = 42.934f}, {.id = 365, .distance = 44.581f}
+        }},
+        {343, {
+            {.id = 365, .distance = 28.776f}, {.id = 327, .distance = 29.314f}, {.id = 328, .distance = 32.088f}, {.id = 342, .distance = 32.852f}, {.id = 344, .distance = 36.954f}, {.id = 364, .distance = 42.498f}, {.id = 326, .distance = 47.075f}
+        }},
+        {344, {
+            {.id = 366, .distance = 23.617f}, {.id = 365, .distance = 31.442f}, {.id = 328, .distance = 31.964f}, {.id = 345, .distance = 32.703f}, {.id = 343, .distance = 36.954f}, {.id = 413, .distance = 41.259f}, {.id = 415, .distance = 45.103f}
+        }},
+        {345, {
+            {.id = 328, .distance = 31.937f}, {.id = 344, .distance = 32.703f}, {.id = 346, .distance = 32.725f}, {.id = 367, .distance = 36.068f}, {.id = 329, .distance = 37.491f}, {.id = 368, .distance = 39.068f}, {.id = 366, .distance = 41.895f}
+        }},
+        {346, {
+            {.id = 329, .distance = 29.419f}, {.id = 347, .distance = 30.638f}, {.id = 345, .distance = 32.725f}, {.id = 368, .distance = 35.794f}, {.id = 369, .distance = 36.665f}, {.id = 330, .distance = 44.568f}, {.id = 370, .distance = 46.412f}
+        }},
+        {347, {
+            {.id = 370, .distance = 24.191f}, {.id = 330, .distance = 29.848f}, {.id = 346, .distance = 30.638f}, {.id = 348, .distance = 31.516f}, {.id = 329, .distance = 41.947f}, {.id = 371, .distance = 44.167f}, {.id = 369, .distance = 44.460f}
+        }},
+        {348, {
+            {.id = 375, .distance = 27.519f}, {.id = 347, .distance = 31.516f}, {.id = 349, .distance = 33.096f}, {.id = 331, .distance = 33.457f}, {.id = 330, .distance = 35.426f}, {.id = 372, .distance = 35.506f}, {.id = 370, .distance = 36.051f}
+        }},
+        {349, {
+            {.id = 331, .distance = 30.775f}, {.id = 350, .distance = 30.943f}, {.id = 375, .distance = 31.347f}, {.id = 348, .distance = 33.096f}, {.id = 377, .distance = 37.393f}, {.id = 332, .distance = 38.606f}, {.id = 376, .distance = 45.102f}
+        }},
+        {350, {
+            {.id = 332, .distance = 28.126f}, {.id = 349, .distance = 30.943f}, {.id = 351, .distance = 32.322f}, {.id = 378, .distance = 33.115f}, {.id = 377, .distance = 43.474f}, {.id = 379, .distance = 44.048f}, {.id = 331, .distance = 47.195f}
+        }},
+        {351, {
+            {.id = 381, .distance = 30.540f}, {.id = 333, .distance = 30.745f}, {.id = 350, .distance = 32.322f}, {.id = 352, .distance = 32.441f}, {.id = 379, .distance = 37.153f}, {.id = 332, .distance = 40.686f}, {.id = 380, .distance = 45.279f}
+        }},
+        {352, {
+            {.id = 381, .distance = 27.373f}, {.id = 353, .distance = 31.563f}, {.id = 351, .distance = 32.441f}, {.id = 333, .distance = 33.990f}, {.id = 383, .distance = 35.618f}, {.id = 334, .distance = 35.628f}, {.id = 385, .distance = 36.566f}
+        }},
+        {353, {
+            {.id = 385, .distance = 24.293f}, {.id = 334, .distance = 30.088f}, {.id = 352, .distance = 31.563f}, {.id = 354, .distance = 31.793f}, {.id = 335, .distance = 42.067f}, {.id = 386, .distance = 43.775f}, {.id = 387, .distance = 43.787f}
+        }},
+        {354, {
+            {.id = 335, .distance = 28.726f}, {.id = 355, .distance = 31.427f}, {.id = 353, .distance = 31.793f}, {.id = 388, .distance = 35.922f}, {.id = 387, .distance = 37.333f}, {.id = 334, .distance = 44.864f}, {.id = 385, .distance = 47.704f}
+        }},
+        {355, {
+            {.id = 354, .distance = 31.427f}, {.id = 336, .distance = 31.889f}, {.id = 356, .distance = 32.342f}, {.id = 389, .distance = 35.562f}, {.id = 335, .distance = 37.444f}, {.id = 388, .distance = 39.243f}, {.id = 391, .distance = 41.982f}
+        }},
+        {356, {
+            {.id = 391, .distance = 23.803f}, {.id = 357, .distance = 31.693f}, {.id = 355, .distance = 32.342f}, {.id = 336, .distance = 32.458f}, {.id = 337, .distance = 36.707f}, {.id = 393, .distance = 41.333f}, {.id = 390, .distance = 44.974f}
+        }},
+        {357, {
+            {.id = 395, .distance = 24.410f}, {.id = 337, .distance = 28.557f}, {.id = 356, .distance = 31.693f}, {.id = 358, .distance = 32.138f}, {.id = 393, .distance = 38.124f}, {.id = 391, .distance = 43.096f}, {.id = 338, .distance = 45.069f}
+        }},
+        {358, {
+            {.id = 338, .distance = 29.283f}, {.id = 359, .distance = 31.589f}, {.id = 357, .distance = 32.138f}, {.id = 397, .distance = 36.174f}, {.id = 395, .distance = 36.927f}, {.id = 337, .distance = 42.276f}, {.id = 398, .distance = 43.787f}
+        }},
+        {359, {
+            {.id = 358, .distance = 31.589f}, {.id = 360, .distance = 32.185f}, {.id = 398, .distance = 33.528f}, {.id = 339, .distance = 33.774f}, {.id = 338, .distance = 35.383f}, {.id = 399, .distance = 39.292f}, {.id = 397, .distance = 48.151f}
+        }},
+        {360, {
+            {.id = 401, .distance = 26.800f}, {.id = 339, .distance = 30.492f}, {.id = 361, .distance = 31.085f}, {.id = 359, .distance = 32.185f}, {.id = 340, .distance = 39.658f}, {.id = 399, .distance = 40.843f}, {.id = 400, .distance = 44.297f}
+        }},
+        {361, {
+            {.id = 340, .distance = 28.796f}, {.id = 360, .distance = 31.085f}, {.id = 401, .distance = 31.165f}, {.id = 362, .distance = 31.748f}, {.id = 405, .distance = 32.025f}, {.id = 403, .distance = 35.484f}, {.id = 341, .distance = 46.778f}
+        }},
+        {362, {
+            {.id = 405, .distance = 26.974f}, {.id = 341, .distance = 30.076f}, {.id = 363, .distance = 31.574f}, {.id = 361, .distance = 31.748f}, {.id = 340, .distance = 39.130f}, {.id = 407, .distance = 40.759f}, {.id = 406, .distance = 44.255f}
+        }},
+        {363, {
+            {.id = 362, .distance = 31.574f}, {.id = 364, .distance = 32.495f}, {.id = 341, .distance = 33.386f}, {.id = 408, .distance = 34.006f}, {.id = 342, .distance = 35.446f}, {.id = 407, .distance = 40.058f}, {.id = 409, .distance = 48.765f}
+        }},
+        {364, {
+            {.id = 342, .distance = 29.653f}, {.id = 365, .distance = 31.761f}, {.id = 363, .distance = 32.495f}, {.id = 409, .distance = 35.652f}, {.id = 411, .distance = 35.973f}, {.id = 343, .distance = 42.498f}, {.id = 408, .distance = 43.930f}
+        }},
+        {365, {
+            {.id = 411, .distance = 24.656f}, {.id = 343, .distance = 28.776f}, {.id = 344, .distance = 31.442f}, {.id = 364, .distance = 31.761f}, {.id = 413, .distance = 38.273f}, {.id = 366, .distance = 43.129f}, {.id = 342, .distance = 44.581f}
+        }},
+        {366, {
+            {.id = 415, .distance = 22.863f}, {.id = 344, .distance = 23.617f}, {.id = 413, .distance = 27.856f}, {.id = 414, .distance = 35.561f}, {.id = 367, .distance = 37.917f}, {.id = 345, .distance = 41.895f}, {.id = 365, .distance = 43.129f}
+        }},
+        {367, {
+            {.id = 415, .distance = 28.096f}, {.id = 368, .distance = 29.153f}, {.id = 97, .distance = 30.344f}, {.id = 345, .distance = 36.068f}, {.id = 366, .distance = 37.917f}, {.id = 98, .distance = 40.387f}, {.id = 96, .distance = 42.992f}
+        }},
+        {368, {
+            {.id = 369, .distance = 28.265f}, {.id = 367, .distance = 29.153f}, {.id = 96, .distance = 30.696f}, {.id = 346, .distance = 35.794f}, {.id = 345, .distance = 39.068f}, {.id = 97, .distance = 41.292f}, {.id = 95, .distance = 42.959f}
+        }},
+        {369, {
+            {.id = 368, .distance = 28.265f}, {.id = 371, .distance = 28.989f}, {.id = 95, .distance = 30.170f}, {.id = 346, .distance = 36.665f}, {.id = 370, .distance = 38.712f}, {.id = 96, .distance = 40.388f}, {.id = 94, .distance = 43.161f}
+        }},
+        {370, {
+            {.id = 371, .distance = 23.607f}, {.id = 347, .distance = 24.191f}, {.id = 372, .distance = 27.455f}, {.id = 373, .distance = 35.536f}, {.id = 348, .distance = 36.051f}, {.id = 369, .distance = 38.712f}, {.id = 346, .distance = 46.412f}
+        }},
+        {371, {
+            {.id = 370, .distance = 23.607f}, {.id = 373, .distance = 28.500f}, {.id = 369, .distance = 28.989f}, {.id = 94, .distance = 30.403f}, {.id = 372, .distance = 38.998f}, {.id = 95, .distance = 40.512f}, {.id = 92, .distance = 42.484f}
+        }},
+        {372, {
+            {.id = 373, .distance = 25.823f}, {.id = 374, .distance = 26.007f}, {.id = 375, .distance = 27.304f}, {.id = 370, .distance = 27.455f}, {.id = 348, .distance = 35.506f}, {.id = 371, .distance = 38.998f}, {.id = 376, .distance = 39.242f}
+        }},
+        {373, {
+            {.id = 372, .distance = 25.823f}, {.id = 371, .distance = 28.500f}, {.id = 92, .distance = 30.385f}, {.id = 374, .distance = 30.900f}, {.id = 370, .distance = 35.536f}, {.id = 94, .distance = 40.601f}, {.id = 375, .distance = 52.152f}
+        }},
+        {374, {
+            {.id = 372, .distance = 26.007f}, {.id = 516, .distance = 29.051f}, {.id = 376, .distance = 29.614f}, {.id = 373, .distance = 30.900f}, {.id = 375, .distance = 35.963f}, {.id = 514, .distance = 41.540f}, {.id = 518, .distance = 51.840f}
+        }},
+        {375, {
+            {.id = 376, .distance = 23.404f}, {.id = 372, .distance = 27.304f}, {.id = 348, .distance = 27.519f}, {.id = 349, .distance = 31.347f}, {.id = 374, .distance = 35.963f}, {.id = 377, .distance = 38.924f}, {.id = 370, .distance = 47.034f}
+        }},
+        {376, {
+            {.id = 375, .distance = 23.404f}, {.id = 377, .distance = 28.584f}, {.id = 374, .distance = 29.614f}, {.id = 514, .distance = 29.702f}, {.id = 372, .distance = 39.242f}, {.id = 513, .distance = 41.095f}, {.id = 516, .distance = 41.571f}
+        }},
+        {377, {
+            {.id = 378, .distance = 28.069f}, {.id = 376, .distance = 28.584f}, {.id = 513, .distance = 29.685f}, {.id = 349, .distance = 37.393f}, {.id = 375, .distance = 38.924f}, {.id = 512, .distance = 41.143f}, {.id = 514, .distance = 41.304f}
+        }},
+        {378, {
+            {.id = 377, .distance = 28.069f}, {.id = 379, .distance = 28.840f}, {.id = 512, .distance = 29.797f}, {.id = 350, .distance = 33.115f}, {.id = 513, .distance = 41.280f}, {.id = 511, .distance = 41.692f}, {.id = 349, .distance = 48.228f}
+        }},
+        {379, {
+            {.id = 378, .distance = 28.840f}, {.id = 380, .distance = 29.098f}, {.id = 511, .distance = 29.688f}, {.id = 351, .distance = 37.153f}, {.id = 381, .distance = 38.371f}, {.id = 512, .distance = 41.093f}, {.id = 510, .distance = 41.803f}
+        }},
+        {380, {
+            {.id = 381, .distance = 23.468f}, {.id = 382, .distance = 28.067f}, {.id = 379, .distance = 29.098f}, {.id = 510, .distance = 29.884f}, {.id = 383, .distance = 37.859f}, {.id = 508, .distance = 41.024f}, {.id = 511, .distance = 41.264f}
+        }},
+        {381, {
+            {.id = 380, .distance = 23.468f}, {.id = 383, .distance = 26.995f}, {.id = 352, .distance = 27.373f}, {.id = 351, .distance = 30.540f}, {.id = 382, .distance = 35.584f}, {.id = 379, .distance = 38.371f}, {.id = 385, .distance = 47.445f}
+        }},
+        {382, {
+            {.id = 383, .distance = 25.235f}, {.id = 380, .distance = 28.067f}, {.id = 508, .distance = 29.698f}, {.id = 384, .distance = 31.314f}, {.id = 381, .distance = 35.584f}, {.id = 510, .distance = 40.907f}, {.id = 1130, .distance = 50.621f}
+        }},
+        {383, {
+            {.id = 382, .distance = 25.235f}, {.id = 384, .distance = 25.959f}, {.id = 381, .distance = 26.995f}, {.id = 385, .distance = 28.280f}, {.id = 352, .distance = 35.618f}, {.id = 380, .distance = 37.859f}, {.id = 386, .distance = 39.348f}
+        }},
+        {384, {
+            {.id = 383, .distance = 25.959f}, {.id = 1130, .distance = 27.690f}, {.id = 386, .distance = 28.175f}, {.id = 382, .distance = 31.314f}, {.id = 385, .distance = 35.099f}, {.id = 1128, .distance = 39.154f}, {.id = 1131, .distance = 50.900f}
+        }},
+        {385, {
+            {.id = 386, .distance = 22.858f}, {.id = 353, .distance = 24.293f}, {.id = 383, .distance = 28.280f}, {.id = 384, .distance = 35.099f}, {.id = 352, .distance = 36.566f}, {.id = 387, .distance = 37.718f}, {.id = 381, .distance = 47.445f}
+        }},
+        {386, {
+            {.id = 385, .distance = 22.858f}, {.id = 1128, .distance = 27.436f}, {.id = 384, .distance = 28.175f}, {.id = 387, .distance = 28.665f}, {.id = 383, .distance = 39.348f}, {.id = 1130, .distance = 40.114f}, {.id = 1127, .distance = 40.252f}
+        }},
+        {387, {
+            {.id = 1127, .distance = 27.613f}, {.id = 386, .distance = 28.665f}, {.id = 388, .distance = 28.744f}, {.id = 354, .distance = 37.333f}, {.id = 385, .distance = 37.718f}, {.id = 1126, .distance = 39.855f}, {.id = 1128, .distance = 39.947f}
+        }},
+        {388, {
+            {.id = 1126, .distance = 27.498f}, {.id = 389, .distance = 28.665f}, {.id = 387, .distance = 28.744f}, {.id = 354, .distance = 35.922f}, {.id = 355, .distance = 39.243f}, {.id = 1127, .distance = 39.255f}, {.id = 1125, .distance = 39.752f}
+        }},
+        {389, {
+            {.id = 1125, .distance = 27.628f}, {.id = 388, .distance = 28.665f}, {.id = 390, .distance = 28.989f}, {.id = 355, .distance = 35.562f}, {.id = 391, .distance = 37.946f}, {.id = 1126, .distance = 39.790f}, {.id = 1124, .distance = 39.805f}
+        }},
+        {390, {
+            {.id = 391, .distance = 22.522f}, {.id = 1124, .distance = 27.583f}, {.id = 392, .distance = 28.989f}, {.id = 389, .distance = 28.989f}, {.id = 393, .distance = 38.748f}, {.id = 1122, .distance = 39.435f}, {.id = 1125, .distance = 40.007f}
+        }},
+        {391, {
+            {.id = 390, .distance = 22.522f}, {.id = 356, .distance = 23.803f}, {.id = 393, .distance = 27.573f}, {.id = 392, .distance = 35.430f}, {.id = 389, .distance = 37.946f}, {.id = 355, .distance = 41.982f}, {.id = 357, .distance = 43.096f}
+        }},
+        {392, {
+            {.id = 393, .distance = 25.732f}, {.id = 1122, .distance = 27.473f}, {.id = 390, .distance = 28.989f}, {.id = 394, .distance = 30.699f}, {.id = 391, .distance = 35.430f}, {.id = 1124, .distance = 40.223f}, {.id = 1120, .distance = 49.900f}
+        }},
+        {393, {
+            {.id = 394, .distance = 25.715f}, {.id = 392, .distance = 25.732f}, {.id = 395, .distance = 27.009f}, {.id = 391, .distance = 27.573f}, {.id = 357, .distance = 38.124f}, {.id = 390, .distance = 38.748f}, {.id = 396, .distance = 38.795f}
+        }},
+        {394, {
+            {.id = 393, .distance = 25.715f}, {.id = 1036, .distance = 27.990f}, {.id = 396, .distance = 28.587f}, {.id = 392, .distance = 30.699f}, {.id = 395, .distance = 35.180f}, {.id = 1034, .distance = 41.739f}, {.id = 1038, .distance = 50.403f}
+        }},
+        {395, {
+            {.id = 396, .distance = 23.318f}, {.id = 357, .distance = 24.410f}, {.id = 393, .distance = 27.009f}, {.id = 394, .distance = 35.180f}, {.id = 358, .distance = 36.927f}, {.id = 397, .distance = 38.625f}, {.id = 391, .distance = 47.229f}
+        }},
+        {396, {
+            {.id = 395, .distance = 23.318f}, {.id = 1034, .distance = 28.526f}, {.id = 394, .distance = 28.587f}, {.id = 397, .distance = 28.648f}, {.id = 393, .distance = 38.795f}, {.id = 1036, .distance = 39.023f}, {.id = 1033, .distance = 41.888f}
+        }},
+        {397, {
+            {.id = 396, .distance = 28.648f}, {.id = 398, .distance = 28.678f}, {.id = 1033, .distance = 28.720f}, {.id = 358, .distance = 36.174f}, {.id = 395, .distance = 38.625f}, {.id = 1034, .distance = 38.975f}, {.id = 1032, .distance = 42.065f}
+        }},
+        {398, {
+            {.id = 399, .distance = 28.019f}, {.id = 1032, .distance = 28.593f}, {.id = 397, .distance = 28.678f}, {.id = 359, .distance = 33.528f}, {.id = 1033, .distance = 39.193f}, {.id = 1031, .distance = 42.010f}, {.id = 358, .distance = 43.787f}
+        }},
+        {399, {
+            {.id = 398, .distance = 28.019f}, {.id = 1031, .distance = 28.538f}, {.id = 400, .distance = 29.666f}, {.id = 1032, .distance = 38.440f}, {.id = 401, .distance = 39.143f}, {.id = 359, .distance = 39.292f}, {.id = 360, .distance = 40.843f}
+        }},
+        {400, {
+            {.id = 401, .distance = 23.574f}, {.id = 1030, .distance = 28.586f}, {.id = 402, .distance = 28.796f}, {.id = 399, .distance = 29.666f}, {.id = 403, .distance = 38.536f}, {.id = 1031, .distance = 38.933f}, {.id = 1028, .distance = 41.429f}
+        }},
+        {401, {
+            {.id = 400, .distance = 23.574f}, {.id = 360, .distance = 26.800f}, {.id = 403, .distance = 27.295f}, {.id = 361, .distance = 31.165f}, {.id = 402, .distance = 35.726f}, {.id = 399, .distance = 39.143f}, {.id = 405, .distance = 46.866f}
+        }},
+        {402, {
+            {.id = 403, .distance = 25.236f}, {.id = 1028, .distance = 28.551f}, {.id = 400, .distance = 28.796f}, {.id = 404, .distance = 30.642f}, {.id = 401, .distance = 35.726f}, {.id = 1030, .distance = 39.222f}, {.id = 405, .distance = 51.793f}
+        }},
+        {403, {
+            {.id = 402, .distance = 25.236f}, {.id = 404, .distance = 25.701f}, {.id = 401, .distance = 27.295f}, {.id = 405, .distance = 27.601f}, {.id = 361, .distance = 35.484f}, {.id = 400, .distance = 38.536f}, {.id = 406, .distance = 38.536f}
+        }},
+        {404, {
+            {.id = 403, .distance = 25.701f}, {.id = 406, .distance = 28.171f}, {.id = 278, .distance = 29.698f}, {.id = 402, .distance = 30.642f}, {.id = 405, .distance = 35.416f}, {.id = 276, .distance = 41.024f}, {.id = 1028, .distance = 50.454f}
+        }},
+        {405, {
+            {.id = 406, .distance = 23.046f}, {.id = 362, .distance = 26.974f}, {.id = 403, .distance = 27.601f}, {.id = 361, .distance = 32.025f}, {.id = 404, .distance = 35.416f}, {.id = 407, .distance = 38.124f}, {.id = 401, .distance = 46.866f}
+        }},
+        {406, {
+            {.id = 405, .distance = 23.046f}, {.id = 404, .distance = 28.171f}, {.id = 407, .distance = 28.796f}, {.id = 276, .distance = 29.884f}, {.id = 403, .distance = 38.536f}, {.id = 278, .distance = 40.907f}, {.id = 275, .distance = 41.803f}
+        }},
+        {407, {
+            {.id = 408, .distance = 28.739f}, {.id = 406, .distance = 28.796f}, {.id = 275, .distance = 29.688f}, {.id = 405, .distance = 38.124f}, {.id = 363, .distance = 40.058f}, {.id = 362, .distance = 40.759f}, {.id = 276, .distance = 41.264f}
+        }},
+        {408, {
+            {.id = 407, .distance = 28.739f}, {.id = 409, .distance = 28.996f}, {.id = 274, .distance = 29.797f}, {.id = 363, .distance = 34.006f}, {.id = 275, .distance = 41.093f}, {.id = 273, .distance = 41.143f}, {.id = 364, .distance = 43.930f}
+        }},
+        {409, {
+            {.id = 410, .distance = 28.539f}, {.id = 408, .distance = 28.996f}, {.id = 273, .distance = 29.685f}, {.id = 364, .distance = 35.652f}, {.id = 411, .distance = 38.072f}, {.id = 272, .distance = 41.095f}, {.id = 274, .distance = 41.280f}
+        }},
+        {410, {
+            {.id = 411, .distance = 23.229f}, {.id = 409, .distance = 28.539f}, {.id = 412, .distance = 29.175f}, {.id = 272, .distance = 29.702f}, {.id = 413, .distance = 38.795f}, {.id = 273, .distance = 41.304f}, {.id = 270, .distance = 41.540f}
+        }},
+        {411, {
+            {.id = 410, .distance = 23.229f}, {.id = 365, .distance = 24.656f}, {.id = 413, .distance = 27.373f}, {.id = 364, .distance = 35.973f}, {.id = 412, .distance = 36.131f}, {.id = 409, .distance = 38.072f}, {.id = 366, .distance = 47.750f}
+        }},
+        {412, {
+            {.id = 413, .distance = 26.133f}, {.id = 270, .distance = 29.051f}, {.id = 410, .distance = 29.175f}, {.id = 414, .distance = 30.723f}, {.id = 411, .distance = 36.131f}, {.id = 272, .distance = 41.571f}, {.id = 269, .distance = 52.211f}
+        }},
+        {413, {
+            {.id = 414, .distance = 25.813f}, {.id = 412, .distance = 26.133f}, {.id = 411, .distance = 27.373f}, {.id = 366, .distance = 27.856f}, {.id = 365, .distance = 38.273f}, {.id = 410, .distance = 38.795f}, {.id = 415, .distance = 39.458f}
+        }},
+        {414, {
+            {.id = 413, .distance = 25.813f}, {.id = 415, .distance = 29.479f}, {.id = 100, .distance = 29.970f}, {.id = 412, .distance = 30.723f}, {.id = 366, .distance = 35.561f}, {.id = 98, .distance = 43.137f}, {.id = 270, .distance = 51.840f}
+        }},
+        {415, {
+            {.id = 366, .distance = 22.863f}, {.id = 367, .distance = 28.096f}, {.id = 414, .distance = 29.479f}, {.id = 98, .distance = 30.291f}, {.id = 413, .distance = 39.458f}, {.id = 100, .distance = 40.924f}, {.id = 97, .distance = 42.554f}
+        }},
+        {416, {
+            {.id = 417, .distance = 25.256f}, {.id = 419, .distance = 25.653f}, {.id = 418, .distance = 25.660f}, {.id = 421, .distance = 26.237f}, {.id = 420, .distance = 26.780f}, {.id = 423, .distance = 53.251f}, {.id = 427, .distance = 53.584f}
+        }},
+        {417, {
+            {.id = 416, .distance = 25.256f}, {.id = 423, .distance = 27.996f}, {.id = 421, .distance = 30.406f}, {.id = 418, .distance = 30.746f}, {.id = 424, .distance = 36.902f}, {.id = 422, .distance = 36.902f}, {.id = 419, .distance = 48.670f}
+        }},
+        {418, {
+            {.id = 416, .distance = 25.660f}, {.id = 425, .distance = 28.138f}, {.id = 419, .distance = 30.016f}, {.id = 417, .distance = 30.746f}, {.id = 426, .distance = 35.779f}, {.id = 424, .distance = 37.730f}, {.id = 420, .distance = 49.623f}
+        }},
+        {419, {
+            {.id = 416, .distance = 25.653f}, {.id = 427, .distance = 27.950f}, {.id = 418, .distance = 30.016f}, {.id = 420, .distance = 30.334f}, {.id = 428, .distance = 36.663f}, {.id = 426, .distance = 36.917f}, {.id = 417, .distance = 48.670f}
+        }},
+        {420, {
+            {.id = 416, .distance = 26.780f}, {.id = 429, .distance = 28.148f}, {.id = 419, .distance = 30.334f}, {.id = 421, .distance = 30.829f}, {.id = 428, .distance = 36.041f}, {.id = 430, .distance = 36.581f}, {.id = 417, .distance = 49.415f}
+        }},
+        {421, {
+            {.id = 416, .distance = 26.237f}, {.id = 431, .distance = 28.784f}, {.id = 417, .distance = 30.406f}, {.id = 420, .distance = 30.829f}, {.id = 422, .distance = 36.136f}, {.id = 430, .distance = 36.663f}, {.id = 419, .distance = 49.028f}
+        }},
+        {422, {
+            {.id = 433, .distance = 29.943f}, {.id = 431, .distance = 32.709f}, {.id = 423, .distance = 33.241f}, {.id = 432, .distance = 35.999f}, {.id = 421, .distance = 36.136f}, {.id = 417, .distance = 36.902f}, {.id = 434, .distance = 43.146f}
+        }},
+        {423, {
+            {.id = 417, .distance = 27.996f}, {.id = 434, .distance = 31.091f}, {.id = 422, .distance = 33.241f}, {.id = 424, .distance = 33.489f}, {.id = 435, .distance = 33.997f}, {.id = 433, .distance = 46.465f}, {.id = 436, .distance = 50.872f}
+        }},
+        {424, {
+            {.id = 436, .distance = 28.795f}, {.id = 423, .distance = 33.489f}, {.id = 425, .distance = 34.526f}, {.id = 417, .distance = 36.902f}, {.id = 418, .distance = 37.730f}, {.id = 435, .distance = 39.001f}, {.id = 437, .distance = 39.043f}
+        }},
+        {425, {
+            {.id = 418, .distance = 28.138f}, {.id = 438, .distance = 30.119f}, {.id = 426, .distance = 32.862f}, {.id = 437, .distance = 33.326f}, {.id = 424, .distance = 34.526f}, {.id = 439, .distance = 46.032f}, {.id = 436, .distance = 51.953f}
+        }},
+        {426, {
+            {.id = 439, .distance = 29.271f}, {.id = 425, .distance = 32.862f}, {.id = 427, .distance = 32.910f}, {.id = 440, .distance = 35.475f}, {.id = 418, .distance = 35.779f}, {.id = 419, .distance = 36.917f}, {.id = 438, .distance = 42.036f}
+        }},
+        {427, {
+            {.id = 419, .distance = 27.950f}, {.id = 441, .distance = 30.515f}, {.id = 426, .distance = 32.910f}, {.id = 428, .distance = 34.288f}, {.id = 440, .distance = 35.680f}, {.id = 442, .distance = 43.747f}, {.id = 418, .distance = 50.881f}
+        }},
+        {428, {
+            {.id = 442, .distance = 30.713f}, {.id = 443, .distance = 32.961f}, {.id = 427, .distance = 34.288f}, {.id = 429, .distance = 34.333f}, {.id = 420, .distance = 36.041f}, {.id = 419, .distance = 36.663f}, {.id = 441, .distance = 47.436f}
+        }},
+        {429, {
+            {.id = 420, .distance = 28.148f}, {.id = 444, .distance = 28.795f}, {.id = 430, .distance = 32.474f}, {.id = 428, .distance = 34.333f}, {.id = 445, .distance = 37.853f}, {.id = 443, .distance = 39.529f}, {.id = 421, .distance = 52.029f}
+        }},
+        {430, {
+            {.id = 446, .distance = 30.978f}, {.id = 429, .distance = 32.474f}, {.id = 445, .distance = 33.378f}, {.id = 431, .distance = 34.135f}, {.id = 420, .distance = 36.581f}, {.id = 421, .distance = 36.663f}, {.id = 447, .distance = 47.075f}
+        }},
+        {431, {
+            {.id = 421, .distance = 28.784f}, {.id = 447, .distance = 29.314f}, {.id = 422, .distance = 32.709f}, {.id = 430, .distance = 34.135f}, {.id = 432, .distance = 35.428f}, {.id = 446, .distance = 42.934f}, {.id = 417, .distance = 52.730f}
+        }},
+        {432, {
+            {.id = 449, .distance = 31.937f}, {.id = 448, .distance = 31.964f}, {.id = 447, .distance = 32.088f}, {.id = 433, .distance = 32.704f}, {.id = 431, .distance = 35.428f}, {.id = 422, .distance = 35.999f}, {.id = 469, .distance = 49.921f}
+        }},
+        {433, {
+            {.id = 450, .distance = 29.419f}, {.id = 422, .distance = 29.943f}, {.id = 434, .distance = 32.468f}, {.id = 432, .distance = 32.704f}, {.id = 449, .distance = 37.491f}, {.id = 451, .distance = 41.947f}, {.id = 423, .distance = 46.465f}
+        }},
+        {434, {
+            {.id = 451, .distance = 29.848f}, {.id = 423, .distance = 31.091f}, {.id = 435, .distance = 31.917f}, {.id = 433, .distance = 32.468f}, {.id = 452, .distance = 35.426f}, {.id = 422, .distance = 43.146f}, {.id = 450, .distance = 44.568f}
+        }},
+        {435, {
+            {.id = 453, .distance = 30.775f}, {.id = 434, .distance = 31.917f}, {.id = 436, .distance = 32.089f}, {.id = 452, .distance = 33.457f}, {.id = 423, .distance = 33.997f}, {.id = 424, .distance = 39.001f}, {.id = 454, .distance = 47.195f}
+        }},
+        {436, {
+            {.id = 454, .distance = 28.126f}, {.id = 424, .distance = 28.795f}, {.id = 435, .distance = 32.089f}, {.id = 437, .distance = 33.350f}, {.id = 453, .distance = 38.606f}, {.id = 455, .distance = 40.686f}, {.id = 423, .distance = 50.872f}
+        }},
+        {437, {
+            {.id = 455, .distance = 30.745f}, {.id = 438, .distance = 32.585f}, {.id = 425, .distance = 33.326f}, {.id = 436, .distance = 33.350f}, {.id = 456, .distance = 33.990f}, {.id = 424, .distance = 39.043f}, {.id = 454, .distance = 47.230f}
+        }},
+        {438, {
+            {.id = 457, .distance = 30.088f}, {.id = 425, .distance = 30.119f}, {.id = 439, .distance = 32.298f}, {.id = 437, .distance = 32.585f}, {.id = 456, .distance = 35.628f}, {.id = 426, .distance = 42.036f}, {.id = 458, .distance = 44.864f}
+        }},
+        {439, {
+            {.id = 458, .distance = 28.726f}, {.id = 426, .distance = 29.271f}, {.id = 440, .distance = 31.916f}, {.id = 438, .distance = 32.298f}, {.id = 459, .distance = 37.444f}, {.id = 457, .distance = 42.067f}, {.id = 425, .distance = 46.032f}
+        }},
+        {440, {
+            {.id = 459, .distance = 31.889f}, {.id = 439, .distance = 31.916f}, {.id = 460, .distance = 32.458f}, {.id = 441, .distance = 32.605f}, {.id = 426, .distance = 35.475f}, {.id = 427, .distance = 35.680f}, {.id = 458, .distance = 49.358f}
+        }},
+        {441, {
+            {.id = 461, .distance = 28.557f}, {.id = 427, .distance = 30.515f}, {.id = 440, .distance = 32.605f}, {.id = 442, .distance = 33.386f}, {.id = 460, .distance = 36.707f}, {.id = 462, .distance = 42.276f}, {.id = 428, .distance = 47.436f}
+        }},
+        {442, {
+            {.id = 462, .distance = 29.283f}, {.id = 428, .distance = 30.713f}, {.id = 443, .distance = 32.395f}, {.id = 441, .distance = 33.386f}, {.id = 463, .distance = 35.383f}, {.id = 427, .distance = 43.747f}, {.id = 461, .distance = 45.069f}
+        }},
+        {443, {
+            {.id = 464, .distance = 30.492f}, {.id = 442, .distance = 32.395f}, {.id = 444, .distance = 32.492f}, {.id = 428, .distance = 32.961f}, {.id = 463, .distance = 33.774f}, {.id = 429, .distance = 39.529f}, {.id = 465, .distance = 46.947f}
+        }},
+        {444, {
+            {.id = 429, .distance = 28.795f}, {.id = 465, .distance = 28.796f}, {.id = 445, .distance = 31.301f}, {.id = 443, .distance = 32.492f}, {.id = 466, .distance = 39.130f}, {.id = 464, .distance = 39.658f}, {.id = 430, .distance = 50.236f}
+        }},
+        {445, {
+            {.id = 466, .distance = 30.076f}, {.id = 444, .distance = 31.301f}, {.id = 446, .distance = 33.324f}, {.id = 430, .distance = 33.378f}, {.id = 467, .distance = 33.386f}, {.id = 429, .distance = 37.853f}, {.id = 465, .distance = 46.778f}
+        }},
+        {446, {
+            {.id = 468, .distance = 29.653f}, {.id = 430, .distance = 30.978f}, {.id = 447, .distance = 32.852f}, {.id = 445, .distance = 33.324f}, {.id = 467, .distance = 35.446f}, {.id = 431, .distance = 42.934f}, {.id = 469, .distance = 44.581f}
+        }},
+        {447, {
+            {.id = 469, .distance = 28.776f}, {.id = 431, .distance = 29.314f}, {.id = 432, .distance = 32.088f}, {.id = 446, .distance = 32.852f}, {.id = 448, .distance = 36.954f}, {.id = 468, .distance = 42.498f}, {.id = 430, .distance = 47.075f}
+        }},
+        {448, {
+            {.id = 470, .distance = 23.617f}, {.id = 469, .distance = 31.442f}, {.id = 432, .distance = 31.964f}, {.id = 449, .distance = 32.703f}, {.id = 447, .distance = 36.954f}, {.id = 517, .distance = 41.259f}, {.id = 519, .distance = 45.103f}
+        }},
+        {449, {
+            {.id = 432, .distance = 31.937f}, {.id = 448, .distance = 32.703f}, {.id = 450, .distance = 32.725f}, {.id = 471, .distance = 36.068f}, {.id = 433, .distance = 37.491f}, {.id = 472, .distance = 39.068f}, {.id = 470, .distance = 41.895f}
+        }},
+        {450, {
+            {.id = 433, .distance = 29.419f}, {.id = 451, .distance = 30.638f}, {.id = 449, .distance = 32.725f}, {.id = 472, .distance = 35.794f}, {.id = 473, .distance = 36.665f}, {.id = 434, .distance = 44.568f}, {.id = 474, .distance = 46.412f}
+        }},
+        {451, {
+            {.id = 474, .distance = 24.191f}, {.id = 434, .distance = 29.848f}, {.id = 450, .distance = 30.638f}, {.id = 452, .distance = 31.516f}, {.id = 433, .distance = 41.947f}, {.id = 475, .distance = 44.167f}, {.id = 473, .distance = 44.460f}
+        }},
+        {452, {
+            {.id = 479, .distance = 27.519f}, {.id = 451, .distance = 31.516f}, {.id = 453, .distance = 33.096f}, {.id = 435, .distance = 33.457f}, {.id = 434, .distance = 35.426f}, {.id = 476, .distance = 35.506f}, {.id = 474, .distance = 36.051f}
+        }},
+        {453, {
+            {.id = 435, .distance = 30.775f}, {.id = 454, .distance = 30.943f}, {.id = 479, .distance = 31.347f}, {.id = 452, .distance = 33.096f}, {.id = 481, .distance = 37.393f}, {.id = 436, .distance = 38.606f}, {.id = 480, .distance = 45.102f}
+        }},
+        {454, {
+            {.id = 436, .distance = 28.126f}, {.id = 453, .distance = 30.943f}, {.id = 455, .distance = 32.322f}, {.id = 482, .distance = 33.115f}, {.id = 481, .distance = 43.474f}, {.id = 483, .distance = 44.048f}, {.id = 435, .distance = 47.195f}
+        }},
+        {455, {
+            {.id = 485, .distance = 30.540f}, {.id = 437, .distance = 30.745f}, {.id = 454, .distance = 32.322f}, {.id = 456, .distance = 32.441f}, {.id = 483, .distance = 37.153f}, {.id = 436, .distance = 40.686f}, {.id = 484, .distance = 45.279f}
+        }},
+        {456, {
+            {.id = 485, .distance = 27.373f}, {.id = 457, .distance = 31.563f}, {.id = 455, .distance = 32.441f}, {.id = 437, .distance = 33.990f}, {.id = 487, .distance = 35.618f}, {.id = 438, .distance = 35.628f}, {.id = 489, .distance = 36.566f}
+        }},
+        {457, {
+            {.id = 489, .distance = 24.293f}, {.id = 438, .distance = 30.088f}, {.id = 456, .distance = 31.563f}, {.id = 458, .distance = 31.793f}, {.id = 439, .distance = 42.067f}, {.id = 490, .distance = 43.775f}, {.id = 491, .distance = 43.787f}
+        }},
+        {458, {
+            {.id = 439, .distance = 28.726f}, {.id = 459, .distance = 31.427f}, {.id = 457, .distance = 31.793f}, {.id = 492, .distance = 35.922f}, {.id = 491, .distance = 37.333f}, {.id = 438, .distance = 44.864f}, {.id = 489, .distance = 47.704f}
+        }},
+        {459, {
+            {.id = 458, .distance = 31.427f}, {.id = 440, .distance = 31.889f}, {.id = 460, .distance = 32.342f}, {.id = 493, .distance = 35.562f}, {.id = 439, .distance = 37.444f}, {.id = 492, .distance = 39.243f}, {.id = 495, .distance = 41.982f}
+        }},
+        {460, {
+            {.id = 495, .distance = 23.803f}, {.id = 461, .distance = 31.693f}, {.id = 459, .distance = 32.342f}, {.id = 440, .distance = 32.458f}, {.id = 441, .distance = 36.707f}, {.id = 497, .distance = 41.333f}, {.id = 494, .distance = 44.974f}
+        }},
+        {461, {
+            {.id = 499, .distance = 24.410f}, {.id = 441, .distance = 28.557f}, {.id = 460, .distance = 31.693f}, {.id = 462, .distance = 32.138f}, {.id = 497, .distance = 38.124f}, {.id = 495, .distance = 43.096f}, {.id = 442, .distance = 45.069f}
+        }},
+        {462, {
+            {.id = 442, .distance = 29.283f}, {.id = 463, .distance = 31.589f}, {.id = 461, .distance = 32.138f}, {.id = 501, .distance = 36.174f}, {.id = 499, .distance = 36.927f}, {.id = 441, .distance = 42.276f}, {.id = 502, .distance = 43.787f}
+        }},
+        {463, {
+            {.id = 462, .distance = 31.589f}, {.id = 464, .distance = 32.185f}, {.id = 502, .distance = 33.528f}, {.id = 443, .distance = 33.774f}, {.id = 442, .distance = 35.383f}, {.id = 503, .distance = 39.292f}, {.id = 501, .distance = 48.151f}
+        }},
+        {464, {
+            {.id = 505, .distance = 26.800f}, {.id = 443, .distance = 30.492f}, {.id = 465, .distance = 31.085f}, {.id = 463, .distance = 32.185f}, {.id = 444, .distance = 39.658f}, {.id = 503, .distance = 40.843f}, {.id = 504, .distance = 44.297f}
+        }},
+        {465, {
+            {.id = 444, .distance = 28.796f}, {.id = 464, .distance = 31.085f}, {.id = 505, .distance = 31.165f}, {.id = 466, .distance = 31.748f}, {.id = 509, .distance = 32.025f}, {.id = 507, .distance = 35.484f}, {.id = 445, .distance = 46.778f}
+        }},
+        {466, {
+            {.id = 509, .distance = 26.974f}, {.id = 445, .distance = 30.076f}, {.id = 467, .distance = 31.574f}, {.id = 465, .distance = 31.748f}, {.id = 444, .distance = 39.130f}, {.id = 511, .distance = 40.759f}, {.id = 510, .distance = 44.255f}
+        }},
+        {467, {
+            {.id = 466, .distance = 31.574f}, {.id = 468, .distance = 32.495f}, {.id = 445, .distance = 33.386f}, {.id = 512, .distance = 34.006f}, {.id = 446, .distance = 35.446f}, {.id = 511, .distance = 40.058f}, {.id = 513, .distance = 48.765f}
+        }},
+        {468, {
+            {.id = 446, .distance = 29.653f}, {.id = 469, .distance = 31.761f}, {.id = 467, .distance = 32.495f}, {.id = 513, .distance = 35.652f}, {.id = 515, .distance = 35.973f}, {.id = 447, .distance = 42.498f}, {.id = 512, .distance = 43.930f}
+        }},
+        {469, {
+            {.id = 515, .distance = 24.656f}, {.id = 447, .distance = 28.776f}, {.id = 448, .distance = 31.442f}, {.id = 468, .distance = 31.761f}, {.id = 517, .distance = 38.273f}, {.id = 470, .distance = 43.129f}, {.id = 446, .distance = 44.581f}
+        }},
+        {470, {
+            {.id = 519, .distance = 22.863f}, {.id = 448, .distance = 23.617f}, {.id = 517, .distance = 27.856f}, {.id = 518, .distance = 35.561f}, {.id = 471, .distance = 37.917f}, {.id = 449, .distance = 41.895f}, {.id = 469, .distance = 43.129f}
+        }},
+        {471, {
+            {.id = 519, .distance = 28.096f}, {.id = 87, .distance = 29.135f}, {.id = 472, .distance = 29.153f}, {.id = 449, .distance = 36.068f}, {.id = 470, .distance = 37.917f}, {.id = 88, .distance = 40.304f}, {.id = 86, .distance = 41.584f}
+        }},
+        {472, {
+            {.id = 473, .distance = 28.265f}, {.id = 471, .distance = 29.153f}, {.id = 86, .distance = 29.580f}, {.id = 450, .distance = 35.794f}, {.id = 449, .distance = 39.068f}, {.id = 87, .distance = 40.348f}, {.id = 85, .distance = 41.613f}
+        }},
+        {473, {
+            {.id = 472, .distance = 28.265f}, {.id = 475, .distance = 28.989f}, {.id = 85, .distance = 29.175f}, {.id = 450, .distance = 36.665f}, {.id = 474, .distance = 38.712f}, {.id = 86, .distance = 40.192f}, {.id = 84, .distance = 41.569f}
+        }},
+        {474, {
+            {.id = 475, .distance = 23.607f}, {.id = 451, .distance = 24.191f}, {.id = 476, .distance = 27.455f}, {.id = 477, .distance = 35.536f}, {.id = 452, .distance = 36.051f}, {.id = 473, .distance = 38.712f}, {.id = 450, .distance = 46.412f}
+        }},
+        {475, {
+            {.id = 474, .distance = 23.607f}, {.id = 477, .distance = 28.500f}, {.id = 473, .distance = 28.989f}, {.id = 84, .distance = 29.217f}, {.id = 476, .distance = 38.998f}, {.id = 85, .distance = 40.470f}, {.id = 82, .distance = 41.271f}
+        }},
+        {476, {
+            {.id = 477, .distance = 25.823f}, {.id = 478, .distance = 26.007f}, {.id = 479, .distance = 27.304f}, {.id = 474, .distance = 27.455f}, {.id = 452, .distance = 35.506f}, {.id = 475, .distance = 38.998f}, {.id = 480, .distance = 39.242f}
+        }},
+        {477, {
+            {.id = 476, .distance = 25.823f}, {.id = 475, .distance = 28.500f}, {.id = 82, .distance = 29.341f}, {.id = 478, .distance = 30.900f}, {.id = 474, .distance = 35.536f}, {.id = 84, .distance = 40.505f}, {.id = 80, .distance = 51.992f}
+        }},
+        {478, {
+            {.id = 476, .distance = 26.007f}, {.id = 620, .distance = 29.051f}, {.id = 480, .distance = 29.614f}, {.id = 477, .distance = 30.900f}, {.id = 479, .distance = 35.963f}, {.id = 618, .distance = 41.540f}, {.id = 622, .distance = 51.840f}
+        }},
+        {479, {
+            {.id = 480, .distance = 23.404f}, {.id = 476, .distance = 27.304f}, {.id = 452, .distance = 27.519f}, {.id = 453, .distance = 31.347f}, {.id = 478, .distance = 35.963f}, {.id = 481, .distance = 38.924f}, {.id = 474, .distance = 47.034f}
+        }},
+        {480, {
+            {.id = 479, .distance = 23.404f}, {.id = 481, .distance = 28.584f}, {.id = 478, .distance = 29.614f}, {.id = 618, .distance = 29.702f}, {.id = 476, .distance = 39.242f}, {.id = 617, .distance = 41.095f}, {.id = 620, .distance = 41.571f}
+        }},
+        {481, {
+            {.id = 482, .distance = 28.069f}, {.id = 480, .distance = 28.584f}, {.id = 617, .distance = 29.685f}, {.id = 453, .distance = 37.393f}, {.id = 479, .distance = 38.924f}, {.id = 616, .distance = 41.143f}, {.id = 618, .distance = 41.304f}
+        }},
+        {482, {
+            {.id = 481, .distance = 28.069f}, {.id = 483, .distance = 28.840f}, {.id = 616, .distance = 29.797f}, {.id = 454, .distance = 33.115f}, {.id = 617, .distance = 41.280f}, {.id = 615, .distance = 41.692f}, {.id = 453, .distance = 48.228f}
+        }},
+        {483, {
+            {.id = 482, .distance = 28.840f}, {.id = 484, .distance = 29.097f}, {.id = 615, .distance = 29.688f}, {.id = 455, .distance = 37.153f}, {.id = 485, .distance = 38.371f}, {.id = 616, .distance = 41.093f}, {.id = 614, .distance = 41.803f}
+        }},
+        {484, {
+            {.id = 485, .distance = 23.468f}, {.id = 486, .distance = 28.068f}, {.id = 483, .distance = 29.097f}, {.id = 614, .distance = 29.884f}, {.id = 487, .distance = 37.859f}, {.id = 612, .distance = 41.024f}, {.id = 615, .distance = 41.264f}
+        }},
+        {485, {
+            {.id = 484, .distance = 23.468f}, {.id = 487, .distance = 26.995f}, {.id = 456, .distance = 27.373f}, {.id = 455, .distance = 30.540f}, {.id = 486, .distance = 35.584f}, {.id = 483, .distance = 38.371f}, {.id = 489, .distance = 47.445f}
+        }},
+        {486, {
+            {.id = 487, .distance = 25.235f}, {.id = 484, .distance = 28.068f}, {.id = 612, .distance = 29.698f}, {.id = 488, .distance = 31.314f}, {.id = 485, .distance = 35.584f}, {.id = 614, .distance = 40.907f}, {.id = 714, .distance = 50.621f}
+        }},
+        {487, {
+            {.id = 486, .distance = 25.235f}, {.id = 488, .distance = 25.959f}, {.id = 485, .distance = 26.995f}, {.id = 489, .distance = 28.280f}, {.id = 456, .distance = 35.618f}, {.id = 484, .distance = 37.859f}, {.id = 490, .distance = 39.348f}
+        }},
+        {488, {
+            {.id = 487, .distance = 25.959f}, {.id = 714, .distance = 27.690f}, {.id = 490, .distance = 28.175f}, {.id = 486, .distance = 31.314f}, {.id = 489, .distance = 35.099f}, {.id = 712, .distance = 39.154f}, {.id = 715, .distance = 50.900f}
+        }},
+        {489, {
+            {.id = 490, .distance = 22.858f}, {.id = 457, .distance = 24.293f}, {.id = 487, .distance = 28.280f}, {.id = 488, .distance = 35.099f}, {.id = 456, .distance = 36.566f}, {.id = 491, .distance = 37.718f}, {.id = 485, .distance = 47.445f}
+        }},
+        {490, {
+            {.id = 489, .distance = 22.858f}, {.id = 712, .distance = 27.436f}, {.id = 488, .distance = 28.175f}, {.id = 491, .distance = 28.665f}, {.id = 487, .distance = 39.348f}, {.id = 714, .distance = 40.114f}, {.id = 711, .distance = 40.252f}
+        }},
+        {491, {
+            {.id = 711, .distance = 27.613f}, {.id = 490, .distance = 28.665f}, {.id = 492, .distance = 28.744f}, {.id = 458, .distance = 37.333f}, {.id = 489, .distance = 37.718f}, {.id = 710, .distance = 39.855f}, {.id = 712, .distance = 39.947f}
+        }},
+        {492, {
+            {.id = 710, .distance = 27.498f}, {.id = 493, .distance = 28.665f}, {.id = 491, .distance = 28.744f}, {.id = 458, .distance = 35.922f}, {.id = 459, .distance = 39.243f}, {.id = 711, .distance = 39.255f}, {.id = 709, .distance = 39.752f}
+        }},
+        {493, {
+            {.id = 709, .distance = 27.628f}, {.id = 492, .distance = 28.665f}, {.id = 494, .distance = 28.989f}, {.id = 459, .distance = 35.562f}, {.id = 495, .distance = 37.946f}, {.id = 710, .distance = 39.790f}, {.id = 708, .distance = 39.805f}
+        }},
+        {494, {
+            {.id = 495, .distance = 22.522f}, {.id = 708, .distance = 27.583f}, {.id = 493, .distance = 28.989f}, {.id = 496, .distance = 28.989f}, {.id = 497, .distance = 38.748f}, {.id = 706, .distance = 39.435f}, {.id = 709, .distance = 40.007f}
+        }},
+        {495, {
+            {.id = 494, .distance = 22.522f}, {.id = 460, .distance = 23.803f}, {.id = 497, .distance = 27.573f}, {.id = 496, .distance = 35.430f}, {.id = 493, .distance = 37.946f}, {.id = 459, .distance = 41.982f}, {.id = 461, .distance = 43.096f}
+        }},
+        {496, {
+            {.id = 497, .distance = 25.732f}, {.id = 706, .distance = 27.473f}, {.id = 494, .distance = 28.989f}, {.id = 498, .distance = 30.699f}, {.id = 495, .distance = 35.430f}, {.id = 708, .distance = 40.223f}, {.id = 704, .distance = 49.900f}
+        }},
+        {497, {
+            {.id = 498, .distance = 25.715f}, {.id = 496, .distance = 25.732f}, {.id = 499, .distance = 27.009f}, {.id = 495, .distance = 27.573f}, {.id = 461, .distance = 38.124f}, {.id = 494, .distance = 38.748f}, {.id = 500, .distance = 38.795f}
+        }},
+        {498, {
+            {.id = 497, .distance = 25.715f}, {.id = 1140, .distance = 27.990f}, {.id = 500, .distance = 28.587f}, {.id = 496, .distance = 30.699f}, {.id = 499, .distance = 35.180f}, {.id = 1138, .distance = 41.739f}, {.id = 1142, .distance = 50.403f}
+        }},
+        {499, {
+            {.id = 500, .distance = 23.318f}, {.id = 461, .distance = 24.410f}, {.id = 497, .distance = 27.009f}, {.id = 498, .distance = 35.180f}, {.id = 462, .distance = 36.927f}, {.id = 501, .distance = 38.625f}, {.id = 495, .distance = 47.229f}
+        }},
+        {500, {
+            {.id = 499, .distance = 23.318f}, {.id = 1138, .distance = 28.526f}, {.id = 498, .distance = 28.587f}, {.id = 501, .distance = 28.648f}, {.id = 497, .distance = 38.795f}, {.id = 1140, .distance = 39.023f}, {.id = 1137, .distance = 41.888f}
+        }},
+        {501, {
+            {.id = 500, .distance = 28.648f}, {.id = 502, .distance = 28.678f}, {.id = 1137, .distance = 28.720f}, {.id = 462, .distance = 36.174f}, {.id = 499, .distance = 38.625f}, {.id = 1138, .distance = 38.975f}, {.id = 1136, .distance = 42.065f}
+        }},
+        {502, {
+            {.id = 503, .distance = 28.019f}, {.id = 1136, .distance = 28.593f}, {.id = 501, .distance = 28.678f}, {.id = 463, .distance = 33.528f}, {.id = 1137, .distance = 39.193f}, {.id = 1135, .distance = 42.010f}, {.id = 462, .distance = 43.787f}
+        }},
+        {503, {
+            {.id = 502, .distance = 28.019f}, {.id = 1135, .distance = 28.538f}, {.id = 504, .distance = 29.666f}, {.id = 1136, .distance = 38.440f}, {.id = 505, .distance = 39.143f}, {.id = 463, .distance = 39.292f}, {.id = 464, .distance = 40.843f}
+        }},
+        {504, {
+            {.id = 505, .distance = 23.574f}, {.id = 1134, .distance = 28.586f}, {.id = 506, .distance = 28.796f}, {.id = 503, .distance = 29.666f}, {.id = 507, .distance = 38.536f}, {.id = 1135, .distance = 38.933f}, {.id = 1132, .distance = 41.429f}
+        }},
+        {505, {
+            {.id = 504, .distance = 23.574f}, {.id = 464, .distance = 26.800f}, {.id = 507, .distance = 27.295f}, {.id = 465, .distance = 31.165f}, {.id = 506, .distance = 35.726f}, {.id = 503, .distance = 39.143f}, {.id = 509, .distance = 46.866f}
+        }},
+        {506, {
+            {.id = 507, .distance = 25.236f}, {.id = 1132, .distance = 28.551f}, {.id = 504, .distance = 28.796f}, {.id = 508, .distance = 30.643f}, {.id = 505, .distance = 35.726f}, {.id = 1134, .distance = 39.222f}, {.id = 509, .distance = 51.793f}
+        }},
+        {507, {
+            {.id = 506, .distance = 25.236f}, {.id = 508, .distance = 25.701f}, {.id = 505, .distance = 27.295f}, {.id = 509, .distance = 27.601f}, {.id = 465, .distance = 35.484f}, {.id = 504, .distance = 38.536f}, {.id = 510, .distance = 38.536f}
+        }},
+        {508, {
+            {.id = 507, .distance = 25.701f}, {.id = 510, .distance = 28.171f}, {.id = 382, .distance = 29.698f}, {.id = 506, .distance = 30.643f}, {.id = 509, .distance = 35.416f}, {.id = 380, .distance = 41.024f}, {.id = 1132, .distance = 50.454f}
+        }},
+        {509, {
+            {.id = 510, .distance = 23.046f}, {.id = 466, .distance = 26.974f}, {.id = 507, .distance = 27.601f}, {.id = 465, .distance = 32.025f}, {.id = 508, .distance = 35.416f}, {.id = 511, .distance = 38.124f}, {.id = 505, .distance = 46.866f}
+        }},
+        {510, {
+            {.id = 509, .distance = 23.046f}, {.id = 508, .distance = 28.171f}, {.id = 511, .distance = 28.796f}, {.id = 380, .distance = 29.884f}, {.id = 507, .distance = 38.536f}, {.id = 382, .distance = 40.907f}, {.id = 379, .distance = 41.803f}
+        }},
+        {511, {
+            {.id = 512, .distance = 28.739f}, {.id = 510, .distance = 28.796f}, {.id = 379, .distance = 29.688f}, {.id = 509, .distance = 38.124f}, {.id = 467, .distance = 40.058f}, {.id = 466, .distance = 40.759f}, {.id = 380, .distance = 41.264f}
+        }},
+        {512, {
+            {.id = 511, .distance = 28.739f}, {.id = 513, .distance = 28.996f}, {.id = 378, .distance = 29.797f}, {.id = 467, .distance = 34.006f}, {.id = 379, .distance = 41.093f}, {.id = 377, .distance = 41.143f}, {.id = 468, .distance = 43.930f}
+        }},
+        {513, {
+            {.id = 514, .distance = 28.539f}, {.id = 512, .distance = 28.996f}, {.id = 377, .distance = 29.685f}, {.id = 468, .distance = 35.652f}, {.id = 515, .distance = 38.072f}, {.id = 376, .distance = 41.095f}, {.id = 378, .distance = 41.280f}
+        }},
+        {514, {
+            {.id = 515, .distance = 23.229f}, {.id = 513, .distance = 28.539f}, {.id = 516, .distance = 29.175f}, {.id = 376, .distance = 29.702f}, {.id = 517, .distance = 38.795f}, {.id = 377, .distance = 41.304f}, {.id = 374, .distance = 41.540f}
+        }},
+        {515, {
+            {.id = 514, .distance = 23.229f}, {.id = 469, .distance = 24.656f}, {.id = 517, .distance = 27.373f}, {.id = 468, .distance = 35.973f}, {.id = 516, .distance = 36.131f}, {.id = 513, .distance = 38.072f}, {.id = 470, .distance = 47.750f}
+        }},
+        {516, {
+            {.id = 517, .distance = 26.133f}, {.id = 374, .distance = 29.051f}, {.id = 514, .distance = 29.175f}, {.id = 518, .distance = 30.723f}, {.id = 515, .distance = 36.131f}, {.id = 376, .distance = 41.571f}, {.id = 373, .distance = 52.211f}
+        }},
+        {517, {
+            {.id = 518, .distance = 25.813f}, {.id = 516, .distance = 26.133f}, {.id = 515, .distance = 27.373f}, {.id = 470, .distance = 27.856f}, {.id = 469, .distance = 38.273f}, {.id = 514, .distance = 38.795f}, {.id = 519, .distance = 39.458f}
+        }},
+        {518, {
+            {.id = 517, .distance = 25.813f}, {.id = 90, .distance = 29.473f}, {.id = 519, .distance = 29.479f}, {.id = 516, .distance = 30.723f}, {.id = 470, .distance = 35.561f}, {.id = 88, .distance = 41.626f}, {.id = 92, .distance = 51.460f}
+        }},
+        {519, {
+            {.id = 470, .distance = 22.863f}, {.id = 471, .distance = 28.096f}, {.id = 88, .distance = 29.181f}, {.id = 518, .distance = 29.479f}, {.id = 517, .distance = 39.458f}, {.id = 90, .distance = 41.051f}, {.id = 87, .distance = 41.749f}
+        }},
+        {520, {
+            {.id = 521, .distance = 25.256f}, {.id = 523, .distance = 25.653f}, {.id = 522, .distance = 25.660f}, {.id = 525, .distance = 26.237f}, {.id = 524, .distance = 26.780f}, {.id = 527, .distance = 53.251f}, {.id = 531, .distance = 53.584f}
+        }},
+        {521, {
+            {.id = 520, .distance = 25.256f}, {.id = 527, .distance = 27.996f}, {.id = 525, .distance = 30.406f}, {.id = 522, .distance = 30.745f}, {.id = 528, .distance = 36.902f}, {.id = 526, .distance = 36.902f}, {.id = 523, .distance = 48.670f}
+        }},
+        {522, {
+            {.id = 520, .distance = 25.660f}, {.id = 529, .distance = 28.138f}, {.id = 523, .distance = 30.016f}, {.id = 521, .distance = 30.745f}, {.id = 530, .distance = 35.779f}, {.id = 528, .distance = 37.730f}, {.id = 524, .distance = 49.623f}
+        }},
+        {523, {
+            {.id = 520, .distance = 25.653f}, {.id = 531, .distance = 27.950f}, {.id = 522, .distance = 30.016f}, {.id = 524, .distance = 30.334f}, {.id = 532, .distance = 36.663f}, {.id = 530, .distance = 36.917f}, {.id = 521, .distance = 48.670f}
+        }},
+        {524, {
+            {.id = 520, .distance = 26.780f}, {.id = 533, .distance = 28.148f}, {.id = 523, .distance = 30.334f}, {.id = 525, .distance = 30.829f}, {.id = 532, .distance = 36.041f}, {.id = 534, .distance = 36.581f}, {.id = 521, .distance = 49.415f}
+        }},
+        {525, {
+            {.id = 520, .distance = 26.237f}, {.id = 535, .distance = 28.784f}, {.id = 521, .distance = 30.406f}, {.id = 524, .distance = 30.829f}, {.id = 526, .distance = 36.136f}, {.id = 534, .distance = 36.663f}, {.id = 523, .distance = 49.028f}
+        }},
+        {526, {
+            {.id = 537, .distance = 29.943f}, {.id = 535, .distance = 32.709f}, {.id = 527, .distance = 33.241f}, {.id = 536, .distance = 35.999f}, {.id = 525, .distance = 36.136f}, {.id = 521, .distance = 36.902f}, {.id = 538, .distance = 43.146f}
+        }},
+        {527, {
+            {.id = 521, .distance = 27.996f}, {.id = 538, .distance = 31.091f}, {.id = 526, .distance = 33.241f}, {.id = 528, .distance = 33.489f}, {.id = 539, .distance = 33.997f}, {.id = 537, .distance = 46.465f}, {.id = 540, .distance = 50.872f}
+        }},
+        {528, {
+            {.id = 540, .distance = 28.795f}, {.id = 527, .distance = 33.489f}, {.id = 529, .distance = 34.526f}, {.id = 521, .distance = 36.902f}, {.id = 522, .distance = 37.730f}, {.id = 539, .distance = 39.001f}, {.id = 541, .distance = 39.043f}
+        }},
+        {529, {
+            {.id = 522, .distance = 28.138f}, {.id = 542, .distance = 30.119f}, {.id = 530, .distance = 32.862f}, {.id = 541, .distance = 33.326f}, {.id = 528, .distance = 34.526f}, {.id = 543, .distance = 46.032f}, {.id = 540, .distance = 51.953f}
+        }},
+        {530, {
+            {.id = 543, .distance = 29.271f}, {.id = 529, .distance = 32.862f}, {.id = 531, .distance = 32.910f}, {.id = 544, .distance = 35.475f}, {.id = 522, .distance = 35.779f}, {.id = 523, .distance = 36.917f}, {.id = 542, .distance = 42.036f}
+        }},
+        {531, {
+            {.id = 523, .distance = 27.950f}, {.id = 545, .distance = 30.515f}, {.id = 530, .distance = 32.910f}, {.id = 532, .distance = 34.288f}, {.id = 544, .distance = 35.680f}, {.id = 546, .distance = 43.747f}, {.id = 522, .distance = 50.881f}
+        }},
+        {532, {
+            {.id = 546, .distance = 30.713f}, {.id = 547, .distance = 32.961f}, {.id = 531, .distance = 34.288f}, {.id = 533, .distance = 34.333f}, {.id = 524, .distance = 36.041f}, {.id = 523, .distance = 36.663f}, {.id = 545, .distance = 47.436f}
+        }},
+        {533, {
+            {.id = 524, .distance = 28.148f}, {.id = 548, .distance = 28.795f}, {.id = 534, .distance = 32.474f}, {.id = 532, .distance = 34.333f}, {.id = 549, .distance = 37.853f}, {.id = 547, .distance = 39.529f}, {.id = 525, .distance = 52.029f}
+        }},
+        {534, {
+            {.id = 550, .distance = 30.978f}, {.id = 533, .distance = 32.474f}, {.id = 549, .distance = 33.378f}, {.id = 535, .distance = 34.135f}, {.id = 524, .distance = 36.581f}, {.id = 525, .distance = 36.663f}, {.id = 551, .distance = 47.075f}
+        }},
+        {535, {
+            {.id = 525, .distance = 28.784f}, {.id = 551, .distance = 29.314f}, {.id = 526, .distance = 32.709f}, {.id = 534, .distance = 34.135f}, {.id = 536, .distance = 35.428f}, {.id = 550, .distance = 42.934f}, {.id = 521, .distance = 52.730f}
+        }},
+        {536, {
+            {.id = 553, .distance = 31.937f}, {.id = 552, .distance = 31.964f}, {.id = 551, .distance = 32.088f}, {.id = 537, .distance = 32.704f}, {.id = 535, .distance = 35.428f}, {.id = 526, .distance = 35.999f}, {.id = 573, .distance = 49.921f}
+        }},
+        {537, {
+            {.id = 554, .distance = 29.419f}, {.id = 526, .distance = 29.943f}, {.id = 538, .distance = 32.468f}, {.id = 536, .distance = 32.704f}, {.id = 553, .distance = 37.491f}, {.id = 555, .distance = 41.947f}, {.id = 527, .distance = 46.465f}
+        }},
+        {538, {
+            {.id = 555, .distance = 29.848f}, {.id = 527, .distance = 31.091f}, {.id = 539, .distance = 31.917f}, {.id = 537, .distance = 32.468f}, {.id = 556, .distance = 35.426f}, {.id = 526, .distance = 43.146f}, {.id = 554, .distance = 44.568f}
+        }},
+        {539, {
+            {.id = 557, .distance = 30.775f}, {.id = 538, .distance = 31.917f}, {.id = 540, .distance = 32.089f}, {.id = 556, .distance = 33.457f}, {.id = 527, .distance = 33.997f}, {.id = 528, .distance = 39.001f}, {.id = 558, .distance = 47.195f}
+        }},
+        {540, {
+            {.id = 558, .distance = 28.126f}, {.id = 528, .distance = 28.795f}, {.id = 539, .distance = 32.089f}, {.id = 541, .distance = 33.350f}, {.id = 557, .distance = 38.606f}, {.id = 559, .distance = 40.686f}, {.id = 527, .distance = 50.872f}
+        }},
+        {541, {
+            {.id = 559, .distance = 30.745f}, {.id = 542, .distance = 32.585f}, {.id = 529, .distance = 33.326f}, {.id = 540, .distance = 33.350f}, {.id = 560, .distance = 33.990f}, {.id = 528, .distance = 39.043f}, {.id = 558, .distance = 47.230f}
+        }},
+        {542, {
+            {.id = 561, .distance = 30.088f}, {.id = 529, .distance = 30.119f}, {.id = 543, .distance = 32.298f}, {.id = 541, .distance = 32.585f}, {.id = 560, .distance = 35.628f}, {.id = 530, .distance = 42.036f}, {.id = 562, .distance = 44.864f}
+        }},
+        {543, {
+            {.id = 562, .distance = 28.726f}, {.id = 530, .distance = 29.271f}, {.id = 544, .distance = 31.916f}, {.id = 542, .distance = 32.298f}, {.id = 563, .distance = 37.444f}, {.id = 561, .distance = 42.067f}, {.id = 529, .distance = 46.032f}
+        }},
+        {544, {
+            {.id = 563, .distance = 31.889f}, {.id = 543, .distance = 31.916f}, {.id = 564, .distance = 32.458f}, {.id = 545, .distance = 32.605f}, {.id = 530, .distance = 35.475f}, {.id = 531, .distance = 35.680f}, {.id = 562, .distance = 49.358f}
+        }},
+        {545, {
+            {.id = 565, .distance = 28.557f}, {.id = 531, .distance = 30.515f}, {.id = 544, .distance = 32.605f}, {.id = 546, .distance = 33.386f}, {.id = 564, .distance = 36.707f}, {.id = 566, .distance = 42.276f}, {.id = 532, .distance = 47.436f}
+        }},
+        {546, {
+            {.id = 566, .distance = 29.283f}, {.id = 532, .distance = 30.713f}, {.id = 547, .distance = 32.395f}, {.id = 545, .distance = 33.386f}, {.id = 567, .distance = 35.383f}, {.id = 531, .distance = 43.747f}, {.id = 565, .distance = 45.069f}
+        }},
+        {547, {
+            {.id = 568, .distance = 30.492f}, {.id = 546, .distance = 32.395f}, {.id = 548, .distance = 32.492f}, {.id = 532, .distance = 32.961f}, {.id = 567, .distance = 33.774f}, {.id = 533, .distance = 39.529f}, {.id = 569, .distance = 46.947f}
+        }},
+        {548, {
+            {.id = 533, .distance = 28.795f}, {.id = 569, .distance = 28.796f}, {.id = 549, .distance = 31.301f}, {.id = 547, .distance = 32.492f}, {.id = 570, .distance = 39.130f}, {.id = 568, .distance = 39.658f}, {.id = 534, .distance = 50.236f}
+        }},
+        {549, {
+            {.id = 570, .distance = 30.076f}, {.id = 548, .distance = 31.301f}, {.id = 550, .distance = 33.324f}, {.id = 534, .distance = 33.378f}, {.id = 571, .distance = 33.386f}, {.id = 533, .distance = 37.853f}, {.id = 569, .distance = 46.778f}
+        }},
+        {550, {
+            {.id = 572, .distance = 29.653f}, {.id = 534, .distance = 30.978f}, {.id = 551, .distance = 32.852f}, {.id = 549, .distance = 33.324f}, {.id = 571, .distance = 35.446f}, {.id = 535, .distance = 42.934f}, {.id = 573, .distance = 44.581f}
+        }},
+        {551, {
+            {.id = 573, .distance = 28.776f}, {.id = 535, .distance = 29.314f}, {.id = 536, .distance = 32.088f}, {.id = 550, .distance = 32.852f}, {.id = 552, .distance = 36.954f}, {.id = 572, .distance = 42.498f}, {.id = 534, .distance = 47.075f}
+        }},
+        {552, {
+            {.id = 574, .distance = 23.617f}, {.id = 573, .distance = 31.442f}, {.id = 536, .distance = 31.964f}, {.id = 553, .distance = 32.703f}, {.id = 551, .distance = 36.954f}, {.id = 621, .distance = 41.259f}, {.id = 623, .distance = 45.103f}
+        }},
+        {553, {
+            {.id = 536, .distance = 31.937f}, {.id = 552, .distance = 32.703f}, {.id = 554, .distance = 32.725f}, {.id = 575, .distance = 36.068f}, {.id = 537, .distance = 37.491f}, {.id = 576, .distance = 39.068f}, {.id = 574, .distance = 41.895f}
+        }},
+        {554, {
+            {.id = 537, .distance = 29.419f}, {.id = 555, .distance = 30.638f}, {.id = 553, .distance = 32.725f}, {.id = 576, .distance = 35.794f}, {.id = 577, .distance = 36.665f}, {.id = 538, .distance = 44.568f}, {.id = 578, .distance = 46.412f}
+        }},
+        {555, {
+            {.id = 578, .distance = 24.191f}, {.id = 538, .distance = 29.848f}, {.id = 554, .distance = 30.638f}, {.id = 556, .distance = 31.516f}, {.id = 537, .distance = 41.947f}, {.id = 579, .distance = 44.167f}, {.id = 577, .distance = 44.460f}
+        }},
+        {556, {
+            {.id = 583, .distance = 27.519f}, {.id = 555, .distance = 31.516f}, {.id = 557, .distance = 33.096f}, {.id = 539, .distance = 33.457f}, {.id = 538, .distance = 35.426f}, {.id = 580, .distance = 35.506f}, {.id = 578, .distance = 36.051f}
+        }},
+        {557, {
+            {.id = 539, .distance = 30.775f}, {.id = 558, .distance = 30.943f}, {.id = 583, .distance = 31.347f}, {.id = 556, .distance = 33.096f}, {.id = 585, .distance = 37.393f}, {.id = 540, .distance = 38.606f}, {.id = 584, .distance = 45.102f}
+        }},
+        {558, {
+            {.id = 540, .distance = 28.126f}, {.id = 557, .distance = 30.943f}, {.id = 559, .distance = 32.322f}, {.id = 586, .distance = 33.115f}, {.id = 585, .distance = 43.474f}, {.id = 587, .distance = 44.048f}, {.id = 539, .distance = 47.195f}
+        }},
+        {559, {
+            {.id = 589, .distance = 30.540f}, {.id = 541, .distance = 30.745f}, {.id = 558, .distance = 32.322f}, {.id = 560, .distance = 32.441f}, {.id = 587, .distance = 37.153f}, {.id = 540, .distance = 40.686f}, {.id = 588, .distance = 45.279f}
+        }},
+        {560, {
+            {.id = 589, .distance = 27.373f}, {.id = 561, .distance = 31.563f}, {.id = 559, .distance = 32.441f}, {.id = 541, .distance = 33.990f}, {.id = 591, .distance = 35.618f}, {.id = 542, .distance = 35.628f}, {.id = 593, .distance = 36.566f}
+        }},
+        {561, {
+            {.id = 593, .distance = 24.293f}, {.id = 542, .distance = 30.088f}, {.id = 560, .distance = 31.563f}, {.id = 562, .distance = 31.793f}, {.id = 543, .distance = 42.067f}, {.id = 594, .distance = 43.775f}, {.id = 595, .distance = 43.787f}
+        }},
+        {562, {
+            {.id = 543, .distance = 28.726f}, {.id = 563, .distance = 31.427f}, {.id = 561, .distance = 31.793f}, {.id = 596, .distance = 35.922f}, {.id = 595, .distance = 37.333f}, {.id = 542, .distance = 44.864f}, {.id = 593, .distance = 47.704f}
+        }},
+        {563, {
+            {.id = 562, .distance = 31.427f}, {.id = 544, .distance = 31.889f}, {.id = 564, .distance = 32.342f}, {.id = 597, .distance = 35.562f}, {.id = 543, .distance = 37.444f}, {.id = 596, .distance = 39.243f}, {.id = 599, .distance = 41.982f}
+        }},
+        {564, {
+            {.id = 599, .distance = 23.803f}, {.id = 565, .distance = 31.693f}, {.id = 563, .distance = 32.342f}, {.id = 544, .distance = 32.458f}, {.id = 545, .distance = 36.707f}, {.id = 601, .distance = 41.333f}, {.id = 598, .distance = 44.974f}
+        }},
+        {565, {
+            {.id = 603, .distance = 24.410f}, {.id = 545, .distance = 28.557f}, {.id = 564, .distance = 31.693f}, {.id = 566, .distance = 32.138f}, {.id = 601, .distance = 38.124f}, {.id = 599, .distance = 43.096f}, {.id = 546, .distance = 45.069f}
+        }},
+        {566, {
+            {.id = 546, .distance = 29.283f}, {.id = 567, .distance = 31.589f}, {.id = 565, .distance = 32.138f}, {.id = 605, .distance = 36.174f}, {.id = 603, .distance = 36.927f}, {.id = 545, .distance = 42.276f}, {.id = 606, .distance = 43.787f}
+        }},
+        {567, {
+            {.id = 566, .distance = 31.589f}, {.id = 568, .distance = 32.185f}, {.id = 606, .distance = 33.528f}, {.id = 547, .distance = 33.774f}, {.id = 546, .distance = 35.383f}, {.id = 607, .distance = 39.292f}, {.id = 605, .distance = 48.151f}
+        }},
+        {568, {
+            {.id = 609, .distance = 26.800f}, {.id = 547, .distance = 30.492f}, {.id = 569, .distance = 31.085f}, {.id = 567, .distance = 32.185f}, {.id = 548, .distance = 39.658f}, {.id = 607, .distance = 40.843f}, {.id = 608, .distance = 44.297f}
+        }},
+        {569, {
+            {.id = 548, .distance = 28.796f}, {.id = 568, .distance = 31.085f}, {.id = 609, .distance = 31.165f}, {.id = 570, .distance = 31.748f}, {.id = 613, .distance = 32.025f}, {.id = 611, .distance = 35.484f}, {.id = 549, .distance = 46.778f}
+        }},
+        {570, {
+            {.id = 613, .distance = 26.974f}, {.id = 549, .distance = 30.076f}, {.id = 571, .distance = 31.574f}, {.id = 569, .distance = 31.748f}, {.id = 548, .distance = 39.130f}, {.id = 615, .distance = 40.759f}, {.id = 614, .distance = 44.255f}
+        }},
+        {571, {
+            {.id = 570, .distance = 31.574f}, {.id = 572, .distance = 32.495f}, {.id = 549, .distance = 33.386f}, {.id = 616, .distance = 34.006f}, {.id = 550, .distance = 35.446f}, {.id = 615, .distance = 40.058f}, {.id = 617, .distance = 48.765f}
+        }},
+        {572, {
+            {.id = 550, .distance = 29.653f}, {.id = 573, .distance = 31.761f}, {.id = 571, .distance = 32.495f}, {.id = 617, .distance = 35.652f}, {.id = 619, .distance = 35.973f}, {.id = 551, .distance = 42.498f}, {.id = 616, .distance = 43.930f}
+        }},
+        {573, {
+            {.id = 619, .distance = 24.656f}, {.id = 551, .distance = 28.776f}, {.id = 552, .distance = 31.442f}, {.id = 572, .distance = 31.761f}, {.id = 621, .distance = 38.273f}, {.id = 574, .distance = 43.129f}, {.id = 550, .distance = 44.581f}
+        }},
+        {574, {
+            {.id = 623, .distance = 22.863f}, {.id = 552, .distance = 23.617f}, {.id = 621, .distance = 27.856f}, {.id = 622, .distance = 35.561f}, {.id = 575, .distance = 37.917f}, {.id = 553, .distance = 41.895f}, {.id = 573, .distance = 43.129f}
+        }},
+        {575, {
+            {.id = 623, .distance = 28.096f}, {.id = 576, .distance = 29.153f}, {.id = 77, .distance = 29.296f}, {.id = 553, .distance = 36.068f}, {.id = 574, .distance = 37.917f}, {.id = 76, .distance = 40.703f}, {.id = 78, .distance = 41.400f}
+        }},
+        {576, {
+            {.id = 577, .distance = 28.265f}, {.id = 575, .distance = 29.153f}, {.id = 76, .distance = 29.691f}, {.id = 554, .distance = 35.794f}, {.id = 553, .distance = 39.068f}, {.id = 75, .distance = 40.851f}, {.id = 77, .distance = 41.883f}
+        }},
+        {577, {
+            {.id = 576, .distance = 28.265f}, {.id = 579, .distance = 28.989f}, {.id = 75, .distance = 29.345f}, {.id = 554, .distance = 36.665f}, {.id = 578, .distance = 38.712f}, {.id = 74, .distance = 40.738f}, {.id = 76, .distance = 41.214f}
+        }},
+        {578, {
+            {.id = 579, .distance = 23.607f}, {.id = 555, .distance = 24.191f}, {.id = 580, .distance = 27.455f}, {.id = 581, .distance = 35.536f}, {.id = 556, .distance = 36.051f}, {.id = 577, .distance = 38.712f}, {.id = 554, .distance = 46.412f}
+        }},
+        {579, {
+            {.id = 578, .distance = 23.607f}, {.id = 581, .distance = 28.500f}, {.id = 577, .distance = 28.989f}, {.id = 74, .distance = 29.310f}, {.id = 580, .distance = 38.998f}, {.id = 72, .distance = 40.243f}, {.id = 75, .distance = 41.503f}
+        }},
+        {580, {
+            {.id = 581, .distance = 25.823f}, {.id = 582, .distance = 26.007f}, {.id = 583, .distance = 27.304f}, {.id = 578, .distance = 27.455f}, {.id = 556, .distance = 35.506f}, {.id = 579, .distance = 38.998f}, {.id = 584, .distance = 39.242f}
+        }},
+        {581, {
+            {.id = 580, .distance = 25.823f}, {.id = 579, .distance = 28.500f}, {.id = 72, .distance = 29.549f}, {.id = 582, .distance = 30.900f}, {.id = 578, .distance = 35.536f}, {.id = 74, .distance = 41.456f}, {.id = 194, .distance = 51.536f}
+        }},
+        {582, {
+            {.id = 580, .distance = 26.007f}, {.id = 194, .distance = 28.580f}, {.id = 584, .distance = 29.614f}, {.id = 581, .distance = 30.900f}, {.id = 583, .distance = 35.963f}, {.id = 192, .distance = 40.019f}, {.id = 196, .distance = 51.461f}
+        }},
+        {583, {
+            {.id = 584, .distance = 23.404f}, {.id = 580, .distance = 27.304f}, {.id = 556, .distance = 27.519f}, {.id = 557, .distance = 31.347f}, {.id = 582, .distance = 35.963f}, {.id = 585, .distance = 38.924f}, {.id = 578, .distance = 47.034f}
+        }},
+        {584, {
+            {.id = 583, .distance = 23.404f}, {.id = 585, .distance = 28.584f}, {.id = 192, .distance = 28.638f}, {.id = 582, .distance = 29.614f}, {.id = 580, .distance = 39.242f}, {.id = 191, .distance = 40.269f}, {.id = 194, .distance = 41.724f}
+        }},
+        {585, {
+            {.id = 586, .distance = 28.069f}, {.id = 191, .distance = 28.459f}, {.id = 584, .distance = 28.584f}, {.id = 557, .distance = 37.393f}, {.id = 583, .distance = 38.924f}, {.id = 190, .distance = 39.725f}, {.id = 192, .distance = 41.284f}
+        }},
+        {586, {
+            {.id = 585, .distance = 28.069f}, {.id = 190, .distance = 28.695f}, {.id = 587, .distance = 28.840f}, {.id = 558, .distance = 33.115f}, {.id = 189, .distance = 40.338f}, {.id = 191, .distance = 40.350f}, {.id = 557, .distance = 48.228f}
+        }},
+        {587, {
+            {.id = 189, .distance = 28.736f}, {.id = 586, .distance = 28.840f}, {.id = 588, .distance = 29.098f}, {.id = 559, .distance = 37.153f}, {.id = 589, .distance = 38.371f}, {.id = 188, .distance = 40.206f}, {.id = 190, .distance = 40.940f}
+        }},
+        {588, {
+            {.id = 589, .distance = 23.468f}, {.id = 590, .distance = 28.067f}, {.id = 188, .distance = 28.751f}, {.id = 587, .distance = 29.098f}, {.id = 591, .distance = 37.859f}, {.id = 186, .distance = 39.803f}, {.id = 189, .distance = 41.267f}
+        }},
+        {589, {
+            {.id = 588, .distance = 23.468f}, {.id = 591, .distance = 26.995f}, {.id = 560, .distance = 27.373f}, {.id = 559, .distance = 30.540f}, {.id = 590, .distance = 35.584f}, {.id = 587, .distance = 38.371f}, {.id = 593, .distance = 47.445f}
+        }},
+        {590, {
+            {.id = 591, .distance = 25.235f}, {.id = 588, .distance = 28.067f}, {.id = 186, .distance = 28.672f}, {.id = 592, .distance = 31.314f}, {.id = 589, .distance = 35.584f}, {.id = 188, .distance = 40.855f}, {.id = 818, .distance = 50.621f}
+        }},
+        {591, {
+            {.id = 590, .distance = 25.235f}, {.id = 592, .distance = 25.959f}, {.id = 589, .distance = 26.995f}, {.id = 593, .distance = 28.280f}, {.id = 560, .distance = 35.618f}, {.id = 588, .distance = 37.859f}, {.id = 594, .distance = 39.348f}
+        }},
+        {592, {
+            {.id = 591, .distance = 25.959f}, {.id = 818, .distance = 27.690f}, {.id = 594, .distance = 28.175f}, {.id = 590, .distance = 31.314f}, {.id = 593, .distance = 35.099f}, {.id = 816, .distance = 39.154f}, {.id = 819, .distance = 50.900f}
+        }},
+        {593, {
+            {.id = 594, .distance = 22.858f}, {.id = 561, .distance = 24.293f}, {.id = 591, .distance = 28.280f}, {.id = 592, .distance = 35.099f}, {.id = 560, .distance = 36.566f}, {.id = 595, .distance = 37.718f}, {.id = 589, .distance = 47.445f}
+        }},
+        {594, {
+            {.id = 593, .distance = 22.858f}, {.id = 816, .distance = 27.436f}, {.id = 592, .distance = 28.175f}, {.id = 595, .distance = 28.665f}, {.id = 591, .distance = 39.348f}, {.id = 818, .distance = 40.114f}, {.id = 815, .distance = 40.252f}
+        }},
+        {595, {
+            {.id = 815, .distance = 27.613f}, {.id = 594, .distance = 28.665f}, {.id = 596, .distance = 28.744f}, {.id = 562, .distance = 37.333f}, {.id = 593, .distance = 37.718f}, {.id = 814, .distance = 39.855f}, {.id = 816, .distance = 39.947f}
+        }},
+        {596, {
+            {.id = 814, .distance = 27.498f}, {.id = 597, .distance = 28.665f}, {.id = 595, .distance = 28.744f}, {.id = 562, .distance = 35.922f}, {.id = 563, .distance = 39.243f}, {.id = 815, .distance = 39.255f}, {.id = 813, .distance = 39.752f}
+        }},
+        {597, {
+            {.id = 813, .distance = 27.628f}, {.id = 596, .distance = 28.665f}, {.id = 598, .distance = 28.989f}, {.id = 563, .distance = 35.562f}, {.id = 599, .distance = 37.946f}, {.id = 814, .distance = 39.790f}, {.id = 812, .distance = 39.805f}
+        }},
+        {598, {
+            {.id = 599, .distance = 22.522f}, {.id = 812, .distance = 27.583f}, {.id = 597, .distance = 28.989f}, {.id = 600, .distance = 28.989f}, {.id = 601, .distance = 38.748f}, {.id = 810, .distance = 39.435f}, {.id = 813, .distance = 40.007f}
+        }},
+        {599, {
+            {.id = 598, .distance = 22.522f}, {.id = 564, .distance = 23.803f}, {.id = 601, .distance = 27.573f}, {.id = 600, .distance = 35.430f}, {.id = 597, .distance = 37.946f}, {.id = 563, .distance = 41.982f}, {.id = 565, .distance = 43.096f}
+        }},
+        {600, {
+            {.id = 601, .distance = 25.732f}, {.id = 810, .distance = 27.473f}, {.id = 598, .distance = 28.989f}, {.id = 602, .distance = 30.699f}, {.id = 599, .distance = 35.430f}, {.id = 812, .distance = 40.223f}, {.id = 808, .distance = 49.900f}
+        }},
+        {601, {
+            {.id = 602, .distance = 25.715f}, {.id = 600, .distance = 25.732f}, {.id = 603, .distance = 27.009f}, {.id = 599, .distance = 27.573f}, {.id = 565, .distance = 38.124f}, {.id = 598, .distance = 38.748f}, {.id = 604, .distance = 38.795f}
+        }},
+        {602, {
+            {.id = 601, .distance = 25.715f}, {.id = 724, .distance = 27.990f}, {.id = 604, .distance = 28.587f}, {.id = 600, .distance = 30.699f}, {.id = 603, .distance = 35.180f}, {.id = 722, .distance = 41.739f}, {.id = 726, .distance = 50.403f}
+        }},
+        {603, {
+            {.id = 604, .distance = 23.318f}, {.id = 565, .distance = 24.410f}, {.id = 601, .distance = 27.009f}, {.id = 602, .distance = 35.180f}, {.id = 566, .distance = 36.927f}, {.id = 605, .distance = 38.625f}, {.id = 599, .distance = 47.229f}
+        }},
+        {604, {
+            {.id = 603, .distance = 23.318f}, {.id = 722, .distance = 28.526f}, {.id = 602, .distance = 28.587f}, {.id = 605, .distance = 28.648f}, {.id = 601, .distance = 38.795f}, {.id = 724, .distance = 39.023f}, {.id = 721, .distance = 41.888f}
+        }},
+        {605, {
+            {.id = 604, .distance = 28.648f}, {.id = 606, .distance = 28.678f}, {.id = 721, .distance = 28.720f}, {.id = 566, .distance = 36.174f}, {.id = 603, .distance = 38.625f}, {.id = 722, .distance = 38.975f}, {.id = 720, .distance = 42.065f}
+        }},
+        {606, {
+            {.id = 607, .distance = 28.019f}, {.id = 720, .distance = 28.593f}, {.id = 605, .distance = 28.678f}, {.id = 567, .distance = 33.528f}, {.id = 721, .distance = 39.193f}, {.id = 719, .distance = 42.010f}, {.id = 566, .distance = 43.787f}
+        }},
+        {607, {
+            {.id = 606, .distance = 28.019f}, {.id = 719, .distance = 28.538f}, {.id = 608, .distance = 29.666f}, {.id = 720, .distance = 38.440f}, {.id = 609, .distance = 39.143f}, {.id = 567, .distance = 39.292f}, {.id = 568, .distance = 40.843f}
+        }},
+        {608, {
+            {.id = 609, .distance = 23.574f}, {.id = 718, .distance = 28.586f}, {.id = 610, .distance = 28.796f}, {.id = 607, .distance = 29.666f}, {.id = 611, .distance = 38.536f}, {.id = 719, .distance = 38.933f}, {.id = 716, .distance = 41.429f}
+        }},
+        {609, {
+            {.id = 608, .distance = 23.574f}, {.id = 568, .distance = 26.800f}, {.id = 611, .distance = 27.295f}, {.id = 569, .distance = 31.165f}, {.id = 610, .distance = 35.726f}, {.id = 607, .distance = 39.143f}, {.id = 613, .distance = 46.866f}
+        }},
+        {610, {
+            {.id = 611, .distance = 25.236f}, {.id = 716, .distance = 28.551f}, {.id = 608, .distance = 28.796f}, {.id = 612, .distance = 30.643f}, {.id = 609, .distance = 35.726f}, {.id = 718, .distance = 39.222f}, {.id = 613, .distance = 51.793f}
+        }},
+        {611, {
+            {.id = 610, .distance = 25.236f}, {.id = 612, .distance = 25.701f}, {.id = 609, .distance = 27.295f}, {.id = 613, .distance = 27.601f}, {.id = 569, .distance = 35.484f}, {.id = 608, .distance = 38.536f}, {.id = 614, .distance = 38.536f}
+        }},
+        {612, {
+            {.id = 611, .distance = 25.701f}, {.id = 614, .distance = 28.171f}, {.id = 486, .distance = 29.698f}, {.id = 610, .distance = 30.643f}, {.id = 613, .distance = 35.416f}, {.id = 484, .distance = 41.024f}, {.id = 716, .distance = 50.454f}
+        }},
+        {613, {
+            {.id = 614, .distance = 23.046f}, {.id = 570, .distance = 26.974f}, {.id = 611, .distance = 27.601f}, {.id = 569, .distance = 32.025f}, {.id = 612, .distance = 35.416f}, {.id = 615, .distance = 38.124f}, {.id = 609, .distance = 46.866f}
+        }},
+        {614, {
+            {.id = 613, .distance = 23.046f}, {.id = 612, .distance = 28.171f}, {.id = 615, .distance = 28.796f}, {.id = 484, .distance = 29.884f}, {.id = 611, .distance = 38.536f}, {.id = 486, .distance = 40.907f}, {.id = 483, .distance = 41.803f}
+        }},
+        {615, {
+            {.id = 616, .distance = 28.739f}, {.id = 614, .distance = 28.796f}, {.id = 483, .distance = 29.688f}, {.id = 613, .distance = 38.124f}, {.id = 571, .distance = 40.058f}, {.id = 570, .distance = 40.759f}, {.id = 484, .distance = 41.264f}
+        }},
+        {616, {
+            {.id = 615, .distance = 28.739f}, {.id = 617, .distance = 28.996f}, {.id = 482, .distance = 29.797f}, {.id = 571, .distance = 34.006f}, {.id = 483, .distance = 41.093f}, {.id = 481, .distance = 41.143f}, {.id = 572, .distance = 43.930f}
+        }},
+        {617, {
+            {.id = 618, .distance = 28.539f}, {.id = 616, .distance = 28.996f}, {.id = 481, .distance = 29.685f}, {.id = 572, .distance = 35.652f}, {.id = 619, .distance = 38.072f}, {.id = 480, .distance = 41.095f}, {.id = 482, .distance = 41.280f}
+        }},
+        {618, {
+            {.id = 619, .distance = 23.229f}, {.id = 617, .distance = 28.539f}, {.id = 620, .distance = 29.175f}, {.id = 480, .distance = 29.702f}, {.id = 621, .distance = 38.795f}, {.id = 481, .distance = 41.304f}, {.id = 478, .distance = 41.540f}
+        }},
+        {619, {
+            {.id = 618, .distance = 23.229f}, {.id = 573, .distance = 24.656f}, {.id = 621, .distance = 27.373f}, {.id = 572, .distance = 35.973f}, {.id = 620, .distance = 36.131f}, {.id = 617, .distance = 38.072f}, {.id = 574, .distance = 47.750f}
+        }},
+        {620, {
+            {.id = 621, .distance = 26.133f}, {.id = 478, .distance = 29.051f}, {.id = 618, .distance = 29.175f}, {.id = 622, .distance = 30.723f}, {.id = 619, .distance = 36.131f}, {.id = 480, .distance = 41.571f}, {.id = 80, .distance = 51.803f}
+        }},
+        {621, {
+            {.id = 622, .distance = 25.813f}, {.id = 620, .distance = 26.133f}, {.id = 619, .distance = 27.373f}, {.id = 574, .distance = 27.856f}, {.id = 573, .distance = 38.273f}, {.id = 618, .distance = 38.795f}, {.id = 623, .distance = 39.458f}
+        }},
+        {622, {
+            {.id = 621, .distance = 25.813f}, {.id = 80, .distance = 29.465f}, {.id = 623, .distance = 29.479f}, {.id = 620, .distance = 30.723f}, {.id = 574, .distance = 35.561f}, {.id = 78, .distance = 40.864f}, {.id = 478, .distance = 51.840f}
+        }},
+        {623, {
+            {.id = 574, .distance = 22.863f}, {.id = 575, .distance = 28.096f}, {.id = 78, .distance = 29.440f}, {.id = 622, .distance = 29.479f}, {.id = 621, .distance = 39.458f}, {.id = 77, .distance = 40.496f}, {.id = 80, .distance = 42.121f}
+        }},
+        {624, {
+            {.id = 625, .distance = 25.256f}, {.id = 627, .distance = 25.653f}, {.id = 626, .distance = 25.660f}, {.id = 629, .distance = 26.237f}, {.id = 628, .distance = 26.780f}, {.id = 631, .distance = 53.251f}, {.id = 635, .distance = 53.584f}
+        }},
+        {625, {
+            {.id = 624, .distance = 25.256f}, {.id = 631, .distance = 27.996f}, {.id = 629, .distance = 30.406f}, {.id = 626, .distance = 30.745f}, {.id = 632, .distance = 36.902f}, {.id = 630, .distance = 36.902f}, {.id = 627, .distance = 48.670f}
+        }},
+        {626, {
+            {.id = 624, .distance = 25.660f}, {.id = 633, .distance = 28.138f}, {.id = 627, .distance = 30.016f}, {.id = 625, .distance = 30.745f}, {.id = 634, .distance = 35.779f}, {.id = 632, .distance = 37.730f}, {.id = 628, .distance = 49.623f}
+        }},
+        {627, {
+            {.id = 624, .distance = 25.653f}, {.id = 635, .distance = 27.950f}, {.id = 626, .distance = 30.016f}, {.id = 628, .distance = 30.334f}, {.id = 636, .distance = 36.663f}, {.id = 634, .distance = 36.917f}, {.id = 625, .distance = 48.670f}
+        }},
+        {628, {
+            {.id = 624, .distance = 26.780f}, {.id = 637, .distance = 28.148f}, {.id = 627, .distance = 30.334f}, {.id = 629, .distance = 30.829f}, {.id = 636, .distance = 36.041f}, {.id = 638, .distance = 36.581f}, {.id = 625, .distance = 49.415f}
+        }},
+        {629, {
+            {.id = 624, .distance = 26.237f}, {.id = 639, .distance = 28.784f}, {.id = 625, .distance = 30.406f}, {.id = 628, .distance = 30.829f}, {.id = 630, .distance = 36.136f}, {.id = 638, .distance = 36.663f}, {.id = 627, .distance = 49.028f}
+        }},
+        {630, {
+            {.id = 641, .distance = 29.943f}, {.id = 639, .distance = 32.709f}, {.id = 631, .distance = 33.241f}, {.id = 640, .distance = 35.999f}, {.id = 629, .distance = 36.136f}, {.id = 625, .distance = 36.902f}, {.id = 642, .distance = 43.146f}
+        }},
+        {631, {
+            {.id = 625, .distance = 27.996f}, {.id = 642, .distance = 31.091f}, {.id = 630, .distance = 33.241f}, {.id = 632, .distance = 33.489f}, {.id = 643, .distance = 33.997f}, {.id = 641, .distance = 46.465f}, {.id = 644, .distance = 50.872f}
+        }},
+        {632, {
+            {.id = 644, .distance = 28.795f}, {.id = 631, .distance = 33.489f}, {.id = 633, .distance = 34.526f}, {.id = 625, .distance = 36.902f}, {.id = 626, .distance = 37.730f}, {.id = 643, .distance = 39.001f}, {.id = 645, .distance = 39.043f}
+        }},
+        {633, {
+            {.id = 626, .distance = 28.138f}, {.id = 646, .distance = 30.119f}, {.id = 634, .distance = 32.862f}, {.id = 645, .distance = 33.326f}, {.id = 632, .distance = 34.526f}, {.id = 647, .distance = 46.032f}, {.id = 644, .distance = 51.953f}
+        }},
+        {634, {
+            {.id = 647, .distance = 29.271f}, {.id = 633, .distance = 32.862f}, {.id = 635, .distance = 32.910f}, {.id = 648, .distance = 35.475f}, {.id = 626, .distance = 35.779f}, {.id = 627, .distance = 36.917f}, {.id = 646, .distance = 42.036f}
+        }},
+        {635, {
+            {.id = 627, .distance = 27.950f}, {.id = 649, .distance = 30.515f}, {.id = 634, .distance = 32.910f}, {.id = 636, .distance = 34.288f}, {.id = 648, .distance = 35.680f}, {.id = 650, .distance = 43.747f}, {.id = 626, .distance = 50.881f}
+        }},
+        {636, {
+            {.id = 650, .distance = 30.713f}, {.id = 651, .distance = 32.961f}, {.id = 635, .distance = 34.288f}, {.id = 637, .distance = 34.333f}, {.id = 628, .distance = 36.041f}, {.id = 627, .distance = 36.663f}, {.id = 649, .distance = 47.436f}
+        }},
+        {637, {
+            {.id = 628, .distance = 28.148f}, {.id = 652, .distance = 28.795f}, {.id = 638, .distance = 32.474f}, {.id = 636, .distance = 34.333f}, {.id = 653, .distance = 37.853f}, {.id = 651, .distance = 39.529f}, {.id = 629, .distance = 52.029f}
+        }},
+        {638, {
+            {.id = 654, .distance = 30.978f}, {.id = 637, .distance = 32.474f}, {.id = 653, .distance = 33.378f}, {.id = 639, .distance = 34.135f}, {.id = 628, .distance = 36.581f}, {.id = 629, .distance = 36.663f}, {.id = 655, .distance = 47.075f}
+        }},
+        {639, {
+            {.id = 629, .distance = 28.784f}, {.id = 655, .distance = 29.314f}, {.id = 630, .distance = 32.709f}, {.id = 638, .distance = 34.135f}, {.id = 640, .distance = 35.428f}, {.id = 654, .distance = 42.934f}, {.id = 625, .distance = 52.730f}
+        }},
+        {640, {
+            {.id = 657, .distance = 31.937f}, {.id = 656, .distance = 31.964f}, {.id = 655, .distance = 32.088f}, {.id = 641, .distance = 32.704f}, {.id = 639, .distance = 35.428f}, {.id = 630, .distance = 35.999f}, {.id = 677, .distance = 49.921f}
+        }},
+        {641, {
+            {.id = 658, .distance = 29.419f}, {.id = 630, .distance = 29.943f}, {.id = 642, .distance = 32.468f}, {.id = 640, .distance = 32.704f}, {.id = 657, .distance = 37.491f}, {.id = 659, .distance = 41.947f}, {.id = 631, .distance = 46.465f}
+        }},
+        {642, {
+            {.id = 659, .distance = 29.848f}, {.id = 631, .distance = 31.091f}, {.id = 643, .distance = 31.917f}, {.id = 641, .distance = 32.468f}, {.id = 660, .distance = 35.426f}, {.id = 630, .distance = 43.146f}, {.id = 658, .distance = 44.568f}
+        }},
+        {643, {
+            {.id = 661, .distance = 30.775f}, {.id = 642, .distance = 31.917f}, {.id = 644, .distance = 32.089f}, {.id = 660, .distance = 33.457f}, {.id = 631, .distance = 33.997f}, {.id = 632, .distance = 39.001f}, {.id = 662, .distance = 47.195f}
+        }},
+        {644, {
+            {.id = 662, .distance = 28.126f}, {.id = 632, .distance = 28.795f}, {.id = 643, .distance = 32.089f}, {.id = 645, .distance = 33.350f}, {.id = 661, .distance = 38.606f}, {.id = 663, .distance = 40.686f}, {.id = 631, .distance = 50.872f}
+        }},
+        {645, {
+            {.id = 663, .distance = 30.745f}, {.id = 646, .distance = 32.585f}, {.id = 633, .distance = 33.326f}, {.id = 644, .distance = 33.350f}, {.id = 664, .distance = 33.990f}, {.id = 632, .distance = 39.043f}, {.id = 662, .distance = 47.230f}
+        }},
+        {646, {
+            {.id = 665, .distance = 30.088f}, {.id = 633, .distance = 30.119f}, {.id = 647, .distance = 32.298f}, {.id = 645, .distance = 32.585f}, {.id = 664, .distance = 35.628f}, {.id = 634, .distance = 42.036f}, {.id = 666, .distance = 44.864f}
+        }},
+        {647, {
+            {.id = 666, .distance = 28.726f}, {.id = 634, .distance = 29.271f}, {.id = 648, .distance = 31.916f}, {.id = 646, .distance = 32.298f}, {.id = 667, .distance = 37.444f}, {.id = 665, .distance = 42.067f}, {.id = 633, .distance = 46.032f}
+        }},
+        {648, {
+            {.id = 667, .distance = 31.889f}, {.id = 647, .distance = 31.916f}, {.id = 668, .distance = 32.458f}, {.id = 649, .distance = 32.605f}, {.id = 634, .distance = 35.475f}, {.id = 635, .distance = 35.680f}, {.id = 666, .distance = 49.358f}
+        }},
+        {649, {
+            {.id = 669, .distance = 28.557f}, {.id = 635, .distance = 30.515f}, {.id = 648, .distance = 32.605f}, {.id = 650, .distance = 33.386f}, {.id = 668, .distance = 36.707f}, {.id = 670, .distance = 42.276f}, {.id = 636, .distance = 47.436f}
+        }},
+        {650, {
+            {.id = 670, .distance = 29.283f}, {.id = 636, .distance = 30.713f}, {.id = 651, .distance = 32.395f}, {.id = 649, .distance = 33.386f}, {.id = 671, .distance = 35.383f}, {.id = 635, .distance = 43.747f}, {.id = 669, .distance = 45.069f}
+        }},
+        {651, {
+            {.id = 672, .distance = 30.492f}, {.id = 650, .distance = 32.395f}, {.id = 652, .distance = 32.492f}, {.id = 636, .distance = 32.961f}, {.id = 671, .distance = 33.774f}, {.id = 637, .distance = 39.529f}, {.id = 673, .distance = 46.947f}
+        }},
+        {652, {
+            {.id = 637, .distance = 28.795f}, {.id = 673, .distance = 28.796f}, {.id = 653, .distance = 31.301f}, {.id = 651, .distance = 32.492f}, {.id = 674, .distance = 39.130f}, {.id = 672, .distance = 39.658f}, {.id = 638, .distance = 50.236f}
+        }},
+        {653, {
+            {.id = 674, .distance = 30.076f}, {.id = 652, .distance = 31.301f}, {.id = 654, .distance = 33.324f}, {.id = 638, .distance = 33.378f}, {.id = 675, .distance = 33.386f}, {.id = 637, .distance = 37.853f}, {.id = 673, .distance = 46.778f}
+        }},
+        {654, {
+            {.id = 676, .distance = 29.653f}, {.id = 638, .distance = 30.978f}, {.id = 655, .distance = 32.852f}, {.id = 653, .distance = 33.324f}, {.id = 675, .distance = 35.446f}, {.id = 639, .distance = 42.934f}, {.id = 677, .distance = 44.581f}
+        }},
+        {655, {
+            {.id = 677, .distance = 28.776f}, {.id = 639, .distance = 29.314f}, {.id = 640, .distance = 32.088f}, {.id = 654, .distance = 32.852f}, {.id = 656, .distance = 36.954f}, {.id = 676, .distance = 42.498f}, {.id = 638, .distance = 47.075f}
+        }},
+        {656, {
+            {.id = 678, .distance = 23.617f}, {.id = 677, .distance = 31.442f}, {.id = 640, .distance = 31.964f}, {.id = 657, .distance = 32.703f}, {.id = 655, .distance = 36.954f}, {.id = 725, .distance = 41.259f}, {.id = 727, .distance = 45.103f}
+        }},
+        {657, {
+            {.id = 640, .distance = 31.937f}, {.id = 656, .distance = 32.703f}, {.id = 658, .distance = 32.725f}, {.id = 679, .distance = 36.068f}, {.id = 641, .distance = 37.491f}, {.id = 680, .distance = 39.068f}, {.id = 678, .distance = 41.895f}
+        }},
+        {658, {
+            {.id = 641, .distance = 29.419f}, {.id = 659, .distance = 30.638f}, {.id = 657, .distance = 32.725f}, {.id = 680, .distance = 35.794f}, {.id = 681, .distance = 36.665f}, {.id = 642, .distance = 44.568f}, {.id = 682, .distance = 46.412f}
+        }},
+        {659, {
+            {.id = 682, .distance = 24.191f}, {.id = 642, .distance = 29.848f}, {.id = 658, .distance = 30.638f}, {.id = 660, .distance = 31.516f}, {.id = 641, .distance = 41.947f}, {.id = 683, .distance = 44.167f}, {.id = 681, .distance = 44.460f}
+        }},
+        {660, {
+            {.id = 687, .distance = 27.519f}, {.id = 659, .distance = 31.516f}, {.id = 661, .distance = 33.096f}, {.id = 643, .distance = 33.457f}, {.id = 642, .distance = 35.426f}, {.id = 684, .distance = 35.506f}, {.id = 682, .distance = 36.051f}
+        }},
+        {661, {
+            {.id = 643, .distance = 30.775f}, {.id = 662, .distance = 30.943f}, {.id = 687, .distance = 31.347f}, {.id = 660, .distance = 33.096f}, {.id = 689, .distance = 37.393f}, {.id = 644, .distance = 38.606f}, {.id = 688, .distance = 45.102f}
+        }},
+        {662, {
+            {.id = 644, .distance = 28.126f}, {.id = 661, .distance = 30.943f}, {.id = 663, .distance = 32.322f}, {.id = 690, .distance = 33.115f}, {.id = 689, .distance = 43.474f}, {.id = 691, .distance = 44.048f}, {.id = 643, .distance = 47.195f}
+        }},
+        {663, {
+            {.id = 693, .distance = 30.540f}, {.id = 645, .distance = 30.745f}, {.id = 662, .distance = 32.322f}, {.id = 664, .distance = 32.441f}, {.id = 691, .distance = 37.153f}, {.id = 644, .distance = 40.686f}, {.id = 692, .distance = 45.279f}
+        }},
+        {664, {
+            {.id = 693, .distance = 27.373f}, {.id = 665, .distance = 31.563f}, {.id = 663, .distance = 32.441f}, {.id = 645, .distance = 33.990f}, {.id = 695, .distance = 35.618f}, {.id = 646, .distance = 35.628f}, {.id = 697, .distance = 36.566f}
+        }},
+        {665, {
+            {.id = 697, .distance = 24.293f}, {.id = 646, .distance = 30.088f}, {.id = 664, .distance = 31.563f}, {.id = 666, .distance = 31.793f}, {.id = 647, .distance = 42.067f}, {.id = 698, .distance = 43.775f}, {.id = 699, .distance = 43.787f}
+        }},
+        {666, {
+            {.id = 647, .distance = 28.726f}, {.id = 667, .distance = 31.427f}, {.id = 665, .distance = 31.793f}, {.id = 700, .distance = 35.922f}, {.id = 699, .distance = 37.333f}, {.id = 646, .distance = 44.864f}, {.id = 697, .distance = 47.704f}
+        }},
+        {667, {
+            {.id = 666, .distance = 31.427f}, {.id = 648, .distance = 31.889f}, {.id = 668, .distance = 32.342f}, {.id = 701, .distance = 35.562f}, {.id = 647, .distance = 37.444f}, {.id = 700, .distance = 39.243f}, {.id = 703, .distance = 41.982f}
+        }},
+        {668, {
+            {.id = 703, .distance = 23.803f}, {.id = 669, .distance = 31.693f}, {.id = 667, .distance = 32.342f}, {.id = 648, .distance = 32.458f}, {.id = 649, .distance = 36.707f}, {.id = 705, .distance = 41.333f}, {.id = 702, .distance = 44.974f}
+        }},
+        {669, {
+            {.id = 707, .distance = 24.410f}, {.id = 649, .distance = 28.557f}, {.id = 668, .distance = 31.693f}, {.id = 670, .distance = 32.138f}, {.id = 705, .distance = 38.124f}, {.id = 703, .distance = 43.096f}, {.id = 650, .distance = 45.069f}
+        }},
+        {670, {
+            {.id = 650, .distance = 29.283f}, {.id = 671, .distance = 31.589f}, {.id = 669, .distance = 32.138f}, {.id = 709, .distance = 36.174f}, {.id = 707, .distance = 36.927f}, {.id = 649, .distance = 42.276f}, {.id = 710, .distance = 43.787f}
+        }},
+        {671, {
+            {.id = 670, .distance = 31.589f}, {.id = 672, .distance = 32.185f}, {.id = 710, .distance = 33.528f}, {.id = 651, .distance = 33.774f}, {.id = 650, .distance = 35.383f}, {.id = 711, .distance = 39.292f}, {.id = 709, .distance = 48.151f}
+        }},
+        {672, {
+            {.id = 713, .distance = 26.800f}, {.id = 651, .distance = 30.492f}, {.id = 673, .distance = 31.085f}, {.id = 671, .distance = 32.185f}, {.id = 652, .distance = 39.658f}, {.id = 711, .distance = 40.843f}, {.id = 712, .distance = 44.297f}
+        }},
+        {673, {
+            {.id = 652, .distance = 28.796f}, {.id = 672, .distance = 31.085f}, {.id = 713, .distance = 31.165f}, {.id = 674, .distance = 31.748f}, {.id = 717, .distance = 32.025f}, {.id = 715, .distance = 35.484f}, {.id = 653, .distance = 46.778f}
+        }},
+        {674, {
+            {.id = 717, .distance = 26.974f}, {.id = 653, .distance = 30.076f}, {.id = 675, .distance = 31.574f}, {.id = 673, .distance = 31.748f}, {.id = 652, .distance = 39.130f}, {.id = 719, .distance = 40.759f}, {.id = 718, .distance = 44.255f}
+        }},
+        {675, {
+            {.id = 674, .distance = 31.574f}, {.id = 676, .distance = 32.495f}, {.id = 653, .distance = 33.386f}, {.id = 720, .distance = 34.006f}, {.id = 654, .distance = 35.446f}, {.id = 719, .distance = 40.058f}, {.id = 721, .distance = 48.765f}
+        }},
+        {676, {
+            {.id = 654, .distance = 29.653f}, {.id = 677, .distance = 31.761f}, {.id = 675, .distance = 32.495f}, {.id = 721, .distance = 35.652f}, {.id = 723, .distance = 35.973f}, {.id = 655, .distance = 42.498f}, {.id = 720, .distance = 43.930f}
+        }},
+        {677, {
+            {.id = 723, .distance = 24.656f}, {.id = 655, .distance = 28.776f}, {.id = 656, .distance = 31.442f}, {.id = 676, .distance = 31.761f}, {.id = 725, .distance = 38.273f}, {.id = 678, .distance = 43.129f}, {.id = 654, .distance = 44.581f}
+        }},
+        {678, {
+            {.id = 727, .distance = 22.863f}, {.id = 656, .distance = 23.617f}, {.id = 725, .distance = 27.856f}, {.id = 726, .distance = 35.561f}, {.id = 679, .distance = 37.917f}, {.id = 657, .distance = 41.895f}, {.id = 677, .distance = 43.129f}
+        }},
+        {679, {
+            {.id = 727, .distance = 28.096f}, {.id = 680, .distance = 29.153f}, {.id = 805, .distance = 29.303f}, {.id = 657, .distance = 36.068f}, {.id = 678, .distance = 37.917f}, {.id = 804, .distance = 40.708f}, {.id = 806, .distance = 41.405f}
+        }},
+        {680, {
+            {.id = 681, .distance = 28.265f}, {.id = 679, .distance = 29.153f}, {.id = 804, .distance = 29.697f}, {.id = 658, .distance = 35.794f}, {.id = 657, .distance = 39.068f}, {.id = 803, .distance = 40.854f}, {.id = 805, .distance = 41.887f}
+        }},
+        {681, {
+            {.id = 680, .distance = 28.265f}, {.id = 683, .distance = 28.989f}, {.id = 803, .distance = 29.349f}, {.id = 658, .distance = 36.665f}, {.id = 682, .distance = 38.712f}, {.id = 802, .distance = 40.741f}, {.id = 804, .distance = 41.218f}
+        }},
+        {682, {
+            {.id = 683, .distance = 23.607f}, {.id = 659, .distance = 24.191f}, {.id = 684, .distance = 27.455f}, {.id = 685, .distance = 35.536f}, {.id = 660, .distance = 36.051f}, {.id = 681, .distance = 38.712f}, {.id = 658, .distance = 46.412f}
+        }},
+        {683, {
+            {.id = 682, .distance = 23.607f}, {.id = 685, .distance = 28.500f}, {.id = 681, .distance = 28.989f}, {.id = 802, .distance = 29.313f}, {.id = 684, .distance = 38.998f}, {.id = 800, .distance = 40.245f}, {.id = 803, .distance = 41.506f}
+        }},
+        {684, {
+            {.id = 685, .distance = 25.823f}, {.id = 686, .distance = 26.007f}, {.id = 687, .distance = 27.304f}, {.id = 682, .distance = 27.455f}, {.id = 660, .distance = 35.506f}, {.id = 683, .distance = 38.998f}, {.id = 688, .distance = 39.242f}
+        }},
+        {685, {
+            {.id = 684, .distance = 25.823f}, {.id = 683, .distance = 28.500f}, {.id = 800, .distance = 29.551f}, {.id = 686, .distance = 30.900f}, {.id = 682, .distance = 35.536f}, {.id = 802, .distance = 41.458f}, {.id = 798, .distance = 51.969f}
+        }},
+        {686, {
+            {.id = 684, .distance = 26.007f}, {.id = 688, .distance = 29.614f}, {.id = 1205, .distance = 30.452f}, {.id = 685, .distance = 30.900f}, {.id = 687, .distance = 35.963f}, {.id = 1203, .distance = 41.143f}, {.id = 682, .distance = 52.371f}
+        }},
+        {687, {
+            {.id = 688, .distance = 23.404f}, {.id = 684, .distance = 27.304f}, {.id = 660, .distance = 27.519f}, {.id = 661, .distance = 31.347f}, {.id = 686, .distance = 35.963f}, {.id = 689, .distance = 38.924f}, {.id = 682, .distance = 47.034f}
+        }},
+        {688, {
+            {.id = 687, .distance = 23.404f}, {.id = 689, .distance = 28.584f}, {.id = 686, .distance = 29.614f}, {.id = 1203, .distance = 30.527f}, {.id = 684, .distance = 39.242f}, {.id = 1201, .distance = 40.848f}, {.id = 1205, .distance = 43.063f}
+        }},
+        {689, {
+            {.id = 690, .distance = 28.069f}, {.id = 688, .distance = 28.584f}, {.id = 1201, .distance = 30.240f}, {.id = 661, .distance = 37.393f}, {.id = 687, .distance = 38.924f}, {.id = 1200, .distance = 40.805f}, {.id = 1203, .distance = 42.836f}
+        }},
+        {690, {
+            {.id = 689, .distance = 28.069f}, {.id = 691, .distance = 28.840f}, {.id = 1200, .distance = 30.894f}, {.id = 662, .distance = 33.115f}, {.id = 1199, .distance = 41.340f}, {.id = 1201, .distance = 42.310f}, {.id = 661, .distance = 48.228f}
+        }},
+        {691, {
+            {.id = 690, .distance = 28.840f}, {.id = 692, .distance = 29.098f}, {.id = 1199, .distance = 30.415f}, {.id = 663, .distance = 37.153f}, {.id = 693, .distance = 38.371f}, {.id = 1247, .distance = 40.963f}, {.id = 1200, .distance = 43.032f}
+        }},
+        {692, {
+            {.id = 693, .distance = 23.468f}, {.id = 694, .distance = 28.067f}, {.id = 691, .distance = 29.098f}, {.id = 1247, .distance = 30.625f}, {.id = 695, .distance = 37.859f}, {.id = 1246, .distance = 41.283f}, {.id = 1199, .distance = 42.661f}
+        }},
+        {693, {
+            {.id = 692, .distance = 23.468f}, {.id = 695, .distance = 26.995f}, {.id = 664, .distance = 27.373f}, {.id = 663, .distance = 30.540f}, {.id = 694, .distance = 35.584f}, {.id = 691, .distance = 38.371f}, {.id = 697, .distance = 47.445f}
+        }},
+        {694, {
+            {.id = 695, .distance = 25.235f}, {.id = 692, .distance = 28.067f}, {.id = 1246, .distance = 30.660f}, {.id = 696, .distance = 31.314f}, {.id = 693, .distance = 35.584f}, {.id = 1247, .distance = 42.761f}, {.id = 1101, .distance = 51.969f}
+        }},
+        {695, {
+            {.id = 694, .distance = 25.235f}, {.id = 696, .distance = 25.959f}, {.id = 693, .distance = 26.995f}, {.id = 697, .distance = 28.280f}, {.id = 664, .distance = 35.618f}, {.id = 692, .distance = 37.859f}, {.id = 698, .distance = 39.348f}
+        }},
+        {696, {
+            {.id = 695, .distance = 25.959f}, {.id = 698, .distance = 28.175f}, {.id = 1101, .distance = 29.551f}, {.id = 694, .distance = 31.314f}, {.id = 697, .distance = 35.099f}, {.id = 1099, .distance = 40.245f}, {.id = 693, .distance = 52.245f}
+        }},
+        {697, {
+            {.id = 698, .distance = 22.858f}, {.id = 665, .distance = 24.293f}, {.id = 695, .distance = 28.280f}, {.id = 696, .distance = 35.099f}, {.id = 664, .distance = 36.566f}, {.id = 699, .distance = 37.718f}, {.id = 693, .distance = 47.445f}
+        }},
+        {698, {
+            {.id = 697, .distance = 22.858f}, {.id = 696, .distance = 28.175f}, {.id = 699, .distance = 28.665f}, {.id = 1099, .distance = 29.313f}, {.id = 695, .distance = 39.348f}, {.id = 1097, .distance = 40.741f}, {.id = 1101, .distance = 41.458f}
+        }},
+        {699, {
+            {.id = 698, .distance = 28.665f}, {.id = 700, .distance = 28.744f}, {.id = 1097, .distance = 29.349f}, {.id = 666, .distance = 37.333f}, {.id = 697, .distance = 37.718f}, {.id = 1096, .distance = 40.854f}, {.id = 1099, .distance = 41.506f}
+        }},
+        {700, {
+            {.id = 701, .distance = 28.665f}, {.id = 699, .distance = 28.744f}, {.id = 1096, .distance = 29.697f}, {.id = 666, .distance = 35.922f}, {.id = 667, .distance = 39.243f}, {.id = 1095, .distance = 40.708f}, {.id = 1097, .distance = 41.218f}
+        }},
+        {701, {
+            {.id = 700, .distance = 28.665f}, {.id = 702, .distance = 28.989f}, {.id = 1095, .distance = 29.303f}, {.id = 667, .distance = 35.562f}, {.id = 703, .distance = 37.946f}, {.id = 1143, .distance = 40.502f}, {.id = 1096, .distance = 41.887f}
+        }},
+        {702, {
+            {.id = 703, .distance = 22.522f}, {.id = 701, .distance = 28.989f}, {.id = 704, .distance = 28.989f}, {.id = 1143, .distance = 29.448f}, {.id = 705, .distance = 38.748f}, {.id = 1142, .distance = 40.870f}, {.id = 1095, .distance = 41.405f}
+        }},
+        {703, {
+            {.id = 702, .distance = 22.522f}, {.id = 668, .distance = 23.803f}, {.id = 705, .distance = 27.573f}, {.id = 704, .distance = 35.430f}, {.id = 701, .distance = 37.946f}, {.id = 667, .distance = 41.982f}, {.id = 669, .distance = 43.096f}
+        }},
+        {704, {
+            {.id = 705, .distance = 25.732f}, {.id = 702, .distance = 28.989f}, {.id = 1142, .distance = 29.475f}, {.id = 706, .distance = 30.699f}, {.id = 703, .distance = 35.430f}, {.id = 1143, .distance = 42.128f}, {.id = 496, .distance = 49.900f}
+        }},
+        {705, {
+            {.id = 706, .distance = 25.715f}, {.id = 704, .distance = 25.732f}, {.id = 707, .distance = 27.009f}, {.id = 703, .distance = 27.573f}, {.id = 669, .distance = 38.124f}, {.id = 702, .distance = 38.748f}, {.id = 708, .distance = 38.795f}
+        }},
+        {706, {
+            {.id = 705, .distance = 25.715f}, {.id = 496, .distance = 27.473f}, {.id = 708, .distance = 28.587f}, {.id = 704, .distance = 30.699f}, {.id = 707, .distance = 35.180f}, {.id = 494, .distance = 39.435f}, {.id = 498, .distance = 50.891f}
+        }},
+        {707, {
+            {.id = 708, .distance = 23.318f}, {.id = 669, .distance = 24.410f}, {.id = 705, .distance = 27.009f}, {.id = 706, .distance = 35.180f}, {.id = 670, .distance = 36.927f}, {.id = 709, .distance = 38.625f}, {.id = 703, .distance = 47.229f}
+        }},
+        {708, {
+            {.id = 707, .distance = 23.318f}, {.id = 494, .distance = 27.583f}, {.id = 706, .distance = 28.587f}, {.id = 709, .distance = 28.648f}, {.id = 705, .distance = 38.795f}, {.id = 493, .distance = 39.805f}, {.id = 496, .distance = 40.223f}
+        }},
+        {709, {
+            {.id = 493, .distance = 27.628f}, {.id = 708, .distance = 28.648f}, {.id = 710, .distance = 28.678f}, {.id = 670, .distance = 36.174f}, {.id = 707, .distance = 38.625f}, {.id = 492, .distance = 39.752f}, {.id = 494, .distance = 40.007f}
+        }},
+        {710, {
+            {.id = 492, .distance = 27.498f}, {.id = 711, .distance = 28.019f}, {.id = 709, .distance = 28.678f}, {.id = 671, .distance = 33.528f}, {.id = 493, .distance = 39.790f}, {.id = 491, .distance = 39.855f}, {.id = 670, .distance = 43.787f}
+        }},
+        {711, {
+            {.id = 491, .distance = 27.613f}, {.id = 710, .distance = 28.019f}, {.id = 712, .distance = 29.666f}, {.id = 713, .distance = 39.143f}, {.id = 492, .distance = 39.255f}, {.id = 671, .distance = 39.292f}, {.id = 490, .distance = 40.252f}
+        }},
+        {712, {
+            {.id = 713, .distance = 23.574f}, {.id = 490, .distance = 27.436f}, {.id = 714, .distance = 28.796f}, {.id = 711, .distance = 29.666f}, {.id = 715, .distance = 38.536f}, {.id = 488, .distance = 39.154f}, {.id = 491, .distance = 39.947f}
+        }},
+        {713, {
+            {.id = 712, .distance = 23.574f}, {.id = 672, .distance = 26.800f}, {.id = 715, .distance = 27.295f}, {.id = 673, .distance = 31.165f}, {.id = 714, .distance = 35.726f}, {.id = 711, .distance = 39.143f}, {.id = 717, .distance = 46.866f}
+        }},
+        {714, {
+            {.id = 715, .distance = 25.236f}, {.id = 488, .distance = 27.690f}, {.id = 712, .distance = 28.796f}, {.id = 716, .distance = 30.642f}, {.id = 713, .distance = 35.726f}, {.id = 490, .distance = 40.114f}, {.id = 486, .distance = 50.621f}
+        }},
+        {715, {
+            {.id = 714, .distance = 25.236f}, {.id = 716, .distance = 25.701f}, {.id = 713, .distance = 27.295f}, {.id = 717, .distance = 27.601f}, {.id = 673, .distance = 35.484f}, {.id = 712, .distance = 38.536f}, {.id = 718, .distance = 38.536f}
+        }},
+        {716, {
+            {.id = 715, .distance = 25.701f}, {.id = 718, .distance = 28.171f}, {.id = 610, .distance = 28.551f}, {.id = 714, .distance = 30.642f}, {.id = 717, .distance = 35.416f}, {.id = 608, .distance = 41.429f}, {.id = 612, .distance = 50.454f}
+        }},
+        {717, {
+            {.id = 718, .distance = 23.046f}, {.id = 674, .distance = 26.974f}, {.id = 715, .distance = 27.601f}, {.id = 673, .distance = 32.025f}, {.id = 716, .distance = 35.416f}, {.id = 719, .distance = 38.124f}, {.id = 713, .distance = 46.866f}
+        }},
+        {718, {
+            {.id = 717, .distance = 23.046f}, {.id = 716, .distance = 28.171f}, {.id = 608, .distance = 28.586f}, {.id = 719, .distance = 28.796f}, {.id = 715, .distance = 38.536f}, {.id = 610, .distance = 39.222f}, {.id = 607, .distance = 42.712f}
+        }},
+        {719, {
+            {.id = 607, .distance = 28.538f}, {.id = 720, .distance = 28.739f}, {.id = 718, .distance = 28.796f}, {.id = 717, .distance = 38.124f}, {.id = 608, .distance = 38.933f}, {.id = 675, .distance = 40.058f}, {.id = 674, .distance = 40.759f}
+        }},
+        {720, {
+            {.id = 606, .distance = 28.593f}, {.id = 719, .distance = 28.739f}, {.id = 721, .distance = 28.996f}, {.id = 675, .distance = 34.006f}, {.id = 607, .distance = 38.440f}, {.id = 605, .distance = 42.065f}, {.id = 676, .distance = 43.930f}
+        }},
+        {721, {
+            {.id = 722, .distance = 28.539f}, {.id = 605, .distance = 28.720f}, {.id = 720, .distance = 28.996f}, {.id = 676, .distance = 35.652f}, {.id = 723, .distance = 38.072f}, {.id = 606, .distance = 39.193f}, {.id = 604, .distance = 41.888f}
+        }},
+        {722, {
+            {.id = 723, .distance = 23.229f}, {.id = 604, .distance = 28.526f}, {.id = 721, .distance = 28.539f}, {.id = 724, .distance = 29.175f}, {.id = 725, .distance = 38.795f}, {.id = 605, .distance = 38.975f}, {.id = 602, .distance = 41.739f}
+        }},
+        {723, {
+            {.id = 722, .distance = 23.229f}, {.id = 677, .distance = 24.656f}, {.id = 725, .distance = 27.373f}, {.id = 676, .distance = 35.973f}, {.id = 724, .distance = 36.131f}, {.id = 721, .distance = 38.072f}, {.id = 678, .distance = 47.750f}
+        }},
+        {724, {
+            {.id = 725, .distance = 26.133f}, {.id = 602, .distance = 27.990f}, {.id = 722, .distance = 29.175f}, {.id = 726, .distance = 30.723f}, {.id = 723, .distance = 36.131f}, {.id = 604, .distance = 39.023f}, {.id = 600, .distance = 51.341f}
+        }},
+        {725, {
+            {.id = 726, .distance = 25.813f}, {.id = 724, .distance = 26.133f}, {.id = 723, .distance = 27.373f}, {.id = 678, .distance = 27.856f}, {.id = 677, .distance = 38.273f}, {.id = 722, .distance = 38.795f}, {.id = 727, .distance = 39.458f}
+        }},
+        {726, {
+            {.id = 725, .distance = 25.813f}, {.id = 808, .distance = 29.475f}, {.id = 727, .distance = 29.479f}, {.id = 724, .distance = 30.723f}, {.id = 678, .distance = 35.561f}, {.id = 806, .distance = 40.870f}, {.id = 602, .distance = 50.403f}
+        }},
+        {727, {
+            {.id = 678, .distance = 22.863f}, {.id = 679, .distance = 28.096f}, {.id = 806, .distance = 29.448f}, {.id = 726, .distance = 29.479f}, {.id = 725, .distance = 39.458f}, {.id = 805, .distance = 40.502f}, {.id = 808, .distance = 42.128f}
+        }},
+        {728, {
+            {.id = 729, .distance = 25.256f}, {.id = 731, .distance = 25.653f}, {.id = 730, .distance = 25.660f}, {.id = 733, .distance = 26.237f}, {.id = 732, .distance = 26.780f}, {.id = 735, .distance = 53.251f}, {.id = 739, .distance = 53.584f}
+        }},
+        {729, {
+            {.id = 728, .distance = 25.256f}, {.id = 735, .distance = 27.996f}, {.id = 733, .distance = 30.406f}, {.id = 730, .distance = 30.745f}, {.id = 736, .distance = 36.902f}, {.id = 734, .distance = 36.902f}, {.id = 731, .distance = 48.670f}
+        }},
+        {730, {
+            {.id = 728, .distance = 25.660f}, {.id = 737, .distance = 28.138f}, {.id = 731, .distance = 30.016f}, {.id = 729, .distance = 30.745f}, {.id = 738, .distance = 35.779f}, {.id = 736, .distance = 37.730f}, {.id = 732, .distance = 49.623f}
+        }},
+        {731, {
+            {.id = 728, .distance = 25.653f}, {.id = 739, .distance = 27.950f}, {.id = 730, .distance = 30.016f}, {.id = 732, .distance = 30.334f}, {.id = 740, .distance = 36.663f}, {.id = 738, .distance = 36.917f}, {.id = 729, .distance = 48.670f}
+        }},
+        {732, {
+            {.id = 728, .distance = 26.780f}, {.id = 741, .distance = 28.148f}, {.id = 731, .distance = 30.334f}, {.id = 733, .distance = 30.829f}, {.id = 740, .distance = 36.041f}, {.id = 742, .distance = 36.581f}, {.id = 729, .distance = 49.415f}
+        }},
+        {733, {
+            {.id = 728, .distance = 26.237f}, {.id = 743, .distance = 28.784f}, {.id = 729, .distance = 30.406f}, {.id = 732, .distance = 30.829f}, {.id = 734, .distance = 36.136f}, {.id = 742, .distance = 36.663f}, {.id = 731, .distance = 49.028f}
+        }},
+        {734, {
+            {.id = 745, .distance = 29.943f}, {.id = 743, .distance = 32.709f}, {.id = 735, .distance = 33.241f}, {.id = 744, .distance = 35.999f}, {.id = 733, .distance = 36.136f}, {.id = 729, .distance = 36.902f}, {.id = 746, .distance = 43.146f}
+        }},
+        {735, {
+            {.id = 729, .distance = 27.996f}, {.id = 746, .distance = 31.091f}, {.id = 734, .distance = 33.241f}, {.id = 736, .distance = 33.489f}, {.id = 747, .distance = 33.997f}, {.id = 745, .distance = 46.465f}, {.id = 748, .distance = 50.872f}
+        }},
+        {736, {
+            {.id = 748, .distance = 28.795f}, {.id = 735, .distance = 33.489f}, {.id = 737, .distance = 34.526f}, {.id = 729, .distance = 36.902f}, {.id = 730, .distance = 37.730f}, {.id = 747, .distance = 39.001f}, {.id = 749, .distance = 39.043f}
+        }},
+        {737, {
+            {.id = 730, .distance = 28.138f}, {.id = 750, .distance = 30.119f}, {.id = 738, .distance = 32.862f}, {.id = 749, .distance = 33.326f}, {.id = 736, .distance = 34.526f}, {.id = 751, .distance = 46.032f}, {.id = 748, .distance = 51.953f}
+        }},
+        {738, {
+            {.id = 751, .distance = 29.271f}, {.id = 737, .distance = 32.862f}, {.id = 739, .distance = 32.910f}, {.id = 752, .distance = 35.475f}, {.id = 730, .distance = 35.779f}, {.id = 731, .distance = 36.917f}, {.id = 750, .distance = 42.036f}
+        }},
+        {739, {
+            {.id = 731, .distance = 27.950f}, {.id = 753, .distance = 30.515f}, {.id = 738, .distance = 32.910f}, {.id = 740, .distance = 34.288f}, {.id = 752, .distance = 35.680f}, {.id = 754, .distance = 43.747f}, {.id = 730, .distance = 50.881f}
+        }},
+        {740, {
+            {.id = 754, .distance = 30.713f}, {.id = 755, .distance = 32.961f}, {.id = 739, .distance = 34.288f}, {.id = 741, .distance = 34.333f}, {.id = 732, .distance = 36.041f}, {.id = 731, .distance = 36.663f}, {.id = 753, .distance = 47.436f}
+        }},
+        {741, {
+            {.id = 732, .distance = 28.148f}, {.id = 756, .distance = 28.795f}, {.id = 742, .distance = 32.474f}, {.id = 740, .distance = 34.333f}, {.id = 757, .distance = 37.853f}, {.id = 755, .distance = 39.529f}, {.id = 733, .distance = 52.029f}
+        }},
+        {742, {
+            {.id = 758, .distance = 30.978f}, {.id = 741, .distance = 32.474f}, {.id = 757, .distance = 33.378f}, {.id = 743, .distance = 34.135f}, {.id = 732, .distance = 36.581f}, {.id = 733, .distance = 36.663f}, {.id = 759, .distance = 47.075f}
+        }},
+        {743, {
+            {.id = 733, .distance = 28.784f}, {.id = 759, .distance = 29.314f}, {.id = 734, .distance = 32.709f}, {.id = 742, .distance = 34.135f}, {.id = 744, .distance = 35.428f}, {.id = 758, .distance = 42.934f}, {.id = 729, .distance = 52.730f}
+        }},
+        {744, {
+            {.id = 761, .distance = 31.937f}, {.id = 760, .distance = 31.964f}, {.id = 759, .distance = 32.088f}, {.id = 745, .distance = 32.704f}, {.id = 743, .distance = 35.428f}, {.id = 734, .distance = 35.999f}, {.id = 781, .distance = 49.921f}
+        }},
+        {745, {
+            {.id = 762, .distance = 29.419f}, {.id = 734, .distance = 29.943f}, {.id = 746, .distance = 32.468f}, {.id = 744, .distance = 32.704f}, {.id = 761, .distance = 37.491f}, {.id = 763, .distance = 41.947f}, {.id = 735, .distance = 46.465f}
+        }},
+        {746, {
+            {.id = 763, .distance = 29.848f}, {.id = 735, .distance = 31.091f}, {.id = 747, .distance = 31.917f}, {.id = 745, .distance = 32.468f}, {.id = 764, .distance = 35.426f}, {.id = 734, .distance = 43.146f}, {.id = 762, .distance = 44.568f}
+        }},
+        {747, {
+            {.id = 765, .distance = 30.775f}, {.id = 746, .distance = 31.917f}, {.id = 748, .distance = 32.089f}, {.id = 764, .distance = 33.457f}, {.id = 735, .distance = 33.997f}, {.id = 736, .distance = 39.001f}, {.id = 766, .distance = 47.195f}
+        }},
+        {748, {
+            {.id = 766, .distance = 28.126f}, {.id = 736, .distance = 28.795f}, {.id = 747, .distance = 32.089f}, {.id = 749, .distance = 33.350f}, {.id = 765, .distance = 38.606f}, {.id = 767, .distance = 40.686f}, {.id = 735, .distance = 50.872f}
+        }},
+        {749, {
+            {.id = 767, .distance = 30.745f}, {.id = 750, .distance = 32.585f}, {.id = 737, .distance = 33.326f}, {.id = 748, .distance = 33.350f}, {.id = 768, .distance = 33.990f}, {.id = 736, .distance = 39.043f}, {.id = 766, .distance = 47.230f}
+        }},
+        {750, {
+            {.id = 769, .distance = 30.088f}, {.id = 737, .distance = 30.119f}, {.id = 751, .distance = 32.298f}, {.id = 749, .distance = 32.585f}, {.id = 768, .distance = 35.628f}, {.id = 738, .distance = 42.036f}, {.id = 770, .distance = 44.864f}
+        }},
+        {751, {
+            {.id = 770, .distance = 28.726f}, {.id = 738, .distance = 29.271f}, {.id = 752, .distance = 31.916f}, {.id = 750, .distance = 32.298f}, {.id = 771, .distance = 37.444f}, {.id = 769, .distance = 42.067f}, {.id = 737, .distance = 46.032f}
+        }},
+        {752, {
+            {.id = 771, .distance = 31.889f}, {.id = 751, .distance = 31.916f}, {.id = 772, .distance = 32.458f}, {.id = 753, .distance = 32.605f}, {.id = 738, .distance = 35.475f}, {.id = 739, .distance = 35.680f}, {.id = 770, .distance = 49.358f}
+        }},
+        {753, {
+            {.id = 773, .distance = 28.557f}, {.id = 739, .distance = 30.515f}, {.id = 752, .distance = 32.605f}, {.id = 754, .distance = 33.386f}, {.id = 772, .distance = 36.707f}, {.id = 774, .distance = 42.276f}, {.id = 740, .distance = 47.436f}
+        }},
+        {754, {
+            {.id = 774, .distance = 29.283f}, {.id = 740, .distance = 30.713f}, {.id = 755, .distance = 32.395f}, {.id = 753, .distance = 33.386f}, {.id = 775, .distance = 35.383f}, {.id = 739, .distance = 43.747f}, {.id = 773, .distance = 45.069f}
+        }},
+        {755, {
+            {.id = 776, .distance = 30.492f}, {.id = 754, .distance = 32.395f}, {.id = 756, .distance = 32.492f}, {.id = 740, .distance = 32.961f}, {.id = 775, .distance = 33.774f}, {.id = 741, .distance = 39.529f}, {.id = 777, .distance = 46.947f}
+        }},
+        {756, {
+            {.id = 741, .distance = 28.795f}, {.id = 777, .distance = 28.796f}, {.id = 757, .distance = 31.301f}, {.id = 755, .distance = 32.492f}, {.id = 778, .distance = 39.130f}, {.id = 776, .distance = 39.658f}, {.id = 742, .distance = 50.236f}
+        }},
+        {757, {
+            {.id = 778, .distance = 30.076f}, {.id = 756, .distance = 31.301f}, {.id = 758, .distance = 33.324f}, {.id = 742, .distance = 33.378f}, {.id = 779, .distance = 33.386f}, {.id = 741, .distance = 37.853f}, {.id = 777, .distance = 46.778f}
+        }},
+        {758, {
+            {.id = 780, .distance = 29.653f}, {.id = 742, .distance = 30.978f}, {.id = 759, .distance = 32.852f}, {.id = 757, .distance = 33.324f}, {.id = 779, .distance = 35.446f}, {.id = 743, .distance = 42.934f}, {.id = 781, .distance = 44.581f}
+        }},
+        {759, {
+            {.id = 781, .distance = 28.776f}, {.id = 743, .distance = 29.314f}, {.id = 744, .distance = 32.088f}, {.id = 758, .distance = 32.852f}, {.id = 760, .distance = 36.954f}, {.id = 780, .distance = 42.498f}, {.id = 742, .distance = 47.075f}
+        }},
+        {760, {
+            {.id = 782, .distance = 23.617f}, {.id = 781, .distance = 31.442f}, {.id = 744, .distance = 31.964f}, {.id = 761, .distance = 32.703f}, {.id = 759, .distance = 36.954f}, {.id = 829, .distance = 41.259f}, {.id = 831, .distance = 45.103f}
+        }},
+        {761, {
+            {.id = 744, .distance = 31.937f}, {.id = 760, .distance = 32.703f}, {.id = 762, .distance = 32.725f}, {.id = 783, .distance = 36.068f}, {.id = 745, .distance = 37.491f}, {.id = 784, .distance = 39.068f}, {.id = 782, .distance = 41.895f}
+        }},
+        {762, {
+            {.id = 745, .distance = 29.419f}, {.id = 763, .distance = 30.638f}, {.id = 761, .distance = 32.725f}, {.id = 784, .distance = 35.794f}, {.id = 785, .distance = 36.665f}, {.id = 746, .distance = 44.568f}, {.id = 786, .distance = 46.412f}
+        }},
+        {763, {
+            {.id = 786, .distance = 24.191f}, {.id = 746, .distance = 29.848f}, {.id = 762, .distance = 30.638f}, {.id = 764, .distance = 31.516f}, {.id = 745, .distance = 41.947f}, {.id = 787, .distance = 44.167f}, {.id = 785, .distance = 44.460f}
+        }},
+        {764, {
+            {.id = 791, .distance = 27.519f}, {.id = 763, .distance = 31.516f}, {.id = 765, .distance = 33.096f}, {.id = 747, .distance = 33.457f}, {.id = 746, .distance = 35.426f}, {.id = 788, .distance = 35.506f}, {.id = 786, .distance = 36.051f}
+        }},
+        {765, {
+            {.id = 747, .distance = 30.775f}, {.id = 766, .distance = 30.943f}, {.id = 791, .distance = 31.347f}, {.id = 764, .distance = 33.096f}, {.id = 793, .distance = 37.393f}, {.id = 748, .distance = 38.606f}, {.id = 792, .distance = 45.102f}
+        }},
+        {766, {
+            {.id = 748, .distance = 28.126f}, {.id = 765, .distance = 30.943f}, {.id = 767, .distance = 32.322f}, {.id = 794, .distance = 33.115f}, {.id = 793, .distance = 43.474f}, {.id = 795, .distance = 44.048f}, {.id = 747, .distance = 47.195f}
+        }},
+        {767, {
+            {.id = 797, .distance = 30.540f}, {.id = 749, .distance = 30.745f}, {.id = 766, .distance = 32.322f}, {.id = 768, .distance = 32.441f}, {.id = 795, .distance = 37.153f}, {.id = 748, .distance = 40.686f}, {.id = 796, .distance = 45.279f}
+        }},
+        {768, {
+            {.id = 797, .distance = 27.373f}, {.id = 769, .distance = 31.563f}, {.id = 767, .distance = 32.441f}, {.id = 749, .distance = 33.990f}, {.id = 799, .distance = 35.618f}, {.id = 750, .distance = 35.628f}, {.id = 801, .distance = 36.566f}
+        }},
+        {769, {
+            {.id = 801, .distance = 24.293f}, {.id = 750, .distance = 30.088f}, {.id = 768, .distance = 31.563f}, {.id = 770, .distance = 31.793f}, {.id = 751, .distance = 42.067f}, {.id = 802, .distance = 43.775f}, {.id = 803, .distance = 43.787f}
+        }},
+        {770, {
+            {.id = 751, .distance = 28.726f}, {.id = 771, .distance = 31.427f}, {.id = 769, .distance = 31.793f}, {.id = 804, .distance = 35.922f}, {.id = 803, .distance = 37.333f}, {.id = 750, .distance = 44.864f}, {.id = 801, .distance = 47.704f}
+        }},
+        {771, {
+            {.id = 770, .distance = 31.427f}, {.id = 752, .distance = 31.889f}, {.id = 772, .distance = 32.342f}, {.id = 805, .distance = 35.562f}, {.id = 751, .distance = 37.444f}, {.id = 804, .distance = 39.243f}, {.id = 807, .distance = 41.982f}
+        }},
+        {772, {
+            {.id = 807, .distance = 23.803f}, {.id = 773, .distance = 31.693f}, {.id = 771, .distance = 32.342f}, {.id = 752, .distance = 32.458f}, {.id = 753, .distance = 36.707f}, {.id = 809, .distance = 41.333f}, {.id = 806, .distance = 44.974f}
+        }},
+        {773, {
+            {.id = 811, .distance = 24.410f}, {.id = 753, .distance = 28.557f}, {.id = 772, .distance = 31.693f}, {.id = 774, .distance = 32.138f}, {.id = 809, .distance = 38.124f}, {.id = 807, .distance = 43.096f}, {.id = 754, .distance = 45.069f}
+        }},
+        {774, {
+            {.id = 754, .distance = 29.283f}, {.id = 775, .distance = 31.589f}, {.id = 773, .distance = 32.138f}, {.id = 813, .distance = 36.174f}, {.id = 811, .distance = 36.927f}, {.id = 753, .distance = 42.276f}, {.id = 814, .distance = 43.787f}
+        }},
+        {775, {
+            {.id = 774, .distance = 31.589f}, {.id = 776, .distance = 32.185f}, {.id = 814, .distance = 33.528f}, {.id = 755, .distance = 33.774f}, {.id = 754, .distance = 35.383f}, {.id = 815, .distance = 39.292f}, {.id = 813, .distance = 48.151f}
+        }},
+        {776, {
+            {.id = 817, .distance = 26.800f}, {.id = 755, .distance = 30.492f}, {.id = 777, .distance = 31.085f}, {.id = 775, .distance = 32.185f}, {.id = 756, .distance = 39.658f}, {.id = 815, .distance = 40.843f}, {.id = 816, .distance = 44.297f}
+        }},
+        {777, {
+            {.id = 756, .distance = 28.796f}, {.id = 776, .distance = 31.085f}, {.id = 817, .distance = 31.165f}, {.id = 778, .distance = 31.748f}, {.id = 821, .distance = 32.025f}, {.id = 819, .distance = 35.484f}, {.id = 757, .distance = 46.778f}
+        }},
+        {778, {
+            {.id = 821, .distance = 26.974f}, {.id = 757, .distance = 30.076f}, {.id = 779, .distance = 31.574f}, {.id = 777, .distance = 31.748f}, {.id = 756, .distance = 39.130f}, {.id = 823, .distance = 40.759f}, {.id = 822, .distance = 44.255f}
+        }},
+        {779, {
+            {.id = 778, .distance = 31.574f}, {.id = 780, .distance = 32.495f}, {.id = 757, .distance = 33.386f}, {.id = 824, .distance = 34.006f}, {.id = 758, .distance = 35.446f}, {.id = 823, .distance = 40.058f}, {.id = 825, .distance = 48.765f}
+        }},
+        {780, {
+            {.id = 758, .distance = 29.653f}, {.id = 781, .distance = 31.761f}, {.id = 779, .distance = 32.495f}, {.id = 825, .distance = 35.652f}, {.id = 827, .distance = 35.973f}, {.id = 759, .distance = 42.498f}, {.id = 824, .distance = 43.930f}
+        }},
+        {781, {
+            {.id = 827, .distance = 24.656f}, {.id = 759, .distance = 28.776f}, {.id = 760, .distance = 31.442f}, {.id = 780, .distance = 31.761f}, {.id = 829, .distance = 38.273f}, {.id = 782, .distance = 43.129f}, {.id = 758, .distance = 44.581f}
+        }},
+        {782, {
+            {.id = 831, .distance = 22.863f}, {.id = 760, .distance = 23.617f}, {.id = 829, .distance = 27.856f}, {.id = 830, .distance = 35.561f}, {.id = 783, .distance = 37.917f}, {.id = 761, .distance = 41.895f}, {.id = 781, .distance = 43.129f}
+        }},
+        {783, {
+            {.id = 831, .distance = 28.096f}, {.id = 784, .distance = 29.153f}, {.id = 909, .distance = 29.303f}, {.id = 761, .distance = 36.068f}, {.id = 782, .distance = 37.917f}, {.id = 908, .distance = 40.708f}, {.id = 910, .distance = 41.405f}
+        }},
+        {784, {
+            {.id = 785, .distance = 28.265f}, {.id = 783, .distance = 29.153f}, {.id = 908, .distance = 29.697f}, {.id = 762, .distance = 35.794f}, {.id = 761, .distance = 39.068f}, {.id = 907, .distance = 40.854f}, {.id = 909, .distance = 41.887f}
+        }},
+        {785, {
+            {.id = 784, .distance = 28.265f}, {.id = 787, .distance = 28.989f}, {.id = 907, .distance = 29.349f}, {.id = 762, .distance = 36.665f}, {.id = 786, .distance = 38.712f}, {.id = 906, .distance = 40.741f}, {.id = 908, .distance = 41.218f}
+        }},
+        {786, {
+            {.id = 787, .distance = 23.607f}, {.id = 763, .distance = 24.191f}, {.id = 788, .distance = 27.455f}, {.id = 789, .distance = 35.536f}, {.id = 764, .distance = 36.051f}, {.id = 785, .distance = 38.712f}, {.id = 762, .distance = 46.412f}
+        }},
+        {787, {
+            {.id = 786, .distance = 23.607f}, {.id = 789, .distance = 28.500f}, {.id = 785, .distance = 28.989f}, {.id = 906, .distance = 29.313f}, {.id = 788, .distance = 38.998f}, {.id = 904, .distance = 40.245f}, {.id = 907, .distance = 41.506f}
+        }},
+        {788, {
+            {.id = 789, .distance = 25.823f}, {.id = 790, .distance = 26.007f}, {.id = 791, .distance = 27.304f}, {.id = 786, .distance = 27.455f}, {.id = 764, .distance = 35.506f}, {.id = 787, .distance = 38.998f}, {.id = 792, .distance = 39.242f}
+        }},
+        {789, {
+            {.id = 788, .distance = 25.823f}, {.id = 787, .distance = 28.500f}, {.id = 904, .distance = 29.551f}, {.id = 790, .distance = 30.900f}, {.id = 786, .distance = 35.536f}, {.id = 906, .distance = 41.458f}, {.id = 1214, .distance = 51.891f}
+        }},
+        {790, {
+            {.id = 788, .distance = 26.007f}, {.id = 792, .distance = 29.614f}, {.id = 1214, .distance = 29.836f}, {.id = 789, .distance = 30.900f}, {.id = 791, .distance = 35.963f}, {.id = 1212, .distance = 39.709f}, {.id = 786, .distance = 52.371f}
+        }},
+        {791, {
+            {.id = 792, .distance = 23.404f}, {.id = 788, .distance = 27.304f}, {.id = 764, .distance = 27.519f}, {.id = 765, .distance = 31.347f}, {.id = 790, .distance = 35.963f}, {.id = 793, .distance = 38.924f}, {.id = 786, .distance = 47.034f}
+        }},
+        {792, {
+            {.id = 791, .distance = 23.404f}, {.id = 793, .distance = 28.584f}, {.id = 790, .distance = 29.614f}, {.id = 1212, .distance = 30.187f}, {.id = 788, .distance = 39.242f}, {.id = 1211, .distance = 39.536f}, {.id = 1214, .distance = 43.439f}
+        }},
+        {793, {
+            {.id = 794, .distance = 28.069f}, {.id = 792, .distance = 28.584f}, {.id = 1211, .distance = 29.916f}, {.id = 765, .distance = 37.393f}, {.id = 791, .distance = 38.924f}, {.id = 1210, .distance = 39.539f}, {.id = 766, .distance = 43.474f}
+        }},
+        {794, {
+            {.id = 793, .distance = 28.069f}, {.id = 795, .distance = 28.840f}, {.id = 1210, .distance = 30.071f}, {.id = 766, .distance = 33.115f}, {.id = 1209, .distance = 39.539f}, {.id = 1211, .distance = 43.068f}, {.id = 765, .distance = 48.228f}
+        }},
+        {795, {
+            {.id = 794, .distance = 28.840f}, {.id = 796, .distance = 29.098f}, {.id = 1209, .distance = 29.916f}, {.id = 767, .distance = 37.153f}, {.id = 797, .distance = 38.371f}, {.id = 1208, .distance = 39.536f}, {.id = 1210, .distance = 43.068f}
+        }},
+        {796, {
+            {.id = 797, .distance = 23.468f}, {.id = 798, .distance = 28.067f}, {.id = 795, .distance = 29.098f}, {.id = 1208, .distance = 30.187f}, {.id = 799, .distance = 37.859f}, {.id = 1206, .distance = 39.709f}, {.id = 1209, .distance = 43.663f}
+        }},
+        {797, {
+            {.id = 796, .distance = 23.468f}, {.id = 799, .distance = 26.995f}, {.id = 768, .distance = 27.373f}, {.id = 767, .distance = 30.540f}, {.id = 798, .distance = 35.584f}, {.id = 795, .distance = 38.371f}, {.id = 801, .distance = 47.445f}
+        }},
+        {798, {
+            {.id = 799, .distance = 25.235f}, {.id = 796, .distance = 28.067f}, {.id = 1206, .distance = 29.836f}, {.id = 800, .distance = 31.314f}, {.id = 797, .distance = 35.584f}, {.id = 1208, .distance = 43.439f}, {.id = 1205, .distance = 51.891f}
+        }},
+        {799, {
+            {.id = 798, .distance = 25.235f}, {.id = 800, .distance = 25.959f}, {.id = 797, .distance = 26.995f}, {.id = 801, .distance = 28.280f}, {.id = 768, .distance = 35.618f}, {.id = 796, .distance = 37.859f}, {.id = 802, .distance = 39.348f}
+        }},
+        {800, {
+            {.id = 799, .distance = 25.959f}, {.id = 802, .distance = 28.175f}, {.id = 685, .distance = 29.551f}, {.id = 798, .distance = 31.314f}, {.id = 801, .distance = 35.099f}, {.id = 683, .distance = 40.245f}, {.id = 797, .distance = 52.245f}
+        }},
+        {801, {
+            {.id = 802, .distance = 22.858f}, {.id = 769, .distance = 24.293f}, {.id = 799, .distance = 28.280f}, {.id = 800, .distance = 35.099f}, {.id = 768, .distance = 36.566f}, {.id = 803, .distance = 37.718f}, {.id = 797, .distance = 47.445f}
+        }},
+        {802, {
+            {.id = 801, .distance = 22.858f}, {.id = 800, .distance = 28.175f}, {.id = 803, .distance = 28.665f}, {.id = 683, .distance = 29.313f}, {.id = 799, .distance = 39.348f}, {.id = 681, .distance = 40.741f}, {.id = 685, .distance = 41.458f}
+        }},
+        {803, {
+            {.id = 802, .distance = 28.665f}, {.id = 804, .distance = 28.744f}, {.id = 681, .distance = 29.349f}, {.id = 770, .distance = 37.333f}, {.id = 801, .distance = 37.718f}, {.id = 680, .distance = 40.854f}, {.id = 683, .distance = 41.506f}
+        }},
+        {804, {
+            {.id = 805, .distance = 28.665f}, {.id = 803, .distance = 28.744f}, {.id = 680, .distance = 29.697f}, {.id = 770, .distance = 35.922f}, {.id = 771, .distance = 39.243f}, {.id = 679, .distance = 40.708f}, {.id = 681, .distance = 41.218f}
+        }},
+        {805, {
+            {.id = 804, .distance = 28.665f}, {.id = 806, .distance = 28.989f}, {.id = 679, .distance = 29.303f}, {.id = 771, .distance = 35.562f}, {.id = 807, .distance = 37.946f}, {.id = 727, .distance = 40.502f}, {.id = 680, .distance = 41.887f}
+        }},
+        {806, {
+            {.id = 807, .distance = 22.522f}, {.id = 805, .distance = 28.989f}, {.id = 808, .distance = 28.989f}, {.id = 727, .distance = 29.448f}, {.id = 809, .distance = 38.748f}, {.id = 726, .distance = 40.870f}, {.id = 679, .distance = 41.405f}
+        }},
+        {807, {
+            {.id = 806, .distance = 22.522f}, {.id = 772, .distance = 23.803f}, {.id = 809, .distance = 27.573f}, {.id = 808, .distance = 35.430f}, {.id = 805, .distance = 37.946f}, {.id = 771, .distance = 41.982f}, {.id = 773, .distance = 43.096f}
+        }},
+        {808, {
+            {.id = 809, .distance = 25.732f}, {.id = 806, .distance = 28.989f}, {.id = 726, .distance = 29.475f}, {.id = 810, .distance = 30.699f}, {.id = 807, .distance = 35.430f}, {.id = 727, .distance = 42.128f}, {.id = 600, .distance = 49.900f}
+        }},
+        {809, {
+            {.id = 810, .distance = 25.715f}, {.id = 808, .distance = 25.732f}, {.id = 811, .distance = 27.009f}, {.id = 807, .distance = 27.573f}, {.id = 773, .distance = 38.124f}, {.id = 806, .distance = 38.748f}, {.id = 812, .distance = 38.795f}
+        }},
+        {810, {
+            {.id = 809, .distance = 25.715f}, {.id = 600, .distance = 27.473f}, {.id = 812, .distance = 28.587f}, {.id = 808, .distance = 30.699f}, {.id = 811, .distance = 35.180f}, {.id = 598, .distance = 39.435f}, {.id = 602, .distance = 50.891f}
+        }},
+        {811, {
+            {.id = 812, .distance = 23.318f}, {.id = 773, .distance = 24.410f}, {.id = 809, .distance = 27.009f}, {.id = 810, .distance = 35.180f}, {.id = 774, .distance = 36.927f}, {.id = 813, .distance = 38.625f}, {.id = 807, .distance = 47.229f}
+        }},
+        {812, {
+            {.id = 811, .distance = 23.318f}, {.id = 598, .distance = 27.583f}, {.id = 810, .distance = 28.587f}, {.id = 813, .distance = 28.648f}, {.id = 809, .distance = 38.795f}, {.id = 597, .distance = 39.805f}, {.id = 600, .distance = 40.223f}
+        }},
+        {813, {
+            {.id = 597, .distance = 27.628f}, {.id = 812, .distance = 28.648f}, {.id = 814, .distance = 28.678f}, {.id = 774, .distance = 36.174f}, {.id = 811, .distance = 38.625f}, {.id = 596, .distance = 39.752f}, {.id = 598, .distance = 40.007f}
+        }},
+        {814, {
+            {.id = 596, .distance = 27.498f}, {.id = 815, .distance = 28.019f}, {.id = 813, .distance = 28.678f}, {.id = 775, .distance = 33.528f}, {.id = 597, .distance = 39.790f}, {.id = 595, .distance = 39.855f}, {.id = 774, .distance = 43.787f}
+        }},
+        {815, {
+            {.id = 595, .distance = 27.613f}, {.id = 814, .distance = 28.019f}, {.id = 816, .distance = 29.666f}, {.id = 817, .distance = 39.143f}, {.id = 596, .distance = 39.255f}, {.id = 775, .distance = 39.292f}, {.id = 594, .distance = 40.252f}
+        }},
+        {816, {
+            {.id = 817, .distance = 23.574f}, {.id = 594, .distance = 27.436f}, {.id = 818, .distance = 28.796f}, {.id = 815, .distance = 29.666f}, {.id = 819, .distance = 38.536f}, {.id = 592, .distance = 39.154f}, {.id = 595, .distance = 39.947f}
+        }},
+        {817, {
+            {.id = 816, .distance = 23.574f}, {.id = 776, .distance = 26.800f}, {.id = 819, .distance = 27.295f}, {.id = 777, .distance = 31.165f}, {.id = 818, .distance = 35.726f}, {.id = 815, .distance = 39.143f}, {.id = 821, .distance = 46.866f}
+        }},
+        {818, {
+            {.id = 819, .distance = 25.236f}, {.id = 592, .distance = 27.690f}, {.id = 816, .distance = 28.796f}, {.id = 820, .distance = 30.642f}, {.id = 817, .distance = 35.726f}, {.id = 594, .distance = 40.114f}, {.id = 590, .distance = 50.621f}
+        }},
+        {819, {
+            {.id = 818, .distance = 25.236f}, {.id = 820, .distance = 25.701f}, {.id = 817, .distance = 27.295f}, {.id = 821, .distance = 27.601f}, {.id = 777, .distance = 35.484f}, {.id = 822, .distance = 38.536f}, {.id = 816, .distance = 38.536f}
+        }},
+        {820, {
+            {.id = 819, .distance = 25.701f}, {.id = 822, .distance = 28.171f}, {.id = 184, .distance = 28.509f}, {.id = 818, .distance = 30.642f}, {.id = 821, .distance = 35.416f}, {.id = 182, .distance = 40.640f}, {.id = 592, .distance = 50.968f}
+        }},
+        {821, {
+            {.id = 822, .distance = 23.046f}, {.id = 778, .distance = 26.974f}, {.id = 819, .distance = 27.601f}, {.id = 777, .distance = 32.025f}, {.id = 820, .distance = 35.416f}, {.id = 823, .distance = 38.124f}, {.id = 817, .distance = 46.866f}
+        }},
+        {822, {
+            {.id = 821, .distance = 23.046f}, {.id = 820, .distance = 28.171f}, {.id = 182, .distance = 28.758f}, {.id = 823, .distance = 28.796f}, {.id = 819, .distance = 38.536f}, {.id = 184, .distance = 40.267f}, {.id = 181, .distance = 41.392f}
+        }},
+        {823, {
+            {.id = 181, .distance = 28.612f}, {.id = 824, .distance = 28.739f}, {.id = 822, .distance = 28.796f}, {.id = 821, .distance = 38.124f}, {.id = 182, .distance = 40.023f}, {.id = 779, .distance = 40.058f}, {.id = 778, .distance = 40.759f}
+        }},
+        {824, {
+            {.id = 180, .distance = 28.628f}, {.id = 823, .distance = 28.739f}, {.id = 825, .distance = 28.996f}, {.id = 779, .distance = 34.006f}, {.id = 181, .distance = 39.961f}, {.id = 179, .distance = 41.256f}, {.id = 780, .distance = 43.930f}
+        }},
+        {825, {
+            {.id = 826, .distance = 28.539f}, {.id = 179, .distance = 28.849f}, {.id = 824, .distance = 28.996f}, {.id = 780, .distance = 35.652f}, {.id = 827, .distance = 38.072f}, {.id = 180, .distance = 40.208f}, {.id = 178, .distance = 41.035f}
+        }},
+        {826, {
+            {.id = 827, .distance = 23.229f}, {.id = 825, .distance = 28.539f}, {.id = 178, .distance = 28.558f}, {.id = 828, .distance = 29.175f}, {.id = 829, .distance = 38.795f}, {.id = 179, .distance = 40.001f}, {.id = 176, .distance = 40.663f}
+        }},
+        {827, {
+            {.id = 826, .distance = 23.229f}, {.id = 781, .distance = 24.656f}, {.id = 829, .distance = 27.373f}, {.id = 780, .distance = 35.973f}, {.id = 828, .distance = 36.131f}, {.id = 825, .distance = 38.072f}, {.id = 782, .distance = 47.750f}
+        }},
+        {828, {
+            {.id = 829, .distance = 26.133f}, {.id = 176, .distance = 28.160f}, {.id = 826, .distance = 29.175f}, {.id = 830, .distance = 30.723f}, {.id = 827, .distance = 36.131f}, {.id = 178, .distance = 39.985f}, {.id = 174, .distance = 51.290f}
+        }},
+        {829, {
+            {.id = 830, .distance = 25.813f}, {.id = 828, .distance = 26.133f}, {.id = 827, .distance = 27.373f}, {.id = 782, .distance = 27.856f}, {.id = 781, .distance = 38.273f}, {.id = 826, .distance = 38.795f}, {.id = 831, .distance = 39.458f}
+        }},
+        {830, {
+            {.id = 829, .distance = 25.813f}, {.id = 912, .distance = 29.475f}, {.id = 831, .distance = 29.479f}, {.id = 828, .distance = 30.723f}, {.id = 782, .distance = 35.561f}, {.id = 910, .distance = 40.870f}, {.id = 176, .distance = 51.351f}
+        }},
+        {831, {
+            {.id = 782, .distance = 22.863f}, {.id = 783, .distance = 28.096f}, {.id = 910, .distance = 29.448f}, {.id = 830, .distance = 29.479f}, {.id = 829, .distance = 39.458f}, {.id = 909, .distance = 40.502f}, {.id = 912, .distance = 42.128f}
+        }},
+        {832, {
+            {.id = 833, .distance = 25.256f}, {.id = 835, .distance = 25.653f}, {.id = 834, .distance = 25.660f}, {.id = 837, .distance = 26.237f}, {.id = 836, .distance = 26.780f}, {.id = 839, .distance = 53.251f}, {.id = 843, .distance = 53.584f}
+        }},
+        {833, {
+            {.id = 832, .distance = 25.256f}, {.id = 839, .distance = 27.996f}, {.id = 837, .distance = 30.406f}, {.id = 834, .distance = 30.746f}, {.id = 840, .distance = 36.902f}, {.id = 838, .distance = 36.902f}, {.id = 835, .distance = 48.670f}
+        }},
+        {834, {
+            {.id = 832, .distance = 25.660f}, {.id = 841, .distance = 28.138f}, {.id = 835, .distance = 30.016f}, {.id = 833, .distance = 30.746f}, {.id = 842, .distance = 35.779f}, {.id = 840, .distance = 37.730f}, {.id = 836, .distance = 49.623f}
+        }},
+        {835, {
+            {.id = 832, .distance = 25.653f}, {.id = 843, .distance = 27.950f}, {.id = 834, .distance = 30.016f}, {.id = 836, .distance = 30.334f}, {.id = 844, .distance = 36.663f}, {.id = 842, .distance = 36.917f}, {.id = 833, .distance = 48.670f}
+        }},
+        {836, {
+            {.id = 832, .distance = 26.780f}, {.id = 845, .distance = 28.148f}, {.id = 835, .distance = 30.334f}, {.id = 837, .distance = 30.829f}, {.id = 844, .distance = 36.041f}, {.id = 846, .distance = 36.581f}, {.id = 833, .distance = 49.415f}
+        }},
+        {837, {
+            {.id = 832, .distance = 26.237f}, {.id = 847, .distance = 28.784f}, {.id = 833, .distance = 30.406f}, {.id = 836, .distance = 30.829f}, {.id = 838, .distance = 36.136f}, {.id = 846, .distance = 36.663f}, {.id = 835, .distance = 49.028f}
+        }},
+        {838, {
+            {.id = 849, .distance = 29.943f}, {.id = 847, .distance = 32.709f}, {.id = 839, .distance = 33.241f}, {.id = 848, .distance = 35.999f}, {.id = 837, .distance = 36.136f}, {.id = 833, .distance = 36.902f}, {.id = 850, .distance = 43.146f}
+        }},
+        {839, {
+            {.id = 833, .distance = 27.996f}, {.id = 850, .distance = 31.091f}, {.id = 838, .distance = 33.241f}, {.id = 840, .distance = 33.489f}, {.id = 851, .distance = 33.997f}, {.id = 849, .distance = 46.465f}, {.id = 852, .distance = 50.872f}
+        }},
+        {840, {
+            {.id = 852, .distance = 28.795f}, {.id = 839, .distance = 33.489f}, {.id = 841, .distance = 34.526f}, {.id = 833, .distance = 36.902f}, {.id = 834, .distance = 37.730f}, {.id = 851, .distance = 39.001f}, {.id = 853, .distance = 39.043f}
+        }},
+        {841, {
+            {.id = 834, .distance = 28.138f}, {.id = 854, .distance = 30.119f}, {.id = 842, .distance = 32.862f}, {.id = 853, .distance = 33.326f}, {.id = 840, .distance = 34.526f}, {.id = 855, .distance = 46.032f}, {.id = 852, .distance = 51.953f}
+        }},
+        {842, {
+            {.id = 855, .distance = 29.271f}, {.id = 841, .distance = 32.862f}, {.id = 843, .distance = 32.910f}, {.id = 856, .distance = 35.475f}, {.id = 834, .distance = 35.779f}, {.id = 835, .distance = 36.917f}, {.id = 854, .distance = 42.036f}
+        }},
+        {843, {
+            {.id = 835, .distance = 27.950f}, {.id = 857, .distance = 30.515f}, {.id = 842, .distance = 32.910f}, {.id = 844, .distance = 34.288f}, {.id = 856, .distance = 35.680f}, {.id = 858, .distance = 43.747f}, {.id = 834, .distance = 50.881f}
+        }},
+        {844, {
+            {.id = 858, .distance = 30.713f}, {.id = 859, .distance = 32.961f}, {.id = 843, .distance = 34.288f}, {.id = 845, .distance = 34.333f}, {.id = 836, .distance = 36.041f}, {.id = 835, .distance = 36.663f}, {.id = 857, .distance = 47.436f}
+        }},
+        {845, {
+            {.id = 836, .distance = 28.148f}, {.id = 860, .distance = 28.795f}, {.id = 846, .distance = 32.474f}, {.id = 844, .distance = 34.333f}, {.id = 861, .distance = 37.853f}, {.id = 859, .distance = 39.529f}, {.id = 837, .distance = 52.029f}
+        }},
+        {846, {
+            {.id = 862, .distance = 30.978f}, {.id = 845, .distance = 32.474f}, {.id = 861, .distance = 33.378f}, {.id = 847, .distance = 34.135f}, {.id = 836, .distance = 36.581f}, {.id = 837, .distance = 36.663f}, {.id = 863, .distance = 47.075f}
+        }},
+        {847, {
+            {.id = 837, .distance = 28.784f}, {.id = 863, .distance = 29.314f}, {.id = 838, .distance = 32.709f}, {.id = 846, .distance = 34.135f}, {.id = 848, .distance = 35.428f}, {.id = 862, .distance = 42.934f}, {.id = 833, .distance = 52.730f}
+        }},
+        {848, {
+            {.id = 865, .distance = 31.937f}, {.id = 864, .distance = 31.964f}, {.id = 863, .distance = 32.088f}, {.id = 849, .distance = 32.704f}, {.id = 847, .distance = 35.428f}, {.id = 838, .distance = 35.999f}, {.id = 885, .distance = 49.921f}
+        }},
+        {849, {
+            {.id = 866, .distance = 29.419f}, {.id = 838, .distance = 29.943f}, {.id = 850, .distance = 32.468f}, {.id = 848, .distance = 32.704f}, {.id = 865, .distance = 37.491f}, {.id = 867, .distance = 41.947f}, {.id = 839, .distance = 46.465f}
+        }},
+        {850, {
+            {.id = 867, .distance = 29.848f}, {.id = 839, .distance = 31.091f}, {.id = 851, .distance = 31.917f}, {.id = 849, .distance = 32.468f}, {.id = 868, .distance = 35.426f}, {.id = 838, .distance = 43.146f}, {.id = 866, .distance = 44.568f}
+        }},
+        {851, {
+            {.id = 869, .distance = 30.775f}, {.id = 850, .distance = 31.917f}, {.id = 852, .distance = 32.089f}, {.id = 868, .distance = 33.457f}, {.id = 839, .distance = 33.997f}, {.id = 840, .distance = 39.001f}, {.id = 870, .distance = 47.195f}
+        }},
+        {852, {
+            {.id = 870, .distance = 28.126f}, {.id = 840, .distance = 28.795f}, {.id = 851, .distance = 32.089f}, {.id = 853, .distance = 33.350f}, {.id = 869, .distance = 38.606f}, {.id = 871, .distance = 40.686f}, {.id = 839, .distance = 50.872f}
+        }},
+        {853, {
+            {.id = 871, .distance = 30.745f}, {.id = 854, .distance = 32.585f}, {.id = 841, .distance = 33.326f}, {.id = 852, .distance = 33.350f}, {.id = 872, .distance = 33.990f}, {.id = 840, .distance = 39.043f}, {.id = 870, .distance = 47.230f}
+        }},
+        {854, {
+            {.id = 873, .distance = 30.088f}, {.id = 841, .distance = 30.119f}, {.id = 855, .distance = 32.298f}, {.id = 853, .distance = 32.585f}, {.id = 872, .distance = 35.628f}, {.id = 842, .distance = 42.036f}, {.id = 874, .distance = 44.864f}
+        }},
+        {855, {
+            {.id = 874, .distance = 28.726f}, {.id = 842, .distance = 29.271f}, {.id = 856, .distance = 31.916f}, {.id = 854, .distance = 32.298f}, {.id = 875, .distance = 37.444f}, {.id = 873, .distance = 42.067f}, {.id = 841, .distance = 46.032f}
+        }},
+        {856, {
+            {.id = 875, .distance = 31.889f}, {.id = 855, .distance = 31.916f}, {.id = 876, .distance = 32.458f}, {.id = 857, .distance = 32.605f}, {.id = 842, .distance = 35.475f}, {.id = 843, .distance = 35.680f}, {.id = 874, .distance = 49.358f}
+        }},
+        {857, {
+            {.id = 877, .distance = 28.557f}, {.id = 843, .distance = 30.515f}, {.id = 856, .distance = 32.605f}, {.id = 858, .distance = 33.386f}, {.id = 876, .distance = 36.707f}, {.id = 878, .distance = 42.276f}, {.id = 844, .distance = 47.436f}
+        }},
+        {858, {
+            {.id = 878, .distance = 29.283f}, {.id = 844, .distance = 30.713f}, {.id = 859, .distance = 32.395f}, {.id = 857, .distance = 33.386f}, {.id = 879, .distance = 35.383f}, {.id = 843, .distance = 43.747f}, {.id = 877, .distance = 45.069f}
+        }},
+        {859, {
+            {.id = 880, .distance = 30.492f}, {.id = 858, .distance = 32.395f}, {.id = 860, .distance = 32.492f}, {.id = 844, .distance = 32.961f}, {.id = 879, .distance = 33.774f}, {.id = 845, .distance = 39.529f}, {.id = 881, .distance = 46.947f}
+        }},
+        {860, {
+            {.id = 845, .distance = 28.795f}, {.id = 881, .distance = 28.796f}, {.id = 861, .distance = 31.301f}, {.id = 859, .distance = 32.492f}, {.id = 882, .distance = 39.130f}, {.id = 880, .distance = 39.658f}, {.id = 846, .distance = 50.236f}
+        }},
+        {861, {
+            {.id = 882, .distance = 30.076f}, {.id = 860, .distance = 31.301f}, {.id = 862, .distance = 33.324f}, {.id = 846, .distance = 33.378f}, {.id = 883, .distance = 33.386f}, {.id = 845, .distance = 37.853f}, {.id = 881, .distance = 46.778f}
+        }},
+        {862, {
+            {.id = 884, .distance = 29.653f}, {.id = 846, .distance = 30.978f}, {.id = 863, .distance = 32.852f}, {.id = 861, .distance = 33.324f}, {.id = 883, .distance = 35.446f}, {.id = 847, .distance = 42.934f}, {.id = 885, .distance = 44.581f}
+        }},
+        {863, {
+            {.id = 885, .distance = 28.776f}, {.id = 847, .distance = 29.314f}, {.id = 848, .distance = 32.088f}, {.id = 862, .distance = 32.852f}, {.id = 864, .distance = 36.954f}, {.id = 884, .distance = 42.498f}, {.id = 846, .distance = 47.075f}
+        }},
+        {864, {
+            {.id = 886, .distance = 23.617f}, {.id = 885, .distance = 31.442f}, {.id = 848, .distance = 31.964f}, {.id = 865, .distance = 32.702f}, {.id = 863, .distance = 36.954f}, {.id = 933, .distance = 41.259f}, {.id = 935, .distance = 45.103f}
+        }},
+        {865, {
+            {.id = 848, .distance = 31.937f}, {.id = 864, .distance = 32.702f}, {.id = 866, .distance = 32.725f}, {.id = 887, .distance = 36.068f}, {.id = 849, .distance = 37.491f}, {.id = 888, .distance = 39.068f}, {.id = 886, .distance = 41.895f}
+        }},
+        {866, {
+            {.id = 849, .distance = 29.419f}, {.id = 867, .distance = 30.638f}, {.id = 865, .distance = 32.725f}, {.id = 888, .distance = 35.794f}, {.id = 889, .distance = 36.665f}, {.id = 850, .distance = 44.568f}, {.id = 890, .distance = 46.412f}
+        }},
+        {867, {
+            {.id = 890, .distance = 24.191f}, {.id = 850, .distance = 29.848f}, {.id = 866, .distance = 30.638f}, {.id = 868, .distance = 31.516f}, {.id = 849, .distance = 41.947f}, {.id = 891, .distance = 44.167f}, {.id = 889, .distance = 44.460f}
+        }},
+        {868, {
+            {.id = 895, .distance = 27.519f}, {.id = 867, .distance = 31.516f}, {.id = 869, .distance = 33.096f}, {.id = 851, .distance = 33.457f}, {.id = 850, .distance = 35.426f}, {.id = 892, .distance = 35.506f}, {.id = 890, .distance = 36.051f}
+        }},
+        {869, {
+            {.id = 851, .distance = 30.775f}, {.id = 870, .distance = 30.943f}, {.id = 895, .distance = 31.347f}, {.id = 868, .distance = 33.096f}, {.id = 897, .distance = 37.393f}, {.id = 852, .distance = 38.606f}, {.id = 896, .distance = 45.102f}
+        }},
+        {870, {
+            {.id = 852, .distance = 28.126f}, {.id = 869, .distance = 30.943f}, {.id = 871, .distance = 32.322f}, {.id = 898, .distance = 33.115f}, {.id = 897, .distance = 43.474f}, {.id = 899, .distance = 44.048f}, {.id = 851, .distance = 47.195f}
+        }},
+        {871, {
+            {.id = 901, .distance = 30.540f}, {.id = 853, .distance = 30.745f}, {.id = 870, .distance = 32.322f}, {.id = 872, .distance = 32.441f}, {.id = 899, .distance = 37.153f}, {.id = 852, .distance = 40.686f}, {.id = 900, .distance = 45.279f}
+        }},
+        {872, {
+            {.id = 901, .distance = 27.373f}, {.id = 873, .distance = 31.563f}, {.id = 871, .distance = 32.441f}, {.id = 853, .distance = 33.990f}, {.id = 903, .distance = 35.618f}, {.id = 854, .distance = 35.628f}, {.id = 905, .distance = 36.566f}
+        }},
+        {873, {
+            {.id = 905, .distance = 24.293f}, {.id = 854, .distance = 30.088f}, {.id = 872, .distance = 31.563f}, {.id = 874, .distance = 31.793f}, {.id = 855, .distance = 42.067f}, {.id = 906, .distance = 43.775f}, {.id = 907, .distance = 43.787f}
+        }},
+        {874, {
+            {.id = 855, .distance = 28.726f}, {.id = 875, .distance = 31.427f}, {.id = 873, .distance = 31.793f}, {.id = 908, .distance = 35.922f}, {.id = 907, .distance = 37.333f}, {.id = 854, .distance = 44.864f}, {.id = 905, .distance = 47.704f}
+        }},
+        {875, {
+            {.id = 874, .distance = 31.427f}, {.id = 856, .distance = 31.889f}, {.id = 876, .distance = 32.342f}, {.id = 909, .distance = 35.562f}, {.id = 855, .distance = 37.444f}, {.id = 908, .distance = 39.243f}, {.id = 911, .distance = 41.982f}
+        }},
+        {876, {
+            {.id = 911, .distance = 23.803f}, {.id = 877, .distance = 31.693f}, {.id = 875, .distance = 32.342f}, {.id = 856, .distance = 32.458f}, {.id = 857, .distance = 36.707f}, {.id = 913, .distance = 41.333f}, {.id = 910, .distance = 44.974f}
+        }},
+        {877, {
+            {.id = 915, .distance = 24.410f}, {.id = 857, .distance = 28.557f}, {.id = 876, .distance = 31.693f}, {.id = 878, .distance = 32.138f}, {.id = 913, .distance = 38.124f}, {.id = 911, .distance = 43.096f}, {.id = 858, .distance = 45.069f}
+        }},
+        {878, {
+            {.id = 858, .distance = 29.283f}, {.id = 879, .distance = 31.589f}, {.id = 877, .distance = 32.138f}, {.id = 917, .distance = 36.174f}, {.id = 915, .distance = 36.927f}, {.id = 857, .distance = 42.276f}, {.id = 918, .distance = 43.787f}
+        }},
+        {879, {
+            {.id = 878, .distance = 31.589f}, {.id = 880, .distance = 32.185f}, {.id = 918, .distance = 33.528f}, {.id = 859, .distance = 33.774f}, {.id = 858, .distance = 35.383f}, {.id = 919, .distance = 39.292f}, {.id = 917, .distance = 48.151f}
+        }},
+        {880, {
+            {.id = 921, .distance = 26.800f}, {.id = 859, .distance = 30.492f}, {.id = 881, .distance = 31.085f}, {.id = 879, .distance = 32.185f}, {.id = 860, .distance = 39.658f}, {.id = 919, .distance = 40.843f}, {.id = 920, .distance = 44.297f}
+        }},
+        {881, {
+            {.id = 860, .distance = 28.796f}, {.id = 880, .distance = 31.085f}, {.id = 921, .distance = 31.165f}, {.id = 882, .distance = 31.748f}, {.id = 925, .distance = 32.025f}, {.id = 923, .distance = 35.484f}, {.id = 861, .distance = 46.778f}
+        }},
+        {882, {
+            {.id = 925, .distance = 26.974f}, {.id = 861, .distance = 30.076f}, {.id = 883, .distance = 31.574f}, {.id = 881, .distance = 31.748f}, {.id = 860, .distance = 39.130f}, {.id = 927, .distance = 40.759f}, {.id = 926, .distance = 44.255f}
+        }},
+        {883, {
+            {.id = 882, .distance = 31.574f}, {.id = 884, .distance = 32.495f}, {.id = 861, .distance = 33.386f}, {.id = 928, .distance = 34.006f}, {.id = 862, .distance = 35.446f}, {.id = 927, .distance = 40.058f}, {.id = 929, .distance = 48.765f}
+        }},
+        {884, {
+            {.id = 862, .distance = 29.653f}, {.id = 885, .distance = 31.761f}, {.id = 883, .distance = 32.495f}, {.id = 929, .distance = 35.652f}, {.id = 931, .distance = 35.973f}, {.id = 863, .distance = 42.498f}, {.id = 928, .distance = 43.930f}
+        }},
+        {885, {
+            {.id = 931, .distance = 24.656f}, {.id = 863, .distance = 28.776f}, {.id = 864, .distance = 31.442f}, {.id = 884, .distance = 31.761f}, {.id = 933, .distance = 38.273f}, {.id = 886, .distance = 43.129f}, {.id = 862, .distance = 44.581f}
+        }},
+        {886, {
+            {.id = 935, .distance = 22.863f}, {.id = 864, .distance = 23.617f}, {.id = 933, .distance = 27.856f}, {.id = 934, .distance = 35.561f}, {.id = 887, .distance = 37.917f}, {.id = 865, .distance = 41.895f}, {.id = 885, .distance = 43.129f}
+        }},
+        {887, {
+            {.id = 935, .distance = 28.096f}, {.id = 888, .distance = 29.153f}, {.id = 1013, .distance = 29.303f}, {.id = 865, .distance = 36.068f}, {.id = 886, .distance = 37.917f}, {.id = 1012, .distance = 40.708f}, {.id = 1014, .distance = 41.405f}
+        }},
+        {888, {
+            {.id = 889, .distance = 28.265f}, {.id = 887, .distance = 29.153f}, {.id = 1012, .distance = 29.697f}, {.id = 866, .distance = 35.794f}, {.id = 865, .distance = 39.068f}, {.id = 1011, .distance = 40.854f}, {.id = 1013, .distance = 41.887f}
+        }},
+        {889, {
+            {.id = 888, .distance = 28.265f}, {.id = 891, .distance = 28.989f}, {.id = 1011, .distance = 29.349f}, {.id = 866, .distance = 36.665f}, {.id = 890, .distance = 38.712f}, {.id = 1010, .distance = 40.741f}, {.id = 1012, .distance = 41.218f}
+        }},
+        {890, {
+            {.id = 891, .distance = 23.607f}, {.id = 867, .distance = 24.191f}, {.id = 892, .distance = 27.455f}, {.id = 893, .distance = 35.536f}, {.id = 868, .distance = 36.051f}, {.id = 889, .distance = 38.712f}, {.id = 866, .distance = 46.412f}
+        }},
+        {891, {
+            {.id = 890, .distance = 23.607f}, {.id = 893, .distance = 28.500f}, {.id = 889, .distance = 28.989f}, {.id = 1010, .distance = 29.313f}, {.id = 892, .distance = 38.998f}, {.id = 1008, .distance = 40.245f}, {.id = 1011, .distance = 41.506f}
+        }},
+        {892, {
+            {.id = 893, .distance = 25.823f}, {.id = 894, .distance = 26.007f}, {.id = 895, .distance = 27.304f}, {.id = 890, .distance = 27.455f}, {.id = 868, .distance = 35.506f}, {.id = 891, .distance = 38.998f}, {.id = 896, .distance = 39.242f}
+        }},
+        {893, {
+            {.id = 892, .distance = 25.823f}, {.id = 891, .distance = 28.500f}, {.id = 1008, .distance = 29.551f}, {.id = 894, .distance = 30.900f}, {.id = 890, .distance = 35.536f}, {.id = 1010, .distance = 41.458f}, {.id = 1224, .distance = 50.838f}
+        }},
+        {894, {
+            {.id = 892, .distance = 26.007f}, {.id = 1224, .distance = 28.644f}, {.id = 896, .distance = 29.614f}, {.id = 893, .distance = 30.900f}, {.id = 895, .distance = 35.963f}, {.id = 1222, .distance = 39.268f}, {.id = 1225, .distance = 52.119f}
+        }},
+        {895, {
+            {.id = 896, .distance = 23.404f}, {.id = 892, .distance = 27.304f}, {.id = 868, .distance = 27.519f}, {.id = 869, .distance = 31.347f}, {.id = 894, .distance = 35.963f}, {.id = 897, .distance = 38.924f}, {.id = 890, .distance = 47.034f}
+        }},
+        {896, {
+            {.id = 895, .distance = 23.404f}, {.id = 897, .distance = 28.584f}, {.id = 1222, .distance = 28.966f}, {.id = 894, .distance = 29.614f}, {.id = 1221, .distance = 39.043f}, {.id = 892, .distance = 39.242f}, {.id = 1224, .distance = 42.830f}
+        }},
+        {897, {
+            {.id = 898, .distance = 28.069f}, {.id = 896, .distance = 28.584f}, {.id = 1221, .distance = 28.757f}, {.id = 869, .distance = 37.393f}, {.id = 1220, .distance = 38.867f}, {.id = 895, .distance = 38.924f}, {.id = 1222, .distance = 42.413f}
+        }},
+        {898, {
+            {.id = 897, .distance = 28.069f}, {.id = 899, .distance = 28.840f}, {.id = 1220, .distance = 28.846f}, {.id = 870, .distance = 33.115f}, {.id = 1219, .distance = 39.574f}, {.id = 1221, .distance = 41.923f}, {.id = 869, .distance = 48.228f}
+        }},
+        {899, {
+            {.id = 898, .distance = 28.840f}, {.id = 1219, .distance = 28.966f}, {.id = 900, .distance = 29.098f}, {.id = 871, .distance = 37.153f}, {.id = 901, .distance = 38.371f}, {.id = 1218, .distance = 39.389f}, {.id = 1220, .distance = 41.988f}
+        }},
+        {900, {
+            {.id = 901, .distance = 23.468f}, {.id = 902, .distance = 28.068f}, {.id = 1218, .distance = 28.906f}, {.id = 899, .distance = 29.098f}, {.id = 903, .distance = 37.859f}, {.id = 1216, .distance = 38.797f}, {.id = 1219, .distance = 42.324f}
+        }},
+        {901, {
+            {.id = 900, .distance = 23.468f}, {.id = 903, .distance = 26.995f}, {.id = 872, .distance = 27.373f}, {.id = 871, .distance = 30.540f}, {.id = 902, .distance = 35.584f}, {.id = 899, .distance = 38.371f}, {.id = 905, .distance = 47.445f}
+        }},
+        {902, {
+            {.id = 903, .distance = 25.235f}, {.id = 900, .distance = 28.068f}, {.id = 1216, .distance = 28.941f}, {.id = 904, .distance = 31.314f}, {.id = 901, .distance = 35.584f}, {.id = 1218, .distance = 41.827f}, {.id = 1214, .distance = 50.917f}
+        }},
+        {903, {
+            {.id = 902, .distance = 25.235f}, {.id = 904, .distance = 25.959f}, {.id = 901, .distance = 26.995f}, {.id = 905, .distance = 28.280f}, {.id = 872, .distance = 35.618f}, {.id = 900, .distance = 37.859f}, {.id = 906, .distance = 39.348f}
+        }},
+        {904, {
+            {.id = 903, .distance = 25.959f}, {.id = 906, .distance = 28.175f}, {.id = 789, .distance = 29.551f}, {.id = 902, .distance = 31.314f}, {.id = 905, .distance = 35.099f}, {.id = 787, .distance = 40.245f}, {.id = 901, .distance = 52.245f}
+        }},
+        {905, {
+            {.id = 906, .distance = 22.858f}, {.id = 873, .distance = 24.293f}, {.id = 903, .distance = 28.280f}, {.id = 904, .distance = 35.099f}, {.id = 872, .distance = 36.566f}, {.id = 907, .distance = 37.718f}, {.id = 901, .distance = 47.445f}
+        }},
+        {906, {
+            {.id = 905, .distance = 22.858f}, {.id = 904, .distance = 28.175f}, {.id = 907, .distance = 28.665f}, {.id = 787, .distance = 29.313f}, {.id = 903, .distance = 39.348f}, {.id = 785, .distance = 40.741f}, {.id = 789, .distance = 41.458f}
+        }},
+        {907, {
+            {.id = 906, .distance = 28.665f}, {.id = 908, .distance = 28.744f}, {.id = 785, .distance = 29.349f}, {.id = 874, .distance = 37.333f}, {.id = 905, .distance = 37.718f}, {.id = 784, .distance = 40.854f}, {.id = 787, .distance = 41.506f}
+        }},
+        {908, {
+            {.id = 909, .distance = 28.665f}, {.id = 907, .distance = 28.744f}, {.id = 784, .distance = 29.697f}, {.id = 874, .distance = 35.922f}, {.id = 875, .distance = 39.243f}, {.id = 783, .distance = 40.708f}, {.id = 785, .distance = 41.218f}
+        }},
+        {909, {
+            {.id = 908, .distance = 28.665f}, {.id = 910, .distance = 28.989f}, {.id = 783, .distance = 29.303f}, {.id = 875, .distance = 35.562f}, {.id = 911, .distance = 37.946f}, {.id = 831, .distance = 40.502f}, {.id = 784, .distance = 41.887f}
+        }},
+        {910, {
+            {.id = 911, .distance = 22.522f}, {.id = 912, .distance = 28.989f}, {.id = 909, .distance = 28.989f}, {.id = 831, .distance = 29.448f}, {.id = 913, .distance = 38.748f}, {.id = 830, .distance = 40.870f}, {.id = 783, .distance = 41.405f}
+        }},
+        {911, {
+            {.id = 910, .distance = 22.522f}, {.id = 876, .distance = 23.803f}, {.id = 913, .distance = 27.573f}, {.id = 912, .distance = 35.430f}, {.id = 909, .distance = 37.946f}, {.id = 875, .distance = 41.982f}, {.id = 877, .distance = 43.096f}
+        }},
+        {912, {
+            {.id = 913, .distance = 25.732f}, {.id = 910, .distance = 28.989f}, {.id = 830, .distance = 29.475f}, {.id = 914, .distance = 30.699f}, {.id = 911, .distance = 35.430f}, {.id = 831, .distance = 42.128f}, {.id = 174, .distance = 50.956f}
+        }},
+        {913, {
+            {.id = 914, .distance = 25.715f}, {.id = 912, .distance = 25.732f}, {.id = 915, .distance = 27.009f}, {.id = 911, .distance = 27.573f}, {.id = 877, .distance = 38.124f}, {.id = 910, .distance = 38.748f}, {.id = 916, .distance = 38.795f}
+        }},
+        {914, {
+            {.id = 913, .distance = 25.715f}, {.id = 916, .distance = 28.587f}, {.id = 174, .distance = 28.700f}, {.id = 912, .distance = 30.699f}, {.id = 915, .distance = 35.180f}, {.id = 172, .distance = 39.833f}, {.id = 175, .distance = 52.098f}
+        }},
+        {915, {
+            {.id = 916, .distance = 23.318f}, {.id = 877, .distance = 24.410f}, {.id = 913, .distance = 27.009f}, {.id = 914, .distance = 35.180f}, {.id = 878, .distance = 36.927f}, {.id = 917, .distance = 38.625f}, {.id = 911, .distance = 47.229f}
+        }},
+        {916, {
+            {.id = 915, .distance = 23.318f}, {.id = 914, .distance = 28.587f}, {.id = 917, .distance = 28.648f}, {.id = 172, .distance = 28.780f}, {.id = 913, .distance = 38.795f}, {.id = 171, .distance = 40.238f}, {.id = 174, .distance = 40.865f}
+        }},
+        {917, {
+            {.id = 916, .distance = 28.648f}, {.id = 918, .distance = 28.678f}, {.id = 171, .distance = 28.767f}, {.id = 878, .distance = 36.174f}, {.id = 915, .distance = 38.625f}, {.id = 170, .distance = 40.371f}, {.id = 172, .distance = 41.278f}
+        }},
+        {918, {
+            {.id = 919, .distance = 28.019f}, {.id = 917, .distance = 28.678f}, {.id = 170, .distance = 28.727f}, {.id = 879, .distance = 33.528f}, {.id = 169, .distance = 39.759f}, {.id = 171, .distance = 40.952f}, {.id = 878, .distance = 43.787f}
+        }},
+        {919, {
+            {.id = 918, .distance = 28.019f}, {.id = 169, .distance = 28.493f}, {.id = 920, .distance = 29.666f}, {.id = 921, .distance = 39.143f}, {.id = 879, .distance = 39.292f}, {.id = 168, .distance = 40.304f}, {.id = 170, .distance = 40.363f}
+        }},
+        {920, {
+            {.id = 921, .distance = 23.574f}, {.id = 168, .distance = 28.673f}, {.id = 922, .distance = 28.796f}, {.id = 919, .distance = 29.666f}, {.id = 923, .distance = 38.536f}, {.id = 166, .distance = 40.055f}, {.id = 169, .distance = 41.297f}
+        }},
+        {921, {
+            {.id = 920, .distance = 23.574f}, {.id = 880, .distance = 26.800f}, {.id = 923, .distance = 27.295f}, {.id = 881, .distance = 31.165f}, {.id = 922, .distance = 35.726f}, {.id = 919, .distance = 39.143f}, {.id = 925, .distance = 46.866f}
+        }},
+        {922, {
+            {.id = 923, .distance = 25.236f}, {.id = 166, .distance = 28.617f}, {.id = 920, .distance = 28.796f}, {.id = 924, .distance = 30.642f}, {.id = 921, .distance = 35.726f}, {.id = 168, .distance = 41.739f}, {.id = 165, .distance = 51.576f}
+        }},
+        {923, {
+            {.id = 922, .distance = 25.236f}, {.id = 924, .distance = 25.701f}, {.id = 921, .distance = 27.295f}, {.id = 925, .distance = 27.601f}, {.id = 881, .distance = 35.484f}, {.id = 920, .distance = 38.536f}, {.id = 926, .distance = 38.536f}
+        }},
+        {924, {
+            {.id = 923, .distance = 25.701f}, {.id = 926, .distance = 28.171f}, {.id = 298, .distance = 28.551f}, {.id = 922, .distance = 30.642f}, {.id = 925, .distance = 35.416f}, {.id = 296, .distance = 41.429f}, {.id = 300, .distance = 50.454f}
+        }},
+        {925, {
+            {.id = 926, .distance = 23.046f}, {.id = 882, .distance = 26.974f}, {.id = 923, .distance = 27.601f}, {.id = 881, .distance = 32.025f}, {.id = 924, .distance = 35.416f}, {.id = 927, .distance = 38.124f}, {.id = 921, .distance = 46.866f}
+        }},
+        {926, {
+            {.id = 925, .distance = 23.046f}, {.id = 924, .distance = 28.171f}, {.id = 296, .distance = 28.586f}, {.id = 927, .distance = 28.796f}, {.id = 923, .distance = 38.536f}, {.id = 298, .distance = 39.222f}, {.id = 295, .distance = 42.712f}
+        }},
+        {927, {
+            {.id = 295, .distance = 28.538f}, {.id = 928, .distance = 28.739f}, {.id = 926, .distance = 28.796f}, {.id = 925, .distance = 38.124f}, {.id = 296, .distance = 38.933f}, {.id = 883, .distance = 40.058f}, {.id = 882, .distance = 40.759f}
+        }},
+        {928, {
+            {.id = 294, .distance = 28.593f}, {.id = 927, .distance = 28.739f}, {.id = 929, .distance = 28.996f}, {.id = 883, .distance = 34.006f}, {.id = 295, .distance = 38.440f}, {.id = 293, .distance = 42.065f}, {.id = 884, .distance = 43.930f}
+        }},
+        {929, {
+            {.id = 930, .distance = 28.539f}, {.id = 293, .distance = 28.720f}, {.id = 928, .distance = 28.996f}, {.id = 884, .distance = 35.652f}, {.id = 931, .distance = 38.072f}, {.id = 294, .distance = 39.193f}, {.id = 292, .distance = 41.888f}
+        }},
+        {930, {
+            {.id = 931, .distance = 23.229f}, {.id = 292, .distance = 28.526f}, {.id = 929, .distance = 28.539f}, {.id = 932, .distance = 29.175f}, {.id = 933, .distance = 38.795f}, {.id = 293, .distance = 38.975f}, {.id = 290, .distance = 41.739f}
+        }},
+        {931, {
+            {.id = 930, .distance = 23.229f}, {.id = 885, .distance = 24.656f}, {.id = 933, .distance = 27.373f}, {.id = 884, .distance = 35.973f}, {.id = 932, .distance = 36.131f}, {.id = 929, .distance = 38.072f}, {.id = 886, .distance = 47.750f}
+        }},
+        {932, {
+            {.id = 933, .distance = 26.133f}, {.id = 290, .distance = 27.990f}, {.id = 930, .distance = 29.175f}, {.id = 934, .distance = 30.723f}, {.id = 931, .distance = 36.131f}, {.id = 292, .distance = 39.023f}, {.id = 288, .distance = 51.341f}
+        }},
+        {933, {
+            {.id = 934, .distance = 25.813f}, {.id = 932, .distance = 26.133f}, {.id = 931, .distance = 27.373f}, {.id = 886, .distance = 27.856f}, {.id = 885, .distance = 38.273f}, {.id = 930, .distance = 38.795f}, {.id = 935, .distance = 39.458f}
+        }},
+        {934, {
+            {.id = 933, .distance = 25.813f}, {.id = 1016, .distance = 29.475f}, {.id = 935, .distance = 29.479f}, {.id = 932, .distance = 30.723f}, {.id = 886, .distance = 35.561f}, {.id = 1014, .distance = 40.870f}, {.id = 290, .distance = 50.403f}
+        }},
+        {935, {
+            {.id = 886, .distance = 22.863f}, {.id = 887, .distance = 28.096f}, {.id = 1014, .distance = 29.448f}, {.id = 934, .distance = 29.479f}, {.id = 933, .distance = 39.458f}, {.id = 1013, .distance = 40.502f}, {.id = 1016, .distance = 42.128f}
+        }},
+        {936, {
+            {.id = 937, .distance = 25.256f}, {.id = 939, .distance = 25.653f}, {.id = 938, .distance = 25.660f}, {.id = 941, .distance = 26.237f}, {.id = 940, .distance = 26.780f}, {.id = 943, .distance = 53.251f}, {.id = 947, .distance = 53.584f}
+        }},
+        {937, {
+            {.id = 936, .distance = 25.256f}, {.id = 943, .distance = 27.996f}, {.id = 941, .distance = 30.406f}, {.id = 938, .distance = 30.745f}, {.id = 944, .distance = 36.902f}, {.id = 942, .distance = 36.902f}, {.id = 939, .distance = 48.670f}
+        }},
+        {938, {
+            {.id = 936, .distance = 25.660f}, {.id = 945, .distance = 28.138f}, {.id = 939, .distance = 30.016f}, {.id = 937, .distance = 30.745f}, {.id = 946, .distance = 35.779f}, {.id = 944, .distance = 37.730f}, {.id = 940, .distance = 49.623f}
+        }},
+        {939, {
+            {.id = 936, .distance = 25.653f}, {.id = 947, .distance = 27.950f}, {.id = 938, .distance = 30.016f}, {.id = 940, .distance = 30.334f}, {.id = 948, .distance = 36.663f}, {.id = 946, .distance = 36.917f}, {.id = 937, .distance = 48.670f}
+        }},
+        {940, {
+            {.id = 936, .distance = 26.780f}, {.id = 949, .distance = 28.148f}, {.id = 939, .distance = 30.334f}, {.id = 941, .distance = 30.829f}, {.id = 948, .distance = 36.041f}, {.id = 950, .distance = 36.581f}, {.id = 937, .distance = 49.415f}
+        }},
+        {941, {
+            {.id = 936, .distance = 26.237f}, {.id = 951, .distance = 28.784f}, {.id = 937, .distance = 30.406f}, {.id = 940, .distance = 30.829f}, {.id = 942, .distance = 36.136f}, {.id = 950, .distance = 36.663f}, {.id = 939, .distance = 49.028f}
+        }},
+        {942, {
+            {.id = 953, .distance = 29.943f}, {.id = 951, .distance = 32.709f}, {.id = 943, .distance = 33.241f}, {.id = 952, .distance = 35.999f}, {.id = 941, .distance = 36.136f}, {.id = 937, .distance = 36.902f}, {.id = 954, .distance = 43.146f}
+        }},
+        {943, {
+            {.id = 937, .distance = 27.996f}, {.id = 954, .distance = 31.091f}, {.id = 942, .distance = 33.241f}, {.id = 944, .distance = 33.489f}, {.id = 955, .distance = 33.997f}, {.id = 953, .distance = 46.465f}, {.id = 956, .distance = 50.872f}
+        }},
+        {944, {
+            {.id = 956, .distance = 28.795f}, {.id = 943, .distance = 33.489f}, {.id = 945, .distance = 34.526f}, {.id = 937, .distance = 36.902f}, {.id = 938, .distance = 37.730f}, {.id = 955, .distance = 39.001f}, {.id = 957, .distance = 39.043f}
+        }},
+        {945, {
+            {.id = 938, .distance = 28.138f}, {.id = 958, .distance = 30.119f}, {.id = 946, .distance = 32.862f}, {.id = 957, .distance = 33.326f}, {.id = 944, .distance = 34.526f}, {.id = 959, .distance = 46.032f}, {.id = 956, .distance = 51.953f}
+        }},
+        {946, {
+            {.id = 959, .distance = 29.271f}, {.id = 945, .distance = 32.862f}, {.id = 947, .distance = 32.910f}, {.id = 960, .distance = 35.475f}, {.id = 938, .distance = 35.779f}, {.id = 939, .distance = 36.917f}, {.id = 958, .distance = 42.036f}
+        }},
+        {947, {
+            {.id = 939, .distance = 27.950f}, {.id = 961, .distance = 30.515f}, {.id = 946, .distance = 32.910f}, {.id = 948, .distance = 34.288f}, {.id = 960, .distance = 35.680f}, {.id = 962, .distance = 43.747f}, {.id = 938, .distance = 50.881f}
+        }},
+        {948, {
+            {.id = 962, .distance = 30.713f}, {.id = 963, .distance = 32.961f}, {.id = 947, .distance = 34.288f}, {.id = 949, .distance = 34.333f}, {.id = 940, .distance = 36.041f}, {.id = 939, .distance = 36.663f}, {.id = 961, .distance = 47.436f}
+        }},
+        {949, {
+            {.id = 940, .distance = 28.148f}, {.id = 964, .distance = 28.795f}, {.id = 950, .distance = 32.474f}, {.id = 948, .distance = 34.333f}, {.id = 965, .distance = 37.853f}, {.id = 963, .distance = 39.529f}, {.id = 941, .distance = 52.029f}
+        }},
+        {950, {
+            {.id = 966, .distance = 30.978f}, {.id = 949, .distance = 32.474f}, {.id = 965, .distance = 33.378f}, {.id = 951, .distance = 34.135f}, {.id = 940, .distance = 36.581f}, {.id = 941, .distance = 36.663f}, {.id = 967, .distance = 47.075f}
+        }},
+        {951, {
+            {.id = 941, .distance = 28.784f}, {.id = 967, .distance = 29.314f}, {.id = 942, .distance = 32.709f}, {.id = 950, .distance = 34.135f}, {.id = 952, .distance = 35.428f}, {.id = 966, .distance = 42.934f}, {.id = 937, .distance = 52.730f}
+        }},
+        {952, {
+            {.id = 969, .distance = 31.937f}, {.id = 968, .distance = 31.964f}, {.id = 967, .distance = 32.088f}, {.id = 953, .distance = 32.704f}, {.id = 951, .distance = 35.428f}, {.id = 942, .distance = 35.999f}, {.id = 989, .distance = 49.921f}
+        }},
+        {953, {
+            {.id = 970, .distance = 29.419f}, {.id = 942, .distance = 29.943f}, {.id = 954, .distance = 32.468f}, {.id = 952, .distance = 32.704f}, {.id = 969, .distance = 37.491f}, {.id = 971, .distance = 41.947f}, {.id = 943, .distance = 46.465f}
+        }},
+        {954, {
+            {.id = 971, .distance = 29.848f}, {.id = 943, .distance = 31.091f}, {.id = 955, .distance = 31.917f}, {.id = 953, .distance = 32.468f}, {.id = 972, .distance = 35.426f}, {.id = 942, .distance = 43.146f}, {.id = 970, .distance = 44.568f}
+        }},
+        {955, {
+            {.id = 973, .distance = 30.775f}, {.id = 954, .distance = 31.917f}, {.id = 956, .distance = 32.089f}, {.id = 972, .distance = 33.457f}, {.id = 943, .distance = 33.997f}, {.id = 944, .distance = 39.001f}, {.id = 974, .distance = 47.195f}
+        }},
+        {956, {
+            {.id = 974, .distance = 28.126f}, {.id = 944, .distance = 28.795f}, {.id = 955, .distance = 32.089f}, {.id = 957, .distance = 33.350f}, {.id = 973, .distance = 38.606f}, {.id = 975, .distance = 40.686f}, {.id = 943, .distance = 50.872f}
+        }},
+        {957, {
+            {.id = 975, .distance = 30.745f}, {.id = 958, .distance = 32.585f}, {.id = 945, .distance = 33.326f}, {.id = 956, .distance = 33.350f}, {.id = 976, .distance = 33.990f}, {.id = 944, .distance = 39.043f}, {.id = 974, .distance = 47.230f}
+        }},
+        {958, {
+            {.id = 977, .distance = 30.088f}, {.id = 945, .distance = 30.119f}, {.id = 959, .distance = 32.298f}, {.id = 957, .distance = 32.585f}, {.id = 976, .distance = 35.628f}, {.id = 946, .distance = 42.036f}, {.id = 978, .distance = 44.864f}
+        }},
+        {959, {
+            {.id = 978, .distance = 28.726f}, {.id = 946, .distance = 29.271f}, {.id = 960, .distance = 31.916f}, {.id = 958, .distance = 32.298f}, {.id = 979, .distance = 37.444f}, {.id = 977, .distance = 42.067f}, {.id = 945, .distance = 46.032f}
+        }},
+        {960, {
+            {.id = 979, .distance = 31.889f}, {.id = 959, .distance = 31.916f}, {.id = 980, .distance = 32.458f}, {.id = 961, .distance = 32.605f}, {.id = 946, .distance = 35.475f}, {.id = 947, .distance = 35.680f}, {.id = 978, .distance = 49.358f}
+        }},
+        {961, {
+            {.id = 981, .distance = 28.557f}, {.id = 947, .distance = 30.515f}, {.id = 960, .distance = 32.605f}, {.id = 962, .distance = 33.386f}, {.id = 980, .distance = 36.707f}, {.id = 982, .distance = 42.276f}, {.id = 948, .distance = 47.436f}
+        }},
+        {962, {
+            {.id = 982, .distance = 29.283f}, {.id = 948, .distance = 30.713f}, {.id = 963, .distance = 32.395f}, {.id = 961, .distance = 33.386f}, {.id = 983, .distance = 35.383f}, {.id = 947, .distance = 43.747f}, {.id = 981, .distance = 45.069f}
+        }},
+        {963, {
+            {.id = 984, .distance = 30.492f}, {.id = 962, .distance = 32.395f}, {.id = 964, .distance = 32.492f}, {.id = 948, .distance = 32.961f}, {.id = 983, .distance = 33.774f}, {.id = 949, .distance = 39.529f}, {.id = 985, .distance = 46.947f}
+        }},
+        {964, {
+            {.id = 949, .distance = 28.795f}, {.id = 985, .distance = 28.796f}, {.id = 965, .distance = 31.301f}, {.id = 963, .distance = 32.492f}, {.id = 986, .distance = 39.130f}, {.id = 984, .distance = 39.658f}, {.id = 950, .distance = 50.236f}
+        }},
+        {965, {
+            {.id = 986, .distance = 30.076f}, {.id = 964, .distance = 31.301f}, {.id = 966, .distance = 33.324f}, {.id = 950, .distance = 33.378f}, {.id = 987, .distance = 33.386f}, {.id = 949, .distance = 37.853f}, {.id = 985, .distance = 46.778f}
+        }},
+        {966, {
+            {.id = 988, .distance = 29.653f}, {.id = 950, .distance = 30.978f}, {.id = 967, .distance = 32.852f}, {.id = 965, .distance = 33.324f}, {.id = 987, .distance = 35.446f}, {.id = 951, .distance = 42.934f}, {.id = 989, .distance = 44.581f}
+        }},
+        {967, {
+            {.id = 989, .distance = 28.776f}, {.id = 951, .distance = 29.314f}, {.id = 952, .distance = 32.088f}, {.id = 966, .distance = 32.852f}, {.id = 968, .distance = 36.954f}, {.id = 988, .distance = 42.498f}, {.id = 950, .distance = 47.075f}
+        }},
+        {968, {
+            {.id = 990, .distance = 23.617f}, {.id = 989, .distance = 31.442f}, {.id = 952, .distance = 31.964f}, {.id = 969, .distance = 32.703f}, {.id = 967, .distance = 36.954f}, {.id = 1037, .distance = 41.259f}, {.id = 1039, .distance = 45.103f}
+        }},
+        {969, {
+            {.id = 952, .distance = 31.937f}, {.id = 968, .distance = 32.703f}, {.id = 970, .distance = 32.725f}, {.id = 991, .distance = 36.068f}, {.id = 953, .distance = 37.491f}, {.id = 992, .distance = 39.068f}, {.id = 990, .distance = 41.895f}
+        }},
+        {970, {
+            {.id = 953, .distance = 29.419f}, {.id = 971, .distance = 30.638f}, {.id = 969, .distance = 32.725f}, {.id = 992, .distance = 35.794f}, {.id = 993, .distance = 36.665f}, {.id = 954, .distance = 44.568f}, {.id = 994, .distance = 46.412f}
+        }},
+        {971, {
+            {.id = 994, .distance = 24.191f}, {.id = 954, .distance = 29.848f}, {.id = 970, .distance = 30.638f}, {.id = 972, .distance = 31.516f}, {.id = 953, .distance = 41.947f}, {.id = 995, .distance = 44.167f}, {.id = 993, .distance = 44.460f}
+        }},
+        {972, {
+            {.id = 999, .distance = 27.519f}, {.id = 971, .distance = 31.516f}, {.id = 973, .distance = 33.096f}, {.id = 955, .distance = 33.457f}, {.id = 954, .distance = 35.426f}, {.id = 996, .distance = 35.506f}, {.id = 994, .distance = 36.051f}
+        }},
+        {973, {
+            {.id = 955, .distance = 30.775f}, {.id = 974, .distance = 30.943f}, {.id = 999, .distance = 31.347f}, {.id = 972, .distance = 33.096f}, {.id = 1001, .distance = 37.393f}, {.id = 956, .distance = 38.606f}, {.id = 1000, .distance = 45.102f}
+        }},
+        {974, {
+            {.id = 956, .distance = 28.126f}, {.id = 973, .distance = 30.943f}, {.id = 975, .distance = 32.322f}, {.id = 1002, .distance = 33.115f}, {.id = 1001, .distance = 43.474f}, {.id = 1003, .distance = 44.048f}, {.id = 955, .distance = 47.195f}
+        }},
+        {975, {
+            {.id = 1005, .distance = 30.540f}, {.id = 957, .distance = 30.745f}, {.id = 974, .distance = 32.322f}, {.id = 976, .distance = 32.441f}, {.id = 1003, .distance = 37.153f}, {.id = 956, .distance = 40.686f}, {.id = 1004, .distance = 45.279f}
+        }},
+        {976, {
+            {.id = 1005, .distance = 27.373f}, {.id = 977, .distance = 31.563f}, {.id = 975, .distance = 32.441f}, {.id = 957, .distance = 33.990f}, {.id = 1007, .distance = 35.618f}, {.id = 958, .distance = 35.628f}, {.id = 1009, .distance = 36.566f}
+        }},
+        {977, {
+            {.id = 1009, .distance = 24.293f}, {.id = 958, .distance = 30.088f}, {.id = 976, .distance = 31.563f}, {.id = 978, .distance = 31.793f}, {.id = 959, .distance = 42.067f}, {.id = 1010, .distance = 43.775f}, {.id = 1011, .distance = 43.787f}
+        }},
+        {978, {
+            {.id = 959, .distance = 28.726f}, {.id = 979, .distance = 31.427f}, {.id = 977, .distance = 31.793f}, {.id = 1012, .distance = 35.922f}, {.id = 1011, .distance = 37.333f}, {.id = 958, .distance = 44.864f}, {.id = 1009, .distance = 47.704f}
+        }},
+        {979, {
+            {.id = 978, .distance = 31.427f}, {.id = 960, .distance = 31.889f}, {.id = 980, .distance = 32.342f}, {.id = 1013, .distance = 35.562f}, {.id = 959, .distance = 37.444f}, {.id = 1012, .distance = 39.243f}, {.id = 1015, .distance = 41.982f}
+        }},
+        {980, {
+            {.id = 1015, .distance = 23.803f}, {.id = 981, .distance = 31.693f}, {.id = 979, .distance = 32.342f}, {.id = 960, .distance = 32.458f}, {.id = 961, .distance = 36.707f}, {.id = 1017, .distance = 41.333f}, {.id = 1014, .distance = 44.974f}
+        }},
+        {981, {
+            {.id = 1019, .distance = 24.410f}, {.id = 961, .distance = 28.557f}, {.id = 980, .distance = 31.693f}, {.id = 982, .distance = 32.138f}, {.id = 1017, .distance = 38.124f}, {.id = 1015, .distance = 43.096f}, {.id = 962, .distance = 45.069f}
+        }},
+        {982, {
+            {.id = 962, .distance = 29.283f}, {.id = 983, .distance = 31.589f}, {.id = 981, .distance = 32.138f}, {.id = 1021, .distance = 36.174f}, {.id = 1019, .distance = 36.927f}, {.id = 961, .distance = 42.276f}, {.id = 1022, .distance = 43.787f}
+        }},
+        {983, {
+            {.id = 982, .distance = 31.589f}, {.id = 984, .distance = 32.185f}, {.id = 1022, .distance = 33.528f}, {.id = 963, .distance = 33.774f}, {.id = 962, .distance = 35.383f}, {.id = 1023, .distance = 39.292f}, {.id = 1021, .distance = 48.151f}
+        }},
+        {984, {
+            {.id = 1025, .distance = 26.800f}, {.id = 963, .distance = 30.492f}, {.id = 985, .distance = 31.085f}, {.id = 983, .distance = 32.185f}, {.id = 964, .distance = 39.658f}, {.id = 1023, .distance = 40.843f}, {.id = 1024, .distance = 44.297f}
+        }},
+        {985, {
+            {.id = 964, .distance = 28.796f}, {.id = 984, .distance = 31.085f}, {.id = 1025, .distance = 31.165f}, {.id = 986, .distance = 31.748f}, {.id = 1029, .distance = 32.025f}, {.id = 1027, .distance = 35.484f}, {.id = 965, .distance = 46.778f}
+        }},
+        {986, {
+            {.id = 1029, .distance = 26.974f}, {.id = 965, .distance = 30.076f}, {.id = 987, .distance = 31.574f}, {.id = 985, .distance = 31.748f}, {.id = 964, .distance = 39.130f}, {.id = 1031, .distance = 40.759f}, {.id = 1030, .distance = 44.255f}
+        }},
+        {987, {
+            {.id = 986, .distance = 31.574f}, {.id = 988, .distance = 32.495f}, {.id = 965, .distance = 33.386f}, {.id = 1032, .distance = 34.006f}, {.id = 966, .distance = 35.446f}, {.id = 1031, .distance = 40.058f}, {.id = 1033, .distance = 48.765f}
+        }},
+        {988, {
+            {.id = 966, .distance = 29.653f}, {.id = 989, .distance = 31.761f}, {.id = 987, .distance = 32.495f}, {.id = 1033, .distance = 35.652f}, {.id = 1035, .distance = 35.973f}, {.id = 967, .distance = 42.498f}, {.id = 1032, .distance = 43.930f}
+        }},
+        {989, {
+            {.id = 1035, .distance = 24.656f}, {.id = 967, .distance = 28.776f}, {.id = 968, .distance = 31.442f}, {.id = 988, .distance = 31.761f}, {.id = 1037, .distance = 38.273f}, {.id = 990, .distance = 43.129f}, {.id = 966, .distance = 44.581f}
+        }},
+        {990, {
+            {.id = 1039, .distance = 22.863f}, {.id = 968, .distance = 23.617f}, {.id = 1037, .distance = 27.856f}, {.id = 1038, .distance = 35.561f}, {.id = 991, .distance = 37.917f}, {.id = 969, .distance = 41.895f}, {.id = 989, .distance = 43.129f}
+        }},
+        {991, {
+            {.id = 1039, .distance = 28.096f}, {.id = 992, .distance = 29.153f}, {.id = 1117, .distance = 29.303f}, {.id = 969, .distance = 36.068f}, {.id = 990, .distance = 37.917f}, {.id = 1116, .distance = 40.708f}, {.id = 1118, .distance = 41.405f}
+        }},
+        {992, {
+            {.id = 993, .distance = 28.265f}, {.id = 991, .distance = 29.153f}, {.id = 1116, .distance = 29.697f}, {.id = 970, .distance = 35.794f}, {.id = 969, .distance = 39.068f}, {.id = 1115, .distance = 40.854f}, {.id = 1117, .distance = 41.887f}
+        }},
+        {993, {
+            {.id = 992, .distance = 28.265f}, {.id = 995, .distance = 28.989f}, {.id = 1115, .distance = 29.349f}, {.id = 970, .distance = 36.665f}, {.id = 994, .distance = 38.712f}, {.id = 1114, .distance = 40.741f}, {.id = 1116, .distance = 41.218f}
+        }},
+        {994, {
+            {.id = 995, .distance = 23.607f}, {.id = 971, .distance = 24.191f}, {.id = 996, .distance = 27.455f}, {.id = 997, .distance = 35.536f}, {.id = 972, .distance = 36.051f}, {.id = 993, .distance = 38.712f}, {.id = 970, .distance = 46.412f}
+        }},
+        {995, {
+            {.id = 994, .distance = 23.607f}, {.id = 997, .distance = 28.500f}, {.id = 993, .distance = 28.989f}, {.id = 1114, .distance = 29.313f}, {.id = 996, .distance = 38.998f}, {.id = 1112, .distance = 40.245f}, {.id = 1115, .distance = 41.506f}
+        }},
+        {996, {
+            {.id = 997, .distance = 25.823f}, {.id = 998, .distance = 26.008f}, {.id = 999, .distance = 27.304f}, {.id = 994, .distance = 27.455f}, {.id = 972, .distance = 35.506f}, {.id = 995, .distance = 38.998f}, {.id = 1000, .distance = 39.242f}
+        }},
+        {997, {
+            {.id = 996, .distance = 25.823f}, {.id = 995, .distance = 28.500f}, {.id = 1112, .distance = 29.551f}, {.id = 998, .distance = 30.900f}, {.id = 994, .distance = 35.536f}, {.id = 1114, .distance = 41.458f}, {.id = 1234, .distance = 51.535f}
+        }},
+        {998, {
+            {.id = 996, .distance = 26.008f}, {.id = 1234, .distance = 28.579f}, {.id = 1000, .distance = 29.614f}, {.id = 997, .distance = 30.900f}, {.id = 999, .distance = 35.963f}, {.id = 1232, .distance = 40.017f}, {.id = 1236, .distance = 51.461f}
+        }},
+        {999, {
+            {.id = 1000, .distance = 23.404f}, {.id = 996, .distance = 27.304f}, {.id = 972, .distance = 27.519f}, {.id = 973, .distance = 31.347f}, {.id = 998, .distance = 35.963f}, {.id = 1001, .distance = 38.924f}, {.id = 994, .distance = 47.034f}
+        }},
+        {1000, {
+            {.id = 999, .distance = 23.404f}, {.id = 1001, .distance = 28.584f}, {.id = 1232, .distance = 28.635f}, {.id = 998, .distance = 29.614f}, {.id = 996, .distance = 39.242f}, {.id = 1231, .distance = 40.267f}, {.id = 1234, .distance = 41.723f}
+        }},
+        {1001, {
+            {.id = 1002, .distance = 28.069f}, {.id = 1231, .distance = 28.455f}, {.id = 1000, .distance = 28.584f}, {.id = 973, .distance = 37.393f}, {.id = 999, .distance = 38.924f}, {.id = 1230, .distance = 39.721f}, {.id = 1232, .distance = 41.281f}
+        }},
+        {1002, {
+            {.id = 1001, .distance = 28.069f}, {.id = 1230, .distance = 28.689f}, {.id = 1003, .distance = 28.840f}, {.id = 974, .distance = 33.115f}, {.id = 1229, .distance = 40.334f}, {.id = 1231, .distance = 40.347f}, {.id = 973, .distance = 48.228f}
+        }},
+        {1003, {
+            {.id = 1229, .distance = 28.729f}, {.id = 1002, .distance = 28.840f}, {.id = 1004, .distance = 29.098f}, {.id = 975, .distance = 37.153f}, {.id = 1005, .distance = 38.371f}, {.id = 1228, .distance = 40.200f}, {.id = 1230, .distance = 40.936f}
+        }},
+        {1004, {
+            {.id = 1005, .distance = 23.468f}, {.id = 1006, .distance = 28.067f}, {.id = 1228, .distance = 28.742f}, {.id = 1003, .distance = 29.098f}, {.id = 1007, .distance = 37.859f}, {.id = 1226, .distance = 39.796f}, {.id = 1229, .distance = 41.262f}
+        }},
+        {1005, {
+            {.id = 1004, .distance = 23.468f}, {.id = 1007, .distance = 26.995f}, {.id = 976, .distance = 27.373f}, {.id = 975, .distance = 30.540f}, {.id = 1006, .distance = 35.584f}, {.id = 1003, .distance = 38.371f}, {.id = 1009, .distance = 47.445f}
+        }},
+        {1006, {
+            {.id = 1007, .distance = 25.235f}, {.id = 1004, .distance = 28.067f}, {.id = 1226, .distance = 28.662f}, {.id = 1008, .distance = 31.314f}, {.id = 1005, .distance = 35.584f}, {.id = 1228, .distance = 40.849f}, {.id = 1224, .distance = 50.916f}
+        }},
+        {1007, {
+            {.id = 1006, .distance = 25.235f}, {.id = 1008, .distance = 25.959f}, {.id = 1005, .distance = 26.995f}, {.id = 1009, .distance = 28.280f}, {.id = 976, .distance = 35.618f}, {.id = 1004, .distance = 37.859f}, {.id = 1010, .distance = 39.348f}
+        }},
+        {1008, {
+            {.id = 1007, .distance = 25.959f}, {.id = 1010, .distance = 28.175f}, {.id = 893, .distance = 29.551f}, {.id = 1006, .distance = 31.314f}, {.id = 1009, .distance = 35.099f}, {.id = 891, .distance = 40.245f}, {.id = 1005, .distance = 52.245f}
+        }},
+        {1009, {
+            {.id = 1010, .distance = 22.858f}, {.id = 977, .distance = 24.293f}, {.id = 1007, .distance = 28.280f}, {.id = 1008, .distance = 35.099f}, {.id = 976, .distance = 36.566f}, {.id = 1011, .distance = 37.718f}, {.id = 1005, .distance = 47.445f}
+        }},
+        {1010, {
+            {.id = 1009, .distance = 22.858f}, {.id = 1008, .distance = 28.175f}, {.id = 1011, .distance = 28.665f}, {.id = 891, .distance = 29.313f}, {.id = 1007, .distance = 39.348f}, {.id = 889, .distance = 40.741f}, {.id = 893, .distance = 41.458f}
+        }},
+        {1011, {
+            {.id = 1010, .distance = 28.665f}, {.id = 1012, .distance = 28.744f}, {.id = 889, .distance = 29.349f}, {.id = 978, .distance = 37.333f}, {.id = 1009, .distance = 37.718f}, {.id = 888, .distance = 40.854f}, {.id = 891, .distance = 41.506f}
+        }},
+        {1012, {
+            {.id = 1013, .distance = 28.665f}, {.id = 1011, .distance = 28.744f}, {.id = 888, .distance = 29.697f}, {.id = 978, .distance = 35.922f}, {.id = 979, .distance = 39.243f}, {.id = 887, .distance = 40.708f}, {.id = 889, .distance = 41.218f}
+        }},
+        {1013, {
+            {.id = 1012, .distance = 28.665f}, {.id = 1014, .distance = 28.989f}, {.id = 887, .distance = 29.303f}, {.id = 979, .distance = 35.562f}, {.id = 1015, .distance = 37.946f}, {.id = 935, .distance = 40.502f}, {.id = 888, .distance = 41.887f}
+        }},
+        {1014, {
+            {.id = 1015, .distance = 22.522f}, {.id = 1016, .distance = 28.989f}, {.id = 1013, .distance = 28.989f}, {.id = 935, .distance = 29.448f}, {.id = 1017, .distance = 38.748f}, {.id = 934, .distance = 40.870f}, {.id = 887, .distance = 41.405f}
+        }},
+        {1015, {
+            {.id = 1014, .distance = 22.522f}, {.id = 980, .distance = 23.803f}, {.id = 1017, .distance = 27.573f}, {.id = 1016, .distance = 35.430f}, {.id = 1013, .distance = 37.946f}, {.id = 979, .distance = 41.982f}, {.id = 981, .distance = 43.096f}
+        }},
+        {1016, {
+            {.id = 1017, .distance = 25.732f}, {.id = 1014, .distance = 28.989f}, {.id = 934, .distance = 29.475f}, {.id = 1018, .distance = 30.699f}, {.id = 1015, .distance = 35.430f}, {.id = 935, .distance = 42.128f}, {.id = 288, .distance = 49.900f}
+        }},
+        {1017, {
+            {.id = 1018, .distance = 25.715f}, {.id = 1016, .distance = 25.732f}, {.id = 1019, .distance = 27.009f}, {.id = 1015, .distance = 27.573f}, {.id = 981, .distance = 38.124f}, {.id = 1014, .distance = 38.748f}, {.id = 1020, .distance = 38.795f}
+        }},
+        {1018, {
+            {.id = 1017, .distance = 25.715f}, {.id = 288, .distance = 27.473f}, {.id = 1020, .distance = 28.587f}, {.id = 1016, .distance = 30.699f}, {.id = 1019, .distance = 35.180f}, {.id = 286, .distance = 39.435f}, {.id = 290, .distance = 50.891f}
+        }},
+        {1019, {
+            {.id = 1020, .distance = 23.318f}, {.id = 981, .distance = 24.410f}, {.id = 1017, .distance = 27.009f}, {.id = 1018, .distance = 35.180f}, {.id = 982, .distance = 36.927f}, {.id = 1021, .distance = 38.625f}, {.id = 1015, .distance = 47.229f}
+        }},
+        {1020, {
+            {.id = 1019, .distance = 23.318f}, {.id = 286, .distance = 27.583f}, {.id = 1018, .distance = 28.587f}, {.id = 1021, .distance = 28.648f}, {.id = 1017, .distance = 38.795f}, {.id = 285, .distance = 39.805f}, {.id = 288, .distance = 40.223f}
+        }},
+        {1021, {
+            {.id = 285, .distance = 27.628f}, {.id = 1020, .distance = 28.648f}, {.id = 1022, .distance = 28.678f}, {.id = 982, .distance = 36.174f}, {.id = 1019, .distance = 38.625f}, {.id = 284, .distance = 39.752f}, {.id = 286, .distance = 40.007f}
+        }},
+        {1022, {
+            {.id = 284, .distance = 27.498f}, {.id = 1023, .distance = 28.019f}, {.id = 1021, .distance = 28.678f}, {.id = 983, .distance = 33.528f}, {.id = 285, .distance = 39.790f}, {.id = 283, .distance = 39.855f}, {.id = 982, .distance = 43.787f}
+        }},
+        {1023, {
+            {.id = 283, .distance = 27.613f}, {.id = 1022, .distance = 28.019f}, {.id = 1024, .distance = 29.666f}, {.id = 1025, .distance = 39.143f}, {.id = 284, .distance = 39.255f}, {.id = 983, .distance = 39.292f}, {.id = 282, .distance = 40.252f}
+        }},
+        {1024, {
+            {.id = 1025, .distance = 23.574f}, {.id = 282, .distance = 27.436f}, {.id = 1026, .distance = 28.796f}, {.id = 1023, .distance = 29.666f}, {.id = 1027, .distance = 38.536f}, {.id = 280, .distance = 39.154f}, {.id = 283, .distance = 39.947f}
+        }},
+        {1025, {
+            {.id = 1024, .distance = 23.574f}, {.id = 984, .distance = 26.800f}, {.id = 1027, .distance = 27.295f}, {.id = 985, .distance = 31.165f}, {.id = 1026, .distance = 35.726f}, {.id = 1023, .distance = 39.143f}, {.id = 1029, .distance = 46.866f}
+        }},
+        {1026, {
+            {.id = 1027, .distance = 25.236f}, {.id = 280, .distance = 27.690f}, {.id = 1024, .distance = 28.796f}, {.id = 1028, .distance = 30.642f}, {.id = 1025, .distance = 35.726f}, {.id = 282, .distance = 40.114f}, {.id = 278, .distance = 50.621f}
+        }},
+        {1027, {
+            {.id = 1026, .distance = 25.236f}, {.id = 1028, .distance = 25.701f}, {.id = 1025, .distance = 27.295f}, {.id = 1029, .distance = 27.601f}, {.id = 985, .distance = 35.484f}, {.id = 1030, .distance = 38.536f}, {.id = 1024, .distance = 38.536f}
+        }},
+        {1028, {
+            {.id = 1027, .distance = 25.701f}, {.id = 1030, .distance = 28.171f}, {.id = 402, .distance = 28.551f}, {.id = 1026, .distance = 30.642f}, {.id = 1029, .distance = 35.416f}, {.id = 400, .distance = 41.429f}, {.id = 404, .distance = 50.454f}
+        }},
+        {1029, {
+            {.id = 1030, .distance = 23.046f}, {.id = 986, .distance = 26.974f}, {.id = 1027, .distance = 27.601f}, {.id = 985, .distance = 32.025f}, {.id = 1028, .distance = 35.416f}, {.id = 1031, .distance = 38.124f}, {.id = 1025, .distance = 46.866f}
+        }},
+        {1030, {
+            {.id = 1029, .distance = 23.046f}, {.id = 1028, .distance = 28.171f}, {.id = 400, .distance = 28.586f}, {.id = 1031, .distance = 28.796f}, {.id = 1027, .distance = 38.536f}, {.id = 402, .distance = 39.222f}, {.id = 399, .distance = 42.712f}
+        }},
+        {1031, {
+            {.id = 399, .distance = 28.538f}, {.id = 1032, .distance = 28.739f}, {.id = 1030, .distance = 28.796f}, {.id = 1029, .distance = 38.124f}, {.id = 400, .distance = 38.933f}, {.id = 987, .distance = 40.058f}, {.id = 986, .distance = 40.759f}
+        }},
+        {1032, {
+            {.id = 398, .distance = 28.593f}, {.id = 1031, .distance = 28.739f}, {.id = 1033, .distance = 28.996f}, {.id = 987, .distance = 34.006f}, {.id = 399, .distance = 38.440f}, {.id = 397, .distance = 42.065f}, {.id = 988, .distance = 43.930f}
+        }},
+        {1033, {
+            {.id = 1034, .distance = 28.539f}, {.id = 397, .distance = 28.720f}, {.id = 1032, .distance = 28.996f}, {.id = 988, .distance = 35.652f}, {.id = 1035, .distance = 38.072f}, {.id = 398, .distance = 39.193f}, {.id = 396, .distance = 41.888f}
+        }},
+        {1034, {
+            {.id = 1035, .distance = 23.229f}, {.id = 396, .distance = 28.526f}, {.id = 1033, .distance = 28.539f}, {.id = 1036, .distance = 29.175f}, {.id = 1037, .distance = 38.795f}, {.id = 397, .distance = 38.975f}, {.id = 394, .distance = 41.739f}
+        }},
+        {1035, {
+            {.id = 1034, .distance = 23.229f}, {.id = 989, .distance = 24.656f}, {.id = 1037, .distance = 27.373f}, {.id = 988, .distance = 35.973f}, {.id = 1036, .distance = 36.131f}, {.id = 1033, .distance = 38.072f}, {.id = 990, .distance = 47.750f}
+        }},
+        {1036, {
+            {.id = 1037, .distance = 26.133f}, {.id = 394, .distance = 27.990f}, {.id = 1034, .distance = 29.175f}, {.id = 1038, .distance = 30.723f}, {.id = 1035, .distance = 36.131f}, {.id = 396, .distance = 39.023f}, {.id = 392, .distance = 51.341f}
+        }},
+        {1037, {
+            {.id = 1038, .distance = 25.813f}, {.id = 1036, .distance = 26.133f}, {.id = 1035, .distance = 27.373f}, {.id = 990, .distance = 27.856f}, {.id = 989, .distance = 38.273f}, {.id = 1034, .distance = 38.795f}, {.id = 1039, .distance = 39.458f}
+        }},
+        {1038, {
+            {.id = 1037, .distance = 25.813f}, {.id = 1120, .distance = 29.475f}, {.id = 1039, .distance = 29.479f}, {.id = 1036, .distance = 30.723f}, {.id = 990, .distance = 35.561f}, {.id = 1118, .distance = 40.870f}, {.id = 394, .distance = 50.403f}
+        }},
+        {1039, {
+            {.id = 990, .distance = 22.863f}, {.id = 991, .distance = 28.096f}, {.id = 1118, .distance = 29.448f}, {.id = 1038, .distance = 29.479f}, {.id = 1037, .distance = 39.458f}, {.id = 1117, .distance = 40.502f}, {.id = 1120, .distance = 42.128f}
+        }},
+        {1040, {
+            {.id = 1041, .distance = 25.256f}, {.id = 1043, .distance = 25.653f}, {.id = 1042, .distance = 25.660f}, {.id = 1045, .distance = 26.237f}, {.id = 1044, .distance = 26.780f}, {.id = 1047, .distance = 53.251f}, {.id = 1051, .distance = 53.584f}
+        }},
+        {1041, {
+            {.id = 1040, .distance = 25.256f}, {.id = 1047, .distance = 27.996f}, {.id = 1045, .distance = 30.406f}, {.id = 1042, .distance = 30.746f}, {.id = 1048, .distance = 36.902f}, {.id = 1046, .distance = 36.902f}, {.id = 1043, .distance = 48.670f}
+        }},
+        {1042, {
+            {.id = 1040, .distance = 25.660f}, {.id = 1049, .distance = 28.138f}, {.id = 1043, .distance = 30.016f}, {.id = 1041, .distance = 30.746f}, {.id = 1050, .distance = 35.779f}, {.id = 1048, .distance = 37.730f}, {.id = 1044, .distance = 49.623f}
+        }},
+        {1043, {
+            {.id = 1040, .distance = 25.653f}, {.id = 1051, .distance = 27.950f}, {.id = 1042, .distance = 30.016f}, {.id = 1044, .distance = 30.334f}, {.id = 1052, .distance = 36.663f}, {.id = 1050, .distance = 36.917f}, {.id = 1041, .distance = 48.670f}
+        }},
+        {1044, {
+            {.id = 1040, .distance = 26.780f}, {.id = 1053, .distance = 28.148f}, {.id = 1043, .distance = 30.334f}, {.id = 1045, .distance = 30.829f}, {.id = 1052, .distance = 36.041f}, {.id = 1054, .distance = 36.581f}, {.id = 1041, .distance = 49.415f}
+        }},
+        {1045, {
+            {.id = 1040, .distance = 26.237f}, {.id = 1055, .distance = 28.784f}, {.id = 1041, .distance = 30.406f}, {.id = 1044, .distance = 30.829f}, {.id = 1046, .distance = 36.136f}, {.id = 1054, .distance = 36.663f}, {.id = 1043, .distance = 49.028f}
+        }},
+        {1046, {
+            {.id = 1057, .distance = 29.943f}, {.id = 1055, .distance = 32.709f}, {.id = 1047, .distance = 33.241f}, {.id = 1056, .distance = 35.999f}, {.id = 1045, .distance = 36.136f}, {.id = 1041, .distance = 36.902f}, {.id = 1058, .distance = 43.146f}
+        }},
+        {1047, {
+            {.id = 1041, .distance = 27.996f}, {.id = 1058, .distance = 31.091f}, {.id = 1046, .distance = 33.241f}, {.id = 1048, .distance = 33.489f}, {.id = 1059, .distance = 33.997f}, {.id = 1057, .distance = 46.465f}, {.id = 1060, .distance = 50.872f}
+        }},
+        {1048, {
+            {.id = 1060, .distance = 28.795f}, {.id = 1047, .distance = 33.489f}, {.id = 1049, .distance = 34.526f}, {.id = 1041, .distance = 36.902f}, {.id = 1042, .distance = 37.730f}, {.id = 1059, .distance = 39.001f}, {.id = 1061, .distance = 39.043f}
+        }},
+        {1049, {
+            {.id = 1042, .distance = 28.138f}, {.id = 1062, .distance = 30.119f}, {.id = 1050, .distance = 32.862f}, {.id = 1061, .distance = 33.326f}, {.id = 1048, .distance = 34.526f}, {.id = 1063, .distance = 46.032f}, {.id = 1060, .distance = 51.953f}
+        }},
+        {1050, {
+            {.id = 1063, .distance = 29.271f}, {.id = 1049, .distance = 32.862f}, {.id = 1051, .distance = 32.910f}, {.id = 1064, .distance = 35.475f}, {.id = 1042, .distance = 35.779f}, {.id = 1043, .distance = 36.917f}, {.id = 1062, .distance = 42.036f}
+        }},
+        {1051, {
+            {.id = 1043, .distance = 27.950f}, {.id = 1065, .distance = 30.515f}, {.id = 1050, .distance = 32.910f}, {.id = 1052, .distance = 34.288f}, {.id = 1064, .distance = 35.680f}, {.id = 1066, .distance = 43.747f}, {.id = 1042, .distance = 50.881f}
+        }},
+        {1052, {
+            {.id = 1066, .distance = 30.713f}, {.id = 1067, .distance = 32.961f}, {.id = 1051, .distance = 34.288f}, {.id = 1053, .distance = 34.333f}, {.id = 1044, .distance = 36.041f}, {.id = 1043, .distance = 36.663f}, {.id = 1065, .distance = 47.436f}
+        }},
+        {1053, {
+            {.id = 1044, .distance = 28.148f}, {.id = 1068, .distance = 28.795f}, {.id = 1054, .distance = 32.474f}, {.id = 1052, .distance = 34.333f}, {.id = 1069, .distance = 37.853f}, {.id = 1067, .distance = 39.529f}, {.id = 1045, .distance = 52.029f}
+        }},
+        {1054, {
+            {.id = 1070, .distance = 30.978f}, {.id = 1053, .distance = 32.474f}, {.id = 1069, .distance = 33.378f}, {.id = 1055, .distance = 34.135f}, {.id = 1044, .distance = 36.581f}, {.id = 1045, .distance = 36.663f}, {.id = 1071, .distance = 47.075f}
+        }},
+        {1055, {
+            {.id = 1045, .distance = 28.784f}, {.id = 1071, .distance = 29.314f}, {.id = 1046, .distance = 32.709f}, {.id = 1054, .distance = 34.135f}, {.id = 1056, .distance = 35.428f}, {.id = 1070, .distance = 42.934f}, {.id = 1041, .distance = 52.730f}
+        }},
+        {1056, {
+            {.id = 1073, .distance = 31.937f}, {.id = 1072, .distance = 31.964f}, {.id = 1071, .distance = 32.088f}, {.id = 1057, .distance = 32.704f}, {.id = 1055, .distance = 35.428f}, {.id = 1046, .distance = 35.999f}, {.id = 1093, .distance = 49.921f}
+        }},
+        {1057, {
+            {.id = 1074, .distance = 29.419f}, {.id = 1046, .distance = 29.943f}, {.id = 1058, .distance = 32.468f}, {.id = 1056, .distance = 32.704f}, {.id = 1073, .distance = 37.491f}, {.id = 1075, .distance = 41.947f}, {.id = 1047, .distance = 46.465f}
+        }},
+        {1058, {
+            {.id = 1075, .distance = 29.848f}, {.id = 1047, .distance = 31.091f}, {.id = 1059, .distance = 31.917f}, {.id = 1057, .distance = 32.468f}, {.id = 1076, .distance = 35.426f}, {.id = 1046, .distance = 43.146f}, {.id = 1074, .distance = 44.568f}
+        }},
+        {1059, {
+            {.id = 1077, .distance = 30.775f}, {.id = 1058, .distance = 31.917f}, {.id = 1060, .distance = 32.089f}, {.id = 1076, .distance = 33.457f}, {.id = 1047, .distance = 33.997f}, {.id = 1048, .distance = 39.001f}, {.id = 1078, .distance = 47.195f}
+        }},
+        {1060, {
+            {.id = 1078, .distance = 28.126f}, {.id = 1048, .distance = 28.795f}, {.id = 1059, .distance = 32.089f}, {.id = 1061, .distance = 33.350f}, {.id = 1077, .distance = 38.606f}, {.id = 1079, .distance = 40.686f}, {.id = 1047, .distance = 50.872f}
+        }},
+        {1061, {
+            {.id = 1079, .distance = 30.745f}, {.id = 1062, .distance = 32.585f}, {.id = 1049, .distance = 33.326f}, {.id = 1060, .distance = 33.350f}, {.id = 1080, .distance = 33.990f}, {.id = 1048, .distance = 39.043f}, {.id = 1078, .distance = 47.230f}
+        }},
+        {1062, {
+            {.id = 1081, .distance = 30.088f}, {.id = 1049, .distance = 30.119f}, {.id = 1063, .distance = 32.298f}, {.id = 1061, .distance = 32.585f}, {.id = 1080, .distance = 35.628f}, {.id = 1050, .distance = 42.036f}, {.id = 1082, .distance = 44.864f}
+        }},
+        {1063, {
+            {.id = 1082, .distance = 28.726f}, {.id = 1050, .distance = 29.271f}, {.id = 1064, .distance = 31.916f}, {.id = 1062, .distance = 32.298f}, {.id = 1083, .distance = 37.444f}, {.id = 1081, .distance = 42.067f}, {.id = 1049, .distance = 46.032f}
+        }},
+        {1064, {
+            {.id = 1083, .distance = 31.889f}, {.id = 1063, .distance = 31.916f}, {.id = 1084, .distance = 32.458f}, {.id = 1065, .distance = 32.605f}, {.id = 1050, .distance = 35.475f}, {.id = 1051, .distance = 35.680f}, {.id = 1082, .distance = 49.358f}
+        }},
+        {1065, {
+            {.id = 1085, .distance = 28.557f}, {.id = 1051, .distance = 30.515f}, {.id = 1064, .distance = 32.605f}, {.id = 1066, .distance = 33.386f}, {.id = 1084, .distance = 36.707f}, {.id = 1086, .distance = 42.276f}, {.id = 1052, .distance = 47.436f}
+        }},
+        {1066, {
+            {.id = 1086, .distance = 29.283f}, {.id = 1052, .distance = 30.713f}, {.id = 1067, .distance = 32.395f}, {.id = 1065, .distance = 33.386f}, {.id = 1087, .distance = 35.383f}, {.id = 1051, .distance = 43.747f}, {.id = 1085, .distance = 45.069f}
+        }},
+        {1067, {
+            {.id = 1088, .distance = 30.492f}, {.id = 1066, .distance = 32.395f}, {.id = 1068, .distance = 32.492f}, {.id = 1052, .distance = 32.961f}, {.id = 1087, .distance = 33.774f}, {.id = 1053, .distance = 39.529f}, {.id = 1089, .distance = 46.947f}
+        }},
+        {1068, {
+            {.id = 1053, .distance = 28.795f}, {.id = 1089, .distance = 28.796f}, {.id = 1069, .distance = 31.301f}, {.id = 1067, .distance = 32.492f}, {.id = 1090, .distance = 39.130f}, {.id = 1088, .distance = 39.658f}, {.id = 1054, .distance = 50.236f}
+        }},
+        {1069, {
+            {.id = 1090, .distance = 30.076f}, {.id = 1068, .distance = 31.301f}, {.id = 1070, .distance = 33.324f}, {.id = 1054, .distance = 33.378f}, {.id = 1091, .distance = 33.386f}, {.id = 1053, .distance = 37.853f}, {.id = 1089, .distance = 46.778f}
+        }},
+        {1070, {
+            {.id = 1092, .distance = 29.653f}, {.id = 1054, .distance = 30.978f}, {.id = 1071, .distance = 32.852f}, {.id = 1069, .distance = 33.324f}, {.id = 1091, .distance = 35.446f}, {.id = 1055, .distance = 42.934f}, {.id = 1093, .distance = 44.581f}
+        }},
+        {1071, {
+            {.id = 1093, .distance = 28.776f}, {.id = 1055, .distance = 29.314f}, {.id = 1056, .distance = 32.088f}, {.id = 1070, .distance = 32.852f}, {.id = 1072, .distance = 36.954f}, {.id = 1092, .distance = 42.498f}, {.id = 1054, .distance = 47.075f}
+        }},
+        {1072, {
+            {.id = 1094, .distance = 23.617f}, {.id = 1093, .distance = 31.442f}, {.id = 1056, .distance = 31.964f}, {.id = 1073, .distance = 32.703f}, {.id = 1071, .distance = 36.954f}, {.id = 1141, .distance = 41.259f}, {.id = 1143, .distance = 45.103f}
+        }},
+        {1073, {
+            {.id = 1056, .distance = 31.937f}, {.id = 1072, .distance = 32.703f}, {.id = 1074, .distance = 32.725f}, {.id = 1095, .distance = 36.068f}, {.id = 1057, .distance = 37.491f}, {.id = 1096, .distance = 39.068f}, {.id = 1094, .distance = 41.895f}
+        }},
+        {1074, {
+            {.id = 1057, .distance = 29.419f}, {.id = 1075, .distance = 30.638f}, {.id = 1073, .distance = 32.725f}, {.id = 1096, .distance = 35.794f}, {.id = 1097, .distance = 36.665f}, {.id = 1058, .distance = 44.568f}, {.id = 1098, .distance = 46.412f}
+        }},
+        {1075, {
+            {.id = 1098, .distance = 24.191f}, {.id = 1058, .distance = 29.848f}, {.id = 1074, .distance = 30.638f}, {.id = 1076, .distance = 31.516f}, {.id = 1057, .distance = 41.947f}, {.id = 1099, .distance = 44.167f}, {.id = 1097, .distance = 44.460f}
+        }},
+        {1076, {
+            {.id = 1103, .distance = 27.519f}, {.id = 1075, .distance = 31.516f}, {.id = 1077, .distance = 33.096f}, {.id = 1059, .distance = 33.457f}, {.id = 1058, .distance = 35.426f}, {.id = 1100, .distance = 35.506f}, {.id = 1098, .distance = 36.051f}
+        }},
+        {1077, {
+            {.id = 1059, .distance = 30.775f}, {.id = 1078, .distance = 30.943f}, {.id = 1103, .distance = 31.347f}, {.id = 1076, .distance = 33.096f}, {.id = 1105, .distance = 37.393f}, {.id = 1060, .distance = 38.606f}, {.id = 1104, .distance = 45.102f}
+        }},
+        {1078, {
+            {.id = 1060, .distance = 28.126f}, {.id = 1077, .distance = 30.943f}, {.id = 1079, .distance = 32.322f}, {.id = 1106, .distance = 33.115f}, {.id = 1105, .distance = 43.474f}, {.id = 1107, .distance = 44.048f}, {.id = 1059, .distance = 47.195f}
+        }},
+        {1079, {
+            {.id = 1109, .distance = 30.540f}, {.id = 1061, .distance = 30.745f}, {.id = 1078, .distance = 32.322f}, {.id = 1080, .distance = 32.441f}, {.id = 1107, .distance = 37.153f}, {.id = 1060, .distance = 40.686f}, {.id = 1108, .distance = 45.279f}
+        }},
+        {1080, {
+            {.id = 1109, .distance = 27.373f}, {.id = 1081, .distance = 31.563f}, {.id = 1079, .distance = 32.441f}, {.id = 1061, .distance = 33.990f}, {.id = 1111, .distance = 35.618f}, {.id = 1062, .distance = 35.628f}, {.id = 1113, .distance = 36.566f}
+        }},
+        {1081, {
+            {.id = 1113, .distance = 24.293f}, {.id = 1062, .distance = 30.088f}, {.id = 1080, .distance = 31.563f}, {.id = 1082, .distance = 31.793f}, {.id = 1063, .distance = 42.067f}, {.id = 1114, .distance = 43.775f}, {.id = 1115, .distance = 43.787f}
+        }},
+        {1082, {
+            {.id = 1063, .distance = 28.726f}, {.id = 1083, .distance = 31.427f}, {.id = 1081, .distance = 31.793f}, {.id = 1116, .distance = 35.922f}, {.id = 1115, .distance = 37.333f}, {.id = 1062, .distance = 44.864f}, {.id = 1113, .distance = 47.704f}
+        }},
+        {1083, {
+            {.id = 1082, .distance = 31.427f}, {.id = 1064, .distance = 31.889f}, {.id = 1084, .distance = 32.342f}, {.id = 1117, .distance = 35.562f}, {.id = 1063, .distance = 37.444f}, {.id = 1116, .distance = 39.243f}, {.id = 1119, .distance = 41.982f}
+        }},
+        {1084, {
+            {.id = 1119, .distance = 23.803f}, {.id = 1085, .distance = 31.693f}, {.id = 1083, .distance = 32.342f}, {.id = 1064, .distance = 32.458f}, {.id = 1065, .distance = 36.707f}, {.id = 1121, .distance = 41.333f}, {.id = 1118, .distance = 44.974f}
+        }},
+        {1085, {
+            {.id = 1123, .distance = 24.410f}, {.id = 1065, .distance = 28.557f}, {.id = 1084, .distance = 31.693f}, {.id = 1086, .distance = 32.138f}, {.id = 1121, .distance = 38.124f}, {.id = 1119, .distance = 43.096f}, {.id = 1066, .distance = 45.069f}
+        }},
+        {1086, {
+            {.id = 1066, .distance = 29.283f}, {.id = 1087, .distance = 31.589f}, {.id = 1085, .distance = 32.138f}, {.id = 1125, .distance = 36.174f}, {.id = 1123, .distance = 36.927f}, {.id = 1065, .distance = 42.276f}, {.id = 1126, .distance = 43.787f}
+        }},
+        {1087, {
+            {.id = 1086, .distance = 31.589f}, {.id = 1088, .distance = 32.185f}, {.id = 1126, .distance = 33.528f}, {.id = 1067, .distance = 33.774f}, {.id = 1066, .distance = 35.383f}, {.id = 1127, .distance = 39.292f}, {.id = 1125, .distance = 48.151f}
+        }},
+        {1088, {
+            {.id = 1129, .distance = 26.800f}, {.id = 1067, .distance = 30.492f}, {.id = 1089, .distance = 31.085f}, {.id = 1087, .distance = 32.185f}, {.id = 1068, .distance = 39.658f}, {.id = 1127, .distance = 40.843f}, {.id = 1128, .distance = 44.297f}
+        }},
+        {1089, {
+            {.id = 1068, .distance = 28.796f}, {.id = 1088, .distance = 31.085f}, {.id = 1129, .distance = 31.165f}, {.id = 1090, .distance = 31.748f}, {.id = 1133, .distance = 32.025f}, {.id = 1131, .distance = 35.484f}, {.id = 1069, .distance = 46.778f}
+        }},
+        {1090, {
+            {.id = 1133, .distance = 26.974f}, {.id = 1069, .distance = 30.076f}, {.id = 1091, .distance = 31.574f}, {.id = 1089, .distance = 31.748f}, {.id = 1068, .distance = 39.130f}, {.id = 1135, .distance = 40.759f}, {.id = 1134, .distance = 44.255f}
+        }},
+        {1091, {
+            {.id = 1090, .distance = 31.574f}, {.id = 1092, .distance = 32.495f}, {.id = 1069, .distance = 33.386f}, {.id = 1136, .distance = 34.006f}, {.id = 1070, .distance = 35.446f}, {.id = 1135, .distance = 40.058f}, {.id = 1137, .distance = 48.765f}
+        }},
+        {1092, {
+            {.id = 1070, .distance = 29.653f}, {.id = 1093, .distance = 31.761f}, {.id = 1091, .distance = 32.495f}, {.id = 1137, .distance = 35.652f}, {.id = 1139, .distance = 35.973f}, {.id = 1071, .distance = 42.498f}, {.id = 1136, .distance = 43.930f}
+        }},
+        {1093, {
+            {.id = 1139, .distance = 24.656f}, {.id = 1071, .distance = 28.776f}, {.id = 1072, .distance = 31.442f}, {.id = 1092, .distance = 31.761f}, {.id = 1141, .distance = 38.273f}, {.id = 1094, .distance = 43.129f}, {.id = 1070, .distance = 44.581f}
+        }},
+        {1094, {
+            {.id = 1143, .distance = 22.863f}, {.id = 1072, .distance = 23.617f}, {.id = 1141, .distance = 27.856f}, {.id = 1142, .distance = 35.561f}, {.id = 1095, .distance = 37.917f}, {.id = 1073, .distance = 41.895f}, {.id = 1093, .distance = 43.129f}
+        }},
+        {1095, {
+            {.id = 1143, .distance = 28.096f}, {.id = 1096, .distance = 29.153f}, {.id = 701, .distance = 29.303f}, {.id = 1073, .distance = 36.068f}, {.id = 1094, .distance = 37.917f}, {.id = 700, .distance = 40.708f}, {.id = 702, .distance = 41.405f}
+        }},
+        {1096, {
+            {.id = 1097, .distance = 28.265f}, {.id = 1095, .distance = 29.153f}, {.id = 700, .distance = 29.697f}, {.id = 1074, .distance = 35.794f}, {.id = 1073, .distance = 39.068f}, {.id = 699, .distance = 40.854f}, {.id = 701, .distance = 41.887f}
+        }},
+        {1097, {
+            {.id = 1096, .distance = 28.265f}, {.id = 1099, .distance = 28.989f}, {.id = 699, .distance = 29.349f}, {.id = 1074, .distance = 36.665f}, {.id = 1098, .distance = 38.712f}, {.id = 698, .distance = 40.741f}, {.id = 700, .distance = 41.218f}
+        }},
+        {1098, {
+            {.id = 1099, .distance = 23.607f}, {.id = 1075, .distance = 24.191f}, {.id = 1100, .distance = 27.455f}, {.id = 1101, .distance = 35.536f}, {.id = 1076, .distance = 36.051f}, {.id = 1097, .distance = 38.712f}, {.id = 1074, .distance = 46.412f}
+        }},
+        {1099, {
+            {.id = 1098, .distance = 23.607f}, {.id = 1101, .distance = 28.500f}, {.id = 1097, .distance = 28.989f}, {.id = 698, .distance = 29.313f}, {.id = 1100, .distance = 38.998f}, {.id = 696, .distance = 40.245f}, {.id = 699, .distance = 41.506f}
+        }},
+        {1100, {
+            {.id = 1101, .distance = 25.823f}, {.id = 1102, .distance = 26.007f}, {.id = 1103, .distance = 27.304f}, {.id = 1098, .distance = 27.455f}, {.id = 1076, .distance = 35.506f}, {.id = 1099, .distance = 38.998f}, {.id = 1104, .distance = 39.242f}
+        }},
+        {1101, {
+            {.id = 1100, .distance = 25.823f}, {.id = 1099, .distance = 28.500f}, {.id = 696, .distance = 29.551f}, {.id = 1102, .distance = 30.900f}, {.id = 1098, .distance = 35.536f}, {.id = 698, .distance = 41.458f}, {.id = 694, .distance = 51.969f}
+        }},
+        {1102, {
+            {.id = 1100, .distance = 26.007f}, {.id = 1244, .distance = 29.050f}, {.id = 1104, .distance = 29.614f}, {.id = 1101, .distance = 30.900f}, {.id = 1103, .distance = 35.963f}, {.id = 1242, .distance = 41.538f}, {.id = 1246, .distance = 51.839f}
+        }},
+        {1103, {
+            {.id = 1104, .distance = 23.404f}, {.id = 1100, .distance = 27.304f}, {.id = 1076, .distance = 27.519f}, {.id = 1077, .distance = 31.347f}, {.id = 1102, .distance = 35.963f}, {.id = 1105, .distance = 38.924f}, {.id = 1098, .distance = 47.034f}
+        }},
+        {1104, {
+            {.id = 1103, .distance = 23.404f}, {.id = 1105, .distance = 28.584f}, {.id = 1102, .distance = 29.614f}, {.id = 1242, .distance = 29.699f}, {.id = 1100, .distance = 39.242f}, {.id = 1241, .distance = 41.093f}, {.id = 1244, .distance = 41.569f}
+        }},
+        {1105, {
+            {.id = 1106, .distance = 28.069f}, {.id = 1104, .distance = 28.584f}, {.id = 1241, .distance = 29.681f}, {.id = 1077, .distance = 37.393f}, {.id = 1103, .distance = 38.924f}, {.id = 1240, .distance = 41.139f}, {.id = 1242, .distance = 41.301f}
+        }},
+        {1106, {
+            {.id = 1105, .distance = 28.069f}, {.id = 1107, .distance = 28.840f}, {.id = 1240, .distance = 29.791f}, {.id = 1078, .distance = 33.115f}, {.id = 1241, .distance = 41.276f}, {.id = 1239, .distance = 41.688f}, {.id = 1077, .distance = 48.228f}
+        }},
+        {1107, {
+            {.id = 1106, .distance = 28.840f}, {.id = 1108, .distance = 29.098f}, {.id = 1239, .distance = 29.681f}, {.id = 1079, .distance = 37.153f}, {.id = 1109, .distance = 38.371f}, {.id = 1240, .distance = 41.088f}, {.id = 1238, .distance = 41.797f}
+        }},
+        {1108, {
+            {.id = 1109, .distance = 23.468f}, {.id = 1110, .distance = 28.067f}, {.id = 1107, .distance = 29.098f}, {.id = 1238, .distance = 29.876f}, {.id = 1111, .distance = 37.859f}, {.id = 1236, .distance = 41.018f}, {.id = 1239, .distance = 41.259f}
+        }},
+        {1109, {
+            {.id = 1108, .distance = 23.468f}, {.id = 1111, .distance = 26.995f}, {.id = 1080, .distance = 27.373f}, {.id = 1079, .distance = 30.540f}, {.id = 1110, .distance = 35.584f}, {.id = 1107, .distance = 38.371f}, {.id = 1113, .distance = 47.445f}
+        }},
+        {1110, {
+            {.id = 1111, .distance = 25.235f}, {.id = 1108, .distance = 28.067f}, {.id = 1236, .distance = 29.688f}, {.id = 1112, .distance = 31.314f}, {.id = 1109, .distance = 35.584f}, {.id = 1238, .distance = 40.900f}, {.id = 997, .distance = 51.969f}
+        }},
+        {1111, {
+            {.id = 1110, .distance = 25.235f}, {.id = 1112, .distance = 25.959f}, {.id = 1109, .distance = 26.995f}, {.id = 1113, .distance = 28.280f}, {.id = 1080, .distance = 35.618f}, {.id = 1108, .distance = 37.859f}, {.id = 1114, .distance = 39.348f}
+        }},
+        {1112, {
+            {.id = 1111, .distance = 25.959f}, {.id = 1114, .distance = 28.175f}, {.id = 997, .distance = 29.551f}, {.id = 1110, .distance = 31.314f}, {.id = 1113, .distance = 35.099f}, {.id = 995, .distance = 40.245f}, {.id = 1109, .distance = 52.245f}
+        }},
+        {1113, {
+            {.id = 1114, .distance = 22.858f}, {.id = 1081, .distance = 24.293f}, {.id = 1111, .distance = 28.280f}, {.id = 1112, .distance = 35.099f}, {.id = 1080, .distance = 36.566f}, {.id = 1115, .distance = 37.718f}, {.id = 1109, .distance = 47.445f}
+        }},
+        {1114, {
+            {.id = 1113, .distance = 22.858f}, {.id = 1112, .distance = 28.175f}, {.id = 1115, .distance = 28.665f}, {.id = 995, .distance = 29.313f}, {.id = 1111, .distance = 39.348f}, {.id = 993, .distance = 40.741f}, {.id = 997, .distance = 41.458f}
+        }},
+        {1115, {
+            {.id = 1114, .distance = 28.665f}, {.id = 1116, .distance = 28.744f}, {.id = 993, .distance = 29.349f}, {.id = 1082, .distance = 37.333f}, {.id = 1113, .distance = 37.718f}, {.id = 992, .distance = 40.854f}, {.id = 995, .distance = 41.506f}
+        }},
+        {1116, {
+            {.id = 1117, .distance = 28.665f}, {.id = 1115, .distance = 28.744f}, {.id = 992, .distance = 29.697f}, {.id = 1082, .distance = 35.922f}, {.id = 1083, .distance = 39.243f}, {.id = 991, .distance = 40.708f}, {.id = 993, .distance = 41.218f}
+        }},
+        {1117, {
+            {.id = 1116, .distance = 28.665f}, {.id = 1118, .distance = 28.989f}, {.id = 991, .distance = 29.303f}, {.id = 1083, .distance = 35.562f}, {.id = 1119, .distance = 37.946f}, {.id = 1039, .distance = 40.502f}, {.id = 992, .distance = 41.887f}
+        }},
+        {1118, {
+            {.id = 1119, .distance = 22.522f}, {.id = 1117, .distance = 28.989f}, {.id = 1120, .distance = 28.989f}, {.id = 1039, .distance = 29.448f}, {.id = 1121, .distance = 38.748f}, {.id = 1038, .distance = 40.870f}, {.id = 991, .distance = 41.405f}
+        }},
+        {1119, {
+            {.id = 1118, .distance = 22.522f}, {.id = 1084, .distance = 23.803f}, {.id = 1121, .distance = 27.573f}, {.id = 1120, .distance = 35.430f}, {.id = 1117, .distance = 37.946f}, {.id = 1083, .distance = 41.982f}, {.id = 1085, .distance = 43.096f}
+        }},
+        {1120, {
+            {.id = 1121, .distance = 25.732f}, {.id = 1118, .distance = 28.989f}, {.id = 1038, .distance = 29.475f}, {.id = 1122, .distance = 30.699f}, {.id = 1119, .distance = 35.430f}, {.id = 1039, .distance = 42.128f}, {.id = 392, .distance = 49.900f}
+        }},
+        {1121, {
+            {.id = 1122, .distance = 25.715f}, {.id = 1120, .distance = 25.732f}, {.id = 1123, .distance = 27.009f}, {.id = 1119, .distance = 27.573f}, {.id = 1085, .distance = 38.124f}, {.id = 1118, .distance = 38.748f}, {.id = 1124, .distance = 38.795f}
+        }},
+        {1122, {
+            {.id = 1121, .distance = 25.715f}, {.id = 392, .distance = 27.473f}, {.id = 1124, .distance = 28.587f}, {.id = 1120, .distance = 30.699f}, {.id = 1123, .distance = 35.180f}, {.id = 390, .distance = 39.435f}, {.id = 394, .distance = 50.891f}
+        }},
+        {1123, {
+            {.id = 1124, .distance = 23.318f}, {.id = 1085, .distance = 24.410f}, {.id = 1121, .distance = 27.009f}, {.id = 1122, .distance = 35.180f}, {.id = 1086, .distance = 36.927f}, {.id = 1125, .distance = 38.625f}, {.id = 1119, .distance = 47.229f}
+        }},
+        {1124, {
+            {.id = 1123, .distance = 23.318f}, {.id = 390, .distance = 27.583f}, {.id = 1122, .distance = 28.587f}, {.id = 1125, .distance = 28.648f}, {.id = 1121, .distance = 38.795f}, {.id = 389, .distance = 39.805f}, {.id = 392, .distance = 40.223f}
+        }},
+        {1125, {
+            {.id = 389, .distance = 27.628f}, {.id = 1124, .distance = 28.648f}, {.id = 1126, .distance = 28.678f}, {.id = 1086, .distance = 36.174f}, {.id = 1123, .distance = 38.625f}, {.id = 388, .distance = 39.752f}, {.id = 390, .distance = 40.007f}
+        }},
+        {1126, {
+            {.id = 388, .distance = 27.498f}, {.id = 1127, .distance = 28.019f}, {.id = 1125, .distance = 28.678f}, {.id = 1087, .distance = 33.528f}, {.id = 389, .distance = 39.790f}, {.id = 387, .distance = 39.855f}, {.id = 1086, .distance = 43.787f}
+        }},
+        {1127, {
+            {.id = 387, .distance = 27.613f}, {.id = 1126, .distance = 28.019f}, {.id = 1128, .distance = 29.666f}, {.id = 1129, .distance = 39.143f}, {.id = 388, .distance = 39.255f}, {.id = 1087, .distance = 39.292f}, {.id = 386, .distance = 40.252f}
+        }},
+        {1128, {
+            {.id = 1129, .distance = 23.574f}, {.id = 386, .distance = 27.436f}, {.id = 1130, .distance = 28.796f}, {.id = 1127, .distance = 29.666f}, {.id = 1131, .distance = 38.536f}, {.id = 384, .distance = 39.154f}, {.id = 387, .distance = 39.947f}
+        }},
+        {1129, {
+            {.id = 1128, .distance = 23.574f}, {.id = 1088, .distance = 26.800f}, {.id = 1131, .distance = 27.295f}, {.id = 1089, .distance = 31.165f}, {.id = 1130, .distance = 35.726f}, {.id = 1127, .distance = 39.143f}, {.id = 1133, .distance = 46.866f}
+        }},
+        {1130, {
+            {.id = 1131, .distance = 25.236f}, {.id = 384, .distance = 27.690f}, {.id = 1128, .distance = 28.796f}, {.id = 1132, .distance = 30.642f}, {.id = 1129, .distance = 35.726f}, {.id = 386, .distance = 40.114f}, {.id = 382, .distance = 50.621f}
+        }},
+        {1131, {
+            {.id = 1130, .distance = 25.236f}, {.id = 1132, .distance = 25.701f}, {.id = 1129, .distance = 27.295f}, {.id = 1133, .distance = 27.601f}, {.id = 1089, .distance = 35.484f}, {.id = 1128, .distance = 38.536f}, {.id = 1134, .distance = 38.536f}
+        }},
+        {1132, {
+            {.id = 1131, .distance = 25.701f}, {.id = 1134, .distance = 28.171f}, {.id = 506, .distance = 28.551f}, {.id = 1130, .distance = 30.642f}, {.id = 1133, .distance = 35.416f}, {.id = 504, .distance = 41.429f}, {.id = 508, .distance = 50.454f}
+        }},
+        {1133, {
+            {.id = 1134, .distance = 23.046f}, {.id = 1090, .distance = 26.974f}, {.id = 1131, .distance = 27.601f}, {.id = 1089, .distance = 32.025f}, {.id = 1132, .distance = 35.416f}, {.id = 1135, .distance = 38.124f}, {.id = 1129, .distance = 46.866f}
+        }},
+        {1134, {
+            {.id = 1133, .distance = 23.046f}, {.id = 1132, .distance = 28.171f}, {.id = 504, .distance = 28.586f}, {.id = 1135, .distance = 28.796f}, {.id = 1131, .distance = 38.536f}, {.id = 506, .distance = 39.222f}, {.id = 503, .distance = 42.712f}
+        }},
+        {1135, {
+            {.id = 503, .distance = 28.538f}, {.id = 1136, .distance = 28.739f}, {.id = 1134, .distance = 28.796f}, {.id = 1133, .distance = 38.124f}, {.id = 504, .distance = 38.933f}, {.id = 1091, .distance = 40.058f}, {.id = 1090, .distance = 40.759f}
+        }},
+        {1136, {
+            {.id = 502, .distance = 28.593f}, {.id = 1135, .distance = 28.739f}, {.id = 1137, .distance = 28.996f}, {.id = 1091, .distance = 34.006f}, {.id = 503, .distance = 38.440f}, {.id = 501, .distance = 42.065f}, {.id = 1092, .distance = 43.930f}
+        }},
+        {1137, {
+            {.id = 1138, .distance = 28.539f}, {.id = 501, .distance = 28.720f}, {.id = 1136, .distance = 28.996f}, {.id = 1092, .distance = 35.652f}, {.id = 1139, .distance = 38.072f}, {.id = 502, .distance = 39.193f}, {.id = 500, .distance = 41.888f}
+        }},
+        {1138, {
+            {.id = 1139, .distance = 23.229f}, {.id = 500, .distance = 28.526f}, {.id = 1137, .distance = 28.539f}, {.id = 1140, .distance = 29.175f}, {.id = 1141, .distance = 38.795f}, {.id = 501, .distance = 38.975f}, {.id = 498, .distance = 41.739f}
+        }},
+        {1139, {
+            {.id = 1138, .distance = 23.229f}, {.id = 1093, .distance = 24.656f}, {.id = 1141, .distance = 27.373f}, {.id = 1092, .distance = 35.973f}, {.id = 1140, .distance = 36.131f}, {.id = 1137, .distance = 38.072f}, {.id = 1094, .distance = 47.750f}
+        }},
+        {1140, {
+            {.id = 1141, .distance = 26.133f}, {.id = 498, .distance = 27.990f}, {.id = 1138, .distance = 29.175f}, {.id = 1142, .distance = 30.723f}, {.id = 1139, .distance = 36.131f}, {.id = 500, .distance = 39.023f}, {.id = 496, .distance = 51.341f}
+        }},
+        {1141, {
+            {.id = 1142, .distance = 25.813f}, {.id = 1140, .distance = 26.133f}, {.id = 1139, .distance = 27.373f}, {.id = 1094, .distance = 27.856f}, {.id = 1093, .distance = 38.273f}, {.id = 1138, .distance = 38.795f}, {.id = 1143, .distance = 39.458f}
+        }},
+        {1142, {
+            {.id = 1141, .distance = 25.813f}, {.id = 704, .distance = 29.475f}, {.id = 1143, .distance = 29.479f}, {.id = 1140, .distance = 30.723f}, {.id = 1094, .distance = 35.561f}, {.id = 702, .distance = 40.870f}, {.id = 498, .distance = 50.403f}
+        }},
+        {1143, {
+            {.id = 1094, .distance = 22.863f}, {.id = 1095, .distance = 28.096f}, {.id = 702, .distance = 29.448f}, {.id = 1142, .distance = 29.479f}, {.id = 1141, .distance = 39.458f}, {.id = 701, .distance = 40.502f}, {.id = 704, .distance = 42.128f}
+        }},
+        {1144, {
+            {.id = 1145, .distance = 25.256f}, {.id = 1147, .distance = 25.653f}, {.id = 1146, .distance = 25.660f}, {.id = 1149, .distance = 26.237f}, {.id = 1148, .distance = 26.780f}, {.id = 1151, .distance = 53.251f}, {.id = 1155, .distance = 53.584f}
+        }},
+        {1145, {
+            {.id = 1144, .distance = 25.256f}, {.id = 1151, .distance = 27.996f}, {.id = 1149, .distance = 30.406f}, {.id = 1146, .distance = 30.746f}, {.id = 1152, .distance = 36.902f}, {.id = 1150, .distance = 36.902f}, {.id = 1147, .distance = 48.670f}
+        }},
+        {1146, {
+            {.id = 1144, .distance = 25.660f}, {.id = 1153, .distance = 28.138f}, {.id = 1147, .distance = 30.016f}, {.id = 1145, .distance = 30.746f}, {.id = 1154, .distance = 35.779f}, {.id = 1152, .distance = 37.730f}, {.id = 1148, .distance = 49.623f}
+        }},
+        {1147, {
+            {.id = 1144, .distance = 25.653f}, {.id = 1155, .distance = 27.950f}, {.id = 1146, .distance = 30.016f}, {.id = 1148, .distance = 30.334f}, {.id = 1156, .distance = 36.663f}, {.id = 1154, .distance = 36.917f}, {.id = 1145, .distance = 48.670f}
+        }},
+        {1148, {
+            {.id = 1144, .distance = 26.780f}, {.id = 1157, .distance = 28.148f}, {.id = 1147, .distance = 30.334f}, {.id = 1149, .distance = 30.829f}, {.id = 1156, .distance = 36.041f}, {.id = 1158, .distance = 36.581f}, {.id = 1145, .distance = 49.415f}
+        }},
+        {1149, {
+            {.id = 1144, .distance = 26.237f}, {.id = 1159, .distance = 28.784f}, {.id = 1145, .distance = 30.406f}, {.id = 1148, .distance = 30.829f}, {.id = 1150, .distance = 36.136f}, {.id = 1158, .distance = 36.663f}, {.id = 1147, .distance = 49.028f}
+        }},
+        {1150, {
+            {.id = 1161, .distance = 29.943f}, {.id = 1159, .distance = 32.709f}, {.id = 1151, .distance = 33.241f}, {.id = 1160, .distance = 35.999f}, {.id = 1149, .distance = 36.136f}, {.id = 1145, .distance = 36.902f}, {.id = 1162, .distance = 43.146f}
+        }},
+        {1151, {
+            {.id = 1145, .distance = 27.996f}, {.id = 1162, .distance = 31.091f}, {.id = 1150, .distance = 33.241f}, {.id = 1152, .distance = 33.489f}, {.id = 1163, .distance = 33.997f}, {.id = 1161, .distance = 46.465f}, {.id = 1164, .distance = 50.872f}
+        }},
+        {1152, {
+            {.id = 1164, .distance = 28.795f}, {.id = 1151, .distance = 33.489f}, {.id = 1153, .distance = 34.526f}, {.id = 1145, .distance = 36.902f}, {.id = 1146, .distance = 37.730f}, {.id = 1163, .distance = 39.001f}, {.id = 1165, .distance = 39.043f}
+        }},
+        {1153, {
+            {.id = 1146, .distance = 28.138f}, {.id = 1166, .distance = 30.119f}, {.id = 1154, .distance = 32.862f}, {.id = 1165, .distance = 33.326f}, {.id = 1152, .distance = 34.526f}, {.id = 1167, .distance = 46.032f}, {.id = 1164, .distance = 51.953f}
+        }},
+        {1154, {
+            {.id = 1167, .distance = 29.271f}, {.id = 1153, .distance = 32.862f}, {.id = 1155, .distance = 32.910f}, {.id = 1168, .distance = 35.475f}, {.id = 1146, .distance = 35.779f}, {.id = 1147, .distance = 36.917f}, {.id = 1166, .distance = 42.036f}
+        }},
+        {1155, {
+            {.id = 1147, .distance = 27.950f}, {.id = 1169, .distance = 30.515f}, {.id = 1154, .distance = 32.910f}, {.id = 1156, .distance = 34.288f}, {.id = 1168, .distance = 35.680f}, {.id = 1170, .distance = 43.747f}, {.id = 1146, .distance = 50.881f}
+        }},
+        {1156, {
+            {.id = 1170, .distance = 30.713f}, {.id = 1171, .distance = 32.961f}, {.id = 1155, .distance = 34.288f}, {.id = 1157, .distance = 34.333f}, {.id = 1148, .distance = 36.041f}, {.id = 1147, .distance = 36.663f}, {.id = 1169, .distance = 47.436f}
+        }},
+        {1157, {
+            {.id = 1148, .distance = 28.148f}, {.id = 1172, .distance = 28.795f}, {.id = 1158, .distance = 32.474f}, {.id = 1156, .distance = 34.333f}, {.id = 1173, .distance = 37.853f}, {.id = 1171, .distance = 39.529f}, {.id = 1149, .distance = 52.029f}
+        }},
+        {1158, {
+            {.id = 1174, .distance = 30.978f}, {.id = 1157, .distance = 32.474f}, {.id = 1173, .distance = 33.378f}, {.id = 1159, .distance = 34.135f}, {.id = 1148, .distance = 36.581f}, {.id = 1149, .distance = 36.663f}, {.id = 1175, .distance = 47.075f}
+        }},
+        {1159, {
+            {.id = 1149, .distance = 28.784f}, {.id = 1175, .distance = 29.314f}, {.id = 1150, .distance = 32.709f}, {.id = 1158, .distance = 34.135f}, {.id = 1160, .distance = 35.428f}, {.id = 1174, .distance = 42.934f}, {.id = 1145, .distance = 52.730f}
+        }},
+        {1160, {
+            {.id = 1177, .distance = 31.937f}, {.id = 1176, .distance = 31.964f}, {.id = 1175, .distance = 32.088f}, {.id = 1161, .distance = 32.704f}, {.id = 1159, .distance = 35.428f}, {.id = 1150, .distance = 35.999f}, {.id = 1197, .distance = 49.921f}
+        }},
+        {1161, {
+            {.id = 1178, .distance = 29.419f}, {.id = 1150, .distance = 29.943f}, {.id = 1162, .distance = 32.468f}, {.id = 1160, .distance = 32.704f}, {.id = 1177, .distance = 37.491f}, {.id = 1179, .distance = 41.947f}, {.id = 1151, .distance = 46.465f}
+        }},
+        {1162, {
+            {.id = 1179, .distance = 29.848f}, {.id = 1151, .distance = 31.091f}, {.id = 1163, .distance = 31.917f}, {.id = 1161, .distance = 32.468f}, {.id = 1180, .distance = 35.426f}, {.id = 1150, .distance = 43.146f}, {.id = 1178, .distance = 44.568f}
+        }},
+        {1163, {
+            {.id = 1181, .distance = 30.775f}, {.id = 1162, .distance = 31.917f}, {.id = 1164, .distance = 32.089f}, {.id = 1180, .distance = 33.457f}, {.id = 1151, .distance = 33.997f}, {.id = 1152, .distance = 39.001f}, {.id = 1182, .distance = 47.195f}
+        }},
+        {1164, {
+            {.id = 1182, .distance = 28.126f}, {.id = 1152, .distance = 28.795f}, {.id = 1163, .distance = 32.089f}, {.id = 1165, .distance = 33.350f}, {.id = 1181, .distance = 38.606f}, {.id = 1183, .distance = 40.686f}, {.id = 1151, .distance = 50.872f}
+        }},
+        {1165, {
+            {.id = 1183, .distance = 30.745f}, {.id = 1166, .distance = 32.585f}, {.id = 1153, .distance = 33.326f}, {.id = 1164, .distance = 33.350f}, {.id = 1184, .distance = 33.990f}, {.id = 1152, .distance = 39.043f}, {.id = 1182, .distance = 47.230f}
+        }},
+        {1166, {
+            {.id = 1185, .distance = 30.088f}, {.id = 1153, .distance = 30.119f}, {.id = 1167, .distance = 32.298f}, {.id = 1165, .distance = 32.585f}, {.id = 1184, .distance = 35.628f}, {.id = 1154, .distance = 42.036f}, {.id = 1186, .distance = 44.864f}
+        }},
+        {1167, {
+            {.id = 1186, .distance = 28.726f}, {.id = 1154, .distance = 29.271f}, {.id = 1168, .distance = 31.916f}, {.id = 1166, .distance = 32.298f}, {.id = 1187, .distance = 37.444f}, {.id = 1185, .distance = 42.067f}, {.id = 1153, .distance = 46.032f}
+        }},
+        {1168, {
+            {.id = 1187, .distance = 31.889f}, {.id = 1167, .distance = 31.916f}, {.id = 1188, .distance = 32.458f}, {.id = 1169, .distance = 32.605f}, {.id = 1154, .distance = 35.475f}, {.id = 1155, .distance = 35.680f}, {.id = 1186, .distance = 49.358f}
+        }},
+        {1169, {
+            {.id = 1189, .distance = 28.557f}, {.id = 1155, .distance = 30.515f}, {.id = 1168, .distance = 32.605f}, {.id = 1170, .distance = 33.386f}, {.id = 1188, .distance = 36.707f}, {.id = 1190, .distance = 42.276f}, {.id = 1156, .distance = 47.436f}
+        }},
+        {1170, {
+            {.id = 1190, .distance = 29.283f}, {.id = 1156, .distance = 30.713f}, {.id = 1171, .distance = 32.395f}, {.id = 1169, .distance = 33.386f}, {.id = 1191, .distance = 35.383f}, {.id = 1155, .distance = 43.747f}, {.id = 1189, .distance = 45.069f}
+        }},
+        {1171, {
+            {.id = 1192, .distance = 30.492f}, {.id = 1170, .distance = 32.395f}, {.id = 1172, .distance = 32.492f}, {.id = 1156, .distance = 32.961f}, {.id = 1191, .distance = 33.774f}, {.id = 1157, .distance = 39.529f}, {.id = 1193, .distance = 46.947f}
+        }},
+        {1172, {
+            {.id = 1157, .distance = 28.795f}, {.id = 1193, .distance = 28.796f}, {.id = 1173, .distance = 31.301f}, {.id = 1171, .distance = 32.492f}, {.id = 1194, .distance = 39.130f}, {.id = 1192, .distance = 39.658f}, {.id = 1158, .distance = 50.236f}
+        }},
+        {1173, {
+            {.id = 1194, .distance = 30.076f}, {.id = 1172, .distance = 31.301f}, {.id = 1174, .distance = 33.324f}, {.id = 1158, .distance = 33.378f}, {.id = 1195, .distance = 33.386f}, {.id = 1157, .distance = 37.853f}, {.id = 1193, .distance = 46.778f}
+        }},
+        {1174, {
+            {.id = 1196, .distance = 29.653f}, {.id = 1158, .distance = 30.978f}, {.id = 1175, .distance = 32.852f}, {.id = 1173, .distance = 33.324f}, {.id = 1195, .distance = 35.446f}, {.id = 1159, .distance = 42.934f}, {.id = 1197, .distance = 44.581f}
+        }},
+        {1175, {
+            {.id = 1197, .distance = 28.776f}, {.id = 1159, .distance = 29.314f}, {.id = 1160, .distance = 32.088f}, {.id = 1174, .distance = 32.852f}, {.id = 1176, .distance = 36.954f}, {.id = 1196, .distance = 42.498f}, {.id = 1158, .distance = 47.075f}
+        }},
+        {1176, {
+            {.id = 1198, .distance = 23.617f}, {.id = 1197, .distance = 31.442f}, {.id = 1160, .distance = 31.964f}, {.id = 1177, .distance = 32.703f}, {.id = 1175, .distance = 36.954f}, {.id = 1245, .distance = 41.259f}, {.id = 1247, .distance = 45.103f}
+        }},
+        {1177, {
+            {.id = 1160, .distance = 31.937f}, {.id = 1176, .distance = 32.703f}, {.id = 1178, .distance = 32.725f}, {.id = 1199, .distance = 36.068f}, {.id = 1161, .distance = 37.491f}, {.id = 1200, .distance = 39.068f}, {.id = 1198, .distance = 41.895f}
+        }},
+        {1178, {
+            {.id = 1161, .distance = 29.419f}, {.id = 1179, .distance = 30.638f}, {.id = 1177, .distance = 32.725f}, {.id = 1200, .distance = 35.794f}, {.id = 1201, .distance = 36.665f}, {.id = 1162, .distance = 44.568f}, {.id = 1202, .distance = 46.412f}
+        }},
+        {1179, {
+            {.id = 1202, .distance = 24.191f}, {.id = 1162, .distance = 29.848f}, {.id = 1178, .distance = 30.638f}, {.id = 1180, .distance = 31.516f}, {.id = 1161, .distance = 41.947f}, {.id = 1203, .distance = 44.167f}, {.id = 1201, .distance = 44.460f}
+        }},
+        {1180, {
+            {.id = 1207, .distance = 27.519f}, {.id = 1179, .distance = 31.516f}, {.id = 1181, .distance = 33.096f}, {.id = 1163, .distance = 33.457f}, {.id = 1162, .distance = 35.426f}, {.id = 1204, .distance = 35.506f}, {.id = 1202, .distance = 36.051f}
+        }},
+        {1181, {
+            {.id = 1163, .distance = 30.775f}, {.id = 1182, .distance = 30.943f}, {.id = 1207, .distance = 31.347f}, {.id = 1180, .distance = 33.096f}, {.id = 1209, .distance = 37.393f}, {.id = 1164, .distance = 38.606f}, {.id = 1208, .distance = 45.102f}
+        }},
+        {1182, {
+            {.id = 1164, .distance = 28.126f}, {.id = 1181, .distance = 30.943f}, {.id = 1183, .distance = 32.322f}, {.id = 1210, .distance = 33.115f}, {.id = 1209, .distance = 43.474f}, {.id = 1211, .distance = 44.048f}, {.id = 1163, .distance = 47.195f}
+        }},
+        {1183, {
+            {.id = 1213, .distance = 30.540f}, {.id = 1165, .distance = 30.745f}, {.id = 1182, .distance = 32.322f}, {.id = 1184, .distance = 32.441f}, {.id = 1211, .distance = 37.153f}, {.id = 1164, .distance = 40.686f}, {.id = 1212, .distance = 45.279f}
+        }},
+        {1184, {
+            {.id = 1213, .distance = 27.373f}, {.id = 1185, .distance = 31.563f}, {.id = 1183, .distance = 32.441f}, {.id = 1165, .distance = 33.990f}, {.id = 1215, .distance = 35.618f}, {.id = 1166, .distance = 35.628f}, {.id = 1217, .distance = 36.566f}
+        }},
+        {1185, {
+            {.id = 1217, .distance = 24.293f}, {.id = 1166, .distance = 30.088f}, {.id = 1184, .distance = 31.563f}, {.id = 1186, .distance = 31.793f}, {.id = 1167, .distance = 42.067f}, {.id = 1218, .distance = 43.775f}, {.id = 1219, .distance = 43.787f}
+        }},
+        {1186, {
+            {.id = 1167, .distance = 28.726f}, {.id = 1187, .distance = 31.427f}, {.id = 1185, .distance = 31.793f}, {.id = 1220, .distance = 35.922f}, {.id = 1219, .distance = 37.333f}, {.id = 1166, .distance = 44.864f}, {.id = 1217, .distance = 47.704f}
+        }},
+        {1187, {
+            {.id = 1186, .distance = 31.427f}, {.id = 1168, .distance = 31.889f}, {.id = 1188, .distance = 32.342f}, {.id = 1221, .distance = 35.562f}, {.id = 1167, .distance = 37.444f}, {.id = 1220, .distance = 39.243f}, {.id = 1223, .distance = 41.982f}
+        }},
+        {1188, {
+            {.id = 1223, .distance = 23.803f}, {.id = 1189, .distance = 31.693f}, {.id = 1187, .distance = 32.342f}, {.id = 1168, .distance = 32.458f}, {.id = 1169, .distance = 36.707f}, {.id = 1225, .distance = 41.333f}, {.id = 1222, .distance = 44.974f}
+        }},
+        {1189, {
+            {.id = 1227, .distance = 24.410f}, {.id = 1169, .distance = 28.557f}, {.id = 1188, .distance = 31.693f}, {.id = 1190, .distance = 32.138f}, {.id = 1225, .distance = 38.124f}, {.id = 1223, .distance = 43.096f}, {.id = 1170, .distance = 45.069f}
+        }},
+        {1190, {
+            {.id = 1170, .distance = 29.283f}, {.id = 1191, .distance = 31.589f}, {.id = 1189, .distance = 32.138f}, {.id = 1229, .distance = 36.174f}, {.id = 1227, .distance = 36.927f}, {.id = 1169, .distance = 42.276f}, {.id = 1230, .distance = 43.787f}
+        }},
+        {1191, {
+            {.id = 1190, .distance = 31.589f}, {.id = 1192, .distance = 32.185f}, {.id = 1230, .distance = 33.528f}, {.id = 1171, .distance = 33.774f}, {.id = 1170, .distance = 35.383f}, {.id = 1231, .distance = 39.292f}, {.id = 1229, .distance = 48.151f}
+        }},
+        {1192, {
+            {.id = 1233, .distance = 26.800f}, {.id = 1171, .distance = 30.492f}, {.id = 1193, .distance = 31.085f}, {.id = 1191, .distance = 32.185f}, {.id = 1172, .distance = 39.658f}, {.id = 1231, .distance = 40.843f}, {.id = 1232, .distance = 44.297f}
+        }},
+        {1193, {
+            {.id = 1172, .distance = 28.796f}, {.id = 1192, .distance = 31.085f}, {.id = 1233, .distance = 31.165f}, {.id = 1194, .distance = 31.748f}, {.id = 1237, .distance = 32.025f}, {.id = 1235, .distance = 35.484f}, {.id = 1173, .distance = 46.778f}
+        }},
+        {1194, {
+            {.id = 1237, .distance = 26.974f}, {.id = 1173, .distance = 30.076f}, {.id = 1195, .distance = 31.574f}, {.id = 1193, .distance = 31.748f}, {.id = 1172, .distance = 39.130f}, {.id = 1239, .distance = 40.759f}, {.id = 1238, .distance = 44.255f}
+        }},
+        {1195, {
+            {.id = 1194, .distance = 31.574f}, {.id = 1196, .distance = 32.495f}, {.id = 1173, .distance = 33.386f}, {.id = 1240, .distance = 34.006f}, {.id = 1174, .distance = 35.446f}, {.id = 1239, .distance = 40.058f}, {.id = 1241, .distance = 48.765f}
+        }},
+        {1196, {
+            {.id = 1174, .distance = 29.653f}, {.id = 1197, .distance = 31.761f}, {.id = 1195, .distance = 32.495f}, {.id = 1241, .distance = 35.652f}, {.id = 1243, .distance = 35.973f}, {.id = 1175, .distance = 42.498f}, {.id = 1240, .distance = 43.930f}
+        }},
+        {1197, {
+            {.id = 1243, .distance = 24.656f}, {.id = 1175, .distance = 28.776f}, {.id = 1176, .distance = 31.442f}, {.id = 1196, .distance = 31.761f}, {.id = 1245, .distance = 38.273f}, {.id = 1198, .distance = 43.129f}, {.id = 1174, .distance = 44.581f}
+        }},
+        {1198, {
+            {.id = 1247, .distance = 22.863f}, {.id = 1176, .distance = 23.617f}, {.id = 1245, .distance = 27.856f}, {.id = 1246, .distance = 35.561f}, {.id = 1199, .distance = 37.917f}, {.id = 1177, .distance = 41.895f}, {.id = 1197, .distance = 43.129f}
+        }},
+        {1199, {
+            {.id = 1247, .distance = 28.096f}, {.id = 1200, .distance = 29.153f}, {.id = 691, .distance = 30.415f}, {.id = 1177, .distance = 36.068f}, {.id = 1198, .distance = 37.917f}, {.id = 690, .distance = 41.340f}, {.id = 692, .distance = 42.661f}
+        }},
+        {1200, {
+            {.id = 1201, .distance = 28.265f}, {.id = 1199, .distance = 29.153f}, {.id = 690, .distance = 30.894f}, {.id = 1178, .distance = 35.794f}, {.id = 1177, .distance = 39.068f}, {.id = 689, .distance = 40.805f}, {.id = 691, .distance = 43.032f}
+        }},
+        {1201, {
+            {.id = 1200, .distance = 28.265f}, {.id = 1203, .distance = 28.989f}, {.id = 689, .distance = 30.240f}, {.id = 1178, .distance = 36.665f}, {.id = 1202, .distance = 38.712f}, {.id = 688, .distance = 40.848f}, {.id = 690, .distance = 42.310f}
+        }},
+        {1202, {
+            {.id = 1203, .distance = 23.607f}, {.id = 1179, .distance = 24.191f}, {.id = 1204, .distance = 27.455f}, {.id = 1205, .distance = 35.536f}, {.id = 1180, .distance = 36.051f}, {.id = 1201, .distance = 38.712f}, {.id = 1178, .distance = 46.412f}
+        }},
+        {1203, {
+            {.id = 1202, .distance = 23.607f}, {.id = 1205, .distance = 28.500f}, {.id = 1201, .distance = 28.989f}, {.id = 688, .distance = 30.527f}, {.id = 1204, .distance = 38.998f}, {.id = 686, .distance = 41.143f}, {.id = 689, .distance = 42.836f}
+        }},
+        {1204, {
+            {.id = 1205, .distance = 25.823f}, {.id = 1206, .distance = 26.007f}, {.id = 1207, .distance = 27.304f}, {.id = 1202, .distance = 27.455f}, {.id = 1180, .distance = 35.506f}, {.id = 1203, .distance = 38.998f}, {.id = 1208, .distance = 39.242f}
+        }},
+        {1205, {
+            {.id = 1204, .distance = 25.823f}, {.id = 1203, .distance = 28.500f}, {.id = 686, .distance = 30.452f}, {.id = 1206, .distance = 30.900f}, {.id = 1202, .distance = 35.536f}, {.id = 688, .distance = 43.063f}, {.id = 798, .distance = 51.891f}
+        }},
+        {1206, {
+            {.id = 1204, .distance = 26.007f}, {.id = 1208, .distance = 29.614f}, {.id = 798, .distance = 29.836f}, {.id = 1205, .distance = 30.900f}, {.id = 1207, .distance = 35.963f}, {.id = 796, .distance = 39.709f}, {.id = 1202, .distance = 52.371f}
+        }},
+        {1207, {
+            {.id = 1208, .distance = 23.404f}, {.id = 1204, .distance = 27.304f}, {.id = 1180, .distance = 27.519f}, {.id = 1181, .distance = 31.347f}, {.id = 1206, .distance = 35.963f}, {.id = 1209, .distance = 38.924f}, {.id = 1202, .distance = 47.034f}
+        }},
+        {1208, {
+            {.id = 1207, .distance = 23.404f}, {.id = 1209, .distance = 28.584f}, {.id = 1206, .distance = 29.614f}, {.id = 796, .distance = 30.187f}, {.id = 1204, .distance = 39.242f}, {.id = 795, .distance = 39.536f}, {.id = 798, .distance = 43.439f}
+        }},
+        {1209, {
+            {.id = 1210, .distance = 28.069f}, {.id = 1208, .distance = 28.584f}, {.id = 795, .distance = 29.916f}, {.id = 1181, .distance = 37.393f}, {.id = 1207, .distance = 38.924f}, {.id = 794, .distance = 39.539f}, {.id = 1182, .distance = 43.474f}
+        }},
+        {1210, {
+            {.id = 1209, .distance = 28.069f}, {.id = 1211, .distance = 28.840f}, {.id = 794, .distance = 30.071f}, {.id = 1182, .distance = 33.115f}, {.id = 793, .distance = 39.539f}, {.id = 795, .distance = 43.068f}, {.id = 1181, .distance = 48.228f}
+        }},
+        {1211, {
+            {.id = 1210, .distance = 28.840f}, {.id = 1212, .distance = 29.097f}, {.id = 793, .distance = 29.916f}, {.id = 1183, .distance = 37.153f}, {.id = 1213, .distance = 38.371f}, {.id = 792, .distance = 39.536f}, {.id = 794, .distance = 43.068f}
+        }},
+        {1212, {
+            {.id = 1213, .distance = 23.468f}, {.id = 1214, .distance = 28.067f}, {.id = 1211, .distance = 29.097f}, {.id = 792, .distance = 30.187f}, {.id = 1215, .distance = 37.859f}, {.id = 790, .distance = 39.709f}, {.id = 793, .distance = 43.663f}
+        }},
+        {1213, {
+            {.id = 1212, .distance = 23.468f}, {.id = 1215, .distance = 26.995f}, {.id = 1184, .distance = 27.373f}, {.id = 1183, .distance = 30.540f}, {.id = 1214, .distance = 35.584f}, {.id = 1211, .distance = 38.371f}, {.id = 1217, .distance = 47.445f}
+        }},
+        {1214, {
+            {.id = 1215, .distance = 25.235f}, {.id = 1212, .distance = 28.067f}, {.id = 790, .distance = 29.836f}, {.id = 1216, .distance = 31.314f}, {.id = 1213, .distance = 35.584f}, {.id = 792, .distance = 43.439f}, {.id = 902, .distance = 50.917f}
+        }},
+        {1215, {
+            {.id = 1214, .distance = 25.235f}, {.id = 1216, .distance = 25.959f}, {.id = 1213, .distance = 26.995f}, {.id = 1217, .distance = 28.280f}, {.id = 1184, .distance = 35.618f}, {.id = 1212, .distance = 37.859f}, {.id = 1218, .distance = 39.348f}
+        }},
+        {1216, {
+            {.id = 1215, .distance = 25.959f}, {.id = 1218, .distance = 28.175f}, {.id = 902, .distance = 28.941f}, {.id = 1214, .distance = 31.314f}, {.id = 1217, .distance = 35.099f}, {.id = 900, .distance = 38.797f}, {.id = 1213, .distance = 52.245f}
+        }},
+        {1217, {
+            {.id = 1218, .distance = 22.858f}, {.id = 1185, .distance = 24.293f}, {.id = 1215, .distance = 28.280f}, {.id = 1216, .distance = 35.099f}, {.id = 1184, .distance = 36.566f}, {.id = 1219, .distance = 37.718f}, {.id = 1213, .distance = 47.445f}
+        }},
+        {1218, {
+            {.id = 1217, .distance = 22.858f}, {.id = 1216, .distance = 28.175f}, {.id = 1219, .distance = 28.665f}, {.id = 900, .distance = 28.906f}, {.id = 1215, .distance = 39.348f}, {.id = 899, .distance = 39.389f}, {.id = 902, .distance = 41.827f}
+        }},
+        {1219, {
+            {.id = 1218, .distance = 28.665f}, {.id = 1220, .distance = 28.744f}, {.id = 899, .distance = 28.966f}, {.id = 1186, .distance = 37.333f}, {.id = 1217, .distance = 37.718f}, {.id = 898, .distance = 39.574f}, {.id = 900, .distance = 42.324f}
+        }},
+        {1220, {
+            {.id = 1221, .distance = 28.665f}, {.id = 1219, .distance = 28.744f}, {.id = 898, .distance = 28.846f}, {.id = 1186, .distance = 35.922f}, {.id = 897, .distance = 38.867f}, {.id = 1187, .distance = 39.243f}, {.id = 899, .distance = 41.988f}
+        }},
+        {1221, {
+            {.id = 1220, .distance = 28.665f}, {.id = 897, .distance = 28.757f}, {.id = 1222, .distance = 28.989f}, {.id = 1187, .distance = 35.562f}, {.id = 1223, .distance = 37.946f}, {.id = 896, .distance = 39.043f}, {.id = 898, .distance = 41.923f}
+        }},
+        {1222, {
+            {.id = 1223, .distance = 22.522f}, {.id = 896, .distance = 28.966f}, {.id = 1221, .distance = 28.989f}, {.id = 1224, .distance = 28.989f}, {.id = 1225, .distance = 38.748f}, {.id = 894, .distance = 39.268f}, {.id = 897, .distance = 42.413f}
+        }},
+        {1223, {
+            {.id = 1222, .distance = 22.522f}, {.id = 1188, .distance = 23.803f}, {.id = 1225, .distance = 27.573f}, {.id = 1224, .distance = 35.430f}, {.id = 1221, .distance = 37.946f}, {.id = 1187, .distance = 41.982f}, {.id = 1189, .distance = 43.096f}
+        }},
+        {1224, {
+            {.id = 1225, .distance = 25.732f}, {.id = 894, .distance = 28.644f}, {.id = 1222, .distance = 28.989f}, {.id = 1226, .distance = 30.699f}, {.id = 1223, .distance = 35.430f}, {.id = 896, .distance = 42.830f}, {.id = 893, .distance = 50.838f}
+        }},
+        {1225, {
+            {.id = 1226, .distance = 25.715f}, {.id = 1224, .distance = 25.732f}, {.id = 1227, .distance = 27.009f}, {.id = 1223, .distance = 27.573f}, {.id = 1189, .distance = 38.124f}, {.id = 1222, .distance = 38.748f}, {.id = 1228, .distance = 38.795f}
+        }},
+        {1226, {
+            {.id = 1225, .distance = 25.715f}, {.id = 1228, .distance = 28.587f}, {.id = 1006, .distance = 28.662f}, {.id = 1224, .distance = 30.699f}, {.id = 1227, .distance = 35.180f}, {.id = 1004, .distance = 39.796f}, {.id = 1007, .distance = 52.063f}
+        }},
+        {1227, {
+            {.id = 1228, .distance = 23.318f}, {.id = 1189, .distance = 24.410f}, {.id = 1225, .distance = 27.009f}, {.id = 1226, .distance = 35.180f}, {.id = 1190, .distance = 36.927f}, {.id = 1229, .distance = 38.625f}, {.id = 1223, .distance = 47.229f}
+        }},
+        {1228, {
+            {.id = 1227, .distance = 23.318f}, {.id = 1226, .distance = 28.587f}, {.id = 1229, .distance = 28.648f}, {.id = 1004, .distance = 28.742f}, {.id = 1225, .distance = 38.795f}, {.id = 1003, .distance = 40.200f}, {.id = 1006, .distance = 40.849f}
+        }},
+        {1229, {
+            {.id = 1228, .distance = 28.648f}, {.id = 1230, .distance = 28.678f}, {.id = 1003, .distance = 28.729f}, {.id = 1190, .distance = 36.174f}, {.id = 1227, .distance = 38.625f}, {.id = 1002, .distance = 40.334f}, {.id = 1004, .distance = 41.262f}
+        }},
+        {1230, {
+            {.id = 1231, .distance = 28.019f}, {.id = 1229, .distance = 28.678f}, {.id = 1002, .distance = 28.689f}, {.id = 1191, .distance = 33.528f}, {.id = 1001, .distance = 39.721f}, {.id = 1003, .distance = 40.936f}, {.id = 1190, .distance = 43.787f}
+        }},
+        {1231, {
+            {.id = 1230, .distance = 28.019f}, {.id = 1001, .distance = 28.455f}, {.id = 1232, .distance = 29.666f}, {.id = 1233, .distance = 39.143f}, {.id = 1191, .distance = 39.292f}, {.id = 1000, .distance = 40.267f}, {.id = 1002, .distance = 40.347f}
+        }},
+        {1232, {
+            {.id = 1233, .distance = 23.574f}, {.id = 1000, .distance = 28.635f}, {.id = 1234, .distance = 28.796f}, {.id = 1231, .distance = 29.666f}, {.id = 1235, .distance = 38.536f}, {.id = 998, .distance = 40.017f}, {.id = 1001, .distance = 41.281f}
+        }},
+        {1233, {
+            {.id = 1232, .distance = 23.574f}, {.id = 1192, .distance = 26.800f}, {.id = 1235, .distance = 27.295f}, {.id = 1193, .distance = 31.165f}, {.id = 1234, .distance = 35.726f}, {.id = 1231, .distance = 39.143f}, {.id = 1237, .distance = 46.866f}
+        }},
+        {1234, {
+            {.id = 1235, .distance = 25.236f}, {.id = 998, .distance = 28.579f}, {.id = 1232, .distance = 28.796f}, {.id = 1236, .distance = 30.643f}, {.id = 1233, .distance = 35.726f}, {.id = 1000, .distance = 41.723f}, {.id = 997, .distance = 51.535f}
+        }},
+        {1235, {
+            {.id = 1234, .distance = 25.236f}, {.id = 1236, .distance = 25.701f}, {.id = 1233, .distance = 27.295f}, {.id = 1237, .distance = 27.601f}, {.id = 1193, .distance = 35.484f}, {.id = 1232, .distance = 38.536f}, {.id = 1238, .distance = 38.536f}
+        }},
+        {1236, {
+            {.id = 1235, .distance = 25.701f}, {.id = 1238, .distance = 28.171f}, {.id = 1110, .distance = 29.688f}, {.id = 1234, .distance = 30.643f}, {.id = 1237, .distance = 35.416f}, {.id = 1108, .distance = 41.018f}, {.id = 998, .distance = 51.461f}
+        }},
+        {1237, {
+            {.id = 1238, .distance = 23.046f}, {.id = 1194, .distance = 26.974f}, {.id = 1235, .distance = 27.601f}, {.id = 1193, .distance = 32.025f}, {.id = 1236, .distance = 35.416f}, {.id = 1239, .distance = 38.124f}, {.id = 1233, .distance = 46.866f}
+        }},
+        {1238, {
+            {.id = 1237, .distance = 23.046f}, {.id = 1236, .distance = 28.171f}, {.id = 1239, .distance = 28.796f}, {.id = 1108, .distance = 29.876f}, {.id = 1235, .distance = 38.536f}, {.id = 1110, .distance = 40.900f}, {.id = 1107, .distance = 41.797f}
+        }},
+        {1239, {
+            {.id = 1240, .distance = 28.739f}, {.id = 1238, .distance = 28.796f}, {.id = 1107, .distance = 29.681f}, {.id = 1237, .distance = 38.124f}, {.id = 1195, .distance = 40.058f}, {.id = 1194, .distance = 40.759f}, {.id = 1108, .distance = 41.259f}
+        }},
+        {1240, {
+            {.id = 1239, .distance = 28.739f}, {.id = 1241, .distance = 28.996f}, {.id = 1106, .distance = 29.791f}, {.id = 1195, .distance = 34.006f}, {.id = 1107, .distance = 41.088f}, {.id = 1105, .distance = 41.139f}, {.id = 1196, .distance = 43.930f}
+        }},
+        {1241, {
+            {.id = 1242, .distance = 28.539f}, {.id = 1240, .distance = 28.996f}, {.id = 1105, .distance = 29.681f}, {.id = 1196, .distance = 35.652f}, {.id = 1243, .distance = 38.072f}, {.id = 1104, .distance = 41.093f}, {.id = 1106, .distance = 41.276f}
+        }},
+        {1242, {
+            {.id = 1243, .distance = 23.229f}, {.id = 1241, .distance = 28.539f}, {.id = 1244, .distance = 29.175f}, {.id = 1104, .distance = 29.699f}, {.id = 1245, .distance = 38.795f}, {.id = 1105, .distance = 41.301f}, {.id = 1102, .distance = 41.538f}
+        }},
+        {1243, {
+            {.id = 1242, .distance = 23.229f}, {.id = 1197, .distance = 24.656f}, {.id = 1245, .distance = 27.373f}, {.id = 1196, .distance = 35.973f}, {.id = 1244, .distance = 36.131f}, {.id = 1241, .distance = 38.072f}, {.id = 1198, .distance = 47.750f}
+        }},
+        {1244, {
+            {.id = 1245, .distance = 26.133f}, {.id = 1102, .distance = 29.050f}, {.id = 1242, .distance = 29.175f}, {.id = 1246, .distance = 30.723f}, {.id = 1243, .distance = 36.131f}, {.id = 1104, .distance = 41.569f}, {.id = 1101, .distance = 52.210f}
+        }},
+        {1245, {
+            {.id = 1246, .distance = 25.813f}, {.id = 1244, .distance = 26.133f}, {.id = 1243, .distance = 27.373f}, {.id = 1198, .distance = 27.856f}, {.id = 1197, .distance = 38.273f}, {.id = 1242, .distance = 38.795f}, {.id = 1247, .distance = 39.458f}
+        }},
+        {1246, {
+            {.id = 1245, .distance = 25.813f}, {.id = 1247, .distance = 29.479f}, {.id = 694, .distance = 30.660f}, {.id = 1244, .distance = 30.723f}, {.id = 1198, .distance = 35.561f}, {.id = 692, .distance = 41.283f}, {.id = 1102, .distance = 51.839f}
+        }},
+        {1247, {
+            {.id = 1198, .distance = 22.863f}, {.id = 1199, .distance = 28.096f}, {.id = 1246, .distance = 29.479f}, {.id = 692, .distance = 30.625f}, {.id = 1245, .distance = 39.458f}, {.id = 691, .distance = 40.963f}, {.id = 694, .distance = 42.761f}
+        }}
     };
 };
 

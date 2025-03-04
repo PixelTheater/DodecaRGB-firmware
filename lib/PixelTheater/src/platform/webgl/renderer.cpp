@@ -1,3 +1,5 @@
+#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+
 #include "PixelTheater/platform/webgl/renderer.h"
 #include "PixelTheater/platform/webgl/shaders.h"
 #include <emscripten.h>
@@ -383,4 +385,6 @@ void WebGLRenderer::cleanup() {
     }
 }
 
-} // namespace PixelTheater 
+} // namespace PixelTheater
+
+#endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 

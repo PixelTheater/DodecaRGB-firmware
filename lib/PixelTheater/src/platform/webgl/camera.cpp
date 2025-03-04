@@ -156,12 +156,12 @@ void Camera::calculateViewMatrix(float* matrix) {
     // Calculate camera position in world space
     // For top view (90 degrees), cosine will be 0 and sine will be 1
     float eyeX = 0.0f;
-    float eyeY = _cameraDistance * sinTilt;  // Will be _cameraDistance for top view
-    float eyeZ = -_cameraDistance * cosTilt; // Will be 0 for top view
+    float eyeY = _cameraDistance * sinTilt - 0.05f;  // Offset camera down slightly
+    float eyeZ = -_cameraDistance * cosTilt;
     
     // Center position (where the model is)
     float centerX = 0.0f;
-    float centerY = 0.0f;
+    float centerY = -0.02f;  // Offset target down slightly
     float centerZ = 0.0f;
     
     // Up vector (always world up for turntable effect)

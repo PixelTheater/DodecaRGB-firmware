@@ -1,8 +1,8 @@
 # project files (refactor)
-/README.md
-/src/docs/README.md
-/include/network.h
-/src/hardware
+/web/simulator.js
+/web/simulator.wasm
+/src/model.cpp
+/data/*
 
 # generally not useful
 /3d-models

@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+
 #include <cmath>
 #include <cstdint>
 #include <emscripten.h>
@@ -46,4 +48,6 @@ int getCanvasHeight();
 void updateFPSCounter(int fps);
 
 } // namespace WebGLUtil
-} // namespace PixelTheater 
+} // namespace PixelTheater
+
+#endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 

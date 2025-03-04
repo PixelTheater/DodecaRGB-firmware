@@ -2,6 +2,40 @@
  * DodecaRGB Web Simulator UI
  * Handles all the UI interaction, controls, and WASM module integration
  */
+
+// Set up external C functions in the global scope
+window._get_canvas_width = () => {
+    const canvas = document.getElementById('canvas');
+    return canvas ? canvas.width : 800;
+};
+
+window._get_canvas_height = () => {
+    const canvas = document.getElementById('canvas');
+    return canvas ? canvas.height : 600;
+};
+
+window._get_current_time = () => {
+    return performance.now() / 1000.0;
+};
+
+window._update_ui_fps = (fps) => {
+    const fpsElement = document.getElementById('fps');
+    if (fpsElement) {
+        fpsElement.textContent = Math.round(fps);
+    }
+};
+
+window._update_ui_brightness = (brightness) => {
+    const brightnessSlider = document.getElementById('brightness');
+    const brightnessValue = document.getElementById('brightness-value');
+    if (brightnessSlider && brightnessValue) {
+        // Convert from 0-1 to 0-100 for the slider
+        const percentage = Math.round(brightness * 100);
+        brightnessSlider.value = percentage;
+        brightnessValue.textContent = percentage;
+    }
+};
+
 class DodecaSimulator {
     constructor() {
         // Store DOM elements
@@ -49,6 +83,58 @@ class DodecaSimulator {
         
         // Auto-updating info
         this.updateIntervalId = null;
+
+        // Set up external C function implementations BEFORE module initialization
+        this.setupExternalFunctions();
+    }
+    
+    /**
+     * Set up external C function implementations
+     */
+    setupExternalFunctions() {
+        // Define the functions
+        const getCanvasWidth = () => {
+            return this.canvas ? this.canvas.width : 800;
+        };
+        
+        const getCanvasHeight = () => {
+            return this.canvas ? this.canvas.height : 600;
+        };
+        
+        const getCurrentTime = () => {
+            return performance.now() / 1000.0;
+        };
+        
+        const updateUIFps = (fps) => {
+            if (this.fpsElement) {
+                this.fpsElement.textContent = Math.round(fps);
+            }
+        };
+        
+        const updateUIBrightness = (brightness) => {
+            if (this.brightnessSlider && this.brightnessValue) {
+                // Convert from 0-1 to 0-100 for the slider
+                const percentage = Math.round(brightness * 100);
+                this.brightnessSlider.value = percentage;
+                this.brightnessValue.textContent = percentage;
+            }
+        };
+
+        // Set up on window object
+        window._get_canvas_width = getCanvasWidth;
+        window._get_canvas_height = getCanvasHeight;
+        window._get_current_time = getCurrentTime;
+        window._update_ui_fps = updateUIFps;
+        window._update_ui_brightness = updateUIBrightness;
+
+        // Set up on Module object if it exists
+        if (typeof Module !== 'undefined') {
+            Module._get_canvas_width = getCanvasWidth;
+            Module._get_canvas_height = getCanvasHeight;
+            Module._get_current_time = getCurrentTime;
+            Module._update_ui_fps = updateUIFps;
+            Module._update_ui_brightness = updateUIBrightness;
+        }
     }
     
     /**

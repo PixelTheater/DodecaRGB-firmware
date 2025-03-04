@@ -25,6 +25,11 @@ struct ModelDefinition {
         uint8_t type_id;
         uint8_t rotation;
         float x, y, z;  // Position (normal calculated from this)
+        // Array of x,y,z coordinates for each vertex
+        struct Vertex {
+            float x, y, z;
+        };
+        Vertex vertices[Limits::MAX_EDGES_PER_FACE];  // Instead of std::array
     };
 
     // Point geometry

@@ -1,5 +1,13 @@
 # Change Log
 
+0.1 - Mar 4
+- retire old versioning, completely new codebase for "PixelTheater" library (v0.1)
+- introduce web simulator
+- hardware tests and first working scenes
+- new model generation and definition approach
+
+(original firmware project "v2" beyond here)
+
 v2.8.3 Feb 13 2025:
 
 - refactored with type handlers and sentinel values, resulting in cleaner code

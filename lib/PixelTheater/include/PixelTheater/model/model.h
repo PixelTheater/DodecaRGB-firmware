@@ -83,13 +83,27 @@ private:
         for(size_t i = 0; i < ModelDef::FACE_COUNT; i++) {
             const auto& face_data = _def.FACES[i];
             const auto& face_type = _def.FACE_TYPES[face_data.type_id];
-            _faces[i] = Face(
+            auto& face = _faces[i];
+            
+            // Create face instance
+            face = Face(
                 face_type.type,
                 face_data.id,
                 led_offset,
                 face_type.num_leds,
-                _leds
+                _leds,
+                static_cast<uint16_t>(face_type.type)  // Use enum value as number of sides
             );
+
+            // Initialize vertices from face data
+            for(size_t j = 0; j < static_cast<size_t>(face_type.type); j++) {  // Use enum value as number of sides
+                face.vertices[j] = {
+                    face_data.vertices[j].x,
+                    face_data.vertices[j].y,
+                    face_data.vertices[j].z
+                };
+            }
+
             led_offset += face_type.num_leds;
         }
     }

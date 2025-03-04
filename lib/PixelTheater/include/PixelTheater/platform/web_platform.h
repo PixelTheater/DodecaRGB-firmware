@@ -2,14 +2,18 @@
 
 #include "PixelTheater/core/crgb.h"
 #include "PixelTheater/platform/platform.h"
-#include "PixelTheater/platform/webgl/renderer.h"
 #include "PixelTheater/platform/webgl/camera.h"
+#include "PixelTheater/platform/webgl/renderer.h"
 #include "PixelTheater/platform/webgl/mesh.h"
+#include "PixelTheater/model_def.h"
+#include "PixelTheater/platform/webgl/web_model.h"
+#include "PixelTheater/platform/webgl/shaders.h"
 
 #include <functional>
 #include <vector>
 #include <array>
 #include <cstdint>
+#include <memory>
 
 // Only include WebGL and Emscripten headers in web builds
 #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
@@ -18,26 +22,13 @@
 #endif
 
 namespace PixelTheater {
+namespace WebGL {
 
-// Forward declarations for non-web builds
-#if !defined(PLATFORM_WEB) && !defined(EMSCRIPTEN)
-// Just enough to make the header compile, implementation will be empty
-typedef unsigned int GLuint;
-typedef int GLint;
-#endif
-
-// Define preset view types
-enum class PresetView {
-    SIDE = 0,    // Side view
-    TOP = 1,     // Top-down view
-    ANGLE = 2    // Angled view (45 degrees)
-};
-
-// Define zoom levels
+// Add zoom level enum
 enum class ZoomLevel {
-    CLOSE = 0,
-    NORMAL = 1,
-    FAR = 2
+    CLOSE,
+    NORMAL,
+    FAR
 };
 
 class WebPlatform : public Platform {
@@ -78,12 +69,54 @@ public:
     static constexpr float MAX_DEPTH_FADE = 6.0f;              // Maximum depth for LED visibility fade
     static constexpr float MIN_DEPTH_FADE = 0.4f;              // Minimum depth fade value
     
-    explicit WebPlatform(uint16_t num_leds);
+    explicit WebPlatform();
     ~WebPlatform() override;
 
     // Prevent copying
     WebPlatform(const WebPlatform&) = delete;
     WebPlatform& operator=(const WebPlatform&) = delete;
+
+    // Model loading
+    template<typename ModelDef>
+    WebModel createWebModel() {
+        WebModel model;
+        
+        // Metadata
+        model.metadata.name = ModelDef::NAME;
+        model.metadata.version = ModelDef::VERSION;
+        model.metadata.num_leds = ModelDef::LED_COUNT;
+        
+        // LED positions
+        model.leds.positions.reserve(ModelDef::LED_COUNT);
+        for (uint16_t i = 0; i < ModelDef::LED_COUNT; i++) {
+            // Get coordinates directly from POINTS array
+            const auto& point = ModelDef::POINTS[i];
+            model.leds.positions.push_back({point.x, point.y, point.z});
+        }
+        
+        // Geometry
+        model.geometry.faces.reserve(ModelDef::FACE_COUNT);
+        for (uint16_t face = 0; face < ModelDef::FACE_COUNT; face++) {
+            WebFace web_face;
+            for (uint16_t i = 0; i < 5; i++) {
+                web_face.vertices[i] = {
+                    ModelDef::FACES[face].vertices[i].x,
+                    ModelDef::FACES[face].vertices[i].y,
+                    ModelDef::FACES[face].vertices[i].z
+                };
+            }
+            model.geometry.faces.push_back(web_face);
+        }
+        
+        return model;
+    }
+
+    // Initialize with a specific model
+    template<typename ModelDef>
+    void initializeWithModel() {
+        WebModel model = createWebModel<ModelDef>();
+        initializeFromWebModel(model);
+    }
 
     // Core LED array management
     CRGB* getLEDs() override;
@@ -112,9 +145,8 @@ public:
     bool getShowMesh() const;
     void setMeshOpacity(float opacity);
     float getMeshOpacity() const;
-    
-    // Set a callback to provide 3D coordinates for each LED
-    void setCoordinateProvider(std::function<void(uint16_t, float&, float&, float&)> callback);
+    void setShowWireframe(bool show);
+    bool getShowWireframe() const;
     
     // Rotation and view control
     void updateRotation(float deltaX, float deltaY);
@@ -129,31 +161,20 @@ public:
     void onMouseMove(int x, int y, bool shift_key);
     void onMouseUp();
     void onMouseWheel(float delta);
-#endif
+
+    // WebGL resource management
+    EMSCRIPTEN_KEEPALIVE void cleanupWebGL();
 
 private:
 #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
-    // WebGL renderer components
-    WebGLRenderer _renderer;
-    Camera _camera;
-    MeshGenerator _mesh_generator;
-    
-    // Helper methods
+    void initializeFromWebModel(const WebModel& model);
     void initWebGL();
     void updateVertexBuffer();
-    void updateMesh();
     void renderFrame();
     void updateAutoRotation();
-#endif
+    void renderMesh(const float* view_matrix, const float* projection_matrix, const float* model_matrix);
+    void renderLEDs(const float* view_matrix, const float* projection_matrix, const float* model_matrix);
 
-    // LED data
-    CRGB* _leds{nullptr};
-    uint16_t _num_leds{0};
-    uint8_t _brightness{DEFAULT_BRIGHTNESS};
-    uint8_t _max_refresh_rate{0};
-    uint8_t _dither{0};
-
-#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
     // Canvas parameters
     int _canvas_width{800};
     int _canvas_height{600};
@@ -164,6 +185,7 @@ private:
     float _led_spacing{DEFAULT_LED_SPACING};
     bool _show_mesh{true};
     float _mesh_opacity{0.3f};
+    bool _show_wireframe{true};
     
     // Camera settings
     float _camera_distance{CAMERA_NORMAL_DISTANCE};
@@ -188,11 +210,26 @@ private:
     // Performance metrics
     int _frame_count{0};
     double _last_frame_time{0};
-    double _last_auto_rotation_time{0}; // For smooth auto-rotation timing
-    
-    // Coordinate provider
-    std::function<void(uint16_t, float&, float&, float&)> _coordinate_provider{nullptr};
+    double _last_auto_rotation_time{0};
 #endif
+
+    // WebGL components
+    std::unique_ptr<WebGLRenderer> _renderer;
+    std::unique_ptr<MeshGenerator> _mesh_generator;
+    std::unique_ptr<Camera> _camera;
+
+    // Model data
+    std::vector<WebVertex> _led_positions;  // Cached LED positions from WebModel
+
+    // LED data
+    CRGB* _leds{nullptr};
+    uint16_t _num_leds{0};
+    uint8_t _brightness{DEFAULT_BRIGHTNESS};
+    uint8_t _max_refresh_rate{0};
+    uint8_t _dither{0};
 };
 
+} // namespace WebGL
 } // namespace PixelTheater 
+
+#endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 

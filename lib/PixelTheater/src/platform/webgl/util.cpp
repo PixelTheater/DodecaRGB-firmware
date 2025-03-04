@@ -1,3 +1,5 @@
+#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+
 #include "PixelTheater/platform/webgl/util.h"
 #include <emscripten.h>
 
@@ -27,4 +29,6 @@ void updateFPSCounter(int fps) {
 }
 
 } // namespace WebGLUtil
-} // namespace PixelTheater 
+} // namespace PixelTheater
+
+#endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 

@@ -859,14 +859,6 @@ async function createWasm() {
 }
 
 // === Body ===
-
-var ASM_CONSTS = {
-  127168: () => { return document.getElementById('canvas') ? document.getElementById('canvas').width : 800; },  
- 127262: () => { return document.getElementById('canvas') ? document.getElementById('canvas').height : 600; },  
- 127357: ($0) => { if (window.updateFPS) { window.updateFPS($0); } },  
- 127409: ($0) => { if (window.updateBrightnessUI) { window.updateBrightnessUI($0); } }
-};
-
 // end include: preamble.js
 
 
@@ -1179,48 +1171,6 @@ var ASM_CONSTS = {
       return 0;
     ;
   }
-
-  var readEmAsmArgsArray = [];
-  var readEmAsmArgs = (sigPtr, buf) => {
-      // Nobody should have mutated _readEmAsmArgsArray underneath us to be something else than an array.
-      assert(Array.isArray(readEmAsmArgsArray));
-      // The input buffer is allocated on the stack, so it must be stack-aligned.
-      assert(buf % 16 == 0);
-      readEmAsmArgsArray.length = 0;
-      var ch;
-      // Most arguments are i32s, so shift the buffer pointer so it is a plain
-      // index into HEAP32.
-      while (ch = HEAPU8[sigPtr++]) {
-        var chr = String.fromCharCode(ch);
-        var validChars = ['d', 'f', 'i', 'p'];
-        // In WASM_BIGINT mode we support passing i64 values as bigint.
-        validChars.push('j');
-        assert(validChars.includes(chr), `Invalid character ${ch}("${chr}") in readEmAsmArgs! Use only [${validChars}], and do not specify "v" for void return argument.`);
-        // Floats are always passed as doubles, so all types except for 'i'
-        // are 8 bytes and require alignment.
-        var wide = (ch != 105);
-        wide &= (ch != 112);
-        buf += wide && (buf % 8) ? 4 : 0;
-        readEmAsmArgsArray.push(
-          // Special case for pointers under wasm64 or CAN_ADDRESS_2GB mode.
-          ch == 112 ? HEAPU32[((buf)>>2)] :
-          ch == 106 ? HEAP64[((buf)>>3)] :
-          ch == 105 ?
-            HEAP32[((buf)>>2)] :
-            HEAPF64[((buf)>>3)]
-        );
-        buf += wide ? 8 : 4;
-      }
-      return readEmAsmArgsArray;
-    };
-  var runEmAsmFunction = (code, sigPtr, argbuf) => {
-      var args = readEmAsmArgs(sigPtr, argbuf);
-      assert(ASM_CONSTS.hasOwnProperty(code), `No EM_ASM constant found at address ${code}.  The loaded WebAssembly file is likely out of sync with the generated JavaScript.`);
-      return ASM_CONSTS[code](...args);
-    };
-  var _emscripten_asm_const_int = (code, sigPtr, argbuf) => {
-      return runEmAsmFunction(code, sigPtr, argbuf);
-    };
 
 
   var getHeapMax = () =>
@@ -5334,6 +5284,12 @@ var ASM_CONSTS = {
 
   var _glDepthFunc = (x0) => GLctx.depthFunc(x0);
 
+  var _glDisableVertexAttribArray = (index) => {
+      var cb = GL.currentContext.clientBuffers[index];
+      cb.enabled = false;
+      GLctx.disableVertexAttribArray(index);
+    };
+
   var _glDrawArrays = (mode, first, count) => {
       // bind any client-side buffers
       GL.preDrawHandleClientVertexAttribBindings(first + count);
@@ -5624,6 +5580,8 @@ var ASM_CONSTS = {
       return -1;
     };
 
+  var _glLineWidth = (x0) => GLctx.lineWidth(x0);
+
   var _glLinkProgram = (program) => {
       program = GL.programs[program];
       GLctx.linkProgram(program);
@@ -5766,6 +5724,11 @@ var ASM_CONSTS = {
     };
 
   
+  var _glUniform3f = (location, v0, v1, v2) => {
+      GLctx.uniform3f(webglGetUniformLocation(location), v0, v1, v2);
+    };
+
+  
   var miniTempWebGLFloatBuffers = [];
   
   var _glUniformMatrix4fv = (location, count, transpose, value) => {
@@ -5871,8 +5834,6 @@ var wasmImports = {
   /** @export */
   clock_time_get: _clock_time_get,
   /** @export */
-  emscripten_asm_const_int: _emscripten_asm_const_int,
-  /** @export */
   emscripten_get_now: _emscripten_get_now,
   /** @export */
   emscripten_resize_heap: _emscripten_resize_heap,
@@ -5943,6 +5904,8 @@ var wasmImports = {
   /** @export */
   glDepthFunc: _glDepthFunc,
   /** @export */
+  glDisableVertexAttribArray: _glDisableVertexAttribArray,
+  /** @export */
   glDrawArrays: _glDrawArrays,
   /** @export */
   glDrawElements: _glDrawElements,
@@ -5975,6 +5938,8 @@ var wasmImports = {
   /** @export */
   glGetUniformLocation: _glGetUniformLocation,
   /** @export */
+  glLineWidth: _glLineWidth,
+  /** @export */
   glLinkProgram: _glLinkProgram,
   /** @export */
   glRenderbufferStorage: _glRenderbufferStorage,
@@ -5991,6 +5956,8 @@ var wasmImports = {
   /** @export */
   glUniform2f: _glUniform2f,
   /** @export */
+  glUniform3f: _glUniform3f,
+  /** @export */
   glUniformMatrix4fv: _glUniformMatrix4fv,
   /** @export */
   glUseProgram: _glUseProgram,
@@ -6002,14 +5969,12 @@ var wasmImports = {
 var wasmExports;
 createWasm();
 var ___wasm_call_ctors = createExportWrapper('__wasm_call_ctors', 0);
-var _get_canvas_width = Module['_get_canvas_width'] = createExportWrapper('get_canvas_width', 0);
-var _get_canvas_height = Module['_get_canvas_height'] = createExportWrapper('get_canvas_height', 0);
-var _get_current_time = Module['_get_current_time'] = createExportWrapper('get_current_time', 0);
-var _update_ui_fps = Module['_update_ui_fps'] = createExportWrapper('update_ui_fps', 1);
-var _update_ui_brightness = Module['_update_ui_brightness'] = createExportWrapper('update_ui_brightness', 1);
+var _init_simulator = Module['_init_simulator'] = createExportWrapper('init_simulator', 0);
+var _update_simulator = Module['_update_simulator'] = createExportWrapper('update_simulator', 0);
 var _change_scene = Module['_change_scene'] = createExportWrapper('change_scene', 1);
 var _get_scene_count = Module['_get_scene_count'] = createExportWrapper('get_scene_count', 0);
 var _set_brightness = Module['_set_brightness'] = createExportWrapper('set_brightness', 1);
+var _get_brightness = Module['_get_brightness'] = createExportWrapper('get_brightness', 0);
 var _update_rotation = Module['_update_rotation'] = createExportWrapper('update_rotation', 2);
 var _reset_rotation = Module['_reset_rotation'] = createExportWrapper('reset_rotation', 0);
 var _set_auto_rotation = Module['_set_auto_rotation'] = createExportWrapper('set_auto_rotation', 2);
@@ -6020,7 +5985,6 @@ var _toggle_debug_mode = Module['_toggle_debug_mode'] = createExportWrapper('tog
 var _print_model_info = Module['_print_model_info'] = createExportWrapper('print_model_info', 0);
 var _get_num_scenes = Module['_get_num_scenes'] = createExportWrapper('get_num_scenes', 0);
 var _get_scene_name = Module['_get_scene_name'] = createExportWrapper('get_scene_name', 3);
-var _set_scene = Module['_set_scene'] = createExportWrapper('set_scene', 1);
 var _set_led_size = Module['_set_led_size'] = createExportWrapper('set_led_size', 1);
 var _get_led_size = Module['_get_led_size'] = createExportWrapper('get_led_size', 0);
 var _set_atmosphere_intensity = Module['_set_atmosphere_intensity'] = createExportWrapper('set_atmosphere_intensity', 1);
@@ -6032,8 +5996,13 @@ var _get_mesh_opacity = Module['_get_mesh_opacity'] = createExportWrapper('get_m
 var _get_led_count = Module['_get_led_count'] = createExportWrapper('get_led_count', 0);
 var _get_fps = Module['_get_fps'] = createExportWrapper('get_fps', 0);
 var _log_message = Module['_log_message'] = createExportWrapper('log_message', 1);
-var _get_brightness = Module['_get_brightness'] = createExportWrapper('get_brightness', 0);
 var _main = Module['_main'] = createExportWrapper('main', 2);
+var _get_canvas_width = Module['_get_canvas_width'] = createExportWrapper('get_canvas_width', 0);
+var _get_canvas_height = Module['_get_canvas_height'] = createExportWrapper('get_canvas_height', 0);
+var _get_current_time = Module['_get_current_time'] = createExportWrapper('get_current_time', 0);
+var _update_ui_fps = Module['_update_ui_fps'] = createExportWrapper('update_ui_fps', 1);
+var _update_ui_brightness = Module['_update_ui_brightness'] = createExportWrapper('update_ui_brightness', 1);
+var __ZN12PixelTheater5WebGL11WebPlatform12cleanupWebGLEv = Module['__ZN12PixelTheater5WebGL11WebPlatform12cleanupWebGLEv'] = createExportWrapper('_ZN12PixelTheater5WebGL11WebPlatform12cleanupWebGLEv', 1);
 var _fflush = createExportWrapper('fflush', 1);
 var _strerror = createExportWrapper('strerror', 1);
 var _malloc = createExportWrapper('malloc', 1);
@@ -6072,7 +6041,7 @@ var missingLibrarySymbols = [
   'readSockaddr',
   'writeSockaddr',
   'emscriptenLog',
-  'runMainThreadEmAsm',
+  'readEmAsmArgs',
   'listenOnce',
   'autoResumeAudioContext',
   'getDynCaller',
@@ -6235,8 +6204,6 @@ var unexportedSymbols = [
   'timers',
   'warnOnce',
   'readEmAsmArgsArray',
-  'readEmAsmArgs',
-  'runEmAsmFunction',
   'jstoi_q',
   'jstoi_s',
   'getExecutableName',
