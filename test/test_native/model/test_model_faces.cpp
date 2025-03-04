@@ -90,4 +90,53 @@ TEST_SUITE("Model - Face Operations") {
         }
         CHECK(model.leds[0] == CRGB::Red);
     }
+
+    TEST_CASE("face vertex access") {
+        BasicPentagonModel def;
+        NativePlatform platform(BasicPentagonModel::LED_COUNT);
+        platform.clear();
+        Model<BasicPentagonModel> model(def, platform.getLEDs());
+
+        // Check face 0 vertices
+        const auto& face0 = model.faces[0];
+        CHECK(face0.vertices[0].x == doctest::Approx(0.0f));   // Center x
+        CHECK(face0.vertices[0].y == doctest::Approx(0.0f));   // Center y
+        CHECK(face0.vertices[0].z == doctest::Approx(1.0f));   // Center z
+
+        CHECK(face0.vertices[1].x == doctest::Approx(1.0f));   // Right vertex x
+        CHECK(face0.vertices[1].y == doctest::Approx(0.0f));   // Right vertex y
+        CHECK(face0.vertices[1].z == doctest::Approx(1.0f));   // Right vertex z
+
+        // Check face 1 vertices (middle face)
+        const auto& face1 = model.faces[1];
+        for(const auto& vertex : face1.vertices) {
+            CHECK(vertex.z == doctest::Approx(0.0f));  // All vertices should be at z=0
+        }
+
+        // Check face 2 vertices (bottom face)
+        const auto& face2 = model.faces[2];
+        for(const auto& vertex : face2.vertices) {
+            CHECK(vertex.z == doctest::Approx(-1.0f));  // All vertices should be at z=-1
+        }
+
+        // Verify vertex count for each face
+        for(const auto& face : model.faces) {
+            CHECK(face.vertices.size() == Limits::MAX_EDGES_PER_FACE);
+        }
+
+        // Test vertex array bounds checking
+        const auto& face = model.faces[0];
+        const auto& last_valid_vertex = face.vertices[Limits::MAX_EDGES_PER_FACE - 1];
+        
+        // Should return last valid vertex when out of bounds
+        const auto& out_of_bounds = face.vertices[Limits::MAX_EDGES_PER_FACE];
+        CHECK(out_of_bounds.x == last_valid_vertex.x);
+        CHECK(out_of_bounds.y == last_valid_vertex.y);
+        CHECK(out_of_bounds.z == last_valid_vertex.z);
+
+        const auto& large_index = face.vertices[0xFFFF];
+        CHECK(large_index.x == last_valid_vertex.x);
+        CHECK(large_index.y == last_valid_vertex.y);
+        CHECK(large_index.z == last_valid_vertex.z);
+    }
 } 

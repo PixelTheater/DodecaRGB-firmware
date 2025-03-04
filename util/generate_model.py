@@ -18,13 +18,18 @@ from util.dodeca_core import (
     load_pcb_points,
     transform_led_point,
     radius,
-    MAX_LED_NEIGHBORS
+    MAX_LED_NEIGHBORS,
+    Matrix3D,
+    TWO_PI,
+    zv, ro, xv,
+    side_rotation
 )
 
 # Define the PixelTheater namespace constants for C++ output
 class PixelTheater:
     class Limits:
         MAX_NEIGHBORS = MAX_LED_NEIGHBORS
+        MAX_EDGES_PER_FACE = 5
 
 @dataclass
 class Point3D:
@@ -214,17 +219,35 @@ class DodecaModel:
         print(f"\n    static constexpr size_t LED_COUNT = {led_count};", file=file)
         print(f"    static constexpr size_t FACE_COUNT = {face_count};", file=file)
 
-        # Face types
-        print(f"\n    // Face type definitions", file=file)
+        # Face types with vertices
+        print(f"\n    // Face type definitions with vertex geometry", file=file)
         print(f"    static constexpr std::array<FaceTypeData, {len(self.model_def.face_types)}> FACE_TYPES{{{{", file=file)
         for i, (name, ft) in enumerate(self.model_def.face_types.items()):
             face_type = f"FaceType::{ft.name.capitalize()}"
             if ft.name.lower() == "pentagon":
                 face_type = "FaceType::Pentagon"
+                # Calculate pentagon vertices
+                vertices = []
+                for j in range(5):
+                    angle = 2.0 * math.pi * j / 5.0
+                    x = math.cos(angle) * ft.edge_length_mm
+                    y = math.sin(angle) * ft.edge_length_mm
+                    vertices.append((x, y, 0.0))
+                num_sides = 5
             elif ft.name.lower() == "triangle":
                 face_type = "FaceType::Triangle"
-            elif ft.name.lower() == "square":
-                face_type = "FaceType::Square"
+                # Calculate triangle vertices
+                vertices = []
+                for j in range(3):
+                    angle = 2.0 * math.pi * j / 3.0
+                    x = math.cos(angle) * ft.edge_length_mm
+                    y = math.sin(angle) * ft.edge_length_mm
+                    vertices.append((x, y, 0.0))
+                num_sides = 3
+            else:
+                vertices = []
+                num_sides = 0
+
             print(f"        {{", file=file)
             print(f"            .id = {i},", file=file)
             print(f"            .type = {face_type},", file=file)
@@ -234,50 +257,103 @@ class DodecaModel:
         print("    }};", file=file)
 
         # Face instances
-        print(f"\n    // Face instances", file=file)
+        print(f"\n    // Face instances with transformed vertices", file=file)
         print(f"    static constexpr std::array<FaceData, FACE_COUNT> FACES{{{{", file=file)
         for i, face in enumerate(self.model_def.faces):
             # Find the type_id for this face
             type_id = 0
-            for j, (name, _) in enumerate(self.model_def.face_types.items()):
+            face_type = None
+            for j, (name, ft) in enumerate(self.model_def.face_types.items()):
                 if name == face.type:
                     type_id = j
+                    face_type = ft
                     break
             
+            # Calculate vertices based on face type
+            vertices = []
+            if face_type:
+                # Generate base vertices in local space for any regular polygon
+                base_vertices = []
+                num_sides = face_type.num_sides
+                for j in range(num_sides):
+                    angle = j * (2 * math.pi / num_sides)
+                    x = radius * math.cos(angle)
+                    y = radius * math.sin(angle)
+                    base_vertices.append([x, y, 0])
+
+                # Transform vertices using same pipeline as viewer
+                m = Matrix3D()
+                m.rotate_x(math.pi)  # Initial transform
+                
+                # Side positioning from drawPentagon()
+                if face.id == 0:  # bottom
+                    m.rotate_z(-zv - ro*2)
+                elif face.id > 0 and face.id < 6:  # bottom half
+                    m.rotate_z(ro*face.id + zv - ro)
+                    m.rotate_x(xv)
+                elif face.id >= 6 and face.id < 11:  # top half
+                    m.rotate_z(ro*face.id - zv + ro*3)
+                    m.rotate_x(math.pi - xv)
+                else:  # face.id == 11, top
+                    m.rotate_x(math.pi)
+                    m.rotate_z(zv)
+                
+                # Move face out to radius
+                m.translate(0, 0, radius*1.31)
+                
+                # Additional hemisphere rotation
+                if face.id >= 6 and face.id < 11:
+                    m.rotate_z(zv)
+                else:
+                    m.rotate_z(-zv)
+                
+                # Side rotation
+                m.rotate_z(ro * side_rotation[face.id])
+                
+                # Transform all vertices
+                for vertex in base_vertices:
+                    world_pos = m.apply(vertex)
+                    # Negate Y and Z to match coordinate system
+                    vertices.append([world_pos[0], -world_pos[1], -world_pos[2]])
+
             # Check if we have position data
             if hasattr(face.position, 'x') and face.position.x != 0 and face.position.y != 0 and face.position.z != 0:
                 print(f"        {{.id = {face.id}, .type_id = {type_id}, .rotation = {face.rotation}, "
-                      f".x = {face.position.x}f, .y = {face.position.y}f, .z = {face.position.z}f }}{'' if i == len(self.model_def.faces) - 1 else ','}", file=file)
+                      f".x = {face.position.x}f, .y = {face.position.y}f, .z = {face.position.z}f,", file=file)
             else:
-                print(f"        {{.id = {face.id}, .type_id = {type_id}, .rotation = {face.rotation}}}{'' if i == len(self.model_def.faces) - 1 else ','}", file=file)
+                print(f"        {{.id = {face.id}, .type_id = {type_id}, .rotation = {face.rotation},", file=file)
+            
+            # Output vertices as simple arrays of floats
+            print(f"            .vertices = {{", file=file)
+            for j, vertex in enumerate(vertices):
+                print(f"                {{.x = {vertex[0]:.3f}f, .y = {vertex[1]:.3f}f, .z = {vertex[2]:.3f}f}}{'' if j == len(vertices) - 1 else ','}", file=file)
+            # Pad remaining vertices with zeros if needed
+            for j in range(len(vertices), PixelTheater.Limits.MAX_EDGES_PER_FACE):
+                print(f"                {{.x = 0.0f, .y = 0.0f, .z = 0.0f}}{'' if j == PixelTheater.Limits.MAX_EDGES_PER_FACE - 1 else ','}", file=file)
+            print(f"            }}", file=file)
+            print(f"        }}{'' if i == len(self.model_def.faces) - 1 else ','}", file=file)
         print("    }};", file=file)
 
         # Points
         print(f"\n    // Point geometry - define all points with correct face assignments", file=file)
         print(f"    static constexpr PointData POINTS[] = {{", file=file)
         for i, led in enumerate(self.model_def.leds):
-            print(f"        {{{led.index}, {led.face_id}, {led.position.x:.3f}f, "
-                  f"{led.position.y:.3f}f, {led.position.z:.3f}f}}{'' if i == len(self.model_def.leds) - 1 else ','}", file=file)
+            print(f"        {{{led.index}, {led.face_id}, {led.position.x:.3f}f, {led.position.y:.3f}f, {led.position.z:.3f}f}}"
+                  f"{'' if i == len(self.model_def.leds) - 1 else ','}", file=file)
         print("    };", file=file)
 
-        # Neighbors
+        # Neighbors - simple array initialization
         print(f"\n    // Define neighbor relationships", file=file)
         print(f"    static constexpr NeighborData NEIGHBORS[] = {{", file=file)
         for i, led in enumerate(self.model_def.leds):
             if not led.neighbors:
                 continue
-                
-            print(f"        {{", file=file)
-            print(f"            .point_id = {led.index},", file=file)
-            print(f"            .neighbors = {{", file=file)
-            
-            neighbors_str = []
-            for j, n in enumerate(led.neighbors[:MAX_LED_NEIGHBORS]):
-                neighbors_str.append(f"                {{.id = {n.led_number}, .distance = {n.distance:.3f}f}}")
-            
-            print(",\n".join(neighbors_str), file=file)
-            print(f"            }}", file=file)
-            print(f"        }}{'' if i == len(self.model_def.leds) - 1 else ','}", file=file)
+            print(f"        {{{led.index}, {{", file=file)
+            neighbors = []
+            for n in led.neighbors[:MAX_LED_NEIGHBORS]:
+                neighbors.append(f"{{.id = {n.led_number}, .distance = {n.distance:.3f}f}}")
+            print(f"            {', '.join(neighbors)}", file=file)
+            print(f"        }}}}{'' if i == len(self.model_def.leds) - 1 else ','}", file=file)
         print("    };", file=file)
 
         # Close model definition

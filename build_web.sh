@@ -35,7 +35,7 @@ emcc src/web_simulator.cpp \
      -I"src/scenes" \
      -I".pio/libdeps/web/ArduinoEigen/ArduinoEigen" \
      -I"include" \
-     -std=c++17 \
+     -std=c++20 \
      -DPLATFORM_WEB \
      -DEMSCRIPTEN \
      -DDEBUG \
@@ -44,7 +44,7 @@ emcc src/web_simulator.cpp \
      -s FULL_ES3=1 \
      -s ALLOW_MEMORY_GROWTH=1 \
      -s EXPORTED_RUNTIME_METHODS='["UTF8ToString", "ccall", "cwrap"]' \
-     -s EXPORTED_FUNCTIONS='["_main", "_change_scene", "_get_scene_count", "_get_scene_name", "_set_brightness", "_show_benchmark_report", "_toggle_debug_mode", "_print_model_info"]' \
+     -s EXPORTED_FUNCTIONS='["_main", "_change_scene", "_get_scene_count", "_get_scene_name", "_set_brightness", "_show_benchmark_report", "_toggle_debug_mode", "_print_model_info", "_get_current_time", "_update_ui_fps", "_update_ui_brightness", "_get_canvas_width", "_get_canvas_height", "_ZN12PixelTheater4WebGL11WebPlatform13cleanupWebGLEv", "_ZN12PixelTheater4WebGL11WebPlatform13onCanvasResizeEii", "_ZN12PixelTheater4WebGL11WebPlatform9onMouseDownEii", "_ZN12PixelTheater4WebGL11WebPlatform9onMouseMoveEiib", "_ZN12PixelTheater4WebGL11WebPlatform7onMouseUpEv", "_ZN12PixelTheater4WebGL11WebPlatform10onMouseWheelEf", "_ZN12PixelTheater4WebGL11WebPlatform11setLEDSizeEf", "_ZN12PixelTheater4WebGL11WebPlatform11setShowMeshEb", "_ZN12PixelTheater4WebGL11WebPlatform14setMeshOpacityEf", "_ZN12PixelTheater4WebGL11WebPlatform14setAutoRotationEbf", "_ZN12PixelTheater4WebGL11WebPlatform12setPresetViewEi", "_ZN12PixelTheater4WebGL11WebPlatform12setZoomLevelEi", "_get_current_time", "_update_ui_fps", "_update_ui_brightness", "_get_canvas_width", "_get_canvas_height"]' \
      -s INITIAL_MEMORY=32MB \
      -s MAXIMUM_MEMORY=128MB \
      -s ASSERTIONS=2 \

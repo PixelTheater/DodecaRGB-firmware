@@ -32,7 +32,7 @@ using ModelDef = PixelTheater::Fixtures::DodecaRGBv2;
 class WebSimulator {
 private:
     // Member variables
-    std::unique_ptr<PixelTheater::WebPlatform> platform;
+    std::unique_ptr<PixelTheater::WebGL::WebPlatform> platform;
     std::unique_ptr<PixelTheater::Model<ModelDef>> model;
     std::unique_ptr<PixelTheater::Stage<ModelDef>> stage;
     Scenes::TestScene<ModelDef>* test_scene = nullptr;
@@ -52,55 +52,27 @@ public:
             // Enable benchmarking
             Benchmark::enabled = true;
             
-            // Create the platform with the correct number of LEDs
-            const uint16_t num_leds = ModelDef::LED_COUNT;
-            if (g_debug_mode) {
-                std::cout << "Creating WebPlatform with " << num_leds << " LEDs" << std::endl;
-            }
-            platform = std::make_unique<PixelTheater::WebPlatform>(num_leds);
-            
-            // Set higher default brightness for better visibility
-            platform->setBrightness(200);
-            
-            // Set initial zoom level to NORMAL
-            platform->setZoomLevel(static_cast<int>(PixelTheater::ZoomLevel::NORMAL));
-            
-            // Create model based on our model definition
-            if (g_debug_mode) {
-                std::cout << "Creating Model" << std::endl;
-            }
-            model = std::make_unique<PixelTheater::Model<ModelDef>>(ModelDef{}, platform->getLEDs());
-            
-            // Print model information
-            if (g_debug_mode) {
-                std::cout << "Model created with " << model->face_count() << " faces" << std::endl;
+            // Initialize the platform
+            if (!platform) {
+                platform = std::make_unique<PixelTheater::WebGL::WebPlatform>();
+                platform->initializeWithModel<ModelDef>();
+                platform->setBrightness(200);
+                platform->setZoomLevel(1); 
+                
+                printf("Platform initialized successfully\n");
             }
             
-            // Store a raw pointer to the model for the coordinate provider
-            // This is safe because the model will be owned by the stage and will outlive the platform
-            auto* model_ptr = model.get();
-            
-            // Set up the coordinate provider callback
-            // This will provide the 3D coordinates for each LED from the model
-            platform->setCoordinateProvider([model_ptr](uint16_t index, float& x, float& y, float& z) {
-                if (model_ptr && index < model_ptr->led_count()) {
-                    const auto& point = model_ptr->points[index];
-                    x = static_cast<float>(point.x());
-                    y = static_cast<float>(point.y());
-                    z = static_cast<float>(point.z());
-                } else {
-                    // Default values if model or index is invalid
-                    x = 0.0f;
-                    y = 0.0f;
-                    z = 0.0f;
-                }
-            });
+            // Create model instance
+            if (!model) {
+                model = std::make_unique<PixelTheater::Model<ModelDef>>(ModelDef{}, platform->getLEDs());
+                printf("Model created successfully\n");
+            }
             
             // Create stage with platform and model
-            if (g_debug_mode) {
-                std::cout << "Creating Stage" << std::endl;
+            if (!stage) {
+                stage = std::make_unique<PixelTheater::Stage<ModelDef>>(std::move(platform), std::move(model));
+                printf("Stage created successfully\n");
             }
-            stage = std::make_unique<PixelTheater::Stage<ModelDef>>(std::move(platform), std::move(model));
             
             // Add scenes
             if (g_debug_mode) {
@@ -126,10 +98,7 @@ public:
             
             return true;
         } catch (const std::exception& e) {
-            std::cerr << "Error in initialization: " << e.what() << std::endl;
-            return false;
-        } catch (...) {
-            std::cerr << "Unknown error in initialization" << std::endl;
+            printf("Error during initialization: %s\n", e.what());
             return false;
         }
     }
@@ -228,15 +197,14 @@ public:
     }
     
     // Get current brightness
-    uint8_t getBrightness() const {
-        if (stage) {
-            auto* platform = dynamic_cast<PixelTheater::WebPlatform*>(stage->getPlatform());
+    uint8_t getBrightness() {
+        if (stage && stage->getPlatform()) {
+            auto* platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(stage->getPlatform());
             if (platform) {
                 return platform->getBrightness();
             }
         }
-        // Return default if platform not available
-        return PixelTheater::WebPlatform::DEFAULT_BRIGHTNESS;
+        return PixelTheater::WebGL::WebPlatform::DEFAULT_BRIGHTNESS;
     }
     
     // Rotation management
@@ -244,9 +212,9 @@ public:
         if (stage) {
             auto* platform = stage->getPlatform();
             if (platform) {
-                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
                 if (web_platform) {
-                    web_platform->updateRotation(delta_x, delta_y);
+                    web_platform->updateRotation(-delta_x, -delta_y); // Inverted the deltas
                 } else {
                     std::cerr << "Platform is not a WebPlatform" << std::endl;
                 }
@@ -262,7 +230,7 @@ public:
         if (stage) {
             auto* platform = stage->getPlatform();
             if (platform) {
-                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
                 if (web_platform) {
                     web_platform->resetRotation();
                 } else {
@@ -281,7 +249,7 @@ public:
         if (stage) {
             auto* platform = stage->getPlatform();
             if (platform) {
-                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
                 if (web_platform) {
                     web_platform->setAutoRotation(enabled, speed);
                 }
@@ -294,7 +262,7 @@ public:
         if (stage) {
             auto* platform = stage->getPlatform();
             if (platform) {
-                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
                 if (web_platform) {
                     web_platform->setPresetView(preset_index);
                 }
@@ -307,7 +275,7 @@ public:
         if (stage) {
             auto* platform = stage->getPlatform();
             if (platform) {
-                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
                 if (web_platform) {
                     web_platform->setZoomLevel(zoom_level);
                 }
@@ -329,12 +297,14 @@ public:
             int frame_diff = frame_count - last_frame_count;
             fps = frame_diff / elapsed;
             
+            // Print benchmark report
+            std::cout << "FPS: " << fps << std::endl;
+            BENCHMARK_REPORT();
+            
+            // Reset counters
             last_frame_count = frame_count;
             last_time = current_time;
         }
-        
-        // Show benchmark report with calculated FPS
-        BENCHMARK_REPORT(fps);
     }
     
     // Debug mode toggle
@@ -395,7 +365,7 @@ public:
             std::cout << "Setting LED size to: " << size << std::endl;
             auto* platform = stage->getPlatform();
             if (platform) {
-                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
                 if (web_platform) {
                     web_platform->setLEDSize(size);
                 }
@@ -407,7 +377,7 @@ public:
         if (stage) {
             auto* platform = stage->getPlatform();
             if (platform) {
-                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
                 if (web_platform) {
                     return web_platform->getLEDSize();
                 }
@@ -420,7 +390,7 @@ public:
     void setAtmosphereIntensity(float intensity) {
         if (stage) {
             std::cout << "Setting atmosphere intensity to: " << intensity << std::endl;
-            auto* platform = dynamic_cast<PixelTheater::WebPlatform*>(stage->getPlatform());
+            auto* platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(stage->getPlatform());
             if (platform) {
                 platform->setAtmosphereIntensity(intensity);
             } else {
@@ -431,12 +401,12 @@ public:
     
     float getAtmosphereIntensity() const {
         if (stage) {
-            auto* platform = dynamic_cast<PixelTheater::WebPlatform*>(stage->getPlatform());
+            auto* platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(stage->getPlatform());
             if (platform) {
                 return platform->getAtmosphereIntensity();
             }
         }
-        return PixelTheater::WebPlatform::DEFAULT_ATMOSPHERE_INTENSITY;
+        return PixelTheater::WebGL::WebPlatform::DEFAULT_ATMOSPHERE_INTENSITY;
     }
     
     // Mesh visualization controls
@@ -444,7 +414,7 @@ public:
         if (stage) {
             auto* platform = stage->getPlatform();
             if (platform) {
-                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
                 if (web_platform) {
                     web_platform->setShowMesh(show);
                     std::cout << "Set mesh visibility: " << (show ? "ON" : "OFF") << std::endl;
@@ -457,7 +427,7 @@ public:
         if (stage) {
             auto* platform = stage->getPlatform();
             if (platform) {
-                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
                 if (web_platform) {
                     return web_platform->getShowMesh();
                 }
@@ -470,7 +440,7 @@ public:
         if (stage) {
             auto* platform = stage->getPlatform();
             if (platform) {
-                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
                 if (web_platform) {
                     web_platform->setMeshOpacity(opacity);
                     std::cout << "Set mesh opacity: " << opacity << std::endl;
@@ -483,7 +453,7 @@ public:
         if (stage) {
             auto* platform = stage->getPlatform();
             if (platform) {
-                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
                 if (web_platform) {
                     return web_platform->getMeshOpacity();
                 }
@@ -507,213 +477,210 @@ public:
     }
 };
 
-// Global instance
-WebSimulator g_simulator;
+// Create a global WebSimulator instance
+static std::unique_ptr<WebSimulator> g_simulator;
 
-// Function to be called every frame
-void main_loop() {
-    g_simulator.update();
-}
-
-// Implement the external C functions used by WebPlatform
+// Forward declarations of functions used in main
 extern "C" {
-    EMSCRIPTEN_KEEPALIVE
-    int get_canvas_width() {
-        // Return the canvas width, or a default value if not available
-        // In a real implementation, this would query the actual canvas element
-        return EM_ASM_INT({
-            return document.getElementById('canvas') ? document.getElementById('canvas').width : 800;
-        });
-    }
-
-    EMSCRIPTEN_KEEPALIVE
-    int get_canvas_height() {
-        // Return the canvas height, or a default value if not available
-        return EM_ASM_INT({
-            return document.getElementById('canvas') ? document.getElementById('canvas').height : 600;
-        });
-    }
-
-    EMSCRIPTEN_KEEPALIVE
-    double get_current_time() {
-        // Return the current time in seconds
-        return emscripten_get_now() / 1000.0;
-    }
-
-    EMSCRIPTEN_KEEPALIVE
-    void update_ui_fps(int fps) {
-        // Update the FPS display in the UI
-        EM_ASM_({
-            if (window.updateFPS) {
-                window.updateFPS($0);
-            }
-        }, fps);
-    }
-
-    EMSCRIPTEN_KEEPALIVE
-    void update_ui_brightness(float brightness) {
-        // Update the brightness slider in the UI
-        EM_ASM_({
-            if (window.updateBrightnessUI) {
-                window.updateBrightnessUI($0);
-            }
-        }, brightness);
-    }
-
-    // JavaScript callback for changing scenes
-    EMSCRIPTEN_KEEPALIVE
-    void change_scene(int scene_index) {
-        g_simulator.setScene(scene_index);
-    }
-    
-    EMSCRIPTEN_KEEPALIVE
-    int get_scene_count() {
-        return g_simulator.getSceneCount();
-    }
-    
-    EMSCRIPTEN_KEEPALIVE
-    void set_brightness(uint8_t brightness) {
-        g_simulator.setBrightness(brightness);
-    }
-    
-    // Expose rotation functions to JavaScript
-    EMSCRIPTEN_KEEPALIVE
-    void update_rotation(float delta_x, float delta_y) {
-        g_simulator.updateRotation(delta_x, delta_y);
-    }
-    
-    EMSCRIPTEN_KEEPALIVE
-    void reset_rotation() {
-        g_simulator.resetRotation();
-    }
-    
-    // New functions for auto-rotation and preset views
-    EMSCRIPTEN_KEEPALIVE
-    void set_auto_rotation(bool enabled, float speed) {
-        g_simulator.setAutoRotation(enabled, speed);
-    }
-    
-    EMSCRIPTEN_KEEPALIVE
-    void set_preset_view(int preset_index) {
-        g_simulator.setPresetView(preset_index);
-    }
-    
-    EMSCRIPTEN_KEEPALIVE
-    void set_zoom_level(int zoom_level) {
-        g_simulator.setZoomLevel(zoom_level);
-    }
-    
-    EMSCRIPTEN_KEEPALIVE
-    void show_benchmark_report() {
-        g_simulator.showBenchmarkReport();
-    }
-    
-    EMSCRIPTEN_KEEPALIVE
-    void toggle_debug_mode() {
-        g_simulator.toggleDebugMode();
-    }
-    
-    EMSCRIPTEN_KEEPALIVE
-    void print_model_info() {
-        g_simulator.printModelInfo();
-    }
-    
-    // Expose scene management functions
-    EMSCRIPTEN_KEEPALIVE
-    int get_num_scenes() {
-        return g_simulator.getSceneCount();
-    }
-    
-    EMSCRIPTEN_KEEPALIVE
-    void get_scene_name(int scene_index, char* buffer, int buffer_size) {
-        g_simulator.getSceneName(scene_index, buffer, buffer_size);
-    }
-    
-    EMSCRIPTEN_KEEPALIVE
-    void set_scene(int scene_index) {
-        g_simulator.setScene(scene_index);
-    }
-    
-    // LED size and atmosphere intensity controls
-    EMSCRIPTEN_KEEPALIVE
-    void set_led_size(float size) {
-        g_simulator.setLEDSize(size);
-    }
-    
-    EMSCRIPTEN_KEEPALIVE
-    float get_led_size() {
-        return g_simulator.getLEDSize();
-    }
-    
-    EMSCRIPTEN_KEEPALIVE
-    void set_atmosphere_intensity(float intensity) {
-        g_simulator.setAtmosphereIntensity(intensity);
-    }
-    
-    EMSCRIPTEN_KEEPALIVE
-    float get_atmosphere_intensity() {
-        return g_simulator.getAtmosphereIntensity();
-    }
-    
-    // Mesh visualization controls
-    EMSCRIPTEN_KEEPALIVE
-    void set_show_mesh(bool show) {
-        g_simulator.setShowMesh(show);
-    }
-    
-    EMSCRIPTEN_KEEPALIVE
-    bool get_show_mesh() {
-        return g_simulator.getShowMesh();
-    }
-    
-    EMSCRIPTEN_KEEPALIVE
-    void set_mesh_opacity(float opacity) {
-        g_simulator.setMeshOpacity(opacity);
-    }
-    
-    EMSCRIPTEN_KEEPALIVE
-    float get_mesh_opacity() {
-        return g_simulator.getMeshOpacity();
-    }
-    
-    // Add functions for model stats
-    EMSCRIPTEN_KEEPALIVE
-    int get_led_count() {
-        return g_simulator.getLEDCount();
-    }
-    
-    EMSCRIPTEN_KEEPALIVE
-    float get_fps() {
-        return g_simulator.getFPS();
-    }
-    
-    // Function to be called from JavaScript for logging
-    EMSCRIPTEN_KEEPALIVE
-    void log_message(const char* message) {
-        PixelTheater::Log::warning("%s", message);
-    }
-    
-    // JavaScript callback for getting brightness
-    EMSCRIPTEN_KEEPALIVE
-    uint8_t get_brightness() {
-        return g_simulator.getBrightness();
-    }
+    bool init_simulator();
+    void update_simulator();
 }
 
+// Main function (not extern "C")
 int main() {
-    std::cout << "Initializing WebGL LED Simulator..." << std::endl;
-    
     // Initialize the simulator
-    if (!g_simulator.initialize()) {
+    if (!init_simulator()) {
         std::cerr << "Failed to initialize simulator" << std::endl;
         return 1;
     }
     
-    // Set up the main loop
-    std::cout << "Setting up main loop" << std::endl;
-    emscripten_set_main_loop(main_loop, 0, 1);
+    // Set up the animation loop
+    emscripten_set_main_loop([]() {
+        update_simulator();
+    }, 0, 1);  // 0 = no FPS limit, 1 = simulate infinite loop
     
-    // This code will never be reached in Emscripten
     return 0;
-} 
-#endif 
+}
+
+// JavaScript interface functions
+extern "C" {
+
+EMSCRIPTEN_KEEPALIVE
+bool init_simulator() {
+    try {
+        g_simulator = std::make_unique<WebSimulator>();
+        return g_simulator->initialize();
+    } catch (const std::exception& e) {
+        std::cerr << "Error initializing simulator: " << e.what() << std::endl;
+        return false;
+    } catch (...) {
+        std::cerr << "Unknown error initializing simulator" << std::endl;
+        return false;
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+void update_simulator() {
+    if (g_simulator) {
+        g_simulator->update();
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+void change_scene(int sceneIndex) {
+    if (g_simulator) {
+        g_simulator->setScene(sceneIndex);
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+int get_scene_count() {
+    return g_simulator ? g_simulator->getSceneCount() : 0;
+}
+
+EMSCRIPTEN_KEEPALIVE
+void set_brightness(uint8_t brightness) {
+    if (g_simulator) {
+        g_simulator->setBrightness(brightness);
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+uint8_t get_brightness() {
+    return g_simulator ? g_simulator->getBrightness() : 0;
+}
+
+EMSCRIPTEN_KEEPALIVE
+void update_rotation(float delta_x, float delta_y) {
+    if (g_simulator) {
+        g_simulator->updateRotation(delta_x, delta_y);
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+void reset_rotation() {
+    if (g_simulator) {
+        g_simulator->resetRotation();
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+void set_auto_rotation(bool enabled, float speed) {
+    if (g_simulator) {
+        g_simulator->setAutoRotation(enabled, speed);
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+void set_preset_view(int preset_index) {
+    if (g_simulator) {
+        g_simulator->setPresetView(preset_index);
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+void set_zoom_level(int zoom_level) {
+    if (g_simulator) {
+        g_simulator->setZoomLevel(zoom_level);
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+void show_benchmark_report() {
+    if (g_simulator) {
+        g_simulator->showBenchmarkReport();
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+void toggle_debug_mode() {
+    if (g_simulator) {
+        g_simulator->toggleDebugMode();
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+void print_model_info() {
+    if (g_simulator) {
+        g_simulator->printModelInfo();
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+int get_num_scenes() {
+    return g_simulator ? g_simulator->getSceneCount() : 0;
+}
+
+EMSCRIPTEN_KEEPALIVE
+void get_scene_name(int scene_index, char* buffer, int buffer_size) {
+    if (g_simulator) {
+        g_simulator->getSceneName(scene_index, buffer, buffer_size);
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+void set_led_size(float size) {
+    if (g_simulator) {
+        g_simulator->setLEDSize(size);
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+float get_led_size() {
+    return g_simulator ? g_simulator->getLEDSize() : 0.0f;
+}
+
+EMSCRIPTEN_KEEPALIVE
+void set_atmosphere_intensity(float intensity) {
+    if (g_simulator) {
+        g_simulator->setAtmosphereIntensity(intensity);
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+float get_atmosphere_intensity() {
+    return g_simulator ? g_simulator->getAtmosphereIntensity() : 0.0f;
+}
+
+EMSCRIPTEN_KEEPALIVE
+void set_show_mesh(bool show) {
+    if (g_simulator) {
+        g_simulator->setShowMesh(show);
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+bool get_show_mesh() {
+    return g_simulator ? g_simulator->getShowMesh() : false;
+}
+
+EMSCRIPTEN_KEEPALIVE
+void set_mesh_opacity(float opacity) {
+    if (g_simulator) {
+        g_simulator->setMeshOpacity(opacity);
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+float get_mesh_opacity() {
+    return g_simulator ? g_simulator->getMeshOpacity() : 0.3f;
+}
+
+EMSCRIPTEN_KEEPALIVE
+int get_led_count() {
+    return g_simulator ? g_simulator->getLEDCount() : 0;
+}
+
+EMSCRIPTEN_KEEPALIVE
+float get_fps() {
+    return g_simulator ? g_simulator->getFPS() : 0.0f;
+}
+
+EMSCRIPTEN_KEEPALIVE
+void log_message(const char* message) {
+    PixelTheater::Log::warning("%s", message);
+}
+
+} // extern "C"
+
+#endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 

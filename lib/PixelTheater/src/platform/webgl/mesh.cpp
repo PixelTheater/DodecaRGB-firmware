@@ -1,3 +1,5 @@
+#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+
 #include "PixelTheater/platform/webgl/mesh.h"
 #include <cmath>
 #include <cstdio> // For printf instead of <iostream>
@@ -7,127 +9,22 @@
 #include <utility>
 
 namespace PixelTheater {
+namespace WebGL {
 
-MeshGenerator::MeshGenerator(std::function<void(uint16_t, float&, float&, float&)> coordProvider, uint16_t numLEDs)
-    : _coord_provider(coordProvider), _num_leds(numLEDs) {
-    // Empty constructor
-}
-
-void MeshGenerator::generateDodecahedronMesh() {
-    // Clear any existing mesh data
-    clear();
-    
-    // The golden ratio - key to building a dodecahedron
-    const float phi = (1.0f + std::sqrt(5.0f)) / 2.0f;
-    
-    // The scale factor for the dodecahedron
-    const float scale = 250.0f;
-    
-    // Vertices of a regular dodecahedron
-    std::vector<std::array<float, 3>> vertices = {
-        // (±1, ±1, ±1)
-        {-1.0f, -1.0f, -1.0f},
-        {-1.0f, -1.0f,  1.0f},
-        {-1.0f,  1.0f, -1.0f},
-        {-1.0f,  1.0f,  1.0f},
-        { 1.0f, -1.0f, -1.0f},
-        { 1.0f, -1.0f,  1.0f},
-        { 1.0f,  1.0f, -1.0f},
-        { 1.0f,  1.0f,  1.0f},
-        
-        // (0, ±1/φ, ±φ)
-        {0.0f, -1.0f/phi, -phi},
-        {0.0f, -1.0f/phi,  phi},
-        {0.0f,  1.0f/phi, -phi},
-        {0.0f,  1.0f/phi,  phi},
-        
-        // (±1/φ, ±φ, 0)
-        {-1.0f/phi, -phi, 0.0f},
-        {-1.0f/phi,  phi, 0.0f},
-        { 1.0f/phi, -phi, 0.0f},
-        { 1.0f/phi,  phi, 0.0f},
-        
-        // (±φ, 0, ±1/φ)
-        {-phi, 0.0f, -1.0f/phi},
-        {-phi, 0.0f,  1.0f/phi},
-        { phi, 0.0f, -1.0f/phi},
-        { phi, 0.0f,  1.0f/phi}
-    };
-    
-    // Scale vertices
-    for (auto& v : vertices) {
-        v[0] *= scale;
-        v[1] *= scale;
-        v[2] *= scale;
-    }
-    
-    // Define the 12 faces of the dodecahedron, each with 5 vertex indices
-    const std::array<std::array<int, 5>, 12> faces = {{
-        {0, 8, 10, 2, 16},    // Face 0
-        {0, 12, 14, 4, 8},    // Face 1
-        {0, 16, 17, 1, 12},   // Face 2
-        {1, 9, 5, 14, 12},    // Face 3
-        {1, 17, 3, 11, 9},    // Face 4
-        {2, 10, 6, 15, 13},   // Face 5
-        {2, 13, 3, 17, 16},   // Face 6
-        {3, 13, 15, 7, 11},   // Face 7
-        {4, 14, 5, 19, 18},   // Face 8
-        {4, 18, 6, 10, 8},    // Face 9
-        {5, 9, 11, 7, 19},    // Face 10
-        {6, 18, 19, 7, 15}    // Face 11
-    }};
-    
-    // Add each face to the mesh
-    for (const auto& face : faces) {
-        // Calculate face center and normal for proper lighting
-        std::array<float, 3> center = {0.0f, 0.0f, 0.0f};
-        
-        for (int idx : face) {
-            const auto& v = vertices[idx];
-            center[0] += v[0];
-            center[1] += v[1];
-            center[2] += v[2];
-        }
-        
-        center[0] /= 5.0f;
-        center[1] /= 5.0f;
-        center[2] /= 5.0f;
-        
-        // Calculate normal as direction from origin to center (for dodecahedron)
-        float normalLength = std::sqrt(center[0]*center[0] + center[1]*center[1] + center[2]*center[2]);
-        std::array<float, 3> normal = {
-            center[0] / normalLength,
-            center[1] / normalLength,
-            center[2] / normalLength
-        };
-        
-        // Add vertices with calculated normal
-        std::vector<uint16_t> faceIndices;
-        for (int idx : face) {
-            // Store result of addVertex
-            uint16_t vertexIndex = 0;
-            // Use the void function form
-            addVertex(
-                vertices[idx][0], vertices[idx][1], vertices[idx][2],
-                normal[0], normal[1], normal[2]
-            );
-            // Get the last vertex index
-            vertexIndex = static_cast<uint16_t>(_vertices.size() / 6 - 1);
-            faceIndices.push_back(vertexIndex);
-        }
-        
-        // Triangulate the pentagon (fan triangulation)
-        for (int i = 1; i < 4; ++i) {
-            // Use addTriangle as declared in the header
-            addTriangle(faceIndices[0], faceIndices[i], faceIndices[i+1]);
-        }
-    }
+void MeshGenerator::clear() {
+    _vertices.clear();
+    _indices.clear();
+    _edge_vertices.clear();
+    _edge_indices.clear();
 }
 
 void MeshGenerator::addVertex(float x, float y, float z, float nx, float ny, float nz) {
+    // Add position
     _vertices.push_back(x);
     _vertices.push_back(y);
     _vertices.push_back(z);
+    
+    // Add normal
     _vertices.push_back(nx);
     _vertices.push_back(ny);
     _vertices.push_back(nz);
@@ -139,9 +36,131 @@ void MeshGenerator::addTriangle(uint16_t a, uint16_t b, uint16_t c) {
     _indices.push_back(c);
 }
 
-void MeshGenerator::clear() {
-    _vertices.clear();
-    _indices.clear();
+void MeshGenerator::addEdge(const WebVertex& v1, const WebVertex& v2) {
+    // Add vertices for the edge line
+    size_t start_idx = _edge_vertices.size() / 3;
+    _edge_vertices.push_back(v1.x);
+    _edge_vertices.push_back(v1.y);
+    _edge_vertices.push_back(v1.z);
+    _edge_vertices.push_back(v2.x);
+    _edge_vertices.push_back(v2.y);
+    _edge_vertices.push_back(v2.z);
+    
+    // Add indices for the line
+    _edge_indices.push_back(start_idx);
+    _edge_indices.push_back(start_idx + 1);
 }
 
-} // namespace PixelTheater 
+void MeshGenerator::calculateFaceNormal(const std::vector<WebVertex>& vertices, float& nx, float& ny, float& nz) {
+    if (vertices.size() < 3) {
+        nx = 0; ny = 0; nz = 1; // Default normal if not enough vertices
+        return;
+    }
+
+    // Use first three vertices to calculate normal
+    const WebVertex& v1 = vertices[0];
+    const WebVertex& v2 = vertices[1];
+    const WebVertex& v3 = vertices[2];
+
+    // Calculate two vectors in the plane
+    float ux = v2.x - v1.x;
+    float uy = v2.y - v1.y;
+    float uz = v2.z - v1.z;
+
+    float vx = v3.x - v1.x;
+    float vy = v3.y - v1.y;
+    float vz = v3.z - v1.z;
+
+    // Calculate cross product
+    nx = uy * vz - uz * vy;
+    ny = uz * vx - ux * vz;
+    nz = ux * vy - uy * vx;
+
+    // Normalize
+    float length = std::sqrt(nx * nx + ny * ny + nz * nz);
+    if (length > 0.0001f) {
+        nx /= length;
+        ny /= length;
+        nz /= length;
+    } else {
+        nx = 0; ny = 0; nz = 1; // Default normal if vectors are parallel
+    }
+}
+
+void MeshGenerator::generateDodecahedronMesh(const std::vector<WebFace>& faces) {
+    clear();
+    
+    // Scale factor to match LED scaling - adjusted to match LED positions
+    constexpr float POSITION_SCALE = 0.0295f;  // LED positions are pre-scaled, face vertices are in raw mm
+    constexpr float Z_CORRECTION = 1.0f;
+    
+    // Generate faces and edges
+    for (size_t face = 0; face < faces.size(); face++) {
+        std::vector<WebVertex> faceVertices;
+        float nx, ny, nz;
+        
+        // Get actual pentagon corner vertices for this face
+        for (size_t i = 0; i < faces[face].vertices.size(); i++) {
+            // Get vertex position from the provided face data
+            float x = faces[face].vertices[i].x;
+            float y = faces[face].vertices[i].y;
+            float z = faces[face].vertices[i].z;
+            
+            // Scale positions to match LED scaling
+            x *= POSITION_SCALE;
+            y *= POSITION_SCALE;
+            z *= POSITION_SCALE * Z_CORRECTION;
+            
+            faceVertices.push_back({x, y, z});
+        }
+        
+        // Calculate face normal
+        calculateFaceNormal(faceVertices, nx, ny, nz);
+        
+        // Calculate center point of pentagon
+        WebVertex center = {0, 0, 0};
+        for (const auto& v : faceVertices) {
+            center.x += v.x;
+            center.y += v.y;
+            center.z += v.z;
+        }
+        center.x /= faceVertices.size();
+        center.y /= faceVertices.size();
+        center.z /= faceVertices.size();
+        
+        // Add center vertex
+        size_t centerIndex = _vertices.size() / 6;
+        addVertex(center.x, center.y, center.z, nx, ny, nz);
+        
+        // Add pentagon vertices
+        size_t baseVertexIndex = _vertices.size() / 6;
+        for (const auto& vertex : faceVertices) {
+            addVertex(vertex.x, vertex.y, vertex.z, nx, ny, nz);
+        }
+        
+        // Create triangles from center to each edge
+        for (size_t i = 0; i < faceVertices.size(); i++) {
+            size_t next = (i + 1) % faceVertices.size();
+            // Create triangle with correct winding order
+            addTriangle(
+                centerIndex,
+                baseVertexIndex + i,
+                baseVertexIndex + next
+            );
+        }
+        
+        // Add edges between consecutive vertices
+        for (size_t i = 0; i < faceVertices.size(); i++) {
+            size_t next = (i + 1) % faceVertices.size();
+            addEdge(faceVertices[i], faceVertices[next]);
+        }
+    }
+    
+    printf("Generated mesh with %zu vertices and %zu indices\n", 
+           _vertices.size() / 6, _indices.size() / 3);
+}
+
+} // namespace WebGL
+} // namespace PixelTheater
+
+#endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 
