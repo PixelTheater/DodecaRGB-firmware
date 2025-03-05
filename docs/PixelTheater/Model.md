@@ -28,12 +28,11 @@ Models follow a specific folder structure:
 
 ```
 src/models/
-└── DodecaRGBv2/              # Model directory
-    ├── model.yaml            # Model definition
+└── DodecaRGBv2/             # Model directory
+    ├── model.yaml           # Model definition
     ├── model.h              # Generated header file
     ├── pcb/                 # PCB-related files
-    │   ├── DodecaRGB.pos    # Pick-and-place file
-    │   └── board.json       # Board definition
+    │   ├── DodecaRGB.csv    # Pick-and-place file
     └── README.md            # Model documentation
 ```
 
