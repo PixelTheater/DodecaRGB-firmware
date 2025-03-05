@@ -8,16 +8,10 @@ version: 2.8.3
 
 Scenes are the core animation components in PixelTheater. Each scene defines a self-contained animation with its own parameters, state, and rendering logic.
 
-## Scene Structure
+## Scene Organization
 
 A scene consists of:
-1. Scene class implementation
-2. Parameter definitions (YAML or code)
-3. Optional resources (palettes, patterns)
-4. Documentation
-
-Example directory structure:
-```bash
+```
 scenes/space/              # Scene root directory
 ├── space.yaml            # Parameter configuration
 ├── space.cpp             # Scene implementation 
@@ -28,107 +22,76 @@ scenes/space/              # Scene root directory
     └── deep_space.pal   # Palette resource
 ```
 
-## Basic Scene Implementation
+## Scene Implementation
+
+### Lifecycle
 
 ```cpp
-namespace PixelTheater {
-namespace Scenes {
-
 template<typename ModelDef>
-class SpaceScene : public Scene<ModelDef> {
+class MyScene : public Scene<ModelDef> {
     using Scene = Scene<ModelDef>;
     using Scene::Scene;  // Inherit constructor
     
     void setup() override {
-        // Define parameters
+        // Called once when scene becomes active
+        // Initialize parameters and state here
         param("speed", "ratio", 0.5f, "clamp");
-        param("fade", "integer", 2);
-        param("stars", "integer", 100);
-        
-        // Initialize scene state
         _stars.reserve(settings["stars"]);
-        for (int i = 0; i < settings["stars"]; i++) {
-            _stars.emplace_back(createStar());
-        }
     }
     
     void tick() override {
-        Scene::tick();  // Call base to increment counter
+        Scene::tick();  // Required: updates frame counter
         
-        // Get current parameter values
-        float speed = settings["speed"];
-        int fade = settings["fade"];
-        
-        // Update scene state
-        updateStars(speed);
-        
-        // Apply global effects
-        fadeFrame(fade);
-        
-        // Render the frame
-        renderStars();
+        // Called every frame
+        updateState();
+        renderFrame();
     }
     
     std::string status() const override {
-        return "Stars: " + std::to_string(_stars.size()) + 
-               ", Speed: " + std::to_string(settings["speed"]);
-    }
-
-private:
-    std::vector<Star> _stars;
-    
-    void updateStars(float speed) {
-        for (auto& star : _stars) {
-            star.update(speed);
-        }
-    }
-    
-    void fadeFrame(int amount) {
-        for (auto& led : this->stage->model->leds) {
-            fadeToBlackBy(led, amount);
-        }
-    }
-    
-    void renderStars() {
-        for (const auto& star : _stars) {
-            auto& led = this->stage->model->leds[star.led_index];
-            led = star.color;
-        }
+        return "Frame: " + std::to_string(tick_count());
     }
 };
+```
 
-}} // namespace PixelTheater::Scenes
+### Stage and Model Access
+
+```cpp
+void MyScene::tick() {
+    Scene::tick();
+    
+    // Stage access
+    auto& leds = this->stage.leds;           // LED array
+    auto& model = this->stage.model;         // Model access
+    size_t num_leds = model.led_count();     // Total LEDs
+    size_t num_faces = model.face_count();   // Total faces
+    
+    // LED access patterns
+    leds[0] = CRGB::Red;                    // Direct indexing
+    model.faces[0].leds[0] = CRGB::Blue;    // Through face
+    
+    // Range-based iteration
+    for(auto& led : leds) {
+        fadeToBlackBy(led, 128);
+    }
+    
+    // Face-based iteration
+    for(auto& face : model.faces) {
+        for(auto& led : face.leds) {
+            led = CRGB::Green;
+        }
+    }
+    
+    // Point-based access
+    for(const auto& point : model.points) {
+        float height = point.y();
+        leds[point.id()] = CHSV(height * 255, 255, 255);
+    }
+}
 ```
 
 ## Parameter System
 
-Parameters in PixelTheater use a four-layer architecture for type safety and validation:
-
-1. **Scene Layer** (User Interface)
-   - Type-safe parameter access via `settings[]`
-   - Parameter definition in `setup()`
-   - Parameter lifecycle and inheritance
-
-2. **Settings Layer** (Parameter Management)
-   - Parameter definitions and values
-   - Validation chains
-   - Parameter inheritance
-   - Bounds checking
-
-3. **Parameter Layer** (Type System)
-   - Parameter definitions and metadata
-   - Type-safe value container
-   - Validation and conversion rules
-
-4. **Handler Layer** (Core Logic)
-   - Type validation and conversion
-   - Range validation
-   - Flag handling
-   - Error handling
-
-### Parameter Definition
-
-Parameters can be defined in three ways:
+### Definition Methods
 
 1. **YAML Definition** (Recommended):
 ```yaml
@@ -147,7 +110,7 @@ parameters:
     description: "Particle motion pattern"
 ```
 
-2. **Manual Definition**:
+2. **Code Definition**:
 ```cpp
 void setup() override {
     param("speed", "ratio", 0.5f, "clamp");
@@ -157,13 +120,7 @@ void setup() override {
 
 3. **Inheritance**:
 ```cpp
-class BaseScene : public Scene<ModelDef> {
-    void setup() override {
-        param("global_speed", "ratio", 1.0f);
-    }
-};
-
-class DerivedScene : public BaseScene {
+class DerivedScene : public BaseScene<ModelDef> {
     void setup() override {
         BaseScene::setup();  // Inherit parameters
         param("local_speed", "ratio", 0.5f);
@@ -171,132 +128,61 @@ class DerivedScene : public BaseScene {
 };
 ```
 
-### Parameter Types
-
-The parameter system supports these types:
-
-1. **ratio**: Float value [0.0, 1.0]
-   ```cpp
-   param("opacity", "ratio", 0.5f, "clamp");
-   float opacity = settings["opacity"];  // Range [0.0, 1.0]
-   ```
-
-2. **signed_ratio**: Float value [-1.0, 1.0]
-   ```cpp
-   param("balance", "signed_ratio", 0.0f);
-   float balance = settings["balance"];  // Range [-1.0, 1.0]
-   ```
-
-3. **integer**: Whole number value
-   ```cpp
-   param("count", "integer", 10);
-   int count = settings["count"];
-   ```
-
-4. **boolean**: True/false value
-   ```cpp
-   param("active", "boolean", true);
-   bool active = settings["active"];
-   ```
-
-5. **select**: Enumerated string value
-   ```cpp
-   param("mode", "select", "orbit");
-   std::string mode = settings["mode"];
-   ```
-
-### Parameter Access
-
-Parameters are accessed through the type-safe `settings[]` interface:
+### Parameter Types and Access
 
 ```cpp
-void SpaceScene::tick() {
-    // Type-safe access with validation
+void setup() {
+    // Type definitions
+    param("opacity", "ratio", 0.5f);         // [0.0, 1.0]
+    param("balance", "signed_ratio", 0.0f);  // [-1.0, 1.0]
+    param("count", "integer", 10);           // Whole number
+    param("active", "boolean", true);        // True/false
+    param("mode", "select", "orbit");        // Enumerated string
+}
+
+void tick() {
+    // Type-safe access
     float speed = settings["speed"];     // Returns float
     int count = settings["count"];       // Returns int
     bool active = settings["active"];    // Returns bool
     
-    // Invalid access returns safe sentinel values
+    // Safe defaults for invalid access
     float invalid = settings["nonexistent"];  // Returns 0.0f
     int bad_count = settings["bad_count"];    // Returns -1
     bool missing = settings["missing"];       // Returns false
-    
-    // Values are automatically clamped/wrapped based on flags
-    settings["speed"] = 1.2f;    // With "clamp": becomes 1.0f
-    settings["angle"] = 1.5f;    // With "wrap": wraps to -0.5f
 }
 ```
 
 ### Parameter Flags
-
-Parameters can have flags that modify their behavior:
 
 - `clamp`: Clamps values to valid range
 - `wrap`: Wraps values around range boundaries
 - `readonly`: Prevents value modification
 - `hidden`: Hides from UI but allows programmatic access
 
-## LED Access Patterns
-
-Scenes can access LEDs through the model in several ways:
-
-1. **Direct LED Access**:
+Example:
 ```cpp
-// Single LED access
-auto& led = this->stage->model->leds[0];
-led = CRGB::Red;
-
-// Range-based iteration
-for (auto& led : this->stage->model->leds) {
-    fadeToBlackBy(led, 128);
-}
-```
-
-2. **Face-based Access**:
-```cpp
-// Single face
-auto& face = this->stage->model->faces[0];
-for (auto& led : face.leds) {
-    led = CRGB::Blue;
-}
-
-// All faces
-for (auto& face : this->stage->model->faces) {
-    for (auto& led : face.leds) {
-        led = CRGB::Green;
-    }
-}
-```
-
-3. **Point-based Access**:
-```cpp
-// Access by point
-for (const auto& point : this->stage->model->points) {
-    float height = point.y();
-    this->stage->model->leds[point.id()] = CHSV(height * 255, 255, 255);
-}
+settings["speed"] = 1.2f;    // With "clamp": becomes 1.0f
+settings["angle"] = 1.5f;    // With "wrap": wraps to -0.5f
 ```
 
 ## Best Practices
 
-1. **Scene Organization**:
+1. **Scene Design**:
    - One scene per file
    - Clear parameter documentation
    - Meaningful scene names
+   - Call base class `tick()` for frame counting
 
-2. **Parameter Management**:
-   - Use YAML for parameter definition
-   - Document parameter ranges
-   - Use appropriate parameter types
-
-3. **Performance**:
+2. **Performance**:
    - Minimize allocations in tick()
    - Cache frequently used values
    - Use range-based for loops
+   - Pre-allocate vectors in setup()
 
-4. **Error Handling**:
+3. **Error Handling**:
    - Check parameter existence
-   - Validate parameter ranges
    - Use safe defaults
+   - Validate ranges
 
-See [Stage Documentation](Stage.md) for details on scene registration and lifecycle management.
+See [Stage Documentation](Stage.md) for scene registration and lifecycle management.
