@@ -1,524 +1,212 @@
-# Model Initialization and Use
+# Model System
 
-In PixelTheater, a **Model** represents a physical shape made from PCBs, along with all of the geometry data and LED points and region mappings. Models are generated from YAML configuration files and hardware specifications (EDA pick-and-place files) using the utility scripts. The result is a compete set of 3d point and geometric data in a C++ header file that can be used to animate the model. This workflow allows many model shapes and sizes to be designed and remixed while maintaining support for [Scene](Scene.md) animations.
+The Model system in PixelTheater represents physical LED arrangements and their geometric relationships. Models are defined through YAML configuration and generated into C++ header files that provide type-safe access to LED data and geometric information.
 
-## Core Relationships
+## Namespace Organization
 
-The `Model` contains collections of `Face` objects, `CRGB` colors, and `Point` coordinates.
-
-Each `Face` represents a physical surface. There can be different types of faces on the same model, so every model defines one or more `FaceType` objects. 
-
-for each `FaceType`, users can optionally define mutiple named `LedGroup` arrays, which are simple lists of LEDs numbers that define patterns or groups of LEDs on a face for animations. These will be avilable on each face instance.
-
-## Understanding LEDs and Points
-
-The model represents physical LEDs in two ways:
-1. As RGB colors that can be manipulated (leds)
-2. As 3D coordinates with relationships (points)
-
-Consider a face that has 20 LEDs, on a model with 8 faces. Indexing from the model is from 0..159. But each face has its own indexing from 0..19. Therefore:
+Models are defined in the `PixelTheater::Models` namespace to avoid naming conflicts. Each model is defined in its own header file:
 
 ```cpp
-model.leds[3] == model.faces[0].leds[3]    // Same LED, different index space
-model.leds[47] == model.faces[2].leds[7]
-model.leds[159] == model.faces[7].leds[19]
+// In models/DodecaRGBv2/model.h
+namespace PixelTheater {
+namespace Models {
+
+struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
+    static constexpr const char* NAME = "DodecaRGBv2";
+    static constexpr const char* VERSION = "2.0.0";
+    static constexpr const char* DESCRIPTION = "12-sided RGB LED dodecahedron";
+    static constexpr const char* MODEL_TYPE = "dodecahedron";
+    // ... model-specific data ...
+};
+
+}} // namespace PixelTheater::Models
 ```
 
-### Storage and Indexing
+## Model Organization
 
-The Model maintains two parallel arrays that represent each physical LED in two ways:
+Models follow a specific folder structure:
+
+```
+src/models/
+└── DodecaRGBv2/              # Model directory
+    ├── model.yaml            # Model definition
+    ├── model.h              # Generated header file
+    ├── pcb/                 # PCB-related files
+    │   ├── DodecaRGB.pos    # Pick-and-place file
+    │   └── board.json       # Board definition
+    └── README.md            # Model documentation
+```
+
+## Core Components
+
+A Model consists of three main collections that work together to represent the physical LED arrangement:
+
+1. **LED Array** (`leds`): 
+   - Direct access to LED color data
+   - Compatible with FastLED
+   - Zero-based continuous indexing
+   - Bounds-checked access
+
+2. **Point Geometry** (`points`):
+   - 3D coordinates for each LED
+   - Face assignments
+   - Neighbor relationships
+   - Distance calculations
+
+3. **Face Hierarchy** (`faces`):
+   - Physical surface definitions
+   - LED groupings
+   - Geometric transformations
+   - Local coordinate systems
+
+## Data Organization
+
+The Model maintains parallel arrays that represent each physical LED:
 
 ```cpp
-std::array<CRGB, ModelDef::LED_COUNT> _leds_data;    // LED colors (FastLED compatible)
-std::array<Point, ModelDef::LED_COUNT> _points;       // 3D coordinates and relationships
+// Internal storage (simplified)
+namespace PixelTheater {
+template<typename ModelDef>
+class Model {
+private:
+    CRGB* _leds;                                        // LED colors (FastLED)
+    std::array<Point, ModelDef::LED_COUNT> _points;     // 3D geometry
+    std::array<Face, ModelDef::FACE_COUNT> _faces;      // Surface hierarchy
+};
+}
 ```
 
 These arrays are always synchronized:
-- Same size (defined by ModelDef::LED_COUNT)
-- Same indexing (leds[i] and points[i] refer to same physical LED)
-- Zero-based indexing (required for FastLED and hardware addressing)
-- Direct array access for FastLED compatibility
-- Point data for geometric calculations and relationships
+- Same indexing scheme (leds[i] and points[i] refer to same LED)
+- Consistent face assignments
+- Maintained automatically by the Model class
 
-The key difference is that while the storage remains the same, the access patterns have evolved:
+## Coordinate Systems
+
+Models support multiple coordinate systems:
+
+1. **World Space**:
+   - Global 3D coordinates
+   - Used for distance calculations
+   - Origin at model center
+
+2. **Face Space**:
+   - Local to each face
+   - Used for surface effects
+   - Origin at face center
+
+3. **LED Indices**:
+   - Zero-based continuous array
+   - Used for direct LED access
+   - Maps to physical wiring
+
+Example coordinate relationships:
 ```cpp
-// Direct LED access (FastLED compatible)
-CRGB& led = model.leds[42];
-led.fadeToBlackBy(128);
+// World space position of LED
+Point& p = model.points[42];
+float x = p.x();  // Global X coordinate
+float y = p.y();  // Global Y coordinate
+float z = p.z();  // Global Z coordinate
 
-// Corresponding point access
-const Point& point = model.points[42];
-float height = point.y();
+// Face space mapping
+Face& f = model.faces[p.face_id()];
+size_t local_idx = f.local_index(42);  // LED index within face
+
+// Direct LED access
+CRGB& led = model.leds[42];  // Color data for same LED
 ```
 
-### Access Patterns
+## Model Definition
 
-The model provides three main patterns for working with LEDs:
-
-1. Direct LED Access (FastLED Compatible):
-
-```cpp
-// Get LED reference for direct manipulation
-CRGB& led = model.leds[42];
-led = CRGB::Blue;
-led.fadeToBlackBy(128);
-
-// Or use inline operations
-model.leds[42] = CRGB::Red;
-model.leds[42].nscale8(192);
-```
-
-2. Collection Operations:
-
-```cpp
-// Fill operations
-model.leds.fill(CRGB::Blue);
-
-// Iteration with references
-for(CRGB& led : model.leds) {
-    led.fadeToBlackBy(128);
-}
-
-// Point iteration
-for(const Point& point : model.points) {
-    float height = point.y();
-    model.leds[point.id()].setHue(height * 255);
-}
-```
-
-3. LedGroup-based animations (user-defined groups):
-
-```cpp
-// Fill each ring red
-for(auto& ring : model.groups("ring0", "ring1", "ring2")) {
-    ring.fill(CRGB::Red);
-}
-// define shapes or symbols, for example counting from 1-3 using groups
-for (int i=0; i<3; i++) {
-    model.groups("digit_" + String(i)).fill(CRGB::Red);
-}   
-```
-
-## Model API
-
-The model interface is designed to allow inspection of the overall shape and its components, as well as manipulation of the LEDs. Many methods are chainable, and return the object they are called on, allowing for a fluid syntax.
-
-### Core Classes
-
-- `Model` - The main model class that implements IModel interface
-  - `model_internal.h` - Generated model macros for configuration via generated code
-- `Face` - A physical face of the model with its LEDs and layout
-  - `FaceType` - Enum defining types of faces (Pentagon, Triangle, etc)
-  - `LedGroup` - A collection of LEDs on a face, defined by a list of LED indices
-  - `Point` - A 3D point with LED index and face assignment
-
-### Collection Access
-
-Collections are accessed in two ways:
-
-1. Direct element access:
-   - `model.leds[i] = CRGB::Red`
-   - `model.faces()[0].leds[0] = CRGB::Red`
-
-2. Collection operations:
-   - `model.leds.fill(CRGB::Blue)`
-   - `model.faces.size()`
-
-3. Led Groups (lists of led indices):
-   - `model.groups("ring0")`
-   - `face.groups()`
-
-Collections are returned as `ArrayView` types, and can be iterated over or indexed. By convention, a matching `operator[]` method is offered for indexing each collection type:
-
-- `model.faces()`  // collection of all faces
-- `auto& face = model.faces[0]`  // single face
-
-This works in a similar way to the `std::span`, but is specialized for the model classes and provides bounds checking and type safety, as well as cross-platform compatibility with hardware environments that don't support the C++20 standard library (like Teensy, ESP32, etc).
-
-### API Methods
-
-### Model Metadata
-
-- `model.name` - Name of the model
-- `model.version` - Version of the model
-- `model.description` - Description of the model
-
-### Model Collections
-
-- `model.faces` - collection of all faces (in order of definition)
-- `model.leds` - collection of all LEDs as CRGB colors
-- `model.points` - collection of all Points
-
-### Faces
-
-given `auto face = model.faces[0];`
-
-- `face.leds` - collection of all LEDs on the face
-- `face.led_offset()` - the global index of the first LED on the face
-- `face.points` - collection of all points on the face
-- `face.groups()` - collection of all led groups on the face (in order of definition)
-
-
-### Syntax Examples
-
-We aim to support a clean and easy style of syntax for accessing regionsand manipulating leds on the model.
-
-```cpp
-// Direct LED access and index operator
-model.leds[2];                          // index getter, Led type
-model.leds[42] = CRGB::Blue;            // Set LED color directly
-model.leds.size();                    // optional getter syntax, size_t
-
-// Point to LED relationships
-float x = model.points[42].x();           // Get x coordinate of LED 42
-auto& center = face.groups("center");
-Point p = model.points[center[0]+face.led_offset()];    // middle Point on the face
-for(const auto& id : model.findNearby(p, 0.5f)) {      // find all leds within 0.5 radius
-    model.leds[id] = CRGB::Blue;
-}
-
-// Iterate faces
-for(size_t i = 0; i < model.faces.size(); i++) {
-    auto& face = model.faces[i];
-    // fill different color for each face
-    CHSV hsv = CHSV(i * 255 / model.faces.size(), 255, 255);
-    face.leds.fill(hsv);
-}
-```
-
-All array access and methods should be bounds-checked and not crash on invalid inputs:
-
-- Out of range indices return last valid element
-- Invalid geometric queries return zero/empty results
-- Color operations on empty spans are safely ignored
-- Warnings are logged to the console when invalid operations are attempted
-
-### Setup and Configuration in main.cpp
-
-```cpp
-// In main.cpp
-#include "FastLED.h"
-#include "PixelTheater.h"
-#include "models/DodecaRGBv2r0.h"
-#include "scenes/test_scene.h"
-
-CRGB leds[Models::DodecaRGBv2r0::NUM_LEDS];   // Define the FastLED-compatible array
-
-void setup() {
-    using namespace Models::DodecaRGBv2r0;
-    
-    FastLED.addLeds<WS2812B, 19, GRB>(leds, 0, NUM_LEDS/2);
-    FastLED.addLeds<WS2812B, 18, GRB>(leds + NUM_LEDS/2, NUM_LEDS/2);
-
-    Model model = new Model(ModelDefinition::DodecaRGBv2r0);
-
-    // startup: Set the brightness and fill the LEDs with a color
-    stage.brightness(128);
-    stage.leds.fill(CRGB::Green);
-    stage.update();
-    stage.delay(500);
-
-    Stage stage = new Stage(model, leds);
-    stage.addScene(new TestScene());
-}
-
-void loop() {
-    stage.tick();
-    stage.update();
-}
-```
-
-## Model Definition and Generation
-
-### YAML Definition
-
-Models are defined in YAML with explicit IDs and relationships:
+Models are defined in YAML with explicit geometric relationships:
 
 ```yaml
-# Model metadata
-name: SampleModel
-model_type: Dodecahedron   # this tells the generator what math strategy to use
-version: 1.0.0
-description: "Sample model for testing"
+model:
+  name: "DodecaRGBv2"
+  version: "2.0.0"
+  description: "12-sided RGB LED dodecahedron"
+  author: "PixelTheater Team"
 
-# Face type definitions
-face_types:          # most models will have a single face type, but some may have multiple
-  - small_pentagon:
-        face_type: Pentagon
-        num_leds: 104
-        edge_length_mm: 50.0
-        groups:
-            # All indices are local to face
-            middle: [0]
-            ring0: [1, 2, 3, 4, 5]
-            shape: [6, 7, 8, 16, 17, 18]
+geometry:
+  shape: "dodecahedron"
+  edge_length_mm: 130.0
+  
+face_types:
+  pentagon:
+    num_leds: 104
+    num_sides: 5
+    groups:
+      edge: [0-19, 20-39, 40-59, 60-79, 80-99]
+      center: [100-103]
 
-# Face instances, all conform to face_types. rotation is important for PCB assembly.
 faces:
   - id: 0
-    type: small_pentagon
+    type: pentagon
     rotation: 0
-  - id: 1
-    type: small_pentagon
-    rotation: 2
-  - id: 2
-    type: small_pentagon
-    rotation: 1
-    ## ... etc
-    
-# LED definitions - all points are generated from the pnp file(s), one for each face type.
-led_placement:
-  - face_type: small_pentagon
-    pnp_file: "pnp-files/dodecav2r1.csv"
+  # ... additional faces ...
 ```
 
-### Model File Structure
+The YAML definition is processed by the model generator to create a C++ header file that provides:
+- Type-safe access to LED data
+- Compile-time constants
+- Geometric relationships
+- Neighbor calculations
 
-Models are organized in self-contained folders:
+## Model Generation
 
-```cpp
-// Model folder structure:
-src/
-  models/
-    dodecav2r1/             # Each model in its own folder
-      README.md             # Model user documentation
-      model.cpp             # **Generated data** (using ModelDefinition struct)
-      model.yaml            # Model definition
-      pcb/                  # PCB files
-        pentagon.csv        # Pick and place file
+Models are generated using the `generate_model.py` utility which creates a header file containing the complete model definition:
+
+```bash
+python util/generate_model.py -d src/models/DodecaRGBv2
 ```
 
-The initialization code uses this data to implement the model interface. The generated files are focused purely on the model-specific data, while the API implementation lives in the core library.
+This creates `model.h` with:
+- LED count and face count as template parameters
+- Face type definitions with vertices
+- Point coordinates and face assignments
+- Neighbor relationships
+- Model metadata
 
-### Generation Process
+## Best Practices
 
-Python generator validates YAML:
+1. **Model Organization**:
+   - Keep model definitions in `src/models/`
+   - One directory per model with model.h as the main header
+   - Include PCB data and documentation
+   - Never manually edit generated model.h files
 
-- No required values or sections are missing
-- Face IDs are unique and sequential (0..N-1)
-- LED IDs are unique and sequential (0..N-1)
-- LedGroups indices are valid
+2. **Coordinate Systems**:
+   - Use world space for global effects
+   - Use face space for surface effects
+   - Use LED indices for direct access
 
-The generator creates C++ model.h file which is based on the ModelDefinition template. It's a simple struct and some constants that are used to define the data for the model.
+3. **Type Safety**:
+   - Use the Models namespace
+   - Let the compiler check LED counts
+   - Use provided bounds-checking accessors
 
-### Model Definition Format
+4. **Documentation**:
+   - Document coordinate conventions
+   - Explain face numbering
+   - Note any special LED arrangements
+   - Keep a README.md in each model directory
 
-The base ModelDefinition provides a template and common constants. NumLeds and NumFaces are required parameters for initialization of FastLED and hardware setup. The rest is generated from the YAML file.
+## Creating New Models
 
-```cpp
-template<uint16_t NumLeds, uint8_t NumFaces>
-struct ModelDefinition {    
-    // Required constants
-    static constexpr uint16_t LED_COUNT = NumLeds;
-    static constexpr uint8_t FACE_COUNT = NumFaces;
+To create a new model:
 
-    struct Metadata {
-        const char* name;
-        const char* model_type;
-        const char* version;
-        const char* description;
-    };
+1. Create a new directory in `src/models/`
+2. Create a `model.yaml` file defining your model's properties
+3. Add the PCB pick-and-place data (CSV) to the `pcb/` subdirectory
+4. Run the model generator:
+   ```bash
+   python util/generate_model.py -d src/models/YourModel
+   ```
+5. Create a README.md documenting:
+   - Physical dimensions
+   - LED arrangement
+   - Coordinate system
+   - Special considerations
+   - Assembly instructions
 
-    // Face type constants
-    struct FaceTypes {
-        static constexpr uint8_t NONE = 0;
-        static constexpr uint8_t STRIP = 1;
-        static constexpr uint8_t CIRCLE = 2;
-        static constexpr uint8_t TRIANGLE = 3;
-        static constexpr uint8_t SQUARE = 4;
-        static constexpr uint8_t PENTAGON = 5;
-        static constexpr uint8_t HEXAGON = 6;
-        static constexpr uint8_t HEPTAGON = 7;
-        static constexpr uint8_t OCTAGON = 8;
-    };
-
-    // Face type properties
-    struct FaceTypeData {
-        uint8_t id;
-        FaceType type;
-        uint16_t num_leds;
-        float edge_length_mm;
-    };
-
-    // Led group data
-    struct LedGroupData {
-        uint8_t id;
-        uint16_t num_leds;
-        const char* name[16];
-        FaceType type;
-        uint16_t led_ids[MAX_LEDS_PER_REGION];
-    };
-
-
-    // Face instance data
-    struct FaceData {
-        uint8_t id;
-        uint8_t type_id;
-        uint8_t rotation;
-        float x, y, z;  // Position (normal calculated from this)
-    };
-
-    // Point geometry
-    struct PointData {
-        uint16_t id;
-        uint8_t face_id;
-        float x, y, z;
-    };
-
-    // Point neighbor data
-    struct NeighborData {
-        uint16_t point_id;
-        struct Neighbor {
-            uint16_t id;
-            float distance;
-        };
-        static constexpr size_t MAX_NEIGHBORS = 7;
-        Neighbor neighbors[MAX_NEIGHBORS];
-    };
-
-};
-```
-
-### Generated Model.h
-
-```cpp
-struct ModelDefinition {
-    static constexpr uint16_t LED_COUNT = 1248;
-    static constexpr uint8_t FACE_COUNT = 12;
-
-    // Model metadata
-    static constexpr char NAME[] = "Valid Pentagon Model";
-    static constexpr char VERSION[] = "1.0";
-    static constexpr char DESCRIPTION[] = "Pre-configured pentagon model with valid regions";
-
-    // Generated data
-    static constexpr FaceTypeData face_types[FACE_TYPES_COUNT] = { ... };
-    static constexpr FaceData faces[FACE_COUNT] = { ... };
-    static constexpr NeighborData neighbors[POINT_COUNT] = { ... };
-    static constexpr PointData points[LED_COUNT] = { ... };
-};
-```
-
-The Model class includes this data at compile-time and provides runtime access through its interface.
-
-### Model Definition Requirements
-
-The model must include metadata, and define at least one face type, and at least one face instance. Coordinates in a model are based on a unit sphere, with the origin at the center. All faces are assumed to be tangent to the origin.
-
-Each face is assumed to have edges of equal length, defined in millimeters. This is helpful for calculating led density and real-world size of the model.
-
-### Index Spaces
-
-The implementation maintains two distinct index spaces:
-
-1. **Global Indices** (0 to LED_COUNT-1)
-- Used by Model for LED and Point arrays
-- Required for FastLED compatibility
-- Used for hardware addressing
-
-2. **Local Indices** (0 to face.num_leds-1)
-- Used within Faces and LedGroups
-- Makes face-based animations simpler
-- Preserves PCB LED sequences
-
-Example:
-
-```cpp
-// Global space (model level)
-model.leds[42] = CRGB::Blue;
-
-// Local space (face level)
-face.leds[3] = CRGB::Red;  // Local index 3
-
-
-// Get global LED index and look up its point
-uint16_t global_idx = face.group["edge1"][i].id();
-const Point& p = model.points[global_idx];
-// do something with the point
-```
-
-## LED Groups
-
-LedGroups provide a way to work with collections of LEDs as a single unit. They can be defined in the model configuration or created at runtime through operations on other groups.
-
-### Basic Usage
-
-LedGroups can be accessed at both model and face scope:
-
-```cpp
-// Face-local group access
-auto& center = model.faces[0].group("center");
-fill_solid(center, CRGB::Red);
-
-// Model-wide group access (gets all groups with name across faces)
-auto all_groups = model.groups();
-for(auto& group : all_groups) {
-}
-```
-
-### Working with Groups
-
-LedGroups support array-style indexing and iteration:
-
-```cpp
-// Direct LED access
-center[0] = CRGB::Red;  // Set first LED in group
-
-// Range-based iteration
-for(auto& led : ring) {
-    led = CRGB::Blue;
-}
-
-// FastLED operations work directly
-fill_solid(ring, CRGB::Green);
-fadeToBlackBy(edge, 128);
-```
-
-### Group Operations
-
-LedGroups can be combined using set operations:
-
-```cpp
-auto& ring = face.group("ring1");    // e.g. LEDs [1,2,3,4]
-auto& edge = face.group("edge");     // e.g. LEDs [2,3]
-
-// Union - all LEDs from both groups (unique)
-auto combined = ring + edge;         // LEDs [1,2,3,4]
-
-// Intersection - only LEDs in both groups
-auto shared = ring & edge;           // LEDs [2,3]
-
-// Difference - LEDs in first group but not second
-auto ring_only = ring - edge;        // LEDs [1,4]
-```
-
-These operations create new temporary groups that can be used for animations or further operations. All groups must be from the same model (they share the same LED array).
-
-### Pattern Composition
-
-The group operations can be used to compose complex patterns from simple building blocks at runtime. For example, with a 7-segment display defined in the model:
-
-```cpp
-static constexpr FaceTypeData FACE_TYPES[1] = {{
-    .groups = {
-        // Basic segments
-        { .name = "seg_a", .leds = {0, 1, 2} },    // Top
-        { .name = "seg_b", .leds = {3, 4} },       // Top right
-        { .name = "seg_c", .leds = {5, 6} },       // Bottom right
-        { .name = "seg_d", .leds = {7, 8, 9} },    // Bottom
-        { .name = "seg_e", .leds = {10, 11} },     // Bottom left
-        { .name = "seg_f", .leds = {12, 13} },     // Top left
-        { .name = "seg_g", .leds = {14, 15} },     // Middle
-    }
-}};
-```
-
-Scenes can compose digits by combining segments:
-
-```cpp
-// Create digit "7" from segments a + b + g + e + d
-auto seven = face.group("seg_a") + face.group("seg_b") + face.group("seg_c");
-fill_solid(seven, CRGB::Black);
-```
-
-By combining basic segments with group operations, animations can create complex patterns while maintaining efficient LED addressing.
+See the DodecaRGBv2 model for a complete example.

@@ -1,184 +1,216 @@
-# PixelTheater Stage Overview
+# Stage System
 
-The Stage class is the central component of the PixelTheater library, connecting hardware LEDs, model definitions, and animation scenes. It serves as the primary interface between your application and the visual output, managing the LED data and coordinating scene execution.
+The Stage is the central orchestrator in PixelTheater, managing the hardware platform, model state, and scene execution. It provides a unified interface for coordinating all components of an LED animation system.
 
-## Core Components
+## Core Responsibilities
 
-The Stage template class takes a ModelDef parameter that defines your LED configuration. It consists of:
+1. **Hardware Integration**
+   - Platform abstraction (FastLED, custom drivers)
+   - LED buffer management
+   - Frame rate control
+   - Hardware synchronization
 
-- **Platform**: Manages hardware interactions and LED buffer access
-- **Model**: Represents the physical arrangement of LEDs based on ModelDef
-- **Scenes**: Contains animation logic and visual effects
-- **LED Data**: Direct access to the LED color buffer
+2. **Scene Management**
+   - Scene registration and lifecycle
+   - Scene transitions
+   - Global state coordination
+   - Resource allocation
 
-## Configuration and Setup
+3. **Update Loop**
+   - Frame timing
+   - Scene execution
+   - LED buffer updates
+   - Platform synchronization
 
-### Basic Setup with FastLED
-
-```cpp
-#include <FastLED.h>
-#include "PixelTheater/platform/fastled_platform.h"
-#include "PixelTheater/model/model.h"
-#include "PixelTheater/stage.h"
-#include "models/your_model_def.h"
-
-// Define your LED array
-CRGB leds[YourModelDef::LED_COUNT];
-
-void setup() {
-    // Configure FastLED with your hardware setup
-    FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, YourModelDef::LED_COUNT);
-    // For multiple strips:
-    // FastLED.addLeds<WS2812B, PIN1, GRB>(leds, 0, YourModelDef::LED_COUNT/2);
-    // FastLED.addLeds<WS2812B, PIN2, GRB>(leds + YourModelDef::LED_COUNT/2, YourModelDef::LED_COUNT/2);
-    
-    // Set initial FastLED parameters
-    FastLED.setBrightness(128);
-    FastLED.setMaxRefreshRate(60);
-    
-    // Create platform with FastLED integration
-    auto platform = std::make_unique<FastLEDPlatform>(leds, YourModelDef::LED_COUNT);
-    
-    // Create model based on your model definition
-    auto model = std::make_unique<Model<YourModelDef>>(YourModelDef{}, platform->getLEDs());
-    
-    // Create stage with platform and model
-    auto stage = std::make_unique<Stage<YourModelDef>>(std::move(platform), std::move(model));
-    
-    // Add and set initial scene
-    auto* myScene = stage->addScene<MyScene<YourModelDef>>(*stage);
-    stage->setScene(myScene);
-}
-
-void loop() {
-    // Update stage (calls current scene's tick() and updates LEDs)
-    stage->update();  // This will call FastLED.show() internally
-}
-```
-
-### Custom Model Configuration
-
-For custom LED arrangements, define your own ModelDef:
+## Basic Setup
 
 ```cpp
-// In your custom model header
-struct MyCustomModel {
-    static constexpr uint16_t LED_COUNT = 300;
-    static constexpr uint8_t FACE_COUNT = 6;
-    // Define other model properties
-};
+#include "FastLED.h"
+#include "PixelTheater.h"
+#include "models/DodecaRGBv2/model.h"  // Include generated model header
 
-// In your application
-CRGB leds[MyCustomModel::LED_COUNT];
+// Define model type alias - all models live in PixelTheater::Models namespace
+using DodecaModel = PixelTheater::Models::DodecaRGBv2;
 
-// Configure FastLED
-FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, MyCustomModel::LED_COUNT);
+class Application {
+private:
+    // LED buffer for FastLED
+    CRGB leds[DodecaModel::LED_COUNT];
+    
+    // Core components
+    std::unique_ptr<PixelTheater::FastLEDPlatform> platform;
+    std::unique_ptr<PixelTheater::Model<DodecaModel>> model;
+    std::unique_ptr<PixelTheater::Stage<DodecaModel>> stage;
 
-// Create platform with FastLED integration
-auto platform = std::make_unique<FastLEDPlatform>(leds, MyCustomModel::LED_COUNT);
-auto model = std::make_unique<Model<MyCustomModel>>(MyCustomModel{}, platform->getLEDs());
-auto stage = std::make_unique<Stage<MyCustomModel>>(std::move(platform), std::move(model));
-```
-
-## LED Access and Manipulation
-
-The Stage provides direct access to LEDs through the `leds` member:
-
-```cpp
-// Access individual LEDs
-stage->leds[0] = CRGB::Red;
-
-// Bounds checking is built-in (out-of-range indices are clamped to the last valid LED)
-stage->leds[9999] = CRGB::Blue;  // Sets the last LED to blue
-
-// Use range-based loops
-for (auto& led : stage->leds) {
-    led = CRGB::Green;
-}
-
-// Apply changes to the hardware
-stage->update();  // This will call FastLED.show() internally
-```
-
-## Scene Management
-
-Scenes contain the animation logic for your LED display:
-
-```cpp
-// Adding a scene (passing the stage reference to the scene)
-auto* myScene = stage->addScene<MyCustomScene<ModelDef>>(*stage);
-
-// Switching to a different scene
-stage->setScene(myScene);
-
-// Main loop to render current scene
-void loop() {
-    stage->update();  // Calls current scene's tick() and updates LEDs
-}
-```
-
-## Scene Implementation
-
-When implementing a scene, you have access to the stage and its components:
-
-```cpp
-template<typename ModelDef>
-class MyScene : public Scene<ModelDef> {
 public:
-    using Scene<ModelDef>::Scene;  // Inherit constructor
-    
-    void setup() override {
-        // Initialization code
+    void setup() {
+        // Initialize FastLED
+        FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, DodecaModel::LED_COUNT);
+        FastLED.setBrightness(128);
+        FastLED.setMaxRefreshRate(60);
+        
+        // Create platform
+        platform = std::make_unique<PixelTheater::FastLEDPlatform>(
+            reinterpret_cast<PixelTheater::CRGB*>(leds),
+            DodecaModel::LED_COUNT
+        );
+        
+        // Create model
+        model = std::make_unique<PixelTheater::Model<DodecaModel>>(
+            DodecaModel{},
+            platform->getLEDs()
+        );
+        
+        // Create stage
+        stage = std::make_unique<PixelTheater::Stage<DodecaModel>>(
+            std::move(platform),
+            std::move(model)
+        );
+        
+        // Register scenes
+        registerScenes();
     }
     
-    void tick() override {
-        Scene<ModelDef>::tick();  // Call base to increment counter
+    void loop() {
+        stage->update();  // Updates current scene and syncs hardware
+    }
+
+private:
+    void registerScenes() {
+        // Register scenes with metadata
+        stage->registerScene<SpaceScene<DodecaModel>>(
+            "Space",
+            "Deep space visualization"
+        );
         
-        // Access LEDs through stage
-        auto& leds = this->stage.leds;
-        leds[0] = CRGB::Red;
+        stage->registerScene<FireworksScene<DodecaModel>>(
+            "Fireworks",
+            "Colorful firework display"
+        );
         
-        // Access model through stage
-        auto last_idx = this->stage.model.led_count() - 1;
-        leds[last_idx] = CRGB::Blue;
-        
-        // Access faces through model
-        this->stage.model.faces[0].leds[0] = CRGB::Green;
-        
-        // Use range-based iteration with FastLED functions
-        for(auto& led : this->stage.leds) {
-            fadeToBlackBy(led, 128);
+        // Set initial scene
+        if (auto* scene = stage->getScene("Space")) {
+            stage->setScene(scene);
         }
     }
 };
 ```
 
-## Performance and Hardware Considerations
+## Platform Integration
 
-Our hardware tests demonstrate excellent performance for the library:
+The Stage manages hardware through platform abstractions:
 
-- Successfully handles large LED arrays (tested up to 4096 LEDs)
-- Memory management is efficient with proper allocation/deallocation
-- PixelTheater operations are only approximately 19% slower than native FastLED
-- Optimized for microcontroller constraints without exceptions
+```cpp
+// Platform interface (simplified)
+class Platform {
+public:
+    virtual void update() = 0;              // Update hardware
+    virtual void setBrightness(uint8_t) = 0;// Set global brightness
+    virtual CRGB* getLEDs() = 0;            // Get LED buffer
+    virtual size_t getLEDCount() = 0;       // Get LED count
+};
 
-For applications with limited memory, consider:
+// FastLED implementation
+class FastLEDPlatform : public Platform {
+public:
+    void update() override {
+        FastLED.show();  // Update physical LEDs
+    }
+    
+    void setBrightness(uint8_t value) override {
+        FastLED.setBrightness(value);
+    }
+    // ... other methods ...
+};
+```
 
-- Using smaller LED counts for testing and development
-- Monitoring memory usage with built-in tools
-- Structuring animations to avoid large temporary allocations
+## Scene Management
 
-## Error Handling
+The Stage provides a type-safe API for scene management:
 
-Since exceptions aren't available on most microcontrollers, the library employs these strategies:
+```cpp
+// Scene registration
+auto* scene = stage->registerScene<MyScene<ModelDef>>(
+    "My Scene",
+    "Scene description"
+);
 
-1. Array access is bounds-checked but returns safe values:
-   - Out of range indices return the last valid element (clamping behavior)
-   - The `leds` member provides safe array access with bounds checking
+// Scene transitions
+stage->setScene(scene);           // Switch to scene
+stage->setScene("My Scene");      // Switch by name
+stage->nextScene();               // Advance to next scene
+stage->previousScene();           // Return to previous scene
 
-2. Methods return sentinel values:
-   - Invalid geometric queries return zero vectors
-   - Size queries return 0 for invalid inputs
-   - Color operations silently skip invalid LEDs
+// Scene queries
+if (auto* scene = stage->getScene("My Scene")) {
+    // Scene exists
+}
 
-This approach prevents crashes while making issues visible during testing.
+// Scene enumeration
+for (const auto& info : stage->getSceneInfo()) {
+    std::cout << info.name << ": " << info.description << "\n";
+}
+```
+
+## Update Loop
+
+The Stage's update loop coordinates all components:
+
+```cpp
+void Stage::update() {
+    // Update timing
+    auto now = std::chrono::steady_clock::now();
+    float delta = std::chrono::duration<float>(now - _last_update).count();
+    _last_update = now;
+    
+    // Update current scene
+    if (_current_scene) {
+        _current_scene->tick();
+    }
+    
+    // Update platform
+    _platform->update();
+}
+```
+
+## Global State
+
+The Stage maintains global state accessible to all scenes:
+
+```cpp
+// Global brightness
+stage->brightness(128);           // Set brightness
+uint8_t bright = stage->brightness(); // Get brightness
+
+// Frame timing
+float delta = stage->deltaTime(); // Time since last frame
+float fps = stage->frameRate();   // Current frame rate
+
+// Scene information
+const auto& info = stage->currentScene(); // Current scene info
+size_t count = stage->sceneCount();      // Number of scenes
+```
+
+## Best Practices
+
+1. **Resource Management**:
+   - Use smart pointers for components
+   - Let Stage manage scene lifecycle
+   - Clean up resources in scene destructors
+
+2. **Performance**:
+   - Maintain consistent frame rate
+   - Minimize allocations in update loop
+   - Use platform-specific optimizations
+
+3. **Error Handling**:
+   - Check scene existence before use
+   - Validate transitions
+   - Provide fallback scenes
+
+4. **Scene Organization**:
+   - Register scenes at startup
+   - Use meaningful names and descriptions
+   - Group related scenes together
+
+See [Scene Documentation](Scenes.md) for details on implementing scenes.
