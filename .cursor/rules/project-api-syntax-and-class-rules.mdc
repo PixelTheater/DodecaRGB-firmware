@@ -23,9 +23,8 @@ alwaysApply: false
 1. **FastLED-Style Direct Access** (using `[]`)
 ```cpp
 model.leds[42] = CRGB::Blue;            // Direct LED access
-model.leds[42].fadeToBlackBy(128);      // FastLED operations
 face.leds[3] = CRGB::Red;                  // Face-local LED access
-face.ledGroup("name")[0] = CRGB::Green;     // Group LED access
+face.ledGroup("name")[0] = CRGB::Green;     // Group LED access  TODO
 ```
 
 2. **Collection Operations** (using methods)
