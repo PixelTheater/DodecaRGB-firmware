@@ -196,8 +196,17 @@ class DodecaModel:
         print("#include \"PixelTheater/model_def.h\"", file=file)
         print("#include \"PixelTheater/model/face_type.h\"", file=file)
         print(f"\n// Generated on: {generation_date}", file=file)
+        
+        # Add generation command info
+        cmd_args = ' '.join(sys.argv[1:])
+        print(f"// Generated using: {os.path.basename(sys.argv[0])} {cmd_args}", file=file)
+        if hasattr(self.model_def, 'config') and 'model' in self.model_def.config:
+            print(f"// Model source: {self.model_def.model.get('source', 'Unknown')}", file=file)
+            if 'author' in self.model_def.model:
+                print(f"// Author: {self.model_def.model['author']}", file=file)
+        
         print("\nnamespace PixelTheater {", file=file)
-        print("namespace Fixtures {", file=file)
+        print("namespace Models {", file=file)
         
         # Start model definition
         model_name = self.model_def.model['name']
@@ -358,7 +367,7 @@ class DodecaModel:
 
         # Close model definition
         print("};", file=file)
-        print("\n}} // namespace PixelTheater::Fixtures", file=file)
+        print("\n}} // namespace PixelTheater::Models", file=file)
 
     def export_json(self, file=sys.stdout) -> None:
         """Export model as JSON"""
@@ -378,18 +387,97 @@ class DodecaModel:
         }
         json.dump(data, file, indent=2)
 
+def find_model_files(model_dir: str) -> tuple[str, str]:
+    """Find model.yaml and pick-and-place files in a model directory structure.
+    Expected structure:
+    model_dir/
+        model.yaml
+        pcb/
+            *.pos or *.csv  (pick and place file)
+    """
+    # Find model.yaml
+    model_yaml = os.path.join(model_dir, "model.yaml")
+    if not os.path.exists(model_yaml):
+        raise FileNotFoundError(f"Could not find model.yaml in {model_dir}")
+    
+    # Find pick and place file
+    pcb_dir = os.path.join(model_dir, "pcb")
+    if not os.path.exists(pcb_dir):
+        raise FileNotFoundError(f"Could not find pcb directory in {model_dir}")
+    
+    # Look for pick and place files with supported extensions
+    supported_extensions = ['.pos', '.csv']
+    pick_place_files = []
+    for ext in supported_extensions:
+        pick_place_files.extend([f for f in os.listdir(pcb_dir) if f.endswith(ext)])
+    
+    if not pick_place_files:
+        raise FileNotFoundError(
+            f"Could not find any pick-and-place files ({', '.join(supported_extensions)}) "
+            f"in {pcb_dir}"
+        )
+    
+    if len(pick_place_files) > 1:
+        print(f"Warning: Multiple pick-and-place files found in {pcb_dir}, using {pick_place_files[0]}", 
+              file=sys.stderr)
+    
+    pick_and_place = os.path.join(pcb_dir, pick_place_files[0])
+    return model_yaml, pick_and_place
+
+def confirm_overwrite(path: str, force: bool = False) -> bool:
+    """Ask user to confirm file overwrite unless force is True"""
+    if not os.path.exists(path) or force:
+        return True
+    
+    response = input(f"\nFile {path} already exists. Overwrite? [y/N] ").lower()
+    return response.startswith('y')
+
+def get_output_path(model_dir: str = None, output: str = None) -> str:
+    """Determine output path based on arguments"""
+    if output:
+        return output
+    elif model_dir:
+        return os.path.join(model_dir, "model.h")
+    return None  # Use stdout
+
 def main():
     parser = argparse.ArgumentParser(description='Generate LED model data for DodecaRGB')
-    parser.add_argument('-o', '--output', help='Output file (default: stdout)')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-m', '--model', help='Path to model YAML definition file')
+    group.add_argument('-d', '--model-dir', help='Path to model directory containing model.yaml and pcb/*.pos')
+    parser.add_argument('-o', '--output', help='Output file (default: model.h in model directory)')
     parser.add_argument('-f', '--format', choices=['cpp', 'json'], default='cpp',
                       help='Output format (default: cpp)')
-    parser.add_argument('-m', '--model', required=True,
-                      help='Path to model YAML definition file')
     parser.add_argument('-i', '--input',
-                      help='Input PCB pick and place file (overrides YAML definition)')
+                      help='Input PCB pick and place file (overrides YAML definition and model-dir)')
+    parser.add_argument('-y', '--yes', action='store_true',
+                      help='Automatically overwrite existing files without confirmation')
+
+    # If no arguments provided, print help and exit
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(0)
+
     args = parser.parse_args()
 
+    # Validate that either model or model-dir is provided
+    if not args.model and not args.model_dir:
+        parser.error("either -m/--model or -d/--model-dir is required")
+
     try:
+        # Handle model directory mode
+        if args.model_dir:
+            model_yaml, pick_and_place = find_model_files(args.model_dir)
+            args.model = model_yaml
+            if not args.input:  # Don't override if explicitly provided
+                args.input = pick_and_place
+        
+        # Determine output path and check for overwrite
+        output_path = get_output_path(args.model_dir, args.output)
+        if output_path and not confirm_overwrite(output_path, args.yes):
+            print("Operation cancelled.", file=sys.stderr)
+            sys.exit(0)
+        
         # Load model definition
         model_def = ModelDefinition(args.model)
         
@@ -399,7 +487,7 @@ def main():
         model.generate_model()
 
         # Select output file
-        output_file = open(args.output, 'w') if args.output else sys.stdout
+        output_file = open(output_path, 'w') if output_path else sys.stdout
         
         try:
             # Export in requested format
@@ -408,9 +496,12 @@ def main():
             else:  # json
                 model.export_json(output_file)
             
-            print(f"\n// Generated model with {len(model_def.leds)} points", file=sys.stderr)
+            if output_path:
+                print(f"\nGenerated model with {len(model_def.leds)} points -> {output_path}", file=sys.stderr)
+            else:
+                print(f"\nGenerated model with {len(model_def.leds)} points", file=sys.stderr)
         finally:
-            if args.output:
+            if output_path:
                 output_file.close()
 
     except Exception as e:

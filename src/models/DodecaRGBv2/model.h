@@ -2,10 +2,13 @@
 #include "PixelTheater/model_def.h"
 #include "PixelTheater/model/face_type.h"
 
-// Generated on: 2025-03-04 07:54:13
+// Generated on: 2025-03-05 09:49:16
+// Generated using: generate_model.py -d src/models/DodecaRGBv2 -y
+// Model source: https://somebox.com/projects/
+// Author: Jeremy Seitz, https://github.com/somebox
 
 namespace PixelTheater {
-namespace Fixtures {
+namespace Models {
 
 // Dodecahedron with 12 pentagon PCBs, 1248 LEDs
 struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
@@ -15,7 +18,7 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
     static constexpr const char* VERSION = "2.0.0";
     static constexpr const char* DESCRIPTION = "Dodecahedron with 12 pentagon PCBs, 1248 LEDs";
     static constexpr const char* MODEL_TYPE = "Dodecahedron";
-    static constexpr const char* GENERATED_DATE = "2025-03-04 07:54:13";
+    static constexpr const char* GENERATED_DATE = "2025-03-05 09:49:16";
 
     static constexpr size_t LED_COUNT = 1248;
     static constexpr size_t FACE_COUNT = 12;
@@ -5143,4 +5146,4 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
     };
 };
 
-}} // namespace PixelTheater::Fixtures
+}} // namespace PixelTheater::Models
