@@ -2,7 +2,9 @@
 model:
   name: DodecaRGBv2
   version: "2.0.0"
+  author: "Jeremy Seitz, https://github.com/somebox"
   description: "Dodecahedron with 12 pentagon PCBs, 1248 LEDs"
+  source: "https://somebox.com/projects/"
 
 geometry:
   shape: Dodecahedron

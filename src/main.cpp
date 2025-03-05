@@ -12,7 +12,7 @@
 // Include the model definition - we'll use an include guard to prevent multiple definitions
 #ifndef DODECARGBV2_MODEL_INCLUDED
 #define DODECARGBV2_MODEL_INCLUDED
-#include "model.cpp" // Include the generated model
+#include "models/DodecaRGBv2/model.h" // Include the generated model
 #endif
 #include "scenes/blob_scene.h" // Include our blob scene
 #include "benchmark.h" // Include our benchmark utilities
@@ -37,7 +37,7 @@
 // https://www.pjrc.com/teensy/td_libs_Wire.html
 // ex: Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x29, &Wire1);
 
-#define BRIGHTNESS  30      // global brightness, should be used by all animations
+#define BRIGHTNESS  15      // global brightness, should be used by all animations
 #define USE_IMU true        // enable orientation sensor (currently: LSM6DSOX)
 
 // model settings (replace with generated model params)
@@ -50,11 +50,11 @@
 CRGB leds[NUM_LEDS];
 
 // PixelTheater components
-using ModelDef = PixelTheater::Fixtures::DodecaRGBv2;
+using DodecaModel = PixelTheater::Models::DodecaRGBv2;
 std::unique_ptr<PixelTheater::FastLEDPlatform> platform;
-std::unique_ptr<PixelTheater::Model<ModelDef>> model;
-std::unique_ptr<PixelTheater::Stage<ModelDef>> stage;
-Scenes::BlobScene<ModelDef>* blob_scene = nullptr;
+std::unique_ptr<PixelTheater::Model<DodecaModel>> model;
+std::unique_ptr<PixelTheater::Stage<DodecaModel>> stage;
+Scenes::BlobScene<DodecaModel>* blob_scene = nullptr;
 
 long random_seed = 0;
 int seed1,seed2 = 0;
@@ -161,17 +161,17 @@ void setup() {
   // Need to cast the leds array to PixelTheater::CRGB* to match the expected type
   platform = std::make_unique<PixelTheater::FastLEDPlatform>(
     reinterpret_cast<PixelTheater::CRGB*>(leds), 
-    ModelDef::LED_COUNT
+    DodecaModel::LED_COUNT
   );
   
   // Create model based on our model definition
-  model = std::make_unique<PixelTheater::Model<ModelDef>>(ModelDef{}, platform->getLEDs());
+  model = std::make_unique<PixelTheater::Model<DodecaModel>>(DodecaModel{}, platform->getLEDs());
   
   // Create stage with platform and model
-  stage = std::make_unique<PixelTheater::Stage<ModelDef>>(std::move(platform), std::move(model));
+  stage = std::make_unique<PixelTheater::Stage<DodecaModel>>(std::move(platform), std::move(model));
   
   // Add and set initial scene
-  blob_scene = stage->addScene<Scenes::BlobScene<ModelDef>>(*stage);
+  blob_scene = stage->addScene<Scenes::BlobScene<DodecaModel>>(*stage);
   blob_scene->setup();
   stage->setScene(blob_scene);
 

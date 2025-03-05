@@ -105,15 +105,12 @@ def stripit(s):
 def load_pcb_points(filename):
     """Load LED positions from PCB pick and place file"""
     pcb_points = []
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(script_dir)  # Go up one level from /util
-    csv_path = os.path.join(project_root, 'data', filename)  # Look in /data folder
     
-    print(f"Loading PCB points from: {csv_path}")
-    if not os.path.exists(csv_path):
-        raise FileNotFoundError(f"PCB file not found at: {csv_path}")
+    print(f"Loading PCB points from: {filename}")
+    if not os.path.exists(filename):
+        raise FileNotFoundError(f"PCB file not found at: {filename}")
         
-    with open(csv_path, 'r') as f:
+    with open(filename, 'r') as f:
         # Parse header
         header = next(f).strip()
         header_fields = [stripit(f) for f in header.split('\t')]
