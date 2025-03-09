@@ -3,6 +3,7 @@
 #include "params/param_value.h"
 #include "settings.h"
 #include <string>
+#include <vector>
 
 namespace PixelTheater {
 
@@ -15,6 +16,11 @@ class SettingsProxy {
 public:
     // Main proxy that wraps a Settings instance
     SettingsProxy(Settings& settings) : _settings(settings) {}
+
+    // Add a method to reset all parameters
+    void reset_all() {
+        _settings.reset_all();
+    }
 
     // Parameter proxy returned by operator[]
     class Parameter {
@@ -90,8 +96,8 @@ public:
         float min() const { return _settings.get_metadata(_name).get_min(); }
         float max() const { return _settings.get_metadata(_name).get_max(); }
         bool has_flag(ParamFlags flag) const { return _settings.get_metadata(_name).has_flag(flag); }
-        const char* name() const { return _settings.get_metadata(_name).name; }
-        const char* description() const { return _settings.get_metadata(_name).description; }
+        std::string name() const { return _settings.get_metadata(_name).name; }
+        std::string description() const { return _settings.get_metadata(_name).description; }
 
     private:
         Settings& _settings;
@@ -127,6 +133,16 @@ public:
                                   const ParamValue& default_val, 
                                   const std::string& flags) {
         _settings.add_parameter_from_strings(name, type, default_val, flags);
+    }
+
+    // Get all parameter names
+    std::vector<std::string> names() const {
+        return _settings.get_parameter_names();
+    }
+
+    // Check if a parameter exists
+    bool has_parameter(const std::string& name) const {
+        return _settings.has_parameter(name);
     }
 
 private:

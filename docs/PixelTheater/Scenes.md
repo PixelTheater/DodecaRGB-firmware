@@ -13,9 +13,7 @@ Scenes are the core animation components in PixelTheater. Each scene defines a s
 A scene consists of:
 ```
 scenes/space/              # Scene root directory
-├── space.yaml            # Parameter configuration
 ├── space.cpp             # Scene implementation 
-├── _params.h            # Generated parameters
 ├── README.md            # Scene documentation
 └── props/               # Scene-specific assets
     ├── nebula.bmp       # Bitmap resource
@@ -35,7 +33,7 @@ class MyScene : public Scene<ModelDef> {
     void setup() override {
         // Called once when scene becomes active
         // Initialize parameters and state here
-        param("speed", "ratio", 0.5f, "clamp");
+        param("speed", 0.5f, Flags::CLAMP, "Controls animation speed");
         _stars.reserve(settings["stars"]);
     }
     
@@ -91,79 +89,66 @@ void MyScene::tick() {
 
 ## Parameter System
 
-### Definition Methods
+### Parameter Definition
 
-1. **YAML Definition** (Recommended):
-```yaml
-# space.yaml
-parameters:
-  speed:
-    type: ratio
-    default: 0.5
-    description: "Controls animation speed"
-    flags: [clamp]
-  
-  mode:
-    type: select
-    values: ["orbit", "spiral", "chaos"]
-    default: "orbit"
-    description: "Particle motion pattern"
-```
+Parameters are defined in the `setup()` method using the `param()` method:
 
-2. **Code Definition**:
 ```cpp
 void setup() override {
-    param("speed", "ratio", 0.5f, "clamp");
-    param("mode", "select", "orbit");
-}
-```
-
-3. **Inheritance**:
-```cpp
-class DerivedScene : public BaseScene<ModelDef> {
-    void setup() override {
-        BaseScene::setup();  // Inherit parameters
-        param("local_speed", "ratio", 0.5f);
-    }
-};
-```
-
-### Parameter Types and Access
-
-```cpp
-void setup() {
-    // Type definitions
-    param("opacity", "ratio", 0.5f);         // [0.0, 1.0]
-    param("balance", "signed_ratio", 0.0f);  // [-1.0, 1.0]
-    param("count", "integer", 10);           // Whole number
-    param("active", "boolean", true);        // True/false
-    param("mode", "select", "orbit");        // Enumerated string
-}
-
-void tick() {
-    // Type-safe access
-    float speed = settings["speed"];     // Returns float
-    int count = settings["count"];       // Returns int
-    bool active = settings["active"];    // Returns bool
+    // Float parameter with range [0.0, 1.0]
+    param("speed", "ratio", 0.5f, "clamp", "Controls animation speed");
     
-    // Safe defaults for invalid access
-    float invalid = settings["nonexistent"];  // Returns 0.0f
-    int bad_count = settings["bad_count"];    // Returns -1
-    bool missing = settings["missing"];       // Returns false
+    // Integer parameter with range [0, 100]
+    param("count", "count", 0, 100, 50, "", "Number of particles");
+    
+    // Boolean parameter
+    param("trails", "switch", true, "", "Enable motion trails");
+    
+    // Float parameter with range [0.0, 2.0]
+    param("size", "range", 0.0f, 2.0f, 1.0f, "", "Particle size");
 }
 ```
 
-### Parameter Flags
+### Parameter Access
 
-- `clamp`: Clamps values to valid range
-- `wrap`: Wraps values around range boundaries
-- `readonly`: Prevents value modification
-- `hidden`: Hides from UI but allows programmatic access
+Parameters can be accessed using the settings object:
 
-Example:
 ```cpp
-settings["speed"] = 1.2f;    // With "clamp": becomes 1.0f
-settings["angle"] = 1.5f;    // With "wrap": wraps to -0.5f
+void tick() override {
+    Scene::tick();
+    
+    // Access parameters
+    float speed = settings["speed"];
+    int count = settings["count"];
+    bool trails = settings["trails"];
+    
+    // Use parameters in animation logic
+    if (trails) {
+        fadeToBlackBy(leds, 255 * (1.0f - speed));
+    } else {
+        fill_solid(leds, CRGB::Black);
+    }
+    
+    // Update particles
+    for (int i = 0; i < count; i++) {
+        updateParticle(i, speed);
+    }
+}
+```
+
+### Parameter Schema
+
+You can generate a schema of all parameters for UI rendering or documentation:
+
+```cpp
+// Get parameter schema as JSON
+auto schema = scene.parameter_schema().to_json();
+
+// Check if a parameter exists
+bool has_speed = scene.has_parameter("speed");
+
+// Get all parameter names
+auto names = scene.parameter_names();
 ```
 
 ## Best Practices

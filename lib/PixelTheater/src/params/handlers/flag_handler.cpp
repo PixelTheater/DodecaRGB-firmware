@@ -1,5 +1,6 @@
 #include "PixelTheater/params/handlers/flag_handler.h"
 #include "PixelTheater/params/handlers/type_handler.h"
+#include <sstream>
 
 namespace PixelTheater {
 namespace ParamHandlers {
@@ -37,6 +38,23 @@ ParamFlags FlagHandler::apply_flag_rules(ParamFlags flags) {
     // (Will be implemented in future)
     
     return flags;
+}
+
+std::string FlagHandler::to_string(ParamFlags flags) {
+    std::stringstream ss;
+    
+    if (flags & Flags::CLAMP) {
+        ss << "clamp";
+    }
+    
+    if (flags & Flags::WRAP) {
+        if (ss.str().length() > 0) ss << " ";
+        ss << "wrap";
+    }
+    
+    // Add other flags as needed
+    
+    return ss.str();
 }
 
 }} // namespace PixelTheater::ParamHandlers 

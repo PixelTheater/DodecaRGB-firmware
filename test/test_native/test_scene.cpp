@@ -11,9 +11,13 @@ using namespace PixelTheater::Fixtures;
 template<typename ModelDef>
 class TestScene : public Scene<ModelDef> {
 public:
-    using Scene<ModelDef>::Scene;
-    void setup() override { setup_called = true; }
-    bool setup_called{false};
+    using Scene<ModelDef>::Scene;  // Inherit constructors
+    
+    void setup() override {
+        setup_called = true;
+    }
+    
+    bool setup_called = false;
 };
 
 // LED test scene
@@ -56,6 +60,33 @@ public:
         }
     }
 };
+
+// Scene with metadata for testing
+template<typename ModelDef>
+class MetadataTestScene : public Scene<ModelDef> {
+public:
+    // Create a static ParamDef to use as metadata
+    static ParamDef createMetadata() {
+        ParamDef metadata;
+        metadata.name = "Test Scene";
+        metadata.description = "A test scene with metadata";
+        return metadata;
+    }
+    
+    // Constructor that passes metadata to the base class
+    MetadataTestScene(Stage<ModelDef>& stage_ref)
+        : Scene<ModelDef>(stage_ref, nullptr, 0, &s_metadata)
+    {}
+    
+    void setup() override {}
+    
+private:
+    static ParamDef s_metadata;
+};
+
+// Initialize static metadata
+template<typename ModelDef>
+ParamDef MetadataTestScene<ModelDef>::s_metadata = MetadataTestScene<ModelDef>::createMetadata();
 
 TEST_SUITE("Scene") {
     TEST_CASE_FIXTURE(StageTestFixture<BasicPentagonModel>, "Scene Lifecycle") {
@@ -133,6 +164,26 @@ TEST_SUITE("Scene") {
             // Verify fading worked on scene's LEDs
             CHECK(stage->leds[5].r <= 128);  // Purple faded
             CHECK(stage->leds[5].b <= 128);  // Purple faded
+        }
+    }
+
+    TEST_CASE_FIXTURE(StageTestFixture<BasicPentagonModel>, "Scene Metadata") {
+        SUBCASE("Default Metadata") {
+            auto* scene = stage->addScene<TestScene<BasicPentagonModel>>(*stage);
+            stage->setScene(scene);
+            
+            // Default scene should have default name and empty description
+            CHECK(std::string(scene->name()) == "Unnamed Scene");
+            CHECK(std::string(scene->description()) == "");
+        }
+        
+        SUBCASE("Custom Metadata") {
+            auto* scene = stage->addScene<MetadataTestScene<BasicPentagonModel>>(*stage);
+            stage->setScene(scene);
+            
+            // Scene with metadata should have custom name and description
+            CHECK(std::string(scene->name()) == "Test Scene");
+            CHECK(std::string(scene->description()) == "A test scene with metadata");
         }
     }
 } 

@@ -2,6 +2,7 @@
 #include <cstdarg>  // For va_list
 #include <cstdio>   // For vprintf
 #include <functional>
+#include <string>   // For std::string
 
 // Define PLATFORM_WEB for Emscripten/web builds if not already defined
 #ifdef EMSCRIPTEN
@@ -41,6 +42,7 @@ namespace Log {
             return old;
         }
         
+        // Keep only the original C-style variadic function
         inline void warning(const char* fmt, ...) {
             static char buffer[256];
             va_list args;
@@ -49,6 +51,8 @@ namespace Log {
             va_end(args);
             set_log_function(nullptr)(buffer);
         }
+        
+        // Remove all template overloads
     #else
         // Hardware environment - direct to Serial
         inline void warning(const char* fmt, ...) {

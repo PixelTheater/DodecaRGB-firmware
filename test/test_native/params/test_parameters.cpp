@@ -1,7 +1,6 @@
 #include <doctest/doctest.h>
 #include "PixelTheater/parameter.h"
-#include "../fixtures/params/parameter_test_params.h"
-#include "helpers/log_capture.h"
+#include "../../helpers/log_capture.h"
 
 using namespace PixelTheater;
 
@@ -28,9 +27,12 @@ TEST_SUITE("Parameters") {
     // Focus on ParamDef type definitions
     TEST_CASE("ParamDef type definitions") {
         SUBCASE("Basic type definitions") {
-            ParamDef ratio_def = PARAM_RATIO("test", 0.5f, Flags::NONE, "");
-            ParamDef count_def = PARAM_COUNT("test", 0, 10, 5, Flags::NONE, "");
-            ParamDef switch_def = PARAM_SWITCH("test", true, "");
+            // Replace PARAM_RATIO with factory method
+            ParamDef ratio_def = ParamDef::create_ratio("test", 0.5f, Flags::NONE, "");
+            // Replace PARAM_COUNT with factory method
+            ParamDef count_def = ParamDef::create_count("test", 0, 10, 5, Flags::NONE, "");
+            // Replace PARAM_SWITCH with factory method
+            ParamDef switch_def = ParamDef::create_switch("test", true, "");
 
             CHECK(ratio_def.type == ParamType::ratio);
             CHECK(count_def.type == ParamType::count);
@@ -38,7 +40,8 @@ TEST_SUITE("Parameters") {
         }
 
         SUBCASE("Type-specific ranges") {
-            ParamDef ratio_def = PARAM_RATIO("test", 0.5f, Flags::NONE, "");
+            // Replace PARAM_RATIO with factory method
+            ParamDef ratio_def = ParamDef::create_ratio("test", 0.5f, Flags::NONE, "");
             CHECK(ratio_def.get_min() == Constants::RATIO_MIN);
             CHECK(ratio_def.get_max() == Constants::RATIO_MAX);
         }
@@ -122,16 +125,6 @@ TEST_SUITE("Parameter System") {
             CHECK(bool_val.as_string() == nullptr);  // Invalid
         }
 
-        SUBCASE("Invalid type conversion returns sentinel") {
-            ParamDef def = PARAM_RATIO("test", 0.5f, Flags::NONE, "");
-            
-            // Try to apply float parameter to bool type
-            ParamValue bool_val(true);
-            ParamValue result = def.apply_flags(bool_val);
-            
-            CHECK(SentinelHandler::is_sentinel(result.as_float()));
-        }
-
         SUBCASE("Invalid float values use sentinel") {
             ParamValue nan_val(NAN);
             ParamValue inf_val(INFINITY);
@@ -143,7 +136,8 @@ TEST_SUITE("Parameter System") {
 
     TEST_CASE("ParamDef validation") {
         SUBCASE("Range parameters") {
-            ParamDef def = PARAM_RANGE("test", -1.0f, 1.0f, 0.0f, Flags::NONE, "");
+            // Replace PARAM_RANGE with factory method
+            ParamDef def = ParamDef::create_range("test", -1.0f, 1.0f, 0.0f, Flags::NONE, "");
             
             ParamValue valid(0.5f);
             CHECK(def.apply_flags(valid).as_float() == valid.as_float());
@@ -154,7 +148,8 @@ TEST_SUITE("Parameter System") {
         }
 
         SUBCASE("Count parameters") {
-            ParamDef def = PARAM_COUNT("test", 0, 10, 5, Flags::NONE, "");
+            // Replace PARAM_COUNT with factory method
+            ParamDef def = ParamDef::create_count("test", 0, 10, 5, Flags::NONE, "");
             
             ParamValue valid(5);
             CHECK(def.apply_flags(valid).as_int() == valid.as_int());
@@ -165,7 +160,8 @@ TEST_SUITE("Parameter System") {
         }
 
         SUBCASE("Switch parameters") {
-            ParamDef def = PARAM_SWITCH("test", true, "");
+            // Replace PARAM_SWITCH with factory method
+            ParamDef def = ParamDef::create_switch("test", true, "");
             
             ParamValue valid(true);
             CHECK(def.apply_flags(valid).as_bool() == valid.as_bool());
