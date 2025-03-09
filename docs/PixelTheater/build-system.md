@@ -85,8 +85,7 @@ Pre-build:
 ```
 scripts/
 ├── pre_build.py          # Environment setup
-├── generate_scenes.py    # YAML to C++ scene definitions
-└── generate_points.py    # LED coordinate generation
+└── generate_model.py     # Create model from YAML definition and PNP file
 ```
 
 Post-build:
@@ -115,15 +114,18 @@ Run tests:
 python -m util.tests.run_tests
 ```
 
-Generate scene code:
+Generate model from YAML definition and PCB data:
 ```bash
-python util/generate_scene.py -h
+python util/generate_model.py -d src/models/YourModel
 ```
 
-Generate LED coordinates:
-```bash
-python util/generate_points.py [-f json] [-o output.json]
-```
+Options:
+- `-m, --model MODEL`: Path to model YAML definition file
+- `-d, --model-dir DIR`: Path to model directory containing model.yaml and pcb/*.pos
+- `-o, --output FILE`: Output file (default: model.h in model directory)
+- `-f, --format FORMAT`: Output format: cpp or json (default: cpp)
+- `-i, --input FILE`: Input PCB pick and place file (overrides YAML definition)
+- `-y, --yes`: Automatically overwrite existing files without confirmation
 
 Run 3D visualizer:
 ```bash

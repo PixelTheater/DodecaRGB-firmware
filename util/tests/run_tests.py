@@ -12,31 +12,7 @@ import importlib
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 sys.path.insert(0, project_root)
 
-def generate_cpp_fixture(yaml_path: str) -> str:
-    """Generate C++ test fixture from YAML file"""
-    result = subprocess.run(
-        ['python', '-m', 'util.generate_scenes', yaml_path],
-        capture_output=True,
-        text=True,
-        check=True
-    )
-    return result.stdout
-
-def generate_test_fixtures():
-    """Generate C++ fixtures from YAML files"""
-    fixtures_dir = os.path.join(project_root, 'test', 'fixtures')
-    os.makedirs(fixtures_dir, exist_ok=True)
-    
-    print("Generating test fixtures...")
-    
-    # Generate fireworks fixture
-    yaml_path = os.path.join(project_root, 'util', 'examples', 'fireworks.yaml')
-    fixture_code = generate_cpp_fixture(yaml_path)
-    fixture_path = os.path.join(fixtures_dir, 'params', 'fireworks_params.h')
-    
-    with open(fixture_path, 'w') as f:
-        f.write(fixture_code)
-    print(f"  Created {os.path.basename(fixture_path)}")
+# Note: YAML-based parameter generation has been removed as part of the parameter system refactoring
 
 class PrettyTestResult(TextTestResult):
     def __init__(self, *args, **kwargs):
@@ -198,5 +174,5 @@ def run_tests():
     return 0 if total_failed == 0 else 1
 
 if __name__ == '__main__':
-    generate_test_fixtures()  # Generate fixtures before running tests
+    # Note: YAML-based fixture generation has been removed as part of the parameter system refactoring
     sys.exit(run_tests()) 
