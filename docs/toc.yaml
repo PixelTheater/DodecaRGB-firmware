@@ -1,0 +1,48 @@
+# Table of Contents configuration
+# This file controls the order and structure of the documentation
+
+# Main navigation items
+main_nav:
+  - title: Home
+    url: /
+  - title: PixelTheater
+    url: /PixelTheater/README.html
+  - title: Guides
+    url: /guides/development.html
+  - title: Web Simulator
+    url: /simulator/index.html
+    is_special: true
+
+# Sidebar sections
+sections:
+  - title: Main Documentation
+    items:
+      - file: README.md
+  
+  - title: PixelTheater
+    items:
+      - file: PixelTheater/README.md
+      - file: PixelTheater/Parameters.md
+      - file: PixelTheater/Stage.md
+      - file: PixelTheater/Scenes.md
+      - file: PixelTheater/Model.md
+      - file: PixelTheater/Palettes.md
+      - file: PixelTheater/build-system.md
+  
+  - title: Guides
+    items:
+      - file: guides/development.md
+      - file: guides/coding_guidelines.md
+      - file: guides/creating_animations.md
+      - file: guides/web_simulator.md
+      - file: guides/dev-plan-scenes-and-stage.md
+      - file: guides/Dodeca-V1-info.md
+  
+  - title: Special Links
+    items:
+      - title: Live Web Simulator
+        url: /simulator/index.html
+        is_special: true
+      - title: GitHub Repository
+        url: https://github.com/yourusername/PixelTheater
+        is_special: true 

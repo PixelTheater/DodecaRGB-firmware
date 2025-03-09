@@ -343,7 +343,9 @@ void WebPlatform::onMouseWheel(float delta) {
 }
 
 void WebPlatform::updateVertexBuffer() {
-    // Structure for each vertex (position + color)
+    if (!_leds || !_renderer) return;
+    
+    // Define vertex structure for LED points
     struct Vertex {
         float x, y, z;  // 3D coordinates
         float r, g, b;  // Color
@@ -360,7 +362,7 @@ void WebPlatform::updateVertexBuffer() {
     for (uint16_t i = 0; i < _num_leds; i++) {
         // Scale positions to fit in scene with equal scaling for all axes
         vertices[i].x = _led_positions[i].x * POSITION_SCALE;
-        vertices[i].y = _led_positions[i].y * POSITION_SCALE;
+        vertices[i].y = _led_positions[i].y * POSITION_SCALE;  // No vertical offset - handled by camera
         vertices[i].z = _led_positions[i].z * POSITION_SCALE * Z_CORRECTION;
         
         // Convert LED color from 0-255 to 0-1 range and apply brightness
@@ -568,7 +570,10 @@ void WebPlatform::initWebGL() {
     
     // Create camera
     _camera = std::make_unique<Camera>();
+    
+    // Set camera distance and position for proper vertical centering
     _camera->setDistance(CAMERA_NORMAL_DISTANCE);
+    _camera->setPresetView(Camera::ViewPreset::ANGLE);
     
     // Create mesh generator
     _mesh_generator = std::make_unique<MeshGenerator>();
@@ -621,6 +626,21 @@ void WebPlatform::cleanupWebGL() {
     _renderer.reset();
     _mesh_generator.reset();
     _camera.reset();
+}
+
+// Add a new function to update scene parameters
+EMSCRIPTEN_KEEPALIVE void update_scene_parameter(const char* param_id, float value) {
+    // Forward to the animation controller
+    if (PixelTheater::WebGL::g_platform) {
+        PixelTheater::WebGL::g_platform->updateSceneParameter(param_id, value);
+    }
+}
+
+void WebPlatform::updateSceneParameter(const char* param_id, float value) {
+    // Forward to the animation controller
+    if (_animation_controller) {
+        _animation_controller->updateParameter(std::string(param_id), value);
+    }
 }
 
 } // namespace WebGL

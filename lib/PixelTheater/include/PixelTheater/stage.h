@@ -69,6 +69,24 @@ public:
     void setScene(Scene<ModelDef>* scene) {
         _current_scene = scene;
     }
+    
+    // Get the current scene
+    Scene<ModelDef>* getCurrentScene() const {
+        return _current_scene;
+    }
+    
+    // Get a scene by index
+    Scene<ModelDef>* getScene(size_t index) const {
+        if (index < _scenes.size()) {
+            return _scenes[index].get();
+        }
+        return nullptr;
+    }
+    
+    // Get the number of scenes
+    size_t getSceneCount() const {
+        return _scenes.size();
+    }
 };
 
 } // namespace PixelTheater 

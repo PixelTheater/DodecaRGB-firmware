@@ -3,6 +3,7 @@
 /web/simulator.wasm
 /src/model.cpp
 /data/*
+/build/docs/*
 
 # generally not useful
 /3d-models

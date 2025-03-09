@@ -4,7 +4,7 @@ generated: 2025-02-10 00:32
 version: 2.8.2
 ---
 
-# [14] Palette System
+# Palette System
 
 ## Overview
 

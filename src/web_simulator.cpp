@@ -16,17 +16,31 @@
 #include "scenes/all_scenes.h"
 #include "scenes/test_scene.h"
 #include "scenes/blob_scene.h"
+#include <emscripten/bind.h>
 
+// Include the model definition - we'll use an include guard to prevent multiple definitions
 #ifndef DODECARGBV2_MODEL_INCLUDED
 #define DODECARGBV2_MODEL_INCLUDED
-#include "model.cpp" // Include the generated model
+#include "models/DodecaRGBv2/model.h" // Include the generated model
 #endif
 
 // Define global debug flag needed by the library
 bool g_debug_mode = false;
 
-// Define the model type we're using - use the fully qualified name
-using ModelDef = PixelTheater::Fixtures::DodecaRGBv2;
+// Define the model type we're using - use the correct namespace
+using ModelDef = PixelTheater::Models::DodecaRGBv2;
+
+// Add this struct definition after other includes but before the WebSimulator class
+struct SceneParameter {
+    std::string id;
+    std::string label;
+    std::string controlType;  // "slider", "checkbox", "select"
+    std::string value;        // String representation of the value
+    float min = 0.0f;         // For numeric parameters
+    float max = 1.0f;         // For numeric parameters
+    float step = 0.01f;       // For numeric parameters
+    std::vector<std::string> options;  // For select parameters
+};
 
 // Create a WebSimulator class to encapsulate all the functionality
 class WebSimulator {
@@ -475,6 +489,106 @@ public:
         // We could implement a better FPS counter here
         return 60.0f; // Default
     }
+    
+    // Get all parameters for the current scene
+    std::vector<SceneParameter> getSceneParameters() {
+        std::vector<SceneParameter> result;
+        
+        // Get the current scene
+        auto* scene = stage->getCurrentScene();
+        if (!scene) return result;
+        
+        // Get all parameter names from the settings
+        const auto& paramNames = scene->_settings_storage.get_parameter_names();
+        
+        // Process each parameter
+        for (const auto& paramName : paramNames) {
+            try {
+                // Get the parameter metadata
+                const auto& metadata = scene->_settings_storage.get_metadata(paramName);
+                const auto& value = scene->_settings_storage.get_value(paramName);
+                
+                // Create a SceneParameter object
+                SceneParameter p;
+                p.id = paramName;
+                p.label = paramName;
+                
+                // Set control type and properties based on parameter type
+                if (metadata.type == PixelTheater::ParamType::switch_type) {
+                    p.controlType = "checkbox";
+                    p.value = value.as_bool() ? "true" : "false";
+                } 
+                else if (metadata.type == PixelTheater::ParamType::select) {
+                    p.controlType = "select";
+                    p.value = value.as_string();
+                    // We don't have access to options directly, so we'll leave it empty
+                    // p.options = ...;
+                } 
+                else {
+                    // All numeric types use a slider
+                    p.controlType = "slider";
+                    p.value = std::to_string(value.as_float());
+                    
+                    // Determine min/max based on parameter type
+                    if (metadata.type == PixelTheater::ParamType::ratio) {
+                        p.min = 0.0f; p.max = 1.0f;
+                    } else if (metadata.type == PixelTheater::ParamType::signed_ratio) {
+                        p.min = -1.0f; p.max = 1.0f;
+                    } else if (metadata.type == PixelTheater::ParamType::angle) {
+                        p.min = 0.0f; p.max = 3.14159f;
+                    } else if (metadata.type == PixelTheater::ParamType::signed_angle) {
+                        p.min = -3.14159f; p.max = 3.14159f;
+                    } else {
+                        // For range and count types, use the defined min/max from metadata
+                        p.min = metadata.get_min();
+                        p.max = metadata.get_max();
+                    }
+                    
+                    p.step = (p.max - p.min) / 100.0f;
+                }
+                
+                result.push_back(p);
+            } catch (const std::exception& e) {
+                // Parameter doesn't exist or other error, skip it
+                continue;
+            }
+        }
+        
+        return result;
+    }
+    
+    // Update a parameter in the current scene
+    void updateSceneParameter(std::string param_id, std::string value) {
+        // Get the current scene
+        auto* scene = stage->getCurrentScene();
+        if (!scene) return;
+        
+        // Get the scene's settings
+        auto& settings = scene->_settings_storage;
+        
+        // Get parameter info to determine type
+        const auto* param = settings.getParameter(param_id.c_str());
+        if (!param) return;
+        
+        // Convert value based on parameter type
+        PixelTheater::ParamValue paramValue;
+        if (param->type == PixelTheater::ParamType::switch_type) {
+            // Convert string "true"/"false" to bool
+            paramValue = PixelTheater::ParamValue(value == "true");
+        } else if (param->type == PixelTheater::ParamType::select) {
+            // For select, pass the string value
+            paramValue = PixelTheater::ParamValue(value.c_str());
+        } else {
+            // For numeric types, convert to float
+            paramValue = PixelTheater::ParamValue(std::stof(value));
+        }
+        
+        // Update the parameter
+        settings.setValue(param_id.c_str(), paramValue);
+        
+        // Reset the scene to apply the change
+        scene->reset();
+    }
 };
 
 // Create a global WebSimulator instance
@@ -679,6 +793,38 @@ float get_fps() {
 EMSCRIPTEN_KEEPALIVE
 void log_message(const char* message) {
     PixelTheater::Log::warning("%s", message);
+}
+
+// Add these helper functions before the EMSCRIPTEN_BINDINGS block
+std::vector<SceneParameter> get_scene_parameters_wrapper() {
+    if (!g_simulator) return std::vector<SceneParameter>();
+    return g_simulator->getSceneParameters();
+}
+
+void update_scene_parameter_wrapper(std::string param_id, std::string value) {
+    if (!g_simulator) return;
+    g_simulator->updateSceneParameter(param_id, value);
+}
+
+EMSCRIPTEN_BINDINGS(scene_parameters) {
+    using namespace emscripten;
+    
+    register_vector<std::string>("StringVector");
+    register_vector<SceneParameter>("SceneParameterVector");
+    
+    value_object<SceneParameter>("SceneParameter")
+        .field("id", &SceneParameter::id)
+        .field("label", &SceneParameter::label)
+        .field("controlType", &SceneParameter::controlType)
+        .field("value", &SceneParameter::value)
+        .field("min", &SceneParameter::min)
+        .field("max", &SceneParameter::max)
+        .field("step", &SceneParameter::step)
+        .field("options", &SceneParameter::options);
+    
+    // Use the wrapper functions instead of lambdas
+    function("getSceneParameters", &get_scene_parameters_wrapper);
+    function("updateSceneParameter", &update_scene_parameter_wrapper);
 }
 
 } // extern "C"

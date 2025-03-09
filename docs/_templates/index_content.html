@@ -1,0 +1,30 @@
+<h1>PixelTheater Documentation</h1>
+
+<p>Welcome to the PixelTheater documentation. This site contains information about building, programming, and using the DodecaRGB LED juggling prop.</p>
+
+<div class="card-grid">
+    {% for section_title, section_items in nav.sections.items() %}
+    <div class="card">
+        <h2>{{ section_title }}</h2>
+        <ul>
+            {% for item in section_items %}
+            <li>
+                {% if item.is_special %}
+                <a href="{{ item.url }}" class="special">{{ item.title }}</a>
+                {% else %}
+                <a href="{{ item.url }}">{{ item.title }}</a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="simulator-preview">
+    <h2>Web Simulator</h2>
+    <p>Try out patterns and visualize your code with our interactive web simulator.</p>
+    <a href="/simulator/" class="button accent">Launch Simulator</a>
+    <img src="/assets/images/web-simulator.png" alt="Web Simulator Preview">
+    <em>Interactive LED pattern simulator</em>
+</div> 

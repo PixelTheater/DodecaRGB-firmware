@@ -12,3 +12,8 @@ black~=24.10.0          # For code formatting
 pylint~=3.3.3           # For code linting
 mypy~=1.14.1            # For type checking
 python-frontmatter~=1.1.0  # For parsing frontmatter in markdown files
+
+# Documentation dependencies
+markdown>=3.3
+Jinja2>=3.0
+PyYAML>=5.4
