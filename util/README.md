@@ -12,14 +12,19 @@ pip install -r requirements.txt
 
 ### Model Generation
 ```bash
-# Generate LED coordinates
-python generate_points.py [-f json] [-o output.json]
+# Generate model from YAML definition and PCB pick-and-place data
+python util/generate_model.py -d <model_dir>
 
-# Generate scene code
-python generate_scene.py -h
+# Options:
+# -m, --model MODEL       Path to model YAML definition file
+# -d, --model-dir DIR     Path to model directory containing model.yaml and pcb/*.pos
+# -o, --output FILE       Output file (default: model.h in model directory)
+# -f, --format FORMAT     Output format: cpp or json (default: cpp)
+# -i, --input FILE        Input PCB pick and place file (overrides YAML definition)
+# -y, --yes               Automatically overwrite existing files without confirmation
 
-# Generate model
-python generate_model.py -h
+# Example:
+python util/generate_model.py -d src/models/DodecaRGBv2
 ```
 
 ### Testing
@@ -44,4 +49,15 @@ Controls:
   - 12 pentagon PCBs (104 LEDs each)
   - ~13cm diameter dodecahedron
   - Verified against physical measurements
+
+## Model Generation Process
+
+The model generation process:
+1. Reads a YAML model definition file that specifies face types, face instances, and model metadata
+2. Loads PCB pick-and-place data to get LED positions
+3. Transforms LED positions based on face positions and rotations
+4. Calculates neighbor relationships between LEDs
+5. Generates a C++ header file with the complete model definition
+
+See [Model.md](../docs/PixelTheater/Model.md) for more details on the model system.
 

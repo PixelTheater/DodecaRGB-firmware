@@ -156,8 +156,19 @@ The YAML definition is processed by the model generator to create a C++ header f
 Models are generated using the `generate_model.py` utility which creates a header file containing the complete model definition:
 
 ```bash
+# Generate model from a model directory (recommended)
 python util/generate_model.py -d src/models/DodecaRGBv2
+
+# Or specify individual files
+python util/generate_model.py -m src/models/DodecaRGBv2/model.yaml -i src/models/DodecaRGBv2/pcb/DodecaRGB.csv
 ```
+
+The model generator:
+1. Reads the YAML model definition file that specifies face types, face instances, and model metadata
+2. Loads PCB pick-and-place data to get LED positions
+3. Transforms LED positions based on face positions and rotations
+4. Calculates neighbor relationships between LEDs
+5. Generates a C++ header file with the complete model definition
 
 This creates `model.h` with:
 - LED count and face count as template parameters
@@ -165,6 +176,18 @@ This creates `model.h` with:
 - Point coordinates and face assignments
 - Neighbor relationships
 - Model metadata
+
+### Command Line Options
+
+```
+Options:
+  -m, --model MODEL       Path to model YAML definition file
+  -d, --model-dir DIR     Path to model directory containing model.yaml and pcb/*.pos
+  -o, --output FILE       Output file (default: model.h in model directory)
+  -f, --format FORMAT     Output format: cpp or json (default: cpp)
+  -i, --input FILE        Input PCB pick and place file (overrides YAML definition)
+  -y, --yes               Automatically overwrite existing files without confirmation
+```
 
 ## Best Practices
 
