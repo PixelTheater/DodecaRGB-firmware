@@ -200,7 +200,7 @@ class TestDodecaModel(unittest.TestCase):
         with open(header_file) as f:
             content = f.read()
             self.assertIn("namespace PixelTheater", content)
-            self.assertIn("namespace Fixtures", content)
+            self.assertIn("namespace Models", content)
             self.assertIn("struct TestModel", content)
             self.assertIn(f"static constexpr size_t LED_COUNT = {expected_led_count}", content)
             

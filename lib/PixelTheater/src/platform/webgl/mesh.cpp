@@ -108,7 +108,7 @@ void MeshGenerator::generateDodecahedronMesh(const std::vector<WebFace>& faces) 
             
             // Scale positions to match LED scaling
             x *= POSITION_SCALE;
-            y *= POSITION_SCALE;
+            y *= POSITION_SCALE;  // No vertical offset - handled by camera
             z *= POSITION_SCALE * Z_CORRECTION;
             
             faceVertices.push_back({x, y, z});
@@ -149,7 +149,7 @@ void MeshGenerator::generateDodecahedronMesh(const std::vector<WebFace>& faces) 
             );
         }
         
-        // Add edges between consecutive vertices
+        // Add edges for wireframe rendering
         for (size_t i = 0; i < faceVertices.size(); i++) {
             size_t next = (i + 1) % faceVertices.size();
             addEdge(faceVertices[i], faceVertices[next]);

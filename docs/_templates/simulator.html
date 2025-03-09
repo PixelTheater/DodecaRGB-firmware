@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block head %}
+<!-- Simulator specific styles -->
+{{ styles_placeholder|safe }}
+{% endblock %}
+
+{% block content %}
+<div class="simulator-fullwidth">
+    <div class="simulator-content">
+        {{ content|safe }}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Simulator specific scripts -->
+{{ scripts_placeholder|safe }}
+
+<!-- Script to handle simulator initialization -->
+<script>
+    (function() {
+        // Function to adjust the simulator elements
+        function adjustSimulatorElements() {
+            console.log('Adjusting simulator elements...');
+            
+            // Any additional adjustments needed for the simulator UI
+            
+            console.log('Simulator elements adjusted');
+        }
+
+        // Function to check if the simulator is loaded
+        function checkSimulatorLoaded() {
+            // Check if the simulator has loaded by looking for specific elements
+            if (document.querySelector('#canvas') && document.querySelector('.scene-navigation')) {
+                console.log('Simulator appears to be loaded, waiting for full initialization...');
+                // Wait a bit longer for full initialization
+                setTimeout(adjustSimulatorElements, 1000);
+            } else {
+                console.log('Simulator not fully loaded yet, retrying in 500ms...');
+                setTimeout(checkSimulatorLoaded, 500);
+            }
+        }
+
+        // Start checking when the page is loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', checkSimulatorLoaded);
+        } else {
+            // DOM already loaded, start checking
+            checkSimulatorLoaded();
+        }
+    })();
+</script>
+{% endblock %} 

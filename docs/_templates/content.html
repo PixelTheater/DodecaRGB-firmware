@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="content-wrapper">
+    <aside class="sidebar">
+        {% for section_title, section_items in nav.sections.items() %}
+        <div class="sidebar-section">
+            <h3>{{ section_title }}</h3>
+            <ul>
+                {% for item in section_items %}
+                <li>
+                    {% if item.is_special %}
+                    <a href="{{ item.url }}" class="special">{{ item.title }}</a>
+                    {% else %}
+                    <a href="{{ item.url }}" {% if current_path == item.url %}class="active"{% endif %}>{{ item.title }}</a>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </aside>
+    
+    <article class="main-content">
+        {% if meta.title %}
+        <h1>{{ meta.title }}</h1>
+        {% endif %}
+        
+        {{ content }}
+    </article>
+</div>
+{% endblock %} 

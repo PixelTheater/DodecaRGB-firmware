@@ -2,7 +2,7 @@
 
 The DodecaRGB Web Simulator provides a browser-based visualization and testing environment for LED animations. It uses WebGL for 3D rendering and Emscripten to compile the C++ codebase to WebAssembly.
 
-![web sim](../images/web-simulator.png)
+![web sim](../images/web-simulator.png:600x)
 
 ## Prerequisites
 

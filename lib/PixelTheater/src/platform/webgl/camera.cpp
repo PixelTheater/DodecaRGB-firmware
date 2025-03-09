@@ -15,6 +15,9 @@ static constexpr float TOP_VIEW_ANGLE = static_cast<float>(M_PI / 2.0f);  // 90 
 static constexpr float SIDE_VIEW_ANGLE = 0.0f;                            // 0 degrees
 static constexpr float ANGLE_VIEW_ANGLE = static_cast<float>(M_PI / 4.0f); // 45 degrees
 
+// Camera vertical offset to center the model in the viewport
+static constexpr float CAMERA_Y_OFFSET = 5.0f;
+
 Camera::Camera() 
     : _cameraHeight(0.0f),      // Start at eye level
       _cameraDistance(20.0f),   // Start at medium distance
@@ -156,12 +159,12 @@ void Camera::calculateViewMatrix(float* matrix) {
     // Calculate camera position in world space
     // For top view (90 degrees), cosine will be 0 and sine will be 1
     float eyeX = 0.0f;
-    float eyeY = _cameraDistance * sinTilt - 0.05f;  // Offset camera down slightly
+    float eyeY = _cameraDistance * sinTilt - CAMERA_Y_OFFSET;  // Apply vertical offset to center model
     float eyeZ = -_cameraDistance * cosTilt;
     
-    // Center position (where the model is)
+    // The model's center is at (0,0,0) in world space
     float centerX = 0.0f;
-    float centerY = -0.02f;  // Offset target down slightly
+    float centerY = 0.0f;  // Look at the origin
     float centerZ = 0.0f;
     
     // Up vector (always world up for turntable effect)

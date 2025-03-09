@@ -84,6 +84,24 @@ class DodecaSimulator {
         // Auto-updating info
         this.updateIntervalId = null;
 
+        // UI elements
+        this.fpsCounter = document.getElementById('fps-counter');
+        this.sceneSelector = document.querySelector('.scene-selector');
+        this.selectedSceneText = document.querySelector('.selected-scene');
+        this.sceneIndicator = document.querySelector('.scene-indicator');
+        this.prevButton = document.querySelector('.prev-button');
+        this.nextButton = document.querySelector('.next-button');
+        this.sceneParams = document.querySelector('.scene-params');
+        
+        // Scene state
+        this.currentSceneIndex = 0;
+        this.totalScenes = 0;
+        this.sceneNames = [];
+        
+        // Ensure canvas is square
+        this.resizeCanvas();
+        window.addEventListener('resize', () => this.resizeCanvas());
+        
         // Set up external C function implementations BEFORE module initialization
         this.setupExternalFunctions();
     }
@@ -98,7 +116,7 @@ class DodecaSimulator {
         };
         
         const getCanvasHeight = () => {
-            return this.canvas ? this.canvas.height : 600;
+            return this.canvas ? this.canvas.height : 800;
         };
         
         const getCurrentTime = () => {
@@ -106,8 +124,8 @@ class DodecaSimulator {
         };
         
         const updateUIFps = (fps) => {
-            if (this.fpsElement) {
-                this.fpsElement.textContent = Math.round(fps);
+            if (this.fpsCounter) {
+                this.fpsCounter.textContent = `${Math.round(fps)}fps`;
             }
         };
         
@@ -138,21 +156,23 @@ class DodecaSimulator {
     }
     
     /**
-     * Initialize the simulator UI
+     * Initialize the simulator
      */
     initialize() {
-        // Check WebGL support first
+        console.log("Initializing DodecaRGB Simulator UI");
+        
+        // Check WebGL2 support
         if (!this.checkWebGL2Support()) {
             return;
         }
         
-        // Set up event handlers for UI elements
+        // Set up event handlers
         this.setupEventHandlers();
         
-        // Set up auto-updating model info
-        this.startModelInfoUpdates();
+        // Set up canvas interaction
+        this.setupCanvasInteraction();
         
-        // Wait for WASM module to initialize
+        // Wait for module to be ready
         this.waitForModuleReady();
     }
     
@@ -173,27 +193,36 @@ class DodecaSimulator {
     }
     
     /**
-     * Safe function call to Module
-     * @param {string} funcName - Function name without the _ prefix
+     * Call a function in the WASM module
+     * @param {string} funcName - Name of the function to call
      * @param {...any} args - Arguments to pass to the function
-     * @returns {any} Result from the function call or null if function not found
+     * @returns {any} - Return value from the function
      */
     callModule(funcName, ...args) {
-        const fullName = '_' + funcName;
         if (!this.moduleReady) {
-            console.warn(`Module not ready when calling ${funcName}`);
+            console.warn(`Module not ready, cannot call ${funcName}`);
             return null;
         }
         
-        if (typeof Module[fullName] === 'function') {
-            try {
-                return Module[fullName](...args);
-            } catch (error) {
-                console.error(`Error calling ${funcName}:`, error);
-                return null;
+        // Check if the function exists in the Module
+        if (typeof Module['_' + funcName] !== 'function') {
+            console.warn(`Function ${funcName} not found in Module`);
+            return null;
+        }
+        
+        try {
+            // Handle special case for update_scene_parameter which takes a string
+            if (funcName === 'update_scene_parameter' && typeof args[0] === 'string') {
+                const paramIdPtr = this.Module.allocateUTF8(args[0]);
+                const result = Module['_' + funcName](paramIdPtr, args[1]);
+                this.Module._free(paramIdPtr);
+                return result;
             }
-        } else {
-            console.error(`Function ${funcName} not found in Module`);
+            
+            // Normal case for other functions
+            return Module['_' + funcName](...args);
+        } catch (e) {
+            console.error(`Error calling ${funcName}:`, e);
             return null;
         }
     }
@@ -202,73 +231,210 @@ class DodecaSimulator {
      * Wait for the WASM module to be ready
      */
     waitForModuleReady() {
-        if (typeof Module !== 'undefined' && Module.ready) {
-            this.onModuleReady();
-        } else {
-            // Set up the onRuntimeInitialized callback
+        // Set up a callback for when the module is ready
+        if (typeof Module !== 'undefined') {
+            // If Module already has onRuntimeInitialized, store the original
+            const originalCallback = Module.onRuntimeInitialized;
+            
+            // Set our own callback
             Module.onRuntimeInitialized = () => {
-                this.onModuleReady();
+                // Call the original callback if it exists
+                if (typeof originalCallback === 'function') {
+                    originalCallback();
+                }
+                
+                // Mark module as ready and initialize
+                this.moduleReady = true;
+                console.log("Module runtime initialized");
+                
+                // Wait a bit longer to ensure all module functions are available
+                setTimeout(() => {
+                    this.onModuleReady();
+                }, 1000);
             };
+        } else {
+            // Module not defined yet, check again later
+            console.log("Module not defined yet, waiting...");
+            setTimeout(() => this.waitForModuleReady(), 100);
         }
     }
     
     /**
-     * Called when the WASM module is initialized
+     * Called when the module is ready
      */
     onModuleReady() {
-        console.log("WebAssembly runtime initialized");
-        this.moduleReady = true;
+        console.log("Module ready, initializing simulator...");
         
-        // Add a short delay before initial setup to ensure everything is properly initialized
-        console.log("Setting up initial state in 100ms...");
+        // Ensure canvas is properly sized
+        this.resizeCanvas();
+        
+        // Set up external functions
+        this.setupExternalFunctions();
+        
+        // Debug: List available functions in the Module
+        this.listAvailableModuleFunctions();
+        
+        // Check if Embind functions are available
+        const embindAvailable = this.checkEmbindFunctions();
+        console.log("Embind functions available:", embindAvailable);
+        
+        // Add a delay before initial setup to ensure everything is properly initialized
         setTimeout(() => {
-            // Set up initial UI state
-            this.setupScenes();
-            this.setupControlValues();
-            console.log("Initial UI state setup complete");
-        }, 100);
+            try {
+                // Initialize UI elements
+                this.setupControlValues();
+                
+                // Set up scenes
+                this.setupScenes();
+                
+                // Start model info updates
+                this.startModelInfoUpdates();
+                
+                console.log("Simulator initialization complete");
+            } catch (error) {
+                console.error("Error during simulator initialization:", error);
+            }
+        }, 1000);
     }
     
     /**
-     * Set up scene buttons based on available scenes
+     * List available functions in the Module for debugging
+     */
+    listAvailableModuleFunctions() {
+        if (typeof Module !== 'undefined') {
+            console.log("Available Module functions:");
+            
+            // List all properties that look like functions
+            const functionNames = Object.keys(Module).filter(key => 
+                typeof Module[key] === 'function' && key.startsWith('_')
+            );
+            
+            functionNames.forEach(name => {
+                console.log(`- ${name}`);
+            });
+            
+            // Check for specific functions we're interested in
+            const checkFunctions = [
+                '_change_scene', 
+                '_set_brightness',
+                '_set_led_size',
+                '_set_atmosphere_intensity',
+                '_set_mesh_opacity',
+                '_set_show_mesh',
+                '_get_num_scenes'
+            ];
+            
+            console.log("Checking for specific functions:");
+            checkFunctions.forEach(name => {
+                console.log(`- ${name}: ${typeof Module[name] === 'function' ? 'Available' : 'Not found'}`);
+            });
+        } else {
+            console.warn("Module is not defined");
+        }
+    }
+    
+    /**
+     * Set up scenes and populate scene selector
      */
     setupScenes() {
+        // Wait for module to be ready before setting up scenes
+        if (!this.moduleReady) {
+            console.log("Module not ready, deferring scene setup");
+            setTimeout(() => this.setupScenes(), 100);
+            return;
+        }
+        
         const numScenes = this.callModule('get_num_scenes');
-        if (numScenes === null) return;
+        if (numScenes === null) {
+            console.log("Could not get number of scenes, using default scenes");
+            this.totalScenes = 8; // Default number of scenes
+            
+            // Create default scene names
+            this.sceneNames = [
+                "Test Pattern",
+                "Wandering Blobs",
+                "Color Waves",
+                "Fire Effect",
+                "Rainbow Cycle",
+                "Starfield",
+                "Audio Visualizer",
+                "Matrix Rain"
+            ];
+            
+            // Set Wandering Blobs (index 1) as active by default
+            this.currentSceneIndex = 1;
+            this.updateSceneUI();
+            this.updateSceneParameters(this.currentSceneIndex);
+            return;
+        }
         
         console.log(`Found ${numScenes} scenes`);
+        this.totalScenes = numScenes;
         
-        // Clear existing buttons
-        this.sceneButtons.innerHTML = '';
-        
-        // Create a button for each scene
+        // Create scene names array
+        this.sceneNames = [];
         for (let i = 0; i < numScenes; i++) {
             // Use a switch statement to match the C++ implementation
             let sceneName = "";
             switch (i) {
                 case 0:
-                    sceneName = "Test Scene";
+                    sceneName = "Test Pattern";
                     break;
                 case 1:
-                    sceneName = "Blob Scene";
+                    sceneName = "Wandering Blobs";
+                    break;
+                case 2:
+                    sceneName = "Color Waves";
+                    break;
+                case 3:
+                    sceneName = "Fire Effect";
+                    break;
+                case 4:
+                    sceneName = "Rainbow Cycle";
+                    break;
+                case 5:
+                    sceneName = "Starfield";
+                    break;
+                case 6:
+                    sceneName = "Audio Visualizer";
+                    break;
+                case 7:
+                    sceneName = "Matrix Rain";
                     break;
                 default:
                     sceneName = `Scene ${i}`;
                     break;
             }
-            
-            // Create the button
-            const button = document.createElement('button');
-            button.textContent = sceneName;
-            button.dataset.sceneIndex = i;
-            button.addEventListener('click', (e) => this.handleSceneChange(e));
-            
-            this.sceneButtons.appendChild(button);
-            
-            // Set the Blob Scene (index 1) as active by default to match C++ initialization
-            if (i === 1) {
-                button.classList.add('active');
-            }
+            this.sceneNames.push(sceneName);
+        }
+        
+        // Set Wandering Blobs (index 1) as active by default
+        this.currentSceneIndex = 1;
+        this.updateSceneUI();
+        this.updateSceneParameters(this.currentSceneIndex);
+    }
+    
+    /**
+     * Update scene UI elements
+     */
+    updateSceneUI() {
+        // Update scene indicator (e.g., "1/8")
+        if (this.sceneIndicator) {
+            this.sceneIndicator.textContent = `${this.currentSceneIndex + 1}/${this.totalScenes}`;
+        }
+        
+        // Update selected scene text
+        if (this.selectedSceneText && this.sceneNames[this.currentSceneIndex]) {
+            this.selectedSceneText.textContent = this.sceneNames[this.currentSceneIndex];
+        }
+        
+        // Set the scene using the available function
+        console.log(`Setting scene to index: ${this.currentSceneIndex}`);
+        
+        if (typeof Module._change_scene === 'function') {
+            Module._change_scene(this.currentSceneIndex);
+        } else {
+            console.warn("Scene change function not found in Module");
         }
     }
     
@@ -485,8 +651,33 @@ class DodecaSimulator {
             this.rotationFastBtn.addEventListener('click', () => this.handleRotationChange(true, 3.0, this.rotationFastBtn));
         }
         
+        // Scene navigation
+        this.prevButton.addEventListener('click', () => this.navigateScene(-1));
+        this.nextButton.addEventListener('click', () => this.navigateScene(1));
+        this.sceneSelector.addEventListener('click', () => this.showSceneDropdown());
+        
         // Set up canvas interaction
         this.setupCanvasInteraction();
+        
+        // Console controls
+        const toggleConsoleBtn = document.getElementById('toggle-console');
+        const clearConsoleBtn = document.getElementById('clear-console');
+        const consoleContainer = document.getElementById('console-container');
+        
+        if (toggleConsoleBtn) {
+            toggleConsoleBtn.addEventListener('click', () => {
+                const isVisible = consoleContainer.style.display !== 'none';
+                consoleContainer.style.display = isVisible ? 'none' : 'block';
+                toggleConsoleBtn.textContent = isVisible ? 'Show Console' : 'Hide Console';
+            });
+        }
+        
+        if (clearConsoleBtn) {
+            clearConsoleBtn.addEventListener('click', () => {
+                const consoleElement = document.getElementById('console');
+                if (consoleElement) consoleElement.innerHTML = '';
+            });
+        }
     }
     
     /**
@@ -639,13 +830,23 @@ class DodecaSimulator {
      * @param {Event} event - Input event
      */
     handleBrightnessChange(event) {
-        const value = parseInt(event.target.value);
-        this.brightnessValue.textContent = value;
-        
-        // Convert from percentage (0-100) to the internal brightness range (0-255)
-        const scaledBrightness = Math.round((value * 255) / 100);
-        console.log(`Setting brightness to: ${value}% (${scaledBrightness}/255)`);
-        this.callModule('set_brightness', scaledBrightness);
+        try {
+            const brightness = parseInt(event.target.value);
+            document.getElementById('brightness-value').textContent = brightness;
+            
+            // Convert from percentage (0-100) to byte (0-255)
+            const scaledBrightness = Math.round((brightness * 255) / 100);
+            console.log(`Setting brightness to: ${brightness}% (${scaledBrightness}/255)`);
+            
+            // Call the available function
+            if (typeof Module._set_brightness === 'function') {
+                Module._set_brightness(scaledBrightness);
+            } else {
+                console.warn("Brightness function not found in Module");
+            }
+        } catch (error) {
+            console.error("Error setting brightness:", error);
+        }
     }
     
     /**
@@ -653,10 +854,20 @@ class DodecaSimulator {
      * @param {Event} event - Input event
      */
     handleLEDSizeChange(event) {
-        const size = parseFloat(event.target.value);
-        this.ledSizeValue.textContent = size.toFixed(1);
-        console.log(`Setting LED size ratio to: ${size.toFixed(1)}x`);
-        this.callModule('set_led_size', size);
+        try {
+            const size = parseFloat(event.target.value);
+            document.getElementById('led-size-value').textContent = size.toFixed(1);
+            console.log(`Setting LED size: ${size}x`);
+            
+            // Call the available function
+            if (typeof Module._set_led_size === 'function') {
+                Module._set_led_size(size);
+            } else {
+                console.warn("LED size function not found in Module");
+            }
+        } catch (error) {
+            console.error("Error setting LED size:", error);
+        }
     }
     
     /**
@@ -664,12 +875,21 @@ class DodecaSimulator {
      * @param {Event} event - Input event
      */
     handleAtmosphereChange(event) {
-        const rawValue = parseFloat(event.target.value);
-        // Convert range 0-30 to 0.0-3.0
-        const intensity = rawValue / 10.0;
-        this.atmosphereValue.textContent = intensity.toFixed(1);
-        console.log(`Setting atmosphere intensity to: ${intensity.toFixed(1)}`);
-        this.callModule('set_atmosphere_intensity', intensity);
+        try {
+            const value = parseInt(event.target.value);
+            const intensity = value / 10.0; // Convert from 0-30 to 0-3.0
+            document.getElementById('glow-intensity-value').textContent = intensity.toFixed(1);
+            console.log(`Setting atmosphere intensity: value=${intensity}, slider=${value}`);
+            
+            // Call the available function
+            if (typeof Module._set_atmosphere_intensity === 'function') {
+                Module._set_atmosphere_intensity(intensity);
+            } else {
+                console.warn("Atmosphere intensity function not found in Module");
+            }
+        } catch (error) {
+            console.error("Error setting atmosphere intensity:", error);
+        }
     }
     
     /**
@@ -677,20 +897,40 @@ class DodecaSimulator {
      * @param {Event} event - Input event
      */
     handleMeshOpacityChange(event) {
-        const value = parseFloat(event.target.value);
-        this.meshOpacityValue.textContent = value.toFixed(1);
-        console.log(`Setting mesh opacity to: ${value.toFixed(1)}`);
-        this.callModule('set_mesh_opacity', value);
+        try {
+            const opacity = parseFloat(event.target.value);
+            document.getElementById('mesh-opacity-value').textContent = opacity.toFixed(1);
+            console.log(`Setting mesh opacity: ${opacity.toFixed(2)}`);
+            
+            // Call the available function
+            if (typeof Module._set_mesh_opacity === 'function') {
+                Module._set_mesh_opacity(opacity);
+            } else {
+                console.warn("Mesh opacity function not found in Module");
+            }
+        } catch (error) {
+            console.error("Error setting mesh opacity:", error);
+        }
     }
     
     /**
      * Handle show mesh checkbox change
-     * @param {Event} event - Change event
+     * @param {Event} event - Input event
      */
     handleShowMeshChange(event) {
-        const enabled = event.target.checked;
-        console.log(`Setting show mesh: ${enabled ? 'ON' : 'OFF'}`);
-        this.callModule('set_show_mesh', enabled);
+        try {
+            const show = event.target.checked;
+            console.log(`Setting show mesh: ${show ? 'ON' : 'OFF'}`);
+            
+            // Call the available function
+            if (typeof Module._set_show_mesh === 'function') {
+                Module._set_show_mesh(show ? 1 : 0);
+            } else {
+                console.warn("Show mesh function not found in Module");
+            }
+        } catch (error) {
+            console.error("Error setting show mesh:", error);
+        }
     }
     
     /**
@@ -782,6 +1022,245 @@ class DodecaSimulator {
             if (btn) btn.classList.remove('active');
         });
         if (activeBtn) activeBtn.classList.add('active');
+    }
+    
+    /**
+     * Navigate to previous or next scene
+     * @param {number} direction - Direction to navigate (-1 for prev, 1 for next)
+     */
+    navigateScene(direction) {
+        try {
+            // Calculate new scene index with wrapping
+            const newIndex = (this.currentSceneIndex + direction + this.totalScenes) % this.totalScenes;
+            console.log(`Navigating from scene ${this.currentSceneIndex} to ${newIndex}`);
+            
+            this.currentSceneIndex = newIndex;
+            this.updateSceneUI();
+            this.updateSceneParameters(this.currentSceneIndex);
+        } catch (error) {
+            console.error("Error navigating scene:", error);
+        }
+    }
+    
+    /**
+     * Show scene selection dropdown (mock for now)
+     */
+    showSceneDropdown() {
+        console.log('Scene dropdown clicked - would show dropdown menu here');
+        // For now, just cycle to the next scene as a placeholder
+        this.navigateScene(1);
+    }
+    
+    /**
+     * Update scene parameters UI based on the selected scene
+     * @param {number} sceneIndex - Index of the selected scene
+     */
+    updateSceneParameters(sceneIndex) {
+        // Clear existing parameters
+        this.sceneParams.innerHTML = '';
+        
+        // Skip if module is not ready
+        if (!this.moduleReady) {
+            console.log("Module not ready, can't update scene parameters");
+            return;
+        }
+        
+        console.log(`Updating parameters for scene ${sceneIndex}`);
+        
+        try {
+            // Get parameters using Embind
+            const parameters = Module.getSceneParameters();
+            console.log("Retrieved parameters:", parameters);
+            
+            if (!parameters || parameters.length === 0) {
+                // No parameters for this scene
+                const noParamsMsg = document.createElement('div');
+                noParamsMsg.className = 'no-params-message';
+                noParamsMsg.textContent = 'This scene has no adjustable parameters.';
+                this.sceneParams.appendChild(noParamsMsg);
+                return;
+            }
+            
+            // Create UI controls for each parameter
+            parameters.forEach(param => {
+                this.addSceneParameter(param);
+            });
+        } catch (error) {
+            console.error("Error updating scene parameters:", error);
+            // Show error message in UI
+            const errorMsg = document.createElement('div');
+            errorMsg.className = 'error-message';
+            errorMsg.textContent = 'Error loading scene parameters.';
+            this.sceneParams.appendChild(errorMsg);
+        }
+    }
+    
+    /**
+     * Add a parameter control to the scene parameters UI
+     * @param {string} id - Parameter ID
+     * @param {string} type - Parameter type (range, checkbox, etc.)
+     * @param {number} min - Minimum value (for range)
+     * @param {number} max - Maximum value (for range)
+     * @param {any} value - Current value
+     * @param {string} label - Parameter label
+     */
+    addSceneParameter(param) {
+        const paramRow = document.createElement('div');
+        paramRow.className = 'param-row';
+        
+        const paramLabel = document.createElement('label');
+        paramLabel.textContent = param.label;
+        paramRow.appendChild(paramLabel);
+        
+        let input;
+        let valueDisplay;
+        
+        switch (param.controlType) {
+            case 'slider':
+                // Create slider
+                input = document.createElement('input');
+                input.type = 'range';
+                input.min = param.min;
+                input.max = param.max;
+                input.step = param.step;
+                input.value = parseFloat(param.value);
+                input.id = `scene-param-${param.id}`;
+                
+                // Create value display
+                valueDisplay = document.createElement('span');
+                valueDisplay.className = 'param-value';
+                valueDisplay.textContent = parseFloat(param.value).toFixed(2);
+                
+                // Add event listener
+                input.addEventListener('input', (e) => {
+                    const newValue = parseFloat(e.target.value);
+                    valueDisplay.textContent = newValue.toFixed(2);
+                    this.handleSceneParameterChange(param.id, newValue.toString());
+                });
+                
+                paramRow.appendChild(input);
+                paramRow.appendChild(valueDisplay);
+                break;
+                
+            case 'checkbox':
+                // Create checkbox
+                input = document.createElement('input');
+                input.type = 'checkbox';
+                input.checked = param.value === "true";
+                input.id = `scene-param-${param.id}`;
+                
+                const checkboxLabel = document.createElement('label');
+                checkboxLabel.appendChild(input);
+                checkboxLabel.appendChild(document.createTextNode(param.label));
+                
+                // Add event listener
+                input.addEventListener('change', (e) => {
+                    this.handleSceneParameterChange(param.id, e.target.checked.toString());
+                });
+                
+                paramRow.innerHTML = '';
+                paramRow.appendChild(checkboxLabel);
+                break;
+                
+            case 'select':
+                // Create select dropdown
+                input = document.createElement('select');
+                input.id = `scene-param-${param.id}`;
+                
+                // Add options
+                if (param.options && param.options.length > 0) {
+                    param.options.forEach(option => {
+                        const optionEl = document.createElement('option');
+                        optionEl.value = option;
+                        optionEl.textContent = option;
+                        optionEl.selected = option === param.value;
+                        input.appendChild(optionEl);
+                    });
+                }
+                
+                // Add event listener
+                input.addEventListener('change', (e) => {
+                    this.handleSceneParameterChange(param.id, e.target.value);
+                });
+                
+                paramRow.appendChild(input);
+                break;
+        }
+        
+        this.sceneParams.appendChild(paramRow);
+    }
+    
+    /**
+     * Handle scene parameter change
+     * @param {string} paramId - Parameter ID
+     * @param {any} value - New value
+     */
+    handleSceneParameterChange(paramId, value) {
+        console.log(`Scene parameter changed: ${paramId}, value: ${value}`);
+        
+        if (!this.moduleReady) {
+            console.warn("Module not ready, can't update parameter");
+            return;
+        }
+        
+        try {
+            // Call the Embind function to update the parameter
+            Module.updateSceneParameter(paramId, value);
+        } catch (error) {
+            console.error(`Error updating parameter ${paramId}:`, error);
+            
+            // Fallback to the old method if Embind fails
+            try {
+                this.callModule('update_scene_parameter', paramId, parseFloat(value));
+            } catch (fallbackError) {
+                console.error(`Fallback also failed: ${fallbackError}`);
+            }
+        }
+    }
+    
+    /**
+     * Check if the Embind functions are available
+     * @returns {boolean} True if Embind functions are available
+     */
+    checkEmbindFunctions() {
+        // Check if the Embind functions are available
+        if (typeof Module.getSceneParameters !== 'function') {
+            console.warn("Module.getSceneParameters is not available");
+            return false;
+        }
+        
+        if (typeof Module.updateSceneParameter !== 'function') {
+            console.warn("Module.updateSceneParameter is not available");
+            return false;
+        }
+        
+        console.log("Embind functions are available");
+        return true;
+    }
+    
+    /**
+     * Resize the canvas based on CSS dimensions
+     * No longer enforcing square aspect ratio
+     */
+    resizeCanvas() {
+        // Get the computed style to see what size CSS has set
+        const computedStyle = window.getComputedStyle(this.canvas);
+        const cssWidth = parseInt(computedStyle.width, 10);
+        
+        // Calculate an optimal height based on some criteria
+        // For example, you could use a specific aspect ratio:
+        const optimalHeight = cssWidth * 0.70; // For a 4:3 aspect ratio
+        
+        // Set the canvas dimensions
+        this.canvas.width = cssWidth;
+        this.canvas.height = optimalHeight;
+        
+        console.log(`Canvas resized to ${this.canvas.width}x${this.canvas.height}`);
+        
+        // Notify the C++ code about the resize
+        if (this.moduleReady) {
+            this.callModule('resizeCanvas', this.canvas.width, this.canvas.height);
+        }
     }
 }
 

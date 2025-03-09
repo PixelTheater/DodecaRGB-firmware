@@ -1,0 +1,230 @@
+/* 
+ * DodecaRGB Simulator CSS for Documentation Site
+ * Organized by component and functionality
+ */
+
+/* ===== LAYOUT STRUCTURE ===== */
+/* Base layout for simulator pages */
+.simulator-wrapper,
+.simulator-container,
+.simulator-fullwidth,
+.simulator-content,
+.main-content {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Main container with proper margins */
+.simulator-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+/* Dark theme for simulator page */
+body.simulator-page {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+/* Main content and sidebar */
+body.simulator-page main {
+    padding: 0;
+    max-width: 100%;
+    background-color: #121212;
+}
+
+body.simulator-page .sidebar {
+    display: none;
+}
+
+/* ===== VISUALIZER & CANVAS ===== */
+/* Column layout */
+.visualizer-column {
+    flex: 7;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.settings-column {
+    flex: 3;
+}
+
+/* Visualizer container - adapts to canvas size */
+.visualizer-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+/* Canvas element - fixed size */
+#canvas {
+    display: block;
+    /* Fixed size that everything else adapts to */
+    width: 600px;
+    height: 450px;
+    max-width: 100%;
+    margin: 0 !important;
+}
+
+/* Instructions text */
+#instructions {
+    position: relative;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted, #aaa);
+    margin-top: 8px;
+    padding: 4px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+/* ===== CONTROLS & BUTTONS ===== */
+/* Form controls */
+input, select, button {
+    background-color: var(--code-bg, #2a2a2a);
+    color: var(--text-color, #e0e0e0);
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 5px 10px;
+}
+
+/* Slider containers */
+.slider-container {
+    margin: 15px 0;
+    padding: 0 5px;
+}
+
+.slider-container label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    color: var(--text-color, #e0e0e0);
+}
+
+.slider-container label span {
+    min-width: 30px;
+    text-align: right;
+    font-weight: bold;
+}
+
+.slider-container input[type="range"] {
+    width: calc(100% - 10px);
+    height: 6px;
+    background-color: #444;
+    border-radius: 3px;
+    outline: none;
+    margin: 0 5px;
+}
+
+/* Button styling */
+button {
+    background-color: var(--primary-color, #432E54);
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+button:hover {
+    background-color: var(--secondary-color, #5a3e70);
+}
+
+/* Scene buttons */
+.scene-button {
+    margin: 5px;
+    padding: 8px 15px;
+}
+
+/* ===== DOCUMENTATION LINKS ===== */
+/* Common button styles */
+.view-docs-button,
+.docs-link {
+    display: block;
+    padding: 10px 15px;
+    background-color: #432E54;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.view-docs-button:hover,
+.docs-link:hover {
+    background-color: #5a3e70;
+    text-decoration: none;
+}
+
+/* View docs button specific */
+.view-docs-button {
+    margin: 10px 0;
+}
+
+/* Documentation link container */
+.docs-link-container {
+    text-align: right;
+    margin-bottom: 15px;
+}
+
+/* Documentation link specific */
+.docs-link {
+    display: inline-block;
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+@media (max-width: 1200px) {
+    /* Stack layout on smaller screens */
+    .simulator-layout {
+        flex-direction: column;
+    }
+    
+    /* Full width columns */
+    .settings-column,
+    .visualizer-column {
+        flex: none;
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 1000px) {
+    /* Adjust canvas size for medium screens */
+    #canvas {
+        width: 500px;
+        height: 500px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Smaller padding for mobile */
+    .visualizer-column {
+        padding: 10px;
+    }
+    
+    .simulator-container {
+        padding: 0 10px;
+    }
+    
+    /* Adjust canvas size for small screens */
+    #canvas {
+        width: 400px;
+        height: 400px;
+    }
+}
+
+@media (max-width: 500px) {
+    /* Fully responsive canvas for very small screens */
+    #canvas {
+        width: 100%;
+        height: auto;
+        max-height: 350px;
+    }
+} 
