@@ -2,6 +2,7 @@
 #include "PixelTheater/params/param_flags.h"
 #include "PixelTheater/params/param_types.h"
 #include "PixelTheater/core/log.h"
+#include <string>
 
 namespace PixelTheater {
 namespace ParamHandlers {
@@ -16,6 +17,9 @@ public:
     
     // Check for conflicting flags
     static bool has_conflicts(ParamFlags flags);
+    
+    // Convert flags to string representation
+    static std::string to_string(ParamFlags flags);
 };
 
 }} // namespace PixelTheater::ParamHandlers 

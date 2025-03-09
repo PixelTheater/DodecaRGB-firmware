@@ -6,7 +6,7 @@ version: 2.8.2
 
 # PixelTheater Animation System
 
-## [1] Overview
+## Overview
 
 The animation system provides a type-safe, flexible framework for creating LED animations on three-dimensional objects. Whether you're building a dodecahedron, sphere, cube, or any other LED-covered shape, this library makes it easy to:
 
@@ -17,7 +17,7 @@ The animation system provides a type-safe, flexible framework for creating LED a
 - Integrate with sensors and user input
 - Debug and monitor animation performance
 
-### [2] Architecture and Class Structure
+### Architecture and Class Structure
 
 ```text
 ┌──────────┐                                                   
@@ -49,7 +49,7 @@ The animation system provides a type-safe, flexible framework for creating LED a
      └────────────┘   └───────────┘                                              
 ```
 
-### [2.1] Key Concepts
+### Key Concepts
 
 - **Stage**: The place where animated scenes are played on a model covered in LEDs
   - **Model**: Definition of a geometric shape covered with LEDs, generated from hardware files
@@ -67,33 +67,65 @@ The animation system provides a type-safe, flexible framework for creating LED a
 
 The Director manages scene transitions and ensures proper lifecycle method calls.
 
-## [5] Directing Scenes
+## Directing Scenes
 
 The Director is responsible for selecting and transitioning between scenes. It can place animations on the stage (run them), and manage playlists and activate presets. The Director puts on the show.
 
-## [6] Props System
+## Props System
 
-Props are binary assets (palettes, bitmaps) that can be:
+Props are binary assets (palettes, bitmaps) that can be used in scenes.
 
-- Global: defined in props.yaml
+## Parameter System
+
+Parameters allow scenes to be configured at runtime. They are defined in the scene's `setup()` method:
+
+```cpp
+void setup() override {
+    // Float parameter with range [0.0, 1.0]
+    param("speed", "ratio", 0.5f, "clamp", "Controls animation speed");
+    
+    // Integer parameter with range [0, 100]
+    param("count", "count", 0, 100, 50, "", "Number of particles");
+    
+    // Boolean parameter
+    param("trails", "switch", true, "", "Enable motion trails");
+}
+```
+
+Parameters can be accessed using the settings object:
+
+```cpp
+float speed = settings["speed"];
+int count = settings["count"];
+bool trails = settings["trails"];
+```
+
+The parameter system also supports schema generation for UI rendering and documentation:
+
+```cpp
+// Get parameter schema as JSON
+auto schema = scene.parameter_schema().to_json();
+```
 
 ## [13] Advanced Configuration
 
 ### Build Process
 
-The build system processes scene YAML files to generate C++ code:
+The build system compiles scenes and models into the firmware:
 
-1. During build, `generate_scenes.py` is called for each scene YAML file
-2. The generator creates a header file in the same directory as the scene YAML file named `_params.h`.
-3. At compile time, the scene automatically includes `_params.h` to get the parameter definitions.
+1. Each scene is compiled as a separate class
+2. Models are generated from their definitions into C++ header files
+3. The firmware links everything together at compile time
 
-The header file uses macros to define the parameters with:
+### Customization
 
-- Type mapping (signed_ratio → float with -1..1 range)
-- Flag conversion (clamp → ParamFlag::Clamp)
-- Range validation
-- Test fixture generation
-- Descriptions preserved
+PixelTheater can be customized in several ways:
+
+1. Creating new scenes
+2. Defining new models
+3. Extending the core library with new features
+
+See the individual documentation pages for more details on each aspect of the system.
 
 ### [14] Palettes
 

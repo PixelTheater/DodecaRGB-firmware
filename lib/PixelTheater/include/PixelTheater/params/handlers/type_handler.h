@@ -80,6 +80,19 @@ public:
         }
     }
 
+    static bool is_float_type(ParamType type) {
+        return (type == ParamType::ratio || 
+                type == ParamType::signed_ratio || 
+                type == ParamType::angle || 
+                type == ParamType::signed_angle || 
+                type == ParamType::range);
+    }
+
+    static bool is_int_type(ParamType type) {
+        return (type == ParamType::count || 
+                type == ParamType::select);
+    }
+
 private:
     static bool is_numeric_type(ParamType type);
     static bool is_integer_type(ParamType type);

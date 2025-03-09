@@ -26,16 +26,18 @@ public:
     // Metadata access
     const ParamDef& get_metadata(const std::string& name) const;
     ParamType get_type(const std::string& name) const;
-    const char* get_description(const std::string& name) const;
+    std::string get_description(const std::string& name) const;
 
     // Parameter management
     void reset_all();   // reset settings to default values
-    void add_parameter(const ParamDef& def);  // add a parameter from a generated YAML definition
-    // add a parameter from a manually defined set of strings, used in a scene's setup() method
+    void add_parameter(const ParamDef& def);
+    
+    // Add a parameter from a set of strings
     void add_parameter_from_strings(const std::string& name, 
                                   const std::string& type,
                                   const ParamValue& default_val, 
-                                  const std::string& flags);
+                                  const std::string& flags,
+                                  const std::string& description = "");
     
     // Direct methods for adding range parameters
     void add_range_parameter(const std::string& name, 
@@ -54,6 +56,9 @@ public:
 
     // Value validation
     bool is_valid_value(const std::string& name, const ParamValue& value) const;
+    
+    // Get all parameter names
+    std::vector<std::string> get_parameter_names() const;
 
 private:
     std::unordered_map<std::string, ParamDef> _params;

@@ -165,6 +165,9 @@ public:
     // WebGL resource management
     EMSCRIPTEN_KEEPALIVE void cleanupWebGL();
 
+    // Update a scene parameter in the animation controller
+    void updateSceneParameter(const char* param_id, float value);
+
 private:
 #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
     void initializeFromWebModel(const WebModel& model);

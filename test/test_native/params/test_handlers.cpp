@@ -42,22 +42,18 @@ TEST_CASE("TypeHandler") {
     }
 
     SUBCASE("Type conversion rules") {
-        // Numeric types can convert between themselves
+        // Keep numeric type conversions
         CHECK(TypeHandler::can_convert(ParamType::ratio, ParamType::range));
         CHECK(TypeHandler::can_convert(ParamType::signed_ratio, ParamType::angle));
         CHECK_FALSE(TypeHandler::can_convert(ParamType::ratio, ParamType::count));
 
-        // Integer types can convert between themselves
+        // Keep integer type conversions
         CHECK(TypeHandler::can_convert(ParamType::count, ParamType::select));
         CHECK_FALSE(TypeHandler::can_convert(ParamType::count, ParamType::ratio));
 
-        // Switch type only converts to itself
+        // Keep switch type conversions
         CHECK(TypeHandler::can_convert(ParamType::switch_type, ParamType::switch_type));
         CHECK_FALSE(TypeHandler::can_convert(ParamType::switch_type, ParamType::count));
-
-        // Resource types can convert between themselves
-        CHECK(TypeHandler::can_convert(ParamType::palette, ParamType::palette));
-        CHECK_FALSE(TypeHandler::can_convert(ParamType::palette, ParamType::ratio));
     }
 
     SUBCASE("Type metadata") {
@@ -84,10 +80,6 @@ TEST_CASE("TypeHandler") {
         const auto& select_info = TypeHandler::get_type_info(ParamType::select);
         CHECK(select_info.has_range == false);
         CHECK(select_info.has_options == true);
-
-        const auto& palette_info = TypeHandler::get_type_info(ParamType::palette);
-        CHECK(palette_info.has_range == false);
-        CHECK(palette_info.is_resource == true);
     }
 
     SUBCASE("Complete conversion matrix") {
@@ -95,8 +87,7 @@ TEST_CASE("TypeHandler") {
             ParamType::ratio, ParamType::signed_ratio,
             ParamType::angle, ParamType::signed_angle,
             ParamType::range, ParamType::count,
-            ParamType::select, ParamType::switch_type,
-            ParamType::palette, ParamType::bitmap
+            ParamType::select, ParamType::switch_type
         };
 
         for (auto from : all_types) {
@@ -117,16 +108,6 @@ TEST_CASE("TypeHandler") {
         
         ParamValue nan_float(NAN);
         CHECK_FALSE(TypeHandler::validate(ParamType::ratio, nan_float));
-
-        // Test resource validation
-        ParamValue valid_resource("test.pal");
-        CHECK(TypeHandler::validate(ParamType::palette, valid_resource));
-        
-        ParamValue empty_resource("");
-        CHECK_FALSE(TypeHandler::validate(ParamType::palette, empty_resource));
-
-        // Test type compatibility
-        CHECK_FALSE(TypeHandler::validate(ParamType::ratio, ParamValue(true)));
     }
 }
 
@@ -259,10 +240,6 @@ TEST_CASE("TypeHandler complete functionality") {
         // Boolean type
         CHECK(TypeHandler::validate(ParamType::switch_type, ParamValue(true)));
         CHECK(TypeHandler::validate(ParamType::switch_type, ParamValue(false)));
-
-        // Resource types
-        CHECK(TypeHandler::validate(ParamType::palette, ParamValue("valid.pal")));
-        CHECK_FALSE(TypeHandler::validate(ParamType::palette, ParamValue("")));
     }
 
     SUBCASE("Sentinel value generation") {
@@ -277,19 +254,14 @@ TEST_CASE("TypeHandler complete functionality") {
         // Boolean type
         CHECK(TypeHandler::get_sentinel_for_type(ParamType::switch_type).as_bool() == 
               SentinelHandler::get_sentinel<bool>());
-
-        // Resource types
-        CHECK(TypeHandler::get_sentinel_for_type(ParamType::palette).as_string() == nullptr);
     }
 
     SUBCASE("Type conversion complete matrix") {
-        // Test all type combinations
         const ParamType all_types[] = {
             ParamType::ratio, ParamType::signed_ratio,
             ParamType::angle, ParamType::signed_angle,
             ParamType::range, ParamType::count,
-            ParamType::select, ParamType::switch_type,
-            ParamType::palette, ParamType::bitmap
+            ParamType::select, ParamType::switch_type
         };
 
         for (auto from : all_types) {
@@ -326,10 +298,6 @@ TEST_CASE("FlagHandler") {
         
         // Non-numeric types
         CHECK(FlagHandler::validate_flags(Flags::NONE, ParamType::switch_type));
-        
-        // Resource types cannot have flags
-        CHECK_FALSE(FlagHandler::validate_flags(Flags::WRAP, ParamType::palette));
-        CHECK_FALSE(FlagHandler::validate_flags(Flags::CLAMP, ParamType::switch_type));
     }
 
     SUBCASE("Flag conflicts") {
@@ -350,12 +318,6 @@ TEST_CASE("FlagHandler") {
     }
 
     SUBCASE("FlagHandler type-specific rules") {
-        SUBCASE("Resource types reject all flags") {
-            CHECK_FALSE(FlagHandler::validate_flags(Flags::CLAMP, ParamType::palette));
-            CHECK_FALSE(FlagHandler::validate_flags(Flags::WRAP, ParamType::bitmap));
-            CHECK_FALSE(FlagHandler::validate_flags(Flags::SLEW, ParamType::palette));
-        }
-
         SUBCASE("Switch type rejects all flags") {
             CHECK_FALSE(FlagHandler::validate_flags(Flags::CLAMP, ParamType::switch_type));
             CHECK_FALSE(FlagHandler::validate_flags(Flags::WRAP, ParamType::switch_type));

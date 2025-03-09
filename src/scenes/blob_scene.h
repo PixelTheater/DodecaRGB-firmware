@@ -159,7 +159,7 @@ public:
     
     void setup() override {
         // Define parameters with the correct types and required min/max values
-        // For count/integer parameters, use add_count_parameter with min, max, default format
+        // For count/integer parameters, use param method with name, type, min, max, default format
         
         // Define ranges for parameters
         const int MIN_BLOBS = 1;
@@ -177,17 +177,17 @@ public:
         const int MIN_FADE = 1;
         const int MAX_FADE = 20;
         
-        // Now define parameters with proper ranges using direct methods
-        this->settings.add_count_parameter("num_blobs", MIN_BLOBS, MAX_BLOBS, DEFAULT_NUM_BLOBS, "clamp");
-        this->settings.add_count_parameter("min_radius", MIN_RADIUS_LOW, MIN_RADIUS_HIGH, DEFAULT_MIN_RADIUS, "clamp");
-        this->settings.add_count_parameter("max_radius", MAX_RADIUS_LOW, MAX_RADIUS_HIGH, DEFAULT_MAX_RADIUS, "clamp");
-        this->settings.add_count_parameter("max_age", MIN_AGE, MAX_AGE, DEFAULT_MAX_AGE, "clamp");
+        // Now define parameters with proper ranges using the param() method
+        this->param("num_blobs", "count", MIN_BLOBS, MAX_BLOBS, DEFAULT_NUM_BLOBS, "clamp", "Number of blobs");
+        this->param("min_radius", "count", MIN_RADIUS_LOW, MIN_RADIUS_HIGH, DEFAULT_MIN_RADIUS, "clamp", "Minimum blob radius");
+        this->param("max_radius", "count", MAX_RADIUS_LOW, MAX_RADIUS_HIGH, DEFAULT_MAX_RADIUS, "clamp", "Maximum blob radius");
+        this->param("max_age", "count", MIN_AGE, MAX_AGE, DEFAULT_MAX_AGE, "clamp", "Maximum blob lifetime");
         
         // For float between 0-1, use "ratio" type (doesn't need min/max as it's fixed to 0-1)
-        this->settings.add_parameter_from_strings("speed", "ratio", DEFAULT_SPEED, "clamp");
+        this->param("speed", "ratio", DEFAULT_SPEED, "clamp", "Animation speed");
         
         // For the fade parameter (which is a small integer), use count type with range
-        this->settings.add_count_parameter("fade", MIN_FADE, MAX_FADE, DEFAULT_FADE, "clamp");
+        this->param("fade", "count", MIN_FADE, MAX_FADE, DEFAULT_FADE, "clamp", "Fade amount per frame");
         
         // Debug output for parameters
         PixelTheater::Log::warning("Parameters defined with ranges:");
