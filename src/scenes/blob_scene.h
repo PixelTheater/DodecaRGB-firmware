@@ -149,6 +149,11 @@ public:
     using Scene = PixelTheater::Scene<ModelDef>;
     using Scene::Scene;  // Inherit constructor
     
+    // Constructor that sets the scene name
+    BlobScene(PixelTheater::Stage<ModelDef>& stage) : Scene(stage) {
+        // We can't modify _metadata directly as it's private and const
+    }
+    
     // Default values
     static constexpr int DEFAULT_NUM_BLOBS = 8;
     static constexpr int DEFAULT_MIN_RADIUS = 80;
