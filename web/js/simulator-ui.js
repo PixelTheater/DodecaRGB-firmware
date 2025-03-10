@@ -203,7 +203,7 @@ class DodecaSimulator {
      * @returns {any} - Return value from the function
      */
     callModule(funcName, ...args) {
-        if (!this.moduleReady) {
+        if (!this.moduleReady || typeof Module === 'undefined') {
             console.warn(`Module not ready, cannot call ${funcName}`);
             return null;
         }
@@ -217,9 +217,9 @@ class DodecaSimulator {
         try {
             // Handle special case for update_scene_parameter which takes a string
             if (funcName === 'update_scene_parameter' && typeof args[0] === 'string') {
-                const paramIdPtr = this.Module.allocateUTF8(args[0]);
+                const paramIdPtr = Module.allocateUTF8(args[0]);
                 const result = Module['_' + funcName](paramIdPtr, args[1]);
-                this.Module._free(paramIdPtr);
+                Module._free(paramIdPtr);
                 return result;
             }
             
@@ -281,31 +281,22 @@ class DodecaSimulator {
         // List available functions for debugging
         this.listAvailableModuleFunctions();
         
-        try {
-            // Set up scenes
-            this.setupScenes();
-            
-            // Set up initial control values
-            this.setupControlValues();
-            
-            // Set up event handlers
-            this.setupEventHandlers();
-            
-            // Set up canvas interaction
-            this.setupCanvasInteraction();
-            
-            // Start model info updates
-            this.startModelInfoUpdates();
-            
-            // Initialize the scene parameters with a delay to ensure the scene is fully loaded
-            setTimeout(() => {
-                this.updateSceneParameters(this.currentSceneIndex);
-            }, 500);
-            
-            console.log("Simulator initialization complete");
-        } catch (error) {
-            console.error("Error during simulator initialization:", error);
-        }
+        // Set up scenes
+        this.setupScenes();
+        
+        // Set up initial control values
+        this.setupControlValues();
+        
+        // Set up event handlers
+        this.setupEventHandlers();
+        
+        // Set up canvas interaction
+        this.setupCanvasInteraction();
+        
+        // Start model info updates
+        this.startModelInfoUpdates();
+        
+        console.log("Simulator initialization complete");
     }
     
     /**
@@ -355,74 +346,82 @@ class DodecaSimulator {
             return;
         }
         
-        const numScenes = this.callModule('get_num_scenes');
-        if (numScenes === null) {
-            console.log("Could not get number of scenes, using default scenes");
-            this.totalScenes = 8; // Default number of scenes
+        try {
+            // Get number of scenes
+            const numScenes = this.callModule('get_num_scenes');
+            if (numScenes === null || numScenes <= 0) {
+                console.error("Could not get number of scenes from the simulator");
+                // Fallback to default
+                this.totalScenes = 3;
+                this.sceneNames = ["Test Scene", "Blob Scene", "Wandering Particles"];
+                this.currentSceneIndex = 2;
+                this.updateSceneUI();
+                this.updateSceneParameters(this.currentSceneIndex);
+                return;
+            }
             
-            // Create default scene names
-            this.sceneNames = [
-                "Test Pattern",
-                "Wandering Blobs",
-                "Color Waves",
-                "Fire Effect",
-                "Rainbow Cycle",
-                "Starfield",
-                "Audio Visualizer",
-                "Matrix Rain"
-            ];
+            console.log(`Found ${numScenes} scenes`);
+            this.totalScenes = numScenes;
             
-            // Set Wandering Blobs (index 1) as active by default
-            this.currentSceneIndex = 1;
+            // Create scene names array
+            this.sceneNames = [];
+            for (let i = 0; i < numScenes; i++) {
+                // Get scene name from C++ code
+                const sceneName = this.getSceneName(i);
+                this.sceneNames.push(sceneName);
+                console.log(`Scene ${i}: ${sceneName}`);
+            }
+            
+            // Get the current scene index from C++
+            // The C++ code sets the default scene to index 2 (WanderingParticlesScene)
+            this.currentSceneIndex = 2; // Match what's set in C++
+            
+            // Update the UI to reflect the current scene
+            this.updateSceneUI();
+            
+            // Update the scene parameters
+            this.updateSceneParameters(this.currentSceneIndex);
+            
+            console.log(`Initialized scene ${this.currentSceneIndex}: ${this.sceneNames[this.currentSceneIndex]}`);
+        } catch (error) {
+            console.error("Error setting up scenes:", error);
+            // Fallback to default
+            this.totalScenes = 3;
+            this.sceneNames = ["Test Scene", "Blob Scene", "Wandering Particles"];
+            this.currentSceneIndex = 2;
             this.updateSceneUI();
             this.updateSceneParameters(this.currentSceneIndex);
-            return;
         }
-        
-        console.log(`Found ${numScenes} scenes`);
-        this.totalScenes = numScenes;
-        
-        // Create scene names array
-        this.sceneNames = [];
-        for (let i = 0; i < numScenes; i++) {
-            // Use a switch statement to match the C++ implementation
-            let sceneName = "";
-            switch (i) {
-                case 0:
-                    sceneName = "Test Pattern";
-                    break;
-                case 1:
-                    sceneName = "Wandering Blobs";
-                    break;
-                case 2:
-                    sceneName = "Color Waves";
-                    break;
-                case 3:
-                    sceneName = "Fire Effect";
-                    break;
-                case 4:
-                    sceneName = "Rainbow Cycle";
-                    break;
-                case 5:
-                    sceneName = "Starfield";
-                    break;
-                case 6:
-                    sceneName = "Audio Visualizer";
-                    break;
-                case 7:
-                    sceneName = "Matrix Rain";
-                    break;
-                default:
-                    sceneName = `Scene ${i}`;
-                    break;
-            }
-            this.sceneNames.push(sceneName);
+    }
+    
+    getSceneName(sceneIndex) {
+        try {
+            // Allocate a buffer for the scene name
+            const bufferSize = 128;
+            const buffer = Module._malloc(bufferSize);
+            
+            // Initialize the buffer with zeros
+            Module.HEAP8.fill(0, buffer, buffer + bufferSize);
+            
+            // Call the C++ function
+            Module._get_scene_name(sceneIndex, buffer, bufferSize);
+            
+            // Read the string from the buffer
+            const sceneName = Module.UTF8ToString(buffer);
+            
+            // Free the buffer
+            Module._free(buffer);
+            
+            return sceneName || `Scene ${sceneIndex}`;
+        } catch (error) {
+            console.error(`Error getting scene name for index ${sceneIndex}:`, error);
+            
+            // Fallback to default scene names
+            const defaultSceneNames = ["Test Scene", "Blob Scene", "Wandering Particles"];
+            return (sceneIndex >= 0 && sceneIndex < defaultSceneNames.length) 
+                ? defaultSceneNames[sceneIndex] 
+                : `Scene ${sceneIndex}`;
         }
-        
-        // Set Wandering Blobs (index 1) as active by default
-        this.currentSceneIndex = 1;
-        this.updateSceneUI();
-        this.updateSceneParameters(this.currentSceneIndex);
     }
     
     /**
@@ -1100,16 +1099,8 @@ class DodecaSimulator {
         // Update the scene name in the UI
         const sceneNameElement = document.getElementById('scene-name');
         if (sceneNameElement) {
-            let sceneName = "Unknown Scene";
-            try {
-                if (this.currentSceneIndex === 0) {
-                    sceneName = "Test Scene";
-                } else if (this.currentSceneIndex === 1) {
-                    sceneName = "Blob Scene";
-                }
-            } catch (e) {
-                console.error("Error getting scene name:", e);
-            }
+            // Get the scene name from our array
+            const sceneName = this.sceneNames[this.currentSceneIndex] || "Unknown Scene";
             sceneNameElement.textContent = sceneName;
         }
     }

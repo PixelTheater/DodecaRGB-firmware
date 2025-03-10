@@ -14,6 +14,11 @@ class TestScene : public PixelTheater::Scene<ModelDef> {
 public:
     using Scene = PixelTheater::Scene<ModelDef>;
     using Scene::Scene;  // Inherit constructor
+    
+    // Constructor that sets the scene name
+    TestScene(PixelTheater::Stage<ModelDef>& stage) : Scene(stage) {
+        // We can't modify _metadata directly as it's private and const
+    }
 
     void setup() override {
         // Define parameters with valid default values

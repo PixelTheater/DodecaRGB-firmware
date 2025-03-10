@@ -15,6 +15,7 @@
 #include "benchmark.h"
 #include "scenes/test_scene.h"
 #include "scenes/blob_scene.h"
+#include "scenes/wandering_particles/wandering_particles_scene.h"
 #include <emscripten/bind.h>
 
 // Include the model definition - we'll use an include guard to prevent multiple definitions
@@ -51,6 +52,7 @@ private:
     std::unique_ptr<PixelTheater::Stage<ModelDef>> stage;
     Scenes::TestScene<ModelDef>* test_scene = nullptr;
     Scenes::BlobScene<ModelDef>* blob_scene = nullptr;
+    Scenes::WanderingParticlesScene<ModelDef>* wandering_particles_scene = nullptr;
     int current_scene = 0;
     int frame_count = 0;
     
@@ -94,17 +96,19 @@ public:
             }
             test_scene = stage->template addScene<Scenes::TestScene<ModelDef>>(*stage);
             blob_scene = stage->template addScene<Scenes::BlobScene<ModelDef>>(*stage);
+            wandering_particles_scene = stage->template addScene<Scenes::WanderingParticlesScene<ModelDef>>(*stage);
             
             // Set up scenes
             test_scene->setup();
             blob_scene->setup();
+            wandering_particles_scene->setup();
             
-            // Set initial scene to BlobScene
-            stage->setScene(blob_scene);
-            current_scene = 1;
+            // Set the default scene
+            stage->setScene(wandering_particles_scene);
+            current_scene = 2; // WanderingParticlesScene is now index 2
             
             if (g_debug_mode) {
-                std::cout << "Initial scene: Blob Scene" << std::endl;
+                std::cout << "Initial scene: Wandering Particles Scene" << std::endl;
             }
             
             // Reset benchmark data
@@ -190,6 +194,13 @@ public:
                     std::cout << "Changing to Blob Scene" << std::endl;
                 }
                 break;
+            case 2:
+                if (wandering_particles_scene) {
+                    targetScene = wandering_particles_scene;
+                    current_scene = 2;
+                    std::cout << "Changing to Wandering Particles Scene" << std::endl;
+                }
+                break;
             default:
                 std::cerr << "Invalid scene index: " << sceneIndex << std::endl;
                 return;
@@ -208,7 +219,7 @@ public:
     
     // Get the number of available scenes
     int getSceneCount() const {
-        return 2; // TestScene and BlobScene
+        return 3; // TestScene, BlobScene, and WanderingParticlesScene
     }
     
     // Set brightness
@@ -368,12 +379,20 @@ public:
         }
         
         const char* name = "Unknown";
+        
+        // Use hardcoded names for now
         switch (scene_index) {
             case 0:
                 name = "Test Scene";
                 break;
             case 1:
                 name = "Blob Scene";
+                break;
+            case 2:
+                name = "Wandering Particles";
+                break;
+            default:
+                name = "Unknown Scene";
                 break;
         }
         
