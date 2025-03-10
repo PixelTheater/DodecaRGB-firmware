@@ -13,7 +13,6 @@
 #include "PixelTheater/platform/web_platform.h"
 #include "PixelTheater/model/model.h"
 #include "benchmark.h"
-#include "scenes/all_scenes.h"
 #include "scenes/test_scene.h"
 #include "scenes/blob_scene.h"
 #include <emscripten/bind.h>
@@ -36,6 +35,7 @@ struct SceneParameter {
     std::string label;
     std::string controlType;  // "slider", "checkbox", "select"
     std::string value;        // String representation of the value
+    std::string type;         // Parameter type from C++ (e.g. "count", "ratio", etc.)
     float min = 0.0f;         // For numeric parameters
     float max = 1.0f;         // For numeric parameters
     float step = 0.01f;       // For numeric parameters
@@ -169,24 +169,40 @@ public:
         
         std::cout << "Scene change requested to index: " << sceneIndex << std::endl;
         
+        // Store the current scene index to check if we're actually changing scenes
+        int previous_scene = current_scene;
+        
+        // Get the target scene pointer
+        PixelTheater::Scene<ModelDef>* targetScene = nullptr;
+        
         switch (sceneIndex) {
             case 0:
                 if (test_scene) {
-                    stage->setScene(test_scene);
+                    targetScene = test_scene;
                     current_scene = 0;
-                    std::cout << "Changed to Test Scene" << std::endl;
+                    std::cout << "Changing to Test Scene" << std::endl;
                 }
                 break;
             case 1:
                 if (blob_scene) {
-                    stage->setScene(blob_scene);
+                    targetScene = blob_scene;
                     current_scene = 1;
-                    std::cout << "Changed to Blob Scene" << std::endl;
+                    std::cout << "Changing to Blob Scene" << std::endl;
                 }
                 break;
             default:
                 std::cerr << "Invalid scene index: " << sceneIndex << std::endl;
-                break;
+                return;
+        }
+        
+        // Only proceed if we have a valid target scene
+        if (targetScene) {
+            // Set the scene
+            stage->setScene(targetScene);
+            
+            // Don't call reset() which would reset all parameters to defaults
+            // Instead, just call setup() to initialize the scene with current parameter values
+            targetScene->setup();
         }
     }
     
@@ -498,60 +514,114 @@ public:
         auto* scene = stage->getCurrentScene();
         if (!scene) return result;
         
-        // Get all parameter names from the settings
-        const auto& paramNames = scene->_settings_storage.get_parameter_names();
-        
-        // Process each parameter
-        for (const auto& paramName : paramNames) {
-            try {
-                // Get the parameter metadata
-                const auto& metadata = scene->_settings_storage.get_metadata(paramName);
-                const auto& value = scene->_settings_storage.get_value(paramName);
-                
+        try {
+            // Get the parameter schema from the scene
+            auto schema = scene->parameter_schema();
+            
+            PixelTheater::Log::warning("Getting parameters for scene: %s", scene->name());
+            
+            // Process each parameter in the schema
+            for (const auto& param : schema.parameters) {
                 // Create a SceneParameter object
                 SceneParameter p;
-                p.id = paramName;
-                p.label = paramName;
+                p.id = param.name;
+                p.label = param.name;
+                p.type = param.type;  // Add the parameter type
+                
+                // Calculate step size based on parameter type and range
+                auto calculateStepSize = [](const auto& param) -> float {
+                    // For ratio types (0-1 range), use 0.01 (100 steps)
+                    if (param.type == "ratio" || param.type == "signed_ratio") {
+                        return 0.01f;
+                    }
+                    
+                    // For angle types, use PI/100 (100 steps)
+                    if (param.type == "angle" || param.type == "signed_angle") {
+                        return M_PI / 100.0f;
+                    }
+                    
+                    // For custom ranges, use (max-min)/100 for float values
+                    if (param.type == "range") {
+                        return (param.max_value - param.min_value) / 100.0f;
+                    }
+                    
+                    // For count type (integers), use 1
+                    if (param.type == "count") {
+                        return 1.0f;
+                    }
+                    
+                    // Default to 0.01 for unknown types
+                    return 0.01f;
+                };
                 
                 // Set control type and properties based on parameter type
-                if (metadata.type == PixelTheater::ParamType::switch_type) {
+                if (param.type == "switch") {
                     p.controlType = "checkbox";
+                    // Get the current value
+                    const auto& value = scene->_settings_storage.get_value(param.name);
                     p.value = value.as_bool() ? "true" : "false";
+                    PixelTheater::Log::warning("  Parameter %s (switch): %s", param.name.c_str(), p.value.c_str());
                 } 
-                else if (metadata.type == PixelTheater::ParamType::select) {
+                else if (param.type == "select") {
                     p.controlType = "select";
+                    const auto& value = scene->_settings_storage.get_value(param.name);
                     p.value = value.as_string();
-                    // We don't have access to options directly, so we'll leave it empty
-                    // p.options = ...;
+                    p.options = param.options;
+                    PixelTheater::Log::warning("  Parameter %s (select): %s", param.name.c_str(), p.value.c_str());
                 } 
                 else {
                     // All numeric types use a slider
                     p.controlType = "slider";
-                    p.value = std::to_string(value.as_float());
+                    const auto& value = scene->_settings_storage.get_value(param.name);
                     
-                    // Determine min/max based on parameter type
-                    if (metadata.type == PixelTheater::ParamType::ratio) {
-                        p.min = 0.0f; p.max = 1.0f;
-                    } else if (metadata.type == PixelTheater::ParamType::signed_ratio) {
-                        p.min = -1.0f; p.max = 1.0f;
-                    } else if (metadata.type == PixelTheater::ParamType::angle) {
-                        p.min = 0.0f; p.max = 3.14159f;
-                    } else if (metadata.type == PixelTheater::ParamType::signed_angle) {
-                        p.min = -3.14159f; p.max = 3.14159f;
+                    // Special handling for count type parameters
+                    if (param.type == "count") {
+                        // Format as integer
+                        int intValue = static_cast<int>(value.as_float());
+                        
+                        // If the value is zero, use the default value from the schema
+                        if (intValue == 0) {
+                            intValue = param.default_int;
+                            PixelTheater::Log::warning("  Parameter %s (count): using default %d instead of 0", 
+                                param.name.c_str(), intValue);
+                        }
+                        
+                        p.value = std::to_string(intValue);
+                        PixelTheater::Log::warning("  Parameter %s (count): %s (from %f)", 
+                            param.name.c_str(), p.value.c_str(), value.as_float());
                     } else {
-                        // For range and count types, use the defined min/max from metadata
-                        p.min = metadata.get_min();
-                        p.max = metadata.get_max();
+                        // Format as float
+                        float floatValue = value.as_float();
+                        
+                        // If the value is zero and this is not the speed parameter, use the default value
+                        if (floatValue == 0.0f && param.name != "speed") {
+                            floatValue = param.default_float;
+                            PixelTheater::Log::warning("  Parameter %s (%s): using default %f instead of 0", 
+                                param.name.c_str(), param.type.c_str(), floatValue);
+                        }
+                        
+                        // Format float value with full precision
+                        std::stringstream ss;
+                        ss.precision(6);  // Use 6 decimal places
+                        ss << std::fixed << floatValue;
+                        p.value = ss.str();
+                        
+                        PixelTheater::Log::warning("  Parameter %s (%s): %s (raw: %.6f)", 
+                            param.name.c_str(), param.type.c_str(), p.value.c_str(), floatValue);
                     }
                     
-                    p.step = (p.max - p.min) / 100.0f;
+                    // Set min/max values
+                    p.min = param.min_value;
+                    p.max = param.max_value;
+                    
+                    // Calculate step size based on parameter type and range
+                    p.step = calculateStepSize(param);
                 }
                 
                 result.push_back(p);
-            } catch (const std::exception& e) {
-                // Parameter doesn't exist or other error, skip it
-                continue;
             }
+        } catch (const std::exception& e) {
+            PixelTheater::Log::warning("Error getting scene parameters: %s", e.what());
         }
         
         return result;
@@ -566,28 +636,65 @@ public:
         // Get the scene's settings
         auto& settings = scene->_settings_storage;
         
-        // Get parameter info to determine type
-        const auto* param = settings.getParameter(param_id.c_str());
-        if (!param) return;
-        
-        // Convert value based on parameter type
-        PixelTheater::ParamValue paramValue;
-        if (param->type == PixelTheater::ParamType::switch_type) {
-            // Convert string "true"/"false" to bool
-            paramValue = PixelTheater::ParamValue(value == "true");
-        } else if (param->type == PixelTheater::ParamType::select) {
-            // For select, pass the string value
-            paramValue = PixelTheater::ParamValue(value.c_str());
-        } else {
-            // For numeric types, convert to float
-            paramValue = PixelTheater::ParamValue(std::stof(value));
+        // Check if parameter exists
+        if (!settings.has_parameter(param_id)) {
+            PixelTheater::Log::warning("Parameter not found: %s", param_id.c_str());
+            return;
         }
         
-        // Update the parameter
-        settings.setValue(param_id.c_str(), paramValue);
-        
-        // Reset the scene to apply the change
-        scene->reset();
+        try {
+            // Get parameter schema to determine type
+            auto schema = scene->parameter_schema();
+            
+            // Find the parameter in the schema
+            auto it = std::find_if(schema.parameters.begin(), schema.parameters.end(),
+                [&param_id](const auto& param) { return param.name == param_id; });
+            
+            if (it == schema.parameters.end()) {
+                PixelTheater::Log::warning("Parameter not found in schema: %s", param_id.c_str());
+                return;
+            }
+            
+            // Convert value based on parameter type
+            PixelTheater::ParamValue paramValue;
+            if (it->type == "switch") {
+                // Convert string "true"/"false" to bool
+                paramValue = PixelTheater::ParamValue(value == "true");
+            } else if (it->type == "select") {
+                // For select, pass the string value
+                paramValue = PixelTheater::ParamValue(value.c_str());
+            } else if (it->type == "count") {
+                // For count type, convert to integer
+                paramValue = PixelTheater::ParamValue(static_cast<int>(std::stof(value)));
+                PixelTheater::Log::warning("Setting count parameter %s to %d", param_id.c_str(), static_cast<int>(std::stof(value)));
+            } else {
+                // For float types (ratio, angle, range), preserve decimal precision
+                float floatValue = std::stof(value);
+                
+                // Log the raw value for debugging
+                PixelTheater::Log::warning("Raw float value for %s (%s): %.6f", 
+                    param_id.c_str(), it->type.c_str(), floatValue);
+                
+                paramValue = PixelTheater::ParamValue(floatValue);
+                PixelTheater::Log::warning("Setting float parameter %s (%s) to %.6f", 
+                    param_id.c_str(), it->type.c_str(), floatValue);
+            }
+            
+            // Update the parameter
+            settings.set_value(param_id, paramValue);
+            
+            // Don't reset the scene, just log the update
+            PixelTheater::Log::warning("Updated parameter %s to %s", param_id.c_str(), value.c_str());
+            
+            // Call setup to ensure the scene is updated with the new parameter value
+            // This is important for parameters that affect the scene's behavior
+            if (param_id == "num_blobs" || param_id == "min_radius" || param_id == "max_radius" || 
+                param_id == "max_age" || param_id == "fade") {
+                scene->setup();
+            }
+        } catch (const std::exception& e) {
+            PixelTheater::Log::warning("Error updating parameter %s: %s", param_id.c_str(), e.what());
+        }
     }
 };
 
@@ -795,10 +902,37 @@ void log_message(const char* message) {
     PixelTheater::Log::warning("%s", message);
 }
 
-// Add these helper functions before the EMSCRIPTEN_BINDINGS block
-std::vector<SceneParameter> get_scene_parameters_wrapper() {
-    if (!g_simulator) return std::vector<SceneParameter>();
-    return g_simulator->getSceneParameters();
+} // extern "C"
+
+// Helper functions for Emscripten bindings
+emscripten::val get_scene_parameters_wrapper() {
+    if (!g_simulator) return emscripten::val::array();
+    
+    auto params = g_simulator->getSceneParameters();
+    auto result = emscripten::val::array();
+    
+    for (size_t i = 0; i < params.size(); i++) {
+        auto param = emscripten::val::object();
+        param.set("id", params[i].id);
+        param.set("label", params[i].label);
+        param.set("controlType", params[i].controlType);
+        param.set("value", params[i].value);
+        param.set("type", params[i].type);  // Add the type field
+        param.set("min", params[i].min);
+        param.set("max", params[i].max);
+        param.set("step", params[i].step);
+        
+        // Convert options vector to JS array
+        auto options = emscripten::val::array();
+        for (size_t j = 0; j < params[i].options.size(); j++) {
+            options.set(j, params[i].options[j]);
+        }
+        param.set("options", options);
+        
+        result.set(i, param);
+    }
+    
+    return result;
 }
 
 void update_scene_parameter_wrapper(std::string param_id, std::string value) {
@@ -809,24 +943,9 @@ void update_scene_parameter_wrapper(std::string param_id, std::string value) {
 EMSCRIPTEN_BINDINGS(scene_parameters) {
     using namespace emscripten;
     
-    register_vector<std::string>("StringVector");
-    register_vector<SceneParameter>("SceneParameterVector");
-    
-    value_object<SceneParameter>("SceneParameter")
-        .field("id", &SceneParameter::id)
-        .field("label", &SceneParameter::label)
-        .field("controlType", &SceneParameter::controlType)
-        .field("value", &SceneParameter::value)
-        .field("min", &SceneParameter::min)
-        .field("max", &SceneParameter::max)
-        .field("step", &SceneParameter::step)
-        .field("options", &SceneParameter::options);
-    
-    // Use the wrapper functions instead of lambdas
+    // Bind the wrapper functions
     function("getSceneParameters", &get_scene_parameters_wrapper);
     function("updateSceneParameter", &update_scene_parameter_wrapper);
 }
-
-} // extern "C"
 
 #endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 

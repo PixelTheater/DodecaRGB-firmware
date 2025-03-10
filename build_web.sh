@@ -51,6 +51,7 @@ emcc src/web_simulator.cpp \
      -s USE_WEBGL2=1 \
      -s FULL_ES3=1 \
      -s ALLOW_MEMORY_GROWTH=1 \
+     --bind \
      -s EXPORTED_RUNTIME_METHODS='["UTF8ToString", "ccall", "cwrap"]' \
      -s EXPORTED_FUNCTIONS='["_main", "_change_scene", "_get_scene_count", "_get_scene_name", "_set_brightness", "_show_benchmark_report", "_toggle_debug_mode", "_print_model_info", "_get_current_time", "_update_ui_fps", "_update_ui_brightness", "_get_canvas_width", "_get_canvas_height"]' \
      -s INITIAL_MEMORY=32MB \

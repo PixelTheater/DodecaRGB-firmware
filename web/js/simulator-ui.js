@@ -97,6 +97,10 @@ class DodecaSimulator {
         this.currentSceneIndex = 0;
         this.totalScenes = 0;
         this.sceneNames = [];
+        this.isChangingScene = false; // Flag to prevent double navigation
+        
+        // Store parameter values for each scene
+        this.sceneParameters = {};
         
         // Ensure canvas is square
         this.resizeCanvas();
@@ -260,10 +264,10 @@ class DodecaSimulator {
     }
     
     /**
-     * Called when the module is ready
+     * Called when the WASM module is ready
      */
     onModuleReady() {
-        console.log("Module ready, initializing simulator...");
+        console.log("Module is ready, initializing simulator");
         
         // Ensure canvas is properly sized
         this.resizeCanvas();
@@ -271,30 +275,37 @@ class DodecaSimulator {
         // Set up external functions
         this.setupExternalFunctions();
         
-        // Debug: List available functions in the Module
+        // Check if Embind functions are available
+        this.hasEmbind = this.checkEmbindFunctions();
+        
+        // List available functions for debugging
         this.listAvailableModuleFunctions();
         
-        // Check if Embind functions are available
-        const embindAvailable = this.checkEmbindFunctions();
-        console.log("Embind functions available:", embindAvailable);
-        
-        // Add a delay before initial setup to ensure everything is properly initialized
-        setTimeout(() => {
-            try {
-                // Initialize UI elements
-                this.setupControlValues();
-                
-                // Set up scenes
-                this.setupScenes();
-                
-                // Start model info updates
-                this.startModelInfoUpdates();
-                
-                console.log("Simulator initialization complete");
-            } catch (error) {
-                console.error("Error during simulator initialization:", error);
-            }
-        }, 1000);
+        try {
+            // Set up scenes
+            this.setupScenes();
+            
+            // Set up initial control values
+            this.setupControlValues();
+            
+            // Set up event handlers
+            this.setupEventHandlers();
+            
+            // Set up canvas interaction
+            this.setupCanvasInteraction();
+            
+            // Start model info updates
+            this.startModelInfoUpdates();
+            
+            // Initialize the scene parameters with a delay to ensure the scene is fully loaded
+            setTimeout(() => {
+                this.updateSceneParameters(this.currentSceneIndex);
+            }, 500);
+            
+            console.log("Simulator initialization complete");
+        } catch (error) {
+            console.error("Error during simulator initialization:", error);
+        }
     }
     
     /**
@@ -418,24 +429,11 @@ class DodecaSimulator {
      * Update scene UI elements
      */
     updateSceneUI() {
-        // Update scene indicator (e.g., "1/8")
-        if (this.sceneIndicator) {
-            this.sceneIndicator.textContent = `${this.currentSceneIndex + 1}/${this.totalScenes}`;
-        }
+        // Update scene indicator and other UI elements
+        this.updateSceneIndicator();
         
-        // Update selected scene text
-        if (this.selectedSceneText && this.sceneNames[this.currentSceneIndex]) {
-            this.selectedSceneText.textContent = this.sceneNames[this.currentSceneIndex];
-        }
-        
-        // Set the scene using the available function
-        console.log(`Setting scene to index: ${this.currentSceneIndex}`);
-        
-        if (typeof Module._change_scene === 'function') {
-            Module._change_scene(this.currentSceneIndex);
-        } else {
-            console.warn("Scene change function not found in Module");
-        }
+        // Note: We no longer call Module._change_scene here to avoid double scene changes
+        // That's now handled directly in navigateScene
     }
     
     /**
@@ -652,8 +650,24 @@ class DodecaSimulator {
         }
         
         // Scene navigation
-        this.prevButton.addEventListener('click', () => this.navigateScene(-1));
-        this.nextButton.addEventListener('click', () => this.navigateScene(1));
+        this.prevButton.addEventListener('click', () => {
+            // Only navigate if we're not already changing scenes
+            if (!this.isChangingScene) {
+                this.navigateScene(-1);
+            } else {
+                console.log("Ignoring navigation request - scene is already changing");
+            }
+        });
+        
+        this.nextButton.addEventListener('click', () => {
+            // Only navigate if we're not already changing scenes
+            if (!this.isChangingScene) {
+                this.navigateScene(1);
+            } else {
+                console.log("Ignoring navigation request - scene is already changing");
+            }
+        });
+        
         this.sceneSelector.addEventListener('click', () => this.showSceneDropdown());
         
         // Set up canvas interaction
@@ -1034,11 +1048,69 @@ class DodecaSimulator {
             const newIndex = (this.currentSceneIndex + direction + this.totalScenes) % this.totalScenes;
             console.log(`Navigating from scene ${this.currentSceneIndex} to ${newIndex}`);
             
+            // Store the previous scene index to detect double navigation
+            const previousSceneIndex = this.currentSceneIndex;
+            
+            // Update the current scene index
             this.currentSceneIndex = newIndex;
-            this.updateSceneUI();
-            this.updateSceneParameters(this.currentSceneIndex);
+            
+            // Call the C++ function to change the scene
+            if (typeof Module._change_scene === 'function') {
+                console.log(`Changing scene to index: ${this.currentSceneIndex}`);
+                Module._change_scene(this.currentSceneIndex);
+                
+                // Add a flag to prevent double navigation
+                this.isChangingScene = true;
+                
+                // Clear the flag after a short delay
+                setTimeout(() => {
+                    this.isChangingScene = false;
+                }, 500);
+            } else {
+                console.warn("Module._change_scene function not found");
+            }
+            
+            // Update the UI to reflect the new scene
+            this.updateSceneIndicator();
+            
+            // Wait a short time to ensure the scene has been changed and parameters are updated
+            setTimeout(() => {
+                // Then update the parameters UI
+                this.updateSceneParameters(this.currentSceneIndex);
+            }, 100);
         } catch (error) {
             console.error("Error navigating scene:", error);
+        }
+    }
+    
+    /**
+     * Update just the scene indicator in the UI
+     */
+    updateSceneIndicator() {
+        // Update scene indicator (e.g., "1/8")
+        if (this.sceneIndicator) {
+            this.sceneIndicator.textContent = `${this.currentSceneIndex + 1}/${this.totalScenes}`;
+        }
+        
+        // Update selected scene text
+        if (this.selectedSceneText && this.sceneNames[this.currentSceneIndex]) {
+            this.selectedSceneText.textContent = this.sceneNames[this.currentSceneIndex];
+        }
+        
+        // Update the scene name in the UI
+        const sceneNameElement = document.getElementById('scene-name');
+        if (sceneNameElement) {
+            let sceneName = "Unknown Scene";
+            try {
+                if (this.currentSceneIndex === 0) {
+                    sceneName = "Test Scene";
+                } else if (this.currentSceneIndex === 1) {
+                    sceneName = "Blob Scene";
+                }
+            } catch (e) {
+                console.error("Error getting scene name:", e);
+            }
+            sceneNameElement.textContent = sceneName;
         }
     }
     
@@ -1047,8 +1119,8 @@ class DodecaSimulator {
      */
     showSceneDropdown() {
         console.log('Scene dropdown clicked - would show dropdown menu here');
-        // For now, just cycle to the next scene as a placeholder
-        this.navigateScene(1);
+        // For now, just show a message instead of navigating
+        // This prevents the double navigation issue
     }
     
     /**
@@ -1081,8 +1153,24 @@ class DodecaSimulator {
                 return;
             }
             
+            // Get stored parameters for this scene
+            const storedParams = this.sceneParameters[sceneIndex] || {};
+            
             // Create UI controls for each parameter
             parameters.forEach(param => {
+                // Use stored value if available
+                if (storedParams[param.id] !== undefined) {
+                    console.log(`Using stored value for ${param.id}: ${storedParams[param.id]}`);
+                    param.value = storedParams[param.id];
+                    
+                    // Also update the parameter in the C++ code
+                    try {
+                        Module.updateSceneParameter(param.id, param.value);
+                    } catch (e) {
+                        console.error(`Error updating parameter ${param.id}:`, e);
+                    }
+                }
+                
                 this.addSceneParameter(param);
             });
         } catch (error) {
@@ -1097,12 +1185,7 @@ class DodecaSimulator {
     
     /**
      * Add a parameter control to the scene parameters UI
-     * @param {string} id - Parameter ID
-     * @param {string} type - Parameter type (range, checkbox, etc.)
-     * @param {number} min - Minimum value (for range)
-     * @param {number} max - Maximum value (for range)
-     * @param {any} value - Current value
-     * @param {string} label - Parameter label
+     * @param {Object} param - Parameter object
      */
     addSceneParameter(param) {
         const paramRow = document.createElement('div');
@@ -1115,6 +1198,14 @@ class DodecaSimulator {
         let input;
         let valueDisplay;
         
+        // Determine if this is an integer parameter based on the parameter type
+        const isInteger = param.controlType === 'slider' && (
+            param.type === 'count' || // Count type is always integer
+            (Number.isInteger(parseFloat(param.value)) && 
+             Number.isInteger(param.min) && 
+             Number.isInteger(param.max))
+        );
+        
         switch (param.controlType) {
             case 'slider':
                 // Create slider
@@ -1122,20 +1213,48 @@ class DodecaSimulator {
                 input.type = 'range';
                 input.min = param.min;
                 input.max = param.max;
+                
+                // Use the step value provided by the C++ code
                 input.step = param.step;
+                
                 input.value = parseFloat(param.value);
                 input.id = `scene-param-${param.id}`;
                 
                 // Create value display
                 valueDisplay = document.createElement('span');
                 valueDisplay.className = 'param-value';
-                valueDisplay.textContent = parseFloat(param.value).toFixed(2);
+                
+                // Format value display based on parameter type
+                const formatValue = (val, paramType) => {
+                    if (paramType === 'count') {
+                        return Math.round(val);
+                    }
+                    if (paramType === 'ratio' || paramType === 'signed_ratio') {
+                        return parseFloat(val).toFixed(3);  // Show 3 decimal places for ratios
+                    }
+                    if (paramType === 'angle' || paramType === 'signed_angle') {
+                        return parseFloat(val).toFixed(3);  // Show 3 decimal places for angles
+                    }
+                    if (paramType === 'range') {
+                        return parseFloat(val).toFixed(3);  // Show 3 decimal places for ranges
+                    }
+                    return val;
+                };
+                
+                valueDisplay.textContent = formatValue(param.value, param.type);
                 
                 // Add event listener
                 input.addEventListener('input', (e) => {
                     const newValue = parseFloat(e.target.value);
-                    valueDisplay.textContent = newValue.toFixed(2);
-                    this.handleSceneParameterChange(param.id, newValue.toString());
+                    
+                    // Format display value based on parameter type
+                    valueDisplay.textContent = formatValue(newValue, param.type);
+                    
+                    // Log the parameter change
+                    console.log(`Scene parameter changed: ${param.id} (${param.type}), value: ${newValue}`);
+                    
+                    // Send the raw value string to preserve decimal precision
+                    this.handleSceneParameterChange(param.id, e.target.value);
                 });
                 
                 paramRow.appendChild(input);
@@ -1202,6 +1321,12 @@ class DodecaSimulator {
             console.warn("Module not ready, can't update parameter");
             return;
         }
+        
+        // Store the parameter value for the current scene
+        if (!this.sceneParameters[this.currentSceneIndex]) {
+            this.sceneParameters[this.currentSceneIndex] = {};
+        }
+        this.sceneParameters[this.currentSceneIndex][paramId] = value;
         
         try {
             // Call the Embind function to update the parameter

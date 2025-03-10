@@ -154,7 +154,7 @@ public:
     static constexpr int DEFAULT_MIN_RADIUS = 80;
     static constexpr int DEFAULT_MAX_RADIUS = 130;
     static constexpr int DEFAULT_MAX_AGE = 4000;
-    static constexpr float DEFAULT_SPEED = 1.2;
+    static constexpr float DEFAULT_SPEED = 1.0;
     static constexpr uint8_t DEFAULT_FADE = 2;
     
     void setup() override {
