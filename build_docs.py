@@ -512,13 +512,6 @@ class DocBuilder:
         # Read the simulator HTML
         html_content = simulator_index.read_text(encoding='utf-8')
         
-        # Add a link to the documentation
-        docs_link = '<div class="docs-link-container"><a href="/simulator-docs/index.html" class="docs-link">View Simulator Documentation</a></div>'
-        
-        # Insert the link after the simulator-container div
-        html_content = html_content.replace('<div class="simulator-container">', 
-                                           '<div class="simulator-container">' + docs_link)
-        
         # Write the modified HTML back
         simulator_index.write_text(html_content, encoding='utf-8')
         

@@ -143,40 +143,11 @@ button:hover {
 }
 
 /* ===== DOCUMENTATION LINKS ===== */
-/* Common button styles */
-.view-docs-button,
-.docs-link {
-    display: block;
-    padding: 10px 15px;
-    background-color: #432E54;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 4px;
-    font-weight: bold;
-    transition: background-color 0.2s;
-}
-
-.view-docs-button:hover,
-.docs-link:hover {
-    background-color: #5a3e70;
-    text-decoration: none;
-}
-
-/* View docs button specific */
-.view-docs-button {
-    margin: 10px 0;
-}
-
-/* Documentation link container */
-.docs-link-container {
-    text-align: right;
-    margin-bottom: 15px;
-}
 
 /* Documentation link specific */
 .docs-link {
     display: inline-block;
+    padding: 12px 0 0 20px;
 }
 
 /* ===== RESPONSIVE ADJUSTMENTS ===== */

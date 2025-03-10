@@ -18,7 +18,7 @@ This architecture allows sharing code between the firmware and simulator, ensuri
 
 ### C++ Components
 
-- **[`src/web_simulator.cpp`](../../src/web_simulator.cpp)**: Main C++ entry point for the simulator
+- **[`src/web_simulator.cpp`](../src/web_simulator.cpp)**: Main C++ entry point for the simulator
   - Contains the `WebSimulator` class that manages scene execution and parameter handling
   - Implements Emscripten bindings for JavaScript interoperability
   - Defines the `SceneParameter` struct for passing parameter data to the UI
