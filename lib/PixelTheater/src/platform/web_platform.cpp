@@ -7,6 +7,7 @@
 #include "PixelTheater/platform/webgl/shaders.h"
 #include "PixelTheater/platform/webgl/math.h"
 #include "PixelTheater/platform/webgl/util.h"
+#include "PixelTheater/core/log.h"
 #include <emscripten.h>
 #include <cmath>
 #include <cstdio>
@@ -630,17 +631,20 @@ void WebPlatform::cleanupWebGL() {
 
 // Add a new function to update scene parameters
 EMSCRIPTEN_KEEPALIVE void update_scene_parameter(const char* param_id, float value) {
-    // Forward to the animation controller
-    if (PixelTheater::WebGL::g_platform) {
-        PixelTheater::WebGL::g_platform->updateSceneParameter(param_id, value);
-    }
+    // This function is called from JavaScript
+    // We can't directly access the WebSimulator from here
+    // Instead, we'll log a message for debugging
+    PixelTheater::Log::warning("update_scene_parameter called with param_id: %s, value: %f", param_id, value);
+    
+    // The actual parameter update will be handled by the WebSimulator
+    // through the Emscripten bindings
 }
 
 void WebPlatform::updateSceneParameter(const char* param_id, float value) {
-    // Forward to the animation controller
-    if (_animation_controller) {
-        _animation_controller->updateParameter(std::string(param_id), value);
-    }
+    // This method is part of the WebPlatform class
+    // It's called by the WebSimulator
+    // For now, just log the call
+    PixelTheater::Log::warning("WebPlatform::updateSceneParameter called with param_id: %s, value: %f", param_id, value);
 }
 
 } // namespace WebGL
