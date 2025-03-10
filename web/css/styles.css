@@ -426,23 +426,3 @@ button.active {
         min-width: 35px;
     }
 }
-
-/* Documentation button */
-.view-docs-button {
-    display: block;
-    margin: 10px 0 20px;
-    padding: 10px 15px;
-    background-color: #432E54;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 4px;
-    font-weight: bold;
-    transition: background-color 0.2s;
-}
-
-.view-docs-button:hover {
-    background-color: #5a3e70;
-    text-decoration: none;
-    color: white;
-} 

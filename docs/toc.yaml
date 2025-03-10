@@ -43,5 +43,5 @@ sections:
         url: /simulator/index.html
         is_special: true
       - title: GitHub Repository
-        url: https://github.com/somebox/PixelTheater
+        url: https://github.com/somebox/DodecaRGB-firmware
         is_special: true 
