@@ -31,18 +31,17 @@ sections:
   
   - title: Guides
     items:
+      - file: guides/creating_animations.md
+      - file: guides/web-simulator.md
       - file: guides/development.md
       - file: guides/coding_guidelines.md
-      - file: guides/creating_animations.md
-      - file: guides/web_simulator.md
-      - file: guides/dev-plan-scenes-and-stage.md
       - file: guides/Dodeca-V1-info.md
   
   - title: Special Links
     items:
-      - title: Live Web Simulator
+      - title: Web Simulator
         url: /simulator/index.html
         is_special: true
       - title: GitHub Repository
-        url: https://github.com/yourusername/PixelTheater
+        url: https://github.com/somebox/PixelTheater
         is_special: true 
