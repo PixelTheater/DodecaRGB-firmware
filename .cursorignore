@@ -1,7 +1,6 @@
 # project files (refactor)
 /web/simulator.js
 /web/simulator.wasm
-/src/model.cpp
 /data/*
 /build/docs/*
 

@@ -61,32 +61,20 @@ public:
     }
 };
 
-// Scene with metadata for testing
+// Scene with metadata using the recommended approach
 template<typename ModelDef>
 class MetadataTestScene : public Scene<ModelDef> {
 public:
-    // Create a static ParamDef to use as metadata
-    static ParamDef createMetadata() {
-        ParamDef metadata;
-        metadata.name = "Test Scene";
-        metadata.description = "A test scene with metadata";
-        return metadata;
+    using Scene<ModelDef>::Scene;  // Inherit constructors
+    
+    void setup() override {
+        // Set metadata using the recommended approach
+        this->set_name("Test Scene");
+        this->set_description("A test scene with metadata");
+        this->set_version("1.0");
+        this->set_author("Test Author");
     }
-    
-    // Constructor that passes metadata to the base class
-    MetadataTestScene(Stage<ModelDef>& stage_ref)
-        : Scene<ModelDef>(stage_ref, nullptr, 0, &s_metadata)
-    {}
-    
-    void setup() override {}
-    
-private:
-    static ParamDef s_metadata;
 };
-
-// Initialize static metadata
-template<typename ModelDef>
-ParamDef MetadataTestScene<ModelDef>::s_metadata = MetadataTestScene<ModelDef>::createMetadata();
 
 TEST_SUITE("Scene") {
     TEST_CASE_FIXTURE(StageTestFixture<BasicPentagonModel>, "Scene Lifecycle") {
@@ -173,17 +161,24 @@ TEST_SUITE("Scene") {
             stage->setScene(scene);
             
             // Default scene should have default name and empty description
-            CHECK(std::string(scene->name()) == "Unnamed Scene");
-            CHECK(std::string(scene->description()) == "");
+            CHECK(scene->name() == "Unnamed Scene");
+            CHECK(scene->description() == "");
+            CHECK(scene->version() == "1.0");  // Default version
+            CHECK(scene->author() == "");      // Default author
         }
         
-        SUBCASE("Custom Metadata") {
+        SUBCASE("Setting Metadata in setup()") {
             auto* scene = stage->addScene<MetadataTestScene<BasicPentagonModel>>(*stage);
             stage->setScene(scene);
             
-            // Scene with metadata should have custom name and description
-            CHECK(std::string(scene->name()) == "Test Scene");
-            CHECK(std::string(scene->description()) == "A test scene with metadata");
+            // Call setup to set the metadata
+            scene->setup();
+            
+            // Verify all metadata fields
+            CHECK(scene->name() == "Test Scene");
+            CHECK(scene->description() == "A test scene with metadata");
+            CHECK(scene->version() == "1.0");
+            CHECK(scene->author() == "Test Author");
         }
     }
 } 

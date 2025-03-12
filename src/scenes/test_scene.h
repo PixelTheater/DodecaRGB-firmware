@@ -15,12 +15,13 @@ public:
     using Scene = PixelTheater::Scene<ModelDef>;
     using Scene::Scene;  // Inherit constructor
     
-    // Constructor that sets the scene name
-    TestScene(PixelTheater::Stage<ModelDef>& stage) : Scene(stage) {
-        // We can't modify _metadata directly as it's private and const
-    }
-
     void setup() override {
+        // Set scene metadata
+        this->set_name("Test Scene");
+        this->set_description("A simple test scene that cycles through colors");
+        this->set_version("1.0");
+        this->set_author("PixelTheater Team");
+        
         // Define parameters with valid default values
         this->param("speed", "ratio", 0.5f, "clamp");
         this->param("hue_shift", "ratio", 0.0f, "wrap");  // Make sure this is a valid value

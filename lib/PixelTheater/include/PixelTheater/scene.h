@@ -34,18 +34,20 @@ namespace PixelTheater {
 template<typename ModelDef>
 class Scene {
 public:
-    Scene(Stage<ModelDef>& stage_ref, const ParamDef* params = nullptr, size_t param_count = 0,
-          const ParamDef* metadata = nullptr)
+    Scene(Stage<ModelDef>& stage_ref, const ParamDef* params = nullptr, size_t param_count = 0)
         : stage(stage_ref)
         , _settings_storage()
         , settings(_settings_storage)
+        , _name("Unnamed Scene")
+        , _description("")
+        , _version("1.0")
+        , _author("")
     {
         if (params) {
             _settings_storage = Settings(params, param_count);
         } else {
             init_params();
         }
-        _metadata = metadata;
     }
 
     virtual ~Scene() = default;
@@ -78,19 +80,67 @@ public:
     }
 
     /**
+     * Set scene name
+     * @param name Scene name
+     */
+    void set_name(const std::string& name) {
+        _name = name;
+    }
+
+    /**
+     * Set scene description
+     * @param description Scene description
+     */
+    void set_description(const std::string& description) {
+        _description = description;
+    }
+
+    /**
+     * Set scene version
+     * @param version Scene version
+     */
+    void set_version(const std::string& version) {
+        _version = version;
+    }
+
+    /**
+     * Set scene author
+     * @param author Scene author
+     */
+    void set_author(const std::string& author) {
+        _author = author;
+    }
+
+    /**
      * Get scene name
      * @return Name of the scene
      */
-    const char* name() const {
-        return _metadata ? _metadata->name.c_str() : "Unnamed Scene";
+    const std::string& name() const {
+        return _name;
     }
 
     /**
      * Get scene description
      * @return Description of the scene
      */
-    const char* description() const {
-        return _metadata ? _metadata->description.c_str() : "";
+    const std::string& description() const {
+        return _description;
+    }
+
+    /**
+     * Get scene version
+     * @return Version of the scene
+     */
+    const std::string& version() const {
+        return _version;
+    }
+
+    /**
+     * Get scene author
+     * @return Author of the scene
+     */
+    const std::string& author() const {
+        return _author;
     }
 
     /**
@@ -266,7 +316,10 @@ private:
     }
 
     size_t _tick_count{0};
-    const ParamDef* _metadata;
+    std::string _name;
+    std::string _description;
+    std::string _version;
+    std::string _author;
 };
 
 } // namespace PixelTheater 
