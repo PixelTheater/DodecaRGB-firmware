@@ -1,10 +1,16 @@
 /* Base styles */
 body {
+    --bg-color: #1e1e1e;
+    --border-color: #444;
+    --text-color: #e0e0e0;
+    --hover-color: #333;
+    --active-color: #4CAF50;
+    --active-text-color: #fff;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #121212;
-    color: #e0e0e0;
+    color: var(--text-color);
     line-height: 1.5;
 }
 
@@ -101,6 +107,7 @@ body {
     border-radius: 4px;
     padding: 10px;
     color: #e0e0e0;
+    gap: 10px;
 }
 
 .nav-button {
@@ -127,25 +134,38 @@ body {
     color: #e0e0e0;
 }
 
-.scene-selector {
+.scene-select {
     flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     background-color: #333;
     border: 1px solid #444;
     border-radius: 4px;
-    padding: 10px 15px;
-    cursor: pointer;
-}
-
-.selected-scene {
+    padding: 8px 12px;
+    color: #e0e0e0;
     font-size: 16px;
-    color: #e0e0e0;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e0e0e0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
 }
 
-.dropdown-icon {
+.scene-select:hover {
+    background-color: #444;
+}
+
+.scene-select:focus {
+    outline: none;
+    border-color: var(--active-color);
+}
+
+.scene-select option {
+    background-color: #333;
     color: #e0e0e0;
+    padding: 8px;
 }
 
 /* Scene settings */
@@ -213,7 +233,7 @@ body {
 
 .settings-column h2 {
     margin-top: 0;
-    margin-bottom: 15px;
+    margin-bottom: 0px;
     font-size: 20px;
     color: #e0e0e0;
     border-bottom: none;
@@ -238,12 +258,12 @@ body {
 }
 
 .settings-content {
-    padding: 15px 20px;
+    padding: 10px 15px;
 }
 
 /* Control groups */
 .control-group {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .control-group label {
@@ -259,13 +279,19 @@ body {
     gap: 5px;
 }
 
-button {
-    background-color: #333;
+/* Form controls */
+input, select, button {
+    background-color: #2a2a2a;
     color: #e0e0e0;
     border: 1px solid #444;
-    padding: 8px 12px;
     border-radius: 4px;
+    padding: 5px 10px;
+}
+
+button {
+    background-color: #333;
     cursor: pointer;
+    margin: 0 5px;
     transition: background-color 0.2s;
 }
 
@@ -281,20 +307,16 @@ button.active {
 
 /* Slider containers */
 .slider-container {
-    margin: 15px 0;
+    margin: 10px 0;
     padding: 0 5px;
 }
 
 .slider-container label {
-    display: block;
-    margin-bottom: 8px;
-    color: #e0e0e0;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    margin-bottom: 5px;
+    color: #e0e0e0;
 }
 
-/* Style for the value spans inside labels */
 .slider-container label span {
     min-width: 30px;
     text-align: right;
@@ -307,7 +329,7 @@ button.active {
     background-color: #444;
     border-radius: 3px;
     outline: none;
-    margin: 0 5px;
+    margin: 0 0px;
 }
 
 /* Checkbox containers */
@@ -342,7 +364,7 @@ button.active {
 
 #console {
     font-family: monospace;
-    font-size: 12px;
+    font-size: 10px;
     white-space: pre-wrap;
     color: #ddd;
 }
@@ -421,8 +443,41 @@ button.active {
     .slider-container label {
         font-size: 14px;
     }
-    
-    .slider-container label span {
-        min-width: 35px;
-    }
+}
+
+/* Scene dropdown */
+.scene-dropdown {
+    position: absolute;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    margin-top: 4px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    width: 100%;
+}
+
+.scene-list {
+    padding: 4px 0;
+}
+
+.scene-item {
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.scene-item:hover {
+    background-color: var(--hover-color);
+}
+
+.scene-item.active {
+    background-color: var(--active-color);
+    color: var(--active-text-color);
 }

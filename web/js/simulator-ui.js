@@ -94,10 +94,11 @@ class DodecaSimulator {
         this.sceneParams = document.querySelector('.scene-params');
         
         // Scene state
-        this.currentSceneIndex = 0;
+        this.currentSceneIndex = -1;  // Start with -1 to indicate no scene selected
         this.totalScenes = 0;
         this.sceneNames = [];
-        this.isChangingScene = false; // Flag to prevent double navigation
+        this.isChangingScene = false;
+        this.setupRetries = 0;  // Counter for scene setup retry attempts
         
         // Store parameter values for each scene
         this.sceneParameters = {};
@@ -336,91 +337,137 @@ class DodecaSimulator {
     }
     
     /**
+     * Change scene and wait for it to be ready
+     * @param {number} sceneIndex - Index of scene to change to
+     * @returns {Promise<void>} Promise that resolves when scene is ready
+     */
+    async changeScene(sceneIndex) {
+        if (sceneIndex === this.currentSceneIndex) {
+            return; // Already on this scene
+        }
+
+        try {
+            // Change the scene
+            const result = this.callModule('change_scene', sceneIndex);
+            if (result === null) {
+                throw new Error('Failed to change scene');
+            }
+            
+            // Update UI immediately
+            this.currentSceneIndex = sceneIndex;
+            this.updateSceneIndicator();
+            
+            // Wait for next frame to ensure scene has changed
+            await new Promise(resolve => requestAnimationFrame(resolve));
+            
+            // Update parameters
+            await this.updateSceneParameters(sceneIndex);
+            
+        } catch (error) {
+            console.error('Error changing scene:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Navigate to previous or next scene
+     * @param {number} direction - Direction to navigate (-1 for prev, 1 for next)
+     */
+    async navigateScene(direction) {
+        if (this.isChangingScene) {
+            return;
+        }
+
+        try {
+            this.isChangingScene = true;
+            const newIndex = (this.currentSceneIndex + direction + this.totalScenes) % this.totalScenes;
+            
+            await this.changeScene(newIndex);
+            
+        } catch (error) {
+            console.error("Error navigating scene:", error);
+        } finally {
+            this.isChangingScene = false;
+        }
+    }
+
+    /**
      * Set up scenes and populate scene selector
      */
-    setupScenes() {
-        // Wait for module to be ready before setting up scenes
+    async setupScenes() {
         if (!this.moduleReady) {
             console.log("Module not ready, deferring scene setup");
-            setTimeout(() => this.setupScenes(), 100);
             return;
         }
         
         try {
-            // Get number of scenes
             const numScenes = this.callModule('get_num_scenes');
             if (numScenes === null || numScenes <= 0) {
                 console.error("Could not get number of scenes from the simulator");
-                // Fallback to default
-                this.totalScenes = 3;
-                this.sceneNames = ["Test Scene", "Blob Scene", "Wandering Particles"];
-                this.currentSceneIndex = 2;
-                this.updateSceneUI();
-                this.updateSceneParameters(this.currentSceneIndex);
                 return;
             }
             
-            console.log(`Found ${numScenes} scenes`);
             this.totalScenes = numScenes;
-            
-            // Create scene names array
             this.sceneNames = [];
-            for (let i = 0; i < numScenes; i++) {
-                // Get scene name from C++ code
-                const sceneName = this.getSceneName(i);
-                this.sceneNames.push(sceneName);
-                console.log(`Scene ${i}: ${sceneName}`);
+            
+            // Create the select element if it doesn't exist
+            if (!this.sceneSelect) {
+                this.sceneSelect = document.createElement('select');
+                this.sceneSelect.className = 'scene-select';
+                
+                // Replace the old scene selector with the new select element
+                if (this.sceneSelector) {
+                    this.sceneSelector.parentNode.replaceChild(this.sceneSelect, this.sceneSelector);
+                }
+                
+                // Add change event listener
+                this.sceneSelect.addEventListener('change', async (e) => {
+                    const newIndex = parseInt(e.target.value);
+                    if (!this.isChangingScene && newIndex !== this.currentSceneIndex) {
+                        await this.changeScene(newIndex);
+                    }
+                });
             }
             
-            // Get the current scene index from C++
-            // The C++ code sets the default scene to index 2 (WanderingParticlesScene)
-            this.currentSceneIndex = 2; // Match what's set in C++
+            // Clear existing options
+            this.sceneSelect.innerHTML = '';
             
-            // Update the UI to reflect the current scene
-            this.updateSceneUI();
+            // Add scene options
+            for (let i = 0; i < numScenes; i++) {
+                try {
+                    const sceneName = Module.get_scene_name(i);
+                    this.sceneNames.push(sceneName || `Scene ${i}`);
+                    
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = this.sceneNames[i];
+                    this.sceneSelect.appendChild(option);
+                } catch (error) {
+                    console.error(`Error getting name for scene ${i}:`, error);
+                    this.sceneNames.push(`Scene ${i}`);
+                }
+            }
             
-            // Update the scene parameters
-            this.updateSceneParameters(this.currentSceneIndex);
+            // Set to Wandering Particles scene by default (index 2)
+            this.isChangingScene = true;
+            await this.changeScene(2);
             
-            console.log(`Initialized scene ${this.currentSceneIndex}: ${this.sceneNames[this.currentSceneIndex]}`);
         } catch (error) {
             console.error("Error setting up scenes:", error);
-            // Fallback to default
-            this.totalScenes = 3;
-            this.sceneNames = ["Test Scene", "Blob Scene", "Wandering Particles"];
-            this.currentSceneIndex = 2;
-            this.updateSceneUI();
-            this.updateSceneParameters(this.currentSceneIndex);
+        } finally {
+            this.isChangingScene = false;
         }
     }
     
+    /**
+     * Get scene name using Emscripten's string handling
+     */
     getSceneName(sceneIndex) {
         try {
-            // Allocate a buffer for the scene name
-            const bufferSize = 128;
-            const buffer = Module._malloc(bufferSize);
-            
-            // Initialize the buffer with zeros
-            Module.HEAP8.fill(0, buffer, buffer + bufferSize);
-            
-            // Call the C++ function
-            Module._get_scene_name(sceneIndex, buffer, bufferSize);
-            
-            // Read the string from the buffer
-            const sceneName = Module.UTF8ToString(buffer);
-            
-            // Free the buffer
-            Module._free(buffer);
-            
-            return sceneName || `Scene ${sceneIndex}`;
+            return Module.get_scene_name(sceneIndex) || `Scene ${sceneIndex}`;
         } catch (error) {
             console.error(`Error getting scene name for index ${sceneIndex}:`, error);
-            
-            // Fallback to default scene names
-            const defaultSceneNames = ["Test Scene", "Blob Scene", "Wandering Particles"];
-            return (sceneIndex >= 0 && sceneIndex < defaultSceneNames.length) 
-                ? defaultSceneNames[sceneIndex] 
-                : `Scene ${sceneIndex}`;
+            return `Scene ${sceneIndex}`;
         }
     }
     
@@ -442,10 +489,9 @@ class DodecaSimulator {
         // Get actual current values from the simulator (if available)
         
         // Brightness - internal value is 0-255, UI is 0-100
-        let actualBrightness;
         try {
             // Get the current brightness from C++
-            actualBrightness = this.callModule('get_brightness');
+            const actualBrightness = this.callModule('get_brightness');
             if (actualBrightness === null) {
                 throw new Error("Could not get brightness");
             }
@@ -457,7 +503,7 @@ class DodecaSimulator {
             this.brightnessSlider.value = brightnessPercentage;
             this.brightnessValue.textContent = brightnessPercentage;
         } catch (error) {
-            // Fallback to slider default if we can't get the actual value
+            // Fallback to slider default
             const initialBrightness = parseInt(this.brightnessSlider.value);
             this.brightnessValue.textContent = initialBrightness;
             // Convert from percentage (0-100) to the internal brightness range (0-255)
@@ -471,7 +517,6 @@ class DodecaSimulator {
             if (actualLedSize !== null) {
                 this.ledSizeSlider.value = actualLedSize;
                 this.ledSizeValue.textContent = parseFloat(actualLedSize).toFixed(1);
-                console.log(`Setting initial LED size: ${parseFloat(actualLedSize).toFixed(1)}x`);
             } else {
                 throw new Error("Could not get LED size");
             }
@@ -480,7 +525,6 @@ class DodecaSimulator {
             const initialLedSize = parseFloat(this.ledSizeSlider.value);
             this.ledSizeValue.textContent = initialLedSize.toFixed(1);
             this.callModule('set_led_size', initialLedSize);
-            console.log(`Fallback LED size: ${initialLedSize.toFixed(1)}x`);
         }
         
         // Atmosphere intensity - get the actual value
@@ -491,18 +535,16 @@ class DodecaSimulator {
                 const atmosphereSliderValue = Math.round(actualAtmosphereIntensity * 10);
                 this.atmosphereSlider.value = atmosphereSliderValue;
                 this.atmosphereValue.textContent = actualAtmosphereIntensity.toFixed(1);
-                console.log(`Setting initial atmosphere intensity: value=${actualAtmosphereIntensity.toFixed(1)}, slider=${atmosphereSliderValue}`);
             } else {
                 throw new Error("Could not get atmosphere intensity");
             }
         } catch (error) {
-            // Fallback to slider default - but make sure we use the slider's actual value
+            // Fallback to slider default
             const atmosphereSliderValue = parseInt(this.atmosphereSlider.value);
             // Convert range 0-30 to 0.0-3.0
             const initialAtmosphere = atmosphereSliderValue / 10.0;
             this.atmosphereValue.textContent = initialAtmosphere.toFixed(1);
             this.callModule('set_atmosphere_intensity', initialAtmosphere);
-            console.log(`Fallback atmosphere intensity: value=${initialAtmosphere.toFixed(1)}, slider=${atmosphereSliderValue}`);
         }
         
         // Mesh opacity - get the actual value
@@ -511,7 +553,6 @@ class DodecaSimulator {
             if (actualMeshOpacity !== null) {
                 this.meshOpacitySlider.value = actualMeshOpacity;
                 this.meshOpacityValue.textContent = actualMeshOpacity.toFixed(1);
-                console.log(`Setting initial mesh opacity: ${actualMeshOpacity.toFixed(1)}`);
             } else {
                 throw new Error("Could not get mesh opacity");
             }
@@ -520,7 +561,6 @@ class DodecaSimulator {
             const initialMeshOpacity = parseFloat(this.meshOpacitySlider.value);
             this.meshOpacityValue.textContent = initialMeshOpacity.toFixed(1);
             this.callModule('set_mesh_opacity', initialMeshOpacity);
-            console.log(`Fallback mesh opacity: ${initialMeshOpacity.toFixed(1)}`);
         }
         
         // Show mesh checkbox - get the actual value
@@ -528,7 +568,6 @@ class DodecaSimulator {
             const showMesh = this.callModule('get_show_mesh');
             if (showMesh !== null) {
                 this.showMeshCheckbox.checked = showMesh;
-                console.log(`Setting initial show mesh: ${showMesh ? 'ON' : 'OFF'}`);
             } else {
                 throw new Error("Could not get show mesh state");
             }
@@ -536,7 +575,6 @@ class DodecaSimulator {
             // Fallback to checkbox default
             const initialShowMesh = this.showMeshCheckbox.checked;
             this.callModule('set_show_mesh', initialShowMesh);
-            console.log(`Fallback show mesh: ${initialShowMesh ? 'ON' : 'OFF'}`);
         }
         
         // Set initial view
@@ -550,21 +588,6 @@ class DodecaSimulator {
         // Start with rotation off
         this.callModule('set_auto_rotation', false, 0);
         this.setActiveRotationButton(this.rotationOffBtn);
-        
-        // Set up atmosphere intensity slider
-        if (this.atmosphereSlider) {
-            this.atmosphereSlider.addEventListener('input', (e) => this.handleAtmosphereChange(e));
-        }
-        
-        // Set up mesh opacity slider
-        if (this.meshOpacitySlider) {
-            this.meshOpacitySlider.addEventListener('input', (e) => this.handleMeshOpacityChange(e));
-        }
-        
-        // Set up show mesh checkbox
-        if (this.showMeshCheckbox) {
-            this.showMeshCheckbox.addEventListener('change', (e) => this.handleShowMeshChange(e));
-        }
     }
     
     /**
@@ -667,7 +690,9 @@ class DodecaSimulator {
             }
         });
         
-        this.sceneSelector.addEventListener('click', () => this.showSceneDropdown());
+        if (this.sceneSelector) {
+            this.sceneSelector.addEventListener('click', (e) => this.showSceneDropdown(e));
+        }
         
         // Set up canvas interaction
         this.setupCanvasInteraction();
@@ -701,7 +726,6 @@ class DodecaSimulator {
         
         // Double click to reset rotation
         this.canvas.addEventListener('dblclick', (event) => {
-            console.log("Double click detected - resetting view");
             this.callModule('reset_rotation');
             this.setActiveRotationButton(this.rotationOffBtn);
             event.preventDefault();
@@ -709,11 +733,9 @@ class DodecaSimulator {
         
         // Mouse down to start dragging
         this.canvas.addEventListener('mousedown', (event) => {
-            console.log("Mouse down detected at", event.clientX, event.clientY);
             this.isDragging = true;
             this.lastX = event.clientX;
             this.lastY = event.clientY;
-            event.preventDefault();
             
             // When user starts dragging, turn off auto-rotation
             this.callModule('set_auto_rotation', false, 0);
@@ -721,10 +743,11 @@ class DodecaSimulator {
             
             // Change cursor to indicate dragging
             this.canvas.style.cursor = 'grabbing';
+            event.preventDefault();
         });
         
         // Mouse move to update rotation
-        window.addEventListener('mousemove', (event) => {
+        const handleMouseMove = (event) => {
             if (!this.isDragging) return;
             
             const deltaX = event.clientX - this.lastX;
@@ -735,22 +758,19 @@ class DodecaSimulator {
             if (deltaX !== 0 || deltaY !== 0) {
                 this.callModule('update_rotation', deltaX, deltaY);
             }
-        });
+        };
         
         // Mouse up to stop dragging
-        window.addEventListener('mouseup', () => {
+        const handleMouseUp = () => {
             if (this.isDragging) {
                 this.isDragging = false;
                 this.canvas.style.cursor = 'grab';
             }
-        });
+        };
         
-        window.addEventListener('mouseleave', () => {
-            if (this.isDragging) {
-                this.isDragging = false;
-                this.canvas.style.cursor = 'grab';
-            }
-        });
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseup', handleMouseUp);
+        window.addEventListener('mouseleave', handleMouseUp);
         
         // Touch events for mobile
         this.canvas.addEventListener('touchstart', (event) => {
@@ -767,7 +787,7 @@ class DodecaSimulator {
             }
         });
         
-        this.canvas.addEventListener('touchmove', (event) => {
+        const handleTouchMove = (event) => {
             if (!this.isDragging || event.touches.length !== 1) return;
             
             const deltaX = event.touches[0].clientX - this.lastX;
@@ -780,11 +800,25 @@ class DodecaSimulator {
             }
             
             event.preventDefault();
-        });
+        };
         
-        this.canvas.addEventListener('touchend', () => {
+        const handleTouchEnd = () => {
             this.isDragging = false;
-        });
+        };
+        
+        this.canvas.addEventListener('touchmove', handleTouchMove);
+        this.canvas.addEventListener('touchend', handleTouchEnd);
+        this.canvas.addEventListener('touchcancel', handleTouchEnd);
+        
+        // Store event handlers for cleanup
+        this._canvasEventHandlers = {
+            mousemove: handleMouseMove,
+            mouseup: handleMouseUp,
+            mouseleave: handleMouseUp,
+            touchmove: handleTouchMove,
+            touchend: handleTouchEnd,
+            touchcancel: handleTouchEnd
+        };
     }
     
     /**
@@ -843,23 +877,12 @@ class DodecaSimulator {
      * @param {Event} event - Input event
      */
     handleBrightnessChange(event) {
-        try {
-            const brightness = parseInt(event.target.value);
-            document.getElementById('brightness-value').textContent = brightness;
-            
-            // Convert from percentage (0-100) to byte (0-255)
-            const scaledBrightness = Math.round((brightness * 255) / 100);
-            console.log(`Setting brightness to: ${brightness}% (${scaledBrightness}/255)`);
-            
-            // Call the available function
-            if (typeof Module._set_brightness === 'function') {
-                Module._set_brightness(scaledBrightness);
-            } else {
-                console.warn("Brightness function not found in Module");
-            }
-        } catch (error) {
-            console.error("Error setting brightness:", error);
-        }
+        const brightness = parseInt(event.target.value);
+        this.brightnessValue.textContent = brightness;
+        
+        // Convert from percentage (0-100) to byte (0-255)
+        const scaledBrightness = Math.round((brightness * 255) / 100);
+        this.callModule('set_brightness', scaledBrightness);
     }
     
     /**
@@ -867,20 +890,9 @@ class DodecaSimulator {
      * @param {Event} event - Input event
      */
     handleLEDSizeChange(event) {
-        try {
-            const size = parseFloat(event.target.value);
-            document.getElementById('led-size-value').textContent = size.toFixed(1);
-            console.log(`Setting LED size: ${size}x`);
-            
-            // Call the available function
-            if (typeof Module._set_led_size === 'function') {
-                Module._set_led_size(size);
-            } else {
-                console.warn("LED size function not found in Module");
-            }
-        } catch (error) {
-            console.error("Error setting LED size:", error);
-        }
+        const size = parseFloat(event.target.value);
+        this.ledSizeValue.textContent = size.toFixed(1);
+        this.callModule('set_led_size', size);
     }
     
     /**
@@ -888,21 +900,10 @@ class DodecaSimulator {
      * @param {Event} event - Input event
      */
     handleAtmosphereChange(event) {
-        try {
-            const value = parseInt(event.target.value);
-            const intensity = value / 10.0; // Convert from 0-30 to 0-3.0
-            document.getElementById('glow-intensity-value').textContent = intensity.toFixed(1);
-            console.log(`Setting atmosphere intensity: value=${intensity}, slider=${value}`);
-            
-            // Call the available function
-            if (typeof Module._set_atmosphere_intensity === 'function') {
-                Module._set_atmosphere_intensity(intensity);
-            } else {
-                console.warn("Atmosphere intensity function not found in Module");
-            }
-        } catch (error) {
-            console.error("Error setting atmosphere intensity:", error);
-        }
+        const value = parseInt(event.target.value);
+        const intensity = value / 10.0; // Convert from 0-30 to 0-3.0
+        this.atmosphereValue.textContent = intensity.toFixed(1);
+        this.callModule('set_atmosphere_intensity', intensity);
     }
     
     /**
@@ -910,20 +911,9 @@ class DodecaSimulator {
      * @param {Event} event - Input event
      */
     handleMeshOpacityChange(event) {
-        try {
-            const opacity = parseFloat(event.target.value);
-            document.getElementById('mesh-opacity-value').textContent = opacity.toFixed(1);
-            console.log(`Setting mesh opacity: ${opacity.toFixed(2)}`);
-            
-            // Call the available function
-            if (typeof Module._set_mesh_opacity === 'function') {
-                Module._set_mesh_opacity(opacity);
-            } else {
-                console.warn("Mesh opacity function not found in Module");
-            }
-        } catch (error) {
-            console.error("Error setting mesh opacity:", error);
-        }
+        const opacity = parseFloat(event.target.value);
+        this.meshOpacityValue.textContent = opacity.toFixed(1);
+        this.callModule('set_mesh_opacity', opacity);
     }
     
     /**
@@ -931,19 +921,8 @@ class DodecaSimulator {
      * @param {Event} event - Input event
      */
     handleShowMeshChange(event) {
-        try {
-            const show = event.target.checked;
-            console.log(`Setting show mesh: ${show ? 'ON' : 'OFF'}`);
-            
-            // Call the available function
-            if (typeof Module._set_show_mesh === 'function') {
-                Module._set_show_mesh(show ? 1 : 0);
-            } else {
-                console.warn("Show mesh function not found in Module");
-            }
-        } catch (error) {
-            console.error("Error setting show mesh:", error);
-        }
+        const show = event.target.checked;
+        this.callModule('set_show_mesh', show ? 1 : 0);
     }
     
     /**
@@ -1038,51 +1017,6 @@ class DodecaSimulator {
     }
     
     /**
-     * Navigate to previous or next scene
-     * @param {number} direction - Direction to navigate (-1 for prev, 1 for next)
-     */
-    navigateScene(direction) {
-        try {
-            // Calculate new scene index with wrapping
-            const newIndex = (this.currentSceneIndex + direction + this.totalScenes) % this.totalScenes;
-            console.log(`Navigating from scene ${this.currentSceneIndex} to ${newIndex}`);
-            
-            // Store the previous scene index to detect double navigation
-            const previousSceneIndex = this.currentSceneIndex;
-            
-            // Update the current scene index
-            this.currentSceneIndex = newIndex;
-            
-            // Call the C++ function to change the scene
-            if (typeof Module._change_scene === 'function') {
-                console.log(`Changing scene to index: ${this.currentSceneIndex}`);
-                Module._change_scene(this.currentSceneIndex);
-                
-                // Add a flag to prevent double navigation
-                this.isChangingScene = true;
-                
-                // Clear the flag after a short delay
-                setTimeout(() => {
-                    this.isChangingScene = false;
-                }, 500);
-            } else {
-                console.warn("Module._change_scene function not found");
-            }
-            
-            // Update the UI to reflect the new scene
-            this.updateSceneIndicator();
-            
-            // Wait a short time to ensure the scene has been changed and parameters are updated
-            setTimeout(() => {
-                // Then update the parameters UI
-                this.updateSceneParameters(this.currentSceneIndex);
-            }, 100);
-        } catch (error) {
-            console.error("Error navigating scene:", error);
-        }
-    }
-    
-    /**
      * Update just the scene indicator in the UI
      */
     updateSceneIndicator() {
@@ -1091,52 +1025,120 @@ class DodecaSimulator {
             this.sceneIndicator.textContent = `${this.currentSceneIndex + 1}/${this.totalScenes}`;
         }
         
-        // Update selected scene text
-        if (this.selectedSceneText && this.sceneNames[this.currentSceneIndex]) {
-            this.selectedSceneText.textContent = this.sceneNames[this.currentSceneIndex];
-        }
-        
-        // Update the scene name in the UI
-        const sceneNameElement = document.getElementById('scene-name');
-        if (sceneNameElement) {
-            // Get the scene name from our array
-            const sceneName = this.sceneNames[this.currentSceneIndex] || "Unknown Scene";
-            sceneNameElement.textContent = sceneName;
+        // Update selected scene in dropdown
+        if (this.sceneSelect) {
+            this.sceneSelect.value = this.currentSceneIndex;
         }
     }
     
     /**
-     * Show scene selection dropdown (mock for now)
+     * Show scene selection dropdown
      */
-    showSceneDropdown() {
-        console.log('Scene dropdown clicked - would show dropdown menu here');
-        // For now, just show a message instead of navigating
-        // This prevents the double navigation issue
+    showSceneDropdown(event) {
+        console.log('Showing scene dropdown');
+        
+        // Prevent event from bubbling up
+        if (event) {
+            event.stopPropagation();
+        }
+        
+        // Remove any existing dropdown
+        const existingDropdown = document.querySelector('.scene-dropdown');
+        if (existingDropdown) {
+            console.log('Removing existing dropdown');
+            existingDropdown.remove();
+            return;
+        }
+        
+        // Create dropdown container
+        const dropdown = document.createElement('div');
+        dropdown.className = 'scene-dropdown';
+        
+        // Create scene list
+        const sceneList = document.createElement('div');
+        sceneList.className = 'scene-list';
+        
+        console.log('Available scenes:', this.sceneNames);
+        
+        // Add scenes to the list
+        this.sceneNames.forEach((name, index) => {
+            const sceneItem = document.createElement('div');
+            sceneItem.className = 'scene-item';
+            if (index === this.currentSceneIndex) {
+                sceneItem.classList.add('active');
+            }
+            sceneItem.textContent = name;
+            
+            // Add click handler
+            sceneItem.addEventListener('click', async (e) => {
+                console.log(`Clicked scene: ${name} (index: ${index})`);
+                e.stopPropagation(); // Prevent event from bubbling up
+                
+                if (index !== this.currentSceneIndex && !this.isChangingScene) {
+                    await this.changeScene(index);
+                }
+                dropdown.remove();
+            });
+            
+            sceneList.appendChild(sceneItem);
+        });
+        
+        dropdown.appendChild(sceneList);
+        
+        // Position the dropdown relative to the scene selector
+        const rect = this.sceneSelector.getBoundingClientRect();
+        const parentRect = this.sceneSelector.offsetParent.getBoundingClientRect();
+        
+        dropdown.style.position = 'absolute';
+        dropdown.style.top = `${rect.bottom - parentRect.top}px`;
+        dropdown.style.left = `${rect.left - parentRect.left}px`;
+        dropdown.style.width = `${rect.width}px`;
+        
+        console.log('Positioning dropdown:', {
+            top: `${rect.bottom - parentRect.top}px`,
+            left: `${rect.left - parentRect.left}px`,
+            width: `${rect.width}px`
+        });
+        
+        // Add the dropdown to the scene selector's parent
+        this.sceneSelector.offsetParent.appendChild(dropdown);
+        
+        // Prevent clicks on the dropdown from closing it
+        dropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+        
+        // Close dropdown when clicking outside
+        const closeDropdown = (event) => {
+            if (!dropdown.contains(event.target) && !this.sceneSelector.contains(event.target)) {
+                console.log('Closing dropdown (clicked outside)');
+                dropdown.remove();
+                document.removeEventListener('click', closeDropdown);
+            }
+        };
+        
+        // Delay adding the click listener to prevent immediate closure
+        requestAnimationFrame(() => {
+            document.addEventListener('click', closeDropdown);
+        });
     }
     
     /**
      * Update scene parameters UI based on the selected scene
      * @param {number} sceneIndex - Index of the selected scene
+     * @returns {Promise<void>} Promise that resolves when parameters are updated
      */
-    updateSceneParameters(sceneIndex) {
-        // Clear existing parameters
+    async updateSceneParameters(sceneIndex) {
         this.sceneParams.innerHTML = '';
         
-        // Skip if module is not ready
         if (!this.moduleReady) {
-            console.log("Module not ready, can't update scene parameters");
             return;
         }
-        
-        console.log(`Updating parameters for scene ${sceneIndex}`);
-        
+
         try {
-            // Get parameters using Embind
             const parameters = Module.getSceneParameters();
-            console.log("Retrieved parameters:", parameters);
             
             if (!parameters || parameters.length === 0) {
-                // No parameters for this scene
                 const noParamsMsg = document.createElement('div');
                 noParamsMsg.className = 'no-params-message';
                 noParamsMsg.textContent = 'This scene has no adjustable parameters.';
@@ -1148,25 +1150,15 @@ class DodecaSimulator {
             const storedParams = this.sceneParameters[sceneIndex] || {};
             
             // Create UI controls for each parameter
-            parameters.forEach(param => {
-                // Use stored value if available
+            for (const param of parameters) {
                 if (storedParams[param.id] !== undefined) {
-                    console.log(`Using stored value for ${param.id}: ${storedParams[param.id]}`);
                     param.value = storedParams[param.id];
-                    
-                    // Also update the parameter in the C++ code
-                    try {
-                        Module.updateSceneParameter(param.id, param.value);
-                    } catch (e) {
-                        console.error(`Error updating parameter ${param.id}:`, e);
-                    }
+                    await this.handleSceneParameterChange(param.id, param.value);
                 }
-                
                 this.addSceneParameter(param);
-            });
+            }
         } catch (error) {
             console.error("Error updating scene parameters:", error);
-            // Show error message in UI
             const errorMsg = document.createElement('div');
             errorMsg.className = 'error-message';
             errorMsg.textContent = 'Error loading scene parameters.';
@@ -1378,10 +1370,45 @@ class DodecaSimulator {
             this.callModule('resizeCanvas', this.canvas.width, this.canvas.height);
         }
     }
+
+    // Add cleanup method
+    cleanup() {
+        // Remove window event listeners
+        if (this._canvasEventHandlers) {
+            window.removeEventListener('mousemove', this._canvasEventHandlers.mousemove);
+            window.removeEventListener('mouseup', this._canvasEventHandlers.mouseup);
+            window.removeEventListener('mouseleave', this._canvasEventHandlers.mouseleave);
+            
+            if (this.canvas) {
+                this.canvas.removeEventListener('touchmove', this._canvasEventHandlers.touchmove);
+                this.canvas.removeEventListener('touchend', this._canvasEventHandlers.touchend);
+                this.canvas.removeEventListener('touchcancel', this._canvasEventHandlers.touchcancel);
+            }
+        }
+        
+        // Clear update interval
+        if (this.updateIntervalId) {
+            clearInterval(this.updateIntervalId);
+            this.updateIntervalId = null;
+        }
+    }
 }
 
 // Initialize the simulator when the document is ready
 document.addEventListener('DOMContentLoaded', () => {
+    // Clean up any existing instance
+    if (window.simulator) {
+        window.simulator.cleanup();
+    }
+    
     window.simulator = new DodecaSimulator();
     window.simulator.initialize();
+    
+    // Add cleanup on page unload
+    window.addEventListener('unload', () => {
+        if (window.simulator) {
+            window.simulator.cleanup();
+            window.simulator = null;
+        }
+    });
 }); 

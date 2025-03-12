@@ -149,11 +149,6 @@ public:
     using Scene = PixelTheater::Scene<ModelDef>;
     using Scene::Scene;  // Inherit constructor
     
-    // Constructor that sets the scene name
-    BlobScene(PixelTheater::Stage<ModelDef>& stage) : Scene(stage) {
-        // We can't modify _metadata directly as it's private and const
-    }
-    
     // Default values
     static constexpr int DEFAULT_NUM_BLOBS = 8;
     static constexpr int DEFAULT_MIN_RADIUS = 80;
@@ -163,6 +158,12 @@ public:
     static constexpr uint8_t DEFAULT_FADE = 2;
     
     void setup() override {
+        // Set scene metadata
+        this->set_name("Blob Scene");
+        this->set_description("Colorful blobs that move around the model");
+        this->set_version("1.0");
+        this->set_author("PixelTheater Team");
+        
         // Define parameters with the correct types and required min/max values
         // For count/integer parameters, use param method with name, type, min, max, default format
         

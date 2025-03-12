@@ -204,11 +204,6 @@ public:
     using Scene = PixelTheater::Scene<ModelDef>;
     using Scene::Scene;  // Inherit constructor
     
-    // Constructor that sets the scene name
-    WanderingParticlesScene(PixelTheater::Stage<ModelDef>& stage) : Scene(stage) {
-        // We can't modify _metadata directly as it's private and const
-    }
-    
     // Default values - match original
     static constexpr int DEFAULT_NUM_PARTICLES = 80;  // Original: static const int NUM_PARTICLES = 80;
     static constexpr uint8_t DEFAULT_FADE = 20;       // Original: fadeToBlackBy(leds, numLeds(), 20);
@@ -219,6 +214,12 @@ public:
     int sphere_radius = 100;
     
     void setup() override {
+        // Set scene metadata
+        this->set_name("Wandering Particles");
+        this->set_description("Particles that wander across the model's surface");
+        this->set_version("1.0");
+        this->set_author("PixelTheater Team");
+        
         // Define parameter ranges
         const int MIN_PARTICLES = 5;
         const int MAX_PARTICLES = 200;  // Increased from 100 to 200

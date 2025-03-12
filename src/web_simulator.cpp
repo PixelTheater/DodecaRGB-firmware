@@ -16,6 +16,7 @@
 #include "scenes/test_scene.h"
 #include "scenes/blob_scene.h"
 #include "scenes/wandering_particles/wandering_particles_scene.h"
+#include "scenes/xyz_scanner/xyz_scanner_scene.h"
 #include <emscripten/bind.h>
 
 // Include the model definition - we'll use an include guard to prevent multiple definitions
@@ -50,9 +51,6 @@ private:
     std::unique_ptr<PixelTheater::WebGL::WebPlatform> platform;
     std::unique_ptr<PixelTheater::Model<ModelDef>> model;
     std::unique_ptr<PixelTheater::Stage<ModelDef>> stage;
-    Scenes::TestScene<ModelDef>* test_scene = nullptr;
-    Scenes::BlobScene<ModelDef>* blob_scene = nullptr;
-    Scenes::WanderingParticlesScene<ModelDef>* wandering_particles_scene = nullptr;
     int current_scene = 0;
     int frame_count = 0;
     
@@ -94,21 +92,32 @@ public:
             if (g_debug_mode) {
                 std::cout << "Adding scenes..." << std::endl;
             }
-            test_scene = stage->template addScene<Scenes::TestScene<ModelDef>>(*stage);
-            blob_scene = stage->template addScene<Scenes::BlobScene<ModelDef>>(*stage);
-            wandering_particles_scene = stage->template addScene<Scenes::WanderingParticlesScene<ModelDef>>(*stage);
             
-            // Set up scenes
-            test_scene->setup();
-            blob_scene->setup();
-            wandering_particles_scene->setup();
+            // Add all scenes to the stage
+            stage->template addScene<Scenes::TestScene<ModelDef>>(*stage);
+            stage->template addScene<Scenes::BlobScene<ModelDef>>(*stage);
+            stage->template addScene<Scenes::WanderingParticlesScene<ModelDef>>(*stage);
+            stage->template addScene<Scenes::XYZScannerScene<ModelDef>>(*stage);
             
-            // Set the default scene
-            stage->setScene(wandering_particles_scene);
-            current_scene = 2; // WanderingParticlesScene is now index 2
+            // Set up all scenes
+            for (size_t i = 0; i < stage->getSceneCount(); i++) {
+                PixelTheater::Scene<ModelDef>* scene = stage->getScene(i);
+                if (scene) {
+                    scene->setup();
+                }
+            }
             
-            if (g_debug_mode) {
-                std::cout << "Initial scene: Wandering Particles Scene" << std::endl;
+            // Set the default scene (first scene)
+            if (stage->getSceneCount() > 0) {
+                PixelTheater::Scene<ModelDef>* firstScene = stage->getScene(0);
+                if (firstScene) {
+                    stage->setScene(firstScene);
+                    current_scene = 0;
+                    
+                    if (g_debug_mode) {
+                        std::cout << "Initial scene: " << firstScene->name() << std::endl;
+                    }
+                }
             }
             
             // Reset benchmark data
@@ -176,50 +185,35 @@ public:
         // Store the current scene index to check if we're actually changing scenes
         int previous_scene = current_scene;
         
-        // Get the target scene pointer
-        PixelTheater::Scene<ModelDef>* targetScene = nullptr;
-        
-        switch (sceneIndex) {
-            case 0:
-                if (test_scene) {
-                    targetScene = test_scene;
-                    current_scene = 0;
-                    std::cout << "Changing to Test Scene" << std::endl;
-                }
-                break;
-            case 1:
-                if (blob_scene) {
-                    targetScene = blob_scene;
-                    current_scene = 1;
-                    std::cout << "Changing to Blob Scene" << std::endl;
-                }
-                break;
-            case 2:
-                if (wandering_particles_scene) {
-                    targetScene = wandering_particles_scene;
-                    current_scene = 2;
-                    std::cout << "Changing to Wandering Particles Scene" << std::endl;
-                }
-                break;
-            default:
-                std::cerr << "Invalid scene index: " << sceneIndex << std::endl;
-                return;
+        // Validate scene index
+        if (sceneIndex < 0 || sceneIndex >= static_cast<int>(stage->getSceneCount())) {
+            std::cerr << "Invalid scene index: " << sceneIndex << std::endl;
+            return;
         }
+        
+        // Get the target scene pointer
+        PixelTheater::Scene<ModelDef>* targetScene = stage->getScene(sceneIndex);
         
         // Only proceed if we have a valid target scene
         if (targetScene) {
             // Set the scene
             stage->setScene(targetScene);
+            current_scene = sceneIndex;
+            std::cout << "Changed to scene: " << targetScene->name() << std::endl;
             
-            // Don't call reset() which would reset all parameters to defaults
-            // Instead, just call setup() to initialize the scene with current parameter values
-            targetScene->setup();
+            // Update the current scene index
+            if (previous_scene != current_scene) {
+                // Camera reset functionality is not available in WebPlatform
+                // Just update the scene index
+            }
+        } else {
+            std::cerr << "Scene at index " << sceneIndex << " is null" << std::endl;
         }
     }
     
     // Get the number of available scenes
     int getSceneCount() const {
-        return 3; // TestScene, BlobScene, and WanderingParticlesScene
+        return stage ? static_cast<int>(stage->getSceneCount()) : 0;
     }
     
     // Set brightness
@@ -378,26 +372,23 @@ public:
             return;
         }
         
-        const char* name = "Unknown";
+        std::string name = "Unknown Scene";
         
-        // Use hardcoded names for now
-        switch (scene_index) {
-            case 0:
-                name = "Test Scene";
-                break;
-            case 1:
-                name = "Blob Scene";
-                break;
-            case 2:
-                name = "Wandering Particles";
-                break;
-            default:
-                name = "Unknown Scene";
-                break;
+        // Get the name from the scene if possible
+        if (stage && scene_index >= 0 && scene_index < static_cast<int>(stage->getSceneCount())) {
+            auto* scene = stage->getScene(scene_index);
+            if (scene) {
+                name = scene->name();
+                std::cout << "Retrieved name for scene " << scene_index << ": '" << name << "'" << std::endl;
+            } else {
+                std::cerr << "Scene pointer is null for index " << scene_index << std::endl;
+            }
+        } else {
+            std::cerr << "Invalid scene index or stage not initialized: " << scene_index << std::endl;
         }
         
         // Copy the name to the provided buffer safely
-        int name_length = strlen(name);
+        int name_length = name.length();
         int copy_length = (name_length < buffer_size - 1) ? name_length : buffer_size - 1;
         
         for (int i = 0; i < copy_length; i++) {
@@ -405,7 +396,7 @@ public:
         }
         buffer[copy_length] = '\0'; // Ensure null termination
         
-        std::cout << "Copied scene name: " << name << " (index: " << scene_index << ")" << std::endl;
+        std::cout << "Copied name to buffer: '" << buffer << "'" << std::endl;
     }
     
     // LED appearance settings
@@ -537,7 +528,7 @@ public:
             // Get the parameter schema from the scene
             auto schema = scene->parameter_schema();
             
-            PixelTheater::Log::warning("Getting parameters for scene: %s", scene->name());
+            PixelTheater::Log::warning("Getting parameters for scene: %s", scene->name().c_str());
             
             // Process each parameter in the schema
             for (const auto& param : schema.parameters) {
@@ -715,6 +706,11 @@ public:
             PixelTheater::Log::warning("Error updating parameter %s: %s", param_id.c_str(), e.what());
         }
     }
+
+    // Add this public method to the WebSimulator class (in the public: section)
+    PixelTheater::Scene<ModelDef>* getScene(int scene_index) {
+        return stage ? stage->getScene(scene_index) : nullptr;
+    }
 };
 
 // Create a global WebSimulator instance
@@ -852,9 +848,18 @@ int get_num_scenes() {
 }
 
 EMSCRIPTEN_KEEPALIVE
-void get_scene_name(int scene_index, char* buffer, int buffer_size) {
-    if (g_simulator) {
-        g_simulator->getSceneName(scene_index, buffer, buffer_size);
+std::string get_scene_name(int scene_index) {
+    if (!g_simulator) return "Unknown Scene";
+    
+    try {
+        auto* scene = g_simulator->getScene(scene_index);
+        if (!scene) {
+            return "Unknown Scene";
+        }
+        return scene->name();
+    } catch (const std::exception& e) {
+        std::cerr << "Error getting scene name: " << e.what() << std::endl;
+        return "Unknown Scene";
     }
 }
 
@@ -965,6 +970,11 @@ EMSCRIPTEN_BINDINGS(scene_parameters) {
     // Bind the wrapper functions
     function("getSceneParameters", &get_scene_parameters_wrapper);
     function("updateSceneParameter", &update_scene_parameter_wrapper);
+}
+
+// Add this binding to properly handle string returns
+EMSCRIPTEN_BINDINGS(scene_names) {
+    emscripten::function("get_scene_name", &get_scene_name);
 }
 
 #endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 

@@ -1,6 +1,6 @@
 /* 
  * DodecaRGB Simulator CSS for Documentation Site
- * Organized by component and functionality
+ * Page layout and structure only
  */
 
 /* ===== LAYOUT STRUCTURE ===== */
@@ -54,96 +54,6 @@ body.simulator-page .sidebar {
     flex: 3;
 }
 
-/* Visualizer container - adapts to canvas size */
-.visualizer-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-    margin: 0 auto;
-}
-
-/* Canvas element - fixed size */
-#canvas {
-    display: block;
-    /* Fixed size that everything else adapts to */
-    width: 600px;
-    height: 450px;
-    max-width: 100%;
-    margin: 0 !important;
-}
-
-/* Instructions text */
-#instructions {
-    position: relative;
-    text-align: center;
-    font-size: 0.85rem;
-    color: var(--text-muted, #aaa);
-    margin-top: 8px;
-    padding: 4px;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-}
-
-/* ===== CONTROLS & BUTTONS ===== */
-/* Form controls */
-input, select, button {
-    background-color: var(--code-bg, #2a2a2a);
-    color: var(--text-color, #e0e0e0);
-    border: 1px solid #555;
-    border-radius: 4px;
-    padding: 5px 10px;
-}
-
-/* Slider containers */
-.slider-container {
-    margin: 15px 0;
-    padding: 0 5px;
-}
-
-.slider-container label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-    color: var(--text-color, #e0e0e0);
-}
-
-.slider-container label span {
-    min-width: 30px;
-    text-align: right;
-    font-weight: bold;
-}
-
-.slider-container input[type="range"] {
-    width: calc(100% - 10px);
-    height: 6px;
-    background-color: #444;
-    border-radius: 3px;
-    outline: none;
-    margin: 0 5px;
-}
-
-/* Button styling */
-button {
-    background-color: var(--primary-color, #432E54);
-    cursor: pointer;
-    margin: 0 5px;
-}
-
-button:hover {
-    background-color: var(--secondary-color, #5a3e70);
-}
-
-/* Scene buttons */
-.scene-button {
-    margin: 5px;
-    padding: 8px 15px;
-}
-
-/* ===== DOCUMENTATION LINKS ===== */
-
 /* Documentation link specific */
 .docs-link {
     display: inline-block;
@@ -166,14 +76,6 @@ button:hover {
     }
 }
 
-@media (max-width: 1000px) {
-    /* Adjust canvas size for medium screens */
-    #canvas {
-        width: 500px;
-        height: 500px;
-    }
-}
-
 @media (max-width: 768px) {
     /* Smaller padding for mobile */
     .visualizer-column {
@@ -183,19 +85,35 @@ button:hover {
     .simulator-container {
         padding: 0 10px;
     }
-    
-    /* Adjust canvas size for small screens */
-    #canvas {
-        width: 400px;
-        height: 400px;
-    }
 }
 
-@media (max-width: 500px) {
-    /* Fully responsive canvas for very small screens */
-    #canvas {
-        width: 100%;
-        height: auto;
-        max-height: 350px;
-    }
+.scene-dropdown {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    margin-top: 4px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.scene-list {
+    padding: 4px 0;
+}
+
+.scene-item {
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    color: var(--text-color);
+}
+
+.scene-item:hover {
+    background-color: var(--hover-color);
+}
+
+.scene-item.active {
+    background-color: var(--active-color);
+    color: var(--active-text-color);
 } 
