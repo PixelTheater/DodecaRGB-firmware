@@ -26,10 +26,10 @@ Camera::Camera()
       _modelRotationZ(0.0f),    // Z-axis rotation (roll)
       _autoRotate(true),        // Start with auto-rotation
       _autoRotationSpeed(SLOW_ROTATION_SPEED),  // Start with slow rotation
-      _viewAngle(ANGLE_VIEW_ANGLE)  // Start at 45-degree view
+      _viewAngle(SIDE_VIEW_ANGLE)  // Start with side view (0 degrees)
 {
-    // Set initial camera position to a good viewing angle
-    setPresetView(ViewPreset::ANGLE, DistancePreset::NORMAL);
+    // Set initial camera position to side view
+    setPresetView(ViewPreset::SIDE, DistancePreset::NORMAL);
 }
 
 void Camera::setHeight(float height) {
@@ -151,26 +151,20 @@ void Camera::calculateViewMatrix(float* matrix) {
         matrix[i] = (i % 5 == 0) ? 1.0f : 0.0f;
     }
     
-    // Calculate camera position in world space
-    float tilt = _viewAngle;  // Use view angle directly
+    // Calculate camera position in world space based on view angle
+    float tilt = _viewAngle;
     float cosTilt = std::cos(tilt);
     float sinTilt = std::sin(tilt);
     
     // Calculate camera position in world space
-    // For top view (90 degrees), cosine will be 0 and sine will be 1
     float eyeX = 0.0f;
-    float eyeY = _cameraDistance * sinTilt - CAMERA_Y_OFFSET;  // Apply vertical offset to center model
-    float eyeZ = -_cameraDistance * cosTilt;
+    float eyeY = _cameraDistance * sinTilt;
+    float eyeZ = _cameraDistance * cosTilt;
     
     // The model's center is at (0,0,0) in world space
     float centerX = 0.0f;
-    float centerY = 0.0f;  // Look at the origin
+    float centerY = 0.0f;
     float centerZ = 0.0f;
-    
-    // Up vector (always world up for turntable effect)
-    float upX = 0.0f;
-    float upY = 1.0f;
-    float upZ = 0.0f;
     
     // Calculate forward vector (direction the camera is looking)
     float forwardX = centerX - eyeX;
@@ -179,29 +173,46 @@ void Camera::calculateViewMatrix(float* matrix) {
     
     // Normalize forward vector
     float forwardLength = std::sqrt(forwardX * forwardX + forwardY * forwardY + forwardZ * forwardZ);
-    if (forwardLength > 0.0001f) {  // Avoid division by zero
+    if (forwardLength > 0.0001f) {
         forwardX /= forwardLength;
         forwardY /= forwardLength;
         forwardZ /= forwardLength;
     }
     
-    // For top view, ensure right vector is along world X axis
+    // World up vector and right vector calculation
+    float upX, upY, upZ;
     float rightX, rightY, rightZ;
-    if (std::abs(tilt - TOP_VIEW_ANGLE) < 0.001f) {
-        // When looking straight down, right is along world X
-        rightX = 1.0f;
+    
+    // Check if we're in top view (or very close to it)
+    bool isTopView = std::abs(tilt - TOP_VIEW_ANGLE) < 0.01f;
+    
+    if (isTopView) {
+        // For top view, use Z axis as the up vector to avoid singularity
+        // This ensures the camera's right vector is along the X axis
+        upX = 0.0f;
+        upY = 0.0f;
+        upZ = 1.0f;
+        
+        // Right vector is perpendicular to forward and up
+        rightX = 1.0f;  // Align with world X axis
         rightY = 0.0f;
         rightZ = 0.0f;
     } else {
+        // Standard case - use world Y as up vector
+        upX = 0.0f;
+        upY = 1.0f;
+        upZ = 0.0f;
+        
         // Calculate right vector as cross product of forward and world up
-        rightX = forwardZ;
-        rightY = 0.0f;
-        rightZ = -forwardX;
+        rightX = forwardY * upZ - forwardZ * upY;
+        rightY = forwardZ * upX - forwardX * upZ;
+        rightZ = forwardX * upY - forwardY * upX;
         
         // Normalize right vector
-        float rightLength = std::sqrt(rightX * rightX + rightZ * rightZ);
+        float rightLength = std::sqrt(rightX * rightX + rightY * rightY + rightZ * rightZ);
         if (rightLength > 0.0001f) {
             rightX /= rightLength;
+            rightY /= rightLength;
             rightZ /= rightLength;
         }
     }
@@ -211,7 +222,7 @@ void Camera::calculateViewMatrix(float* matrix) {
     float trueUpY = rightZ * forwardX - rightX * forwardZ;
     float trueUpZ = rightX * forwardY - rightY * forwardX;
     
-    // Build view matrix (camera only)
+    // Build view matrix
     matrix[0] = rightX;
     matrix[1] = rightY;
     matrix[2] = rightZ;
@@ -227,6 +238,7 @@ void Camera::calculateViewMatrix(float* matrix) {
     matrix[10] = -forwardZ;
     matrix[11] = 0.0f;
     
+    // Translation
     matrix[12] = -(rightX * eyeX + rightY * eyeY + rightZ * eyeZ);
     matrix[13] = -(trueUpX * eyeX + trueUpY * eyeY + trueUpZ * eyeZ);
     matrix[14] = -(-forwardX * eyeX + -forwardY * eyeY + -forwardZ * eyeZ);
@@ -239,15 +251,38 @@ void Camera::getModelRotationMatrix(float* matrix) {
         matrix[i] = (i % 5 == 0) ? 1.0f : 0.0f;
     }
     
-    // For turntable effect, we only rotate around world Y axis
+    // Apply Y rotation (around Y axis) for turntable effect
     float cosY = std::cos(_modelRotationY);
     float sinY = std::sin(_modelRotationY);
     
-    // Y rotation (turntable)
+    // Standard Y-axis rotation matrix
     matrix[0] = cosY;
-    matrix[2] = sinY;
-    matrix[8] = -sinY;
+    matrix[2] = -sinY;
+    matrix[8] = sinY;
     matrix[10] = cosY;
+    
+    // Apply X rotation (around X axis) if needed
+    if (_modelRotationX != 0.0f) {
+        float cosX = std::cos(_modelRotationX);
+        float sinX = std::sin(_modelRotationX);
+        
+        // We need a temporary matrix for this
+        float tempMatrix[16];
+        for (int i = 0; i < 16; i++) {
+            tempMatrix[i] = matrix[i];
+        }
+        
+        // Apply X rotation to the Y rotation
+        matrix[4] = tempMatrix[4] * cosX + tempMatrix[8] * sinX;
+        matrix[5] = tempMatrix[5] * cosX + tempMatrix[9] * sinX;
+        matrix[6] = tempMatrix[6] * cosX + tempMatrix[10] * sinX;
+        matrix[7] = tempMatrix[7] * cosX + tempMatrix[11] * sinX;
+        
+        matrix[8] = tempMatrix[4] * -sinX + tempMatrix[8] * cosX;
+        matrix[9] = tempMatrix[5] * -sinX + tempMatrix[9] * cosX;
+        matrix[10] = tempMatrix[6] * -sinX + tempMatrix[10] * cosX;
+        matrix[11] = tempMatrix[7] * -sinX + tempMatrix[11] * cosX;
+    }
 }
 
 } // namespace PixelTheater 

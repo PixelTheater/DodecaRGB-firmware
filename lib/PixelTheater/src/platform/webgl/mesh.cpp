@@ -91,8 +91,7 @@ void MeshGenerator::generateDodecahedronMesh(const std::vector<WebFace>& faces) 
     clear();
     
     // Scale factor to match LED scaling - adjusted to match LED positions
-    constexpr float POSITION_SCALE = 0.0295f;  // LED positions are pre-scaled, face vertices are in raw mm
-    constexpr float Z_CORRECTION = 1.0f;
+    constexpr float POSITION_SCALE = 0.03f;
     
     // Generate faces and edges
     for (size_t face = 0; face < faces.size(); face++) {
@@ -108,8 +107,8 @@ void MeshGenerator::generateDodecahedronMesh(const std::vector<WebFace>& faces) 
             
             // Scale positions to match LED scaling
             x *= POSITION_SCALE;
-            y *= POSITION_SCALE;  // No vertical offset - handled by camera
-            z *= POSITION_SCALE * Z_CORRECTION;
+            y *= POSITION_SCALE;
+            z *= POSITION_SCALE;
             
             faceVertices.push_back({x, y, z});
         }

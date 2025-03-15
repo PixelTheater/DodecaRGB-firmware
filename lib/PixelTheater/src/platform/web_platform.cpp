@@ -357,14 +357,13 @@ void WebPlatform::updateVertexBuffer() {
     
     // Scale factor to fit LEDs in scene
     constexpr float POSITION_SCALE = 0.03f;
-    constexpr float Z_CORRECTION = 1.0f;
     
     // Use cached LED positions from WebModel
     for (uint16_t i = 0; i < _num_leds; i++) {
         // Scale positions to fit in scene with equal scaling for all axes
         vertices[i].x = _led_positions[i].x * POSITION_SCALE;
-        vertices[i].y = _led_positions[i].y * POSITION_SCALE;  // No vertical offset - handled by camera
-        vertices[i].z = _led_positions[i].z * POSITION_SCALE * Z_CORRECTION;
+        vertices[i].y = _led_positions[i].y * POSITION_SCALE;
+        vertices[i].z = _led_positions[i].z * POSITION_SCALE;
         
         // Convert LED color from 0-255 to 0-1 range and apply brightness
         float brightness = static_cast<float>(_brightness) / 255.0f;
@@ -574,7 +573,7 @@ void WebPlatform::initWebGL() {
     
     // Set camera distance and position for proper vertical centering
     _camera->setDistance(CAMERA_NORMAL_DISTANCE);
-    _camera->setPresetView(Camera::ViewPreset::ANGLE);
+    _camera->setPresetView(Camera::ViewPreset::SIDE);
     
     // Create mesh generator
     _mesh_generator = std::make_unique<MeshGenerator>();
