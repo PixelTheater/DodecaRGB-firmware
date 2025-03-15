@@ -72,6 +72,7 @@ public:
                 platform->initializeWithModel<ModelDef>();
                 platform->setBrightness(200);
                 platform->setZoomLevel(1); 
+                platform->setPresetView(0);  // Set initial side view
                 
                 printf("Platform initialized successfully\n");
             }
