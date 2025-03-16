@@ -50,14 +50,30 @@ float Camera::calculateTilt() const {
 
 void Camera::updateModelRotation(float deltaX, float deltaY) {
     // Convert mouse movement to rotation angles
-    _modelRotationY += deltaX;
-    _modelRotationX += deltaY;
+    // Negate deltaX to reverse the direction for left-right rotation
+    _modelRotationY -= deltaX;
     
-    // Clamp pitch to prevent over-rotation
-    const float maxPitch = static_cast<float>(M_PI) / 2.0f;
-    _modelRotationX = std::max(-maxPitch, std::min(maxPitch, _modelRotationX));
+    // For up-down rotation, we need to consider the current orientation
+    // to ensure consistent behavior regardless of model orientation
     
-    // Keep yaw between 0 and 2π
+    // Calculate the effective rotation direction based on current Y rotation
+    // This ensures that "up" always means "up" in screen space
+    float cosY = std::cos(_modelRotationY);
+    float sinY = std::sin(_modelRotationY);
+    
+    // Apply deltaY with direction correction based on current orientation
+    // When model is rotated 180 degrees, we need to reverse the direction
+    _modelRotationX -= deltaY * (cosY > 0 ? 1.0f : -1.0f);
+    
+    // Keep X rotation (pitch) between 0 and 2π, allowing full rotation
+    while (_modelRotationX < 0.0f) {
+        _modelRotationX += static_cast<float>(M_PI * 2.0f);
+    }
+    while (_modelRotationX >= static_cast<float>(M_PI * 2.0f)) {
+        _modelRotationX -= static_cast<float>(M_PI * 2.0f);
+    }
+    
+    // Keep Y rotation (yaw) between 0 and 2π
     while (_modelRotationY < 0.0f) {
         _modelRotationY += static_cast<float>(M_PI * 2.0f);
     }
