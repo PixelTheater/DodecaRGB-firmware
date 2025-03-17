@@ -72,7 +72,6 @@ public:
                 platform->initializeWithModel<ModelDef>();
                 platform->setBrightness(200);
                 platform->setZoomLevel(1); 
-                platform->setPresetView(0);  // Set initial side view
                 
                 printf("Platform initialized successfully\n");
             }
@@ -288,19 +287,6 @@ public:
                 auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
                 if (web_platform) {
                     web_platform->setAutoRotation(enabled, speed);
-                }
-            }
-        }
-    }
-    
-    // View presets
-    void setPresetView(int preset_index) {
-        if (stage) {
-            auto* platform = stage->getPlatform();
-            if (platform) {
-                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
-                if (web_platform) {
-                    web_platform->setPresetView(preset_index);
                 }
             }
         }
@@ -805,13 +791,6 @@ EMSCRIPTEN_KEEPALIVE
 void set_auto_rotation(bool enabled, float speed) {
     if (g_simulator) {
         g_simulator->setAutoRotation(enabled, speed);
-    }
-}
-
-EMSCRIPTEN_KEEPALIVE
-void set_preset_view(int preset_index) {
-    if (g_simulator) {
-        g_simulator->setPresetView(preset_index);
     }
 }
 

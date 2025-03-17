@@ -6,14 +6,9 @@
 namespace PixelTheater {
 
 // Distance presets in world units
-static constexpr float DISTANCE_CLOSE = 10.0f;
+static constexpr float DISTANCE_CLOSE = 7.0f;
 static constexpr float DISTANCE_NORMAL = 20.0f;
 static constexpr float DISTANCE_FAR = 30.0f;
-
-// View angles
-static constexpr float TOP_VIEW_ANGLE = static_cast<float>(M_PI / 2.0f);  // 90 degrees
-static constexpr float SIDE_VIEW_ANGLE = 0.0f;                            // 0 degrees
-static constexpr float ANGLE_VIEW_ANGLE = static_cast<float>(M_PI / 4.0f); // 45 degrees
 
 // Camera vertical offset to center the model in the viewport
 static constexpr float CAMERA_Y_OFFSET = 5.0f;
@@ -26,10 +21,10 @@ Camera::Camera()
       _modelRotationZ(0.0f),    // Z-axis rotation (roll)
       _autoRotate(true),        // Start with auto-rotation
       _autoRotationSpeed(SLOW_ROTATION_SPEED),  // Start with slow rotation
-      _viewAngle(SIDE_VIEW_ANGLE)  // Start with side view (0 degrees)
+      _viewAngle(0.0f)          // Start with side view (0 degrees)
 {
-    // Set initial camera position to side view
-    setPresetView(ViewPreset::SIDE, DistancePreset::NORMAL);
+    // Initialize with default values
+    // No need to call setPresetView anymore
 }
 
 void Camera::setHeight(float height) {
@@ -92,57 +87,6 @@ void Camera::resetRotation() {
     resetModelRotation();  // Alias for compatibility
 }
 
-void Camera::setPresetView(ViewPreset view) {
-    // Use current distance when not specified
-    DistancePreset currentDistance;
-    if (_cameraDistance <= DISTANCE_CLOSE) {
-        currentDistance = DistancePreset::CLOSE;
-    } else if (_cameraDistance <= DISTANCE_NORMAL) {
-        currentDistance = DistancePreset::NORMAL;
-    } else {
-        currentDistance = DistancePreset::FAR;
-    }
-    setPresetView(view, currentDistance);
-}
-
-void Camera::setPresetView(ViewPreset view, DistancePreset distance) {
-    // Set camera position based on view and distance presets
-    setCameraPosition(view, distance);
-}
-
-void Camera::setCameraPosition(ViewPreset view, DistancePreset distance) {
-    // Set distance based on preset
-    switch (distance) {
-        case DistancePreset::CLOSE:
-            _cameraDistance = DISTANCE_CLOSE;
-            break;
-        case DistancePreset::NORMAL:
-            _cameraDistance = DISTANCE_NORMAL;
-            break;
-        case DistancePreset::FAR:
-            _cameraDistance = DISTANCE_FAR;
-            break;
-    }
-    
-    // Set view angle based on preset
-    switch (view) {
-        case ViewPreset::SIDE:
-            _viewAngle = SIDE_VIEW_ANGLE;  // 0 degrees - horizontal view
-            break;
-            
-        case ViewPreset::ANGLE:
-            _viewAngle = ANGLE_VIEW_ANGLE;  // 45 degrees
-            break;
-            
-        case ViewPreset::TOP:
-            _viewAngle = TOP_VIEW_ANGLE;    // 90 degrees - directly overhead
-            break;
-    }
-    
-    // Calculate height based on view angle
-    _cameraHeight = _cameraDistance * std::sin(_viewAngle);
-}
-
 void Camera::updateAutoRotation(float deltaTime) {
     if (_autoRotate) {
         // Only rotate around world Y axis for turntable effect
@@ -199,11 +143,12 @@ void Camera::calculateViewMatrix(float* matrix) {
     float upX, upY, upZ;
     float rightX, rightY, rightZ;
     
-    // Check if we're in top view (or very close to it)
-    bool isTopView = std::abs(tilt - TOP_VIEW_ANGLE) < 0.01f;
+    // Check if we're looking directly down (or very close to it)
+    // This happens when the camera is directly above the model (sinTilt close to 1)
+    bool isLookingDown = sinTilt > 0.99f;
     
-    if (isTopView) {
-        // For top view, use Z axis as the up vector to avoid singularity
+    if (isLookingDown) {
+        // When looking directly down, use Z axis as the up vector to avoid singularity
         // This ensures the camera's right vector is along the X axis
         upX = 0.0f;
         upY = 0.0f;

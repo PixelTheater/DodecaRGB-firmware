@@ -85,7 +85,6 @@ void WebPlatform::initializeFromWebModel(const WebModel& model) {
     // Set initial camera position
     if (_camera) {
         _camera->setDistance(CAMERA_NORMAL_DISTANCE);
-        _camera->setPresetView(Camera::ViewPreset::ANGLE);
     }
     
     printf("Initialized WebPlatform with %s v%s (%d LEDs)\n", 
@@ -257,24 +256,6 @@ void WebPlatform::setAutoRotation(bool enabled, float speed) {
     
     // Reset the auto rotation timer to now
     _last_auto_rotation_time = get_current_time();
-}
-
-void WebPlatform::setPresetView(int preset_index) {
-    // Set camera to a preset view
-    switch (preset_index) {
-        case 0: // Side view
-            _camera->setPresetView(Camera::ViewPreset::SIDE);
-            break;
-        case 1: // Top view
-            _camera->setPresetView(Camera::ViewPreset::TOP);
-            break;
-        case 2: // Angled view
-            _camera->setPresetView(Camera::ViewPreset::ANGLE);
-            break;
-        default:
-            _camera->setPresetView(Camera::ViewPreset::SIDE);
-            break;
-    }
 }
 
 void WebPlatform::setZoomLevel(int zoom_level) {
@@ -573,7 +554,6 @@ void WebPlatform::initWebGL() {
     
     // Set camera distance and position for proper vertical centering
     _camera->setDistance(CAMERA_NORMAL_DISTANCE);
-    _camera->setPresetView(Camera::ViewPreset::SIDE);
     
     // Create mesh generator
     _mesh_generator = std::make_unique<MeshGenerator>();
