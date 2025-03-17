@@ -152,7 +152,6 @@ public:
     void updateRotation(float deltaX, float deltaY);
     void resetRotation();
     void setAutoRotation(bool enabled, float speed = DEFAULT_AUTO_ROTATION_SPEED);
-    void setPresetView(int preset_index);
     void setZoomLevel(int zoom_level);
     
     // JavaScript interface methods (called from JS)

@@ -58,11 +58,6 @@ class DodecaSimulator {
         this.debugBtn = document.getElementById('debug-btn');
         this.modelInfoBtn = document.getElementById('model-info-btn');
         
-        // View controls
-        this.viewSideBtn = document.getElementById('side-view');
-        this.viewTopBtn = document.getElementById('top-view');
-        this.viewAngleBtn = document.getElementById('angle-view');
-        
         // Zoom controls
         this.zoomCloseBtn = document.getElementById('zoom-close');
         this.zoomNormalBtn = document.getElementById('zoom-normal');
@@ -577,10 +572,6 @@ class DodecaSimulator {
             this.callModule('set_show_mesh', initialShowMesh);
         }
         
-        // Set initial view
-        this.callModule('set_preset_view', 0); // Start with side view
-        this.setActiveViewButton(this.viewSideBtn);
-        
         // Set initial zoom
         this.callModule('set_zoom_level', 1); // Normal zoom
         this.setActiveZoomButton(this.zoomNormalBtn);
@@ -630,19 +621,6 @@ class DodecaSimulator {
         
         if (this.modelInfoBtn) {
             this.modelInfoBtn.addEventListener('click', () => this.handleModelInfo());
-        }
-        
-        // Set up view buttons
-        if (this.viewSideBtn) {
-            this.viewSideBtn.addEventListener('click', () => this.handleViewChange(0, this.viewSideBtn));
-        }
-        
-        if (this.viewTopBtn) {
-            this.viewTopBtn.addEventListener('click', () => this.handleViewChange(1, this.viewTopBtn));
-        }
-        
-        if (this.viewAngleBtn) {
-            this.viewAngleBtn.addEventListener('click', () => this.handleViewChange(2, this.viewAngleBtn));
         }
         
         // Set up zoom buttons
@@ -950,17 +928,6 @@ class DodecaSimulator {
     }
     
     /**
-     * Handle view preset change
-     * @param {number} viewIndex - View preset index
-     * @param {HTMLElement} button - Button that was clicked
-     */
-    handleViewChange(viewIndex, button) {
-        console.log(`Switching to view preset: ${viewIndex}`);
-        this.callModule('set_preset_view', viewIndex);
-        this.setActiveViewButton(button);
-    }
-    
-    /**
      * Handle zoom level change
      * @param {number} zoomLevel - Zoom level index
      * @param {HTMLElement} button - Button that was clicked
@@ -981,17 +948,6 @@ class DodecaSimulator {
         console.log(`Setting auto-rotation: ${enabled ? 'ON' : 'OFF'}, speed: ${speed}`);
         this.callModule('set_auto_rotation', enabled, speed);
         this.setActiveRotationButton(button);
-    }
-    
-    /**
-     * Set active view button
-     * @param {HTMLElement} activeBtn - Button to set as active
-     */
-    setActiveViewButton(activeBtn) {
-        [this.viewSideBtn, this.viewTopBtn, this.viewAngleBtn].forEach(btn => {
-            if (btn) btn.classList.remove('active');
-        });
-        if (activeBtn) activeBtn.classList.add('active');
     }
     
     /**

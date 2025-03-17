@@ -156,10 +156,27 @@ The simulator provides controls for adjusting the visual representation:
 
 The camera system allows users to navigate the 3D space:
 
-- **Manual Rotation**: Click and drag to rotate the model
+- **Free Rotation**: Click and drag to rotate the model in any direction
+  - Left/right drag rotates around the Y axis (yaw)
+  - Up/down drag rotates around the X axis (pitch)
+  - Rotation is consistent regardless of the model's current orientation
+  - No rotation limits - the model can be freely rotated in all directions
+
 - **Auto-rotation**: Toggle automatic rotation with speed control
-- **Preset Views**: Predefined viewing angles
+  - Off: No automatic rotation
+  - Slow: Gentle rotation around the Y axis
+  - Fast: Quicker rotation around the Y axis
+
 - **Zoom Levels**: Different distance settings from the model
+  - Close: Detailed view of the model
+  - Normal: Standard viewing distance
+  - Far: Zoomed out view of the entire model
+
+- **Mouse Wheel**: Adjust zoom level dynamically
+
+- **Double-click**: Reset rotation to the default position
+
+The camera system uses a turntable-style rotation model where the camera position remains fixed while the model rotates. This provides an intuitive interaction model for examining the 3D object from all angles.
 
 ## Initialization Sequence
 
