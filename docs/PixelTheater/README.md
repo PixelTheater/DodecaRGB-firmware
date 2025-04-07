@@ -8,106 +8,115 @@ version: 2.8.2
 
 ## Overview
 
-The animation system provides a type-safe, flexible framework for creating LED animations on three-dimensional objects. Whether you're building a dodecahedron, sphere, cube, or any other LED-covered shape, this library makes it easy to:
+The PixelTheater library provides a flexible framework for creating LED animations (Scenes) on three-dimensional objects. It simplifies hardware interaction and scene management through a central `Theater` facade.
 
-- Create modular, reusable animations (scenes)
-- Define configurable parameters for each animation
-- Switch between animations smoothly
-- Define animation parameters and presets
-- Integrate with sensors and user input
-- Debug and monitor animation performance
+Key features:
+- Define complex 3D models from configuration files.
+- Create modular, reusable animation Scenes inheriting from `PixelTheater::Scene`.
+- Access LEDs and geometry easily via Scene helper methods (`leds[i]`, `model().point(i)`).
+- Use common utilities (`millis()`, `random8()`, etc.) directly within Scenes.
+- Configure scenes with runtime parameters.
+- Integrate with different hardware platforms (FastLED, native testing) via the `Theater`.
 
-### Architecture and Class Structure
+### Architecture
 
 ```text
-┌──────────┐                                                   
-│ Director │                                                   
-└┬─────────┘                                                   
- │  ┌────────┐                                                 
- ├─▶│  Show  │ - configure and prepare scenes                  
- │  └┬───────┘                                                 
- │   │  ┌────────┐         ┌───────┐                           
- │   └─▶│ Scene  │     ┌───┤Presets│                           
- │      └┬───────┘     ▼   └───────┘                           
- │       │  ┌───────────┐  ┌──────────┐  - types & ranges      
- │       ├─▶│ Settings  │◀─┤Parameters│  - constants & flags   
- │       │  └───────────┘  └──────────┘  - values & validation 
- │       │  ┌────────┐                                         
- │       └─▶│ Props  │ - palettes and bitmaps                  
- │          └────────┘                                         
-┌┴───────┐    ╔════════════════╗                               
-│ Stage  │───▶║ current scene  ║                               
-└┬───────┘    ╚════════════════╝                               
- │  ┌────────┐              ▲                                  
- ├─▶│ Model  │ geometry     │                                  
- │  └┬───────┘              │                                  
- │   │  ┌────────────┐      │                                  
- │   └─▶│ LEDSurface │linear│                                  
- │      └────────────┘      │                                  
- │   ┌────────────┐   ┌─────┴─────┐                            
- └──▶│  Devices   ├──▶│Controllers│ - sensors, events          
-     └────────────┘   └───────────┘                                              
+                           ┌───────────┐
+                           │ User Code │
+                           │ (main.cpp)│
+                           └─────┬─────┘
+                                 │ Uses
+                                 ▼
+                           ┌───────────┐
+                           │  Theater  │ (Facade)
+                           └─────┬─────┘
+ Manages / Provides Access To    │
+       ┌─────────────────────────┼──────────────────────────┐
+       │                         │                          │
+       ▼                         ▼                          ▼
+┌──────────────┐      ┌───────────────────┐       ┌────────────────────┐
+│   Platform   │      │ IModel/ILedBuffer │       │ Scene N            │
+│ (Native/Hdw) │◀─────│    (Interfaces)   │◀──────│ (Your Animation)   │
+└──────────────┘      └───────────────────┘       └────────────────────┘
+       ▲                         ▲                          ▲
+       │ Implemented By          │ Implemented By           │ Inherits From
+       │                         │                          │
+┌──────┴─────────┐  ┌───────────┴──────────┐      ┌───────┴──────┐
+│ NativePlatform │  │ ModelWrapper         │      │ Scene (Base) │
+│ FastLEDPlatform│  │ LedBufferWrapper     │      └──────────────┘
+└────────────────┘  └──────────────────────┘             │
+                                                           │ Provides Helpers
+                                                           │ (leds[], model(),
+                                                           │  millis(), etc.)
 ```
 
-### Key Concepts
+### Key Concepts 
 
-- **Stage**: The place where animated scenes are played on a model covered in LEDs
-  - **Model**: Definition of a geometric shape covered with LEDs, generated from hardware files
-  - **LEDSurface**: The configured driver for addressable LEDs of a given model
-- **Scene**: A single animation, including its parameters and behavior
-  - **Parameters**: The types and ranges that define how a scene is configured
-  - **Settings**: The interface and internal state of a scene's parameters
-  - **Presets**: A snapshot of settings for a scene
-  - **Props**: Chunks of data like color palettes, bitmaps, or datasets used by the scene
-  - **Actors**: Animation objects (classes) used in a scene
-- **Show**: A sequenced list of scenes to play
-  - **Director**: Manages the performance: scene selection, transitions, behavior
-- **Controls**: Hardware events or sensors that enable interaction
-  - **Controllers**: An control mapped to a parameter of a scene
+- **Theater**: The main entry point. Initializes the system (`useNativePlatform`, `useFastLEDPlatform`), adds scenes (`addScene`), and runs the animation loop (`update`).
+- **Scene**: Base class for all animations. Provides helpers to access LEDs (`leds[i]`), geometry (`model().point(i)`), utilities (`millis()`), and parameters (`settings[]`). You inherit from this to create your animation.
+- **Platform**: Abstract base class for hardware/environment interaction (e.g., `NativePlatform`, `FastLEDPlatform`). Managed by `Theater`.
+- **IModel/ILedBuffer**: Interfaces providing access to model geometry and LED data buffers. Managed by `Theater`, accessed via `Scene` helpers.
+- **ModelWrapper/LedBufferWrapper**: Internal classes implementing the interfaces, wrapping the concrete `Model` and LED buffer. Managed by `Theater`.
+- **Model**: Defines the LED geometry (points, faces). Generated from config files.
+- **Parameters/Settings**: Mechanism for runtime configuration of scenes.
 
-The Director manages scene transitions and ensures proper lifecycle method calls.
+## Getting Started
 
-## Directing Scenes
+1.  **Include Header:** Add `#include "PixelTheater.h"` to your main file (`src/main.cpp`).
+2.  **Define Model:** Ensure your model definition header (e.g., `models/MyModel/model.h`) exists.
+3.  **Create Theater:** Instantiate `PixelTheater::Theater theater;` globally.
+4.  **Initialize Theater:** In `setup()`, call the appropriate method, e.g.:
+    ```cpp
+    // For Teensy/FastLED:
+    #include "models/DodecaRGBv2/model.h" // Include your specific model
+    extern ::CRGB leds[]; // Assuming global FastLED array
+    extern const size_t NUM_LEDS;
+    theater.useFastLEDPlatform<PixelTheater::Models::DodecaRGBv2>(leds, NUM_LEDS);
 
-The Director is responsible for selecting and transitioning between scenes. It can place animations on the stage (run them), and manage playlists and activate presets. The Director puts on the show.
+    // For Native testing:
+    // #include "fixtures/models/basic_pentagon_model.h"
+    // theater.useNativePlatform<PixelTheater::Fixtures::BasicPentagonModel>(/*led count*/);
+    ```
+5.  **Create Scenes:** Define classes inheriting from `PixelTheater::Scene` in separate header files (e.g., `src/scenes/my_scene.h`). Implement `setup()` and `tick()`.
+6.  **Add Scenes:** In `setup()`, include your scene headers and add instances to the theater:
+    ```cpp
+    #include "scenes/my_scene.h"
+    #include "scenes/another_scene.h"
+    // ... 
+    theater.addScene<Scenes::MyScene>(); 
+    theater.addScene<Scenes::AnotherScene>();
+    ```
+7.  **Start Theater:** Call `theater.start();` after adding scenes.
+8.  **Update Loop:** In `loop()`, call `theater.update();`.
 
-## Props System
-
-Props are binary assets (palettes, bitmaps) that can be used in scenes.
+See `creating_animations.md` and `SceneAuthorGuide.md` for more details.
 
 ## Parameter System
 
-Parameters allow scenes to be configured at runtime. They are defined in the scene's `setup()` method:
+Parameters allow scenes to be configured at runtime. They are defined in the scene's `setup()` method using `param()`:
 
 ```cpp
-void setup() override {
-    // Float parameter with range [0.0, 1.0]
-    param("speed", "ratio", 0.5f, "clamp", "Controls animation speed");
-    
-    // Integer parameter with range [0, 100]
-    param("count", "count", 0, 100, 50, "", "Number of particles");
-    
-    // Boolean parameter
-    param("trails", "switch", true, "", "Enable motion trails");
-}
+// Inside MyScene::setup()
+param("speed", "ratio", 0.5f); // Float 0.0-1.0
+param("count", "count", 1, 10, 5); // Integer 1-10, default 5
 ```
 
-Parameters can be accessed using the settings object:
+Access values in `tick()` using the `settings` proxy:
 
 ```cpp
 float speed = settings["speed"];
 int count = settings["count"];
-bool trails = settings["trails"];
 ```
 
-The parameter system also supports schema generation for UI rendering and documentation:
+See `Parameters.md` for full details.
 
-```cpp
-// Get parameter schema as JSON
-auto schema = scene.parameter_schema().to_json();
-```
+## Advanced Configuration & Features
 
-## [13] Advanced Configuration
+*   **Models:** Define custom LED geometry. See `Model.md`.
+*   **Palettes:** Use predefined or custom color palettes. See `Palettes.md`.
+*   **Build System:** Understand how models and code are compiled. See `build-system.md`.
+*   **Logging:** Use `logInfo()`, `logWarning()`, `logError()` within scenes.
+*   **Utilities:** Leverage math functions (`map`, `sin8`, `blend8`), color functions (`hsv2rgb_rainbow`), and constants (`Constants::PT_PI`) provided via `PixelTheater.h`.
 
 ### Build Process
 

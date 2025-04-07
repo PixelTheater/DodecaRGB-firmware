@@ -12,6 +12,10 @@
 #include <cmath>
 #include <cstdio>
 #include <algorithm>
+#include <chrono>   // For millis() stub
+#include <cstdlib>  // For rand() stub
+#include <random>   // For better random stubs if needed
+#include <limits>   // For numeric_limits
 
 #include <GLES3/gl3.h>
 #include <emscripten/html5.h>
@@ -42,6 +46,11 @@ extern "C" {
 namespace PixelTheater {
 namespace WebGL {
 
+// Define logging macros for stubs if not in web environment
+#if !defined(PLATFORM_WEB) && !defined(EMSCRIPTEN)
+#define LOG_STUB_PREFIX "[WebPlatStub] "
+#endif
+
 WebPlatform::WebPlatform()
     : _leds(nullptr),
       _num_leds(0),
@@ -50,6 +59,10 @@ WebPlatform::WebPlatform()
       _atmosphere_intensity(DEFAULT_ATMOSPHERE_INTENSITY),
       _led_spacing(DEFAULT_LED_SPACING)
 {
+    // Seed random number generator for stubs
+    #if !defined(PLATFORM_WEB) && !defined(EMSCRIPTEN)
+    std::srand(std::time(nullptr)); 
+    #endif
     // WebGL initialization will happen when a model is loaded
 }
 
@@ -624,6 +637,132 @@ void WebPlatform::updateSceneParameter(const char* param_id, float value) {
     // It's called by the WebSimulator
     // For now, just log the call
     PixelTheater::Log::warning("WebPlatform::updateSceneParameter called with param_id: %s, value: %f", param_id, value);
+}
+
+// ==============================================================
+// Stubs for Platform virtual methods (Native Testing)
+// ==============================================================
+
+// Timing Utilities
+float WebPlatform::deltaTime() const {
+    // Simple stub for native testing
+    return 0.016f; // Simulate ~60 FPS
+}
+
+uint32_t WebPlatform::millis() const {
+    // Use std::chrono for a basic native implementation
+    auto now = std::chrono::steady_clock::now();
+    // Using steady_clock and a fixed epoch might be better, but requires static variable.
+    // For simplicity, using system_clock assuming it starts near program launch.
+    // This isn't strictly equivalent to Arduino millis() but serves as a basic stub.
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::system_clock::now().time_since_epoch());
+    return static_cast<uint32_t>(duration.count());
+}
+
+// Random Number Utilities
+uint8_t WebPlatform::random8() {
+    #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+        // Actual Emscripten implementation will go here later
+        return static_cast<uint8_t>(std::rand() % 256); 
+    #else
+        // Native stub
+        return static_cast<uint8_t>(std::rand() % 256); 
+    #endif
+}
+
+uint16_t WebPlatform::random16() {
+     #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+        return static_cast<uint16_t>(std::rand()); 
+    #else
+        // Native stub
+        return static_cast<uint16_t>(std::rand()); 
+    #endif
+}
+
+// Default to RAND_MAX if max is 0
+uint32_t WebPlatform::random(uint32_t max) {
+     #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+        uint32_t limit = (max == 0) ? RAND_MAX : max;
+        if (limit == 0) return 0; // Avoid modulo by zero
+        return static_cast<uint32_t>(std::rand()) % limit;
+    #else
+        // Native stub
+        uint32_t limit = (max == 0) ? RAND_MAX : max;
+        if (limit == 0) return 0; 
+        return static_cast<uint32_t>(std::rand()) % limit;
+    #endif
+}
+
+uint32_t WebPlatform::random(uint32_t min, uint32_t max) {
+    #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+        if (min >= max) return min;
+        uint32_t range = max - min;
+        return min + random(range);
+    #else
+        // Native stub
+        if (min >= max) return min;
+        uint32_t range = max - min;
+        return min + random(range);
+    #endif
+}
+
+float WebPlatform::randomFloat() {
+    #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+         return static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
+    #else
+        // Native stub
+        return static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
+    #endif
+}
+
+float WebPlatform::randomFloat(float max) {
+    #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+        return randomFloat() * max;
+    #else
+        // Native stub
+        return randomFloat() * max;
+    #endif
+}
+
+float WebPlatform::randomFloat(float min, float max) {
+    #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+       if (min >= max) return min;
+       return min + randomFloat(max - min);
+    #else
+        // Native stub
+       if (min >= max) return min;
+       return min + randomFloat(max - min);
+    #endif
+}
+
+// Logging Utilities
+void WebPlatform::logInfo(const char* format) {
+    #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+        // Actual implementation using console.log via EM_ASM or similar later
+        printf("[INFO] %s\\n", format); // Simple printf for now
+    #else
+        // Native stub
+        printf(LOG_STUB_PREFIX "[INFO] %s\\n", format);
+    #endif
+}
+
+void WebPlatform::logWarning(const char* format) {
+     #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+        printf("[WARN] %s\\n", format); 
+    #else
+        // Native stub
+        printf(LOG_STUB_PREFIX "[WARN] %s\\n", format);
+    #endif
+}
+
+void WebPlatform::logError(const char* format) {
+     #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+         printf("[ERR ] %s\\n", format); 
+    #else
+        // Native stub
+        printf(LOG_STUB_PREFIX "[ERR ] %s\\n", format);
+    #endif
 }
 
 } // namespace WebGL

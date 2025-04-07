@@ -8,7 +8,9 @@
 #include <Arduino.h>
 #elif defined(PLATFORM_WEB)
 // Web platform uses emscripten
+#ifdef EMSCRIPTEN
 #include <emscripten.h>
+#endif
 #endif
 
 namespace PixelTheater {

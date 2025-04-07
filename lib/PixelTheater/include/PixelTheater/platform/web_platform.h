@@ -76,7 +76,8 @@ public:
     WebPlatform(const WebPlatform&) = delete;
     WebPlatform& operator=(const WebPlatform&) = delete;
 
-    // Model loading
+    // Model loading (Web-specific)
+#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
     template<typename ModelDef>
     WebModel createWebModel() {
         WebModel model;
@@ -111,12 +112,13 @@ public:
         return model;
     }
 
-    // Initialize with a specific model
+    // Initialize with a specific model (Web-specific)
     template<typename ModelDef>
     void initializeWithModel() {
         WebModel model = createWebModel<ModelDef>();
         initializeFromWebModel(model);
     }
+#endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
 
     // Core LED array management
     CRGB* getLEDs() override;
@@ -131,6 +133,24 @@ public:
     // Performance settings
     void setMaxRefreshRate(uint8_t fps) override;
     void setDither(uint8_t dither) override;
+
+    // Timing Utilities (Overrides from Platform)
+    float deltaTime() const override;
+    uint32_t millis() const override;
+
+    // Random Number Utilities (Overrides from Platform)
+    uint8_t random8() override;
+    uint16_t random16() override;
+    uint32_t random(uint32_t max = 0) override;
+    uint32_t random(uint32_t min, uint32_t max) override;
+    float randomFloat() override; // 0.0 to 1.0
+    float randomFloat(float max) override; // 0.0 to max
+    float randomFloat(float min, float max) override; // min to max
+
+    // Logging Utilities (Overrides from Platform)
+    void logInfo(const char* format) override;
+    void logWarning(const char* format) override;
+    void logError(const char* format) override;
 
 #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
     // WebGL-specific methods - only available in web builds
@@ -166,9 +186,12 @@ public:
 
     // Update a scene parameter in the animation controller
     void updateSceneParameter(const char* param_id, float value);
+#endif // End of web-specific PUBLIC methods
 
 private:
 #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+    // --- Start of Web-Specific Private Section --- 
+    // Web-specific private methods
     void initializeFromWebModel(const WebModel& model);
     void initWebGL();
     void updateVertexBuffer();
@@ -189,7 +212,7 @@ private:
     float _mesh_opacity{0.3f};
     bool _show_wireframe{true};
     
-    // Camera settings
+    // Camera settings (Used by WebGL rendering)
     float _camera_distance{CAMERA_NORMAL_DISTANCE};
     
     // Mouse interaction
@@ -213,25 +236,28 @@ private:
     int _frame_count{0};
     double _last_frame_time{0};
     double _last_auto_rotation_time{0};
-#endif
 
-    // WebGL components
+    // WebGL components (Need full definitions, so web-only)
     std::unique_ptr<WebGLRenderer> _renderer;
     std::unique_ptr<MeshGenerator> _mesh_generator;
-    std::unique_ptr<Camera> _camera;
-
-    // Model data
+    
+    // Model data (Web-specific type)
     std::vector<WebVertex> _led_positions;  // Cached LED positions from WebModel
+    // --- End of Web-Specific Private Section --- 
+#endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
 
-    // LED data
-    CRGB* _leds{nullptr};
+    // Common member variables (Declared outside the #ifdef)
+    std::unique_ptr<Camera> _camera; // Camera defined in camera.h (not guarded)
+
+    // LED data (Common)
+    CRGB* _leds{nullptr}; // Pointer provided/managed externally or by platform
     uint16_t _num_leds{0};
     uint8_t _brightness{DEFAULT_BRIGHTNESS};
-    uint8_t _max_refresh_rate{0};
-    uint8_t _dither{0};
+    uint8_t _max_refresh_rate{0}; // Common platform setting
+    uint8_t _dither{0};           // Common platform setting
 };
 
 } // namespace WebGL
 } // namespace PixelTheater 
 
-#endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 
+// Outer #endif REMOVED earlier was correct. 

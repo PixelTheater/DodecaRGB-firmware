@@ -25,6 +25,25 @@ public:
     // Performance settings
     virtual void setMaxRefreshRate(uint8_t fps) = 0;
     virtual void setDither(uint8_t dither) = 0;
+
+    // Timing Utilities
+    virtual float deltaTime() const = 0;
+    virtual uint32_t millis() const = 0;
+
+    // Random Number Utilities
+    virtual uint8_t random8() = 0;
+    virtual uint16_t random16() = 0;
+    virtual uint32_t random(uint32_t max = 0) = 0;
+    virtual uint32_t random(uint32_t min, uint32_t max) = 0;
+    virtual float randomFloat() = 0; // 0.0 to 1.0
+    virtual float randomFloat(float max) = 0; // 0.0 to max
+    virtual float randomFloat(float min, float max) = 0; // min to max
+
+    // Logging Utilities (Simplified signatures for now)
+    virtual void logInfo(const char* format) = 0;
+    virtual void logWarning(const char* format) = 0;
+    virtual void logError(const char* format) = 0;
+    // TODO: Revisit logging to support variadic arguments if needed
 };
 
 // FastLED-compatible helper function implementations for native environment

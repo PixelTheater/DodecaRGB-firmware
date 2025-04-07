@@ -34,3 +34,9 @@ build/
 
 # Processing
 **/sketch.properties
+
+# Generated web assembly
+*.wasm
+*.wasm.map
+web/simulator.js
+web/simulator.js.map

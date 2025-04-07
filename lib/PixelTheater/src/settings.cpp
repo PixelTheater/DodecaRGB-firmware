@@ -253,28 +253,32 @@ bool Settings::is_valid_value(const std::string& name, const ParamValue& value) 
     }
 
     // 2. Range validation
-    // If CLAMP or WRAP flags are set, we still need to validate the type,
-    // but we don't need to validate the range since the value will be adjusted
     if (ParamHandlers::TypeHandler::has_range(def.type)) {
-        // For parameters with CLAMP or WRAP flags, we always return true
-        // since the value will be adjusted in apply_flags
         if (def.has_flag(Flags::CLAMP) || def.has_flag(Flags::WRAP)) {
-            return true;
+            return true; 
         }
         
-        // For parameters without CLAMP or WRAP, we need to validate the range
-        float min, max;
-        if (ParamHandlers::TypeHandler::has_range(def.type)) {
-            min = def.min_value;
-            max = def.max_value;
+        // Use TypeHandler to check if it's an integer type
+        if (ParamHandlers::TypeHandler::is_int_type(def.type)) { 
+            int min_i = static_cast<int>(def.min_value);
+            int max_i = static_cast<int>(def.max_value);
+            if (!ParamHandlers::RangeHandler::validate_int(def.type, value.as_int(), min_i, max_i)) {
+                 Log::warning("[WARNING] Parameter '%s': integer value out of range (%d not in [%d, %d])\n", 
+                    name.c_str(), value.as_int(), min_i, max_i);
+                return false;
+            }
+        } else if (ParamHandlers::TypeHandler::is_float_type(def.type)) {
+            // Use float validation
+            float min_f = def.min_value;
+            float max_f = def.max_value;
+            if (!ParamHandlers::RangeHandler::validate(def.type, value.as_float(), min_f, max_f)) {
+                // Warning logged by RangeHandler::validate
+                return false;
+            }
         } else {
-            ParamHandlers::RangeHandler::get_range(def.type, min, max);
-        }
-        
-        if (!ParamHandlers::RangeHandler::validate(def.type, value.as_float(), min, max)) {
-            Log::warning("[WARNING] Parameter '%s': value out of range (%.2f not in [%.2f, %.2f])\n", 
-                name.c_str(), value.as_float(), min, max);
-            return false;
+             // Should not happen for types where has_range() is true
+             Log::warning("Settings::is_valid_value: Unhandled ranged type!");
+             return false; 
         }
     }
 

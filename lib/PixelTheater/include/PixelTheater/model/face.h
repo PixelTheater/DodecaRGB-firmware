@@ -24,7 +24,18 @@ private:
     std::unique_ptr<std::array<Vertex, Limits::MAX_EDGES_PER_FACE>> _vertices;
 
 public:
-    Face() = default;
+    // Explicit default constructor initializing members
+    Face() 
+        : _id(0), _type(FaceType::None), _led_offset(0), _led_count(0),
+          _vertex_count(0), _leds(nullptr), 
+          _vertices(nullptr), // Initialize unique_ptr to null
+          leds{nullptr, 0, 0}, vertices{nullptr, 0} 
+    {
+        // If default faces MUST have vertices, allocate here:
+        // _vertices = std::make_unique<std::array<Vertex, Limits::MAX_EDGES_PER_FACE>>();
+        // for(auto& v : *_vertices) { v = {0.0f, 0.0f, 0.0f}; }
+        // vertices = Vertices{_vertices.get(), 0}; // Count is 0 for default?
+    }
     
     Face(FaceType type, uint8_t id, uint16_t offset, uint16_t count, CRGB* leds, uint16_t vertex_count)
         : _id(id)
@@ -41,6 +52,49 @@ public:
             v = {0.0f, 0.0f, 0.0f};
         }
         vertices = Vertices{_vertices.get(), _vertex_count};  // Initialize vertices member with actual count
+    }
+
+    // Copy constructor
+    Face(const Face& other)
+        : _id(other._id)
+        , _type(other._type)
+        , _led_offset(other._led_offset)
+        , _led_count(other._led_count)
+        , _vertex_count(other._vertex_count)
+        , _leds(other._leds) // Copy the pointer (points to external buffer)
+    {
+        // Deep copy the vertices if the source has them
+        if (other._vertices) {
+            _vertices = std::make_unique<std::array<Vertex, Limits::MAX_EDGES_PER_FACE>>(*other._vertices);
+        } else {
+            _vertices = nullptr; // Or make_unique and default-initialize if preferred
+        }
+        // Update internal structs to point to the new/copied data
+        leds = Leds{_leds, _led_offset, _led_count};
+        vertices = Vertices{_vertices.get(), _vertex_count}; 
+    }
+
+    // Move constructor
+    Face(Face&& other) noexcept
+        : _id(other._id)
+        , _type(other._type)
+        , _led_offset(other._led_offset)
+        , _led_count(other._led_count)
+        , _vertex_count(other._vertex_count)
+        , _leds(other._leds) // Copy the raw pointer
+        , _vertices(std::move(other._vertices)) // Move ownership of the unique_ptr
+    {
+        // Update internal structs to point to the moved data
+        leds = Leds{_leds, _led_offset, _led_count};
+        vertices = Vertices{_vertices.get(), _vertex_count};
+
+        // Leave the source object in a valid state
+        other._leds = nullptr; 
+        other._led_offset = 0;
+        other._led_count = 0;
+        other._vertex_count = 0;
+        other.leds = Leds{nullptr, 0, 0};
+        other.vertices = Vertices{nullptr, 0};
     }
 
     // Copy assignment operator
@@ -62,6 +116,35 @@ public:
             // Update vertices member to point to new array
             vertices = Vertices{_vertices.get(), _vertex_count};
             leds = Leds{_leds, _led_offset, _led_count};
+        }
+        return *this;
+    }
+
+    // Move assignment operator
+    Face& operator=(Face&& other) noexcept {
+        if (this != &other) {
+            // Move ownership of the unique_ptr
+            _vertices = std::move(other._vertices);
+
+            // Copy other members
+            _id = other._id;
+            _type = other._type;
+            _led_offset = other._led_offset;
+            _led_count = other._led_count;
+            _vertex_count = other._vertex_count;
+            _leds = other._leds; // Copy raw pointer
+
+            // Update internal structs to point to the moved/copied data
+            leds = Leds{_leds, _led_offset, _led_count};
+            vertices = Vertices{_vertices.get(), _vertex_count}; 
+
+            // Leave the source object in a valid state
+            other._leds = nullptr; 
+            other._led_offset = 0;
+            other._led_count = 0;
+            other._vertex_count = 0;
+            other.leds = Leds{nullptr, 0, 0};
+            other.vertices = Vertices{nullptr, 0};
         }
         return *this;
     }

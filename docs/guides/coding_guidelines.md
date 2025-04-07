@@ -69,7 +69,6 @@ The PixelTheater library is used to define scenes, and the Point class is used t
 
 ### Error Handling and Validation
 
-- Use exceptions for error handling (e.g., `std::runtime_error`, `std::invalid_argument`).
 - Use RAII for resource management to avoid memory leaks.
 - Validate inputs at function boundaries.
 - Log errors using Serial.printf()
@@ -117,3 +116,27 @@ As each face of the dodecahedron is a pentagon that could be rotated in 5 differ
 - After any major change is working, update the developer guide and tutorial creating_animations.md.
 - After any major change, update the README.md with any new or changed information.
 - After any major commit, update the VERSION variable in the main.cc file.
+
+### Include Strategy
+
+To ensure consistency and maintainability, follow these guidelines for `#include` directives:
+
+1.  **Library User Perspective (e.g., `src/main.cpp`):
+    *   **Goal:** Simple, single include for using the library.
+    *   **Method:** Include the main library header: `#include "PixelTheater.h"`. PlatformIO automatically makes library headers available.
+    *   **Do Not Include:** Avoid including internal library headers (e.g., `PixelTheater/core/scene.h`) directly.
+
+2.  **Library Internal Perspective (`lib/PixelTheater/src/` and `lib/PixelTheater/include/PixelTheater/`):
+    *   **Goal:** Manage dependencies within the library.
+    *   **Method:**
+        *   Source files (`*.cpp`) should include their corresponding header first (e.g., `native_platform.cpp` includes `"PixelTheater/platform/native_platform.h"`).
+        *   Include other necessary library headers using the full path relative to the `lib/PixelTheater/include` directory (e.g., `#include "PixelTheater/core/crgb.h"`).
+        *   Use forward declarations in headers (`*.h`) when possible to reduce compile times.
+        *   Always use `#pragma once` in header files.
+
+3.  **Testing Perspective (`test/`):
+    *   **Goal:** Include library components under test and test infrastructure.
+    *   **Method:**
+        *   **Library Headers:** Include using the full library path (e.g., `#include "PixelTheater/scene.h"`).
+        *   **Test Framework:** Include using the standard path (e.g., `#include <doctest/doctest.h>`).
+        *   **Test Helpers/Fixtures:** Include using relative paths from the test file being written (e.g., from `test/test_native/core/test_file.cpp` include a fixture in `test/fixtures/models/` using `#include "../../fixtures/models/my_fixture.h"`).

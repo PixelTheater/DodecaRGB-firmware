@@ -3,112 +3,70 @@
 #include "PixelTheater/scene.h"
 #include "benchmark.h"
 #include "PixelTheater/core/color.h"  // For color utilities
+#include "models/DodecaRGBv2/model.h" // Correct path to model header
 
 // External declaration of debug mode flag
 extern bool g_debug_mode;
 
 namespace Scenes {
 
-template<typename ModelDef>
-class TestScene : public PixelTheater::Scene<ModelDef> {
+// Define the concrete model type used by this scene
+using ModelDef = PixelTheater::Models::DodecaRGBv2; // Correct model struct name
+
+// Test Scene Implementation
+// Inherit directly from the non-templated Scene base class
+class TestScene : public PixelTheater::Scene {
 public:
-    using Scene = PixelTheater::Scene<ModelDef>;
-    using Scene::Scene;  // Inherit constructor
-    
+    // Constructor - use the base class constructor or default
+    TestScene() : PixelTheater::Scene() {} // Call base constructor explicitly if needed
+
+    // setup() remains override, base is virtual
     void setup() override {
-        // Set scene metadata
+        // Metadata setting remains the same using base class methods
         this->set_name("Test Scene");
         this->set_description("A simple test scene that cycles through colors");
         this->set_version("1.0");
         this->set_author("PixelTheater Team");
-        
-        // Define parameters with valid default values
+
+        // Parameter definition remains the same using base class protected methods
         this->param("speed", "ratio", 0.5f, "clamp");
-        this->param("hue_shift", "ratio", 0.0f, "wrap");  // Make sure this is a valid value
+        this->param("hue_shift", "ratio", 0.0f, "wrap"); 
         this->param("saturation", "ratio", 1.0f, "clamp");
         this->param("brightness", "ratio", 1.0f, "clamp");
-        
-        // Reset benchmark data when scene is set up
-        BENCHMARK_RESET();
-        
-        // Print debug info
-        std::cout << "TestScene setup complete. Model has " 
-                  << this->stage.model.face_count() << " faces." << std::endl;
+
+        // Example log using base class helper
+        std::stringstream ss;
+        ss << "TestScene setup complete. Model has " 
+           << model().faceCount() << " faces."; // Use model() from base class, faceCount() is correct
+        logInfo(ss.str().c_str()); // Use base class logging
     }
 
+    // tick() remains override, base is virtual
     void tick() override {
-        // Start overall scene benchmark
-        BENCHMARK_START("scene_total");
-        
-        Scene::tick();  // Call base to increment counter
+        // Call the base class tick method correctly
+        PixelTheater::Scene::tick(); 
 
-        // Get parameters - explicitly cast to float before multiplication
-        BENCHMARK_START("get_parameters");
-        float speed = static_cast<float>(this->settings["speed"]);
-        float hue_shift = static_cast<float>(this->settings["hue_shift"]) * 255.0f;
-        float saturation = static_cast<float>(this->settings["saturation"]) * 255.0f;
-        float brightness = static_cast<float>(this->settings["brightness"]) * 255.0f;
-        BENCHMARK_END();
+        // Get parameters using the settings proxy and get_value()
+        float speed = settings["speed"];
+        float hue_shift = (float)settings["hue_shift"] * 255.0f; // Cast needed if direct multiplication ambiguous
+        float saturation = (float)settings["saturation"] * 255.0f;
+        float brightness = (float)settings["brightness"] * 255.0f;
 
-        // Create a simple rainbow animation
-        uint8_t hue_base = (this->tick_count() * speed) + hue_shift;
-        
-        // Debug output every 300 frames (5 seconds at 60fps) when debug mode is on
-        if (this->tick_count() % 300 == 0 && g_debug_mode) {
-            std::cout << "TestScene tick: " << this->tick_count() 
-                      << ", hue_base: " << (int)hue_base 
-                      << ", speed: " << speed 
-                      << ", saturation: " << saturation / 255.0f
-                      << ", brightness: " << brightness / 255.0f
-                      << std::endl;
+        // Calculate hue based on time (tick_count) and speed
+        // Use tick_count() from base class
+        uint8_t hue = (uint8_t)(((tick_count() * speed) / 10.0f) + hue_shift); 
+
+        // Fill all LEDs with the calculated color
+        // Use leds proxy from base class and loop explicitly
+        // fill_solid(leds, leds.size(), CHSV(hue, (uint8_t)saturation, (uint8_t)brightness)); // Old way
+        size_t count = leds.size();
+        PixelTheater::CHSV hsv_color(hue, (uint8_t)saturation, (uint8_t)brightness);
+        PixelTheater::CRGB rgb_color;
+        hsv2rgb_rainbow(hsv_color, rgb_color); // Convert HSV to RGB once
+
+        for(size_t i = 0; i < count; ++i) {
+            leds[i] = rgb_color; // Assign the same RGB color to all LEDs
         }
-        
-        // Apply to all faces with different hue offsets
-        BENCHMARK_START("update_leds");
-        
-        // Add null check for model - use size check instead of empty()
-        if (this->stage.model.face_count() > 0) {
-            size_t face_count = this->stage.model.face_count();
-            
-            for (size_t face_idx = 0; face_idx < face_count; face_idx++) {
-                // Add bounds checking
-                if (face_idx >= this->stage.model.faces.size()) {
-                    continue;  // Skip this face if it's out of bounds
-                }
-                
-                auto& face = this->stage.model.faces[face_idx];
-                uint8_t face_hue = hue_base + (face_idx * 21); // Distribute colors across faces
-                
-                size_t led_count = face.led_count();
-                for (size_t led_idx = 0; led_idx < led_count; led_idx++) {
-                    // Create a gradient within each face
-                    uint8_t led_hue = face_hue + (led_idx * 2);
-                    
-                    // Create HSV color and convert to RGB using existing function
-                    PixelTheater::CHSV hsv(led_hue, saturation, brightness);
-                    
-                    // Add bounds checking for LED access
-                    if (led_idx < led_count) {
-                        PixelTheater::CRGB& rgb = face.leds[led_idx];
-                        
-                        // Use the existing hsv2rgb_rainbow function
-                        PixelTheater::hsv2rgb_rainbow(hsv, rgb);
-                        
-                        // Ensure minimum brightness for visibility
-                        rgb.r = std::max(rgb.r, (uint8_t)50);
-                        rgb.g = std::max(rgb.g, (uint8_t)50);
-                        rgb.b = std::max(rgb.b, (uint8_t)50);
-                    }
-                }
-            }
-        } else {
-            std::cerr << "Error: Model has no faces!" << std::endl;
-        }
-        
-        BENCHMARK_END();
-        
-        // End overall scene benchmark
-        BENCHMARK_END();
     }
 
     // The Scene class might not have a status() method to override

@@ -4,170 +4,88 @@ generated: 2025-02-13 18:48
 version: 2.8.3
 ---
 
-# Scene System
+# Scene API Reference
 
-Scenes are the core animation components in PixelTheater. Each scene defines a self-contained animation with its own parameters, state, and rendering logic.
+This document provides a quick reference to the API available to authors creating custom animations by inheriting from `PixelTheater::Scene`.
 
-## Scene Organization
+For a tutorial on creating scenes, see `docs/creating_animations.md`.
+For a more detailed guide, see `docs/PixelTheater/SceneAuthorGuide.md`.
 
-A scene consists of:
-```
-scenes/space/              # Scene root directory
-├── space.cpp             # Scene implementation 
-├── README.md            # Scene documentation
-└── props/               # Scene-specific assets
-    ├── nebula.bmp       # Bitmap resource
-    └── deep_space.pal   # Palette resource
-```
-
-## Scene Implementation
-
-### Lifecycle
+## Basic Structure
 
 ```cpp
-template<typename ModelDef>
-class MyScene : public Scene<ModelDef> {
-    using Scene = Scene<ModelDef>;
-    using Scene::Scene;  // Inherit constructor
-    
-    void setup() override {
-        // Called once when scene becomes active
-        // Initialize parameters and state here
-        param("speed", 0.5f, Flags::CLAMP, "Controls animation speed");
-        _stars.reserve(settings["stars"]);
-    }
-    
-    void tick() override {
-        Scene::tick();  // Required: updates frame counter
-        
-        // Called every frame
-        updateState();
-        renderFrame();
-    }
-    
-    std::string status() const override {
-        return "Frame: " + std::to_string(tick_count());
-    }
+#include "PixelTheater.h"
+using namespace PixelTheater;
+using namespace PixelTheater::Constants;
+
+namespace Scenes {
+class MyScene : public Scene {
+public:
+    void setup() override { /* Init metadata, params, state */ }
+    void tick() override { /* Animation logic */ }
 };
+} // namespace Scenes
 ```
 
-### Stage and Model Access
+## Available API within Scene Subclass
 
-```cpp
-void MyScene::tick() {
-    Scene::tick();
-    
-    // Stage access
-    auto& leds = this->stage.leds;           // LED array
-    auto& model = this->stage.model;         // Model access
-    size_t num_leds = model.led_count();     // Total LEDs
-    size_t num_faces = model.face_count();   // Total faces
-    
-    // LED access patterns
-    leds[0] = CRGB::Red;                    // Direct indexing
-    model.faces[0].leds[0] = CRGB::Blue;    // Through face
-    
-    // Range-based iteration
-    for(auto& led : leds) {
-        fadeToBlackBy(led, 128);
-    }
-    
-    // Face-based iteration
-    for(auto& face : model.faces) {
-        for(auto& led : face.leds) {
-            led = CRGB::Green;
-        }
-    }
-    
-    // Point-based access
-    for(const auto& point : model.points) {
-        float height = point.y();
-        leds[point.id()] = CHSV(height * 255, 255, 255);
-    }
-}
-```
+### Lifecycle Methods (Override)
 
-## Parameter System
+*   `virtual void setup()`: (Pure Virtual) Initialize parameters, metadata, state.
+*   `virtual void tick()`: Implement frame-by-frame animation logic. Call `Scene::tick()` to increment base counter.
+*   `virtual void reset()`: Optional override. Called when scene becomes active again. Default resets `tick_count` and parameters.
 
-### Parameter Definition
+### LED Access
 
-Parameters are defined in the `setup()` method using the `param()` method:
+*   `leds[index]` (`LedsProxy` member): Provides `CRGB&`. Bounds-clamped.
+*   `led(index)` (`CRGB&` method): Helper access. Bounds-clamped.
+*   `ledCount()` (`size_t` method): Returns total number of LEDs.
 
-```cpp
-void setup() override {
-    // Float parameter with range [0.0, 1.0]
-    param("speed", "ratio", 0.5f, "clamp", "Controls animation speed");
-    
-    // Integer parameter with range [0, 100]
-    param("count", "count", 0, 100, 50, "", "Number of particles");
-    
-    // Boolean parameter
-    param("trails", "switch", true, "", "Enable motion trails");
-    
-    // Float parameter with range [0.0, 2.0]
-    param("size", "range", 0.0f, 2.0f, 1.0f, "", "Particle size");
-}
-```
+### Model Geometry Access
 
-### Parameter Access
+*   `model()` (`const IModel&` method): Returns reference to the model interface.
+*   `model().point(index)` (`const Point&`): Get point data for LED `index`. Bounds-clamped.
+*   `model().face(index)` (`const Face&`): Get face data for face `index`. Bounds-clamped.
+*   `model().pointCount()` (`size_t`): Total number of points (usually == `ledCount()`).
+*   `model().faceCount()` (`size_t`): Total number of faces.
 
-Parameters can be accessed using the settings object:
+### Parameters & Settings
 
-```cpp
-void tick() override {
-    Scene::tick();
-    
-    // Access parameters
-    float speed = settings["speed"];
-    int count = settings["count"];
-    bool trails = settings["trails"];
-    
-    // Use parameters in animation logic
-    if (trails) {
-        fadeToBlackBy(leds, 255 * (1.0f - speed));
-    } else {
-        fill_solid(leds, CRGB::Black);
-    }
-    
-    // Update particles
-    for (int i = 0; i < count; i++) {
-        updateParticle(i, speed);
-    }
-}
-```
+*   `param(...)` (Protected method): Define parameters in `setup()`. Multiple overloads exist.
+*   `meta(key, value)` (Protected method): Define simple string metadata in `setup()`.
+*   `settings["name"]` (`SettingsProxy` member): Access/modify parameter values.
 
-### Parameter Schema
+### Metadata Accessors
 
-You can generate a schema of all parameters for UI rendering or documentation:
+*   `name()` (`const std::string&`): Get scene name.
+*   `description()` (`const std::string&`): Get scene description.
+*   `version()` (`const std::string&`): Get scene version.
+*   `author()` (`const std::string&`): Get scene author.
 
-```cpp
-// Get parameter schema as JSON
-auto schema = scene.parameter_schema().to_json();
+### Timing Utilities
 
-// Check if a parameter exists
-bool has_speed = scene.has_parameter("speed");
+*   `millis()` (`uint32_t`): Milliseconds since program start.
+*   `deltaTime()` (`float`): Time elapsed since the last frame (in seconds).
+*   `tick_count()` (`size_t`): Number of `tick()` calls since the scene was last activated/reset.
 
-// Get all parameter names
-auto names = scene.parameter_names();
-```
+### Math/Random Utilities
 
-## Best Practices
+*   `random8()`
+*   `random16()`
+*   `random(max)`
+*   `random(min, max)`
+*   `randomFloat()` (0.0-1.0)
+*   `randomFloat(max)` (0.0-max)
+*   `randomFloat(min, max)`
+*   *(Global utilities like `map`, `nblend`, `fadeToBlackBy`, `CHSV`, etc., are available via `PixelTheater.h` and `using namespace PixelTheater;`)*
+*   *(Constants like `PT_PI`, `PT_TWO_PI` are available via `PixelTheater.h` and `using namespace PixelTheater::Constants;`)*
 
-1. **Scene Design**:
-   - One scene per file
-   - Clear parameter documentation
-   - Meaningful scene names
-   - Call base class `tick()` for frame counting
+### Logging Utilities
 
-2. **Performance**:
-   - Minimize allocations in tick()
-   - Cache frequently used values
-   - Use range-based for loops
-   - Pre-allocate vectors in setup()
+*   `logInfo(const char* format)`
+*   `logWarning(const char* format)`
+*   `logError(const char* format)`
+*   *(Also `const` versions available)*
+*   *(Note: Currently only supports simple format string, no variable arguments)*
 
-3. **Error Handling**:
-   - Check parameter existence
-   - Use safe defaults
-   - Validate ranges
-
-See [Stage Documentation](Stage.md) for scene registration and lifecycle management.
+Refer to the source code headers (`scene.h`, `imodel.h`, `platform.h`, etc.) for precise signatures and implementation details.

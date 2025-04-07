@@ -27,6 +27,24 @@ public:
     void setMaxRefreshRate(uint8_t fps) override;
     void setDither(uint8_t dither) override;
 
+    // Timing Utilities
+    float deltaTime() const override;
+    uint32_t millis() const override;
+
+    // Random Number Utilities
+    uint8_t random8() override;
+    uint16_t random16() override;
+    uint32_t random(uint32_t max = 0) override;
+    uint32_t random(uint32_t min, uint32_t max) override;
+    float randomFloat() override; // 0.0 to 1.0
+    float randomFloat(float max) override; // 0.0 to max
+    float randomFloat(float min, float max) override; // min to max
+
+    // Logging Utilities (Simplified signatures for now)
+    void logInfo(const char* format) override;
+    void logWarning(const char* format) override;
+    void logError(const char* format) override;
+
 private:
     CRGB* _leds{nullptr};
     uint16_t _num_leds{0};

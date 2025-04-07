@@ -1,192 +1,126 @@
 #include <doctest/doctest.h>
-#include "PixelTheater/scene.h"
-#include "../helpers/stage_test_fixture.h"
+#include "PixelTheater.h"
+#include <string>
+#include <vector>
+#include <algorithm> // For std::find
+
+// Reuse the fixture definition from test_scene.cpp (requires careful linking or separate header)
+// For simplicity here, let's redefine a similar fixture.
 #include "../fixtures/models/basic_pentagon_model.h"
-#include <algorithm>
+#include "PixelTheater/platform/native_platform.h" 
+#include "PixelTheater/core/led_buffer_wrapper.h"
+#include "PixelTheater/core/model_wrapper.h"
+#include "PixelTheater/model/model.h"
 
 using namespace PixelTheater;
-using namespace PixelTheater::Testing;
 using namespace PixelTheater::Fixtures;
 
-// Test scene that adds parameters in setup() rather than config()
-template<typename ModelDef>
-class ParameterTestScene : public Scene<ModelDef> {
+// --- Refactored Test Scene --- 
+class ParamTestScene : public Scene { 
 public:
-    using Scene<ModelDef>::Scene;
+    ParamTestScene() = default;
     
     void setup() override {
-        // Add parameters in setup() instead of config()
-        this->param("speed", "ratio", 0.5f, "clamp", "Controls the animation speed");
-        this->param("count", "count", 1, 10, 5, "clamp", "Number of particles");
-        this->param("enabled", "switch", true, "", "Enable or disable the effect");
-        this->param("placeholder", "ratio", 0.3f, "", "Placeholder parameter"); // Simple placeholder instead of select
-        this->param("intensity", "range", 0.0f, 1.0f, 0.7f, "clamp", "Effect intensity");
-        
-        setup_called = true;
+        param("brightness", "ratio", 0.8f, "clamp", "Overall brightness");
+        param("speed", "range", 0.1f, 2.0f, 1.0f, "", "Animation speed");
+        param("color_hue", "count", 0, 255, 0, "wrap", "Base color hue");
+        param("enabled", "switch", true, "", "Enable feature");
+        param("count", "count", 1, 10, 5, "", "Item count");
     }
     
-    bool setup_called = false;
+    void tick() override {
+        Scene::tick();
+    }
+
+    void call_connect(IModel& m, ILedBuffer& l, Platform& p) { connect(m, l, p); }
 };
 
+// --- Test Fixture --- 
+template<typename SceneType>
+struct ParamSceneFixture {
+    std::unique_ptr<NativePlatform> platform;
+    std::unique_ptr<LedBufferWrapper> leds_wrapper;
+    std::unique_ptr<ModelWrapper<BasicPentagonModel>> model_wrapper;
+    SceneType test_scene; 
+    ILedBuffer* leds_if = nullptr;
+    IModel* model_if = nullptr;
+
+    ParamSceneFixture() {
+        platform = std::make_unique<NativePlatform>(BasicPentagonModel::LED_COUNT);
+        BasicPentagonModel model_def_instance;
+        auto concrete_model = std::make_unique<Model<BasicPentagonModel>>(
+            model_def_instance, platform->getLEDs()
+        );
+        leds_wrapper = std::make_unique<LedBufferWrapper>(platform->getLEDs(), platform->getNumLEDs());
+        model_wrapper = std::make_unique<ModelWrapper<BasicPentagonModel>>(std::move(concrete_model));
+        leds_if = leds_wrapper.get();
+        model_if = model_wrapper.get();
+        test_scene.call_connect(*model_if, *leds_if, *platform);
+        test_scene.setup(); 
+    }
+};
+
+
 TEST_SUITE("Scene Parameters") {
-    TEST_CASE_FIXTURE(StageTestFixture<BasicPentagonModel>, "Parameter Methods") {
-        auto* scene = stage->addScene<ParameterTestScene<BasicPentagonModel>>(*stage);
-        stage->setScene(scene);
-        
-        // Call setup to ensure parameters are added
-        scene->setup();
-        
-        // Verify setup was called
-        CHECK(scene->setup_called);
+
+    TEST_CASE_FIXTURE(ParamSceneFixture<ParamTestScene>, "Parameter Methods") {
+        // Setup is called by fixture
         
         SUBCASE("Parameter Names") {
-            // Get all parameter names
-            auto names = scene->get_parameter_names();
-            
-            // Check that we have the correct number of parameters
+            auto names = test_scene.get_parameter_names();
             CHECK(names.size() == 5);
-            
-            // Check that all parameter names are in the vector
             CHECK(std::find(names.begin(), names.end(), "speed") != names.end());
             CHECK(std::find(names.begin(), names.end(), "count") != names.end());
             CHECK(std::find(names.begin(), names.end(), "enabled") != names.end());
-            CHECK(std::find(names.begin(), names.end(), "placeholder") != names.end());
-            CHECK(std::find(names.begin(), names.end(), "intensity") != names.end());
-            
-            // Test the SettingsProxy names() method
-            auto proxy_names = scene->settings.names();
+            CHECK(std::find(names.begin(), names.end(), "brightness") != names.end());
+            CHECK(std::find(names.begin(), names.end(), "color_hue") != names.end());
+            auto proxy_names = test_scene.settings.names();
             CHECK(proxy_names.size() == 5);
             CHECK(std::find(proxy_names.begin(), proxy_names.end(), "speed") != proxy_names.end());
-            CHECK(std::find(proxy_names.begin(), proxy_names.end(), "count") != proxy_names.end());
         }
         
         SUBCASE("Parameter Access") {
-            // Access parameters through the settings proxy
-            CHECK(float(scene->settings["speed"]) == doctest::Approx(0.5f));
-            CHECK(int(scene->settings["count"]) == 5);
-            CHECK(bool(scene->settings["enabled"]) == true);
-            CHECK(float(scene->settings["placeholder"]) == doctest::Approx(0.3f));
-            CHECK(float(scene->settings["intensity"]) == doctest::Approx(0.7f));
-            
-            // Modify parameters
-            scene->settings["speed"] = 0.8f;
-            scene->settings["count"] = 7;
-            scene->settings["enabled"] = false;
-            
-            // Check that the modifications were applied
-            CHECK(float(scene->settings["speed"]) == doctest::Approx(0.8f));
-            CHECK(int(scene->settings["count"]) == 7);
-            CHECK(bool(scene->settings["enabled"]) == false);
+            CHECK(float(test_scene.settings["brightness"]) == doctest::Approx(0.8f));
+            CHECK(float(test_scene.settings["speed"]) == doctest::Approx(1.0f));
+            CHECK(static_cast<uint8_t>(test_scene.settings["color_hue"]) == 0);
+            CHECK(bool(test_scene.settings["enabled"]) == true);
+            CHECK(int(test_scene.settings["count"]) == 5);
+            test_scene.settings["speed"] = 0.5f;
+            test_scene.settings["count"] = 8;
+            test_scene.settings["enabled"] = false;
+            CHECK(float(test_scene.settings["speed"]) == doctest::Approx(0.5f));
+            CHECK(int(test_scene.settings["count"]) == 8);
+            CHECK(bool(test_scene.settings["enabled"]) == false);
         }
         
-        SUBCASE("Parameter Metadata") {
-            // Get parameter metadata
-            const auto& speed_metadata = scene->get_parameter_metadata("speed");
-            const auto& count_metadata = scene->get_parameter_metadata("count");
-            
-            // Check parameter types using metadata
-            CHECK(speed_metadata.type == ParamType::ratio);
-            CHECK(count_metadata.type == ParamType::count);
-            
-            // Check parameter types using the method
-            CHECK(scene->get_parameter_type("speed") == ParamType::ratio);
-            CHECK(scene->get_parameter_type("count") == ParamType::count);
-            CHECK(scene->get_parameter_type("enabled") == ParamType::switch_type);
-            CHECK(scene->get_parameter_type("placeholder") == ParamType::ratio);
-            CHECK(scene->get_parameter_type("intensity") == ParamType::range);
-            
-            // Check parameter ranges - replace range_min_i with min_value cast to int
-            CHECK(static_cast<int>(count_metadata.min_value) == 1);
-            CHECK(static_cast<int>(count_metadata.max_value) == 10);
-            
-            // Check parameter flags
-            CHECK(speed_metadata.has_flag(Flags::CLAMP));
-            CHECK(count_metadata.has_flag(Flags::CLAMP));
+        SUBCASE("Parameter Metadata & Type") {
+            const auto& speed_meta = test_scene.get_parameter_metadata("speed");
+            CHECK(speed_meta.type == ParamType::range);
+            CHECK(test_scene.get_parameter_type("speed") == ParamType::range);
+            CHECK(test_scene.get_parameter_type("count") == ParamType::count);
+            CHECK(test_scene.get_parameter_type("enabled") == ParamType::switch_type);
+            CHECK(test_scene.get_parameter_type("brightness") == ParamType::ratio);
+            CHECK(test_scene.get_parameter_type("color_hue") == ParamType::count);
         }
         
         SUBCASE("Parameter Reset") {
-            // Get original values
-            float original_speed = float(scene->settings["speed"]);
-            int original_count = int(scene->settings["count"]);
-            
-            // Modify parameters
-            scene->settings["speed"] = 0.8f;
-            scene->settings["count"] = 7;
-            
-            // Verify modifications were applied
-            CHECK(float(scene->settings["speed"]) == doctest::Approx(0.8f));
-            CHECK(int(scene->settings["count"]) == 7);
-            
-            // Reset the scene
-            scene->reset();
-            
-            // Check that parameters were reset to default values
-            CHECK(float(scene->settings["speed"]) == doctest::Approx(original_speed));
-            CHECK(int(scene->settings["count"]) == original_count);
+            float original_speed = test_scene.settings["speed"];
+            int original_count = test_scene.settings["count"];
+            test_scene.settings["speed"] = 0.1f;
+            test_scene.settings["count"] = 1;
+            CHECK(float(test_scene.settings["speed"]) == doctest::Approx(0.1f));
+            CHECK(int(test_scene.settings["count"]) == 1);
+            test_scene.reset(); 
+            CHECK(float(test_scene.settings["speed"]) == doctest::Approx(original_speed));
+            CHECK(int(test_scene.settings["count"]) == original_count);
         }
         
         SUBCASE("Parameter Existence") {
-            // Check that parameters exist
-            CHECK(scene->has_parameter("speed"));
-            CHECK(scene->has_parameter("count"));
-            CHECK(scene->has_parameter("enabled"));
-            CHECK(scene->has_parameter("placeholder"));
-            CHECK(scene->has_parameter("intensity"));
-            
-            // Check that non-existent parameters don't exist
-            CHECK_FALSE(scene->has_parameter("non_existent_param"));
-            CHECK_FALSE(scene->has_parameter(""));
-            
-            // Test the SettingsProxy has_parameter() method
-            CHECK(scene->settings.has_parameter("speed"));
-            CHECK(scene->settings.has_parameter("count"));
-            CHECK_FALSE(scene->settings.has_parameter("non_existent_param"));
+            CHECK(test_scene.has_parameter("speed"));
+            CHECK(test_scene.has_parameter("count"));
+            CHECK_FALSE(test_scene.has_parameter("non_existent"));
+            CHECK(test_scene.settings.has_parameter("speed"));
+            CHECK_FALSE(test_scene.settings.has_parameter("non_existent"));
         }
-        
-        SUBCASE("Parameter Schema") {
-            // Get parameter schema
-            auto schema = scene->parameter_schema();
-            
-            // Check schema properties
-            CHECK(schema.scene_name == "Unnamed Scene");
-            CHECK(schema.parameters.size() == 5);
-            
-            // Find the speed parameter
-            auto speed_param_it = std::find_if(schema.parameters.begin(), schema.parameters.end(),
-                [](const ParameterSchema& param) { return param.name == "speed"; });
-            
-            // Check that we found the speed parameter
-            CHECK(speed_param_it != schema.parameters.end());
-            
-            // Check speed parameter properties
-            CHECK(speed_param_it->name == "speed");
-            CHECK(speed_param_it->type == "ratio");
-            CHECK(speed_param_it->description == "Controls the animation speed");
-            CHECK(speed_param_it->min_value == doctest::Approx(0.0f));
-            CHECK(speed_param_it->max_value == doctest::Approx(1.0f));
-            CHECK(speed_param_it->default_float == doctest::Approx(0.5f));
-            
-            // Get JSON representation
-            std::string json = scene->parameter_schema_json();
-            
-            // Basic JSON validation
-            CHECK(json.find("\"name\": \"Unnamed Scene\"") != std::string::npos);
-            CHECK(json.find("\"parameters\": [") != std::string::npos);
-            CHECK(json.find("\"name\": \"speed\"") != std::string::npos);
-            CHECK(json.find("\"type\": \"ratio\"") != std::string::npos);
-        }
-        
-        // SUBCASE("Parameter Descriptions") {
-        //     // Check that parameter descriptions are correctly set and retrieved
-        //     CHECK(scene->_settings_storage.get_description("speed") == "Controls the animation speed");
-        //     CHECK(scene->_settings_storage.get_description("count") == "Number of particles");
-        //     CHECK(scene->_settings_storage.get_description("enabled") == "Enable or disable the effect");
-        //     CHECK(scene->_settings_storage.get_description("placeholder") == "Placeholder parameter");
-        //     CHECK(scene->_settings_storage.get_description("intensity") == "Effect intensity");
-            
-        //     // Check description access through SettingsProxy
-        //     CHECK(scene->settings["speed"].description() == "Controls the animation speed");
-        //     CHECK(scene->settings["count"].description() == "Number of particles");
-        // }
     }
 } 

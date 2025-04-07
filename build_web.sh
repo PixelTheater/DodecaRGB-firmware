@@ -29,7 +29,6 @@ emcc src/web_simulator.cpp \
      lib/PixelTheater/src/params/param_types.cpp \
      lib/PixelTheater/src/platform/web_platform.cpp \
      lib/PixelTheater/src/settings.cpp \
-     lib/PixelTheater/src/stage.cpp \
      lib/PixelTheater/src/platform/webgl/util.cpp \
      lib/PixelTheater/src/platform/webgl/camera.cpp \
      lib/PixelTheater/src/platform/webgl/mesh.cpp \

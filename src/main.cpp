@@ -6,16 +6,23 @@
 #include <memory>
 
 // PixelTheater includes
-#include "PixelTheater/platform/fastled_platform.h"
-#include "PixelTheater/model/model.h"
-#include "PixelTheater/stage.h"
-// Include the model definition - we'll use an include guard to prevent multiple definitions
+#include "PixelTheater.h" // Use the consolidated header
+// #include "PixelTheater/platform/fastled_platform.h"
+// #include "PixelTheater/model/model.h"
+// #include "PixelTheater/stage.h"
+
+// Include the model definition (for use in useFastLEDPlatform template)
 #ifndef DODECARGBV2_MODEL_INCLUDED
 #define DODECARGBV2_MODEL_INCLUDED
-#include "models/DodecaRGBv2/model.h" // Include the generated model
+#include "models/DodecaRGBv2/model.h" 
 #endif
-#include "scenes/blob_scene.h" // Include our blob scene
-#include "benchmark.h" // Include our benchmark utilities
+
+// Include Scene implementations 
+// #include "scenes/blob_scene.h" // Temporarily disabled until refactored <-- REMOVE COMMENT
+#include "scenes/blob_scene.h" // Refactored
+#include "scenes/xyz_scanner/xyz_scanner_scene.h" // Refactored
+#include "scenes/wandering_particles/wandering_particles_scene.h" // Refactored
+#include "benchmark.h" 
 
 #ifndef PROJECT_VERSION
 #define PROJECT_VERSION "0.0.1"
@@ -47,14 +54,15 @@
 
 #define NUM_SCENES 1  // We'll increase this as we add more scenes
 
-CRGB leds[NUM_LEDS];
+::CRGB leds[NUM_LEDS];
 
 // PixelTheater components
-using DodecaModel = PixelTheater::Models::DodecaRGBv2;
-std::unique_ptr<PixelTheater::FastLEDPlatform> platform;
-std::unique_ptr<PixelTheater::Model<DodecaModel>> model;
-std::unique_ptr<PixelTheater::Stage<DodecaModel>> stage;
-Scenes::BlobScene<DodecaModel>* blob_scene = nullptr;
+// using DodecaModel = PixelTheater::Models::DodecaRGBv2; // No longer needed
+// std::unique_ptr<PixelTheater::FastLEDPlatform> platform; // Managed by Theater
+// std::unique_ptr<PixelTheater::Model<DodecaModel>> model; // Managed by Theater
+// std::unique_ptr<PixelTheater::Stage<DodecaModel>> stage; // Replaced by Theater
+// Scenes::BlobScene<DodecaModel>* blob_scene = nullptr; // Managed by Theater
+PixelTheater::Theater theater; // Global Theater instance
 
 long random_seed = 0;
 int seed1,seed2 = 0;
@@ -66,11 +74,12 @@ float calculate_power_usage() {
 }
 
 void timerStatusMessage(){
-  uint8_t scene_number = 0;
-  String scene_name = "BlobScene";
+  uint8_t scene_number = 0; // TODO: Get current scene index from Theater?
+  String scene_name = "Unknown";
   
-  if (stage && blob_scene) {
-    scene_name = blob_scene->status().c_str();
+  // Get current scene name from Theater
+  if (theater.currentScene()) { 
+    scene_name = theater.currentScene()->name().c_str(); 
   }
   
   Serial.printf("--> mode:%d (%s) @ %d FPS <--\n", 
@@ -79,14 +88,13 @@ void timerStatusMessage(){
     FastLED.getFPS() 
   );
 
-  String status = "running"; // TODO: get status from running scene
+  String status = "running"; // TODO: get status from running scene?
   Serial.printf("%s\n", status.c_str());
 
   Serial.printf("Est Power: %0.1f W (%.1f%% brightness)\n", 
     calculate_power_usage()/1000.0,
     (BRIGHTNESS/ 255.0f) * 100);
     
-  // Include benchmark report in status message
   BENCHMARK_REPORT(FastLED.getFPS());
 }
 
@@ -94,7 +102,7 @@ void fadeInSide(int side, int start_led, int end_led, int duration_ms) {
     for (int brightness = 0; brightness <= 120; brightness += 30) {
         for (int led = start_led; led <= end_led; ++led) {
             int index = side * LEDS_PER_SIDE + led;
-            CRGB side_color = ColorFromPalette(RainbowColors_p, side * 255 / NUM_SIDES);
+            ::CRGB side_color = ColorFromPalette(RainbowColors_p, side * 255 / NUM_SIDES);
             leds[index] = side_color;
             leds[index].fadeToBlackBy(255 - brightness);
         }
@@ -151,29 +159,33 @@ void setup() {
     fadeInSide(side, 6, 15, fade_duration);
   }
 
-  // Initialize PixelTheater components
-  Serial.println("Initializing PixelTheater...");
-  
-  // Enable or disable benchmarking
-  Benchmark::enabled = true;  // Set to false to disable benchmarking
-  
-  // Create platform with FastLED integration
-  // Need to cast the leds array to PixelTheater::CRGB* to match the expected type
-  platform = std::make_unique<PixelTheater::FastLEDPlatform>(
-    reinterpret_cast<PixelTheater::CRGB*>(leds), 
-    DodecaModel::LED_COUNT
+  // Initialize PixelTheater Theater
+  Serial.println("Initializing PixelTheater Theater...");
+  Benchmark::enabled = true;  
+
+  // Initialize Theater with FastLED platform and specific model
+  theater.useFastLEDPlatform<PixelTheater::Models::DodecaRGBv2>(
+    leds,
+    NUM_LEDS
   );
   
-  // Create model based on our model definition
-  model = std::make_unique<PixelTheater::Model<DodecaModel>>(DodecaModel{}, platform->getLEDs());
+  // --- Remove old manual setup ---
+  // platform = std::make_unique<PixelTheater::FastLEDPlatform>(...);
+  // model = std::make_unique<PixelTheater::Model<DodecaModel>>(...);
+  // stage = std::make_unique<PixelTheater::Stage<DodecaModel>>(...);
   
-  // Create stage with platform and model
-  stage = std::make_unique<PixelTheater::Stage<DodecaModel>>(std::move(platform), std::move(model));
+  // Add scenes 
+  theater.addScene<Scenes::BlobScene>(); 
+  theater.addScene<Scenes::XYZScannerScene>(); 
+  theater.addScene<Scenes::WanderingParticlesScene>(); // Add Wandering Particles
   
-  // Add and set initial scene
-  blob_scene = stage->addScene<Scenes::BlobScene<DodecaModel>>(*stage);
-  blob_scene->setup();
-  stage->setScene(blob_scene);
+  // --- Remove old scene setup --- 
+  // blob_scene = stage->addScene<Scenes::BlobScene<DodecaModel>>(*stage);
+  // blob_scene->setup();
+  // stage->setScene(blob_scene);
+
+  // Start the theater 
+  theater.start();
 
   Serial.println("Init done");
 
@@ -202,7 +214,7 @@ void updateOnboardLED() {
 }
 
 void loop() {  
-  updateOnboardLED();  // Replace old LED code with this
+  updateOnboardLED();  
   
   if (interval != last_interval){
     timerStatusMessage();
@@ -211,24 +223,21 @@ void loop() {
   
   // handle button press for mode change
   if (digitalRead(USER_BUTTON) == LOW){
-    // flash while button is still down
     while (digitalRead(USER_BUTTON) == LOW){
-      CRGB c = CRGB::White;
+      ::CRGB c = ::CRGB::White;
       c.setHSV(millis()/500 % 255, 255, 64);
       FastLED.showColor(c);
       FastLED.show(); 
       delay(20); 
     }
     Serial.println("Button released");
-    mode = (mode + 1) % NUM_SCENES;
-    Serial.printf("Button pressed, changed mode to %d\n", mode);
-    // TODO: implement scene switching when we have more scenes
+    mode = (mode + 1); // Simple counter for now
+    Serial.printf("Button pressed, advancing scene...\n");
+    theater.nextScene(); // Use Theater to switch scene
   }
 
-  // Update the stage (calls current scene's tick() and updates LEDs)
-  if (stage) {
+  // Update the Theater (calls current scene's tick() and platform->show())
     BENCHMARK_START("frame_total");
-    stage->update();
+  theater.update();
     BENCHMARK_END();
-  }
 }

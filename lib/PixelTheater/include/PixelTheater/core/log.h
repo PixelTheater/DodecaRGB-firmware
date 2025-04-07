@@ -43,6 +43,14 @@ namespace Log {
         }
         
         // Keep only the original C-style variadic function
+        inline void info(const char* fmt, ...) {
+            static char buffer[256];
+            va_list args;
+            va_start(args, fmt);
+            vsnprintf(buffer, sizeof(buffer), fmt, args);
+            va_end(args);
+            set_log_function(nullptr)(buffer);
+        }
         inline void warning(const char* fmt, ...) {
             static char buffer[256];
             va_list args;
@@ -51,17 +59,40 @@ namespace Log {
             va_end(args);
             set_log_function(nullptr)(buffer);
         }
+        inline void error(const char* fmt, ...) {
+            static char buffer[256];
+            va_list args;
+            va_start(args, fmt);
+            vsnprintf(buffer, sizeof(buffer), fmt, args);
+            va_end(args);
+            set_log_function(nullptr)(buffer);
+        }
         
-        // Remove all template overloads
     #else
         // Hardware environment - direct to Serial
-        inline void warning(const char* fmt, ...) {
-            char buf[256];  // Safe buffer for formatting
+        inline void info(const char* fmt, ...) {
+            char buf[256];
             va_list args;
             va_start(args, fmt);
             vsnprintf(buf, sizeof(buf), fmt, args);
             va_end(args);
-            Serial.print(buf);  // Print the formatted string
+            if (Serial) Serial.print(buf);
+        }
+        inline void warning(const char* fmt, ...) {
+            char buf[256];
+            va_list args;
+            va_start(args, fmt);
+            vsnprintf(buf, sizeof(buf), fmt, args);
+            va_end(args);
+            if (Serial) Serial.print(buf);
+        }
+        inline void error(const char* fmt, ...) {
+            char buf[256];
+            va_list args;
+            va_start(args, fmt);
+            vsnprintf(buf, sizeof(buf), fmt, args);
+            va_end(args);
+            if (Serial) Serial.print(buf);
         }
     #endif
 }

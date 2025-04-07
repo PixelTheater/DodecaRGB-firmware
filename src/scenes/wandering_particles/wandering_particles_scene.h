@@ -1,362 +1,269 @@
 #pragma once
 
-#include "PixelTheater/scene.h"
-#include "PixelTheater/core/color.h"
-#include "PixelTheater/core/time.h"
-#include "PixelTheater/core/log.h"
-#include "PixelTheater/core/math.h"
-#include "PixelTheater/constants.h"
+#include "PixelTheater.h" 
+#include "benchmark.h"
 #include <vector>
 #include <memory>
 #include <cmath>
+#include <algorithm> // For std::max, std::min, std::clamp, std::find, std::fill
+#include <string>
 
 namespace Scenes {
 
-// Get access to the math provider
-extern PixelTheater::MathProvider& getMathProvider();
-
 // Forward declaration
-template<typename ModelDef>
 class WanderingParticlesScene;
 
-// Particle class - represents a single wandering particle
-template<typename ModelDef>
+// Particle class
 class Particle {
 public:
-    WanderingParticlesScene<ModelDef>& scene;
+    WanderingParticlesScene& scene; // Use non-templated Scene type
     uint16_t particle_id = 0;
-    
-    // Position and movement
-    float a = 0;        // azimuth angle (0 to 2π)
-    float c = 0;        // polar angle (0 to π)
-    float av = 0;       // azimuthal velocity
-    float cv = 0;       // polar velocity
-    
-    // Particle state
+    float a = 0.0f, c = 0.0f;        
+    float av = 0.0f, cv = 0.0f;    
     int age = 0;
     int hold_time = 0;
     int led_number = -1;
-    
-    // Path history - stores the last few LEDs the particle visited
     static constexpr size_t MAX_PATH_LENGTH = 10;
     std::vector<int> path;
+    PixelTheater::CRGB color = PixelTheater::CRGB::White;
     
-    // Color
-    PixelTheater::CRGB color = PixelTheater::CRGB(255, 255, 255);
+    Particle(WanderingParticlesScene& parent_scene, uint16_t unique_id);
     
-    Particle(WanderingParticlesScene<ModelDef>& parent_scene, uint16_t unique_id)
-        : scene(parent_scene), particle_id(unique_id), path(MAX_PATH_LENGTH, -1) {
-        reset();
-    }
-    
-    void reset() {
-        // Random starting position around the sphere
-        led_number = getMathProvider().random(scene.stage.model.led_count());
-        
-        // Initialize path with current LED
-        std::fill(path.begin(), path.end(), -1);
-        path[0] = led_number;
-        
-        // Random color (mostly blue/green with a bit of red)
-        // Match original color scheme
-        uint8_t lev = getMathProvider().random8(10, 50);
-        color = PixelTheater::CRGB(lev, getMathProvider().random8(100, 230), lev);
-        
-        // Random starting angles - use much smaller values like the original
-        // Original: this->a = random(20, 40)/15000.0;
-        // Original: this->c = random(TWO_PI*1000)/15000.0;
-        a = getMathProvider().random(20, 40) / 15000.0;
-        c = getMathProvider().random(PixelTheater::Constants::PT_TWO_PI * 1000) / 15000.0;
-        
-        // Random velocities - use much smaller values like the original
-        // Original: this->av = random(20, 60)/25000.0;
-        // Original: this->cv = random(20, 60)/24000.0;
-        av = getMathProvider().random(20, 60) / 25000.0;
-        cv = getMathProvider().random(20, 60) / 24000.0;
-        
-        // Reset age and hold time - match original
-        // Original: this->hold_time = random(6,12);
-        age = 0;
-        hold_time = getMathProvider().random8(6, 12);
-    }
-    
-    // Helper methods to calculate 3D position
-    float x() const { return scene.sphere_radius * sin(c) * cos(a); }
-    float y() const { return scene.sphere_radius * sin(c) * sin(a); }
-    float z() const { return scene.sphere_radius * cos(c); }
-    
-    void tick() {
-        // Increment age
-        age++;
-        
-        // Only move to next LED after hold time expires
-        if (age > hold_time) {
-            // Update position based on velocities
-            a += av;
-            c += cv;
-            
-            // Normalize angles
-            if (a > PixelTheater::Constants::PT_TWO_PI) a -= PixelTheater::Constants::PT_TWO_PI;
-            if (a < 0) a += PixelTheater::Constants::PT_TWO_PI;
-            if (c > PixelTheater::Constants::PT_PI) c = PixelTheater::Constants::PT_PI;
-            if (c < 0) c = 0;
-            
-            // Find the next LED to move to
-            findNextLed();
-            
-            // Update path history
-            path.insert(path.begin(), led_number);
-            path.resize(MAX_PATH_LENGTH);
-            
-            // Reset age for next hold
-            age = 0;
-        }
-    }
-    
-    void findNextLed() {
-        // Calculate theoretical 3D position
-        float px = x();
-        float py = y();
-        float pz = z();
-        
-        // Get current LED position
-        const auto& current_point = scene.stage.model.points[led_number];
-        
-        // Find the best neighbor to move to
-        float closest_dist = 1e9;
-        int closest_led = -1;
-        
-        // Search a subset of LEDs that are likely to be neighbors
-        // Use a much smaller search radius to better match the original behavior
-        // which only looked at immediate neighbors
-        const int SEARCH_RADIUS = 30;  // Reduced from 50 to 30 mm
-        
-        // Limit the number of candidates to check, similar to the original
-        // which only checked MAX_LED_NEIGHBORS (typically 7)
-        const int MAX_CANDIDATES = 7;
-        int candidates_checked = 0;
-        
-        // Create a temporary point at the theoretical position
-        // Note: This is just for distance calculation and doesn't need to be added to the model
-        PixelTheater::Point theoretical_point(0, 0, px, py, pz);
-        
-        for (size_t led_idx = 0; led_idx < scene.stage.model.led_count() && candidates_checked < MAX_CANDIDATES; led_idx++) {
-            // Skip current LED
-            if (static_cast<int>(led_idx) == led_number) continue;
-            
-            // Skip LEDs already in the recent path to avoid backtracking
-            if (std::find(path.begin(), path.begin() + std::min(size_t(3), path.size()), 
-                         static_cast<int>(led_idx)) != path.begin() + std::min(size_t(3), path.size())) {
-                
-                const auto& point = scene.stage.model.points[led_idx];
-                
-                // Calculate distance between points using Point::distanceTo if available
-                // Otherwise fall back to manual calculation
-                float point_dist;
-                try {
-                    // Try to use the Point::distanceTo method
-                    point_dist = current_point.distanceTo(point);
-                } catch (...) {
-                    // Fall back to manual calculation
-                    float dx = point.x() - current_point.x();
-                    float dy = point.y() - current_point.y();
-                    float dz = point.z() - current_point.z();
-                    point_dist = std::sqrt(dx*dx + dy*dy + dz*dz);
-                }
-                
-                // Only consider points within the search radius (likely neighbors)
-                if (point_dist < SEARCH_RADIUS) {
-                    candidates_checked++;
-                    
-                    // Calculate distance to theoretical position
-                    float dist;
-                    try {
-                        // Try to use the Point::distanceTo method
-                        dist = point.distanceTo(theoretical_point);
-                    } catch (...) {
-                        // Fall back to manual calculation
-                        float dx = point.x() - px;
-                        float dy = point.y() - py;
-                        float dz = point.z() - pz;
-                        dist = dx*dx + dy*dy + dz*dz;
-                    }
-                    
-                    // Check if this is closer than current best
-                    if (dist < closest_dist) {
-                        closest_dist = dist;
-                        closest_led = led_idx;
-                    }
-                }
-            }
-        }
-        
-        // If we found a valid LED, move to it
-        if (closest_led >= 0) {
-            led_number = closest_led;
-        }
-    }
+    void reset();
+    float x() const; // Implementation needs access to scene.sphere_radius
+    float y() const; 
+    float z() const; 
+    void tick();
+    void findNextLed();
 };
 
-// WanderingParticlesScene class - manages multiple particles
-template<typename ModelDef>
-class WanderingParticlesScene : public PixelTheater::Scene<ModelDef> {
+// WanderingParticlesScene class
+class WanderingParticlesScene : public PixelTheater::Scene { 
 public:
-    using Scene = PixelTheater::Scene<ModelDef>;
-    using Scene::Scene;  // Inherit constructor
+    WanderingParticlesScene() = default;
     
-    // Default values - match original
-    static constexpr int DEFAULT_NUM_PARTICLES = 80;  // Original: static const int NUM_PARTICLES = 80;
-    static constexpr uint8_t DEFAULT_FADE = 20;       // Original: fadeToBlackBy(leds, numLeds(), 20);
-    static constexpr float DEFAULT_BLEND = 80.0f;     // Original: 80/(particles[i]->hold_time - particles[i]->age + 1)
-    static constexpr int DEFAULT_RESET_CHANCE = 2;    // Original: if (random8() < 2)
+    static constexpr int DEFAULT_NUM_PARTICLES = 80;
+    static constexpr uint8_t DEFAULT_FADE = 20;
+    static constexpr float DEFAULT_BLEND = 80.0f;
+    static constexpr int DEFAULT_RESET_CHANCE = 2;    
     
-    // Sphere radius for positioning
-    int sphere_radius = 100;
+    int sphere_radius = 100; // Make public or provide getter for Particle
     
-    void setup() override {
-        // Set scene metadata
-        this->set_name("Wandering Particles");
-        this->set_description("Particles that wander across the model's surface");
-        this->set_version("1.0");
-        this->set_author("PixelTheater Team");
-        
-        // Define parameter ranges
-        const int MIN_PARTICLES = 5;
-        const int MAX_PARTICLES = 200;  // Increased from 100 to 200
-        
-        const int MIN_FADE = 1;
-        const int MAX_FADE = 50;
-        
-        const float MIN_BLEND = 10.0f;
-        const float MAX_BLEND = 200.0f;
-        
-        const int MIN_RESET = 1;
-        const int MAX_RESET = 20;  // Increased from 10 to 20
-        
-        // Define parameters
-        this->param("num_particles", "count", MIN_PARTICLES, MAX_PARTICLES, DEFAULT_NUM_PARTICLES, "clamp", "Number of particles");
-        this->param("fade_amount", "count", MIN_FADE, MAX_FADE, DEFAULT_FADE, "clamp", "Fade amount per frame (lower = longer trails)");
-        this->param("blend_amount", "range", MIN_BLEND, MAX_BLEND, DEFAULT_BLEND, "clamp", "Blend intensity (higher = brighter particles)");
-        this->param("reset_chance", "count", MIN_RESET, MAX_RESET, DEFAULT_RESET_CHANCE, "clamp", "Chance of particle reset (higher = more frequent)");
-        
-        // Estimate sphere radius from model
-        estimateSphereRadius();
-        
-        // Initialize particles
-        initParticles();
-        
-        PixelTheater::Log::warning("WanderingParticlesScene setup complete with %d particles", particles.size());
-    }
+    void setup() override;
+    void initParticles();
+    void estimateSphereRadius();
+    void tick() override;
+    std::string status() const;
     
-    void estimateSphereRadius() {
-        // Find the maximum distance from origin to any point
-        int max_dist = 0;
-        for (size_t i = 0; i < this->stage.model.led_count(); i++) {
-            const auto& point = this->stage.model.points[i];
-            int dist_sq = point.x() * point.x() + point.y() * point.y() + point.z() * point.z();
-            max_dist = std::max(max_dist, (int)sqrt(dist_sq));
-        }
-        
-        // Set sphere radius to the maximum distance
-        if (max_dist > 0) {
-            sphere_radius = max_dist;
-            PixelTheater::Log::warning("Estimated sphere radius: %d", sphere_radius);
-        } else {
-            PixelTheater::Log::warning("Could not estimate sphere radius, using default");
-        }
-    }
-    
-    void initParticles() {
-        // Get number of particles from settings
-        int num_particles = this->settings["num_particles"];
-        
-        // Create particles
-        particles.clear();
-        for (int i = 0; i < num_particles; i++) {
-            auto particle = std::make_unique<Particle<ModelDef>>(*this, i);
-            particles.push_back(std::move(particle));
-        }
-        
-        PixelTheater::Log::warning("Created %d particles", particles.size());
-    }
-    
-    void tick() override {
-        Scene::tick();  // Call base to increment counter
-        
-        // Get parameters
-        uint8_t fade_amount = static_cast<uint8_t>(this->settings["fade_amount"]);
-        float blend_amount = this->settings["blend_amount"];
-        int reset_chance = this->settings["reset_chance"];
-        
-        // Fade all LEDs - match original fade amount
-        for (auto& led : this->stage.leds) {
-            PixelTheater::fadeToBlackBy(led, fade_amount);
-        }
-        
-        // Update and render particles
-        for (auto& particle : particles) {
-            // Update particle position
-            particle->tick();
-            
-            // Render particle at current position (head of the trail)
-            // This matches the original implementation more closely
-            int led_num = particle->led_number;
-            if (led_num >= 0 && led_num < this->stage.model.led_count()) {
-                // Use original blend calculation:
-                // nblend(leds[led_num], particles[i]->color, 80/(particles[i]->hold_time - particles[i]->age + 1));
-                uint8_t blend = std::min(255.0f, std::max(1.0f, 
-                    blend_amount / (particle->hold_time - particle->age + 1)));
-                
-                // Use nblend for a more authentic matrix-like trail effect
-                PixelTheater::nblend(this->stage.leds[led_num], particle->color, blend);
-            }
-            
-            // Also render the trail (previous positions)
-            for (size_t i = 1; i < particle->path.size(); i++) {
-                int trail_led = particle->path[i];
-                if (trail_led >= 0 && trail_led < this->stage.model.led_count()) {
-                    // Decrease brightness for older positions in the trail
-                    uint8_t trail_blend = std::min(255.0f, std::max(1.0f, 
-                        blend_amount / (i * 2 + 1)));
-                    
-                    PixelTheater::nblend(this->stage.leds[trail_led], particle->color, trail_blend);
-                }
-            }
-            
-            // Randomly reset particles
-            if (getMathProvider().random8() < reset_chance) {
-                particle->reset();
-            }
-        }
-    }
-    
-    std::string status() const {
-        std::string output;
-        
-        // Get parameters
-        int num_particles = this->settings["num_particles"];
-        int fade_amount = this->settings["fade_amount"];
-        float blend_amount = this->settings["blend_amount"];
-        int reset_chance = this->settings["reset_chance"];
-        
-        output += "Particles: " + std::to_string(num_particles) + 
-                  " (fade=" + std::to_string(fade_amount) + 
-                  ", blend=" + std::to_string(blend_amount) + 
-                  ", reset=" + std::to_string(reset_chance) + ")\n";
-        
-        // Show info for first 3 particles
-        for (size_t i = 0; i < std::min(size_t(3), particles.size()); i++) {
-            const auto& particle = particles[i];
-            output += "Particle " + std::to_string(particle->particle_id) + 
-                      ": age=" + std::to_string(particle->age) + "/" + std::to_string(particle->hold_time) + 
-                      " led=" + std::to_string(particle->led_number) + "\n";
-        }
-        
-        return output;
-    }
-    
+    friend class Particle; // Allow Particle to access helpers and sphere_radius
+
 private:
-    std::vector<std::unique_ptr<Particle<ModelDef>>> particles;
+    std::vector<std::unique_ptr<Particle>> particles;
 };
 
+// --- Implementations --- 
+
+// Particle Implementation
+Particle::Particle(WanderingParticlesScene& parent_scene, uint16_t unique_id)
+    : scene(parent_scene), particle_id(unique_id), path(MAX_PATH_LENGTH, -1) {
+    reset();
+}
+
+void Particle::reset() {
+    led_number = scene.random(scene.ledCount()); 
+    std::fill(path.begin(), path.end(), -1);
+    path[0] = led_number;
+    uint8_t lev = scene.random(10, 51); 
+    color = PixelTheater::CRGB(lev, scene.random(100, 231), lev);
+    a = scene.randomFloat(0.02f, 0.04f) / 15.0f; 
+    c = scene.randomFloat(0.0f, PixelTheater::Constants::PT_TWO_PI) / 15.0f;
+    av = scene.randomFloat(0.02f, 0.06f) / 25.0f;
+    cv = scene.randomFloat(0.02f, 0.06f) / 24.0f;
+    age = 0;
+    hold_time = scene.random(6, 12);
+}
+
+float Particle::x() const { return scene.sphere_radius * sin(c) * cos(a); }
+float Particle::y() const { return scene.sphere_radius * sin(c) * sin(a); }
+float Particle::z() const { return scene.sphere_radius * cos(c); }
+
+void Particle::tick() {
+    age++;
+    if (age > hold_time) {
+        a += av;
+        c += cv;
+        using PixelTheater::Constants::PT_PI;
+        using PixelTheater::Constants::PT_TWO_PI;
+        if (a > PT_TWO_PI) a -= PT_TWO_PI;
+        if (a < 0.0f) a += PT_TWO_PI;
+        c = std::clamp(c, 0.0f, PT_PI); // Clamp polar angle
+        findNextLed();
+        path.insert(path.begin(), led_number);
+        path.resize(MAX_PATH_LENGTH);
+        age = 0;
+    }
+}
+
+void Particle::findNextLed() {
+    float px = x();
+    float py = y();
+    float pz = z();
+    if (led_number < 0 || led_number >= (int)scene.ledCount()) { // Safety check
+         reset(); // Reset if current LED is invalid
+         return;
+    }
+    const auto& current_point = scene.model().point(led_number);
+    
+    float closest_dist_sq = 1e18f; // Use squared distance
+    int closest_led = -1;
+    const int SEARCH_RADIUS_SQ = 30 * 30; 
+    const int MAX_CANDIDATES = 7;
+    int candidates_checked = 0;
+        
+    // Iterate through LEDs to find potential neighbors
+    // This is inefficient, ideally model provides neighbors
+    for (size_t i = 0; i < scene.ledCount() && candidates_checked < MAX_CANDIDATES; ++i) {
+        int led_idx = (led_number + i) % scene.ledCount(); // Start search near current
+        if (led_idx == led_number) continue;
+
+        // Check recent path
+        bool in_path = false;
+        for(size_t p_idx = 0; p_idx < std::min(size_t(3), path.size()); ++p_idx) {
+            if (path[p_idx] == led_idx) { in_path = true; break; }
+        }
+        if (in_path) continue;
+
+        const auto& point = scene.model().point(led_idx);
+        float dx = point.x() - current_point.x();
+        float dy = point.y() - current_point.y();
+        float dz = point.z() - current_point.z();
+        float point_dist_sq = dx*dx + dy*dy + dz*dz;
+
+        if (point_dist_sq < SEARCH_RADIUS_SQ) {
+            candidates_checked++;
+            dx = point.x() - px;
+            dy = point.y() - py;
+            dz = point.z() - pz;
+            float dist_sq = dx*dx + dy*dy + dz*dz;
+            if (dist_sq < closest_dist_sq) {
+                closest_dist_sq = dist_sq;
+                closest_led = led_idx;
+            }
+        }
+    }
+        
+    if (closest_led >= 0) {
+        led_number = closest_led;
+    }
+     // else: stay on the current LED if no suitable neighbor found
+}
+
+// WanderingParticlesScene Implementation
+void WanderingParticlesScene::setup() {
+    set_name("Wandering Particles");
+    set_description("Particles that wander across the model surface");
+    set_version("1.0");
+    set_author("PixelTheater Team");
+    
+    const int MIN_PARTICLES = 5, MAX_PARTICLES = 200;  
+    const int MIN_FADE = 1, MAX_FADE = 50;
+    const float MIN_BLEND = 10.0f, MAX_BLEND = 200.0f;
+    const int MIN_RESET = 1, MAX_RESET = 20; 
+        
+    param("num_particles", "count", MIN_PARTICLES, MAX_PARTICLES, DEFAULT_NUM_PARTICLES, "clamp", "Number of particles");
+    param("fade_amount", "count", MIN_FADE, MAX_FADE, DEFAULT_FADE, "clamp", "Fade amount per frame");
+    param("blend_amount", "range", MIN_BLEND, MAX_BLEND, DEFAULT_BLEND, "clamp", "Blend intensity");
+    param("reset_chance", "count", MIN_RESET, MAX_RESET, DEFAULT_RESET_CHANCE, "clamp", "Chance of particle reset");
+    
+    estimateSphereRadius(); // Estimate based on model
+    initParticles();
+    logInfo("WanderingParticlesScene setup complete");
+}
+
+void WanderingParticlesScene::estimateSphereRadius() {
+    int max_dist_sq = 0;
+    size_t count = model().pointCount();
+    if (count == 0) { 
+        logWarning("Cannot estimate sphere radius: No points in model");
+        return; 
+    }
+    for (size_t i = 0; i < count; i++) { 
+        const auto& p = model().point(i);
+        int dist_sq = p.x() * p.x() + p.y() * p.y() + p.z() * p.z();
+        max_dist_sq = std::max(max_dist_sq, dist_sq);
+    }
+    if (max_dist_sq > 0) {
+        sphere_radius = static_cast<int>(sqrt(static_cast<float>(max_dist_sq)));
+        logInfo("Radius estimate done");
+    } else {
+        logWarning("Could not estimate sphere radius, using default");
+        sphere_radius = 100; // Keep default if estimation fails
+    }
+}
+
+void WanderingParticlesScene::initParticles() {
+    int num_particles = settings["num_particles"];
+    logInfo("Creating particles...");
+    particles.clear();
+    particles.reserve(num_particles);
+    for (int i = 0; i < num_particles; i++) {
+        particles.push_back(std::make_unique<Particle>(*this, i));
+    }
+    logInfo("Particles created.");
+}
+
+void WanderingParticlesScene::tick() {
+    Scene::tick();  
+    
+    uint8_t fade_amount = static_cast<uint8_t>(settings["fade_amount"]);
+    float blend_amount = settings["blend_amount"];
+    int reset_chance = settings["reset_chance"];
+    
+    size_t count = ledCount();
+    for(size_t i = 0; i < count; ++i) {
+        PixelTheater::fadeToBlackBy(leds[i], fade_amount);
+    }
+        
+    for (auto& particle : particles) {
+        particle->tick();
+        int head_led = particle->led_number;
+        if (head_led >= 0 && head_led < (int)count) {
+            uint8_t blend = std::min(255.0f, std::max(1.0f, 
+                blend_amount / (particle->hold_time - particle->age + 1)));
+            PixelTheater::nblend(leds[head_led], particle->color, blend);
+        }
+        for (size_t i = 1; i < particle->path.size(); i++) {
+            int trail_led = particle->path[i];
+            if (trail_led >= 0 && trail_led < (int)count) {
+                uint8_t trail_blend = std::min(255.0f, std::max(1.0f, 
+                    blend_amount / (i * 3 + 1))); 
+                PixelTheater::nblend(leds[trail_led], particle->color, trail_blend);
+            }
+        }
+        if (random(256) < reset_chance) {
+            particle->reset();
+        }
+    }
+}
+    
+std::string WanderingParticlesScene::status() const {
+    std::string output;
+    int num_particles = settings["num_particles"];
+    int fade_amount = settings["fade_amount"];
+    float blend_amount = settings["blend_amount"];
+    int reset_chance = settings["reset_chance"];
+    output += "Particles: " + std::to_string(num_particles) + 
+              " (fade=" + std::to_string(fade_amount) + 
+              ", blend=" + std::to_string(blend_amount) + 
+              ", reset=" + std::to_string(reset_chance) + ")\n";
+    // Show info for first 3 particles
+    for (size_t i = 0; i < std::min(size_t(3), particles.size()); i++) {
+        const auto& p = particles[i];
+        output += "P" + std::to_string(p->particle_id) + 
+                  ": age=" + std::to_string(p->age) + "/" + std::to_string(p->hold_time) + 
+                  " led=" + std::to_string(p->led_number) + "\n";
+    }
+    return output;
+}
+    
 } // namespace Scenes 

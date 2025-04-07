@@ -6,17 +6,24 @@
 #include "platform/platform.h"
 #include "model_def.h"
 
-namespace PixelTheater {
+// Forward declare as NON-template now
+// template<typename ModelDef> class Scene;  // Forward declare as template
+class Scene; // Use non-templated forward declaration
 
-template<typename ModelDef> class Scene;  // Forward declare as template
+namespace PixelTheater {
 
 template<typename ModelDef>
 class Stage {
 private:
-    std::unique_ptr<Platform> _platform;
-    std::unique_ptr<Model<ModelDef>> _model;  // Use template parameter
-    std::vector<std::unique_ptr<Scene<ModelDef>>> _scenes;
-    Scene<ModelDef>* _current_scene{nullptr};
+    Platform* _platform{nullptr};
+    Model<ModelDef> _model;
+    
+    // Store scenes with unique_ptr
+    // std::vector<std::unique_ptr<Scene<ModelDef>>> _scenes;
+    // Scene<ModelDef>* _current_scene{nullptr};
+    // Use non-templated Scene for now to allow compilation, will be removed later
+    std::vector<std::unique_ptr<Scene>> _scenes;
+    Scene* _current_scene{nullptr};
 
 public:
     // LED array access - matches Face.h pattern
@@ -37,46 +44,56 @@ public:
     Model<ModelDef>& model;
 
     // Construction with platform and model
-    explicit Stage(std::unique_ptr<Platform> platform, std::unique_ptr<Model<ModelDef>> model)
-        : _platform(std::move(platform))
-        , _model(std::move(model))
+    explicit Stage(Platform* platform)
+        : _platform(platform)
+        , _model(ModelDef::createModel())
         , leds{_platform->getLEDs(), ModelDef::LED_COUNT}  // Initialize leds member
-        , model{*_model}  // Initialize model reference
+        , model{_model}  // Initialize model reference
     {}
 
     // Platform access
     Platform* getPlatform() const {
-        return _platform.get();
+        return _platform;
     }
 
     // Core operations
-    void update() {
-        if (_current_scene) {
-            _current_scene->tick();
-        }
-        _platform->show();
-    }
+    void update() { _platform->show(); } // Temp implementation without tick
 
     // Scene management
-    template<typename T, typename... Args>
-    T* addScene(Args&&... args) {
-        auto scene = std::make_unique<T>(std::forward<Args>(args)...);
-        T* ptr = scene.get();
-        _scenes.push_back(std::move(scene));
-        return ptr;
-    }
+    // template <typename T, typename... Args>
+    // T* addScene(Args&&... args) {
+    //     auto scene = std::make_unique<T>(std::forward<Args>(args)...);
+    //     T* scene_ptr = scene.get();
+    //     _scenes.push_back(std::move(scene));
+    //     if (!_current_scene) {
+    //         setScene(scene_ptr);
+    //     }
+    //     return scene_ptr;
+    // }
 
-    void setScene(Scene<ModelDef>* scene) {
-        _current_scene = scene;
-    }
-    
-    // Get the current scene
-    Scene<ModelDef>* getCurrentScene() const {
-        return _current_scene;
+    // Temporarily comment out methods using Scene<ModelDef>*
+    // void setScene(Scene<ModelDef>* scene) {
+    //     if (scene != _current_scene) {
+    //         _current_scene = scene;
+    //         if (_current_scene) {
+    //             _current_scene->reset();
+    //             _current_scene->setup();
+    //         }
+    //     }
+    // }
+
+    // Scene<ModelDef>* getCurrentScene() const {
+    //     return _current_scene;
+    // }
+
+    // Temporarily return nullptr or handle differently
+    Scene* getCurrentScene() const {
+        // TODO: Adapt or remove Stage functionality
+        return nullptr; // Placeholder
     }
     
     // Get a scene by index
-    Scene<ModelDef>* getScene(size_t index) const {
+    Scene* getScene(size_t index) const {
         if (index < _scenes.size()) {
             return _scenes[index].get();
         }
