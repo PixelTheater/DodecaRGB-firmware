@@ -5,6 +5,12 @@
 OUTPUT_DIR=${1:-"web"}
 echo "Building web simulator to: $OUTPUT_DIR"
 
+# --- ADDED: Clear Emscripten cache ---
+echo "Clearing Emscripten cache..."
+emcc --clear-cache
+echo "Cache cleared."
+# --- END ADDED ---
+
 # Create output directory if it doesn't exist
 mkdir -p "$OUTPUT_DIR"
 
@@ -27,6 +33,7 @@ emcc src/web_simulator.cpp \
      lib/PixelTheater/src/params/handlers/flag_handler.cpp \
      lib/PixelTheater/src/params/handlers/type_handler.cpp \
      lib/PixelTheater/src/params/param_types.cpp \
+     lib/PixelTheater/src/params/param_schema.cpp \
      lib/PixelTheater/src/platform/web_platform.cpp \
      lib/PixelTheater/src/settings.cpp \
      lib/PixelTheater/src/platform/webgl/util.cpp \
@@ -34,6 +41,8 @@ emcc src/web_simulator.cpp \
      lib/PixelTheater/src/platform/webgl/mesh.cpp \
      lib/PixelTheater/src/platform/webgl/shaders.cpp \
      lib/PixelTheater/src/platform/webgl/renderer.cpp \
+     lib/PixelTheater/src/theater.cpp \
+     lib/PixelTheater/src/scene.cpp \
      -I"." \
      -I"lib" \
      -I"lib/PixelTheater/include" \
@@ -50,9 +59,8 @@ emcc src/web_simulator.cpp \
      -s USE_WEBGL2=1 \
      -s FULL_ES3=1 \
      -s ALLOW_MEMORY_GROWTH=1 \
-     --bind \
-     -s EXPORTED_RUNTIME_METHODS='["UTF8ToString", "ccall", "cwrap"]' \
-     -s EXPORTED_FUNCTIONS='["_main", "_change_scene", "_get_scene_count", "_get_scene_name", "_set_brightness", "_show_benchmark_report", "_toggle_debug_mode", "_print_model_info", "_get_current_time", "_update_ui_fps", "_update_ui_brightness", "_get_canvas_width", "_get_canvas_height"]' \
+     -s EXPORTED_RUNTIME_METHODS='["UTF8ToString", "ccall", "cwrap", "getValue", "stackAlloc"]' \
+     -s EXPORTED_FUNCTIONS='["_main", "_init_simulator", "_change_scene", "_get_num_scenes", "_set_brightness", "_get_brightness", "_update_rotation", "_reset_rotation", "_set_auto_rotation", "_set_zoom_level", "_show_benchmark_report", "_toggle_debug_mode", "_get_led_count", "_get_fps", "_set_led_size", "_get_led_size", "_set_atmosphere_intensity", "_get_atmosphere_intensity", "_set_show_mesh", "_get_show_mesh", "_set_mesh_opacity", "_get_mesh_opacity", "_log_message", "_get_current_time", "_update_ui_fps", "_update_ui_brightness", "_get_canvas_width", "_get_canvas_height", "_resizeCanvas", "_get_scene_parameters_json", "_update_scene_parameter_string", "_get_current_scene_metadata_json", "_free_string_memory", "_free"]' \
      -s INITIAL_MEMORY=32MB \
      -s MAXIMUM_MEMORY=128MB \
      -s ASSERTIONS=2 \
@@ -61,6 +69,7 @@ emcc src/web_simulator.cpp \
      -s STACK_OVERFLOW_CHECK=2 \
      -g \
      -O0 \
+     -fno-lto \
      --source-map-base ./ \
      -o "$OUTPUT_DIR/simulator.js"
 

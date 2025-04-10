@@ -5,7 +5,7 @@
 #include <ctime> // For seeding rand()
 #include <cmath> // For fmod
 #include <cstdio> // For printf (logging)
-#include <cstdarg> // For va_list etc. (if needed later for logging)
+#include <cstdarg> // For va_list etc. (logging)
 
 namespace PixelTheater {
 
@@ -58,13 +58,13 @@ void NativePlatform::setDither(uint8_t dither) {
 
 // --- Implementations for new Platform virtual methods --- 
 
-float NativePlatform::deltaTime() const {
+float NativePlatform::deltaTime() {
     // Simple fixed delta time for native testing, maybe 1/60th sec?
     // A more sophisticated implementation could track actual time.
     return 1.0f / 60.0f; 
 }
 
-uint32_t NativePlatform::millis() const {
+uint32_t NativePlatform::millis() {
     auto now = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time);
     return static_cast<uint32_t>(duration.count());
@@ -102,17 +102,32 @@ float NativePlatform::randomFloat(float min, float max) { // min to max
     return min + randomFloat() * (max - min);
 }
 
-// Simplified logging using printf
-void NativePlatform::logInfo(const char* format) {
-    printf("[INFO] %s\n", format);
+// Logging implementations using vprintf
+void NativePlatform::logInfo(const char* format, ...) {
+    printf("[INFO] ");
+    va_list args;
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
+    printf("\n");
 }
 
-void NativePlatform::logWarning(const char* format) {
-     printf("[WARN] %s\n", format);
+void NativePlatform::logWarning(const char* format, ...) {
+     printf("[WARN] ");
+    va_list args;
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
+    printf("\n");
 }
 
-void NativePlatform::logError(const char* format) {
-     printf("[ERROR] %s\n", format);
+void NativePlatform::logError(const char* format, ...) {
+     printf("[ERROR] ");
+    va_list args;
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
+    printf("\n");
 }
 
 } // namespace PixelTheater 

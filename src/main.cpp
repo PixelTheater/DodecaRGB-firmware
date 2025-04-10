@@ -74,12 +74,22 @@ float calculate_power_usage() {
 }
 
 void timerStatusMessage(){
-  uint8_t scene_number = 0; // TODO: Get current scene index from Theater?
+  // uint8_t scene_number = 0; // TODO: Get current scene index from Theater?
+  size_t scene_number = 0; // Default to 0 if no scene
   String scene_name = "Unknown";
   
   // Get current scene name from Theater
-  if (theater.currentScene()) { 
-    scene_name = theater.currentScene()->name().c_str(); 
+  PixelTheater::Scene* current = theater.currentScene();
+  if (current) { 
+    scene_name = current->name().c_str(); 
+    // Find the index of the current scene
+    const auto& all_scenes = theater.scenes();
+    for(size_t i = 0; i < all_scenes.size(); ++i) {
+        if (all_scenes[i].get() == current) {
+            scene_number = i;
+            break;
+        }
+    }
   }
   
   Serial.printf("--> mode:%d (%s) @ %d FPS <--\n", 

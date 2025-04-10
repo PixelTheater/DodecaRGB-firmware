@@ -20,6 +20,8 @@
 #include <GLES3/gl3.h>
 #include <emscripten/html5.h>
 
+namespace PixelTheater {
+
 // External C functions for JavaScript interop
 extern "C" {
     EMSCRIPTEN_KEEPALIVE int get_canvas_width() {
@@ -42,9 +44,6 @@ extern "C" {
         // Will be overridden by JavaScript
     }
 }
-
-namespace PixelTheater {
-namespace WebGL {
 
 // Define logging macros for stubs if not in web environment
 #if !defined(PLATFORM_WEB) && !defined(EMSCRIPTEN)
@@ -93,7 +92,11 @@ void WebPlatform::initializeFromWebModel(const WebModel& model) {
     
     // Store LED positions for rendering
     // We'll use these in updateVertexBuffer() instead of calling coordinate provider
-    _led_positions = model.leds.positions;
+    _led_positions.clear();
+    _led_positions.reserve(model.leds.positions.size());
+    for (const auto& web_vertex : model.leds.positions) {
+        _led_positions.push_back(Point(web_vertex.x, web_vertex.y, web_vertex.z));
+    }
     
     // Set initial camera position
     if (_camera) {
@@ -250,42 +253,27 @@ void WebPlatform::updateRotation(float deltaX, float deltaY) {
 }
 
 void WebPlatform::resetRotation() {
-    // Reset model rotation to 0
-    _camera->resetModelRotation();
+    _camera->resetRotation();
 }
 
 void WebPlatform::setAutoRotation(bool enabled, float speed) {
     _auto_rotation = enabled;
-    
-    // Update the camera's auto-rotation state
-    _camera->setAutoRotation(enabled);
-    
-    // Set the appropriate speed based on the input parameter
-    // speed == 1 means slow, speed == 3 means fast
-    if (enabled) {
-        float rotation_speed = (speed == 1.0f) ? Camera::SLOW_ROTATION_SPEED : Camera::FAST_ROTATION_SPEED;
-        _camera->setAutoRotationSpeed(rotation_speed);
+    _auto_rotation_speed = speed;
+    if (_camera) { // Check if camera exists
+        _camera->setAutoRotationSpeed(speed);
     }
-    
-    // Reset the auto rotation timer to now
-    _last_auto_rotation_time = get_current_time();
+    if (enabled) {
+        // Reset last time to start rotation smoothly
+        _last_auto_rotation_time = get_current_time(); 
+    }
 }
 
 void WebPlatform::setZoomLevel(int zoom_level) {
-    // Set camera zoom level
-    switch (static_cast<ZoomLevel>(zoom_level)) {
-        case ZoomLevel::CLOSE:
-            _camera->setDistance(CAMERA_CLOSE_DISTANCE);
-            break;
-        case ZoomLevel::NORMAL:
-            _camera->setDistance(CAMERA_NORMAL_DISTANCE);
-            break;
-        case ZoomLevel::FAR:
-            _camera->setDistance(CAMERA_FAR_DISTANCE);
-            break;
-        default:
-            _camera->setDistance(CAMERA_NORMAL_DISTANCE);
-            break;
+    // Convert zoom level (e.g., 0, 1, 2) to camera distance
+    float distance = CAMERA_FAR_DISTANCE - zoom_level * (CAMERA_FAR_DISTANCE - CAMERA_CLOSE_DISTANCE) / 2.0f;
+    distance = std::clamp(distance, CAMERA_CLOSE_DISTANCE, CAMERA_FAR_DISTANCE);
+    if (_camera) { // Check if camera exists
+         _camera->setDistance(distance);
     }
 }
 
@@ -299,7 +287,7 @@ void WebPlatform::onCanvasResize(int width, int height) {
 }
 
 void WebPlatform::onMouseDown(int x, int y) {
-    _mouse_down = true;
+    _is_dragging = true;
     _last_mouse_x = x;
     _last_mouse_y = y;
     
@@ -311,7 +299,7 @@ void WebPlatform::onMouseDown(int x, int y) {
 }
 
 void WebPlatform::onMouseMove(int x, int y, bool shift_key) {
-    if (_mouse_down) {
+    if (_is_dragging) {
         float deltaX = static_cast<float>(x - _last_mouse_x);
         float deltaY = static_cast<float>(y - _last_mouse_y);
         
@@ -324,7 +312,7 @@ void WebPlatform::onMouseMove(int x, int y, bool shift_key) {
 }
 
 void WebPlatform::onMouseUp() {
-    _mouse_down = false;
+    _is_dragging = false;
 }
 
 void WebPlatform::onMouseWheel(float delta) {
@@ -355,9 +343,9 @@ void WebPlatform::updateVertexBuffer() {
     // Use cached LED positions from WebModel
     for (uint16_t i = 0; i < _num_leds; i++) {
         // Scale positions to fit in scene with equal scaling for all axes
-        vertices[i].x = _led_positions[i].x * POSITION_SCALE;
-        vertices[i].y = _led_positions[i].y * POSITION_SCALE;
-        vertices[i].z = _led_positions[i].z * POSITION_SCALE;
+        vertices[i].x = _led_positions[i].x() * POSITION_SCALE;
+        vertices[i].y = _led_positions[i].y() * POSITION_SCALE;
+        vertices[i].z = _led_positions[i].z() * POSITION_SCALE;
         
         // Convert LED color from 0-255 to 0-1 range and apply brightness
         float brightness = static_cast<float>(_brightness) / 255.0f;
@@ -367,12 +355,12 @@ void WebPlatform::updateVertexBuffer() {
     }
     
     // Create or update the vertex buffer
-    if (_vertex_buffer == 0) {
-        _vertex_buffer = _renderer->createBuffer();
+    if (_led_vbo == 0) {
+        _led_vbo = _renderer->createBuffer();
     }
     
     // Update the vertex buffer
-    _renderer->bindArrayBuffer(_vertex_buffer, vertices.data(), vertices.size() * sizeof(Vertex), true);
+    _renderer->bindArrayBuffer(_led_vbo, vertices.data(), vertices.size() * sizeof(Vertex), true);
 }
 
 void WebPlatform::renderMesh(const float* view_matrix, const float* projection_matrix, const float* model_matrix) {
@@ -510,18 +498,18 @@ void WebPlatform::renderLEDs(const float* view_matrix, const float* projection_m
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-    glUseProgram(_shader_program);
+    glUseProgram(_led_shader_program);
     
     // Set uniforms for LED rendering
-    GLint projLoc = glGetUniformLocation(_shader_program, "projection");
-    GLint viewLoc = glGetUniformLocation(_shader_program, "view");
-    GLint modelLoc = glGetUniformLocation(_shader_program, "model");
-    GLint sizeLoc = glGetUniformLocation(_shader_program, "led_size");
-    GLint distanceLoc = glGetUniformLocation(_shader_program, "camera_distance");
-    GLint heightLoc = glGetUniformLocation(_shader_program, "canvas_height");
+    GLint projLoc = glGetUniformLocation(_led_shader_program, "projection");
+    GLint viewLoc = glGetUniformLocation(_led_shader_program, "view");
+    GLint modelLoc = glGetUniformLocation(_led_shader_program, "model");
+    GLint sizeLoc = glGetUniformLocation(_led_shader_program, "led_size");
+    GLint distanceLoc = glGetUniformLocation(_led_shader_program, "camera_distance");
+    GLint heightLoc = glGetUniformLocation(_led_shader_program, "canvas_height");
     
     // Add brightness uniform
-    GLint brightnessLoc = glGetUniformLocation(_shader_program, "brightness");
+    GLint brightnessLoc = glGetUniformLocation(_led_shader_program, "brightness");
     
     glUniformMatrix4fv(projLoc, 1, GL_FALSE, projection_matrix);
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view_matrix);
@@ -529,25 +517,43 @@ void WebPlatform::renderLEDs(const float* view_matrix, const float* projection_m
     glUniform1f(sizeLoc, _led_size * PHYSICAL_LED_DIAMETER);
     glUniform1f(distanceLoc, _camera->getDistance());
     glUniform1f(heightLoc, static_cast<float>(_canvas_height));
-    
-    // Only set brightness if the location is valid
-    if (brightnessLoc >= 0) {
-        glUniform1f(brightnessLoc, static_cast<float>(_brightness) / 255.0f);
+    // Pass brightness to shader (ensure shader uses this)
+    glUniform1f(brightnessLoc, static_cast<float>(_brightness) / 255.0f); 
+
+    // --- ADDED: Bind VAO/VBO and Set Attributes for LEDs ---
+    // Define vertex structure here or include header if defined elsewhere
+    struct Vertex {
+        float x, y, z;
+        float r, g, b;
+    };
+
+    if (_led_vbo == 0 || _led_vao == 0) {
+        logError("renderLEDs: LED VBO or VAO not initialized!");
+        return; // Cannot render without buffers
     }
+
+    glBindVertexArray(_led_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, _led_vbo);
     
-    // Configure vertex attributes specifically for LEDs
-    uint32_t led_vao = _renderer->createVertexArray();
-    _renderer->configureVertexAttributes(led_vao, _vertex_buffer);
+    // Assuming shader attribute locations are 0 for position, 1 for color
+    // Position attribute (location = 0)
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, x));
+    glEnableVertexAttribArray(0);
     
-    // Draw points for each LED
-    glBindVertexArray(led_vao);
+    // Color attribute (location = 1)
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, r));
+    glEnableVertexAttribArray(1);
+    // --- END ADDED --- 
+    
+    // Draw points
     glDrawArrays(GL_POINTS, 0, _num_leds);
-    
-    // Restore default blending
+
+    // --- ADDED: Unbind VAO --- 
+    glBindVertexArray(0);
+    // --- END ADDED ---
+
+    // Restore default blend function for other rendering
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
-    // Clean up
-    glDeleteVertexArrays(1, &led_vao);
 }
 
 void WebPlatform::initWebGL() {
@@ -556,30 +562,37 @@ void WebPlatform::initWebGL() {
     _canvas_height = WebGLUtil::getCanvasHeight();
     
     // Create WebGL renderer
-    _renderer = std::make_unique<WebGLRenderer>();
+    if (!_renderer) _renderer = std::make_unique<WebGLRenderer>();
     if (!_renderer->initialize(_canvas_width, _canvas_height)) {
         printf("Failed to initialize WebGL renderer\n");
         return;
     }
     
     // Create camera
-    _camera = std::make_unique<Camera>();
+    if (!_camera) _camera = std::make_unique<Camera>();
     
     // Set camera distance and position for proper vertical centering
     _camera->setDistance(CAMERA_NORMAL_DISTANCE);
     
     // Create mesh generator
-    _mesh_generator = std::make_unique<MeshGenerator>();
+    if (!_mesh_generator) _mesh_generator = std::make_unique<MeshGenerator>();
     
     // Create shader programs
-    _shader_program = _renderer->createShaderProgram(vertex_shader_source, fragment_shader_source);
+    _led_shader_program = _renderer->createShaderProgram(vertex_shader_source, fragment_shader_source);
     _mesh_shader_program = _renderer->createShaderProgram(mesh_vertex_shader_source, mesh_fragment_shader_source);
     _glow_shader_program = _renderer->createShaderProgram(glow_vertex_shader_source, glow_fragment_shader_source);
     _blur_shader_program = _renderer->createShaderProgram(blur_vertex_shader_source, blur_fragment_shader_source);
     _composite_shader_program = _renderer->createShaderProgram(quad_vertex_shader_source, composite_fragment_shader_source);
     
-    // Create vertex buffer for LED positions and colors
-    _vertex_buffer = _renderer->createBuffer();
+    _led_vbo = _renderer->createBuffer();
+    
+    // --- ADDED: Create VAO for LEDs --- 
+    if (_led_vao == 0) { // Check if not already created (though unlikely here)
+        glGenVertexArrays(1, &_led_vao);
+        if (_led_vao == 0) { // Check if creation failed
+            logError("Failed to generate VAO for LEDs!");
+        } 
+    }
     
     // Initialize timing variables
     _last_frame_time = WebGLUtil::getCurrentTime();
@@ -588,9 +601,9 @@ void WebPlatform::initWebGL() {
 
 void WebPlatform::cleanupWebGL() {
     // Clean up shader programs
-    if (_shader_program) {
-        glDeleteProgram(_shader_program);
-        _shader_program = 0;
+    if (_led_shader_program) {
+        glDeleteProgram(_led_shader_program);
+        _led_shader_program = 0;
     }
     if (_mesh_shader_program) {
         glDeleteProgram(_mesh_shader_program);
@@ -610,12 +623,18 @@ void WebPlatform::cleanupWebGL() {
     }
     
     // Clean up vertex buffer
-    if (_vertex_buffer) {
-        glDeleteBuffers(1, &_vertex_buffer);
-        _vertex_buffer = 0;
+    if (_led_vbo) {
+        glDeleteBuffers(1, &_led_vbo);
+        _led_vbo = 0;
     }
     
-    // Clean up WebGL components
+    // Clean up VAO
+    if (_led_vao) {
+        glDeleteVertexArrays(1, &_led_vao);
+        _led_vao = 0;
+    }
+    
+    // Clean up WebGL components (using unique_ptr::reset)
     _renderer.reset();
     _mesh_generator.reset();
     _camera.reset();
@@ -626,7 +645,7 @@ EMSCRIPTEN_KEEPALIVE void update_scene_parameter(const char* param_id, float val
     // This function is called from JavaScript
     // We can't directly access the WebSimulator from here
     // Instead, we'll log a message for debugging
-    PixelTheater::Log::warning("update_scene_parameter called with param_id: %s, value: %f", param_id, value);
+    Log::warning("update_scene_parameter called with param_id: %s, value: %f", param_id, value);
     
     // The actual parameter update will be handled by the WebSimulator
     // through the Emscripten bindings
@@ -636,7 +655,7 @@ void WebPlatform::updateSceneParameter(const char* param_id, float value) {
     // This method is part of the WebPlatform class
     // It's called by the WebSimulator
     // For now, just log the call
-    PixelTheater::Log::warning("WebPlatform::updateSceneParameter called with param_id: %s, value: %f", param_id, value);
+    Log::warning("WebPlatform::updateSceneParameter called with param_id: %s, value: %f", param_id, value);
 }
 
 // ==============================================================
@@ -644,128 +663,160 @@ void WebPlatform::updateSceneParameter(const char* param_id, float value) {
 // ==============================================================
 
 // Timing Utilities
-float WebPlatform::deltaTime() const {
-    // Simple stub for native testing
-    return 0.016f; // Simulate ~60 FPS
+float WebPlatform::deltaTime() {
+    #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+    double now = emscripten_get_now(); // Milliseconds
+    float dt = 0.0f;
+    if (_last_delta_time > 0.0) { // Avoid large delta on first frame
+        dt = static_cast<float>(now - _last_delta_time) / 1000.0f; // Convert ms to seconds
+    }
+    _last_delta_time = now;
+    // Clamp delta time to avoid large jumps (e.g., when tab is inactive)
+    return std::min(dt, 0.1f); // Max delta time of 100ms (10 FPS)
+    #else
+    return 1.0f / 60.0f; // Stub for native
+    #endif
 }
 
-uint32_t WebPlatform::millis() const {
-    // Use std::chrono for a basic native implementation
+uint32_t WebPlatform::millis() {
+    #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+    // Use emscripten_get_now() which returns time in milliseconds
+    return static_cast<uint32_t>(emscripten_get_now());
+    #else
+    // Stub for native: return milliseconds since epoch or similar
     auto now = std::chrono::steady_clock::now();
-    // Using steady_clock and a fixed epoch might be better, but requires static variable.
-    // For simplicity, using system_clock assuming it starts near program launch.
-    // This isn't strictly equivalent to Arduino millis() but serves as a basic stub.
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::system_clock::now().time_since_epoch());
-    return static_cast<uint32_t>(duration.count());
+    auto duration = now.time_since_epoch();
+    return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+    #endif
 }
 
 // Random Number Utilities
 uint8_t WebPlatform::random8() {
     #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
-        // Actual Emscripten implementation will go here later
-        return static_cast<uint8_t>(std::rand() % 256); 
+    // Use EM_ASM to call Math.random()
+    return static_cast<uint8_t>(EM_ASM_INT({ return Math.floor(Math.random() * 256); }));
     #else
-        // Native stub
-        return static_cast<uint8_t>(std::rand() % 256); 
+    return static_cast<uint8_t>(std::rand() % 256);
     #endif
 }
 
 uint16_t WebPlatform::random16() {
-     #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
-        return static_cast<uint16_t>(std::rand()); 
+    #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+    // Combine two Math.random() calls for better distribution (though still not perfect)
+    uint16_t r1 = EM_ASM_INT({ return Math.floor(Math.random() * 256); });
+    uint16_t r2 = EM_ASM_INT({ return Math.floor(Math.random() * 256); });
+    return (r1 << 8) | r2;
     #else
-        // Native stub
-        return static_cast<uint16_t>(std::rand()); 
+    return static_cast<uint16_t>(std::rand());
     #endif
 }
 
 // Default to RAND_MAX if max is 0
 uint32_t WebPlatform::random(uint32_t max) {
-     #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
-        uint32_t limit = (max == 0) ? RAND_MAX : max;
-        if (limit == 0) return 0; // Avoid modulo by zero
-        return static_cast<uint32_t>(std::rand()) % limit;
+    #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+    if (max == 0) return 0;
+    // Use EM_ASM with modulo. Note: Math.random() * max gives [0, max)
+    return EM_ASM_INT({ return Math.floor(Math.random() * $0); }, max);
     #else
-        // Native stub
-        uint32_t limit = (max == 0) ? RAND_MAX : max;
-        if (limit == 0) return 0; 
-        return static_cast<uint32_t>(std::rand()) % limit;
+    if (max == 0) return 0;
+    return std::rand() % max;
     #endif
 }
 
 uint32_t WebPlatform::random(uint32_t min, uint32_t max) {
     #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
-        if (min >= max) return min;
-        uint32_t range = max - min;
-        return min + random(range);
+    if (min >= max) return min;
+    uint32_t range = max - min;
+    // Use EM_ASM: Math.random() * range + min gives [min, max)
+    return EM_ASM_INT({ return Math.floor(Math.random() * $0 + $1); }, range, min);
     #else
-        // Native stub
-        if (min >= max) return min;
-        uint32_t range = max - min;
-        return min + random(range);
+    if (min >= max) return min;
+    uint32_t range = max - min;
+    return (std::rand() % range) + min;
     #endif
 }
 
 float WebPlatform::randomFloat() {
     #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
-         return static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
+    return EM_ASM_DOUBLE({ return Math.random(); });
     #else
-        // Native stub
-        return static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
+    return static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
     #endif
 }
 
 float WebPlatform::randomFloat(float max) {
     #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
-        return randomFloat() * max;
+    return EM_ASM_DOUBLE({ return Math.random() * $0; }, max);
     #else
-        // Native stub
-        return randomFloat() * max;
+    return (static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX)) * max;
     #endif
 }
 
 float WebPlatform::randomFloat(float min, float max) {
     #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
-       if (min >= max) return min;
-       return min + randomFloat(max - min);
+     if (min >= max) return min;
+    float range = max - min;
+    return EM_ASM_DOUBLE({ return Math.random() * $0 + $1; }, range, min);
     #else
-        // Native stub
-       if (min >= max) return min;
-       return min + randomFloat(max - min);
+    if (min >= max) return min;
+    float range = max - min;
+    return (static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX)) * range + min;
     #endif
 }
 
 // Logging Utilities
-void WebPlatform::logInfo(const char* format) {
+void WebPlatform::logInfo(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
     #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
-        // Actual implementation using console.log via EM_ASM or similar later
-        printf("[INFO] %s\\n", format); // Simple printf for now
+    char buffer[256];
+    vsnprintf(buffer, sizeof(buffer), format, args);
+    EM_ASM({
+        console.log("[INFO] " + UTF8ToString($0));
+    }, buffer);
     #else
-        // Native stub
-        printf(LOG_STUB_PREFIX "[INFO] %s\\n", format);
+    // Native stub - print to stdout
+    printf(LOG_STUB_PREFIX "INFO: ");
+    vprintf(format, args);
+    printf("\n");
     #endif
+    va_end(args);
 }
 
-void WebPlatform::logWarning(const char* format) {
-     #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
-        printf("[WARN] %s\\n", format); 
+void WebPlatform::logWarning(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+    char buffer[256];
+    vsnprintf(buffer, sizeof(buffer), format, args);
+    EM_ASM({
+        console.warn("[WARN] " + UTF8ToString($0));
+    }, buffer);
     #else
-        // Native stub
-        printf(LOG_STUB_PREFIX "[WARN] %s\\n", format);
+    printf(LOG_STUB_PREFIX "WARN: ");
+    vprintf(format, args);
+    printf("\n");
     #endif
+    va_end(args);
 }
 
-void WebPlatform::logError(const char* format) {
-     #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
-         printf("[ERR ] %s\\n", format); 
+void WebPlatform::logError(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+    char buffer[256];
+    vsnprintf(buffer, sizeof(buffer), format, args);
+    EM_ASM({
+        console.error("[ERR ] " + UTF8ToString($0));
+    }, buffer);
     #else
-        // Native stub
-        printf(LOG_STUB_PREFIX "[ERR ] %s\\n", format);
+    fprintf(stderr, LOG_STUB_PREFIX "ERROR: ");
+    vfprintf(stderr, format, args);
+    fprintf(stderr, "\n");
     #endif
+    va_end(args);
 }
 
-} // namespace WebGL
-} // namespace PixelTheater 
+} // namespace PixelTheater
 
 #endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 

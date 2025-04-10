@@ -6,6 +6,8 @@
 #include <cstddef>
 #include <vector>
 #include <emscripten/html5.h>
+#include <string>
+#include <GLES3/gl3.h>
 
 namespace PixelTheater {
 
@@ -73,8 +75,10 @@ private:
     // Canvas dimensions
     int _canvas_width;
     int _canvas_height;
+
+    GLuint _composite_shader_program;
 };
 
-} // namespace PixelTheater 
+} // namespace PixelTheater
 
 #endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 

@@ -146,4 +146,72 @@ const Scene& Theater::scene(size_t index) const {
     return *scenes_[index];
 }
 
+// --- ADDED: Platform Accessor ---
+Platform* Theater::platform() {
+    return platform_.get();
+}
+
+const Platform* Theater::platform() const {
+    return platform_.get();
+}
+
+// --- ADDED: Scene Control ---
+bool Theater::setScene(size_t index) {
+    if (!initialized_) {
+        // Log::error should ideally be used, but platform might not be available.
+        printf("[ERROR] Theater::setScene called before initialization.\n");
+        return false;
+    }
+    if (index >= scenes_.size()) {
+        if (platform_) platform_->logWarning("Theater::setScene index out of range: %zu", index);
+        return false;
+    }
+
+    // Get the target scene pointer before potentially changing current_scene_
+    Scene* target_scene = scenes_[index].get(); 
+    
+    // Log whether it's a change or a re-selection
+    if (target_scene == current_scene_) {
+        if (platform_) platform_->logInfo("Theater::setScene re-selected current scene index: %zu", index);
+    } else {
+         if (platform_) platform_->logInfo("Theater::setScene changing to scene index: %zu", index);
+         current_scene_ = target_scene; 
+    }
+    // ALWAYS reset and setup
+    if (current_scene_) { 
+        current_scene_->reset(); 
+        current_scene_->setup(); 
+        if (platform_) platform_->logInfo("Theater scene changed to index %zu: %s", index, current_scene_->name().c_str());
+        return true;
+    } else {
+        // This case should ideally not happen if index check passed
+        if (platform_) platform_->logError("Theater::setScene failed to set scene pointer for index %zu", index);
+        return false; 
+    }
+}
+
+// --- Implementation and instantiation moved back to theater.h ---
+#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+
+// // Implementation moved to header
+// #include "PixelTheater/platform/web_platform.h"
+// template<typename TModelDef>
+// void Theater::useWebPlatform() { ... }
+
+// // Explicit instantiation removed (not needed when definition is in header)
+// #include "models/DodecaRGBv2/model.h" 
+// template void Theater::useWebPlatform<PixelTheater::Models::DodecaRGBv2>();
+
+#endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+
 } // namespace PixelTheater 
+
+
+// --- Explicit Template Instantiations ---
+
+#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+// // Explicitly instantiate useWebPlatform for the specific ModelDef used in web_simulator // REMOVING
+// // Include the specific model definition header required for instantiation
+// #include "models/DodecaRGBv2/model.h" 
+// template void PixelTheater::Theater::useWebPlatform<PixelTheater::Models::DodecaRGBv2>();
+#endif 

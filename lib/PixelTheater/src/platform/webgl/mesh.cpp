@@ -9,7 +9,6 @@
 #include <utility>
 
 namespace PixelTheater {
-namespace WebGL {
 
 void MeshGenerator::clear() {
     _vertices.clear();
@@ -159,7 +158,6 @@ void MeshGenerator::generateDodecahedronMesh(const std::vector<WebFace>& faces) 
            _vertices.size() / 6, _indices.size() / 3);
 }
 
-} // namespace WebGL
-} // namespace PixelTheater
+}
 
 #endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 

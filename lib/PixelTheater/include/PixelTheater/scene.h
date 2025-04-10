@@ -11,6 +11,7 @@
 #include "platform/platform.h"
 #include "core/imodel.h"
 #include "core/iled_buffer.h"
+#include <cstdarg>
 
 // Forward declare to avoid circular dependency
 namespace PixelTheater {
@@ -289,17 +290,14 @@ namespace PixelTheater {
         uint16_t random16() { return platform_ptr ? platform_ptr->random16() : 0; }
         uint32_t random(uint32_t max = 0) { return platform_ptr ? platform_ptr->random(max) : 0; }
         uint32_t random(uint32_t min, uint32_t max) { return platform_ptr ? platform_ptr->random(min, max) : 0; }
-        float randomFloat() { return platform_ptr ? platform_ptr->randomFloat() : 0.0f; }
-        float randomFloat(float max) { return platform_ptr ? platform_ptr->randomFloat(max) : 0.0f; }
-        float randomFloat(float min, float max) { return platform_ptr ? platform_ptr->randomFloat(min, max) : 0.0f; }
-        void logInfo(const char* format) { if (platform_ptr) platform_ptr->logInfo(format); }
-        void logWarning(const char* format) { if (platform_ptr) platform_ptr->logWarning(format); }
-        void logError(const char* format) { if (platform_ptr) platform_ptr->logError(format); }
-        // Const versions for use in const methods
-        void logInfo(const char* format) const { if (platform_ptr) platform_ptr->logInfo(format); }
-        void logWarning(const char* format) const { if (platform_ptr) platform_ptr->logWarning(format); }
-        void logError(const char* format) const { if (platform_ptr) platform_ptr->logError(format); }
         
+        // --- ADDED MISSING DELEGATION --- 
+        float randomFloat() { return platform_ptr ? platform_ptr->randomFloat() : 0.0f; } // 0.0 to 1.0
+        // --- END ADDED --- 
+        
+        float randomFloat(float max) { return platform_ptr ? platform_ptr->randomFloat(max) : 0.0f; } // 0.0 to max
+        float randomFloat(float min, float max) { return platform_ptr ? platform_ptr->randomFloat(min, max) : 0.0f; } // min to max
+
         // Model Geometry Access (NEW)
         const IModel& model() const; // Implementation in .cpp
 
@@ -314,8 +312,53 @@ namespace PixelTheater {
         // Math/Random Utilities Helpers
         // ... random*() ...
 
-        // Logging Utilities Helpers
-        // ... log*() ...
+        // Logging Utilities Helpers (Variadic)
+        // Non-const versions
+        void logInfo(const char* format, ...) {
+            if (!platform_ptr) return;
+            va_list args;
+            va_start(args, format);
+            // Assuming platform log methods now handle va_list or we need a vsprintf helper
+            // For simplicity, let's assume platform->logInfo can handle it (may need adjustment)
+            platform_ptr->logInfo(format, args); // NEEDS PLATFORM SUPPORT FOR THIS SIGNATURE
+            va_end(args);
+        }
+        void logWarning(const char* format, ...) {
+            if (!platform_ptr) return;
+            va_list args;
+            va_start(args, format);
+            platform_ptr->logWarning(format, args); // NEEDS PLATFORM SUPPORT FOR THIS SIGNATURE
+            va_end(args);
+        }
+        void logError(const char* format, ...) {
+            if (!platform_ptr) return;
+            va_list args;
+            va_start(args, format);
+            platform_ptr->logError(format, args); // NEEDS PLATFORM SUPPORT FOR THIS SIGNATURE
+            va_end(args);
+        }
+        // Const versions
+        void logInfo(const char* format, ...) const {
+            if (!platform_ptr) return;
+            va_list args;
+            va_start(args, format);
+            platform_ptr->logInfo(format, args); // NEEDS PLATFORM SUPPORT FOR THIS SIGNATURE
+            va_end(args);
+        }
+        void logWarning(const char* format, ...) const {
+            if (!platform_ptr) return;
+            va_list args;
+            va_start(args, format);
+            platform_ptr->logWarning(format, args); // NEEDS PLATFORM SUPPORT FOR THIS SIGNATURE
+            va_end(args);
+        }
+        void logError(const char* format, ...) const {
+            if (!platform_ptr) return;
+            va_list args;
+            va_start(args, format);
+            platform_ptr->logError(format, args); // NEEDS PLATFORM SUPPORT FOR THIS SIGNATURE
+            va_end(args);
+        }
         
         // --- End Scene Helper Methods --- 
 

@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <array>
 #include "PixelTheater/core/math.h"  // For Vector3d
+#include <cmath>    // For sqrtf, powf
 
 namespace PixelTheater {
 
@@ -39,6 +40,9 @@ public:
         , _face_id(face_id)
         , _x(x), _y(y), _z(z)
     {}
+    // ADDED: Constructor for x, y, z only (default id/face_id to 0)
+    Point(float x, float y, float z)
+        : _id(0), _face_id(0), _x(x), _y(y), _z(z) {}
 
     // Accessors
     uint16_t id() const { return _id; }

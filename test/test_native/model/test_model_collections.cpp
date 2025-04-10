@@ -11,7 +11,7 @@ TEST_SUITE("Model - Collections") {
         BasicPentagonModel def;
         NativePlatform platform(BasicPentagonModel::LED_COUNT);
         platform.clear();
-        Model<BasicPentagonModel> model(def, platform.getLEDs());
+        Model<BasicPentagonModel> model(platform.getLEDs());
 
         SUBCASE("face-local to global indexing") {
             model.leds[7] = CRGB::Green;
@@ -36,7 +36,7 @@ TEST_SUITE("Model - Collections") {
         BasicPentagonModel def;
         NativePlatform platform(BasicPentagonModel::LED_COUNT);
         platform.clear();
-        Model<BasicPentagonModel> model(def, platform.getLEDs());
+        Model<BasicPentagonModel> model(platform.getLEDs());
 
         SUBCASE("array access") {
             model.leds[0] = CRGB::Red;
@@ -57,7 +57,7 @@ TEST_SUITE("Model - Collections") {
         BasicPentagonModel def;
         NativePlatform platform(BasicPentagonModel::LED_COUNT);
         platform.clear();
-        Model<BasicPentagonModel> model(def, platform.getLEDs());
+        Model<BasicPentagonModel> model(platform.getLEDs());
         CHECK(model.led_count() == 15);  // ensure test conditions are met
         CHECK(model.face_count() == 3);
 
@@ -74,7 +74,7 @@ TEST_SUITE("Model - Collections") {
         BasicPentagonModel def;
         NativePlatform platform(BasicPentagonModel::LED_COUNT);
         platform.clear();
-        Model<BasicPentagonModel> model(def, platform.getLEDs());
+        Model<BasicPentagonModel> model(platform.getLEDs());
 
         // Fill all LEDs in each face
         for(auto& face : model.faces) {
@@ -87,7 +87,7 @@ TEST_SUITE("Model - Collections") {
         BasicPentagonModel def;
         NativePlatform platform(BasicPentagonModel::LED_COUNT);
         platform.clear();
-        Model<BasicPentagonModel> model(def, platform.getLEDs());
+        Model<BasicPentagonModel> model(platform.getLEDs());
 
         SUBCASE("size operations") {
             CHECK(model.leds.size() == model.led_count());

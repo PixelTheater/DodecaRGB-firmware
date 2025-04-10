@@ -91,7 +91,7 @@ class DodecaSimulator {
         // Scene state
         this.currentSceneIndex = -1;  // Start with -1 to indicate no scene selected
         this.totalScenes = 0;
-        this.sceneNames = [];
+        this.sceneList = []; // NEW: Stores { index, name } for dropdown
         this.isChangingScene = false;
         this.setupRetries = 0;  // Counter for scene setup retry attempts
         
@@ -104,6 +104,11 @@ class DodecaSimulator {
         
         // Set up external C function implementations BEFORE module initialization
         this.setupExternalFunctions();
+
+        // Ensure these match your HTML structure for the custom dropdown
+        this.sceneSelect = null; // No longer using <select> by default
+        this.sceneSelector = document.querySelector('.scene-selector'); // The clickable area
+        this.selectedSceneText = document.querySelector('.selected-scene'); // The text displaying current scene
     }
     
     /**
@@ -245,7 +250,7 @@ class DodecaSimulator {
                 
                 // Mark module as ready and initialize
                 this.moduleReady = true;
-                console.log("Module runtime initialized");
+                console.log("Module runtime was initialized");
                 
                 // Wait a bit longer to ensure all module functions are available
                 setTimeout(() => {
@@ -262,34 +267,32 @@ class DodecaSimulator {
     /**
      * Called when the WASM module is ready
      */
-    onModuleReady() {
+    async onModuleReady() {
         console.log("Module is ready, initializing simulator");
         
-        // Ensure canvas is properly sized
         this.resizeCanvas();
-        
-        // Set up external functions
         this.setupExternalFunctions();
-        
-        // Check if Embind functions are available
-        this.hasEmbind = this.checkEmbindFunctions();
-        
-        // List available functions for debugging
+        this.hasCAPI = this.checkCAPIFunctions();
         this.listAvailableModuleFunctions();
         
-        // Set up scenes
-        this.setupScenes();
+        console.log("Calling _init_simulator...");
+        try {
+            const initSuccess = this.callModule('init_simulator');
+            if (!initSuccess) {
+                throw new Error("_init_simulator returned false.");
+            }
+            console.log("_init_simulator call succeeded.");
+        } catch (error) {
+            console.error("Error calling _init_simulator:", error);
+            return; 
+        }
+
+        // Populate the scene list UI after init is done
+        await this.populateSceneList();
         
-        // Set up initial control values
-        this.setupControlValues();
-        
-        // Set up event handlers
+        this.setupControlValues(); 
         this.setupEventHandlers();
-        
-        // Set up canvas interaction
         this.setupCanvasInteraction();
-        
-        // Start model info updates
         this.startModelInfoUpdates();
         
         console.log("Simulator initialization complete");
@@ -332,149 +335,241 @@ class DodecaSimulator {
     }
     
     /**
-     * Change scene and wait for it to be ready
-     * @param {number} sceneIndex - Index of scene to change to
-     * @returns {Promise<void>} Promise that resolves when scene is ready
+     * Fetches metadata for all scenes, populates the internal list, and sets initial scene.
      */
-    async changeScene(sceneIndex) {
-        if (sceneIndex === this.currentSceneIndex) {
-            return; // Already on this scene
-        }
+    async populateSceneList() { 
+        console.log("Populating scene list...");
+        this.sceneList = [];
+        // No longer interacting with sceneSelect element directly here
 
         try {
-            // Change the scene
-            const result = this.callModule('change_scene', sceneIndex);
-            if (result === null) {
-                throw new Error('Failed to change scene');
-            }
-            
-            // Update UI immediately
-            this.currentSceneIndex = sceneIndex;
-            this.updateSceneIndicator();
-            
-            // Wait for next frame to ensure scene has changed
-            await new Promise(resolve => requestAnimationFrame(resolve));
-            
-            // Update parameters
-            await this.updateSceneParameters(sceneIndex);
-            
-        } catch (error) {
-            console.error('Error changing scene:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * Navigate to previous or next scene
-     * @param {number} direction - Direction to navigate (-1 for prev, 1 for next)
-     */
-    async navigateScene(direction) {
-        if (this.isChangingScene) {
-            return;
-        }
-
-        try {
-            this.isChangingScene = true;
-            const newIndex = (this.currentSceneIndex + direction + this.totalScenes) % this.totalScenes;
-            
-            await this.changeScene(newIndex);
-            
-        } catch (error) {
-            console.error("Error navigating scene:", error);
-        } finally {
-            this.isChangingScene = false;
-        }
-    }
-
-    /**
-     * Set up scenes and populate scene selector
-     */
-    async setupScenes() {
-        if (!this.moduleReady) {
-            console.log("Module not ready, deferring scene setup");
-            return;
-        }
-        
-        try {
-            const numScenes = this.callModule('get_num_scenes');
-            if (numScenes === null || numScenes <= 0) {
-                console.error("Could not get number of scenes from the simulator");
+            this.totalScenes = this.callModule('get_num_scenes');
+            if (this.totalScenes === null || this.totalScenes <= 0) {
+                console.error("Could not get number of scenes.");
                 return;
             }
-            
-            this.totalScenes = numScenes;
-            this.sceneNames = [];
-            
-            // Create the select element if it doesn't exist
-            if (!this.sceneSelect) {
-                this.sceneSelect = document.createElement('select');
-                this.sceneSelect.className = 'scene-select';
-                
-                // Replace the old scene selector with the new select element
-                if (this.sceneSelector) {
-                    this.sceneSelector.parentNode.replaceChild(this.sceneSelect, this.sceneSelector);
-                }
-                
-                // Add change event listener
-                this.sceneSelect.addEventListener('change', async (e) => {
-                    const newIndex = parseInt(e.target.value);
-                    if (!this.isChangingScene && newIndex !== this.currentSceneIndex) {
-                        await this.changeScene(newIndex);
-                    }
-                });
+            console.log(`Found ${this.totalScenes} scenes.`);
+
+            // --- ADDED: Workaround for TestScene initial name ---
+            if (this.totalScenes > 0) {
+                 console.log("Pre-running scene 0 setup...");
+                 this.callModule('change_scene', 0);
+                 await new Promise(resolve => requestAnimationFrame(resolve)); 
+                 console.log("Pre-run finished.");
             }
-            
-            // Clear existing options
-            this.sceneSelect.innerHTML = '';
-            
-            // Add scene options
-            for (let i = 0; i < numScenes; i++) {
+            // --- END WORKAROUND ---
+
+            for (let i = 0; i < this.totalScenes; i++) {
+                console.log(`Fetching metadata for scene index ${i}...`);
+                
+                // Change scene to ensure setup() runs for metadata fetch
+                this.callModule('change_scene', i); 
+                await new Promise(resolve => requestAnimationFrame(resolve)); 
+
+                // Fetch metadata
+                let metadata = {};
+                let jsonPtr = 0;
                 try {
-                    const sceneName = Module.get_scene_name(i);
-                    this.sceneNames.push(sceneName || `Scene ${i}`);
-                    
-                    const option = document.createElement('option');
-                    option.value = i;
-                    option.textContent = this.sceneNames[i];
-                    this.sceneSelect.appendChild(option);
+                    jsonPtr = this.callModule('get_current_scene_metadata_json');
+                    if (!jsonPtr) throw new Error("Metadata JSON pointer is null");
+                    const metaJsonString = Module.UTF8ToString(jsonPtr);
+                    if (!metaJsonString || metaJsonString.trim() === "") throw new Error("Received empty metadata JSON string.");
+                    console.log(`  [Scene ${i}] Metadata JSON: ${metaJsonString}`);
+                    metadata = JSON.parse(metaJsonString);
                 } catch (error) {
-                    console.error(`Error getting name for scene ${i}:`, error);
-                    this.sceneNames.push(`Scene ${i}`);
+                     console.error(`  [Scene ${i}] Error fetching/parsing metadata:`, error);
+                     metadata = { name: `Scene ${i} (Error)` }; 
+                } finally {
+                     if (jsonPtr) { 
+                          console.log(`  [Scene ${i}] Attempting to free metadata pointer: ${jsonPtr}`);
+                          this.callModule('free_string_memory', jsonPtr);
+                     }
                 }
+
+                // Store info in the list, don't update UI options here
+                const sceneInfo = { index: i, name: metadata.name || `Scene ${i}` };
+                this.sceneList.push(sceneInfo);
+
+                // REMOVED: const option = ... 
+                // REMOVED: this.sceneSelect.appendChild(option); 
             }
-            
-            // Set to Wandering Particles scene by default (index 2)
-            this.isChangingScene = true;
-            await this.changeScene(2);
-            
+
+            console.log("Finished fetching all scene metadata for list.");
+
+            // Set the final desired initial scene AFTER the loop completes
+            const initialSceneIndex = 2; 
+            if (initialSceneIndex >= 0 && initialSceneIndex < this.totalScenes) {
+                console.log(`Setting initial displayed scene to index ${initialSceneIndex}...`);
+                await this.changeScene(initialSceneIndex); 
+                console.log("Initial scene set.");
+            } else { 
+                 console.warn(`Initial scene index ${initialSceneIndex} is invalid. Defaulting to 0.`);
+                 if(this.totalScenes > 0) await this.changeScene(0); 
+            }
+
+        } catch (error) { 
+             console.error("Error populating scene list:", error);
+        } finally { 
+             console.log("populateSceneList finished."); 
+        }
+    }
+    
+    /**
+     * Updates UI elements with current scene's metadata (The main display text)
+     * @param {object} metadata - Parsed metadata object { name, description, ... }
+     */
+    updateSceneDisplay(metadata) {
+         console.log("Updating scene display with metadata:", metadata);
+         
+         // Update the main scene name text display element
+         if (this.selectedSceneText) { 
+             this.selectedSceneText.textContent = metadata.name || 'Unknown Scene';
+             console.log(`Updated selectedSceneText to: ${this.selectedSceneText.textContent}`);
+         } else {
+              console.warn("selectedSceneText element not found to update.");
+         }
+         
+         // No longer need to update sceneSelect.value here
+    }
+    
+    /**
+     * Change scene, fetch and update metadata and parameters.
+     * @param {number} sceneIndex - Index of scene to change to
+     * @returns {Promise<void>} Promise that resolves when scene change is complete
+     */
+    async changeScene(sceneIndex) {
+        if (sceneIndex === this.currentSceneIndex && this.currentSceneIndex !== -1) {
+             console.log(`Already on scene ${sceneIndex}.`);
+             return; // Already on this scene
+        }
+
+        if (this.isChangingScene) {
+            console.warn("changeScene called while already changing scene.");
+            return;
+        }
+        this.isChangingScene = true;
+        console.log(`Attempting to change scene to index: ${sceneIndex}`);
+
+        try {
+            // 1. Change scene in C++
+            const result = this.callModule('change_scene', sceneIndex);
+            if (result === null) { // change_scene might not return a useful value, check logs
+                console.warn('callModule change_scene returned null, proceeding...');
+                 // Consider adding a check or delay if issues persist
+            }
+            console.log(`C++ change_scene(${sceneIndex}) called.`);
+
+            // 2. Update internal index immediately
+            this.currentSceneIndex = sceneIndex;
+
+            // 3. Wait for C++ scene setup to potentially complete
+            // (May not be strictly necessary if calls are synchronous enough, but safer)
+            await new Promise(resolve => requestAnimationFrame(resolve)); 
+            console.log("Waited for next frame.");
+
+            // 4. Fetch and update Metadata Display
+            let metadata = {};
+            let metaPtr = 0;
+            try {
+                metaPtr = this.callModule('get_current_scene_metadata_json');
+                if (!metaPtr) throw new Error("Metadata JSON pointer is null");
+                const metaJsonString = Module.UTF8ToString(metaPtr);
+                console.log(`Metadata JSON received: ${metaJsonString}`);
+                metadata = JSON.parse(metaJsonString);
+            } catch (error) {
+                console.error(`Error fetching/parsing metadata for scene ${sceneIndex}:`, error);
+                metadata = { name: `Scene ${sceneIndex} (Error)` }; // Fallback
+            } finally {
+                if (metaPtr) this.callModule('free_string_memory', metaPtr);
+            }
+            this.updateSceneDisplay(metadata); // Update UI text/dropdown
+
+            // 5. Fetch and update Parameter Controls
+            let parameters = [];
+            let paramsPtr = 0;
+            try {
+                 paramsPtr = this.callModule('get_scene_parameters_json');
+                 if (!paramsPtr) throw new Error("Parameters JSON pointer is null");
+                 const paramsJsonString = Module.UTF8ToString(paramsPtr);
+                 console.log(`Parameters JSON received: ${paramsJsonString}`);
+                 parameters = JSON.parse(paramsJsonString);
+            } catch(error) {
+                 console.error(`Error fetching/parsing parameters for scene ${sceneIndex}:`, error);
+                 parameters = []; // Set empty on error
+            } finally {
+                 if (paramsPtr) this.callModule('free_string_memory', paramsPtr);
+            }
+            this.updateSceneParameterControls(parameters); // Update sliders etc.
+
+            // 6. Update other UI indicators (like "2/4")
+            this.updateSceneIndicator();
+
         } catch (error) {
-            console.error("Error setting up scenes:", error);
+            console.error(`Error during changeScene(${sceneIndex}):`, error);
+            // Potentially revert UI changes or show error to user
         } finally {
             this.isChangingScene = false;
+            console.log(`changeScene(${sceneIndex}) finished, isChangingScene set to false`);
         }
     }
     
     /**
-     * Get scene name using Emscripten's string handling
+     * Update scene parameters UI based on the selected scene
+     * @param {Array<object>} parameters - Array of parameter objects from parsed JSON
      */
-    getSceneName(sceneIndex) {
+    updateSceneParameterControls(parameters) {
+        this.sceneParams.innerHTML = ''; // Clear previous params
+
+        if (!this.moduleReady || typeof Module === 'undefined') {
+            console.warn("Module not ready, skipping parameter update.");
+            return;
+        }
+
+        console.log(`Updating parameter controls for scene ${this.currentSceneIndex}`);
+
         try {
-            return Module.get_scene_name(sceneIndex) || `Scene ${sceneIndex}`;
+            if (!parameters || parameters.length === 0) {
+                 // Handle empty array after successful parse
+                 const noParamsMsg = document.createElement('div');
+                 noParamsMsg.className = 'no-params-message';
+                 noParamsMsg.textContent = 'This scene has no adjustable parameters.';
+                 this.sceneParams.appendChild(noParamsMsg);
+                 console.log("No parameters to display for this scene.");
+                 return;
+            }
+
+            // Get stored parameters for this scene
+            const storedParams = this.sceneParameters[this.currentSceneIndex] || {};
+
+            // Create UI controls for each parameter
+            parameters.forEach(param => {
+                // Use stored value if available
+                if (storedParams[param.id] !== undefined) {
+                    console.log(`Using stored value for ${param.id}: ${storedParams[param.id]}`);
+                    param.value = storedParams[param.id]; 
+
+                    // Update C++ side immediately if needed
+                    try {
+                        this.handleSceneParameterChange(param.id, param.value.toString());
+                    } catch (e) {
+                        console.error(`Error re-applying stored parameter ${param.id}:`, e);
+                    }
+                } else {
+                     // If no stored value, maybe ensure C++ has the default from JSON?
+                     // Could call handleSceneParameterChange here too, but might be redundant
+                     // if C++ already has the correct default from its schema.
+                }
+                this.addSceneParameter(param); // Use existing function to add controls
+            });
+
         } catch (error) {
-            console.error(`Error getting scene name for index ${sceneIndex}:`, error);
-            return `Scene ${sceneIndex}`;
-        }
-    }
-    
-    /**
-     * Update scene UI elements
-     */
-    updateSceneUI() {
-        // Update scene indicator and other UI elements
-        this.updateSceneIndicator();
-        
-        // Note: We no longer call Module._change_scene here to avoid double scene changes
-        // That's now handled directly in navigateScene
+            console.error("Error updating scene parameter controls:", error);
+            // Show error message in UI
+            const errorMsg = document.createElement('div');
+            errorMsg.className = 'error-message';
+            errorMsg.textContent = 'Error loading scene parameters.';
+            this.sceneParams.appendChild(errorMsg);
+        } 
     }
     
     /**
@@ -585,7 +680,24 @@ class DodecaSimulator {
      * Set up event handlers for UI controls
      */
     setupEventHandlers() {
-        // Set up brightness slider
+        // --- Restore click listener for the custom dropdown trigger ---
+        if (this.sceneSelector) {
+             // Remove listener first to prevent duplicates
+             if (this._handleSceneSelectorClick) {
+                  this.sceneSelector.removeEventListener('click', this._handleSceneSelectorClick);
+             }
+             // Store handler on instance for removal later if needed
+             this._handleSceneSelectorClick = (e) => this.showSceneDropdown(e);
+             this.sceneSelector.addEventListener('click', this._handleSceneSelectorClick);
+             console.log("Click listener added to scene selector div (.scene-selector).");
+        } else {
+             console.warn("Scene selector element (.scene-selector) not found for event handler setup.");
+        }
+        // --- End Restore click listener ---
+
+        // REMOVED: Listener setup for this.sceneSelect <select> element
+
+        // --- Keep existing listeners ---
         if (this.brightnessSlider) {
             this.brightnessSlider.addEventListener('input', (e) => this.handleBrightnessChange(e));
         }
@@ -650,27 +762,8 @@ class DodecaSimulator {
         }
         
         // Scene navigation
-        this.prevButton.addEventListener('click', () => {
-            // Only navigate if we're not already changing scenes
-            if (!this.isChangingScene) {
-                this.navigateScene(-1);
-            } else {
-                console.log("Ignoring navigation request - scene is already changing");
-            }
-        });
-        
-        this.nextButton.addEventListener('click', () => {
-            // Only navigate if we're not already changing scenes
-            if (!this.isChangingScene) {
-                this.navigateScene(1);
-            } else {
-                console.log("Ignoring navigation request - scene is already changing");
-            }
-        });
-        
-        if (this.sceneSelector) {
-            this.sceneSelector.addEventListener('click', (e) => this.showSceneDropdown(e));
-        }
+        this.prevButton.addEventListener('click', () => this.navigateScene(-1));
+        this.nextButton.addEventListener('click', () => this.navigateScene(1));
         
         // Set up canvas interaction
         this.setupCanvasInteraction();
@@ -976,174 +1069,153 @@ class DodecaSimulator {
      * Update just the scene indicator in the UI
      */
     updateSceneIndicator() {
-        // Update scene indicator (e.g., "1/8")
-        if (this.sceneIndicator) {
+        if (this.sceneIndicator && this.totalScenes > 0 && this.currentSceneIndex >= 0) {
             this.sceneIndicator.textContent = `${this.currentSceneIndex + 1}/${this.totalScenes}`;
+        } else if (this.sceneIndicator) {
+             this.sceneIndicator.textContent = `-/${this.totalScenes || '?'}`; // Indicate invalid state
         }
-        
-        // Update selected scene in dropdown
-        if (this.sceneSelect) {
-            this.sceneSelect.value = this.currentSceneIndex;
-        }
+        // No longer need to update sceneSelect value here
     }
     
     /**
-     * Show scene selection dropdown
+     * Show scene selection dropdown (Restored and simplified to use CSS classes)
      */
     showSceneDropdown(event) {
-        console.log('Showing scene dropdown');
-        
-        // Prevent event from bubbling up
-        if (event) {
-            event.stopPropagation();
-        }
-        
-        // Remove any existing dropdown
+        console.log('Showing scene dropdown (custom div - CSS positioned)');
+
+        if (event) event.stopPropagation();
+
         const existingDropdown = document.querySelector('.scene-dropdown');
         if (existingDropdown) {
             console.log('Removing existing dropdown');
             existingDropdown.remove();
+            if (this._closeDropdownHandler) {
+                 document.removeEventListener('click', this._closeDropdownHandler);
+                 this._closeDropdownHandler = null;
+            }
             return;
         }
-        
-        // Create dropdown container
+
         const dropdown = document.createElement('div');
-        dropdown.className = 'scene-dropdown';
-        
-        // Create scene list
-        const sceneList = document.createElement('div');
-        sceneList.className = 'scene-list';
-        
-        console.log('Available scenes:', this.sceneNames);
-        
-        // Add scenes to the list
-        this.sceneNames.forEach((name, index) => {
+        dropdown.className = 'scene-dropdown'; // Apply the main CSS class
+
+        const sceneListDiv = document.createElement('div');
+        sceneListDiv.className = 'scene-list'; // Apply the list container class
+
+        console.log('Populating dropdown with scenes:', this.sceneList);
+
+        // Use internal this.sceneList
+        this.sceneList.forEach((sceneInfo) => {
             const sceneItem = document.createElement('div');
-            sceneItem.className = 'scene-item';
-            if (index === this.currentSceneIndex) {
-                sceneItem.classList.add('active');
+            sceneItem.className = 'scene-item'; // Apply list item class
+            if (sceneInfo.index === this.currentSceneIndex) {
+                sceneItem.classList.add('active'); // Mark active item
             }
-            sceneItem.textContent = name;
-            
-            // Add click handler
+            sceneItem.textContent = sceneInfo.name;
+
             sceneItem.addEventListener('click', async (e) => {
-                console.log(`Clicked scene: ${name} (index: ${index})`);
-                e.stopPropagation(); // Prevent event from bubbling up
-                
-                if (index !== this.currentSceneIndex && !this.isChangingScene) {
-                    await this.changeScene(index);
+                console.log(`Clicked scene: ${sceneInfo.name} (index: ${sceneInfo.index})`);
+                e.stopPropagation();
+
+                if (sceneInfo.index !== this.currentSceneIndex && !this.isChangingScene) {
+                    await this.changeScene(sceneInfo.index);
                 }
-                dropdown.remove();
+                dropdown.remove(); // Close dropdown
+                if (this._closeDropdownHandler) {
+                    document.removeEventListener('click', this._closeDropdownHandler);
+                    this._closeDropdownHandler = null;
+                }
             });
-            
-            sceneList.appendChild(sceneItem);
+            sceneListDiv.appendChild(sceneItem);
         });
-        
-        dropdown.appendChild(sceneList);
-        
-        // Position the dropdown relative to the scene selector
-        const rect = this.sceneSelector.getBoundingClientRect();
-        const parentRect = this.sceneSelector.offsetParent.getBoundingClientRect();
-        
-        dropdown.style.position = 'absolute';
-        dropdown.style.top = `${rect.bottom - parentRect.top}px`;
-        dropdown.style.left = `${rect.left - parentRect.left}px`;
-        dropdown.style.width = `${rect.width}px`;
-        
-        console.log('Positioning dropdown:', {
-            top: `${rect.bottom - parentRect.top}px`,
-            left: `${rect.left - parentRect.left}px`,
-            width: `${rect.width}px`
-        });
-        
-        // Add the dropdown to the scene selector's parent
-        this.sceneSelector.offsetParent.appendChild(dropdown);
-        
-        // Prevent clicks on the dropdown from closing it
-        dropdown.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
-        
-        // Close dropdown when clicking outside
-        const closeDropdown = (event) => {
-            if (!dropdown.contains(event.target) && !this.sceneSelector.contains(event.target)) {
+
+        dropdown.appendChild(sceneListDiv);
+
+        // Append the dropdown relative to the selector's parent
+        // CSS (.scene-dropdown { position: absolute; ... }) will handle placement.
+        if (!this.sceneSelector || !this.sceneSelector.offsetParent) {
+             console.error("Cannot append dropdown, sceneSelector or its offsetParent not found.");
+             return;
+        }
+        // Append to the same parent container as the selector
+        this.sceneSelector.appendChild(dropdown);
+        console.log("Appended .scene-dropdown; CSS should position it.");
+
+        // Keep click handlers for closing
+        dropdown.addEventListener('click', (e) => e.stopPropagation());
+
+        this._closeDropdownHandler = (closeEvent) => {
+            // Check if click is outside dropdown AND outside the trigger button
+            if (!dropdown.contains(closeEvent.target) && !this.sceneSelector.contains(closeEvent.target)) {
                 console.log('Closing dropdown (clicked outside)');
                 dropdown.remove();
-                document.removeEventListener('click', closeDropdown);
+                document.removeEventListener('click', this._closeDropdownHandler);
+                this._closeDropdownHandler = null;
             }
         };
-        
-        // Delay adding the click listener to prevent immediate closure
+        // Use requestAnimationFrame to ensure the click handler is added *after* the current event bubble phase
         requestAnimationFrame(() => {
-            document.addEventListener('click', closeDropdown);
+            document.addEventListener('click', this._closeDropdownHandler);
         });
     }
     
     /**
-     * Update scene parameters UI based on the selected scene
-     * @param {number} sceneIndex - Index of the selected scene
-     * @returns {Promise<void>} Promise that resolves when parameters are updated
+     * Navigate to previous or next scene
+     * @param {number} direction - Direction to navigate (-1 for prev, 1 for next)
      */
-    async updateSceneParameters(sceneIndex) {
-        this.sceneParams.innerHTML = '';
-        
-        if (!this.moduleReady) {
+    async navigateScene(direction) {
+        if (this.isChangingScene) {
+            console.warn("NavigateScene ignored: Scene change already in progress.");
             return;
         }
 
         try {
-            const parameters = Module.getSceneParameters();
-            
-            if (!parameters || parameters.length === 0) {
-                const noParamsMsg = document.createElement('div');
-                noParamsMsg.className = 'no-params-message';
-                noParamsMsg.textContent = 'This scene has no adjustable parameters.';
-                this.sceneParams.appendChild(noParamsMsg);
-                return;
+            // Ensure totalScenes is valid before calculating new index
+            if (this.totalScenes <= 0) {
+                 console.error("Cannot navigate, totalScenes is not valid.");
+                 return;
             }
+            const newIndex = (this.currentSceneIndex + direction + this.totalScenes) % this.totalScenes;
             
-            // Get stored parameters for this scene
-            const storedParams = this.sceneParameters[sceneIndex] || {};
+            await this.changeScene(newIndex);
             
-            // Create UI controls for each parameter
-            for (const param of parameters) {
-                if (storedParams[param.id] !== undefined) {
-                    param.value = storedParams[param.id];
-                    await this.handleSceneParameterChange(param.id, param.value);
-                }
-                this.addSceneParameter(param);
-            }
         } catch (error) {
-            console.error("Error updating scene parameters:", error);
-            const errorMsg = document.createElement('div');
-            errorMsg.className = 'error-message';
-            errorMsg.textContent = 'Error loading scene parameters.';
-            this.sceneParams.appendChild(errorMsg);
+            console.error("Error navigating scene:", error);
         }
     }
     
     /**
      * Add a parameter control to the scene parameters UI
-     * @param {Object} param - Parameter object
+     * @param {Object} param - Parameter object from Embind
      */
     addSceneParameter(param) {
         const paramRow = document.createElement('div');
         paramRow.className = 'param-row';
         
         const paramLabel = document.createElement('label');
-        paramLabel.textContent = param.label;
+        // Use param.id as label for now, could be param.label if available
+        paramLabel.textContent = param.label || param.id;
         paramRow.appendChild(paramLabel);
         
         let input;
         let valueDisplay;
         
-        // Determine if this is an integer parameter based on the parameter type
-        const isInteger = param.controlType === 'slider' && (
-            param.type === 'count' || // Count type is always integer
-            (Number.isInteger(parseFloat(param.value)) && 
-             Number.isInteger(param.min) && 
-             Number.isInteger(param.max))
-        );
+        // Helper function to format displayed values
+        const formatValue = (valStr, paramType) => {
+            const val = parseFloat(valStr); // Convert string value to number for formatting
+            if (paramType === 'count') {
+                return Math.round(val);
+            }
+            // For float types, show appropriate precision
+            if (paramType === 'ratio' || paramType === 'signed_ratio' || 
+                paramType === 'angle' || paramType === 'signed_angle' ||
+                paramType === 'range') {
+                // Adjust precision based on step or range if needed
+                return val.toFixed(3); 
+            }
+            // Fallback for unknown types or boolean strings
+            return valStr;
+        };
         
         switch (param.controlType) {
             case 'slider':
@@ -1152,48 +1224,22 @@ class DodecaSimulator {
                 input.type = 'range';
                 input.min = param.min;
                 input.max = param.max;
-                
-                // Use the step value provided by the C++ code
                 input.step = param.step;
-                
-                input.value = parseFloat(param.value);
+                input.value = parseFloat(param.value); // Set initial slider position
                 input.id = `scene-param-${param.id}`;
                 
                 // Create value display
                 valueDisplay = document.createElement('span');
                 valueDisplay.className = 'param-value';
-                
-                // Format value display based on parameter type
-                const formatValue = (val, paramType) => {
-                    if (paramType === 'count') {
-                        return Math.round(val);
-                    }
-                    if (paramType === 'ratio' || paramType === 'signed_ratio') {
-                        return parseFloat(val).toFixed(3);  // Show 3 decimal places for ratios
-                    }
-                    if (paramType === 'angle' || paramType === 'signed_angle') {
-                        return parseFloat(val).toFixed(3);  // Show 3 decimal places for angles
-                    }
-                    if (paramType === 'range') {
-                        return parseFloat(val).toFixed(3);  // Show 3 decimal places for ranges
-                    }
-                    return val;
-                };
-                
                 valueDisplay.textContent = formatValue(param.value, param.type);
                 
                 // Add event listener
                 input.addEventListener('input', (e) => {
-                    const newValue = parseFloat(e.target.value);
+                    const newValueStr = e.target.value; // Value from slider is always a string
+                    valueDisplay.textContent = formatValue(newValueStr, param.type);
                     
-                    // Format display value based on parameter type
-                    valueDisplay.textContent = formatValue(newValue, param.type);
-                    
-                    // Log the parameter change
-                    console.log(`Scene parameter changed: ${param.id} (${param.type}), value: ${newValue}`);
-                    
-                    // Send the raw value string to preserve decimal precision
-                    this.handleSceneParameterChange(param.id, e.target.value);
+                    // Send the raw value string back to C++
+                    this.handleSceneParameterChange(param.id, newValueStr);
                 });
                 
                 paramRow.appendChild(input);
@@ -1204,20 +1250,22 @@ class DodecaSimulator {
                 // Create checkbox
                 input = document.createElement('input');
                 input.type = 'checkbox';
-                input.checked = param.value === "true";
+                // Value from C++ for bool is likely "true" or "false" string
+                input.checked = (param.value.toLowerCase() === "true"); 
                 input.id = `scene-param-${param.id}`;
                 
-                const checkboxLabel = document.createElement('label');
-                checkboxLabel.appendChild(input);
-                checkboxLabel.appendChild(document.createTextNode(param.label));
-                
+                // Re-create label structure to wrap checkbox
+                paramLabel.htmlFor = input.id; // Associate label with input
+                paramRow.innerHTML = ''; // Clear previous label
+                paramRow.appendChild(input);
+                paramRow.appendChild(paramLabel);
+                paramLabel.textContent = param.label || param.id; // Set text again
+
                 // Add event listener
                 input.addEventListener('change', (e) => {
                     this.handleSceneParameterChange(param.id, e.target.checked.toString());
                 });
                 
-                paramRow.innerHTML = '';
-                paramRow.appendChild(checkboxLabel);
                 break;
                 
             case 'select':
@@ -1225,13 +1273,14 @@ class DodecaSimulator {
                 input = document.createElement('select');
                 input.id = `scene-param-${param.id}`;
                 
-                // Add options
-                if (param.options && param.options.length > 0) {
+                // Add options (param.options should be an array of strings)
+                if (param.options && Array.isArray(param.options)) {
                     param.options.forEach(option => {
                         const optionEl = document.createElement('option');
                         optionEl.value = option;
                         optionEl.textContent = option;
-                        optionEl.selected = option === param.value;
+                        // param.value is the current selection string from C++
+                        optionEl.selected = (option === param.value); 
                         input.appendChild(optionEl);
                     });
                 }
@@ -1243,63 +1292,77 @@ class DodecaSimulator {
                 
                 paramRow.appendChild(input);
                 break;
+
+             default:
+                 // Handle unknown control types
+                 const unknownMsg = document.createElement('span');
+                 unknownMsg.textContent = `Unknown control: ${param.controlType}`;
+                 paramRow.appendChild(unknownMsg);
+                 break;
         }
         
         this.sceneParams.appendChild(paramRow);
     }
-    
+
     /**
      * Handle scene parameter change
      * @param {string} paramId - Parameter ID
-     * @param {any} value - New value
+     * @param {string} value - New value (always as a string)
      */
     handleSceneParameterChange(paramId, value) {
         console.log(`Scene parameter changed: ${paramId}, value: ${value}`);
         
-        if (!this.moduleReady) {
+        if (!this.moduleReady || typeof Module === 'undefined') {
             console.warn("Module not ready, can't update parameter");
             return;
         }
         
-        // Store the parameter value for the current scene
+        // Store the parameter value (as string) for the current scene
         if (!this.sceneParameters[this.currentSceneIndex]) {
             this.sceneParameters[this.currentSceneIndex] = {};
         }
         this.sceneParameters[this.currentSceneIndex][paramId] = value;
         
         try {
-            // Call the Embind function to update the parameter
-            Module.updateSceneParameter(paramId, value);
-        } catch (error) {
-            console.error(`Error updating parameter ${paramId}:`, error);
+            // Call the new C API function to update the parameter
+            // We need to pass strings
+            // Module._update_scene_parameter_string(paramId, value.toString()); 
             
-            // Fallback to the old method if Embind fails
-            try {
-                this.callModule('update_scene_parameter', paramId, parseFloat(value));
-            } catch (fallbackError) {
-                console.error(`Fallback also failed: ${fallbackError}`);
-            }
+            // --- MODIFIED: Use ccall for explicit type handling --- 
+            Module.ccall(
+                'update_scene_parameter_string', // C function name (without underscore)
+                null,                           // Return type (null for void)
+                ['string', 'string'],           // Argument types
+                [paramId, value.toString()]     // Arguments
+            );
+            // --- END MODIFIED --- 
+            
+        } catch (error) {
+            console.error(`Error updating parameter ${paramId} via C API:`, error);
         }
     }
     
     /**
-     * Check if the Embind functions are available
-     * @returns {boolean} True if Embind functions are available
+     * Check if the C API functions for JSON are available
+     * @returns {boolean} True if functions are available
      */
-    checkEmbindFunctions() {
-        // Check if the Embind functions are available
-        if (typeof Module.getSceneParameters !== 'function') {
-            console.warn("Module.getSceneParameters is not available");
-            return false;
+    checkCAPIFunctions() { // Renamed from checkEmbindFunctions
+        let available = true;
+        if (typeof Module._get_scene_parameters_json !== 'function') {
+            console.warn("Module._get_scene_parameters_json is not available");
+            available = false;
+        }
+        if (typeof Module._update_scene_parameter_string !== 'function') {
+            console.warn("Module._update_scene_parameter_string is not available");
+            available = false;
+        }
+         if (typeof Module._free_string_memory !== 'function') {
+            console.warn("Module._free_string_memory is not available");
+            available = false;
         }
         
-        if (typeof Module.updateSceneParameter !== 'function') {
-            console.warn("Module.updateSceneParameter is not available");
-            return false;
-        }
-        
-        console.log("Embind functions are available");
-        return true;
+        if(available) console.log("C API JSON functions are available");
+        return available;
     }
     
     /**

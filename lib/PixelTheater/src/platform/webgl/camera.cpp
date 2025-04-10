@@ -1,3 +1,5 @@
+#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+
 #include "PixelTheater/platform/webgl/camera.h"
 #include "PixelTheater/platform/webgl/math.h"
 #include <cmath>
@@ -246,4 +248,6 @@ void Camera::getModelRotationMatrix(float* matrix) {
     }
 }
 
-} // namespace PixelTheater 
+} // namespace PixelTheater
+
+#endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 

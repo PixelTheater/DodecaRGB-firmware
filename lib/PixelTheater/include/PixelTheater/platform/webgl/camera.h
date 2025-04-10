@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+
 namespace PixelTheater {
 
 // Camera class for managing view transformations
@@ -52,6 +54,8 @@ public:
     void setAutoRotationSpeed(float speed) { _autoRotationSpeed = speed; }
     float getAutoRotationSpeed() const { return _autoRotationSpeed; }
     
+    float _aspect_ratio = 1.0f; // Default aspect ratio
+
 private:
     // Camera position (fixed)
     float _cameraHeight;    // Height of camera (tripod height)

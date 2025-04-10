@@ -61,14 +61,15 @@ namespace PixelTheater {
 template<typename ModelDef>
 class Model {
 private:
-    const ModelDef& _def;
+    // REMOVED: const ModelDef& _def; // No longer need instance reference
     CRGB* _leds;  // Non-owning pointer to LED array
     std::array<Point, ModelDef::LED_COUNT> _points;
     std::array<Face, ModelDef::FACE_COUNT> _faces;
 
     void initialize() {
         // Initialize points
-        for(const auto& point_data : _def.POINTS) {
+        // Access ModelDef statically
+        for(const auto& point_data : ModelDef::POINTS) {
             _points[point_data.id] = Point(
                 point_data.id,
                 point_data.face_id,
@@ -81,10 +82,11 @@ private:
         // Initialize faces
         size_t led_offset = 0;
         for(size_t i = 0; i < ModelDef::FACE_COUNT; i++) {
-            const auto& face_data = _def.FACES[i];
-            const auto& face_type = _def.FACE_TYPES[face_data.type_id];
+            // Access ModelDef statically
+            const auto& face_data = ModelDef::FACES[i];
+            const auto& face_type = ModelDef::FACE_TYPES[face_data.type_id];
             auto& face = _faces[i];
-            
+
             // Create face instance
             face = Face(
                 face_type.type,
@@ -109,10 +111,9 @@ private:
     }
 
 public:
-    // Single constructor - requires LED array from Platform
-    explicit Model(const ModelDef& def, CRGB* leds) 
-        : _def(def)
-        , _leds(leds)
+    // Modified constructor - only requires LED array pointer
+    explicit Model(CRGB* leds)
+        : _leds(leds)
     {
         initialize();
     }

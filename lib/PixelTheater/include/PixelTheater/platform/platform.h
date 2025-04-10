@@ -27,8 +27,8 @@ public:
     virtual void setDither(uint8_t dither) = 0;
 
     // Timing Utilities
-    virtual float deltaTime() const = 0;
-    virtual uint32_t millis() const = 0;
+    virtual float deltaTime() = 0;
+    virtual uint32_t millis() = 0;
 
     // Random Number Utilities
     virtual uint8_t random8() = 0;
@@ -39,11 +39,11 @@ public:
     virtual float randomFloat(float max) = 0; // 0.0 to max
     virtual float randomFloat(float min, float max) = 0; // min to max
 
-    // Logging Utilities (Simplified signatures for now)
-    virtual void logInfo(const char* format) = 0;
-    virtual void logWarning(const char* format) = 0;
-    virtual void logError(const char* format) = 0;
-    // TODO: Revisit logging to support variadic arguments if needed
+    // Logging Utilities (Updated to support variadic arguments)
+    virtual void logInfo(const char* format, ...) = 0;
+    virtual void logWarning(const char* format, ...) = 0;
+    virtual void logError(const char* format, ...) = 0;
+    // Removed TODO
 };
 
 // FastLED-compatible helper function implementations for native environment

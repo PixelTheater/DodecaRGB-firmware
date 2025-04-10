@@ -39,11 +39,11 @@ TEST_SUITE("Interface Wrappers") {
             platform_fixture = std::make_unique<NativePlatform>(PixelTheater::Fixtures::BasicPentagonModel::LED_COUNT);
             
             // 2. Create ModelDef instance (needed by Model constructor)
-            PixelTheater::Fixtures::BasicPentagonModel model_def_instance; 
+            // PixelTheater::Fixtures::BasicPentagonModel model_def_instance; // No longer needed
 
-            // 3. Create concrete Model, passing def and platform's LED buffer
+            // 3. Create concrete Model, passing platform's LED buffer
             auto concrete_model = std::make_unique<Model<PixelTheater::Fixtures::BasicPentagonModel>>(
-                model_def_instance,         // Pass the definition object
+                // model_def_instance,         // Removed old argument
                 platform_fixture->getLEDs() // Pass the LED buffer from platform
             );
             

@@ -7,7 +7,6 @@
 #include <array>
 
 namespace PixelTheater {
-namespace WebGL {
 
 // Simple vertex type for web visualization
 struct WebVertex {
@@ -43,7 +42,6 @@ struct WebModel {
     WebGeometry geometry;
 };
 
-} // namespace WebGL
 } // namespace PixelTheater
 
 #endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 

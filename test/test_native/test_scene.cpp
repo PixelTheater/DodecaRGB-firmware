@@ -77,9 +77,8 @@ TEST_SUITE("Scene (Refactored Tests - Manual Setup)") {
     TEST_CASE("Scene Lifecycle") {
         // Manual Fixture Setup
         auto platform = std::make_unique<NativePlatform>(BasicPentagonModel::LED_COUNT);
-        BasicPentagonModel model_def_instance;
         auto concrete_model = std::make_unique<Model<BasicPentagonModel>>(
-            model_def_instance, platform->getLEDs()
+            platform->getLEDs()
         );
         auto leds_wrapper = std::make_unique<LedBufferWrapper>(platform->getLEDs(), platform->getNumLEDs());
         auto model_wrapper = std::make_unique<ModelWrapper<BasicPentagonModel>>(std::move(concrete_model));
@@ -100,8 +99,9 @@ TEST_SUITE("Scene (Refactored Tests - Manual Setup)") {
     TEST_CASE("LED Access") {
         // Manual Fixture Setup (use LEDTestScene)
         auto platform = std::make_unique<NativePlatform>(BasicPentagonModel::LED_COUNT);
-        BasicPentagonModel model_def_instance;
-        auto concrete_model = std::make_unique<Model<BasicPentagonModel>>(model_def_instance, platform->getLEDs());
+        auto concrete_model = std::make_unique<Model<BasicPentagonModel>>(
+            platform->getLEDs()
+        );
         auto leds_wrapper = std::make_unique<LedBufferWrapper>(platform->getLEDs(), platform->getNumLEDs());
         auto model_wrapper = std::make_unique<ModelWrapper<BasicPentagonModel>>(std::move(concrete_model));
         LEDTestScene test_scene; // Use derived class
@@ -118,8 +118,9 @@ TEST_SUITE("Scene (Refactored Tests - Manual Setup)") {
     TEST_CASE("Scene Metadata") {
         // Manual Fixture Setup (use MetadataTestScene)
         auto platform = std::make_unique<NativePlatform>(BasicPentagonModel::LED_COUNT);
-        BasicPentagonModel model_def_instance;
-        auto concrete_model = std::make_unique<Model<BasicPentagonModel>>(model_def_instance, platform->getLEDs());
+        auto concrete_model = std::make_unique<Model<BasicPentagonModel>>(
+            platform->getLEDs()
+        );
         auto leds_wrapper = std::make_unique<LedBufferWrapper>(platform->getLEDs(), platform->getNumLEDs());
         auto model_wrapper = std::make_unique<ModelWrapper<BasicPentagonModel>>(std::move(concrete_model));
         MetadataTestScene test_scene;

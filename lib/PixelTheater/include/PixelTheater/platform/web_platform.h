@@ -8,6 +8,7 @@
 #include "PixelTheater/model_def.h"
 #include "PixelTheater/platform/webgl/web_model.h"
 #include "PixelTheater/platform/webgl/shaders.h"
+#include "PixelTheater/model/point.h"
 
 #include <functional>
 #include <vector>
@@ -22,7 +23,6 @@
 #endif
 
 namespace PixelTheater {
-namespace WebGL {
 
 // Add zoom level enum
 enum class ZoomLevel {
@@ -134,9 +134,9 @@ public:
     void setMaxRefreshRate(uint8_t fps) override;
     void setDither(uint8_t dither) override;
 
-    // Timing Utilities (Overrides from Platform)
-    float deltaTime() const override;
-    uint32_t millis() const override;
+    // Timing Utilities
+    float deltaTime() override; // Non-const override
+    uint32_t millis() override; // Non-const override (must match base)
 
     // Random Number Utilities (Overrides from Platform)
     uint8_t random8() override;
@@ -147,10 +147,10 @@ public:
     float randomFloat(float max) override; // 0.0 to max
     float randomFloat(float min, float max) override; // min to max
 
-    // Logging Utilities (Overrides from Platform)
-    void logInfo(const char* format) override;
-    void logWarning(const char* format) override;
-    void logError(const char* format) override;
+    // Logging Utilities (Overrides from Platform, updated signatures)
+    void logInfo(const char* format, ...) override;
+    void logWarning(const char* format, ...) override;
+    void logError(const char* format, ...) override;
 
 #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
     // WebGL-specific methods - only available in web builds
@@ -197,67 +197,74 @@ private:
     void updateVertexBuffer();
     void renderFrame();
     void updateAutoRotation();
-    void renderMesh(const float* view_matrix, const float* projection_matrix, const float* model_matrix);
-    void renderLEDs(const float* view_matrix, const float* projection_matrix, const float* model_matrix);
+    void renderMesh(const float* viewMatrix, const float* projectionMatrix, const float* modelMatrix);
+    void renderLEDs(const float* viewMatrix, const float* projectionMatrix, const float* modelMatrix);
 
-    // Canvas parameters
-    int _canvas_width{800};
-    int _canvas_height{600};
-    
-    // WebGL rendering properties
-    float _led_size{DEFAULT_LED_SIZE};
-    float _atmosphere_intensity{DEFAULT_ATMOSPHERE_INTENSITY};
-    float _led_spacing{DEFAULT_LED_SPACING};
-    bool _show_mesh{true};
-    float _mesh_opacity{0.3f};
-    bool _show_wireframe{true};
-    
-    // Camera settings (Used by WebGL rendering)
-    float _camera_distance{CAMERA_NORMAL_DISTANCE};
-    
-    // Mouse interaction
-    bool _mouse_down{false};
-    int _last_mouse_x{0};
-    int _last_mouse_y{0};
-    
-    // Auto-rotation
-    bool _auto_rotation{false};
-    float _auto_rotation_speed{DEFAULT_AUTO_ROTATION_SPEED};
-    
-    // Shader resources
-    uint32_t _shader_program{0};
-    uint32_t _mesh_shader_program{0};
-    uint32_t _glow_shader_program{0};
-    uint32_t _blur_shader_program{0};
-    uint32_t _composite_shader_program{0};
-    uint32_t _vertex_buffer{0};
-    
-    // Performance metrics
-    int _frame_count{0};
-    double _last_frame_time{0};
-    double _last_auto_rotation_time{0};
-
-    // WebGL components (Need full definitions, so web-only)
+    // WebGL resource handles
     std::unique_ptr<WebGLRenderer> _renderer;
     std::unique_ptr<MeshGenerator> _mesh_generator;
+    std::unique_ptr<Camera> _camera;
     
-    // Model data (Web-specific type)
-    std::vector<WebVertex> _led_positions;  // Cached LED positions from WebModel
-    // --- End of Web-Specific Private Section --- 
-#endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+    // Shader programs
+    GLuint _led_shader_program = 0;
+    GLuint _mesh_shader_program = 0;
+    GLuint _glow_shader_program = 0;
+    GLuint _blur_shader_program = 0;
+    GLuint _composite_shader_program = 0;
 
-    // Common member variables (Declared outside the #ifdef)
-    std::unique_ptr<Camera> _camera; // Camera defined in camera.h (not guarded)
+    // Vertex Buffer Objects (VBOs) and Vertex Array Objects (VAOs)
+    GLuint _led_vbo = 0;
+    GLuint _led_vao = 0;
+    GLuint _mesh_vbo = 0;
+    GLuint _mesh_ibo = 0; // Index Buffer Object
+    GLuint _mesh_vao = 0;
+    size_t _mesh_index_count = 0;
 
-    // LED data (Common)
-    CRGB* _leds{nullptr}; // Pointer provided/managed externally or by platform
-    uint16_t _num_leds{0};
-    uint8_t _brightness{DEFAULT_BRIGHTNESS};
-    uint8_t _max_refresh_rate{0}; // Common platform setting
-    uint8_t _dither{0};           // Common platform setting
+    // Framebuffer for post-processing
+    GLuint _framebuffer = 0;
+    GLuint _render_texture = 0;
+    GLuint _depth_renderbuffer = 0;
+    GLuint _quad_vao = 0;
+    GLuint _quad_vbo = 0;
+
+    // LED data
+    CRGB* _leds = nullptr;
+    uint16_t _num_leds = 0;
+    std::vector<Point> _led_positions; // Store pre-transformed positions
+    
+    // Platform settings
+    uint8_t _brightness = DEFAULT_BRIGHTNESS;
+    float _led_size = DEFAULT_LED_SIZE;
+    float _atmosphere_intensity = DEFAULT_ATMOSPHERE_INTENSITY;
+    float _led_spacing = DEFAULT_LED_SPACING;
+    bool _show_mesh = true;
+    float _mesh_opacity = 0.3f;
+    bool _show_wireframe = false;
+
+    // Auto-rotation state
+    bool _auto_rotation = false;
+    float _auto_rotation_speed = DEFAULT_AUTO_ROTATION_SPEED;
+    double _last_auto_rotation_time = 0.0;
+    
+    // Mouse interaction state
+    bool _is_dragging = false;
+    int _last_mouse_x = 0;
+    int _last_mouse_y = 0;
+    bool _shift_key_down = false;
+    
+    // Canvas dimensions
+    int _canvas_width = 800;
+    int _canvas_height = 600;
+    
+    // Performance tracking
+    uint8_t _max_refresh_rate = 60;
+    uint8_t _dither = 1; // Assuming default dither is ON
+    double _last_frame_time = 0.0;
+    unsigned int _frame_count = 0;
+    
+    double _last_delta_time = 0.0; // ADDED for deltaTime calculation
+
+#endif // End of Web-Specific Private Section
 };
 
-} // namespace WebGL
-} // namespace PixelTheater 
-
-// Outer #endif REMOVED earlier was correct. 
+} // namespace PixelTheater

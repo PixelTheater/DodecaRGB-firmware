@@ -52,12 +52,9 @@ struct SceneHelperFixture {
         // 1. Create platform
         platform = std::make_unique<NativePlatform>(BasicPentagonModel::LED_COUNT);
         
-        // 2. Create ModelDef instance
-        BasicPentagonModel model_def_instance;
-
-        // 3. Create concrete Model 
+        // 2. Create concrete Model 
         auto concrete_model = std::make_unique<Model<BasicPentagonModel>>(
-            model_def_instance, platform->getLEDs()
+            platform->getLEDs()
         );
         
         // 4. Create wrappers (these will be passed to scene.connect)

@@ -18,6 +18,9 @@
 #ifdef PLATFORM_TEENSY // Only include FastLED platform specifics for Teensy builds
 #include "PixelTheater/platform/fastled_platform.h"
 #endif
+#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+#include "PixelTheater/platform/web_platform.h" // Include WebPlatform definition needed
+#endif
 #include "PixelTheater/model/model.h"
 #include "PixelTheater/model_def.h"
 #include "PixelTheater/core/model_wrapper.h" // Include wrapper header
@@ -32,7 +35,10 @@ namespace PixelTheater {
     // Forward declare specific platform/model if needed for templates
     class NativePlatform;
 #ifdef PLATFORM_TEENSY // Only forward declare FastLED platform for Teensy builds
-    class FastLEDPlatform; 
+    class FastLEDPlatform;
+#endif
+#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+    class WebPlatform; // Forward declaration might still be good practice
 #endif
     template<typename TModelDef> class Model;
     template<typename TModelDef> class ModelWrapper;
@@ -95,6 +101,14 @@ public:
     void useFastLEDPlatform(::CRGB* leds, size_t num_leds);
 #endif
 
+    /**
+     * @brief Initialize the Theater to use the WebPlatform.
+     * 
+     * @tparam TModelDef The specific ModelDefinition struct for the geometry.
+     */
+    template<typename TModelDef>
+    void useWebPlatform();
+
     // --- Scene Management (Task 9) ---
     template<typename SceneType>
     void addScene();
@@ -111,6 +125,13 @@ public:
     Scene* currentScene();
     const Scene* currentScene() const;
     size_t sceneCount() const;
+
+    // --- ADDED: Platform Access --- 
+    Platform* platform();
+    const Platform* platform() const;
+
+    // --- ADDED: Scene Control --- 
+    bool setScene(size_t index);
 
 protected:
     // Core components managed by the Theater
@@ -173,23 +194,29 @@ void Theater::useFastLEDPlatform(::CRGB* leds, size_t num_leds) {
 
 template<typename TModelDef, typename TPlatform>
 void Theater::internal_prepare(std::unique_ptr<TPlatform> platform) {
-    if (!platform) {
-        // Cannot log, just return
-         return; 
+    if (initialized_) {
+        Log::warning("Theater already initialized. Ignoring call.");
+        return;
     }
-    platform_ = std::move(platform);
-    TModelDef model_def_instance;
+
+    platform_ = std::move(platform); // Store platform
+    assert(platform_ && "Platform cannot be null");
+
+    // Create concrete model 
+    // BasicPentagonModel model_def_instance; // Old way - def not needed directly
     auto concrete_model = std::make_unique<Model<TModelDef>>(
-        model_def_instance, 
-        platform_->getLEDs() 
+        // model_def_instance, // Removed old arg
+        platform_->getLEDs()  // Pass ONLY the LED buffer
     );
+    assert(concrete_model && "Failed to create concrete model");
+
+    // Create wrappers
     model_ = std::make_unique<ModelWrapper<TModelDef>>(std::move(concrete_model));
-    leds_ = std::make_unique<LedBufferWrapper>(
-        platform_->getLEDs(), 
-        platform_->getNumLEDs()
-    );
+    leds_ = std::make_unique<LedBufferWrapper>(platform_->getLEDs(), platform_->getNumLEDs());
+    
     initialized_ = true;
-    if (platform_) platform_->logInfo("Theater initialized.");
+    // Log::info("Theater initialized with Platform: %s, Model: %s", typeid(TPlatform).name(), typeid(TModelDef).name()); // RTTI disabled
+    Log::info("Theater initialized."); // Use generic message
 }
 
 template<typename SceneType>
@@ -207,5 +234,50 @@ void Theater::addScene() {
         current_scene_ = scene_ptr;
     }
 }
+
+// --- ADDED Guarded Implementation for useWebPlatform ---
+#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+
+// Implementation of useWebPlatform (directly in header for template visibility)
+template<typename TModelDef>
+void Theater::useWebPlatform() {
+    if (initialized_) {
+        printf("[WARN] Theater::useWebPlatform called after initialization.\n");
+        return;
+    }
+    auto platform = std::make_unique<PixelTheater::WebPlatform>();
+    // Assume WebPlatform constructor/external call handles its specific init
+
+    // Use std::move for derived-to-base unique_ptr assignment
+    platform_ = std::move(platform);
+
+    // Initialize WebPlatform with the model definition - crucial step!
+    // Ensure platform_ is valid before using it.
+    if (platform_) {
+        auto* web_platform_ptr = static_cast<PixelTheater::WebPlatform*>(platform_.get());
+        web_platform_ptr->initializeWithModel<TModelDef>(); // Call the template method
+    } else {
+        printf("[ERROR] Theater::useWebPlatform - Failed to store platform pointer.\n");
+        initialized_ = false;
+        return; // Cannot proceed without platform
+    }
+
+    // Create model and LED wrappers using the platform's LEDs
+    // REMOVED: TModelDef model_def_instance; // Don't create instance!
+    auto concrete_model = std::make_unique<Model<TModelDef>>(
+        // REMOVED: model_def_instance, // Pass only leds pointer
+        platform_->getLEDs() // Get LEDs from the platform_ pointer
+    );
+    model_ = std::make_unique<ModelWrapper<TModelDef>>(std::move(concrete_model));
+    leds_ = std::make_unique<LedBufferWrapper>(
+        platform_->getLEDs(),
+        platform_->getNumLEDs()
+    );
+
+    initialized_ = true;
+    if (platform_) platform_->logInfo("Theater initialized with WebPlatform.");
+    // Removed redundant error check here, handled above
+}
+#endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
 
 } // namespace PixelTheater 

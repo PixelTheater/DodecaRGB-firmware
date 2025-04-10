@@ -11,9 +11,16 @@
 #include <cstdio>
 #include <cmath> // Needed for M_PI
 #include <algorithm> // Needed for std::find_if
+#include <cstdlib> // Needed for malloc, free
+#include <cstring> // Needed for strcpy (use strncpy for safety)
+#include <iomanip> // For escaping potentially
+
+// <<< REMOVED EXTRA INCLUDE BASE PLATFORM >>>
+// #include "PixelTheater/platform/platform.h"
+
 #include "PixelTheater/theater.h"
-#include "PixelTheater/platform/web_platform.h"
-#include "PixelTheater/model/model.h"
+// REMOVED: #include "PixelTheater/platform/web_platform.h" // Should be included via theater.h now
+// #include "PixelTheater/model/model.h" // Not needed directly anymore
 #include "PixelTheater/core/log.h" // For logging
 #include "PixelTheater/params/param_value.h" // For ParamValue
 #include "PixelTheater/params/param_schema.h" // For SceneParameterSchema
@@ -50,12 +57,52 @@ struct SceneParameter {
     std::vector<std::string> options;  // For select parameters
 };
 
+// C-compatible struct for parameter data
+// IMPORTANT: Keep layout simple, C-compatible types. No std::string etc.
+// We will handle strings via char pointers.
+struct CSceneParameter {
+    char* id;           // Pointer to string in WASM memory
+    char* label;        // Pointer to string in WASM memory
+    char* controlType;  // Pointer to string in WASM memory
+    char* value;        // Pointer to string in WASM memory
+    char* type;         // Pointer to string in WASM memory
+    float min;
+    float max;
+    float step;
+    // NOTE: Skipping 'options' for simplicity in this C API first attempt
+};
+
+// --- ADDED: JSON Escape Helper (copied/adapted from param_schema.cpp) ---
+std::string escape_json_helper(const std::string& s) {
+    std::ostringstream o;
+    for (char c : s) {
+        switch (c) {
+            case '"': o << "\\\""; break;
+            case '\\': o << "\\\\"; break;
+            case '\b': o << "\\b"; break;
+            case '\f': o << "\\f"; break;
+            case '\n': o << "\\n"; break;
+            case '\r': o << "\\r"; break;
+            case '\t': o << "\\t"; break;
+            default:
+                if ('\x00' <= c && c <= '\x1f') {
+                    // Control characters need unicode escaping
+                    o << "\\u" << std::hex << std::setw(4) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(c));
+                } else {
+                    o << c;
+                }
+        }
+    }
+    return o.str();
+}
+// --- End JSON Escape Helper ---
+
 // Create a WebSimulator class to encapsulate all the functionality
 class WebSimulator {
-private:
+public: // Made public for easier C access
     // Member variables
     std::unique_ptr<PixelTheater::Theater> theater;
-    int current_scene = 0;
+    int current_scene = 0; // Still potentially useful for UI state?
     int frame_count = 0;
     
 public:
@@ -74,11 +121,11 @@ public:
             if (!theater) {
                 theater = std::make_unique<PixelTheater::Theater>();
                 // Call useWebPlatform to initialize platform, model, leds
-                theater->useWebPlatform<ModelDef>(); 
+                theater->useWebPlatform<ModelDef>(); // Uses template definition from theater.h
                 
                 // Apply initial settings (Platform access through Theater)
                 if (auto* platform = theater->platform()) { // CORRECT: Use platform()
-                    auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
+                    auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
                     if (web_platform) {
                          web_platform->setBrightness(200); // Example initial brightness
                          web_platform->setZoomLevel(1); 
@@ -110,7 +157,7 @@ public:
             PixelTheater::Log::info("%d scenes added.", theater->sceneCount()); // Use info
             
             // Set the default scene (first scene) using Theater::setScene
-            bool success = theater->setScene(0); // Set initial scene via Theater
+            bool success = theater->setScene(0); // CORRECT: Use setScene
             if (success) {
                 current_scene = 0;
                  PixelTheater::Log::info("Initial scene set via Theater: %s", 
@@ -139,7 +186,7 @@ public:
             
             // Update and render the current scene via Theater
             BENCHMARK_START("update");
-            theater->update(); // THEATER handles scene tick and platform show
+            theater->update(); // CORRECT: Call theater update
             BENCHMARK_END();
             
         } catch (const std::exception& e) {
@@ -149,7 +196,7 @@ public:
         }
     }
     
-    // Scene management
+    // --- Scene Management --- 
     void setScene(int sceneIndex) {
         if (!theater) {
             PixelTheater::Log::error("Theater not initialized in setScene");
@@ -166,7 +213,7 @@ public:
         size_t index = static_cast<size_t>(sceneIndex);
 
         // Delegate scene change to Theater
-        bool success = theater->setScene(index);
+        bool success = theater->setScene(index); // CORRECT: Use setScene
 
         if (success) {
             current_scene = sceneIndex;
@@ -180,12 +227,21 @@ public:
     int getSceneCount() {
         return theater ? static_cast<int>(theater->sceneCount()) : 0; // CORRECT: Use sceneCount()
     }
+
+    // Get a pointer to a specific scene (used by C interface)
+    PixelTheater::Scene* getScene(int scene_index) { 
+        if (!theater) return nullptr;
+        if (scene_index < 0 || static_cast<size_t>(scene_index) >= theater->sceneCount()) { // CORRECT: Use sceneCount()
+            return nullptr;
+        }
+        return &theater->scene(static_cast<size_t>(scene_index)); 
+    }
     
-    // Set brightness
+    // --- Platform Interaction (Brightness, Rotation, Zoom, etc.) --- 
     void setBrightness(float brightness) {
         if (theater) {
             if (auto* platform = theater->platform()) { // CORRECT: Use platform()
-                auto* webPlatform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
+                auto* webPlatform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
                 if (webPlatform) {
                     webPlatform->setBrightness(brightness);
                 } else {
@@ -197,10 +253,9 @@ public:
         }
     }
     
-    // Get current brightness
     float getBrightness() {
         if (theater && theater->platform()) { // CORRECT: Use platform()
-            auto* platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(theater->platform()); // CORRECT: Use platform()
+            auto* platform = dynamic_cast<PixelTheater::WebPlatform*>(theater->platform()); // Use PixelTheater::WebPlatform
              if (platform) {
                 return platform->getBrightness();
              } else {
@@ -210,13 +265,12 @@ public:
         return 0.0f; // Default or error value
     }
     
-    // Rotation management
     void updateRotation(float delta_x, float delta_y) {
         if (theater) {
             if (auto* platform = theater->platform()) { // CORRECT: Use platform()
-                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
+                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
                 if (web_platform) {
-                    web_platform->updateRotation(-delta_x, -delta_y); // Inverted the deltas
+                    web_platform->updateRotation(-delta_x, -delta_y); 
                 } else {
                     PixelTheater::Log::warning("Platform is not a WebPlatform in updateRotation");
                 }
@@ -231,7 +285,7 @@ public:
     void resetRotation() {
         if (theater) {
             if (auto* platform = theater->platform()) { // CORRECT: Use platform()
-                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
+                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
                 if (web_platform) {
                     web_platform->resetRotation();
                 } else {
@@ -245,11 +299,10 @@ public:
         }
     }
     
-    // Auto-rotation
     void setAutoRotation(bool enabled, float speed) {
         if (theater) {
             if (auto* platform = theater->platform()) { // CORRECT: Use platform()
-                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
+                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
                 if (web_platform) {
                     web_platform->setAutoRotation(enabled, speed);
                 }
@@ -257,11 +310,10 @@ public:
         }
     }
     
-    // Zoom levels
     void setZoomLevel(int zoom_level) {
         if (theater) {
             if (auto* platform = theater->platform()) { // CORRECT: Use platform()
-                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
+                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
                 if (web_platform) {
                     web_platform->setZoomLevel(zoom_level);
                 }
@@ -269,177 +321,52 @@ public:
         }
     }
     
-    // Benchmarking
+    // --- Debugging & Info --- 
     void showBenchmarkReport() {
-        // (Implementation seems okay, uses emscripten_get_now and BENCHMARK_REPORT)
         static int last_frame_count = 0;
         static double last_time = emscripten_get_now() / 1000.0;
-        static double fps = 60.0; // Default assumption
+        static double fps = 60.0; 
         
         double current_time = emscripten_get_now() / 1000.0;
         double elapsed = current_time - last_time;
         
-        if (elapsed > 0.5) { // Update FPS calculation every half second
+        if (elapsed > 0.5) { 
             int frame_diff = frame_count - last_frame_count;
             fps = frame_diff / elapsed;
             
-            // Print benchmark report
             PixelTheater::Log::info("FPS: %.2f", fps);
             BENCHMARK_REPORT();
             
-            // Reset counters
             last_frame_count = frame_count;
             last_time = current_time;
         }
     }
     
-    // Debug mode toggle
     void toggleDebugMode() {
         g_debug_mode = !g_debug_mode;
         PixelTheater::Log::info("Debug mode: %s", (g_debug_mode ? "ON" : "OFF"));
     }
     
-    // Get scene name by index
-    void getSceneName(int scene_index, char* buffer, int buffer_size) {
-        if (!buffer || buffer_size <= 0) {
-            PixelTheater::Log::error("Invalid buffer provided to getSceneName");
-            return;
-        }
-        
-        std::string name = "Unknown Scene";
-        
-        // Use the simulator's own methods to get count and scene pointer
-        int count = this->getSceneCount(); // Use simulator's getter
-        if (theater && scene_index >= 0 && scene_index < count) { // Use count variable
-            PixelTheater::Scene* scene = this->getScene(scene_index); // Use simulator's getter
-            if (scene) {
-                name = scene->name();
-                PixelTheater::Log::info("Retrieved name for scene %d: '%s'", scene_index, name.c_str());
-            } else {
-                PixelTheater::Log::warning("Scene pointer is null for index %d", scene_index);
-            }
-        } else {
-             PixelTheater::Log::error("Invalid scene index or theater not initialized: %d", scene_index);
-        }
-        
-        // Copy name safely
-        strncpy(buffer, name.c_str(), buffer_size - 1);
-        buffer[buffer_size - 1] = '\0'; // Ensure null termination
-        
-        PixelTheater::Log::info("Copied name to buffer: '%s'", buffer);
-    }
-    
-    // LED appearance settings
-    void setLEDSize(float size) {
-        if (theater) {
-            PixelTheater::Log::info("Setting LED size to: %f", size);
-            if (auto* platform = theater->platform()) { // CORRECT: Use platform()
-                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
-                if (web_platform) {
-                    web_platform->setLEDSize(size);
-                }
-            }
-        }
-    }
-    
-    float getLEDSize() const {
-        if (theater && theater->platform()) { // CORRECT: Use platform()
-            auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(theater->platform()); // CORRECT: Use platform()
-            if (web_platform) {
-                return web_platform->getLEDSize();
-            }
-        }
-        return 0.0f;
-    }
-    
-    // Atmosphere effect control
-    void setAtmosphereIntensity(float intensity) {
-        if (theater) {
-             if (auto* platform = theater->platform()) { // CORRECT: Use platform()
-                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
-                if (web_platform) {
-                    web_platform->setAtmosphereIntensity(intensity);
-                } else {
-                    PixelTheater::Log::warning("Platform not a WebPlatform in setAtmosphereIntensity");
-                }
-             } else {
-                 PixelTheater::Log::warning("Platform not initialized for atmosphere setting");
-             }
-        }
-    }
-    
-    float getAtmosphereIntensity() const {
-        if (theater && theater->platform()) { // CORRECT: Use platform()
-             auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(theater->platform()); // CORRECT: Use platform()
-             if (web_platform) {
-                return web_platform->getAtmosphereIntensity();
-            }
-        }
-        return PixelTheater::WebGL::WebPlatform::DEFAULT_ATMOSPHERE_INTENSITY;
-    }
-    
-    // Mesh visualization controls
-    void setShowMesh(bool show) {
-        if (theater) {
-            if (auto* platform = theater->platform()) { // CORRECT: Use platform()
-                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
-                if (web_platform) {
-                    web_platform->setShowMesh(show);
-                     PixelTheater::Log::info("Set mesh visibility: %s", (show ? "ON" : "OFF"));
-                }
-            }
-        }
-    }
-    
-    bool getShowMesh() const {
-        if (theater && theater->platform()) { // CORRECT: Use platform()
-            auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(theater->platform()); // CORRECT: Use platform()
-            if (web_platform) {
-                return web_platform->getShowMesh();
-            }
-        }
-        return false;
-    }
-    
-    void setMeshOpacity(float opacity) {
-        if (theater) {
-             if (auto* platform = theater->platform()) { // CORRECT: Use platform()
-                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
-                if (web_platform) {
-                    web_platform->setMeshOpacity(opacity);
-                     PixelTheater::Log::info("Set mesh opacity: %.2f", opacity);
-                }
-            }
-        }
-    }
-    
-    float getMeshOpacity() const {
-        if (theater && theater->platform()) { // CORRECT: Use platform()
-             auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(theater->platform()); // CORRECT: Use platform()
-             if (web_platform) {
-                return web_platform->getMeshOpacity();
-            }
-        }
-        return 0.3f; // Default value
-    }
-    
-    // LED count
+    // Get LED count from the platform
     int getLEDCount() const {
         if (theater && theater->platform()) { // CORRECT: Use platform()
-            auto* platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(theater->platform());
-            if(platform) return platform->getNumLEDs();
+             auto* platform = dynamic_cast<PixelTheater::WebPlatform*>(theater->platform()); // Use PixelTheater::WebPlatform
+             if(platform) return platform->getNumLEDs();
         }
         return 0;
     }
     
-    // Get FPS
+    // Get FPS (Placeholder)
     float getFPS() const {
-        // We could implement a better FPS counter here
         return 60.0f; // Default
     }
-    
-    // Get all parameters for the current scene
+
+    // --- Scene Parameter Interaction --- 
     std::vector<SceneParameter> getSceneParameters() {
+        // <<< ADDED LOG >>>
+        PixelTheater::Log::info("***** C++ WebSimulator::getSceneParameters ENTRY POINT *****");
+        // <<< END ADDED LOG >>>
+
         std::vector<SceneParameter> result;
         if (!theater) return result;
         
@@ -451,7 +378,8 @@ public:
         
         try {
             auto schema = scene->parameter_schema();
-            PixelTheater::Log::info("Getting parameters for scene: %s", scene->name().c_str());
+            PixelTheater::Log::info("C++ getSceneParameters: Found %zu parameters for scene '%s'", 
+                                  schema.parameters.size(), scene->name().c_str());
             
             for (const auto& param : schema.parameters) {
                 SceneParameter p;
@@ -467,25 +395,14 @@ public:
                     return 0.01f;
                 };
                 
-                // Get current value via scene->settings proxy
-                // Note: The original code used scene->settings().get_value() - 
-                // If the proxy [] operator is intended, that should be used.
-                // Assuming scene->settings is the SettingsProxy object.
-                // We need to know if SettingsProxy provides .get_value() or relies on [] operator.
-                // Let's assume SettingsProxy uses operator[] for now, matching TestScene fix.
-
                 if (param.type == "switch") {
                     p.controlType = "checkbox";
-                    bool value = scene->settings[param.name]; // Use operator[]
+                    bool value = scene->settings[param.name]; 
                     p.value = value ? "true" : "false";
                     PixelTheater::Log::info("  Param %s (switch): %s", param.name.c_str(), p.value.c_str());
                 } 
                 else if (param.type == "select") {
                     p.controlType = "select";
-                    // Select might store as string or int index, assume string for now
-                    // ParamValue value = scene->settings.get_value(param.name); // Assuming get_value exists on proxy for non-implicit types
-                    // p.value = value.as_string(); 
-                    // Let's defer fixing select/string params until we confirm proxy access method
                     p.value = "TODO: Fix select access"; // Placeholder
                     p.options = param.options;
                     PixelTheater::Log::info("  Param %s (select): %s", param.name.c_str(), p.value.c_str());
@@ -493,15 +410,15 @@ public:
                 else { // Numeric types
                     p.controlType = "slider";
                     if (param.type == "count") {
-                        int intValue = scene->settings[param.name]; // Use operator[]
+                        int intValue = scene->settings[param.name]; 
                         if (intValue == 0 && param.default_int != 0) { 
                              intValue = param.default_int;
                              PixelTheater::Log::info("  Param %s (count): using default %d", param.name.c_str(), intValue);
                         }
                         p.value = std::to_string(intValue);
                         PixelTheater::Log::info("  Param %s (count): %s", param.name.c_str(), p.value.c_str());
-                    } else { // Other numeric (float-based)
-                        float floatValue = scene->settings[param.name]; // Use operator[]
+                    } else { 
+                        float floatValue = scene->settings[param.name]; 
                         if (floatValue == 0.0f && param.default_float != 0.0f) { 
                              floatValue = param.default_float;
                              PixelTheater::Log::info("  Param %s (%s): using default %f", param.name.c_str(), param.type.c_str(), floatValue);
@@ -527,7 +444,6 @@ public:
         return result;
     }
     
-    // Update a parameter in the current scene
     void updateSceneParameter(std::string param_id, std::string value) {
         if (!theater) return;
         auto* scene = theater->currentScene();
@@ -536,16 +452,14 @@ public:
             return;
         }
         
-        // Use scene's settings proxy
         auto& settings = scene->settings;
         
-        if (!settings.has_parameter(param_id)) { // Assuming has_parameter is on proxy
+        if (!settings.has_parameter(param_id)) { 
             PixelTheater::Log::warning("Parameter not found in scene settings: %s", param_id.c_str());
             return;
         }
         
         try {
-            // Get schema to know the type
             auto schema = scene->parameter_schema();
             auto it = std::find_if(schema.parameters.begin(), schema.parameters.end(),
                 [&param_id](const auto& param) { return param.name == param_id; });
@@ -555,19 +469,17 @@ public:
                 return;
             }
             
-            // Update using the proxy's operator[] = overload
             if (it->type == "switch") {
                 settings[param_id] = (value == "true");
             } else if (it->type == "select") {
-                // Select might need explicit ParamValue construction or string assignment?
                  PixelTheater::Log::warning("TODO: Fix select parameter update for %s", param_id.c_str());
-                 // settings[param_id] = value; // ??? Need to confirm proxy assignment
             } else if (it->type == "count") {
                  settings[param_id] = std::stoi(value); 
-            } else { // Float types
+            } else { 
                  settings[param_id] = std::stof(value);
             }
             
+            // Log the update attempt
             PixelTheater::Log::info("Updated parameter %s to %s", param_id.c_str(), value.c_str());
 
         } catch (const std::invalid_argument& ia) {
@@ -579,52 +491,133 @@ public:
         }
     }
 
-    // Add this public method to the WebSimulator class (in the public: section)
-    // This method also needs updating if Scene base class changed
-    PixelTheater::Scene* getScene(int scene_index) { // Return base Scene*
-        if (!theater) return nullptr;
-        if (scene_index < 0 || static_cast<size_t>(scene_index) >= theater->sceneCount()) { // CORRECT: Use sceneCount()
-            return nullptr;
+    // --- Appearance Settings --- 
+    void setLEDSize(float size) {
+        if (theater) {
+            if (auto* platform = theater->platform()) { // CORRECT: Use platform()
+                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
+                if (web_platform) {
+                    web_platform->setLEDSize(size);
+                }
+            }
         }
-        // Theater::scene returns Scene&, return its address
-        return &theater->scene(static_cast<size_t>(scene_index)); 
+    }
+    
+    float getLEDSize() const {
+        if (theater && theater->platform()) { // CORRECT: Use platform()
+            auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(theater->platform()); // Use PixelTheater::WebPlatform
+            if (web_platform) {
+                return web_platform->getLEDSize();
+            }
+        }
+        return 0.0f;
+    }
+    
+    void setAtmosphereIntensity(float intensity) {
+        if (theater) {
+             if (auto* platform = theater->platform()) { // CORRECT: Use platform()
+                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
+                if (web_platform) {
+                    web_platform->setAtmosphereIntensity(intensity);
+                } else {
+                    PixelTheater::Log::warning("Platform not a WebPlatform in setAtmosphereIntensity");
+                }
+             } else {
+                 PixelTheater::Log::warning("Platform not initialized for atmosphere setting");
+             }
+        }
+    }
+    
+    float getAtmosphereIntensity() const {
+        if (theater && theater->platform()) { // CORRECT: Use platform()
+             auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(theater->platform()); // Use PixelTheater::WebPlatform
+             if (web_platform) {
+                return web_platform->getAtmosphereIntensity();
+            }
+        }
+        return PixelTheater::WebPlatform::DEFAULT_ATMOSPHERE_INTENSITY;
+    }
+    
+    void setShowMesh(bool show) {
+        if (theater) {
+            if (auto* platform = theater->platform()) { // CORRECT: Use platform()
+                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
+                if (web_platform) {
+                    web_platform->setShowMesh(show);
+                     PixelTheater::Log::info("Set mesh visibility: %s", (show ? "ON" : "OFF"));
+                }
+            }
+        }
+    }
+    
+    bool getShowMesh() const {
+        if (theater && theater->platform()) { // CORRECT: Use platform()
+            auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(theater->platform()); // Use PixelTheater::WebPlatform
+            if (web_platform) {
+                return web_platform->getShowMesh();
+            }
+        }
+        return false;
+    }
+    
+    void setMeshOpacity(float opacity) {
+        if (theater) {
+             if (auto* platform = theater->platform()) { // CORRECT: Use platform()
+                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
+                if (web_platform) {
+                    web_platform->setMeshOpacity(opacity);
+                     PixelTheater::Log::info("Set mesh opacity: %.2f", opacity);
+                }
+            }
+        }
+    }
+    
+    float getMeshOpacity() const {
+        if (theater && theater->platform()) { // CORRECT: Use platform()
+             auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(theater->platform()); // Use PixelTheater::WebPlatform
+             if (web_platform) {
+                return web_platform->getMeshOpacity();
+            }
+        }
+        return 0.3f; // Default value
+    }
+    
+    // Needs to be public to be called from C function
+    void onCanvasResize(int width, int height) {
+        if (theater && theater->platform()) { // CORRECT: Use platform()
+             auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(theater->platform()); // Use PixelTheater::WebPlatform
+             if (web_platform) {
+                 web_platform->onCanvasResize(width, height);
+             }
+        }
     }
 };
 
-// Create a global WebSimulator instance
+// --- Global Instance & Main Loop --- 
+
+// Create a global WebSimulator instance (managed by JS lifecycle)
 static std::unique_ptr<WebSimulator> g_simulator;
 
-// Forward declarations of functions used in main
-extern "C" {
-    bool init_simulator();
-    void update_simulator();
-}
-
-// Main function (not extern "C")
+// Main function - sets up Emscripten main loop
 int main() {
-    // Initialize the simulator
-    if (!init_simulator()) {
-        std::cerr << "Failed to initialize simulator" << std::endl;
-        return 1;
-    }
-    
-    // Set up the animation loop
+    PixelTheater::Log::info("main() called. Waiting for init_simulator()...");
     emscripten_set_main_loop([]() {
-        update_simulator();
-    }, 0, 1);  // 0 = no FPS limit, 1 = simulate infinite loop
-    
+        if (g_simulator) { g_simulator->update(); }
+    }, 0, 1); 
     return 0;
 }
 
-// JavaScript interface functions
+// Helper function to escape JSON strings (Keep)
+// std::string escape_json_string(const std::string& s) { ... } // Assumed exists
+
 extern "C" {
 
 EMSCRIPTEN_KEEPALIVE
 bool init_simulator() {
-    PixelTheater::Log::info("init_simulator() called.");
+    PixelTheater::Log::info("-----> C function init_simulator() called. <-----");
     if (g_simulator) {
         PixelTheater::Log::warning("Simulator already initialized.");
-        return true; // Or false? Depending on desired re-init behavior
+        return true; 
     }
     try {
         g_simulator = std::make_unique<WebSimulator>();
@@ -634,24 +627,24 @@ bool init_simulator() {
         } else {
              PixelTheater::Log::error("Simulator initialization failed.");
         }
+        PixelTheater::Log::info("-----> C function init_simulator() returning: %s <-----", success ? "true" : "false");
         return success;
     } catch (const std::exception& e) {
         PixelTheater::Log::error("Exception during simulator initialization: %s", e.what());
-        g_simulator.reset(); // Ensure simulator is null on failure
+        g_simulator.reset(); 
+        PixelTheater::Log::info("-----> C function init_simulator() returning: false (exception) <-----");
         return false;
     } catch (...) {
         PixelTheater::Log::error("Unknown exception during simulator initialization.");
         g_simulator.reset();
+        PixelTheater::Log::info("-----> C function init_simulator() returning: false (unknown exception) <-----");
         return false;
     }
 }
 
-EMSCRIPTEN_KEEPALIVE
-void update_simulator() {
-    if (g_simulator) {
-        g_simulator->update();
-    }
-}
+// update_simulator is called by the main loop setup in main()
+// EMSCRIPTEN_KEEPALIVE
+// void update_simulator() { ... }
 
 EMSCRIPTEN_KEEPALIVE
 void change_scene(int sceneIndex) {
@@ -663,12 +656,71 @@ void change_scene(int sceneIndex) {
 }
 
 EMSCRIPTEN_KEEPALIVE
-int get_num_scenes() {
+int get_num_scenes() { // NEW NAME to match JS
     return g_simulator ? g_simulator->getSceneCount() : 0;
 }
 
+// --- REVISED get_current_scene_metadata_json (No goto) ---
 EMSCRIPTEN_KEEPALIVE
-void set_brightness(float brightness) {
+const char* get_current_scene_metadata_json() {
+    const char* default_empty_json = "{}";
+    char* allocated_json_str = nullptr;
+
+    // Helper lambda to allocate and return default JSON
+    auto allocate_default = [&]() -> char* {
+        char* default_str = (char*)malloc(strlen(default_empty_json) + 1);
+        if (!default_str) {
+            PixelTheater::Log::error("Failed to allocate memory for default empty JSON string!");
+            return (char*)"{}"; // Last resort static literal
+        }
+        strcpy(default_str, default_empty_json);
+        return default_str;
+    };
+
+    // Initial checks
+    if (!g_simulator || !g_simulator->theater) {
+        PixelTheater::Log::error("get_current_scene_metadata_json: Simulator not initialized!");
+        return allocate_default(); // Early return
+    }
+
+    PixelTheater::Scene* scene = g_simulator->theater->currentScene();
+    if (!scene) {
+        PixelTheater::Log::warning("get_current_scene_metadata_json: No current scene in Theater.");
+        return allocate_default(); // Early return
+    }
+
+    try {
+        std::ostringstream json_stream;
+        json_stream << "{";
+        json_stream << "\"name\":\"" << escape_json_helper(scene->name()) << "\",";
+        json_stream << "\"description\":\"" << escape_json_helper(scene->description()) << "\",";
+        json_stream << "\"version\":\"" << escape_json_helper(scene->version()) << "\",";
+        json_stream << "\"author\":\"" << escape_json_helper(scene->author()) << "\""; 
+        json_stream << "}";
+
+        std::string json_string = json_stream.str();
+        PixelTheater::Log::info("Generated Metadata JSON for '%s': %s", scene->name().c_str(), json_string.c_str());
+
+        // Allocate memory and copy
+        allocated_json_str = (char*)malloc(json_string.length() + 1);
+        if (!allocated_json_str) {
+            PixelTheater::Log::error("Failed to allocate memory for metadata JSON string!");
+            return allocate_default(); // Early return on allocation failure
+        }
+        strcpy(allocated_json_str, json_string.c_str());
+        return allocated_json_str; // Return successfully allocated string
+
+    } catch (const std::exception& e) {
+        PixelTheater::Log::error("Error creating metadata JSON: %s", e.what());
+        return allocate_default(); // Early return on exception
+    } catch (...) {
+         PixelTheater::Log::error("Unknown error creating metadata JSON");
+        return allocate_default(); // Early return on unknown exception
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+void set_brightness(float brightness) { 
     if (g_simulator) {
         g_simulator->setBrightness(brightness);
     } else {
@@ -677,7 +729,7 @@ void set_brightness(float brightness) {
 }
 
 EMSCRIPTEN_KEEPALIVE
-float get_brightness() {
+float get_brightness() { 
     return g_simulator ? g_simulator->getBrightness() : 0.0f;
 }
 
@@ -732,28 +784,17 @@ void toggle_debug_mode() {
         g_simulator->toggleDebugMode();
     } else {
         PixelTheater::Log::error("toggle_debug_mode called before simulator initialized.");
-        // Toggle global flag anyway? Or require init?
-        // g_debug_mode = !g_debug_mode; 
     }
 }
 
 EMSCRIPTEN_KEEPALIVE
-const char* get_scene_name(int scene_index) {
-    static std::string sceneNameStr = "Invalid Scene"; // Default/error value
-    if (g_simulator) {
-        // Get the scene pointer using the simulator's helper method
-        PixelTheater::Scene* scene = g_simulator->getScene(scene_index); // CORRECT: Use simulator's getScene
-        if (scene) {
-             sceneNameStr = scene->name(); // Get name from the Scene object
-             return sceneNameStr.c_str();
-        } else {
-            PixelTheater::Log::warning("get_scene_name: getScene(%d) returned null.", scene_index);
-        }
-    } else {
-         PixelTheater::Log::error("get_scene_name called before simulator initialized.");
-    }
-    // Return default/error value if simulator not ready or scene not found
-    return sceneNameStr.c_str(); 
+int get_led_count() {
+    return g_simulator ? g_simulator->getLEDCount() : 0;
+}
+
+EMSCRIPTEN_KEEPALIVE
+float get_fps() {
+    return g_simulator ? g_simulator->getFPS() : 0.0f;
 }
 
 EMSCRIPTEN_KEEPALIVE
@@ -781,7 +822,7 @@ void set_atmosphere_intensity(float intensity) {
 
 EMSCRIPTEN_KEEPALIVE
 float get_atmosphere_intensity() {
-    return g_simulator ? g_simulator->getAtmosphereIntensity() : PixelTheater::WebGL::WebPlatform::DEFAULT_ATMOSPHERE_INTENSITY;
+    return g_simulator ? g_simulator->getAtmosphereIntensity() : PixelTheater::WebPlatform::DEFAULT_ATMOSPHERE_INTENSITY;
 }
 
 EMSCRIPTEN_KEEPALIVE
@@ -813,92 +854,211 @@ float get_mesh_opacity() {
 }
 
 EMSCRIPTEN_KEEPALIVE
-int get_led_count() {
-    return g_simulator ? g_simulator->getLEDCount() : 0;
-}
-
-EMSCRIPTEN_KEEPALIVE
-float get_fps() {
-    return g_simulator ? g_simulator->getFPS() : 0.0f;
-}
-
-EMSCRIPTEN_KEEPALIVE
 void log_message(const char* message) {
-    // Simple passthrough for JS logging
     PixelTheater::Log::info("[JS] %s", message);
 }
 
 // NEW C function to handle canvas resize events from JS
 EMSCRIPTEN_KEEPALIVE
-void resize_canvas(int width, int height) {
-    if (g_simulator) {
-        // Assuming WebSimulator has an onCanvasResize method
-        // Need to verify WebSimulator has this method and its signature
-        // g_simulator->onCanvasResize(width, height); 
-        PixelTheater::Log::info("resize_canvas called: %d x %d (WebSimulator::onCanvasResize not yet implemented/called)", width, height);
-    } else {
-        PixelTheater::Log::error("resize_canvas called before simulator initialized.");
-    }
-}
-
-} // extern "C"
-
-// Helper functions for Emscripten bindings
-emscripten::val get_scene_parameters_wrapper() {
-    if (!g_simulator) return emscripten::val::array();
-    
-    auto params = g_simulator->getSceneParameters(); // Calls the C++ method
-    auto result = emscripten::val::array();
-    
-    for (size_t i = 0; i < params.size(); i++) {
-        auto param = emscripten::val::object();
-        param.set("id", params[i].id);
-        param.set("label", params[i].label);
-        param.set("controlType", params[i].controlType);
-        param.set("value", params[i].value); // Value is already stringified
-        param.set("type", params[i].type);  
-        param.set("min", params[i].min);
-        param.set("max", params[i].max);
-        param.set("step", params[i].step);
-        
-        // Convert options vector to JS array if present
-        if (!params[i].options.empty()) {
-             auto options = emscripten::val::array();
-             for (size_t j = 0; j < params[i].options.size(); j++) {
-                 options.set(j, params[i].options[j]);
-             }
-             param.set("options", options);
+void resizeCanvas(int width, int height) { // Function name matches export
+    if (g_simulator && g_simulator->theater) { 
+        if (auto* platform = g_simulator->theater->platform()) { 
+            auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
+            if (web_platform) {
+                web_platform->onCanvasResize(width, height); // Call the method
+                PixelTheater::Log::info("Called WebPlatform::onCanvasResize(%d, %d)", width, height);
+            } else {
+                PixelTheater::Log::error("resizeCanvas: Platform is not a WebPlatform.");
+            }
         } else {
-            param.set("options", emscripten::val::null()); // Use null if no options
+            PixelTheater::Log::error("resizeCanvas: Theater has no platform.");
         }
-        
-        result.set(i, param);
+    } else {
+        PixelTheater::Log::error("resizeCanvas called before simulator/theater initialized.");
     }
+}
+
+// Helper to allocate and copy string for C API (Keep for potential future use)
+char* allocateAndCopyString(const std::string& str) {
+    if (str.empty()) {
+        return nullptr; // Return null if string is empty
+    }
+    // Allocate memory (+1 for null terminator)
+    char* cstr = (char*)malloc(str.length() + 1);
+    if (!cstr) {
+         PixelTheater::Log::error("C_API: Failed to malloc string buffer!");
+         return nullptr; // Allocation failed
+    }
+    // Copy string content
+    strncpy(cstr, str.c_str(), str.length());
+    cstr[str.length()] = '\0'; // Ensure null termination
+    return cstr;
+}
+
+// --- REMOVED C API TEST FUNCTION ---
+// --- END REMOVED TEST FUNCTION ---
+
+// Original C API function (Commented out for test)
+/*
+EMSCRIPTEN_KEEPALIVE
+CSceneParameter* get_scene_parameters_c_api(int* out_count) {
+    // ... original implementation ...
+}
+*/
+
+// Free function (Keep but won't be called in this test)
+EMSCRIPTEN_KEEPALIVE
+void free_scene_parameters_c_api(CSceneParameter* params_array, int count) { /* ... */ }
+
+EMSCRIPTEN_KEEPALIVE
+void free_string_memory(char* ptr) {
+    if (ptr) {
+        // Optional: Add a log to confirm freeing
+        // printf(">>> C++ free_string_memory freeing ptr %p\n", ptr);
+        free(ptr);
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+const char* get_scene_parameters_json() {
+    if (!g_simulator) {
+        PixelTheater::Log::error("get_scene_parameters_json: Simulator not initialized!");
+        return nullptr;
+    }
+    auto* scene = g_simulator->theater->currentScene();
+    if (!scene) {
+        PixelTheater::Log::warning("get_scene_parameters_json: No current scene in Theater.");
+        return nullptr;
+    }
+
+    std::stringstream json_stream;
+    json_stream << "[";
+    bool first_param = true;
+
+    try {
+        auto schema = scene->parameter_schema();
+        PixelTheater::Log::info("get_scene_parameters_json: Found %zu parameters for scene '%s'", 
+                              schema.parameters.size(), scene->name().c_str());
+
+        for (const auto& param : schema.parameters) {
+            if (!first_param) {
+                json_stream << ",";
+            }
+            first_param = false;
+
+            json_stream << "{";
+            json_stream << "\"id\":\"" << escape_json_helper(param.name) << "\",";
+            json_stream << "\"label\":\"" << escape_json_helper(param.name) << "\","; // Using name as label for now
+            json_stream << "\"type\":\"" << escape_json_helper(param.type) << "\",";
+
+            std::string controlType = "slider";
+            std::string valueStr = "";
+            std::vector<std::string> options;
+            float min_val = 0.0f, max_val = 1.0f, step_val = 0.01f;
+
+            if (param.type == "switch") {
+                controlType = "checkbox";
+                bool value = scene->settings[param.name];
+                valueStr = value ? "true" : "false";
+            } else if (param.type == "select") {
+                controlType = "select";
+                valueStr = "TODO"; // Placeholder - Need to access current selection
+                options = param.options;
+            } else { // Numeric types
+                controlType = "slider";
+                if (param.type == "count") {
+                    int intValue = scene->settings[param.name];
+                     if (intValue == 0 && param.default_int != 0) { intValue = param.default_int; }
+                    valueStr = std::to_string(intValue);
+                } else { 
+                    float floatValue = scene->settings[param.name];
+                    if (floatValue == 0.0f && param.default_float != 0.0f) { floatValue = param.default_float; }
+                    std::stringstream ss_val;
+                    ss_val.precision(6);
+                    ss_val << std::fixed << floatValue;
+                    valueStr = ss_val.str();
+                }
+                min_val = param.min_value;
+                max_val = param.max_value;
+                // Calculate step
+                if (param.type == "ratio" || param.type == "signed_ratio") step_val = 0.01f;
+                else if (param.type == "angle" || param.type == "signed_angle") step_val = M_PI / 100.0f;
+                else if (param.type == "range") step_val = (max_val != min_val) ? (max_val - min_val) / 100.0f : 0.01f;
+                else if (param.type == "count") step_val = 1.0f;
+                else step_val = 0.01f; 
+            }
+
+            json_stream << "\"controlType\":\"" << escape_json_helper(controlType) << "\",";
+            // Value needs quotes only if it's not a number or boolean
+            if (controlType == "checkbox") {
+                 json_stream << "\"value\":" << valueStr << ","; // Booleans don't need quotes in JSON
+            } else {
+                 json_stream << "\"value\":\"" << escape_json_helper(valueStr) << "\",";
+            }
+           
+            if (controlType == "slider") {
+                json_stream << "\"min\":" << min_val << ",";
+                json_stream << "\"max\":" << max_val << ",";
+                json_stream << "\"step\":" << step_val << ",";
+            }
+            if (controlType == "select") {
+                json_stream << "\"options\":[";
+                bool first_option = true;
+                for(const auto& opt : options) {
+                    if (!first_option) json_stream << ",";
+                    first_option = false;
+                    json_stream << "\"" << escape_json_helper(opt) << "\"";
+                }
+                 json_stream << "],";
+            }
+
+            // Remove trailing comma if any fields were added
+             json_stream.seekp(-1, std::ios_base::end);
+             json_stream << "}"; // Close param object
+        }
+
+    } catch (const std::exception& e) {
+        PixelTheater::Log::error("Error creating JSON for scene parameters: %s", e.what());
+        json_stream.str(""); // Clear stream on error
+        json_stream << "[]"; // Return empty array on error
+    }
+
+    json_stream << "]"; // Close main array
+
+    std::string json_string = json_stream.str();
+    PixelTheater::Log::info("Generated JSON: %s", json_string.c_str());
+
+    // Allocate memory and copy the string
+    char* json_c_str = (char*)malloc(json_string.length() + 1);
+    if (!json_c_str) {
+        PixelTheater::Log::error("Failed to allocate memory for JSON string!");
+        return nullptr;
+    }
+    strcpy(json_c_str, json_string.c_str());
+
+    return json_c_str;
+}
+
+EMSCRIPTEN_KEEPALIVE
+void update_scene_parameter_string(const char* param_id_cstr, const char* value_cstr) {
+    // --- ADDED LOG --- 
+    PixelTheater::Log::info("--> C function update_scene_parameter_string ENTERED for %s <--", param_id_cstr ? param_id_cstr : "NULL");
+    // --- END ADDED LOG --- 
     
-    return result;
+    if (!g_simulator) {
+         PixelTheater::Log::error("update_scene_parameter_string: Simulator not initialized!");
+         return;
+    }
+    if (!param_id_cstr || !value_cstr) {
+        PixelTheater::Log::error("update_scene_parameter_string: Received null parameter ID or value.");
+        return;
+    }
+    std::string param_id(param_id_cstr);
+    std::string value(value_cstr);
+    PixelTheater::Log::info("update_scene_parameter_string: Updating '%s' to '%s'", param_id.c_str(), value.c_str());
+    g_simulator->updateSceneParameter(param_id, value); // Call the existing class method
 }
 
-void update_scene_parameter_wrapper(std::string param_id, std::string value) {
-    if (!g_simulator) return;
-    g_simulator->updateSceneParameter(param_id, value); // Calls the C++ method
-}
-
-EMSCRIPTEN_BINDINGS(scene_parameters) {
-    using namespace emscripten;
-    
-    // Bind the wrapper functions for parameter handling
-    function("getSceneParameters", &get_scene_parameters_wrapper);
-    function("updateSceneParameter", &update_scene_parameter_wrapper);
-}
-
-// NOTE: Other simple C functions are exported via EXPORTED_FUNCTIONS in the Makefile/
-// build script, not necessarily requiring explicit EMSCRIPTEN_BINDINGS here unless
-// complex types (like std::string return for get_scene_name) need special handling.
-
-// Binding get_scene_name (returns const char*) doesn't strictly need EMSCRIPTEN_BINDINGS
-// if it's listed in EXPORTED_FUNCTIONS, but doesn't hurt.
-// EMSCRIPTEN_BINDINGS(scene_names) {
-//     emscripten::function("get_scene_name", &get_scene_name);
-// }
+} // extern "C" <-- Ensure this closes the ENTIRE block
 
 #endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 

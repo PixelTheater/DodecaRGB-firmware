@@ -941,6 +941,26 @@ async function createWasm() {
 }
 
 // === Body ===
+var ASM_CONSTS = {
+  133216: () => Math.floor(Math.random() * 256),
+  133260: () => Math.floor(Math.random() * 256),
+  133304: () => Math.floor(Math.random() * 256),
+  133348: $0 => Math.floor(Math.random() * $0),
+  133391: ($0, $1) => Math.floor(Math.random() * $0 + $1),
+  133439: () => Math.random(),
+  133465: $0 => Math.random() * $0,
+  133496: ($0, $1) => Math.random() * $0 + $1,
+  133532: $0 => {
+    console.log("[INFO] " + UTF8ToString($0));
+  },
+  133579: $0 => {
+    console.warn("[WARN] " + UTF8ToString($0));
+  },
+  133627: $0 => {
+    console.error("[ERR ] " + UTF8ToString($0));
+  }
+};
+
 // end include: preamble.js
 class ExitStatus {
   name="ExitStatus";
@@ -1303,685 +1323,6 @@ var ___handle_stack_overflow = requested => {
 
 var __abort_js = () => abort("native code called abort()");
 
-var embindRepr = v => {
-  if (v === null) {
-    return "null";
-  }
-  var t = typeof v;
-  if (t === "object" || t === "array" || t === "function") {
-    return v.toString();
-  } else {
-    return "" + v;
-  }
-};
-
-var embind_init_charCodes = () => {
-  var codes = new Array(256);
-  for (var i = 0; i < 256; ++i) {
-    codes[i] = String.fromCharCode(i);
-  }
-  embind_charCodes = codes;
-};
-
-var embind_charCodes;
-
-var readLatin1String = ptr => {
-  var ret = "";
-  var c = ptr;
-  while (SAFE_HEAP_LOAD(c, 1, 1)) {
-    ret += embind_charCodes[SAFE_HEAP_LOAD(c++, 1, 1)];
-  }
-  return ret;
-};
-
-var awaitingDependencies = {};
-
-var registeredTypes = {};
-
-var typeDependencies = {};
-
-var BindingError;
-
-var throwBindingError = message => {
-  throw new BindingError(message);
-};
-
-var InternalError;
-
-var throwInternalError = message => {
-  throw new InternalError(message);
-};
-
-var whenDependentTypesAreResolved = (myTypes, dependentTypes, getTypeConverters) => {
-  myTypes.forEach(type => typeDependencies[type] = dependentTypes);
-  function onComplete(typeConverters) {
-    var myTypeConverters = getTypeConverters(typeConverters);
-    if (myTypeConverters.length !== myTypes.length) {
-      throwInternalError("Mismatched type converter count");
-    }
-    for (var i = 0; i < myTypes.length; ++i) {
-      registerType(myTypes[i], myTypeConverters[i]);
-    }
-  }
-  var typeConverters = new Array(dependentTypes.length);
-  var unregisteredTypes = [];
-  var registered = 0;
-  dependentTypes.forEach((dt, i) => {
-    if (registeredTypes.hasOwnProperty(dt)) {
-      typeConverters[i] = registeredTypes[dt];
-    } else {
-      unregisteredTypes.push(dt);
-      if (!awaitingDependencies.hasOwnProperty(dt)) {
-        awaitingDependencies[dt] = [];
-      }
-      awaitingDependencies[dt].push(() => {
-        typeConverters[i] = registeredTypes[dt];
-        ++registered;
-        if (registered === unregisteredTypes.length) {
-          onComplete(typeConverters);
-        }
-      });
-    }
-  });
-  if (0 === unregisteredTypes.length) {
-    onComplete(typeConverters);
-  }
-};
-
-/** @param {Object=} options */ function sharedRegisterType(rawType, registeredInstance, options = {}) {
-  var name = registeredInstance.name;
-  if (!rawType) {
-    throwBindingError(`type "${name}" must have a positive integer typeid pointer`);
-  }
-  if (registeredTypes.hasOwnProperty(rawType)) {
-    if (options.ignoreDuplicateRegistrations) {
-      return;
-    } else {
-      throwBindingError(`Cannot register type '${name}' twice`);
-    }
-  }
-  registeredTypes[rawType] = registeredInstance;
-  delete typeDependencies[rawType];
-  if (awaitingDependencies.hasOwnProperty(rawType)) {
-    var callbacks = awaitingDependencies[rawType];
-    delete awaitingDependencies[rawType];
-    callbacks.forEach(cb => cb());
-  }
-}
-
-/** @param {Object=} options */ function registerType(rawType, registeredInstance, options = {}) {
-  if (registeredInstance.argPackAdvance === undefined) {
-    throw new TypeError("registerType registeredInstance requires argPackAdvance");
-  }
-  return sharedRegisterType(rawType, registeredInstance, options);
-}
-
-var integerReadValueFromPointer = (name, width, signed) => {
-  // integers are quite common, so generate very specialized functions
-  switch (width) {
-   case 1:
-    return signed ? pointer => SAFE_HEAP_LOAD(pointer, 1, 0) : pointer => SAFE_HEAP_LOAD(pointer, 1, 1);
-
-   case 2:
-    return signed ? pointer => SAFE_HEAP_LOAD(((pointer) >> 1) * 2, 2, 0) : pointer => SAFE_HEAP_LOAD(((pointer) >> 1) * 2, 2, 1);
-
-   case 4:
-    return signed ? pointer => SAFE_HEAP_LOAD(((pointer) >> 2) * 4, 4, 0) : pointer => SAFE_HEAP_LOAD(((pointer) >> 2) * 4, 4, 1);
-
-   case 8:
-    return signed ? pointer => HEAP64[((pointer) >> 3)] : pointer => HEAPU64[((pointer) >> 3)];
-
-   default:
-    throw new TypeError(`invalid integer width (${width}): ${name}`);
-  }
-};
-
-/** @suppress {globalThis} */ var __embind_register_bigint = (primitiveType, name, size, minRange, maxRange) => {
-  name = readLatin1String(name);
-  var isUnsignedType = (name.indexOf("u") != -1);
-  // maxRange comes through as -1 for uint64_t (see issue 13902). Work around that temporarily
-  if (isUnsignedType) {
-    maxRange = (1n << 64n) - 1n;
-  }
-  registerType(primitiveType, {
-    name,
-    "fromWireType": value => value,
-    "toWireType": function(destructors, value) {
-      if (typeof value != "bigint" && typeof value != "number") {
-        throw new TypeError(`Cannot convert "${embindRepr(value)}" to ${this.name}`);
-      }
-      if (typeof value == "number") {
-        value = BigInt(value);
-      }
-      if (value < minRange || value > maxRange) {
-        throw new TypeError(`Passing a number "${embindRepr(value)}" from JS side to C/C++ side to an argument of type "${name}", which is outside the valid range [${minRange}, ${maxRange}]!`);
-      }
-      return value;
-    },
-    argPackAdvance: GenericWireTypeSize,
-    "readValueFromPointer": integerReadValueFromPointer(name, size, !isUnsignedType),
-    destructorFunction: null
-  });
-};
-
-var GenericWireTypeSize = 8;
-
-/** @suppress {globalThis} */ var __embind_register_bool = (rawType, name, trueValue, falseValue) => {
-  name = readLatin1String(name);
-  registerType(rawType, {
-    name,
-    "fromWireType": function(wt) {
-      // ambiguous emscripten ABI: sometimes return values are
-      // true or false, and sometimes integers (0 or 1)
-      return !!wt;
-    },
-    "toWireType": function(destructors, o) {
-      return o ? trueValue : falseValue;
-    },
-    argPackAdvance: GenericWireTypeSize,
-    "readValueFromPointer": function(pointer) {
-      return this["fromWireType"](SAFE_HEAP_LOAD(pointer, 1, 1));
-    },
-    destructorFunction: null
-  });
-};
-
-var emval_freelist = [];
-
-var emval_handles = [];
-
-var __emval_decref = handle => {
-  if (handle > 9 && 0 === --emval_handles[handle + 1]) {
-    assert(emval_handles[handle] !== undefined, `Decref for unallocated handle.`);
-    emval_handles[handle] = undefined;
-    emval_freelist.push(handle);
-  }
-};
-
-var count_emval_handles = () => emval_handles.length / 2 - 5 - emval_freelist.length;
-
-var init_emval = () => {
-  // reserve 0 and some special values. These never get de-allocated.
-  emval_handles.push(0, 1, undefined, 1, null, 1, true, 1, false, 1);
-  assert(emval_handles.length === 5 * 2);
-  Module["count_emval_handles"] = count_emval_handles;
-};
-
-var Emval = {
-  toValue: handle => {
-    if (!handle) {
-      throwBindingError("Cannot use deleted val. handle = " + handle);
-    }
-    // handle 2 is supposed to be `undefined`.
-    assert(handle === 2 || emval_handles[handle] !== undefined && handle % 2 === 0, `invalid handle: ${handle}`);
-    return emval_handles[handle];
-  },
-  toHandle: value => {
-    switch (value) {
-     case undefined:
-      return 2;
-
-     case null:
-      return 4;
-
-     case true:
-      return 6;
-
-     case false:
-      return 8;
-
-     default:
-      {
-        const handle = emval_freelist.pop() || emval_handles.length;
-        emval_handles[handle] = value;
-        emval_handles[handle + 1] = 1;
-        return handle;
-      }
-    }
-  }
-};
-
-/** @suppress {globalThis} */ function readPointer(pointer) {
-  return this["fromWireType"](SAFE_HEAP_LOAD(((pointer) >> 2) * 4, 4, 1));
-}
-
-var EmValType = {
-  name: "emscripten::val",
-  "fromWireType": handle => {
-    var rv = Emval.toValue(handle);
-    __emval_decref(handle);
-    return rv;
-  },
-  "toWireType": (destructors, value) => Emval.toHandle(value),
-  argPackAdvance: GenericWireTypeSize,
-  "readValueFromPointer": readPointer,
-  destructorFunction: null
-};
-
-var __embind_register_emval = rawType => registerType(rawType, EmValType);
-
-var floatReadValueFromPointer = (name, width) => {
-  switch (width) {
-   case 4:
-    return function(pointer) {
-      return this["fromWireType"](SAFE_HEAP_LOAD_D(((pointer) >> 2) * 4, 4, 0));
-    };
-
-   case 8:
-    return function(pointer) {
-      return this["fromWireType"](SAFE_HEAP_LOAD_D(((pointer) >> 3) * 8, 8, 0));
-    };
-
-   default:
-    throw new TypeError(`invalid float width (${width}): ${name}`);
-  }
-};
-
-var __embind_register_float = (rawType, name, size) => {
-  name = readLatin1String(name);
-  registerType(rawType, {
-    name,
-    "fromWireType": value => value,
-    "toWireType": (destructors, value) => {
-      if (typeof value != "number" && typeof value != "boolean") {
-        throw new TypeError(`Cannot convert ${embindRepr(value)} to ${this.name}`);
-      }
-      // The VM will perform JS to Wasm value conversion, according to the spec:
-      // https://www.w3.org/TR/wasm-js-api-1/#towebassemblyvalue
-      return value;
-    },
-    argPackAdvance: GenericWireTypeSize,
-    "readValueFromPointer": floatReadValueFromPointer(name, size),
-    destructorFunction: null
-  });
-};
-
-var createNamedFunction = (name, body) => Object.defineProperty(body, "name", {
-  value: name
-});
-
-var runDestructors = destructors => {
-  while (destructors.length) {
-    var ptr = destructors.pop();
-    var del = destructors.pop();
-    del(ptr);
-  }
-};
-
-function usesDestructorStack(argTypes) {
-  // Skip return value at index 0 - it's not deleted here.
-  for (var i = 1; i < argTypes.length; ++i) {
-    // The type does not define a destructor function - must use dynamic stack
-    if (argTypes[i] !== null && argTypes[i].destructorFunction === undefined) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function newFunc(constructor, argumentList) {
-  if (!(constructor instanceof Function)) {
-    throw new TypeError(`new_ called with constructor type ${typeof (constructor)} which is not a function`);
-  }
-  /*
-       * Previously, the following line was just:
-       *   function dummy() {};
-       * Unfortunately, Chrome was preserving 'dummy' as the object's name, even
-       * though at creation, the 'dummy' has the correct constructor name.  Thus,
-       * objects created with IMVU.new would show up in the debugger as 'dummy',
-       * which isn't very helpful.  Using IMVU.createNamedFunction addresses the
-       * issue.  Doubly-unfortunately, there's no way to write a test for this
-       * behavior.  -NRD 2013.02.22
-       */ var dummy = createNamedFunction(constructor.name || "unknownFunctionName", function() {});
-  dummy.prototype = constructor.prototype;
-  var obj = new dummy;
-  var r = constructor.apply(obj, argumentList);
-  return (r instanceof Object) ? r : obj;
-}
-
-function checkArgCount(numArgs, minArgs, maxArgs, humanName, throwBindingError) {
-  if (numArgs < minArgs || numArgs > maxArgs) {
-    var argCountMessage = minArgs == maxArgs ? minArgs : `${minArgs} to ${maxArgs}`;
-    throwBindingError(`function ${humanName} called with ${numArgs} arguments, expected ${argCountMessage}`);
-  }
-}
-
-function createJsInvoker(argTypes, isClassMethodFunc, returns, isAsync) {
-  var needsDestructorStack = usesDestructorStack(argTypes);
-  var argCount = argTypes.length - 2;
-  var argsList = [];
-  var argsListWired = [ "fn" ];
-  if (isClassMethodFunc) {
-    argsListWired.push("thisWired");
-  }
-  for (var i = 0; i < argCount; ++i) {
-    argsList.push(`arg${i}`);
-    argsListWired.push(`arg${i}Wired`);
-  }
-  argsList = argsList.join(",");
-  argsListWired = argsListWired.join(",");
-  var invokerFnBody = `return function (${argsList}) {\n`;
-  invokerFnBody += "checkArgCount(arguments.length, minArgs, maxArgs, humanName, throwBindingError);\n";
-  if (needsDestructorStack) {
-    invokerFnBody += "var destructors = [];\n";
-  }
-  var dtorStack = needsDestructorStack ? "destructors" : "null";
-  var args1 = [ "humanName", "throwBindingError", "invoker", "fn", "runDestructors", "retType", "classParam" ];
-  if (isClassMethodFunc) {
-    invokerFnBody += `var thisWired = classParam['toWireType'](${dtorStack}, this);\n`;
-  }
-  for (var i = 0; i < argCount; ++i) {
-    invokerFnBody += `var arg${i}Wired = argType${i}['toWireType'](${dtorStack}, arg${i});\n`;
-    args1.push(`argType${i}`);
-  }
-  invokerFnBody += (returns || isAsync ? "var rv = " : "") + `invoker(${argsListWired});\n`;
-  var returnVal = returns ? "rv" : "";
-  if (needsDestructorStack) {
-    invokerFnBody += "runDestructors(destructors);\n";
-  } else {
-    for (var i = isClassMethodFunc ? 1 : 2; i < argTypes.length; ++i) {
-      // Skip return value at index 0 - it's not deleted here. Also skip class type if not a method.
-      var paramName = (i === 1 ? "thisWired" : ("arg" + (i - 2) + "Wired"));
-      if (argTypes[i].destructorFunction !== null) {
-        invokerFnBody += `${paramName}_dtor(${paramName});\n`;
-        args1.push(`${paramName}_dtor`);
-      }
-    }
-  }
-  if (returns) {
-    invokerFnBody += "var ret = retType['fromWireType'](rv);\n" + "return ret;\n";
-  } else {}
-  invokerFnBody += "}\n";
-  args1.push("checkArgCount", "minArgs", "maxArgs");
-  invokerFnBody = `if (arguments.length !== ${args1.length}){ throw new Error(humanName + "Expected ${args1.length} closure arguments " + arguments.length + " given."); }\n${invokerFnBody}`;
-  return [ args1, invokerFnBody ];
-}
-
-function getRequiredArgCount(argTypes) {
-  var requiredArgCount = argTypes.length - 2;
-  for (var i = argTypes.length - 1; i >= 2; --i) {
-    if (!argTypes[i].optional) {
-      break;
-    }
-    requiredArgCount--;
-  }
-  return requiredArgCount;
-}
-
-function craftInvokerFunction(humanName, argTypes, classType, cppInvokerFunc, cppTargetFunc, /** boolean= */ isAsync) {
-  // humanName: a human-readable string name for the function to be generated.
-  // argTypes: An array that contains the embind type objects for all types in the function signature.
-  //    argTypes[0] is the type object for the function return value.
-  //    argTypes[1] is the type object for function this object/class type, or null if not crafting an invoker for a class method.
-  //    argTypes[2...] are the actual function parameters.
-  // classType: The embind type object for the class to be bound, or null if this is not a method of a class.
-  // cppInvokerFunc: JS Function object to the C++-side function that interops into C++ code.
-  // cppTargetFunc: Function pointer (an integer to FUNCTION_TABLE) to the target C++ function the cppInvokerFunc will end up calling.
-  // isAsync: Optional. If true, returns an async function. Async bindings are only supported with JSPI.
-  var argCount = argTypes.length;
-  if (argCount < 2) {
-    throwBindingError("argTypes array size mismatch! Must at least get return value and 'this' types!");
-  }
-  assert(!isAsync, "Async bindings are only supported with JSPI.");
-  var isClassMethodFunc = (argTypes[1] !== null && classType !== null);
-  // Free functions with signature "void function()" do not need an invoker that marshalls between wire types.
-  // TODO: This omits argument count check - enable only at -O3 or similar.
-  //    if (ENABLE_UNSAFE_OPTS && argCount == 2 && argTypes[0].name == "void" && !isClassMethodFunc) {
-  //       return FUNCTION_TABLE[fn];
-  //    }
-  // Determine if we need to use a dynamic stack to store the destructors for the function parameters.
-  // TODO: Remove this completely once all function invokers are being dynamically generated.
-  var needsDestructorStack = usesDestructorStack(argTypes);
-  var returns = (argTypes[0].name !== "void");
-  var expectedArgCount = argCount - 2;
-  var minArgs = getRequiredArgCount(argTypes);
-  // Builld the arguments that will be passed into the closure around the invoker
-  // function.
-  var closureArgs = [ humanName, throwBindingError, cppInvokerFunc, cppTargetFunc, runDestructors, argTypes[0], argTypes[1] ];
-  for (var i = 0; i < argCount - 2; ++i) {
-    closureArgs.push(argTypes[i + 2]);
-  }
-  if (!needsDestructorStack) {
-    for (var i = isClassMethodFunc ? 1 : 2; i < argTypes.length; ++i) {
-      // Skip return value at index 0 - it's not deleted here. Also skip class type if not a method.
-      if (argTypes[i].destructorFunction !== null) {
-        closureArgs.push(argTypes[i].destructorFunction);
-      }
-    }
-  }
-  closureArgs.push(checkArgCount, minArgs, expectedArgCount);
-  let [args, invokerFnBody] = createJsInvoker(argTypes, isClassMethodFunc, returns, isAsync);
-  args.push(invokerFnBody);
-  var invokerFn = newFunc(Function, args)(...closureArgs);
-  return createNamedFunction(humanName, invokerFn);
-}
-
-var ensureOverloadTable = (proto, methodName, humanName) => {
-  if (undefined === proto[methodName].overloadTable) {
-    var prevFunc = proto[methodName];
-    // Inject an overload resolver function that routes to the appropriate overload based on the number of arguments.
-    proto[methodName] = function(...args) {
-      // TODO This check can be removed in -O3 level "unsafe" optimizations.
-      if (!proto[methodName].overloadTable.hasOwnProperty(args.length)) {
-        throwBindingError(`Function '${humanName}' called with an invalid number of arguments (${args.length}) - expects one of (${proto[methodName].overloadTable})!`);
-      }
-      return proto[methodName].overloadTable[args.length].apply(this, args);
-    };
-    // Move the previous function into the overload table.
-    proto[methodName].overloadTable = [];
-    proto[methodName].overloadTable[prevFunc.argCount] = prevFunc;
-  }
-};
-
-/** @param {number=} numArguments */ var exposePublicSymbol = (name, value, numArguments) => {
-  if (Module.hasOwnProperty(name)) {
-    if (undefined === numArguments || (undefined !== Module[name].overloadTable && undefined !== Module[name].overloadTable[numArguments])) {
-      throwBindingError(`Cannot register public name '${name}' twice`);
-    }
-    // We are exposing a function with the same name as an existing function. Create an overload table and a function selector
-    // that routes between the two.
-    ensureOverloadTable(Module, name, name);
-    if (Module[name].overloadTable.hasOwnProperty(numArguments)) {
-      throwBindingError(`Cannot register multiple overloads of a function with the same number of arguments (${numArguments})!`);
-    }
-    // Add the new function into the overload table.
-    Module[name].overloadTable[numArguments] = value;
-  } else {
-    Module[name] = value;
-    Module[name].argCount = numArguments;
-  }
-};
-
-var heap32VectorToArray = (count, firstElement) => {
-  var array = [];
-  for (var i = 0; i < count; i++) {
-    // TODO(https://github.com/emscripten-core/emscripten/issues/17310):
-    // Find a way to hoist the `>> 2` or `>> 3` out of this loop.
-    array.push(SAFE_HEAP_LOAD((((firstElement) + (i * 4)) >> 2) * 4, 4, 1));
-  }
-  return array;
-};
-
-/** @param {number=} numArguments */ var replacePublicSymbol = (name, value, numArguments) => {
-  if (!Module.hasOwnProperty(name)) {
-    throwInternalError("Replacing nonexistent public symbol");
-  }
-  // If there's an overload table for this symbol, replace the symbol in the overload table instead.
-  if (undefined !== Module[name].overloadTable && undefined !== numArguments) {
-    Module[name].overloadTable[numArguments] = value;
-  } else {
-    Module[name] = value;
-    Module[name].argCount = numArguments;
-  }
-};
-
-var wasmTableMirror = [];
-
-/** @type {WebAssembly.Table} */ var wasmTable;
-
-var getWasmTableEntry = funcPtr => {
-  var func = wasmTableMirror[funcPtr];
-  if (!func) {
-    if (funcPtr >= wasmTableMirror.length) wasmTableMirror.length = funcPtr + 1;
-    /** @suppress {checkTypes} */ wasmTableMirror[funcPtr] = func = wasmTable.get(funcPtr);
-  }
-  /** @suppress {checkTypes} */ assert(wasmTable.get(funcPtr) == func, "JavaScript-side Wasm function table mirror is out of date!");
-  return func;
-};
-
-var embind__requireFunction = (signature, rawFunction) => {
-  signature = readLatin1String(signature);
-  function makeDynCaller() {
-    return getWasmTableEntry(rawFunction);
-  }
-  var fp = makeDynCaller();
-  if (typeof fp != "function") {
-    throwBindingError(`unknown function pointer with signature ${signature}: ${rawFunction}`);
-  }
-  return fp;
-};
-
-var extendError = (baseErrorType, errorName) => {
-  var errorClass = createNamedFunction(errorName, function(message) {
-    this.name = errorName;
-    this.message = message;
-    var stack = (new Error(message)).stack;
-    if (stack !== undefined) {
-      this.stack = this.toString() + "\n" + stack.replace(/^Error(:[^\n]*)?\n/, "");
-    }
-  });
-  errorClass.prototype = Object.create(baseErrorType.prototype);
-  errorClass.prototype.constructor = errorClass;
-  errorClass.prototype.toString = function() {
-    if (this.message === undefined) {
-      return this.name;
-    } else {
-      return `${this.name}: ${this.message}`;
-    }
-  };
-  return errorClass;
-};
-
-var UnboundTypeError;
-
-var getTypeName = type => {
-  var ptr = ___getTypeName(type);
-  var rv = readLatin1String(ptr);
-  _free(ptr);
-  return rv;
-};
-
-var throwUnboundTypeError = (message, types) => {
-  var unboundTypes = [];
-  var seen = {};
-  function visit(type) {
-    if (seen[type]) {
-      return;
-    }
-    if (registeredTypes[type]) {
-      return;
-    }
-    if (typeDependencies[type]) {
-      typeDependencies[type].forEach(visit);
-      return;
-    }
-    unboundTypes.push(type);
-    seen[type] = true;
-  }
-  types.forEach(visit);
-  throw new UnboundTypeError(`${message}: ` + unboundTypes.map(getTypeName).join([ ", " ]));
-};
-
-var getFunctionName = signature => {
-  signature = signature.trim();
-  const argsIndex = signature.indexOf("(");
-  if (argsIndex !== -1) {
-    assert(signature[signature.length - 1] == ")", "Parentheses for argument names should match.");
-    return signature.substr(0, argsIndex);
-  } else {
-    return signature;
-  }
-};
-
-var __embind_register_function = (name, argCount, rawArgTypesAddr, signature, rawInvoker, fn, isAsync, isNonnullReturn) => {
-  var argTypes = heap32VectorToArray(argCount, rawArgTypesAddr);
-  name = readLatin1String(name);
-  name = getFunctionName(name);
-  rawInvoker = embind__requireFunction(signature, rawInvoker);
-  exposePublicSymbol(name, function() {
-    throwUnboundTypeError(`Cannot call ${name} due to unbound types`, argTypes);
-  }, argCount - 1);
-  whenDependentTypesAreResolved([], argTypes, argTypes => {
-    var invokerArgsArray = [ argTypes[0], null ].concat(argTypes.slice(1));
-    replacePublicSymbol(name, craftInvokerFunction(name, invokerArgsArray, null, rawInvoker, fn, isAsync), argCount - 1);
-    return [];
-  });
-};
-
-/** @suppress {globalThis} */ var __embind_register_integer = (primitiveType, name, size, minRange, maxRange) => {
-  name = readLatin1String(name);
-  // LLVM doesn't have signed and unsigned 32-bit types, so u32 literals come
-  // out as 'i32 -1'. Always treat those as max u32.
-  if (maxRange === -1) {
-    maxRange = 4294967295;
-  }
-  var fromWireType = value => value;
-  if (minRange === 0) {
-    var bitshift = 32 - 8 * size;
-    fromWireType = value => (value << bitshift) >>> bitshift;
-  }
-  var isUnsignedType = (name.includes("unsigned"));
-  var checkAssertions = (value, toTypeName) => {
-    if (typeof value != "number" && typeof value != "boolean") {
-      throw new TypeError(`Cannot convert "${embindRepr(value)}" to ${toTypeName}`);
-    }
-    if (value < minRange || value > maxRange) {
-      throw new TypeError(`Passing a number "${embindRepr(value)}" from JS side to C/C++ side to an argument of type "${name}", which is outside the valid range [${minRange}, ${maxRange}]!`);
-    }
-  };
-  var toWireType;
-  if (isUnsignedType) {
-    toWireType = function(destructors, value) {
-      checkAssertions(value, this.name);
-      return value >>> 0;
-    };
-  } else {
-    toWireType = function(destructors, value) {
-      checkAssertions(value, this.name);
-      // The VM will perform JS to Wasm value conversion, according to the spec:
-      // https://www.w3.org/TR/wasm-js-api-1/#towebassemblyvalue
-      return value;
-    };
-  }
-  registerType(primitiveType, {
-    name,
-    "fromWireType": fromWireType,
-    "toWireType": toWireType,
-    argPackAdvance: GenericWireTypeSize,
-    "readValueFromPointer": integerReadValueFromPointer(name, size, minRange !== 0),
-    destructorFunction: null
-  });
-};
-
-var __embind_register_memory_view = (rawType, dataTypeIndex, name) => {
-  var typeMapping = [ Int8Array, Uint8Array, Int16Array, Uint16Array, Int32Array, Uint32Array, Float32Array, Float64Array, BigInt64Array, BigUint64Array ];
-  var TA = typeMapping[dataTypeIndex];
-  function decodeMemoryView(handle) {
-    var size = SAFE_HEAP_LOAD(((handle) >> 2) * 4, 4, 1);
-    var data = SAFE_HEAP_LOAD((((handle) + (4)) >> 2) * 4, 4, 1);
-    return new TA(HEAP8.buffer, data, size);
-  }
-  name = readLatin1String(name);
-  registerType(rawType, {
-    name,
-    "fromWireType": decodeMemoryView,
-    argPackAdvance: GenericWireTypeSize,
-    "readValueFromPointer": decodeMemoryView
-  }, {
-    ignoreDuplicateRegistrations: true
-  });
-};
-
 var stringToUTF8Array = (str, heap, outIdx, maxBytesToWrite) => {
   assert(typeof str === "string", `stringToUTF8Array expects a string (got ${typeof str})`);
   // Parameter maxBytesToWrite is not optional. Negative values, 0, null,
@@ -2056,326 +1397,6 @@ var lengthBytesUTF8 = str => {
     }
   }
   return len;
-};
-
-var __embind_register_std_string = (rawType, name) => {
-  name = readLatin1String(name);
-  var stdStringIsUTF8 = true;
-  registerType(rawType, {
-    name,
-    // For some method names we use string keys here since they are part of
-    // the public/external API and/or used by the runtime-generated code.
-    "fromWireType"(value) {
-      var length = SAFE_HEAP_LOAD(((value) >> 2) * 4, 4, 1);
-      var payload = value + 4;
-      var str;
-      if (stdStringIsUTF8) {
-        var decodeStartPtr = payload;
-        // Looping here to support possible embedded '0' bytes
-        for (var i = 0; i <= length; ++i) {
-          var currentBytePtr = payload + i;
-          if (i == length || SAFE_HEAP_LOAD(currentBytePtr, 1, 1) == 0) {
-            var maxRead = currentBytePtr - decodeStartPtr;
-            var stringSegment = UTF8ToString(decodeStartPtr, maxRead);
-            if (str === undefined) {
-              str = stringSegment;
-            } else {
-              str += String.fromCharCode(0);
-              str += stringSegment;
-            }
-            decodeStartPtr = currentBytePtr + 1;
-          }
-        }
-      } else {
-        var a = new Array(length);
-        for (var i = 0; i < length; ++i) {
-          a[i] = String.fromCharCode(SAFE_HEAP_LOAD(payload + i, 1, 1));
-        }
-        str = a.join("");
-      }
-      _free(value);
-      return str;
-    },
-    "toWireType"(destructors, value) {
-      if (value instanceof ArrayBuffer) {
-        value = new Uint8Array(value);
-      }
-      var length;
-      var valueIsOfTypeString = (typeof value == "string");
-      if (!(valueIsOfTypeString || value instanceof Uint8Array || value instanceof Uint8ClampedArray || value instanceof Int8Array)) {
-        throwBindingError("Cannot pass non-string to std::string");
-      }
-      if (stdStringIsUTF8 && valueIsOfTypeString) {
-        length = lengthBytesUTF8(value);
-      } else {
-        length = value.length;
-      }
-      // assumes POINTER_SIZE alignment
-      var base = _malloc(4 + length + 1);
-      var ptr = base + 4;
-      SAFE_HEAP_STORE(((base) >> 2) * 4, length, 4);
-      checkInt32(length);
-      if (stdStringIsUTF8 && valueIsOfTypeString) {
-        stringToUTF8(value, ptr, length + 1);
-      } else {
-        if (valueIsOfTypeString) {
-          for (var i = 0; i < length; ++i) {
-            var charCode = value.charCodeAt(i);
-            if (charCode > 255) {
-              _free(base);
-              throwBindingError("String has UTF-16 code units that do not fit in 8 bits");
-            }
-            SAFE_HEAP_STORE(ptr + i, charCode, 1);
-          }
-        } else {
-          for (var i = 0; i < length; ++i) {
-            SAFE_HEAP_STORE(ptr + i, value[i], 1);
-          }
-        }
-      }
-      if (destructors !== null) {
-        destructors.push(_free, base);
-      }
-      return base;
-    },
-    argPackAdvance: GenericWireTypeSize,
-    "readValueFromPointer": readPointer,
-    destructorFunction(ptr) {
-      _free(ptr);
-    }
-  });
-};
-
-var UTF16Decoder = typeof TextDecoder != "undefined" ? new TextDecoder("utf-16le") : undefined;
-
-var UTF16ToString = (ptr, maxBytesToRead) => {
-  assert(ptr % 2 == 0, "Pointer passed to UTF16ToString must be aligned to two bytes!");
-  var endPtr = ptr;
-  // TextDecoder needs to know the byte length in advance, it doesn't stop on
-  // null terminator by itself.
-  // Also, use the length info to avoid running tiny strings through
-  // TextDecoder, since .subarray() allocates garbage.
-  var idx = endPtr >> 1;
-  var maxIdx = idx + maxBytesToRead / 2;
-  // If maxBytesToRead is not passed explicitly, it will be undefined, and this
-  // will always evaluate to true. This saves on code size.
-  while (!(idx >= maxIdx) && SAFE_HEAP_LOAD(idx * 2, 2, 1)) ++idx;
-  endPtr = idx << 1;
-  if (endPtr - ptr > 32 && UTF16Decoder) return UTF16Decoder.decode(HEAPU8.subarray(ptr, endPtr));
-  // Fallback: decode without UTF16Decoder
-  var str = "";
-  // If maxBytesToRead is not passed explicitly, it will be undefined, and the
-  // for-loop's condition will always evaluate to true. The loop is then
-  // terminated on the first null char.
-  for (var i = 0; !(i >= maxBytesToRead / 2); ++i) {
-    var codeUnit = SAFE_HEAP_LOAD((((ptr) + (i * 2)) >> 1) * 2, 2, 0);
-    if (codeUnit == 0) break;
-    // fromCharCode constructs a character from a UTF-16 code unit, so we can
-    // pass the UTF16 string right through.
-    str += String.fromCharCode(codeUnit);
-  }
-  return str;
-};
-
-var stringToUTF16 = (str, outPtr, maxBytesToWrite) => {
-  assert(outPtr % 2 == 0, "Pointer passed to stringToUTF16 must be aligned to two bytes!");
-  assert(typeof maxBytesToWrite == "number", "stringToUTF16(str, outPtr, maxBytesToWrite) is missing the third parameter that specifies the length of the output buffer!");
-  // Backwards compatibility: if max bytes is not specified, assume unsafe unbounded write is allowed.
-  maxBytesToWrite ??= 2147483647;
-  if (maxBytesToWrite < 2) return 0;
-  maxBytesToWrite -= 2;
-  // Null terminator.
-  var startPtr = outPtr;
-  var numCharsToWrite = (maxBytesToWrite < str.length * 2) ? (maxBytesToWrite / 2) : str.length;
-  for (var i = 0; i < numCharsToWrite; ++i) {
-    // charCodeAt returns a UTF-16 encoded code unit, so it can be directly written to the HEAP.
-    var codeUnit = str.charCodeAt(i);
-    // possibly a lead surrogate
-    SAFE_HEAP_STORE(((outPtr) >> 1) * 2, codeUnit, 2);
-    checkInt16(codeUnit);
-    outPtr += 2;
-  }
-  // Null-terminate the pointer to the HEAP.
-  SAFE_HEAP_STORE(((outPtr) >> 1) * 2, 0, 2);
-  checkInt16(0);
-  return outPtr - startPtr;
-};
-
-var lengthBytesUTF16 = str => str.length * 2;
-
-var UTF32ToString = (ptr, maxBytesToRead) => {
-  assert(ptr % 4 == 0, "Pointer passed to UTF32ToString must be aligned to four bytes!");
-  var i = 0;
-  var str = "";
-  // If maxBytesToRead is not passed explicitly, it will be undefined, and this
-  // will always evaluate to true. This saves on code size.
-  while (!(i >= maxBytesToRead / 4)) {
-    var utf32 = SAFE_HEAP_LOAD((((ptr) + (i * 4)) >> 2) * 4, 4, 0);
-    if (utf32 == 0) break;
-    ++i;
-    // Gotcha: fromCharCode constructs a character from a UTF-16 encoded code (pair), not from a Unicode code point! So encode the code point to UTF-16 for constructing.
-    // See http://unicode.org/faq/utf_bom.html#utf16-3
-    if (utf32 >= 65536) {
-      var ch = utf32 - 65536;
-      str += String.fromCharCode(55296 | (ch >> 10), 56320 | (ch & 1023));
-    } else {
-      str += String.fromCharCode(utf32);
-    }
-  }
-  return str;
-};
-
-var stringToUTF32 = (str, outPtr, maxBytesToWrite) => {
-  assert(outPtr % 4 == 0, "Pointer passed to stringToUTF32 must be aligned to four bytes!");
-  assert(typeof maxBytesToWrite == "number", "stringToUTF32(str, outPtr, maxBytesToWrite) is missing the third parameter that specifies the length of the output buffer!");
-  // Backwards compatibility: if max bytes is not specified, assume unsafe unbounded write is allowed.
-  maxBytesToWrite ??= 2147483647;
-  if (maxBytesToWrite < 4) return 0;
-  var startPtr = outPtr;
-  var endPtr = startPtr + maxBytesToWrite - 4;
-  for (var i = 0; i < str.length; ++i) {
-    // Gotcha: charCodeAt returns a 16-bit word that is a UTF-16 encoded code unit, not a Unicode code point of the character! We must decode the string to UTF-32 to the heap.
-    // See http://unicode.org/faq/utf_bom.html#utf16-3
-    var codeUnit = str.charCodeAt(i);
-    // possibly a lead surrogate
-    if (codeUnit >= 55296 && codeUnit <= 57343) {
-      var trailSurrogate = str.charCodeAt(++i);
-      codeUnit = 65536 + ((codeUnit & 1023) << 10) | (trailSurrogate & 1023);
-    }
-    SAFE_HEAP_STORE(((outPtr) >> 2) * 4, codeUnit, 4);
-    checkInt32(codeUnit);
-    outPtr += 4;
-    if (outPtr + 4 > endPtr) break;
-  }
-  // Null-terminate the pointer to the HEAP.
-  SAFE_HEAP_STORE(((outPtr) >> 2) * 4, 0, 4);
-  checkInt32(0);
-  return outPtr - startPtr;
-};
-
-var lengthBytesUTF32 = str => {
-  var len = 0;
-  for (var i = 0; i < str.length; ++i) {
-    // Gotcha: charCodeAt returns a 16-bit word that is a UTF-16 encoded code unit, not a Unicode code point of the character! We must decode the string to UTF-32 to the heap.
-    // See http://unicode.org/faq/utf_bom.html#utf16-3
-    var codeUnit = str.charCodeAt(i);
-    if (codeUnit >= 55296 && codeUnit <= 57343) ++i;
-    // possibly a lead surrogate, so skip over the tail surrogate.
-    len += 4;
-  }
-  return len;
-};
-
-var __embind_register_std_wstring = (rawType, charSize, name) => {
-  name = readLatin1String(name);
-  var decodeString, encodeString, readCharAt, lengthBytesUTF;
-  if (charSize === 2) {
-    decodeString = UTF16ToString;
-    encodeString = stringToUTF16;
-    lengthBytesUTF = lengthBytesUTF16;
-    readCharAt = pointer => SAFE_HEAP_LOAD(((pointer) >> 1) * 2, 2, 1);
-  } else if (charSize === 4) {
-    decodeString = UTF32ToString;
-    encodeString = stringToUTF32;
-    lengthBytesUTF = lengthBytesUTF32;
-    readCharAt = pointer => SAFE_HEAP_LOAD(((pointer) >> 2) * 4, 4, 1);
-  }
-  registerType(rawType, {
-    name,
-    "fromWireType": value => {
-      // Code mostly taken from _embind_register_std_string fromWireType
-      var length = SAFE_HEAP_LOAD(((value) >> 2) * 4, 4, 1);
-      var str;
-      var decodeStartPtr = value + 4;
-      // Looping here to support possible embedded '0' bytes
-      for (var i = 0; i <= length; ++i) {
-        var currentBytePtr = value + 4 + i * charSize;
-        if (i == length || readCharAt(currentBytePtr) == 0) {
-          var maxReadBytes = currentBytePtr - decodeStartPtr;
-          var stringSegment = decodeString(decodeStartPtr, maxReadBytes);
-          if (str === undefined) {
-            str = stringSegment;
-          } else {
-            str += String.fromCharCode(0);
-            str += stringSegment;
-          }
-          decodeStartPtr = currentBytePtr + charSize;
-        }
-      }
-      _free(value);
-      return str;
-    },
-    "toWireType": (destructors, value) => {
-      if (!(typeof value == "string")) {
-        throwBindingError(`Cannot pass non-string to C++ string type ${name}`);
-      }
-      // assumes POINTER_SIZE alignment
-      var length = lengthBytesUTF(value);
-      var ptr = _malloc(4 + length + charSize);
-      SAFE_HEAP_STORE(((ptr) >> 2) * 4, length / charSize, 4);
-      checkInt32(length / charSize);
-      encodeString(value, ptr + 4, length + charSize);
-      if (destructors !== null) {
-        destructors.push(_free, ptr);
-      }
-      return ptr;
-    },
-    argPackAdvance: GenericWireTypeSize,
-    "readValueFromPointer": readPointer,
-    destructorFunction(ptr) {
-      _free(ptr);
-    }
-  });
-};
-
-var __embind_register_void = (rawType, name) => {
-  name = readLatin1String(name);
-  registerType(rawType, {
-    isVoid: true,
-    // void return values can be optimized out sometimes
-    name,
-    argPackAdvance: 0,
-    "fromWireType": () => undefined,
-    // TODO: assert if anything else is given?
-    "toWireType": (destructors, o) => undefined
-  });
-};
-
-var __emval_new_array = () => Emval.toHandle([]);
-
-var emval_symbols = {};
-
-var getStringOrSymbol = address => {
-  var symbol = emval_symbols[address];
-  if (symbol === undefined) {
-    return readLatin1String(address);
-  }
-  return symbol;
-};
-
-var __emval_new_cstring = v => Emval.toHandle(getStringOrSymbol(v));
-
-var __emval_new_object = () => Emval.toHandle({});
-
-var __emval_set_property = (handle, key, value) => {
-  handle = Emval.toValue(handle);
-  key = Emval.toValue(key);
-  value = Emval.toValue(value);
-  handle[key] = value;
-};
-
-var requireRegisteredType = (rawType, humanName) => {
-  var impl = registeredTypes[rawType];
-  if (undefined === impl) {
-    throwBindingError(`${humanName} has unknown type ${getTypeName(rawType)}`);
-  }
-  return impl;
-};
-
-var __emval_take_value = (type, arg) => {
-  type = requireRegisteredType(type, "_emval_take_value");
-  var v = type["readValueFromPointer"](arg);
-  return Emval.toHandle(v);
 };
 
 var __tzset_js = (timezone, daylight, std_name, dst_name) => {
@@ -2460,6 +1481,45 @@ function _clock_time_get(clk_id, ignored_precision, ptime) {
   checkInt64(nsec);
   return 0;
 }
+
+var readEmAsmArgsArray = [];
+
+var readEmAsmArgs = (sigPtr, buf) => {
+  // Nobody should have mutated _readEmAsmArgsArray underneath us to be something else than an array.
+  assert(Array.isArray(readEmAsmArgsArray));
+  // The input buffer is allocated on the stack, so it must be stack-aligned.
+  assert(buf % 16 == 0);
+  readEmAsmArgsArray.length = 0;
+  var ch;
+  // Most arguments are i32s, so shift the buffer pointer so it is a plain
+  // index into HEAP32.
+  while (ch = SAFE_HEAP_LOAD(sigPtr++, 1, 1)) {
+    var chr = String.fromCharCode(ch);
+    var validChars = [ "d", "f", "i", "p" ];
+    // In WASM_BIGINT mode we support passing i64 values as bigint.
+    validChars.push("j");
+    assert(validChars.includes(chr), `Invalid character ${ch}("${chr}") in readEmAsmArgs! Use only [${validChars}], and do not specify "v" for void return argument.`);
+    // Floats are always passed as doubles, so all types except for 'i'
+    // are 8 bytes and require alignment.
+    var wide = (ch != 105);
+    wide &= (ch != 112);
+    buf += wide && (buf % 8) ? 4 : 0;
+    readEmAsmArgsArray.push(// Special case for pointers under wasm64 or CAN_ADDRESS_2GB mode.
+    ch == 112 ? SAFE_HEAP_LOAD(((buf) >> 2) * 4, 4, 1) : ch == 106 ? HEAP64[((buf) >> 3)] : ch == 105 ? SAFE_HEAP_LOAD(((buf) >> 2) * 4, 4, 0) : SAFE_HEAP_LOAD_D(((buf) >> 3) * 8, 8, 0));
+    buf += wide ? 8 : 4;
+  }
+  return readEmAsmArgsArray;
+};
+
+var runEmAsmFunction = (code, sigPtr, argbuf) => {
+  var args = readEmAsmArgs(sigPtr, argbuf);
+  assert(ASM_CONSTS.hasOwnProperty(code), `No EM_ASM constant found at address ${code}.  The loaded WebAssembly file is likely out of sync with the generated JavaScript.`);
+  return ASM_CONSTS[code](...args);
+};
+
+var _emscripten_asm_const_double = (code, sigPtr, argbuf) => runEmAsmFunction(code, sigPtr, argbuf);
+
+var _emscripten_asm_const_int = (code, sigPtr, argbuf) => runEmAsmFunction(code, sigPtr, argbuf);
 
 var getHeapMax = () => // Stay one Wasm page short of 4GB: while e.g. Chrome is able to allocate
 // full 4GB Wasm memories, the size will wrap back to 0 bytes in Wasm side
@@ -2833,6 +1893,20 @@ var MainLoop = {
   if (simulateInfiniteLoop) {
     throw "unwind";
   }
+};
+
+var wasmTableMirror = [];
+
+/** @type {WebAssembly.Table} */ var wasmTable;
+
+var getWasmTableEntry = funcPtr => {
+  var func = wasmTableMirror[funcPtr];
+  if (!func) {
+    if (funcPtr >= wasmTableMirror.length) wasmTableMirror.length = funcPtr + 1;
+    /** @suppress {checkTypes} */ wasmTableMirror[funcPtr] = func = wasmTable.get(funcPtr);
+  }
+  /** @suppress {checkTypes} */ assert(wasmTable.get(funcPtr) == func, "JavaScript-side Wasm function table mirror is out of date!");
+  return func;
 };
 
 var _emscripten_set_main_loop = (func, fps, simulateInfiniteLoop) => {
@@ -3229,9 +2303,181 @@ var GL = {
   }
 };
 
+var JSEvents = {
+  memcpy(target, src, size) {
+    HEAP8.set(HEAP8.subarray(src, src + size), target);
+  },
+  removeAllEventListeners() {
+    while (JSEvents.eventHandlers.length) {
+      JSEvents._removeHandler(JSEvents.eventHandlers.length - 1);
+    }
+    JSEvents.deferredCalls = [];
+  },
+  inEventHandler: 0,
+  deferredCalls: [],
+  deferCall(targetFunction, precedence, argsList) {
+    function arraysHaveEqualContent(arrA, arrB) {
+      if (arrA.length != arrB.length) return false;
+      for (var i in arrA) {
+        if (arrA[i] != arrB[i]) return false;
+      }
+      return true;
+    }
+    // Test if the given call was already queued, and if so, don't add it again.
+    for (var call of JSEvents.deferredCalls) {
+      if (call.targetFunction == targetFunction && arraysHaveEqualContent(call.argsList, argsList)) {
+        return;
+      }
+    }
+    JSEvents.deferredCalls.push({
+      targetFunction,
+      precedence,
+      argsList
+    });
+    JSEvents.deferredCalls.sort((x, y) => x.precedence < y.precedence);
+  },
+  removeDeferredCalls(targetFunction) {
+    JSEvents.deferredCalls = JSEvents.deferredCalls.filter(call => call.targetFunction != targetFunction);
+  },
+  canPerformEventHandlerRequests() {
+    if (navigator.userActivation) {
+      // Verify against transient activation status from UserActivation API
+      // whether it is possible to perform a request here without needing to defer. See
+      // https://developer.mozilla.org/en-US/docs/Web/Security/User_activation#transient_activation
+      // and https://caniuse.com/mdn-api_useractivation
+      // At the time of writing, Firefox does not support this API: https://bugzilla.mozilla.org/show_bug.cgi?id=1791079
+      return navigator.userActivation.isActive;
+    }
+    return JSEvents.inEventHandler && JSEvents.currentEventHandler.allowsDeferredCalls;
+  },
+  runDeferredCalls() {
+    if (!JSEvents.canPerformEventHandlerRequests()) {
+      return;
+    }
+    var deferredCalls = JSEvents.deferredCalls;
+    JSEvents.deferredCalls = [];
+    for (var call of deferredCalls) {
+      call.targetFunction(...call.argsList);
+    }
+  },
+  eventHandlers: [],
+  removeAllHandlersOnTarget: (target, eventTypeString) => {
+    for (var i = 0; i < JSEvents.eventHandlers.length; ++i) {
+      if (JSEvents.eventHandlers[i].target == target && (!eventTypeString || eventTypeString == JSEvents.eventHandlers[i].eventTypeString)) {
+        JSEvents._removeHandler(i--);
+      }
+    }
+  },
+  _removeHandler(i) {
+    var h = JSEvents.eventHandlers[i];
+    h.target.removeEventListener(h.eventTypeString, h.eventListenerFunc, h.useCapture);
+    JSEvents.eventHandlers.splice(i, 1);
+  },
+  registerOrRemoveHandler(eventHandler) {
+    if (!eventHandler.target) {
+      err("registerOrRemoveHandler: the target element for event handler registration does not exist, when processing the following event handler registration:");
+      console.dir(eventHandler);
+      return -4;
+    }
+    if (eventHandler.callbackfunc) {
+      eventHandler.eventListenerFunc = function(event) {
+        // Increment nesting count for the event handler.
+        ++JSEvents.inEventHandler;
+        JSEvents.currentEventHandler = eventHandler;
+        // Process any old deferred calls the user has placed.
+        JSEvents.runDeferredCalls();
+        // Process the actual event, calls back to user C code handler.
+        eventHandler.handlerFunc(event);
+        // Process any new deferred calls that were placed right now from this event handler.
+        JSEvents.runDeferredCalls();
+        // Out of event handler - restore nesting count.
+        --JSEvents.inEventHandler;
+      };
+      eventHandler.target.addEventListener(eventHandler.eventTypeString, eventHandler.eventListenerFunc, eventHandler.useCapture);
+      JSEvents.eventHandlers.push(eventHandler);
+    } else {
+      for (var i = 0; i < JSEvents.eventHandlers.length; ++i) {
+        if (JSEvents.eventHandlers[i].target == eventHandler.target && JSEvents.eventHandlers[i].eventTypeString == eventHandler.eventTypeString) {
+          JSEvents._removeHandler(i--);
+        }
+      }
+    }
+    return 0;
+  },
+  getNodeNameForTarget(target) {
+    if (!target) return "";
+    if (target == window) return "#window";
+    if (target == screen) return "#screen";
+    return target?.nodeName || "";
+  },
+  fullscreenEnabled() {
+    return document.fullscreenEnabled || document.webkitFullscreenEnabled;
+  }
+};
+
+var webglPowerPreferences = [ "default", "low-power", "high-performance" ];
+
+var maybeCStringToJsString = cString => cString > 2 ? UTF8ToString(cString) : cString;
+
+/** @type {Object} */ var specialHTMLTargets = [ 0, typeof document != "undefined" ? document : 0, typeof window != "undefined" ? window : 0 ];
+
+var findEventTarget = target => {
+  target = maybeCStringToJsString(target);
+  var domElement = specialHTMLTargets[target] || (typeof document != "undefined" ? document.querySelector(target) : null);
+  return domElement;
+};
+
+var findCanvasEventTarget = findEventTarget;
+
+/** @suppress {duplicate } */ var _emscripten_webgl_do_create_context = (target, attributes) => {
+  assert(attributes);
+  var attr32 = ((attributes) >> 2);
+  var powerPreference = SAFE_HEAP_LOAD((attr32 + (8 >> 2)) * 4, 4, 0);
+  var contextAttributes = {
+    "alpha": !!SAFE_HEAP_LOAD(attributes + 0, 1, 0),
+    "depth": !!SAFE_HEAP_LOAD(attributes + 1, 1, 0),
+    "stencil": !!SAFE_HEAP_LOAD(attributes + 2, 1, 0),
+    "antialias": !!SAFE_HEAP_LOAD(attributes + 3, 1, 0),
+    "premultipliedAlpha": !!SAFE_HEAP_LOAD(attributes + 4, 1, 0),
+    "preserveDrawingBuffer": !!SAFE_HEAP_LOAD(attributes + 5, 1, 0),
+    "powerPreference": webglPowerPreferences[powerPreference],
+    "failIfMajorPerformanceCaveat": !!SAFE_HEAP_LOAD(attributes + 12, 1, 0),
+    // The following are not predefined WebGL context attributes in the WebGL specification, so the property names can be minified by Closure.
+    majorVersion: SAFE_HEAP_LOAD((attr32 + (16 >> 2)) * 4, 4, 0),
+    minorVersion: SAFE_HEAP_LOAD((attr32 + (20 >> 2)) * 4, 4, 0),
+    enableExtensionsByDefault: SAFE_HEAP_LOAD(attributes + 24, 1, 0),
+    explicitSwapControl: SAFE_HEAP_LOAD(attributes + 25, 1, 0),
+    proxyContextToMainThread: SAFE_HEAP_LOAD((attr32 + (28 >> 2)) * 4, 4, 0),
+    renderViaOffscreenBackBuffer: SAFE_HEAP_LOAD(attributes + 32, 1, 0)
+  };
+  //  TODO: Make these into hard errors at some point in the future
+  if (contextAttributes.majorVersion !== 1 && contextAttributes.majorVersion !== 2) {
+    err(`Invalid WebGL version requested: ${contextAttributes.majorVersion}`);
+  }
+  var canvas = findCanvasEventTarget(target);
+  var targetStr = UTF8ToString(target);
+  if (!canvas) {
+    dbg(`emscripten_webgl_create_context failed: Unknown canvas target "${targetStr}"!`);
+    return 0;
+  }
+  if (contextAttributes.explicitSwapControl) {
+    dbg("emscripten_webgl_create_context failed: explicitSwapControl is not supported, please rebuild with -sOFFSCREENCANVAS_SUPPORT to enable targeting the experimental OffscreenCanvas specification, or rebuild with -sOFFSCREEN_FRAMEBUFFER to emulate explicitSwapControl in the absence of OffscreenCanvas support!");
+    return 0;
+  }
+  var contextHandle = GL.createContext(canvas, contextAttributes);
+  return contextHandle;
+};
+
+var _emscripten_webgl_create_context = _emscripten_webgl_do_create_context;
+
 var _emscripten_webgl_destroy_context = contextHandle => {
   if (GL.currentContext == contextHandle) GL.currentContext = 0;
   GL.deleteContext(contextHandle);
+};
+
+var _emscripten_webgl_make_context_current = contextHandle => {
+  var success = GL.makeContextCurrent(contextHandle);
+  return success ? 0 : -5;
 };
 
 var ENV = {};
@@ -6008,6 +5254,10 @@ function _fd_write(fd, iov, iovcnt, pnum) {
 
 var _glActiveTexture = x0 => GLctx.activeTexture(x0);
 
+var _glAttachShader = (program, shader) => {
+  GLctx.attachShader(GL.programs[program], GL.shaders[shader]);
+};
+
 var _glBindBuffer = (target, buffer) => {
   if (target == 34962) {
     GLctx.currentArrayBufferBinding = buffer;
@@ -6034,6 +5284,10 @@ var _glBindBuffer = (target, buffer) => {
 
 var _glBindFramebuffer = (target, framebuffer) => {
   GLctx.bindFramebuffer(target, GL.framebuffers[framebuffer]);
+};
+
+var _glBindRenderbuffer = (target, renderbuffer) => {
+  GLctx.bindRenderbuffer(target, GL.renderbuffers[renderbuffer]);
 };
 
 var _glBindTexture = (target, texture) => {
@@ -6068,9 +5322,36 @@ var _glBufferData = (target, size, data, usage) => {
   GLctx.bufferData(target, data ? HEAPU8.subarray(data, data + size) : size, usage);
 };
 
+var _glCheckFramebufferStatus = x0 => GLctx.checkFramebufferStatus(x0);
+
 var _glClear = x0 => GLctx.clear(x0);
 
 var _glClearColor = (x0, x1, x2, x3) => GLctx.clearColor(x0, x1, x2, x3);
+
+var _glCompileShader = shader => {
+  GLctx.compileShader(GL.shaders[shader]);
+  var log = (GLctx.getShaderInfoLog(GL.shaders[shader]) || "").trim();
+  if (log) dbg(`glCompileShader: ${log}`);
+};
+
+var _glCreateProgram = () => {
+  var id = GL.getNewId(GL.programs);
+  var program = GLctx.createProgram();
+  // Store additional information needed for each shader program:
+  program.name = id;
+  // Lazy cache results of
+  // glGetProgramiv(GL_ACTIVE_UNIFORM_MAX_LENGTH/GL_ACTIVE_ATTRIBUTE_MAX_LENGTH/GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH)
+  program.maxUniformLength = program.maxAttributeLength = program.maxUniformBlockNameLength = 0;
+  program.uniformIdCounter = 1;
+  GL.programs[id] = program;
+  return id;
+};
+
+var _glCreateShader = shaderType => {
+  var id = GL.getNewId(GL.shaders);
+  GL.shaders[id] = GLctx.createShader(shaderType);
+  return id;
+};
 
 var _glDeleteBuffers = (n, buffers) => {
   for (var i = 0; i < n; i++) {
@@ -6127,6 +5408,19 @@ var _glDeleteRenderbuffers = (n, renderbuffers) => {
   }
 };
 
+var _glDeleteShader = id => {
+  if (!id) return;
+  var shader = GL.shaders[id];
+  if (!shader) {
+    // glDeleteShader actually signals an error when deleting a nonexisting
+    // object, unlike some other GL delete functions.
+    GL.recordError(1281);
+    return;
+  }
+  GLctx.deleteShader(shader);
+  GL.shaders[id] = null;
+};
+
 var _glDeleteTextures = (n, textures) => {
   for (var i = 0; i < n; i++) {
     var id = SAFE_HEAP_LOAD((((textures) + (i * 4)) >> 2) * 4, 4, 0);
@@ -6147,6 +5441,8 @@ var _glDeleteVertexArrays = (n, vaos) => {
     GL.vaos[id] = null;
   }
 };
+
+var _glDepthFunc = x0 => GLctx.depthFunc(x0);
 
 var _glDisableVertexAttribArray = index => {
   var cb = GL.currentContext.clientBuffers[index];
@@ -6217,12 +5513,133 @@ var _glEnableVertexAttribArray = index => {
   GLctx.enableVertexAttribArray(index);
 };
 
+var _glFramebufferRenderbuffer = (target, attachment, renderbuffertarget, renderbuffer) => {
+  GLctx.framebufferRenderbuffer(target, attachment, renderbuffertarget, GL.renderbuffers[renderbuffer]);
+};
+
+var _glFramebufferTexture2D = (target, attachment, textarget, texture, level) => {
+  GLctx.framebufferTexture2D(target, attachment, textarget, GL.textures[texture], level);
+};
+
 var _glGenBuffers = (n, buffers) => {
   GL.genObject(n, buffers, "createBuffer", GL.buffers);
 };
 
+var _glGenFramebuffers = (n, ids) => {
+  GL.genObject(n, ids, "createFramebuffer", GL.framebuffers);
+};
+
+var _glGenRenderbuffers = (n, renderbuffers) => {
+  GL.genObject(n, renderbuffers, "createRenderbuffer", GL.renderbuffers);
+};
+
+var _glGenTextures = (n, textures) => {
+  GL.genObject(n, textures, "createTexture", GL.textures);
+};
+
 var _glGenVertexArrays = (n, arrays) => {
   GL.genObject(n, arrays, "createVertexArray", GL.vaos);
+};
+
+var _glGetProgramInfoLog = (program, maxLength, length, infoLog) => {
+  var log = GLctx.getProgramInfoLog(GL.programs[program]);
+  if (log === null) log = "(unknown error)";
+  var numBytesWrittenExclNull = (maxLength > 0 && infoLog) ? stringToUTF8(log, infoLog, maxLength) : 0;
+  if (length) SAFE_HEAP_STORE(((length) >> 2) * 4, numBytesWrittenExclNull, 4);
+  checkInt32(numBytesWrittenExclNull);
+};
+
+var _glGetProgramiv = (program, pname, p) => {
+  if (!p) {
+    // GLES2 specification does not specify how to behave if p is a null
+    // pointer. Since calling this function does not make sense if p == null,
+    // issue a GL error to notify user about it.
+    GL.recordError(1281);
+    return;
+  }
+  if (program >= GL.counter) {
+    GL.recordError(1281);
+    return;
+  }
+  program = GL.programs[program];
+  if (pname == 35716) {
+    // GL_INFO_LOG_LENGTH
+    var log = GLctx.getProgramInfoLog(program);
+    if (log === null) log = "(unknown error)";
+    SAFE_HEAP_STORE(((p) >> 2) * 4, log.length + 1, 4);
+    checkInt32(log.length + 1);
+  } else if (pname == 35719) {
+    if (!program.maxUniformLength) {
+      var numActiveUniforms = GLctx.getProgramParameter(program, 35718);
+      for (var i = 0; i < numActiveUniforms; ++i) {
+        program.maxUniformLength = Math.max(program.maxUniformLength, GLctx.getActiveUniform(program, i).name.length + 1);
+      }
+    }
+    SAFE_HEAP_STORE(((p) >> 2) * 4, program.maxUniformLength, 4);
+    checkInt32(program.maxUniformLength);
+  } else if (pname == 35722) {
+    if (!program.maxAttributeLength) {
+      var numActiveAttributes = GLctx.getProgramParameter(program, 35721);
+      for (var i = 0; i < numActiveAttributes; ++i) {
+        program.maxAttributeLength = Math.max(program.maxAttributeLength, GLctx.getActiveAttrib(program, i).name.length + 1);
+      }
+    }
+    SAFE_HEAP_STORE(((p) >> 2) * 4, program.maxAttributeLength, 4);
+    checkInt32(program.maxAttributeLength);
+  } else if (pname == 35381) {
+    if (!program.maxUniformBlockNameLength) {
+      var numActiveUniformBlocks = GLctx.getProgramParameter(program, 35382);
+      for (var i = 0; i < numActiveUniformBlocks; ++i) {
+        program.maxUniformBlockNameLength = Math.max(program.maxUniformBlockNameLength, GLctx.getActiveUniformBlockName(program, i).length + 1);
+      }
+    }
+    SAFE_HEAP_STORE(((p) >> 2) * 4, program.maxUniformBlockNameLength, 4);
+    checkInt32(program.maxUniformBlockNameLength);
+  } else {
+    SAFE_HEAP_STORE(((p) >> 2) * 4, GLctx.getProgramParameter(program, pname), 4);
+    checkInt32(GLctx.getProgramParameter(program, pname));
+  }
+};
+
+var _glGetShaderInfoLog = (shader, maxLength, length, infoLog) => {
+  var log = GLctx.getShaderInfoLog(GL.shaders[shader]);
+  if (log === null) log = "(unknown error)";
+  var numBytesWrittenExclNull = (maxLength > 0 && infoLog) ? stringToUTF8(log, infoLog, maxLength) : 0;
+  if (length) SAFE_HEAP_STORE(((length) >> 2) * 4, numBytesWrittenExclNull, 4);
+  checkInt32(numBytesWrittenExclNull);
+};
+
+var _glGetShaderiv = (shader, pname, p) => {
+  if (!p) {
+    // GLES2 specification does not specify how to behave if p is a null
+    // pointer. Since calling this function does not make sense if p == null,
+    // issue a GL error to notify user about it.
+    GL.recordError(1281);
+    return;
+  }
+  if (pname == 35716) {
+    // GL_INFO_LOG_LENGTH
+    var log = GLctx.getShaderInfoLog(GL.shaders[shader]);
+    if (log === null) log = "(unknown error)";
+    // The GLES2 specification says that if the shader has an empty info log,
+    // a value of 0 is returned. Otherwise the log has a null char appended.
+    // (An empty string is falsey, so we can just check that instead of
+    // looking at log.length.)
+    var logLength = log ? log.length + 1 : 0;
+    SAFE_HEAP_STORE(((p) >> 2) * 4, logLength, 4);
+    checkInt32(logLength);
+  } else if (pname == 35720) {
+    // GL_SHADER_SOURCE_LENGTH
+    var source = GLctx.getShaderSource(GL.shaders[shader]);
+    // source may be a null, or the empty string, both of which are falsey
+    // values that we report a 0 length for.
+    var sourceLength = source ? source.length + 1 : 0;
+    SAFE_HEAP_STORE(((p) >> 2) * 4, sourceLength, 4);
+    checkInt32(sourceLength);
+  } else {
+    SAFE_HEAP_STORE(((p) >> 2) * 4, GLctx.getShaderParameter(GL.shaders[shader], pname), 4);
+    checkInt32(GLctx.getShaderParameter(GL.shaders[shader], pname));
+  }
 };
 
 /** @suppress {checkTypes} */ var jstoi_q = str => parseInt(str);
@@ -6312,6 +5729,101 @@ var _glGetUniformLocation = (program, name) => {
 };
 
 var _glLineWidth = x0 => GLctx.lineWidth(x0);
+
+var _glLinkProgram = program => {
+  program = GL.programs[program];
+  GLctx.linkProgram(program);
+  var log = (GLctx.getProgramInfoLog(program) || "").trim();
+  if (log) dbg(`glLinkProgram: ${log}`);
+  if (program.uniformLocsById) dbg(`glLinkProgram invalidated ${Object.keys(program.uniformLocsById).length} uniform location mappings`);
+  // Invalidate earlier computed uniform->ID mappings, those have now become stale
+  program.uniformLocsById = 0;
+  // Mark as null-like so that glGetUniformLocation() knows to populate this again.
+  program.uniformSizeAndIdsByName = {};
+};
+
+var _glRenderbufferStorage = (x0, x1, x2, x3) => GLctx.renderbufferStorage(x0, x1, x2, x3);
+
+var _glShaderSource = (shader, count, string, length) => {
+  var source = GL.getSource(shader, count, string, length);
+  GLctx.shaderSource(GL.shaders[shader], source);
+};
+
+var computeUnpackAlignedImageSize = (width, height, sizePerPixel) => {
+  function roundedToNextMultipleOf(x, y) {
+    return (x + y - 1) & -y;
+  }
+  var plainRowSize = (GL.unpackRowLength || width) * sizePerPixel;
+  var alignedRowSize = roundedToNextMultipleOf(plainRowSize, GL.unpackAlignment);
+  return height * alignedRowSize;
+};
+
+var colorChannelsInGlTextureFormat = format => {
+  // Micro-optimizations for size: map format to size by subtracting smallest
+  // enum value (0x1902) from all values first.  Also omit the most common
+  // size value (1) from the list, which is assumed by formats not on the
+  // list.
+  var colorChannels = {
+    // 0x1902 /* GL_DEPTH_COMPONENT */ - 0x1902: 1,
+    // 0x1906 /* GL_ALPHA */ - 0x1902: 1,
+    5: 3,
+    6: 4,
+    // 0x1909 /* GL_LUMINANCE */ - 0x1902: 1,
+    8: 2,
+    29502: 3,
+    29504: 4,
+    // 0x1903 /* GL_RED */ - 0x1902: 1,
+    26917: 2,
+    26918: 2,
+    // 0x8D94 /* GL_RED_INTEGER */ - 0x1902: 1,
+    29846: 3,
+    29847: 4
+  };
+  return colorChannels[format - 6402] || 1;
+};
+
+var heapObjectForWebGLType = type => {
+  // Micro-optimization for size: Subtract lowest GL enum number (0x1400/* GL_BYTE */) from type to compare
+  // smaller values for the heap, for shorter generated code size.
+  // Also the type HEAPU16 is not tested for explicitly, but any unrecognized type will return out HEAPU16.
+  // (since most types are HEAPU16)
+  type -= 5120;
+  if (type == 0) return HEAP8;
+  if (type == 1) return HEAPU8;
+  if (type == 2) return HEAP16;
+  if (type == 4) return HEAP32;
+  if (type == 6) return HEAPF32;
+  if (type == 5 || type == 28922 || type == 28520 || type == 30779 || type == 30782) return HEAPU32;
+  return HEAPU16;
+};
+
+var toTypedArrayIndex = (pointer, heap) => pointer >>> (31 - Math.clz32(heap.BYTES_PER_ELEMENT));
+
+var emscriptenWebGLGetTexPixelData = (type, format, width, height, pixels, internalFormat) => {
+  var heap = heapObjectForWebGLType(type);
+  var sizePerPixel = colorChannelsInGlTextureFormat(format) * heap.BYTES_PER_ELEMENT;
+  var bytes = computeUnpackAlignedImageSize(width, height, sizePerPixel);
+  return heap.subarray(toTypedArrayIndex(pixels, heap), toTypedArrayIndex(pixels + bytes, heap));
+};
+
+var _glTexImage2D = (target, level, internalFormat, width, height, border, format, type, pixels) => {
+  if (GL.currentContext.version >= 2) {
+    if (GLctx.currentPixelUnpackBufferBinding) {
+      GLctx.texImage2D(target, level, internalFormat, width, height, border, format, type, pixels);
+      return;
+    }
+    if (pixels) {
+      var heap = heapObjectForWebGLType(type);
+      var index = toTypedArrayIndex(pixels, heap);
+      GLctx.texImage2D(target, level, internalFormat, width, height, border, format, type, heap, index);
+      return;
+    }
+  }
+  var pixelData = pixels ? emscriptenWebGLGetTexPixelData(type, format, width, height, pixels, internalFormat) : null;
+  GLctx.texImage2D(target, level, internalFormat, width, height, border, format, type, pixelData);
+};
+
+var _glTexParameteri = (x0, x1, x2) => GLctx.texParameteri(x0, x1, x2);
 
 var webglGetUniformLocation = location => {
   var p = GLctx.currentProgram;
@@ -6412,6 +5924,8 @@ var _glVertexAttribPointer = (index, size, type, normalized, stride, ptr) => {
   GLctx.vertexAttribPointer(index, size, type, !!normalized, stride, ptr);
 };
 
+var _glViewport = (x0, x1, x2, x3) => GLctx.viewport(x0, x1, x2, x3);
+
 var getCFunc = ident => {
   var func = Module["_" + ident];
   // closure exported function
@@ -6492,26 +6006,6 @@ var stringToUTF8OnStack = str => {
      * @param {Object=} opts
      */ var cwrap = (ident, returnType, argTypes, opts) => (...args) => ccall(ident, returnType, argTypes, args, opts);
 
-embind_init_charCodes();
-
-BindingError = Module["BindingError"] = class BindingError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "BindingError";
-  }
-};
-
-InternalError = Module["InternalError"] = class InternalError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = "InternalError";
-  }
-};
-
-init_emval();
-
-UnboundTypeError = Module["UnboundTypeError"] = extendError(Error, "UnboundTypeError");
-
 Module["requestAnimationFrame"] = MainLoop.requestAnimationFrame;
 
 Module["pauseMainLoop"] = MainLoop.pause;
@@ -6544,29 +6038,17 @@ var wasmImports = {
   /** @export */ __cxa_throw: ___cxa_throw,
   /** @export */ __handle_stack_overflow: ___handle_stack_overflow,
   /** @export */ _abort_js: __abort_js,
-  /** @export */ _embind_register_bigint: __embind_register_bigint,
-  /** @export */ _embind_register_bool: __embind_register_bool,
-  /** @export */ _embind_register_emval: __embind_register_emval,
-  /** @export */ _embind_register_float: __embind_register_float,
-  /** @export */ _embind_register_function: __embind_register_function,
-  /** @export */ _embind_register_integer: __embind_register_integer,
-  /** @export */ _embind_register_memory_view: __embind_register_memory_view,
-  /** @export */ _embind_register_std_string: __embind_register_std_string,
-  /** @export */ _embind_register_std_wstring: __embind_register_std_wstring,
-  /** @export */ _embind_register_void: __embind_register_void,
-  /** @export */ _emval_decref: __emval_decref,
-  /** @export */ _emval_new_array: __emval_new_array,
-  /** @export */ _emval_new_cstring: __emval_new_cstring,
-  /** @export */ _emval_new_object: __emval_new_object,
-  /** @export */ _emval_set_property: __emval_set_property,
-  /** @export */ _emval_take_value: __emval_take_value,
   /** @export */ _tzset_js: __tzset_js,
   /** @export */ alignfault,
   /** @export */ clock_time_get: _clock_time_get,
+  /** @export */ emscripten_asm_const_double: _emscripten_asm_const_double,
+  /** @export */ emscripten_asm_const_int: _emscripten_asm_const_int,
   /** @export */ emscripten_get_now: _emscripten_get_now,
   /** @export */ emscripten_resize_heap: _emscripten_resize_heap,
   /** @export */ emscripten_set_main_loop: _emscripten_set_main_loop,
+  /** @export */ emscripten_webgl_create_context: _emscripten_webgl_create_context,
   /** @export */ emscripten_webgl_destroy_context: _emscripten_webgl_destroy_context,
+  /** @export */ emscripten_webgl_make_context_current: _emscripten_webgl_make_context_current,
   /** @export */ environ_get: _environ_get,
   /** @export */ environ_sizes_get: _environ_sizes_get,
   /** @export */ fd_close: _fd_close,
@@ -6574,29 +6056,51 @@ var wasmImports = {
   /** @export */ fd_seek: _fd_seek,
   /** @export */ fd_write: _fd_write,
   /** @export */ glActiveTexture: _glActiveTexture,
+  /** @export */ glAttachShader: _glAttachShader,
   /** @export */ glBindBuffer: _glBindBuffer,
   /** @export */ glBindFramebuffer: _glBindFramebuffer,
+  /** @export */ glBindRenderbuffer: _glBindRenderbuffer,
   /** @export */ glBindTexture: _glBindTexture,
   /** @export */ glBindVertexArray: _glBindVertexArray,
   /** @export */ glBlendFunc: _glBlendFunc,
   /** @export */ glBufferData: _glBufferData,
+  /** @export */ glCheckFramebufferStatus: _glCheckFramebufferStatus,
   /** @export */ glClear: _glClear,
   /** @export */ glClearColor: _glClearColor,
+  /** @export */ glCompileShader: _glCompileShader,
+  /** @export */ glCreateProgram: _glCreateProgram,
+  /** @export */ glCreateShader: _glCreateShader,
   /** @export */ glDeleteBuffers: _glDeleteBuffers,
   /** @export */ glDeleteFramebuffers: _glDeleteFramebuffers,
   /** @export */ glDeleteProgram: _glDeleteProgram,
   /** @export */ glDeleteRenderbuffers: _glDeleteRenderbuffers,
+  /** @export */ glDeleteShader: _glDeleteShader,
   /** @export */ glDeleteTextures: _glDeleteTextures,
   /** @export */ glDeleteVertexArrays: _glDeleteVertexArrays,
+  /** @export */ glDepthFunc: _glDepthFunc,
   /** @export */ glDisableVertexAttribArray: _glDisableVertexAttribArray,
   /** @export */ glDrawArrays: _glDrawArrays,
   /** @export */ glDrawElements: _glDrawElements,
   /** @export */ glEnable: _glEnable,
   /** @export */ glEnableVertexAttribArray: _glEnableVertexAttribArray,
+  /** @export */ glFramebufferRenderbuffer: _glFramebufferRenderbuffer,
+  /** @export */ glFramebufferTexture2D: _glFramebufferTexture2D,
   /** @export */ glGenBuffers: _glGenBuffers,
+  /** @export */ glGenFramebuffers: _glGenFramebuffers,
+  /** @export */ glGenRenderbuffers: _glGenRenderbuffers,
+  /** @export */ glGenTextures: _glGenTextures,
   /** @export */ glGenVertexArrays: _glGenVertexArrays,
+  /** @export */ glGetProgramInfoLog: _glGetProgramInfoLog,
+  /** @export */ glGetProgramiv: _glGetProgramiv,
+  /** @export */ glGetShaderInfoLog: _glGetShaderInfoLog,
+  /** @export */ glGetShaderiv: _glGetShaderiv,
   /** @export */ glGetUniformLocation: _glGetUniformLocation,
   /** @export */ glLineWidth: _glLineWidth,
+  /** @export */ glLinkProgram: _glLinkProgram,
+  /** @export */ glRenderbufferStorage: _glRenderbufferStorage,
+  /** @export */ glShaderSource: _glShaderSource,
+  /** @export */ glTexImage2D: _glTexImage2D,
+  /** @export */ glTexParameteri: _glTexParameteri,
   /** @export */ glUniform1f: _glUniform1f,
   /** @export */ glUniform1i: _glUniform1i,
   /** @export */ glUniform2f: _glUniform2f,
@@ -6604,6 +6108,7 @@ var wasmImports = {
   /** @export */ glUniformMatrix4fv: _glUniformMatrix4fv,
   /** @export */ glUseProgram: _glUseProgram,
   /** @export */ glVertexAttribPointer: _glVertexAttribPointer,
+  /** @export */ glViewport: _glViewport,
   /** @export */ segfault
 };
 
@@ -6615,11 +6120,13 @@ var ___wasm_call_ctors = createExportWrapper("__wasm_call_ctors", 0);
 
 var _init_simulator = Module["_init_simulator"] = createExportWrapper("init_simulator", 0);
 
-var _update_simulator = Module["_update_simulator"] = createExportWrapper("update_simulator", 0);
-
 var _change_scene = Module["_change_scene"] = createExportWrapper("change_scene", 1);
 
 var _get_num_scenes = Module["_get_num_scenes"] = createExportWrapper("get_num_scenes", 0);
+
+var _get_current_scene_metadata_json = Module["_get_current_scene_metadata_json"] = createExportWrapper("get_current_scene_metadata_json", 0);
+
+var _malloc = createExportWrapper("malloc", 1);
 
 var _set_brightness = Module["_set_brightness"] = createExportWrapper("set_brightness", 1);
 
@@ -6637,7 +6144,9 @@ var _show_benchmark_report = Module["_show_benchmark_report"] = createExportWrap
 
 var _toggle_debug_mode = Module["_toggle_debug_mode"] = createExportWrapper("toggle_debug_mode", 0);
 
-var _get_scene_name = Module["_get_scene_name"] = createExportWrapper("get_scene_name", 1);
+var _get_led_count = Module["_get_led_count"] = createExportWrapper("get_led_count", 0);
+
+var _get_fps = Module["_get_fps"] = createExportWrapper("get_fps", 0);
 
 var _set_led_size = Module["_set_led_size"] = createExportWrapper("set_led_size", 1);
 
@@ -6655,15 +6164,19 @@ var _set_mesh_opacity = Module["_set_mesh_opacity"] = createExportWrapper("set_m
 
 var _get_mesh_opacity = Module["_get_mesh_opacity"] = createExportWrapper("get_mesh_opacity", 0);
 
-var _get_led_count = Module["_get_led_count"] = createExportWrapper("get_led_count", 0);
-
-var _get_fps = Module["_get_fps"] = createExportWrapper("get_fps", 0);
-
 var _log_message = Module["_log_message"] = createExportWrapper("log_message", 1);
 
-var _resize_canvas = Module["_resize_canvas"] = createExportWrapper("resize_canvas", 2);
+var _resizeCanvas = Module["_resizeCanvas"] = createExportWrapper("resizeCanvas", 2);
 
-var _malloc = createExportWrapper("malloc", 1);
+var _free_scene_parameters_c_api = Module["_free_scene_parameters_c_api"] = createExportWrapper("free_scene_parameters_c_api", 2);
+
+var _free_string_memory = Module["_free_string_memory"] = createExportWrapper("free_string_memory", 1);
+
+var _free = Module["_free"] = createExportWrapper("free", 1);
+
+var _get_scene_parameters_json = Module["_get_scene_parameters_json"] = createExportWrapper("get_scene_parameters_json", 0);
+
+var _update_scene_parameter_string = Module["_update_scene_parameter_string"] = createExportWrapper("update_scene_parameter_string", 2);
 
 var _main = Module["_main"] = createExportWrapper("main", 2);
 
@@ -6677,19 +6190,15 @@ var _update_ui_fps = Module["_update_ui_fps"] = createExportWrapper("update_ui_f
 
 var _update_ui_brightness = Module["_update_ui_brightness"] = createExportWrapper("update_ui_brightness", 1);
 
-var __ZN12PixelTheater5WebGL11WebPlatform12cleanupWebGLEv = Module["__ZN12PixelTheater5WebGL11WebPlatform12cleanupWebGLEv"] = createExportWrapper("_ZN12PixelTheater5WebGL11WebPlatform12cleanupWebGLEv", 1);
+var __ZN12PixelTheater11WebPlatform12cleanupWebGLEv = Module["__ZN12PixelTheater11WebPlatform12cleanupWebGLEv"] = createExportWrapper("_ZN12PixelTheater11WebPlatform12cleanupWebGLEv", 1);
 
-var __ZN12PixelTheater5WebGL22update_scene_parameterEPKcf = Module["__ZN12PixelTheater5WebGL22update_scene_parameterEPKcf"] = createExportWrapper("_ZN12PixelTheater5WebGL22update_scene_parameterEPKcf", 2);
-
-var ___getTypeName = createExportWrapper("__getTypeName", 1);
+var __ZN12PixelTheater22update_scene_parameterEPKcf = Module["__ZN12PixelTheater22update_scene_parameterEPKcf"] = createExportWrapper("_ZN12PixelTheater22update_scene_parameterEPKcf", 2);
 
 var _fflush = createExportWrapper("fflush", 1);
 
 var _strerror = createExportWrapper("strerror", 1);
 
 var _sbrk = createExportWrapper("sbrk", 1);
-
-var _free = createExportWrapper("free", 1);
 
 var _emscripten_get_sbrk_ptr = createExportWrapper("emscripten_get_sbrk_ptr", 0);
 
@@ -6711,17 +6220,21 @@ var ___set_stack_limits = Module["___set_stack_limits"] = createExportWrapper("_
 
 // include: postamble.js
 // === Auto-generated postamble setup entry stuff ===
+Module["stackAlloc"] = stackAlloc;
+
 Module["ccall"] = ccall;
 
 Module["cwrap"] = cwrap;
 
+Module["getValue"] = getValue;
+
 Module["UTF8ToString"] = UTF8ToString;
 
-var missingLibrarySymbols = [ "writeI53ToI64", "writeI53ToI64Clamped", "writeI53ToI64Signaling", "writeI53ToU64Clamped", "writeI53ToU64Signaling", "readI53FromI64", "readI53FromU64", "convertI32PairToI53", "convertI32PairToI53Checked", "convertU32PairToI53", "getTempRet0", "setTempRet0", "inetPton4", "inetNtop4", "inetPton6", "inetNtop6", "readSockaddr", "writeSockaddr", "emscriptenLog", "readEmAsmArgs", "listenOnce", "autoResumeAudioContext", "getDynCaller", "dynCall", "runtimeKeepalivePush", "runtimeKeepalivePop", "asmjsMangle", "HandleAllocator", "getNativeTypeSize", "STACK_SIZE", "STACK_ALIGN", "POINTER_SIZE", "ASSERTIONS", "uleb128Encode", "sigToWasmTypes", "generateFuncType", "convertJsFunctionToWasm", "getEmptyTableSlot", "updateTableMap", "getFunctionAddress", "addFunction", "removeFunction", "reallyNegative", "strLen", "reSign", "formatString", "intArrayToString", "AsciiToString", "stringToNewUTF8", "registerKeyEventCallback", "maybeCStringToJsString", "findEventTarget", "getBoundingClientRect", "fillMouseEventData", "registerMouseEventCallback", "registerWheelEventCallback", "registerUiEventCallback", "registerFocusEventCallback", "fillDeviceOrientationEventData", "registerDeviceOrientationEventCallback", "fillDeviceMotionEventData", "registerDeviceMotionEventCallback", "screenOrientation", "fillOrientationChangeEventData", "registerOrientationChangeEventCallback", "fillFullscreenChangeEventData", "registerFullscreenChangeEventCallback", "JSEvents_requestFullscreen", "JSEvents_resizeCanvasForFullscreen", "registerRestoreOldStyle", "hideEverythingExceptGivenElement", "restoreHiddenElements", "setLetterbox", "softFullscreenResizeWebGLRenderTarget", "doRequestFullscreen", "fillPointerlockChangeEventData", "registerPointerlockChangeEventCallback", "registerPointerlockErrorEventCallback", "requestPointerLock", "fillVisibilityChangeEventData", "registerVisibilityChangeEventCallback", "registerTouchEventCallback", "fillGamepadEventData", "registerGamepadEventCallback", "registerBeforeUnloadEventCallback", "fillBatteryEventData", "battery", "registerBatteryEventCallback", "setCanvasElementSize", "getCanvasElementSize", "jsStackTrace", "getCallstack", "convertPCtoSourceLocation", "wasiRightsToMuslOFlags", "wasiOFlagsToMuslOFlags", "safeSetTimeout", "setImmediateWrapped", "safeRequestAnimationFrame", "clearImmediateWrapped", "registerPostMainLoop", "getPromise", "makePromise", "idsToPromises", "makePromiseCallback", "findMatchingCatch", "Browser_asyncPrepareDataCounter", "isLeapYear", "ydayFromDate", "arraySum", "addDays", "getSocketFromFD", "getSocketAddress", "FS_unlink", "FS_mkdirTree", "_setNetworkCallback", "heapObjectForWebGLType", "toTypedArrayIndex", "emscriptenWebGLGet", "computeUnpackAlignedImageSize", "colorChannelsInGlTextureFormat", "emscriptenWebGLGetTexPixelData", "emscriptenWebGLGetUniform", "emscriptenWebGLGetVertexAttrib", "__glGetActiveAttribOrUniform", "emscriptenWebGLGetBufferBinding", "emscriptenWebGLValidateMapBufferTarget", "writeGLArray", "registerWebGlEventCallback", "runAndAbortIfError", "emscriptenWebGLGetIndexed", "ALLOC_NORMAL", "ALLOC_STACK", "allocate", "writeStringToMemory", "writeAsciiToMemory", "setErrNo", "demangle", "stackTrace", "getFunctionArgsName", "createJsInvokerSignature", "getBasestPointer", "registerInheritedInstance", "unregisterInheritedInstance", "getInheritedInstance", "getInheritedInstanceCount", "getLiveInheritedInstances", "enumReadValueFromPointer", "genericPointerToWireType", "constNoSmartPtrRawPointerToWireType", "nonConstNoSmartPtrRawPointerToWireType", "init_RegisteredPointer", "RegisteredPointer", "RegisteredPointer_fromWireType", "runDestructor", "releaseClassHandle", "detachFinalizer", "attachFinalizer", "makeClassHandle", "init_ClassHandle", "ClassHandle", "throwInstanceAlreadyDeleted", "flushPendingDeletes", "setDelayFunction", "RegisteredClass", "shallowCopyInternalPointer", "downcastPointer", "upcastPointer", "validateThis", "char_0", "char_9", "makeLegalFunctionName", "emval_get_global", "emval_returnValue", "emval_lookupTypes", "emval_addMethodCaller" ];
+var missingLibrarySymbols = [ "writeI53ToI64", "writeI53ToI64Clamped", "writeI53ToI64Signaling", "writeI53ToU64Clamped", "writeI53ToU64Signaling", "readI53FromI64", "readI53FromU64", "convertI32PairToI53", "convertI32PairToI53Checked", "convertU32PairToI53", "getTempRet0", "setTempRet0", "inetPton4", "inetNtop4", "inetPton6", "inetNtop6", "readSockaddr", "writeSockaddr", "emscriptenLog", "runMainThreadEmAsm", "listenOnce", "autoResumeAudioContext", "getDynCaller", "dynCall", "runtimeKeepalivePush", "runtimeKeepalivePop", "asmjsMangle", "HandleAllocator", "getNativeTypeSize", "STACK_SIZE", "STACK_ALIGN", "POINTER_SIZE", "ASSERTIONS", "uleb128Encode", "sigToWasmTypes", "generateFuncType", "convertJsFunctionToWasm", "getEmptyTableSlot", "updateTableMap", "getFunctionAddress", "addFunction", "removeFunction", "reallyNegative", "strLen", "reSign", "formatString", "intArrayToString", "AsciiToString", "UTF16ToString", "stringToUTF16", "lengthBytesUTF16", "UTF32ToString", "stringToUTF32", "lengthBytesUTF32", "stringToNewUTF8", "registerKeyEventCallback", "getBoundingClientRect", "fillMouseEventData", "registerMouseEventCallback", "registerWheelEventCallback", "registerUiEventCallback", "registerFocusEventCallback", "fillDeviceOrientationEventData", "registerDeviceOrientationEventCallback", "fillDeviceMotionEventData", "registerDeviceMotionEventCallback", "screenOrientation", "fillOrientationChangeEventData", "registerOrientationChangeEventCallback", "fillFullscreenChangeEventData", "registerFullscreenChangeEventCallback", "JSEvents_requestFullscreen", "JSEvents_resizeCanvasForFullscreen", "registerRestoreOldStyle", "hideEverythingExceptGivenElement", "restoreHiddenElements", "setLetterbox", "softFullscreenResizeWebGLRenderTarget", "doRequestFullscreen", "fillPointerlockChangeEventData", "registerPointerlockChangeEventCallback", "registerPointerlockErrorEventCallback", "requestPointerLock", "fillVisibilityChangeEventData", "registerVisibilityChangeEventCallback", "registerTouchEventCallback", "fillGamepadEventData", "registerGamepadEventCallback", "registerBeforeUnloadEventCallback", "fillBatteryEventData", "battery", "registerBatteryEventCallback", "setCanvasElementSize", "getCanvasElementSize", "jsStackTrace", "getCallstack", "convertPCtoSourceLocation", "wasiRightsToMuslOFlags", "wasiOFlagsToMuslOFlags", "safeSetTimeout", "setImmediateWrapped", "safeRequestAnimationFrame", "clearImmediateWrapped", "registerPostMainLoop", "getPromise", "makePromise", "idsToPromises", "makePromiseCallback", "findMatchingCatch", "Browser_asyncPrepareDataCounter", "isLeapYear", "ydayFromDate", "arraySum", "addDays", "getSocketFromFD", "getSocketAddress", "FS_unlink", "FS_mkdirTree", "_setNetworkCallback", "emscriptenWebGLGet", "emscriptenWebGLGetUniform", "emscriptenWebGLGetVertexAttrib", "__glGetActiveAttribOrUniform", "emscriptenWebGLGetBufferBinding", "emscriptenWebGLValidateMapBufferTarget", "writeGLArray", "registerWebGlEventCallback", "runAndAbortIfError", "emscriptenWebGLGetIndexed", "ALLOC_NORMAL", "ALLOC_STACK", "allocate", "writeStringToMemory", "writeAsciiToMemory", "setErrNo", "demangle", "stackTrace" ];
 
 missingLibrarySymbols.forEach(missingLibrarySymbol);
 
-var unexportedSymbols = [ "run", "addOnPreRun", "addOnInit", "addOnPreMain", "addOnExit", "addOnPostRun", "addRunDependency", "removeRunDependency", "out", "err", "callMain", "abort", "wasmMemory", "wasmExports", "writeStackCookie", "checkStackCookie", "prettyPrint", "INT53_MAX", "INT53_MIN", "bigintToI53Checked", "stackSave", "stackRestore", "stackAlloc", "ptrToString", "zeroMemory", "exitJS", "getHeapMax", "growMemory", "ENV", "setStackLimits", "ERRNO_CODES", "strError", "DNS", "Protocols", "Sockets", "timers", "warnOnce", "readEmAsmArgsArray", "jstoi_q", "jstoi_s", "getExecutableName", "handleException", "keepRuntimeAlive", "callUserCallback", "maybeExit", "asyncLoad", "alignMemory", "mmapAlloc", "wasmTable", "noExitRuntime", "getCFunc", "freeTableIndexes", "functionsInTableMap", "unSign", "setValue", "getValue", "PATH", "PATH_FS", "UTF8Decoder", "UTF8ArrayToString", "stringToUTF8Array", "stringToUTF8", "lengthBytesUTF8", "intArrayFromString", "stringToAscii", "UTF16Decoder", "UTF16ToString", "stringToUTF16", "lengthBytesUTF16", "UTF32ToString", "stringToUTF32", "lengthBytesUTF32", "stringToUTF8OnStack", "writeArrayToMemory", "JSEvents", "specialHTMLTargets", "findCanvasEventTarget", "currentFullscreenStrategy", "restoreOldWindowedStyle", "UNWIND_CACHE", "ExitStatus", "getEnvStrings", "checkWasiClock", "doReadv", "doWritev", "initRandomFill", "randomFill", "emSetImmediate", "emClearImmediate_deps", "emClearImmediate", "registerPreMainLoop", "promiseMap", "uncaughtExceptionCount", "exceptionLast", "exceptionCaught", "ExceptionInfo", "Browser", "getPreloadedImageData__data", "wget", "MONTH_DAYS_REGULAR", "MONTH_DAYS_LEAP", "MONTH_DAYS_REGULAR_CUMULATIVE", "MONTH_DAYS_LEAP_CUMULATIVE", "SYSCALLS", "preloadPlugins", "FS_createPreloadedFile", "FS_modeStringToFlags", "FS_getMode", "FS_stdin_getChar_buffer", "FS_stdin_getChar", "FS_createPath", "FS_createDevice", "FS_readFile", "FS", "FS_createDataFile", "FS_createLazyFile", "MEMFS", "TTY", "PIPEFS", "SOCKFS", "tempFixedLengthArray", "miniTempWebGLFloatBuffers", "miniTempWebGLIntBuffers", "webgl_enable_ANGLE_instanced_arrays", "webgl_enable_OES_vertex_array_object", "webgl_enable_WEBGL_draw_buffers", "webgl_enable_WEBGL_multi_draw", "webgl_enable_EXT_polygon_offset_clamp", "webgl_enable_EXT_clip_control", "webgl_enable_WEBGL_polygon_mode", "GL", "webglGetUniformLocation", "webglPrepareUniformLocationsBeforeFirstUse", "webglGetLeftBracePos", "AL", "GLUT", "EGL", "GLEW", "IDBStore", "SDL", "SDL_gfx", "webgl_enable_WEBGL_draw_instanced_base_vertex_base_instance", "webgl_enable_WEBGL_multi_draw_instanced_base_vertex_base_instance", "allocateUTF8", "allocateUTF8OnStack", "print", "printErr", "InternalError", "BindingError", "throwInternalError", "throwBindingError", "registeredTypes", "awaitingDependencies", "typeDependencies", "tupleRegistrations", "structRegistrations", "sharedRegisterType", "whenDependentTypesAreResolved", "embind_charCodes", "embind_init_charCodes", "readLatin1String", "getTypeName", "getFunctionName", "heap32VectorToArray", "requireRegisteredType", "usesDestructorStack", "checkArgCount", "getRequiredArgCount", "createJsInvoker", "UnboundTypeError", "PureVirtualError", "GenericWireTypeSize", "EmValType", "EmValOptionalType", "throwUnboundTypeError", "ensureOverloadTable", "exposePublicSymbol", "replacePublicSymbol", "extendError", "createNamedFunction", "embindRepr", "registeredInstances", "registeredPointers", "registerType", "integerReadValueFromPointer", "floatReadValueFromPointer", "readPointer", "runDestructors", "newFunc", "craftInvokerFunction", "embind__requireFunction", "finalizationRegistry", "detachFinalizer_deps", "deletionQueue", "delayFunction", "emval_freelist", "emval_handles", "emval_symbols", "init_emval", "count_emval_handles", "getStringOrSymbol", "Emval", "emval_methodCallers", "reflectConstruct" ];
+var unexportedSymbols = [ "run", "addOnPreRun", "addOnInit", "addOnPreMain", "addOnExit", "addOnPostRun", "addRunDependency", "removeRunDependency", "out", "err", "callMain", "abort", "wasmMemory", "wasmExports", "writeStackCookie", "checkStackCookie", "prettyPrint", "INT53_MAX", "INT53_MIN", "bigintToI53Checked", "stackSave", "stackRestore", "ptrToString", "zeroMemory", "exitJS", "getHeapMax", "growMemory", "ENV", "setStackLimits", "ERRNO_CODES", "strError", "DNS", "Protocols", "Sockets", "timers", "warnOnce", "readEmAsmArgsArray", "readEmAsmArgs", "runEmAsmFunction", "jstoi_q", "jstoi_s", "getExecutableName", "handleException", "keepRuntimeAlive", "callUserCallback", "maybeExit", "asyncLoad", "alignMemory", "mmapAlloc", "wasmTable", "noExitRuntime", "getCFunc", "freeTableIndexes", "functionsInTableMap", "unSign", "setValue", "PATH", "PATH_FS", "UTF8Decoder", "UTF8ArrayToString", "stringToUTF8Array", "stringToUTF8", "lengthBytesUTF8", "intArrayFromString", "stringToAscii", "UTF16Decoder", "stringToUTF8OnStack", "writeArrayToMemory", "JSEvents", "specialHTMLTargets", "maybeCStringToJsString", "findEventTarget", "findCanvasEventTarget", "currentFullscreenStrategy", "restoreOldWindowedStyle", "UNWIND_CACHE", "ExitStatus", "getEnvStrings", "checkWasiClock", "doReadv", "doWritev", "initRandomFill", "randomFill", "emSetImmediate", "emClearImmediate_deps", "emClearImmediate", "registerPreMainLoop", "promiseMap", "uncaughtExceptionCount", "exceptionLast", "exceptionCaught", "ExceptionInfo", "Browser", "getPreloadedImageData__data", "wget", "MONTH_DAYS_REGULAR", "MONTH_DAYS_LEAP", "MONTH_DAYS_REGULAR_CUMULATIVE", "MONTH_DAYS_LEAP_CUMULATIVE", "SYSCALLS", "preloadPlugins", "FS_createPreloadedFile", "FS_modeStringToFlags", "FS_getMode", "FS_stdin_getChar_buffer", "FS_stdin_getChar", "FS_createPath", "FS_createDevice", "FS_readFile", "FS", "FS_createDataFile", "FS_createLazyFile", "MEMFS", "TTY", "PIPEFS", "SOCKFS", "tempFixedLengthArray", "miniTempWebGLFloatBuffers", "miniTempWebGLIntBuffers", "heapObjectForWebGLType", "toTypedArrayIndex", "webgl_enable_ANGLE_instanced_arrays", "webgl_enable_OES_vertex_array_object", "webgl_enable_WEBGL_draw_buffers", "webgl_enable_WEBGL_multi_draw", "webgl_enable_EXT_polygon_offset_clamp", "webgl_enable_EXT_clip_control", "webgl_enable_WEBGL_polygon_mode", "GL", "computeUnpackAlignedImageSize", "colorChannelsInGlTextureFormat", "emscriptenWebGLGetTexPixelData", "webglGetUniformLocation", "webglPrepareUniformLocationsBeforeFirstUse", "webglGetLeftBracePos", "AL", "GLUT", "EGL", "GLEW", "IDBStore", "SDL", "SDL_gfx", "webgl_enable_WEBGL_draw_instanced_base_vertex_base_instance", "webgl_enable_WEBGL_multi_draw_instanced_base_vertex_base_instance", "allocateUTF8", "allocateUTF8OnStack", "print", "printErr" ];
 
 unexportedSymbols.forEach(unexportedRuntimeSymbol);
 

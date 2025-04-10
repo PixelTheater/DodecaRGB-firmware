@@ -7,8 +7,8 @@
 #include <string> // For status method
 
 // Add using directives
-using namespace PixelTheater; 
-using namespace PixelTheater::Constants; // Add for constants
+// REMOVED: using namespace PixelTheater; 
+// REMOVED: using namespace PixelTheater::Constants; // Add for constants
 // using PixelTheater::Scene; // Included via namespace
 // using PixelTheater::CRGB; 
 // using PixelTheater::map; 
@@ -44,11 +44,12 @@ public:
     float min_off = 0.0f;
     
     void setup() override {
-        // Use qualified names
+        // <<< ADDED METADATA >>>
         set_name("XYZ Scanner");
         set_description("Scans through the model along the X, Y, and Z axes with colorful planes of light");
         set_version("1.0");
         set_author("PixelTheater Team");
+        // <<< END ADDED METADATA >>>
         
         // Define parameter ranges
         const float MIN_SPEED = 0.001f;
@@ -138,6 +139,7 @@ public:
     
     std::string status() const {
         std::string output;
+        // Ensure settings access is correctly handled here (might need PixelTheater:: qualification if not inherited?)
         float speed = settings["speed"];
         int blend = static_cast<int>(settings["blend"]);
         uint8_t fade = static_cast<uint8_t>(settings["fade"]);

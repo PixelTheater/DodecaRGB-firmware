@@ -37,7 +37,7 @@ See `docs/easier_api_refactoring.md` for the original goals and the final Target
     * [X] **Task:** Remove direct geometry helpers. Add `public: const IModel& model() const;`. 
     * [X] **Task:** Ensure `LedsProxy leds;` member works.
     * [X] **Task:** Adapt `param_schema.h`, stub/comment out `Stage`-related code.
-    * [X] **Testing:** Deferred to Task 11.
+    * [X] **Testing:** Deferred to Task 11. **(Now complete for test scenes)**
 
 5. **Implement Scene Base Helpers & Test:**
     * [X] **Task:** Add/verify public helpers for LEDs (`led`, `ledCount`) and Utilities (`millis`, `random*`, `log*`). Ensure no exceptions.
@@ -47,7 +47,7 @@ See `docs/easier_api_refactoring.md` for the original goals and the final Target
 
 6. **Consolidated Include:**
     * [X] **Task:** Create/update `PixelTheater.h`.
-    * [X] **Testing:** Verified compilation.
+    * [X] **Testing:** Verified compilation. **(Confirmed by passing tests)**
 
 ## Phase 2: Theater Implementation & Integration
 
@@ -66,12 +66,12 @@ See `docs/easier_api_refactoring.md` for the original goals and the final Target
 9. **Implement `Theater::addScene` & Scene Management:**
     * [X] **Task:** Implement `template<typename SceneType> void addScene()`. Check initialization, create scene, call `connect()`, store pointer, handle first scene.
     * [X] **Task:** Implement `start()`, `nextScene()`, `previousScene()`, `update()` (call `current_scene_->tick()` and `platform_->show()`).
-    * [X] **Task:** Implement scene info/access methods: `scene(index)`, `scenes()`, `currentScene()`, `sceneCount()`.
+    * [X] **Task:** Implement scene info/access methods: `scene(index)`, `scenes()`, `currentScene()`, `sceneCount()`. 
     * [X] **Testing:** Add tests in `test_theater.cpp` for adding scenes, switching scenes, checking current scene, accessing scenes by index, and calling update. **Run tests.**
 
-10. **Refactor `main.cpp`:**
-    * [X] **Task:** Remove manual `Model`/`Stage`/`Platform`. Instantiate `Theater`. Call the appropriate `theater.useXPlatform<ModelDef>(...)` method (e.g., `useFastLEDPlatform`). Replace `stage->addScene` with `theater.addScene<Type>()`. Replace `stage->update` with `theater.update()`. Adapt scene switching and parameter setting using `theater.scene(index)`.
-    * [X] **Testing:** Verify `main.cpp` compiles. Native tests verify library integrity. Hardware testing needed for full validation. (Teensy build successful). **Run tests.**
+10. **Refactor `main.cpp`:** 
+    * [ ] **Task:** Remove manual `Model`/`Stage`/`Platform`. Instantiate `Theater`. Call the appropriate `theater.useXPlatform<ModelDef>(...)` method (e.g., `useFastLEDPlatform`). Replace `stage->addScene` with `theater.addScene<Type>()`. Replace `stage->update` with `theater.update()`. Adapt scene switching and parameter setting using `theater.scene(index)`. 
+    * [ ] **Testing:** Verify `main.cpp` compiles. Native tests verify library integrity. Hardware testing needed for full validation. (Teensy build successful but runtime untested). **Run tests.**
 
 ## Phase 3: Refactor Scenes & Documentation
 
@@ -96,7 +96,7 @@ See `docs/easier_api_refactoring.md` for the original goals and the final Target
     * [ ] **Task:** Review code for clarity, comments, style, null checks, error handling (`addScene` before initialization).
     * [ ] **Task:** Remove dead code (old `Stage`? `scene.h` template remnants?).
     * [ ] **Task:** Archive or delete `docs/easier_api_refactoring.md`.
-    * [ ] **Testing:** **Run final tests.**
+    * [ ] **Testing:** **Run final tests.** (Native tests pass, others pending)
 
 ## Target Scene API Summary
 
@@ -179,13 +179,13 @@ See `docs/easier_api_refactoring.md` for the original goals and the final Target
         *   [X] **Task:** Implementation creates `WebPlatform`, calls its (stubbed) `initializeWithModel`, and passes to `internal_prepare`.
         *   [X] **Native Testing:** Added guarded test case (`test_native/test_theater.cpp`) verifying compilation and basic calls for `useWebPlatform` in web environment (excluded from native run). **Native tests passed.**
     *   16. **Refactor `WebSimulator` Class (C++ Logic):**
-        *   [ ] **Task:** Replace `Stage`, `Platform`, `Model` members in `WebSimulator` (`src/web_simulator.cpp`) with `std::unique_ptr<Theater> theater`.
-        *   [ ] **Task:** Update `WebSimulator::initialize()` C++ logic to instantiate `Theater` and call `theater->useWebPlatform<ModelDef>(...)`.
-        *   [ ] **Task:** Update `WebSimulator::update()` C++ logic to call `theater->update()`.
-        *   [ ] **Task:** Add `bool Theater::setScene(size_t index)` method declaration to `theater.h` and basic implementation (e.g., setting `current_scene_`) to `theater.cpp`. Update `WebSimulator::setScene(int sceneIndex)` C++ logic to use `theater->setScene(index)`.
-        *   [ ] **Task:** Update `addScene` calls within `WebSimulator::initialize`'s C++ logic to use `theater->addScene<SceneType>()`.
-        *   [ ] **Task:** Update parameter methods (`getSceneParameters`, `updateSceneParameter`) and their Embind wrappers C++ logic to use `theater->currentScene()`/`theater->scene(index)` and the associated parameter schema/settings storage.
-        *   [ ] **Task:** Update C++ methods bound to JS for platform features (brightness, rotation, etc.) to access the platform via `theater->platform()` and `dynamic_cast<WebPlatform*>(...)`.
+        *   [X] **Task:** Replace `Stage`, `Platform`, `Model` members in `WebSimulator` (`src/web_simulator.cpp`) with `std::unique_ptr<Theater> theater`.
+        *   [X] **Task:** Update `WebSimulator::initialize()` C++ logic to instantiate `Theater` and call `theater->useWebPlatform<ModelDef>(...)`.
+        *   [X] **Task:** Update `WebSimulator::update()` C++ logic to call `theater->update()`.
+        *   [X] **Task:** Add `bool Theater::setScene(size_t index)` method declaration to `theater.h` and basic implementation (e.g., setting `current_scene_`) to `theater.cpp`. Update `WebSimulator::setScene(int sceneIndex)` C++ logic to use `theater->setScene(index)`.
+        *   [X] **Task:** Update `addScene` calls within `WebSimulator::initialize`'s C++ logic to use `theater->addScene<SceneType>()`.
+        *   [X] **Task:** Update parameter methods (`getSceneParameters`, `updateSceneParameter`) and their Embind wrappers C++ logic to use `theater->currentScene()`/`theater->scene(index)` and the associated parameter schema/settings storage.
+        *   [X] **Task:** Update C++ methods bound to JS for platform features (brightness, rotation, etc.) to access the platform via `theater->platform()` and `dynamic_cast<WebPlatform*>(...)`.
         *   [ ] **Native Testing:** Ensure `web_simulator.cpp` compiles cleanly within the *native* test environment build process. Expand tests in `test/test_web/test_main.cpp` (or a new `test_web_simulator.cpp`) to test the *refactored C++ logic* of `WebSimulator`. Verify that:
             *   `initialize` creates the `Theater` instance and calls `useWebPlatform`.
             *   `update` calls `theater->update`.

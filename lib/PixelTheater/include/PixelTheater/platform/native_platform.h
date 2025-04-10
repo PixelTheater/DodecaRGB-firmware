@@ -28,8 +28,8 @@ public:
     void setDither(uint8_t dither) override;
 
     // Timing Utilities
-    float deltaTime() const override;
-    uint32_t millis() const override;
+    float deltaTime() override;
+    uint32_t millis() override;
 
     // Random Number Utilities
     uint8_t random8() override;
@@ -40,10 +40,10 @@ public:
     float randomFloat(float max) override; // 0.0 to max
     float randomFloat(float min, float max) override; // min to max
 
-    // Logging Utilities (Simplified signatures for now)
-    void logInfo(const char* format) override;
-    void logWarning(const char* format) override;
-    void logError(const char* format) override;
+    // Logging Utilities (Updated to match Platform interface)
+    void logInfo(const char* format, ...) override;
+    void logWarning(const char* format, ...) override;
+    void logError(const char* format, ...) override;
 
 private:
     CRGB* _leds{nullptr};

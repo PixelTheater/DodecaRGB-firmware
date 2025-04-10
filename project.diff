@@ -1,0 +1,3563 @@
+diff --git a/build/docs/PixelTheater/Model.html b/build/docs/PixelTheater/Model.html
+index 192060f..5517525 100644
+--- a/build/docs/PixelTheater/Model.html
++++ b/build/docs/PixelTheater/Model.html
+@@ -85,13 +85,7 @@
+                 
+                 <li>
+                     
+-                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
++                    <a href="/PixelTheater/Scenes.html" >Scene API Reference</a>
+                     
+                 </li>
+                 
+diff --git a/build/docs/PixelTheater/Palettes.html b/build/docs/PixelTheater/Palettes.html
+index 4835812..c46a65d 100644
+--- a/build/docs/PixelTheater/Palettes.html
++++ b/build/docs/PixelTheater/Palettes.html
+@@ -85,13 +85,7 @@
+                 
+                 <li>
+                     
+-                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
++                    <a href="/PixelTheater/Scenes.html" >Scene API Reference</a>
+                     
+                 </li>
+                 
+diff --git a/build/docs/PixelTheater/Parameters.html b/build/docs/PixelTheater/Parameters.html
+index ac13c13..2e0ee44 100644
+--- a/build/docs/PixelTheater/Parameters.html
++++ b/build/docs/PixelTheater/Parameters.html
+@@ -85,13 +85,7 @@
+                 
+                 <li>
+                     
+-                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
++                    <a href="/PixelTheater/Scenes.html" >Scene API Reference</a>
+                     
+                 </li>
+                 
+diff --git a/build/docs/PixelTheater/README.html b/build/docs/PixelTheater/README.html
+index 9bfd53a..269e23e 100644
+--- a/build/docs/PixelTheater/README.html
++++ b/build/docs/PixelTheater/README.html
+@@ -85,13 +85,7 @@
+                 
+                 <li>
+                     
+-                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
++                    <a href="/PixelTheater/Scenes.html" >Scene API Reference</a>
+                     
+                 </li>
+                 
+@@ -179,92 +173,104 @@
+         
+         <h1>PixelTheater Animation System</h1>
+ <h2>Overview</h2>
+-<p>The animation system provides a type-safe, flexible framework for creating LED animations on three-dimensional objects. Whether you're building a dodecahedron, sphere, cube, or any other LED-covered shape, this library makes it easy to:</p>
+-<ul>
+-<li>Create modular, reusable animations (scenes)</li>
+-<li>Define configurable parameters for each animation</li>
+-<li>Switch between animations smoothly</li>
+-<li>Define animation parameters and presets</li>
+-<li>Integrate with sensors and user input</li>
+-<li>Debug and monitor animation performance</li>
+-</ul>
+-<h3>Architecture and Class Structure</h3>
+-<pre class="codehilite"><code class="language-text">┌──────────┐                                                   
+-│ Director │                                                   
+-└┬─────────┘                                                   
+- │  ┌────────┐                                                 
+- ├─▶│  Show  │ - configure and prepare scenes                  
+- │  └┬───────┘                                                 
+- │   │  ┌────────┐         ┌───────┐                           
+- │   └─▶│ Scene  │     ┌───┤Presets│                           
+- │      └┬───────┘     ▼   └───────┘                           
+- │       │  ┌───────────┐  ┌──────────┐  - types &amp; ranges      
+- │       ├─▶│ Settings  │◀─┤Parameters│  - constants &amp; flags   
+- │       │  └───────────┘  └──────────┘  - values &amp; validation 
+- │       │  ┌────────┐                                         
+- │       └─▶│ Props  │ - palettes and bitmaps                  
+- │          └────────┘                                         
+-┌┴───────┐    ╔════════════════╗                               
+-│ Stage  │───▶║ current scene  ║                               
+-└┬───────┘    ╚════════════════╝                               
+- │  ┌────────┐              ▲                                  
+- ├─▶│ Model  │ geometry     │                                  
+- │  └┬───────┘              │                                  
+- │   │  ┌────────────┐      │                                  
+- │   └─▶│ LEDSurface │linear│                                  
+- │      └────────────┘      │                                  
+- │   ┌────────────┐   ┌─────┴─────┐                            
+- └──▶│  Devices   ├──▶│Controllers│ - sensors, events          
+-     └────────────┘   └───────────┘                                              
++<p>The PixelTheater library provides a flexible framework for creating LED animations (Scenes) on three-dimensional objects. It simplifies hardware interaction and scene management through a central <code>Theater</code> facade.</p>
++<p>Key features:
++- Define complex 3D models from configuration files.
++- Create modular, reusable animation Scenes inheriting from <code>PixelTheater::Scene</code>.
++- Access LEDs and geometry easily via Scene helper methods (<code>leds[i]</code>, <code>model().point(i)</code>).
++- Use common utilities (<code>millis()</code>, <code>random8()</code>, etc.) directly within Scenes.
++- Configure scenes with runtime parameters.
++- Integrate with different hardware platforms (FastLED, native testing) via the <code>Theater</code>.</p>
++<h3>Architecture</h3>
++<pre class="codehilite"><code class="language-text">                           ┌───────────┐
++                           │ User Code │
++                           │ (main.cpp)│
++                           └─────┬─────┘
++                                 │ Uses
++                                 ▼
++                           ┌───────────┐
++                           │  Theater  │ (Facade)
++                           └─────┬─────┘
++ Manages / Provides Access To    │
++       ┌─────────────────────────┼──────────────────────────┐
++       │                         │                          │
++       ▼                         ▼                          ▼
++┌──────────────┐      ┌───────────────────┐       ┌────────────────────┐
++│   Platform   │      │ IModel/ILedBuffer │       │ Scene N            │
++│ (Native/Hdw) │◀─────│    (Interfaces)   │◀──────│ (Your Animation)   │
++└──────────────┘      └───────────────────┘       └────────────────────┘
++       ▲                         ▲                          ▲
++       │ Implemented By          │ Implemented By           │ Inherits From
++       │                         │                          │
++┌──────┴─────────┐  ┌───────────┴──────────┐      ┌───────┴──────┐
++│ NativePlatform │  │ ModelWrapper         │      │ Scene (Base) │
++│ FastLEDPlatform│  │ LedBufferWrapper     │      └──────────────┘
++└────────────────┘  └──────────────────────┘             │
++                                                           │ Provides Helpers
++                                                           │ (leds[], model(),
++                                                           │  millis(), etc.)
+ </code></pre>
+ 
+ <h3>Key Concepts</h3>
+ <ul>
+-<li><strong>Stage</strong>: The place where animated scenes are played on a model covered in LEDs</li>
+-<li><strong>Model</strong>: Definition of a geometric shape covered with LEDs, generated from hardware files</li>
+-<li><strong>LEDSurface</strong>: The configured driver for addressable LEDs of a given model</li>
+-<li><strong>Scene</strong>: A single animation, including its parameters and behavior</li>
+-<li><strong>Parameters</strong>: The types and ranges that define how a scene is configured</li>
+-<li><strong>Settings</strong>: The interface and internal state of a scene's parameters</li>
+-<li><strong>Presets</strong>: A snapshot of settings for a scene</li>
+-<li><strong>Props</strong>: Chunks of data like color palettes, bitmaps, or datasets used by the scene</li>
+-<li><strong>Actors</strong>: Animation objects (classes) used in a scene</li>
+-<li><strong>Show</strong>: A sequenced list of scenes to play</li>
+-<li><strong>Director</strong>: Manages the performance: scene selection, transitions, behavior</li>
+-<li><strong>Controls</strong>: Hardware events or sensors that enable interaction</li>
+-<li><strong>Controllers</strong>: An control mapped to a parameter of a scene</li>
++<li><strong>Theater</strong>: The main entry point. Initializes the system (<code>useNativePlatform</code>, <code>useFastLEDPlatform</code>), adds scenes (<code>addScene</code>), and runs the animation loop (<code>update</code>).</li>
++<li><strong>Scene</strong>: Base class for all animations. Provides helpers to access LEDs (<code>leds[i]</code>), geometry (<code>model().point(i)</code>), utilities (<code>millis()</code>), and parameters (<code>settings[]</code>). You inherit from this to create your animation.</li>
++<li><strong>Platform</strong>: Abstract base class for hardware/environment interaction (e.g., <code>NativePlatform</code>, <code>FastLEDPlatform</code>). Managed by <code>Theater</code>.</li>
++<li><strong>IModel/ILedBuffer</strong>: Interfaces providing access to model geometry and LED data buffers. Managed by <code>Theater</code>, accessed via <code>Scene</code> helpers.</li>
++<li><strong>ModelWrapper/LedBufferWrapper</strong>: Internal classes implementing the interfaces, wrapping the concrete <code>Model</code> and LED buffer. Managed by <code>Theater</code>.</li>
++<li><strong>Model</strong>: Defines the LED geometry (points, faces). Generated from config files.</li>
++<li><strong>Parameters/Settings</strong>: Mechanism for runtime configuration of scenes.</li>
+ </ul>
+-<p>The Director manages scene transitions and ensures proper lifecycle method calls.</p>
+-<h2>Directing Scenes</h2>
+-<p>The Director is responsible for selecting and transitioning between scenes. It can place animations on the stage (run them), and manage playlists and activate presets. The Director puts on the show.</p>
+-<h2>Props System</h2>
+-<p>Props are binary assets (palettes, bitmaps) that can be used in scenes.</p>
++<h2>Getting Started</h2>
++<ol>
++<li><strong>Include Header:</strong> Add <code>#include "PixelTheater.h"</code> to your main file (<code>src/main.cpp</code>).</li>
++<li><strong>Define Model:</strong> Ensure your model definition header (e.g., <code>models/MyModel/model.h</code>) exists.</li>
++<li><strong>Create Theater:</strong> Instantiate <code>PixelTheater::Theater theater;</code> globally.</li>
++<li>
++<p><strong>Initialize Theater:</strong> In <code>setup()</code>, call the appropriate method, e.g.:
++    ```cpp
++    // For Teensy/FastLED:
++    #include "models/DodecaRGBv2/model.h" // Include your specific model
++    extern ::CRGB leds[]; // Assuming global FastLED array
++    extern const size_t NUM_LEDS;
++    theater.useFastLEDPlatform<PixelTheater::Models::DodecaRGBv2>(leds, NUM_LEDS);</p>
++<p>// For Native testing:
++// #include "fixtures/models/basic_pentagon_model.h"
++// theater.useNativePlatform<PixelTheater::Fixtures::BasicPentagonModel>(/<em>led count</em>/);
++<code>5.  **Create Scenes:** Define classes inheriting from `PixelTheater::Scene` in separate header files (e.g., `src/scenes/my_scene.h`). Implement `setup()` and `tick()`.
++6.  **Add Scenes:** In `setup()`, include your scene headers and add instances to the theater:</code>cpp</p>
++<h1>include "scenes/my_scene.h"</h1>
++<h1>include "scenes/another_scene.h"</h1>
++<p>// ... 
++theater.addScene<Scenes::MyScene>(); 
++theater.addScene<Scenes::AnotherScene>();
++<code>``
++7.  **Start Theater:** Call</code>theater.start();<code>after adding scenes.
++8.  **Update Loop:** In</code>loop()<code>, call</code>theater.update();`.</p>
++</li>
++</ol>
++<p>See <code>creating_animations.md</code> and <code>SceneAuthorGuide.md</code> for more details.</p>
+ <h2>Parameter System</h2>
+-<p>Parameters allow scenes to be configured at runtime. They are defined in the scene's <code>setup()</code> method:</p>
+-<pre class="codehilite"><code class="language-cpp">void setup() override {
+-    // Float parameter with range [0.0, 1.0]
+-    param(&quot;speed&quot;, &quot;ratio&quot;, 0.5f, &quot;clamp&quot;, &quot;Controls animation speed&quot;);
+-
+-    // Integer parameter with range [0, 100]
+-    param(&quot;count&quot;, &quot;count&quot;, 0, 100, 50, &quot;&quot;, &quot;Number of particles&quot;);
+-
+-    // Boolean parameter
+-    param(&quot;trails&quot;, &quot;switch&quot;, true, &quot;&quot;, &quot;Enable motion trails&quot;);
+-}
++<p>Parameters allow scenes to be configured at runtime. They are defined in the scene's <code>setup()</code> method using <code>param()</code>:</p>
++<pre class="codehilite"><code class="language-cpp">// Inside MyScene::setup()
++param(&quot;speed&quot;, &quot;ratio&quot;, 0.5f); // Float 0.0-1.0
++param(&quot;count&quot;, &quot;count&quot;, 1, 10, 5); // Integer 1-10, default 5
+ </code></pre>
+ 
+-<p>Parameters can be accessed using the settings object:</p>
++<p>Access values in <code>tick()</code> using the <code>settings</code> proxy:</p>
+ <pre class="codehilite"><code class="language-cpp">float speed = settings[&quot;speed&quot;];
+ int count = settings[&quot;count&quot;];
+-bool trails = settings[&quot;trails&quot;];
+ </code></pre>
+ 
+-<p>The parameter system also supports schema generation for UI rendering and documentation:</p>
+-<pre class="codehilite"><code class="language-cpp">// Get parameter schema as JSON
+-auto schema = scene.parameter_schema().to_json();
+-</code></pre>
+-
+-<h2>[13] Advanced Configuration</h2>
++<p>See <code>Parameters.md</code> for full details.</p>
++<h2>Advanced Configuration &amp; Features</h2>
++<ul>
++<li><strong>Models:</strong> Define custom LED geometry. See <code>Model.md</code>.</li>
++<li><strong>Palettes:</strong> Use predefined or custom color palettes. See <code>Palettes.md</code>.</li>
++<li><strong>Build System:</strong> Understand how models and code are compiled. See <code>build-system.md</code>.</li>
++<li><strong>Logging:</strong> Use <code>logInfo()</code>, <code>logWarning()</code>, <code>logError()</code> within scenes.</li>
++<li><strong>Utilities:</strong> Leverage math functions (<code>map</code>, <code>sin8</code>, <code>blend8</code>), color functions (<code>hsv2rgb_rainbow</code>), and constants (<code>Constants::PT_PI</code>) provided via <code>PixelTheater.h</code>.</li>
++</ul>
+ <h3>Build Process</h3>
+ <p>The build system compiles scenes and models into the firmware:</p>
+ <ol>
+diff --git a/build/docs/PixelTheater/Scenes.html b/build/docs/PixelTheater/Scenes.html
+index 81f4da5..59c4283 100644
+--- a/build/docs/PixelTheater/Scenes.html
++++ b/build/docs/PixelTheater/Scenes.html
+@@ -85,13 +85,7 @@
+                 
+                 <li>
+                     
+-                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Scenes.html" class="active">Scene System</a>
++                    <a href="/PixelTheater/Scenes.html" class="active">Scene API Reference</a>
+                     
+                 </li>
+                 
+@@ -177,160 +171,85 @@
+     <article class="main-content">
+         
+         
+-        <h1>Scene System</h1>
+-<p>Scenes are the core animation components in PixelTheater. Each scene defines a self-contained animation with its own parameters, state, and rendering logic.</p>
+-<h2>Scene Organization</h2>
+-<p>A scene consists of:</p>
+-<pre class="codehilite"><code>scenes/space/              # Scene root directory
+-├── space.cpp             # Scene implementation 
+-├── README.md            # Scene documentation
+-└── props/               # Scene-specific assets
+-    ├── nebula.bmp       # Bitmap resource
+-    └── deep_space.pal   # Palette resource
+-</code></pre>
+-
+-<h2>Scene Implementation</h2>
+-<h3>Lifecycle</h3>
+-<pre class="codehilite"><code class="language-cpp">template&lt;typename ModelDef&gt;
+-class MyScene : public Scene&lt;ModelDef&gt; {
+-    using Scene = Scene&lt;ModelDef&gt;;
+-    using Scene::Scene;  // Inherit constructor
+-
+-    void setup() override {
+-        // Called once when scene becomes active
+-        // Initialize parameters and state here
+-        param(&quot;speed&quot;, 0.5f, Flags::CLAMP, &quot;Controls animation speed&quot;);
+-        _stars.reserve(settings[&quot;stars&quot;]);
+-    }
++        <h1>Scene API Reference</h1>
++<p>This document provides a quick reference to the API available to authors creating custom animations by inheriting from <code>PixelTheater::Scene</code>.</p>
++<p>For a tutorial on creating scenes, see <code>docs/creating_animations.md</code>.
++For a more detailed guide, see <code>docs/PixelTheater/SceneAuthorGuide.md</code>.</p>
++<h2>Basic Structure</h2>
++<pre class="codehilite"><code class="language-cpp">#include &quot;PixelTheater.h&quot;
++using namespace PixelTheater;
++using namespace PixelTheater::Constants;
+ 
+-    void tick() override {
+-        Scene::tick();  // Required: updates frame counter
+-
+-        // Called every frame
+-        updateState();
+-        renderFrame();
+-    }
+-
+-    std::string status() const override {
+-        return &quot;Frame: &quot; + std::to_string(tick_count());
+-    }
++namespace Scenes {
++class MyScene : public Scene {
++public:
++    void setup() override { /* Init metadata, params, state */ }
++    void tick() override { /* Animation logic */ }
+ };
++} // namespace Scenes
+ </code></pre>
+ 
+-<h3>Stage and Model Access</h3>
+-<pre class="codehilite"><code class="language-cpp">void MyScene::tick() {
+-    Scene::tick();
+-
+-    // Stage access
+-    auto&amp; leds = this-&gt;stage.leds;           // LED array
+-    auto&amp; model = this-&gt;stage.model;         // Model access
+-    size_t num_leds = model.led_count();     // Total LEDs
+-    size_t num_faces = model.face_count();   // Total faces
+-
+-    // LED access patterns
+-    leds[0] = CRGB::Red;                    // Direct indexing
+-    model.faces[0].leds[0] = CRGB::Blue;    // Through face
+-
+-    // Range-based iteration
+-    for(auto&amp; led : leds) {
+-        fadeToBlackBy(led, 128);
+-    }
+-
+-    // Face-based iteration
+-    for(auto&amp; face : model.faces) {
+-        for(auto&amp; led : face.leds) {
+-            led = CRGB::Green;
+-        }
+-    }
+-
+-    // Point-based access
+-    for(const auto&amp; point : model.points) {
+-        float height = point.y();
+-        leds[point.id()] = CHSV(height * 255, 255, 255);
+-    }
+-}
+-</code></pre>
+-
+-<h2>Parameter System</h2>
+-<h3>Parameter Definition</h3>
+-<p>Parameters are defined in the <code>setup()</code> method using the <code>param()</code> method:</p>
+-<pre class="codehilite"><code class="language-cpp">void setup() override {
+-    // Float parameter with range [0.0, 1.0]
+-    param(&quot;speed&quot;, &quot;ratio&quot;, 0.5f, &quot;clamp&quot;, &quot;Controls animation speed&quot;);
+-
+-    // Integer parameter with range [0, 100]
+-    param(&quot;count&quot;, &quot;count&quot;, 0, 100, 50, &quot;&quot;, &quot;Number of particles&quot;);
+-
+-    // Boolean parameter
+-    param(&quot;trails&quot;, &quot;switch&quot;, true, &quot;&quot;, &quot;Enable motion trails&quot;);
+-
+-    // Float parameter with range [0.0, 2.0]
+-    param(&quot;size&quot;, &quot;range&quot;, 0.0f, 2.0f, 1.0f, &quot;&quot;, &quot;Particle size&quot;);
+-}
+-</code></pre>
+-
+-<h3>Parameter Access</h3>
+-<p>Parameters can be accessed using the settings object:</p>
+-<pre class="codehilite"><code class="language-cpp">void tick() override {
+-    Scene::tick();
+-
+-    // Access parameters
+-    float speed = settings[&quot;speed&quot;];
+-    int count = settings[&quot;count&quot;];
+-    bool trails = settings[&quot;trails&quot;];
+-
+-    // Use parameters in animation logic
+-    if (trails) {
+-        fadeToBlackBy(leds, 255 * (1.0f - speed));
+-    } else {
+-        fill_solid(leds, CRGB::Black);
+-    }
+-
+-    // Update particles
+-    for (int i = 0; i &lt; count; i++) {
+-        updateParticle(i, speed);
+-    }
+-}
+-</code></pre>
+-
+-<h3>Parameter Schema</h3>
+-<p>You can generate a schema of all parameters for UI rendering or documentation:</p>
+-<pre class="codehilite"><code class="language-cpp">// Get parameter schema as JSON
+-auto schema = scene.parameter_schema().to_json();
+-
+-// Check if a parameter exists
+-bool has_speed = scene.has_parameter(&quot;speed&quot;);
+-
+-// Get all parameter names
+-auto names = scene.parameter_names();
+-</code></pre>
+-
+-<h2>Best Practices</h2>
+-<ol>
+-<li><strong>Scene Design</strong>:</li>
+-<li>One scene per file</li>
+-<li>Clear parameter documentation</li>
+-<li>Meaningful scene names</li>
+-<li>
+-<p>Call base class <code>tick()</code> for frame counting</p>
+-</li>
+-<li>
+-<p><strong>Performance</strong>:</p>
+-</li>
+-<li>Minimize allocations in tick()</li>
+-<li>Cache frequently used values</li>
+-<li>Use range-based for loops</li>
+-<li>
+-<p>Pre-allocate vectors in setup()</p>
+-</li>
+-<li>
+-<p><strong>Error Handling</strong>:</p>
+-</li>
+-<li>Check parameter existence</li>
+-<li>Use safe defaults</li>
+-<li>Validate ranges</li>
+-</ol>
+-<p>See <a href="Stage.md">Stage Documentation</a> for scene registration and lifecycle management.</p>
++<h2>Available API within Scene Subclass</h2>
++<h3>Lifecycle Methods (Override)</h3>
++<ul>
++<li><code>virtual void setup()</code>: (Pure Virtual) Initialize parameters, metadata, state.</li>
++<li><code>virtual void tick()</code>: Implement frame-by-frame animation logic. Call <code>Scene::tick()</code> to increment base counter.</li>
++<li><code>virtual void reset()</code>: Optional override. Called when scene becomes active again. Default resets <code>tick_count</code> and parameters.</li>
++</ul>
++<h3>LED Access</h3>
++<ul>
++<li><code>leds[index]</code> (<code>LedsProxy</code> member): Provides <code>CRGB&amp;</code>. Bounds-clamped.</li>
++<li><code>led(index)</code> (<code>CRGB&amp;</code> method): Helper access. Bounds-clamped.</li>
++<li><code>ledCount()</code> (<code>size_t</code> method): Returns total number of LEDs.</li>
++</ul>
++<h3>Model Geometry Access</h3>
++<ul>
++<li><code>model()</code> (<code>const IModel&amp;</code> method): Returns reference to the model interface.</li>
++<li><code>model().point(index)</code> (<code>const Point&amp;</code>): Get point data for LED <code>index</code>. Bounds-clamped.</li>
++<li><code>model().face(index)</code> (<code>const Face&amp;</code>): Get face data for face <code>index</code>. Bounds-clamped.</li>
++<li><code>model().pointCount()</code> (<code>size_t</code>): Total number of points (usually == <code>ledCount()</code>).</li>
++<li><code>model().faceCount()</code> (<code>size_t</code>): Total number of faces.</li>
++</ul>
++<h3>Parameters &amp; Settings</h3>
++<ul>
++<li><code>param(...)</code> (Protected method): Define parameters in <code>setup()</code>. Multiple overloads exist.</li>
++<li><code>meta(key, value)</code> (Protected method): Define simple string metadata in <code>setup()</code>.</li>
++<li><code>settings["name"]</code> (<code>SettingsProxy</code> member): Access/modify parameter values.</li>
++</ul>
++<h3>Metadata Accessors</h3>
++<ul>
++<li><code>name()</code> (<code>const std::string&amp;</code>): Get scene name.</li>
++<li><code>description()</code> (<code>const std::string&amp;</code>): Get scene description.</li>
++<li><code>version()</code> (<code>const std::string&amp;</code>): Get scene version.</li>
++<li><code>author()</code> (<code>const std::string&amp;</code>): Get scene author.</li>
++</ul>
++<h3>Timing Utilities</h3>
++<ul>
++<li><code>millis()</code> (<code>uint32_t</code>): Milliseconds since program start.</li>
++<li><code>deltaTime()</code> (<code>float</code>): Time elapsed since the last frame (in seconds).</li>
++<li><code>tick_count()</code> (<code>size_t</code>): Number of <code>tick()</code> calls since the scene was last activated/reset.</li>
++</ul>
++<h3>Math/Random Utilities</h3>
++<ul>
++<li><code>random8()</code></li>
++<li><code>random16()</code></li>
++<li><code>random(max)</code></li>
++<li><code>random(min, max)</code></li>
++<li><code>randomFloat()</code> (0.0-1.0)</li>
++<li><code>randomFloat(max)</code> (0.0-max)</li>
++<li><code>randomFloat(min, max)</code></li>
++<li><em>(Global utilities like <code>map</code>, <code>nblend</code>, <code>fadeToBlackBy</code>, <code>CHSV</code>, etc., are available via <code>PixelTheater.h</code> and <code>using namespace PixelTheater;</code>)</em></li>
++<li><em>(Constants like <code>PT_PI</code>, <code>PT_TWO_PI</code> are available via <code>PixelTheater.h</code> and <code>using namespace PixelTheater::Constants;</code>)</em></li>
++</ul>
++<h3>Logging Utilities</h3>
++<ul>
++<li><code>logInfo(const char* format)</code></li>
++<li><code>logWarning(const char* format)</code></li>
++<li><code>logError(const char* format)</code></li>
++<li><em>(Also <code>const</code> versions available)</em></li>
++<li><em>(Note: Currently only supports simple format string, no variable arguments)</em></li>
++</ul>
++<p>Refer to the source code headers (<code>scene.h</code>, <code>imodel.h</code>, <code>platform.h</code>, etc.) for precise signatures and implementation details.</p>
+     </article>
+ </div>
+ 
+diff --git a/build/docs/PixelTheater/Stage.html b/build/docs/PixelTheater/Stage.html
+deleted file mode 100644
+index 63c897f..0000000
+--- a/build/docs/PixelTheater/Stage.html
++++ /dev/null
+@@ -1,450 +0,0 @@
+-<!DOCTYPE html>
+-<html lang="en">
+-<head>
+-    <meta charset="UTF-8">
+-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+-    <title>Documentation - PixelTheater</title>
+-    <link rel="stylesheet" href="/assets/css/style.css">
+-    
+-    <meta name="theme-color" content="#432E54">
+-    <meta name="color-scheme" content="dark">
+-    
+-    <!-- Highlight.js for syntax highlighting -->
+-    
+-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+-    <!-- Additional languages -->
+-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/yaml.min.js"></script>
+-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/cpp.min.js"></script>
+-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/arduino.min.js"></script>
+-    
+-    
+-    
+-</head>
+-<body>
+-    <nav class="main-nav">
+-        <div class="nav-content">
+-            <a href="/" class="logo">PixelTheater</a>
+-            <ul>
+-                
+-                <li>
+-                    
+-                    <a href="/" >Home</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/README.html" >PixelTheater</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/guides/development.html" >Guides</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/simulator/index.html" class="button accent">Web Simulator</a>
+-                    
+-                </li>
+-                
+-            </ul>
+-        </div>
+-    </nav>
+-    
+-    <main>
+-        
+-<div class="content-wrapper">
+-    <aside class="sidebar">
+-        
+-        <div class="sidebar-section">
+-            <h3>Main Documentation</h3>
+-            <ul>
+-                
+-            </ul>
+-        </div>
+-        
+-        <div class="sidebar-section">
+-            <h3>PixelTheater</h3>
+-            <ul>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/README.html" >PixelTheater Animation System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Parameters.html" >Parameters</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Stage.html" class="active">Stage System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Model.html" >Model System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Palettes.html" >Palette System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/build-system.html" >Build System</a>
+-                    
+-                </li>
+-                
+-            </ul>
+-        </div>
+-        
+-        <div class="sidebar-section">
+-            <h3>Guides</h3>
+-            <ul>
+-                
+-                <li>
+-                    
+-                    <a href="/guides/creating_animations.html" >Creating Animations</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/guides/web-simulator.html" >DodecaRGB Web Simulator</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/guides/development.html" >DodecaRGB v2 Development</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/guides/coding_guidelines.html" >Project Guidelines</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/guides/Dodeca-V1-info.html" >DodecaRGB V1 info</a>
+-                    
+-                </li>
+-                
+-            </ul>
+-        </div>
+-        
+-        <div class="sidebar-section">
+-            <h3>Special Links</h3>
+-            <ul>
+-                
+-                <li>
+-                    
+-                    <a href="/simulator/index.html" class="special">Web Simulator</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="https://github.com/somebox/DodecaRGB-firmware" class="special">GitHub Repository</a>
+-                    
+-                </li>
+-                
+-            </ul>
+-        </div>
+-        
+-    </aside>
+-    
+-    <article class="main-content">
+-        
+-        
+-        <h1>Stage System</h1>
+-<p>The Stage is the central orchestrator in PixelTheater, managing the hardware platform, model state, and scene execution. It provides a unified interface for coordinating all components of an LED animation system.</p>
+-<h2>Core Responsibilities</h2>
+-<ol>
+-<li><strong>Hardware Integration</strong></li>
+-<li>Platform abstraction (FastLED, custom drivers)</li>
+-<li>LED buffer management</li>
+-<li>Frame rate control</li>
+-<li>
+-<p>Hardware synchronization</p>
+-</li>
+-<li>
+-<p><strong>Scene Management</strong></p>
+-</li>
+-<li>Scene registration and lifecycle</li>
+-<li>Scene transitions</li>
+-<li>Global state coordination</li>
+-<li>
+-<p>Resource allocation</p>
+-</li>
+-<li>
+-<p><strong>Update Loop</strong></p>
+-</li>
+-<li>Frame timing</li>
+-<li>Scene execution</li>
+-<li>LED buffer updates</li>
+-<li>Platform synchronization</li>
+-</ol>
+-<h2>Basic Setup</h2>
+-<pre class="codehilite"><code class="language-cpp">#include &quot;FastLED.h&quot;
+-#include &quot;PixelTheater.h&quot;
+-#include &quot;models/DodecaRGBv2/model.h&quot;  // Include generated model header
+-
+-// Define model type alias - all models live in PixelTheater::Models namespace
+-using DodecaModel = PixelTheater::Models::DodecaRGBv2;
+-
+-class Application {
+-private:
+-    // LED buffer for FastLED
+-    CRGB leds[DodecaModel::LED_COUNT];
+-
+-    // Core components
+-    std::unique_ptr&lt;PixelTheater::FastLEDPlatform&gt; platform;
+-    std::unique_ptr&lt;PixelTheater::Model&lt;DodecaModel&gt;&gt; model;
+-    std::unique_ptr&lt;PixelTheater::Stage&lt;DodecaModel&gt;&gt; stage;
+-
+-public:
+-    void setup() {
+-        // Initialize FastLED
+-        FastLED.addLeds&lt;WS2812B, DATA_PIN, GRB&gt;(leds, DodecaModel::LED_COUNT);
+-        FastLED.setBrightness(128);
+-        FastLED.setMaxRefreshRate(60);
+-
+-        // Create platform
+-        platform = std::make_unique&lt;PixelTheater::FastLEDPlatform&gt;(
+-            reinterpret_cast&lt;PixelTheater::CRGB*&gt;(leds),
+-            DodecaModel::LED_COUNT
+-        );
+-
+-        // Create model
+-        model = std::make_unique&lt;PixelTheater::Model&lt;DodecaModel&gt;&gt;(
+-            DodecaModel{},
+-            platform-&gt;getLEDs()
+-        );
+-
+-        // Create stage
+-        stage = std::make_unique&lt;PixelTheater::Stage&lt;DodecaModel&gt;&gt;(
+-            std::move(platform),
+-            std::move(model)
+-        );
+-
+-        // Register scenes
+-        registerScenes();
+-    }
+-
+-    void loop() {
+-        stage-&gt;update();  // Updates current scene and syncs hardware
+-    }
+-
+-private:
+-    void registerScenes() {
+-        // Register scenes with metadata
+-        stage-&gt;registerScene&lt;SpaceScene&lt;DodecaModel&gt;&gt;(
+-            &quot;Space&quot;,
+-            &quot;Deep space visualization&quot;
+-        );
+-
+-        stage-&gt;registerScene&lt;FireworksScene&lt;DodecaModel&gt;&gt;(
+-            &quot;Fireworks&quot;,
+-            &quot;Colorful firework display&quot;
+-        );
+-
+-        // Set initial scene
+-        if (auto* scene = stage-&gt;getScene(&quot;Space&quot;)) {
+-            stage-&gt;setScene(scene);
+-        }
+-    }
+-};
+-</code></pre>
+-
+-<h2>Platform Integration</h2>
+-<p>The Stage manages hardware through platform abstractions:</p>
+-<pre class="codehilite"><code class="language-cpp">// Platform interface (simplified)
+-class Platform {
+-public:
+-    virtual void update() = 0;              // Update hardware
+-    virtual void setBrightness(uint8_t) = 0;// Set global brightness
+-    virtual CRGB* getLEDs() = 0;            // Get LED buffer
+-    virtual size_t getLEDCount() = 0;       // Get LED count
+-};
+-
+-// FastLED implementation
+-class FastLEDPlatform : public Platform {
+-public:
+-    void update() override {
+-        FastLED.show();  // Update physical LEDs
+-    }
+-
+-    void setBrightness(uint8_t value) override {
+-        FastLED.setBrightness(value);
+-    }
+-    // ... other methods ...
+-};
+-</code></pre>
+-
+-<h2>Scene Management</h2>
+-<p>The Stage provides a type-safe API for scene management:</p>
+-<pre class="codehilite"><code class="language-cpp">// Scene registration
+-auto* scene = stage-&gt;registerScene&lt;MyScene&lt;ModelDef&gt;&gt;(
+-    &quot;My Scene&quot;,
+-    &quot;Scene description&quot;
+-);
+-
+-// Scene transitions
+-stage-&gt;setScene(scene);           // Switch to scene
+-stage-&gt;setScene(&quot;My Scene&quot;);      // Switch by name
+-stage-&gt;nextScene();               // Advance to next scene
+-stage-&gt;previousScene();           // Return to previous scene
+-
+-// Scene queries
+-if (auto* scene = stage-&gt;getScene(&quot;My Scene&quot;)) {
+-    // Scene exists
+-}
+-
+-// Scene enumeration
+-for (const auto&amp; info : stage-&gt;getSceneInfo()) {
+-    std::cout &lt;&lt; info.name &lt;&lt; &quot;: &quot; &lt;&lt; info.description &lt;&lt; &quot;\n&quot;;
+-}
+-</code></pre>
+-
+-<h2>Update Loop</h2>
+-<p>The Stage's update loop coordinates all components:</p>
+-<pre class="codehilite"><code class="language-cpp">void Stage::update() {
+-    // Update timing
+-    auto now = std::chrono::steady_clock::now();
+-    float delta = std::chrono::duration&lt;float&gt;(now - _last_update).count();
+-    _last_update = now;
+-
+-    // Update current scene
+-    if (_current_scene) {
+-        _current_scene-&gt;tick();
+-    }
+-
+-    // Update platform
+-    _platform-&gt;update();
+-}
+-</code></pre>
+-
+-<h2>Global State</h2>
+-<p>The Stage maintains global state accessible to all scenes:</p>
+-<pre class="codehilite"><code class="language-cpp">// Global brightness
+-stage-&gt;brightness(128);           // Set brightness
+-uint8_t bright = stage-&gt;brightness(); // Get brightness
+-
+-// Frame timing
+-float delta = stage-&gt;deltaTime(); // Time since last frame
+-float fps = stage-&gt;frameRate();   // Current frame rate
+-
+-// Scene information
+-const auto&amp; info = stage-&gt;currentScene(); // Current scene info
+-size_t count = stage-&gt;sceneCount();      // Number of scenes
+-</code></pre>
+-
+-<h2>Best Practices</h2>
+-<ol>
+-<li><strong>Resource Management</strong>:</li>
+-<li>Use smart pointers for components</li>
+-<li>Let Stage manage scene lifecycle</li>
+-<li>
+-<p>Clean up resources in scene destructors</p>
+-</li>
+-<li>
+-<p><strong>Performance</strong>:</p>
+-</li>
+-<li>Maintain consistent frame rate</li>
+-<li>Minimize allocations in update loop</li>
+-<li>
+-<p>Use platform-specific optimizations</p>
+-</li>
+-<li>
+-<p><strong>Error Handling</strong>:</p>
+-</li>
+-<li>Check scene existence before use</li>
+-<li>Validate transitions</li>
+-<li>
+-<p>Provide fallback scenes</p>
+-</li>
+-<li>
+-<p><strong>Scene Organization</strong>:</p>
+-</li>
+-<li>Register scenes at startup</li>
+-<li>Use meaningful names and descriptions</li>
+-<li>Group related scenes together</li>
+-</ol>
+-<p>See <a href="Scenes.md">Scene Documentation</a> for details on implementing scenes.</p>
+-    </article>
+-</div>
+-
+-    </main>
+-
+-    <footer>
+-        <p>PixelTheater Documentation</p>
+-        <p><small>Built with <a href="https://github.com/yourusername/PixelTheater">PixelTheater</a></small></p>
+-    </footer>
+-
+-    
+-    <script src="/assets/js/main.js"></script>
+-    
+-    <!-- Initialize syntax highlighting and add copy buttons -->
+-    <script>
+-        document.addEventListener('DOMContentLoaded', () => {
+-            // Apply syntax highlighting
+-            document.querySelectorAll('pre code').forEach((block) => {
+-                // Get language from class if available
+-                const codeElement = block;
+-                const preElement = block.parentElement;
+-                
+-                // Add copy button to each code block
+-                const copyButton = document.createElement('button');
+-                copyButton.className = 'copy-button';
+-                copyButton.textContent = 'Copy';
+-                preElement.appendChild(copyButton);
+-                
+-                // Apply highlighting
+-                hljs.highlightElement(block);
+-                
+-                // Add copy functionality
+-                copyButton.addEventListener('click', () => {
+-                    const code = block.textContent;
+-                    navigator.clipboard.writeText(code).then(() => {
+-                        // Visual feedback
+-                        copyButton.textContent = 'Copied!';
+-                        setTimeout(() => {
+-                            copyButton.textContent = 'Copy';
+-                        }, 2000);
+-                    }).catch(err => {
+-                        console.error('Failed to copy: ', err);
+-                        copyButton.textContent = 'Error';
+-                        setTimeout(() => {
+-                            copyButton.textContent = 'Copy';
+-                        }, 2000);
+-                    });
+-                });
+-            });
+-        });
+-    </script>
+-    
+-    
+-    
+-</body>
+-</html> 
+\ No newline at end of file
+diff --git a/build/docs/PixelTheater/build-system.html b/build/docs/PixelTheater/build-system.html
+index 5688086..62072a9 100644
+--- a/build/docs/PixelTheater/build-system.html
++++ b/build/docs/PixelTheater/build-system.html
+@@ -85,13 +85,7 @@
+                 
+                 <li>
+                     
+-                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
++                    <a href="/PixelTheater/Scenes.html" >Scene API Reference</a>
+                     
+                 </li>
+                 
+diff --git a/build/docs/creating_animations.html b/build/docs/creating_animations.html
+index 211cb5b..3e50327 100644
+--- a/build/docs/creating_animations.html
++++ b/build/docs/creating_animations.html
+@@ -85,13 +85,7 @@
+                 
+                 <li>
+                     
+-                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
++                    <a href="/PixelTheater/Scenes.html" >Scene API Reference</a>
+                     
+                 </li>
+                 
+@@ -177,28 +171,151 @@
+     <article class="main-content">
+         
+         
+-        <h2>Setting Scene Metadata</h2>
+-<p>Each scene should have metadata that helps users understand what the scene does. You should set this metadata in your scene's <code>setup()</code> method:</p>
++        <h1>Creating Animations (Scenes)</h1>
++<p>This guide walks you through creating a basic animation (called a "Scene") using the PixelTheater library.</p>
++<h2>1. Prerequisites</h2>
++<ul>
++<li>Familiarity with C++.</li>
++<li>PlatformIO environment set up for the project.</li>
++<li>A generated Model header file (e.g., <code>models/MyModel/model.h</code>) defining your LED geometry.</li>
++</ul>
++<h2>2. Create the Scene File</h2>
++<p>Create a new header file for your scene, typically within the <code>src/scenes/</code> directory (e.g., <code>src/scenes/my_scene/my_scene.h</code>).</p>
++<h2>3. Basic Scene Structure</h2>
++<p>Start with the basic class structure, inheriting from <code>PixelTheater::Scene</code>:</p>
++<pre class="codehilite"><code class="language-cpp">#pragma once
++
++#include &quot;PixelTheater.h&quot; // Include the main library header
++
++namespace Scenes {
++
++class MyScene : public PixelTheater::Scene {
++public:
++    // Constructor (usually default is fine)
++    MyScene() = default;
++
++    // Required lifecycle methods
++    void setup() override {
++        // Initialization code goes here
++        set_name(&quot;My First Scene&quot;); // Set basic metadata
++    }
++
++    void tick() override {
++        // Animation logic goes here (runs every frame)
++        Scene::tick(); // Recommended to call base tick
++    }
++};
++
++} // namespace Scenes
++</code></pre>
++
++<ul>
++<li>Include <code>PixelTheater.h</code>.</li>
++<li>Use a namespace (e.g., <code>Scenes</code>).</li>
++<li>Inherit publicly from <code>PixelTheater::Scene</code>.</li>
++<li>Override the pure virtual <code>setup()</code> method.</li>
++<li>Override the <code>tick()</code> method for animation logic.</li>
++</ul>
++<h3>Including Headers</h3>
++<p>Simply include the main library header <code>#include "PixelTheater.h"</code>. This provides access to the <code>Scene</code> base class, core types (<code>CRGB</code>, <code>Point</code>, <code>Face</code>), the <code>IModel</code> interface, utility functions (<code>map</code>, <code>nblend</code>, etc.), and constants (<code>Constants::PT_PI</code>).</p>
++<p>Consider adding <code>using namespace PixelTheater;</code> for convenience.
++To easily access constants like <code>PT_PI</code>, <code>PT_TWO_PI</code>, etc., add:
++<code>using namespace PixelTheater::Constants;</code></p>
++<h2>4. Defining Parameters</h2>
++<p>Make your scene configurable by adding parameters in <code>setup()</code> using the <code>param()</code> helper:</p>
+ <pre class="codehilite"><code class="language-cpp">void setup() override {
+-    // Set scene metadata
+-    this-&gt;set_name(&quot;My Scene Name&quot;);
+-    this-&gt;set_description(&quot;A description of what this scene does&quot;);
+-    this-&gt;set_version(&quot;1.0&quot;);
+-    this-&gt;set_author(&quot;Your Name&quot;);
++    set_name(&quot;My Scene Name&quot;);
++    set_description(&quot;A description of what this scene does&quot;);
++
++    // Simple float parameter (0.0 to 1.0)
++    param(&quot;speed&quot;, &quot;ratio&quot;, 0.5f, &quot;clamp&quot;, &quot;Animation speed&quot;);
++
++    // Integer parameter with range [1, 10]
++    param(&quot;count&quot;, &quot;count&quot;, 1, 10, 5, &quot;&quot;, &quot;Number of items&quot;);
++
++    // Boolean switch
++    param(&quot;enabled&quot;, &quot;switch&quot;, true, &quot;&quot;, &quot;Enable the effect&quot;);
++}
++</code></pre>
++
++<p>See <code>Parameters.md</code> for all available parameter types and flags.</p>
++<h2>5. Implementing Animation Logic (<code>tick()</code>)</h2>
++<p>Use the <code>tick()</code> method to update the animation state and set LED colors. Access LEDs, geometry, parameters, and utilities via the <code>Scene</code> base class helpers:</p>
++<pre class="codehilite"><code class="language-cpp">void tick() override {
++    Scene::tick(); // Track frame count
++
++    // Get parameter values
++    float speed = settings[&quot;speed&quot;];
++    int count = settings[&quot;count&quot;];
++    bool enabled = settings[&quot;enabled&quot;];
++
++    if (!enabled) {
++        // Optionally clear LEDs if disabled
++        for(size_t i=0; i &lt; ledCount(); ++i) leds[i] = PixelTheater::CRGB::Black;
++        return; // Skip rest of animation
++    }
++
++    // Get time
++    uint32_t time_ms = millis();
+ 
+-    // Define parameters
+-    // ...
++    // Fade existing colors slightly
++    for(size_t i=0; i &lt; ledCount(); ++i) {
++        leds[i].fadeToBlackBy(10); 
++    }
++
++    // Animate based on parameters and geometry
++    for (size_t i = 0; i &lt; ledCount(); ++i) {
++        const auto&amp; p = model().point(i); // Get point for this LED
++
++        // Example: pulse brightness based on Z coordinate and time
++        float phase = (p.z() * 0.1f) + (time_ms / 1000.0f * speed * PixelTheater::Constants::PT_TWO_PI);
++        uint8_t brightness = PixelTheater::sin8(static_cast&lt;uint8_t&gt;(phase * 255 / PixelTheater::Constants::PT_TWO_PI));
++
++        // Set LED color (only if brightness &gt; 0)
++        if (brightness &gt; 10) { // Avoid setting near-black colors constantly
++           leds[i] = PixelTheater::CHSV(160, 255, brightness); // Blue/Green hue
++        }
++    }
+ }
+ </code></pre>
+ 
+-<p>Setting metadata in the <code>setup()</code> method keeps all initialization in one place and follows the same pattern as parameter definition. This makes your code more consistent and easier to understand.</p>
+-<p>The scene name will be displayed in the UI, and the other metadata can be used for documentation, credits, and version tracking.</p>
+-<p>You can access the metadata using the following methods:</p>
+-<pre class="codehilite"><code class="language-cpp">const std::string&amp; name = scene-&gt;name();
+-const std::string&amp; description = scene-&gt;description();
+-const std::string&amp; version = scene-&gt;version();
+-const std::string&amp; author = scene-&gt;author();
++<p><strong>Key Helpers Used:</strong>
++*   <code>settings["param_name"]</code>: Access parameter values.
++*   <code>ledCount()</code>: Get the number of LEDs.
++*   <code>leds[i]</code>: Access individual LEDs (returns <code>PixelTheater::CRGB&amp;</code>).
++*   <code>model().point(i)</code>: Get the 3D point (<code>PixelTheater::Point</code>) for LED <code>i</code>.
++*   <code>millis()</code>: Get current time.
++*   <code>PixelTheater::sin8()</code>: Fast trig function.
++*   <code>PixelTheater::CHSV</code>: Color struct.
++*   <code>PT_PI</code>, <code>PT_TWO_PI</code>: Constants (available via <code>using namespace PixelTheater::Constants;</code>).</p>
++<h2>6. Adding the Scene to the Show</h2>
++<p>In your main application (<code>src/main.cpp</code>), include your scene's header and add it to the <code>Theater</code> during setup:</p>
++<pre class="codehilite"><code class="language-cpp">// In src/main.cpp
++#include &quot;PixelTheater.h&quot;
++#include &quot;models/MyModel/model.h&quot; // Your model
++#include &quot;scenes/my_scene/my_scene.h&quot; // Your new scene
++
++PixelTheater::Theater theater;
++
++void setup() {
++    // ... hardware setup ...
++
++    theater.useFastLEDPlatform&lt;PixelTheater::Models::MyModel&gt;(...); // Initialize Theater
++
++    theater.addScene&lt;Scenes::MyScene&gt;(); // Add your scene
++    // Add other scenes...
++
++    theater.start(); // Start the show
++}
++
++void loop() {
++    theater.update(); // Run the current scene
++    // ... handle input ...
++}
+ </code></pre>
++
++<p>Now, when you build and run, your scene will be part of the sequence managed by the <code>Theater</code>!</p>
++<p>Refer to <code>Scenes.md</code> for a more detailed API reference. </p>
+     </article>
+ </div>
+ 
+diff --git a/build/docs/guides/Dodeca-V1-info.html b/build/docs/guides/Dodeca-V1-info.html
+index c1a02d2..09c16a1 100644
+--- a/build/docs/guides/Dodeca-V1-info.html
++++ b/build/docs/guides/Dodeca-V1-info.html
+@@ -85,13 +85,7 @@
+                 
+                 <li>
+                     
+-                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
++                    <a href="/PixelTheater/Scenes.html" >Scene API Reference</a>
+                     
+                 </li>
+                 
+diff --git a/build/docs/guides/coding_guidelines.html b/build/docs/guides/coding_guidelines.html
+index 6ef9cbb..e6d7273 100644
+--- a/build/docs/guides/coding_guidelines.html
++++ b/build/docs/guides/coding_guidelines.html
+@@ -85,13 +85,7 @@
+                 
+                 <li>
+                     
+-                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
++                    <a href="/PixelTheater/Scenes.html" >Scene API Reference</a>
+                     
+                 </li>
+                 
+@@ -237,7 +231,6 @@ The PixelTheater library is used to define scenes, and the Point class is used t
+ </ul>
+ <h3>Error Handling and Validation</h3>
+ <ul>
+-<li>Use exceptions for error handling (e.g., <code>std::runtime_error</code>, <code>std::invalid_argument</code>).</li>
+ <li>Use RAII for resource management to avoid memory leaks.</li>
+ <li>Validate inputs at function boundaries.</li>
+ <li>Log errors using Serial.printf()</li>
+@@ -282,6 +275,43 @@ The PixelTheater library is used to define scenes, and the Point class is used t
+ <li>After any major change, update the README.md with any new or changed information.</li>
+ <li>After any major commit, update the VERSION variable in the main.cc file.</li>
+ </ul>
++<h3>Include Strategy</h3>
++<p>To ensure consistency and maintainability, follow these guidelines for <code>#include</code> directives:</p>
++<ol>
++<li>
++<p>**Library User Perspective (e.g., <code>src/main.cpp</code>):</p>
++<ul>
++<li><strong>Goal:</strong> Simple, single include for using the library.</li>
++<li><strong>Method:</strong> Include the main library header: <code>#include "PixelTheater.h"</code>. PlatformIO automatically makes library headers available.</li>
++<li><strong>Do Not Include:</strong> Avoid including internal library headers (e.g., <code>PixelTheater/core/scene.h</code>) directly.</li>
++</ul>
++</li>
++<li>
++<p>**Library Internal Perspective (<code>lib/PixelTheater/src/</code> and <code>lib/PixelTheater/include/PixelTheater/</code>):</p>
++<ul>
++<li><strong>Goal:</strong> Manage dependencies within the library.</li>
++<li><strong>Method:</strong><ul>
++<li>Source files (<code>*.cpp</code>) should include their corresponding header first (e.g., <code>native_platform.cpp</code> includes <code>"PixelTheater/platform/native_platform.h"</code>).</li>
++<li>Include other necessary library headers using the full path relative to the <code>lib/PixelTheater/include</code> directory (e.g., <code>#include "PixelTheater/core/crgb.h"</code>).</li>
++<li>Use forward declarations in headers (<code>*.h</code>) when possible to reduce compile times.</li>
++<li>Always use <code>#pragma once</code> in header files.</li>
++</ul>
++</li>
++</ul>
++</li>
++<li>
++<p>**Testing Perspective (<code>test/</code>):</p>
++<ul>
++<li><strong>Goal:</strong> Include library components under test and test infrastructure.</li>
++<li><strong>Method:</strong><ul>
++<li><strong>Library Headers:</strong> Include using the full library path (e.g., <code>#include "PixelTheater/scene.h"</code>).</li>
++<li><strong>Test Framework:</strong> Include using the standard path (e.g., <code>#include &lt;doctest/doctest.h&gt;</code>).</li>
++<li><strong>Test Helpers/Fixtures:</strong> Include using relative paths from the test file being written (e.g., from <code>test/test_native/core/test_file.cpp</code> include a fixture in <code>test/fixtures/models/</code> using <code>#include "../../fixtures/models/my_fixture.h"</code>).</li>
++</ul>
++</li>
++</ul>
++</li>
++</ol>
+     </article>
+ </div>
+ 
+diff --git a/build/docs/guides/creating_animations.html b/build/docs/guides/creating_animations.html
+index 736622a..45931d4 100644
+--- a/build/docs/guides/creating_animations.html
++++ b/build/docs/guides/creating_animations.html
+@@ -85,13 +85,7 @@
+                 
+                 <li>
+                     
+-                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
++                    <a href="/PixelTheater/Scenes.html" >Scene API Reference</a>
+                     
+                 </li>
+                 
+diff --git a/build/docs/guides/development.html b/build/docs/guides/development.html
+index 2f003e2..dd49bfb 100644
+--- a/build/docs/guides/development.html
++++ b/build/docs/guides/development.html
+@@ -85,13 +85,7 @@
+                 
+                 <li>
+                     
+-                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
++                    <a href="/PixelTheater/Scenes.html" >Scene API Reference</a>
+                     
+                 </li>
+                 
+@@ -214,13 +208,13 @@ eval &quot;$(direnv hook zsh)&quot;  # or bash if you use bash
+ cp .env.example .env
+ cp .envrc.example .envrc
+ 
+-# Allow direnv for this directory
+-direnv allow .
+-
+ # Create and activate virtual environment
+ /opt/homebrew/opt/python@3.12/bin/python3.12 -m venv venv
+ source venv/bin/activate
+ 
++# Allow direnv for this directory
++direnv allow .
++
+ # Install requirements
+ pip install -r util/requirements.txt
+ </code></pre>
+@@ -267,12 +261,29 @@ brew uninstall python-tk@3.12
+ brew install python@3.12 --with-tcl-tk
+ </code></pre>
+ 
++<h1>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD:Development.md</h1>
+ <h2>Further Inspiration</h2>
+ <ul>
+ <li><a href="https://www.youtube.com/watch?v=pcV9YAWSDRE">What I learned from making a dodecahedron</a> by the fabulous Dave Darko - honestly the video that got me addicted to this project</li>
+ <li><a href="https://www.youtube.com/watch?v=vR6oae0s6_M">Designing a Dodecahedron</a> in OnShape</li>
+ <li>
+ <h2><a href="https://www.cosmic-core.org/free/article-42-geometry-platonic-solids-part-3-spherical-stereographic-solids/">Geometry - Platonic Solids</a> - great for learning about the geometry of the dodecahedron</h2>
++&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD<blockquote>
++<h1>&gt;&gt;&gt;&gt;&gt;&gt; a40f713 (reorganized docs into /docs folder, added build step and python script to compile headers and frontmatter in markdown, added script to update VERSION strings in project and docs):docs/development.md</h1>
++<blockquote>
++<blockquote>
++<blockquote>
++<blockquote>
++<blockquote>
++<blockquote>
++<p>10248fd (fix doc_builder.py script to take parameters and check file dates against headers (avoiding needless modifications))</p>
++</blockquote>
++</blockquote>
++</blockquote>
++</blockquote>
++</blockquote>
++</blockquote>
++</blockquote>
+ </li>
+ </ul>
+     </article>
+diff --git a/build/docs/guides/web-simulator.html b/build/docs/guides/web-simulator.html
+index 8c191e7..c93c37a 100644
+--- a/build/docs/guides/web-simulator.html
++++ b/build/docs/guides/web-simulator.html
+@@ -85,13 +85,7 @@
+                 
+                 <li>
+                     
+-                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
++                    <a href="/PixelTheater/Scenes.html" >Scene API Reference</a>
+                     
+                 </li>
+                 
+@@ -326,11 +320,37 @@ const parameters = Module.getSceneParameters();
+ <h2>Camera System</h2>
+ <p>The camera system allows users to navigate the 3D space:</p>
+ <ul>
+-<li><strong>Manual Rotation</strong>: Click and drag to rotate the model</li>
+-<li><strong>Auto-rotation</strong>: Toggle automatic rotation with speed control</li>
+-<li><strong>Preset Views</strong>: Predefined viewing angles</li>
+-<li><strong>Zoom Levels</strong>: Different distance settings from the model</li>
++<li><strong>Free Rotation</strong>: Click and drag to rotate the model in any direction</li>
++<li>Left/right drag rotates around the Y axis (yaw)</li>
++<li>Up/down drag rotates around the X axis (pitch)</li>
++<li>Rotation is consistent regardless of the model's current orientation</li>
++<li>
++<p>No rotation limits - the model can be freely rotated in all directions</p>
++</li>
++<li>
++<p><strong>Auto-rotation</strong>: Toggle automatic rotation with speed control</p>
++</li>
++<li>Off: No automatic rotation</li>
++<li>Slow: Gentle rotation around the Y axis</li>
++<li>
++<p>Fast: Quicker rotation around the Y axis</p>
++</li>
++<li>
++<p><strong>Zoom Levels</strong>: Different distance settings from the model</p>
++</li>
++<li>Close: Detailed view of the model</li>
++<li>Normal: Standard viewing distance</li>
++<li>
++<p>Far: Zoomed out view of the entire model</p>
++</li>
++<li>
++<p><strong>Mouse Wheel</strong>: Adjust zoom level dynamically</p>
++</li>
++<li>
++<p><strong>Double-click</strong>: Reset rotation to the default position</p>
++</li>
+ </ul>
++<p>The camera system uses a turntable-style rotation model where the camera position remains fixed while the model rotates. This provides an intuitive interaction model for examining the 3D object from all angles.</p>
+ <h2>Initialization Sequence</h2>
+ <p>The initialization sequence follows these steps:</p>
+ <ol>
+diff --git a/build/docs/index.html b/build/docs/index.html
+index 88af735..f6e6e88 100644
+--- a/build/docs/index.html
++++ b/build/docs/index.html
+@@ -85,13 +85,7 @@
+                 
+                 <li>
+                     
+-                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
++                    <a href="/PixelTheater/Scenes.html" >Scene API Reference</a>
+                     
+                 </li>
+                 
+diff --git a/build/docs/simulator-docs/index.html b/build/docs/simulator-docs/index.html
+index c60b399..c49f280 100644
+--- a/build/docs/simulator-docs/index.html
++++ b/build/docs/simulator-docs/index.html
+@@ -80,13 +80,7 @@
+                 
+                 <li>
+                     
+-                    <a href="/PixelTheater/Stage.html" >Stage System</a>
+-                    
+-                </li>
+-                
+-                <li>
+-                    
+-                    <a href="/PixelTheater/Scenes.html" >Scene System</a>
++                    <a href="/PixelTheater/Scenes.html" >Scene API Reference</a>
+                     
+                 </li>
+                 
+diff --git a/build/docs/simulator/Makefile b/build/docs/simulator/Makefile
+index 37ab128..6f607da 100644
+--- a/build/docs/simulator/Makefile
++++ b/build/docs/simulator/Makefile
+@@ -34,7 +34,9 @@ SOURCES = $(SRC_DIR)/web_simulator.cpp \
+           $(PIXELTHEATER_DIR)/src/platform/webgl/camera.cpp \
+           $(PIXELTHEATER_DIR)/src/platform/webgl/mesh.cpp \
+           $(PIXELTHEATER_DIR)/src/platform/webgl/shaders.cpp \
+-          $(PIXELTHEATER_DIR)/src/platform/webgl/renderer.cpp
++          $(PIXELTHEATER_DIR)/src/platform/webgl/renderer.cpp \
++          $(PIXELTHEATER_DIR)/src/scene.cpp \
++          $(PIXELTHEATER_DIR)/src/theater.cpp
+ 
+ # Emscripten flags
+ EMCC_FLAGS = -std=c++17 \
+diff --git a/build/docs/simulator/simulator.js b/build/docs/simulator/simulator.js
+index 6b5d7a5..4c47c18 100644
+--- a/build/docs/simulator/simulator.js
++++ b/build/docs/simulator/simulator.js
+@@ -1156,6 +1156,84 @@ var warnOnce = text => {
+   }
+ };
+ 
++var UTF8Decoder = typeof TextDecoder != "undefined" ? new TextDecoder : undefined;
++
++/**
++     * Given a pointer 'idx' to a null-terminated UTF8-encoded string in the given
++     * array that contains uint8 values, returns a copy of that string as a
++     * Javascript String object.
++     * heapOrArray is either a regular array, or a JavaScript typed array view.
++     * @param {number=} idx
++     * @param {number=} maxBytesToRead
++     * @return {string}
++     */ var UTF8ArrayToString = (heapOrArray, idx = 0, maxBytesToRead = NaN) => {
++  var endIdx = idx + maxBytesToRead;
++  var endPtr = idx;
++  // TextDecoder needs to know the byte length in advance, it doesn't stop on
++  // null terminator by itself.  Also, use the length info to avoid running tiny
++  // strings through TextDecoder, since .subarray() allocates garbage.
++  // (As a tiny code save trick, compare endPtr against endIdx using a negation,
++  // so that undefined/NaN means Infinity)
++  while (heapOrArray[endPtr] && !(endPtr >= endIdx)) ++endPtr;
++  if (endPtr - idx > 16 && heapOrArray.buffer && UTF8Decoder) {
++    return UTF8Decoder.decode(heapOrArray.subarray(idx, endPtr));
++  }
++  var str = "";
++  // If building with TextDecoder, we have already computed the string length
++  // above, so test loop end condition against that
++  while (idx < endPtr) {
++    // For UTF8 byte structure, see:
++    // http://en.wikipedia.org/wiki/UTF-8#Description
++    // https://www.ietf.org/rfc/rfc2279.txt
++    // https://tools.ietf.org/html/rfc3629
++    var u0 = heapOrArray[idx++];
++    if (!(u0 & 128)) {
++      str += String.fromCharCode(u0);
++      continue;
++    }
++    var u1 = heapOrArray[idx++] & 63;
++    if ((u0 & 224) == 192) {
++      str += String.fromCharCode(((u0 & 31) << 6) | u1);
++      continue;
++    }
++    var u2 = heapOrArray[idx++] & 63;
++    if ((u0 & 240) == 224) {
++      u0 = ((u0 & 15) << 12) | (u1 << 6) | u2;
++    } else {
++      if ((u0 & 248) != 240) warnOnce("Invalid UTF-8 leading byte " + ptrToString(u0) + " encountered when deserializing a UTF-8 string in wasm memory to a JS string!");
++      u0 = ((u0 & 7) << 18) | (u1 << 12) | (u2 << 6) | (heapOrArray[idx++] & 63);
++    }
++    if (u0 < 65536) {
++      str += String.fromCharCode(u0);
++    } else {
++      var ch = u0 - 65536;
++      str += String.fromCharCode(55296 | (ch >> 10), 56320 | (ch & 1023));
++    }
++  }
++  return str;
++};
++
++/**
++     * Given a pointer 'ptr' to a null-terminated UTF8-encoded string in the
++     * emscripten HEAP, returns a copy of that string as a Javascript String object.
++     *
++     * @param {number} ptr
++     * @param {number=} maxBytesToRead - An optional length that specifies the
++     *   maximum number of bytes to read. You can omit this parameter to scan the
++     *   string until the first 0 byte. If maxBytesToRead is passed, and the string
++     *   at [ptr, ptr+maxBytesToReadr[ contains a null byte in the middle, then the
++     *   string will cut short at that byte index (i.e. maxBytesToRead will not
++     *   produce a string of exact length [ptr, ptr+maxBytesToRead[) N.B. mixing
++     *   frequent uses of UTF8ToString() with and without maxBytesToRead may throw
++     *   JS JIT optimizations off, so it is worth to consider consistently using one
++     * @return {string}
++     */ var UTF8ToString = (ptr, maxBytesToRead) => {
++  assert(typeof ptr == "number", `UTF8ToString expects a number (got ${typeof ptr})`);
++  return ptr ? UTF8ArrayToString(HEAPU8, ptr, maxBytesToRead) : "";
++};
++
++var ___assert_fail = (condition, filename, line, func) => abort(`Assertion failed: ${UTF8ToString(condition)}, at: ` + [ filename ? UTF8ToString(filename) : "unknown filename", line, func ? UTF8ToString(func) : "unknown function" ]);
++
+ class ExceptionInfo {
+   // excPtr - Thrown object pointer to wrap. Metadata pointer is calculated from it.
+   constructor(excPtr) {
+@@ -1980,82 +2058,6 @@ var lengthBytesUTF8 = str => {
+   return len;
+ };
+ 
+-var UTF8Decoder = typeof TextDecoder != "undefined" ? new TextDecoder : undefined;
+-
+-/**
+-     * Given a pointer 'idx' to a null-terminated UTF8-encoded string in the given
+-     * array that contains uint8 values, returns a copy of that string as a
+-     * Javascript String object.
+-     * heapOrArray is either a regular array, or a JavaScript typed array view.
+-     * @param {number=} idx
+-     * @param {number=} maxBytesToRead
+-     * @return {string}
+-     */ var UTF8ArrayToString = (heapOrArray, idx = 0, maxBytesToRead = NaN) => {
+-  var endIdx = idx + maxBytesToRead;
+-  var endPtr = idx;
+-  // TextDecoder needs to know the byte length in advance, it doesn't stop on
+-  // null terminator by itself.  Also, use the length info to avoid running tiny
+-  // strings through TextDecoder, since .subarray() allocates garbage.
+-  // (As a tiny code save trick, compare endPtr against endIdx using a negation,
+-  // so that undefined/NaN means Infinity)
+-  while (heapOrArray[endPtr] && !(endPtr >= endIdx)) ++endPtr;
+-  if (endPtr - idx > 16 && heapOrArray.buffer && UTF8Decoder) {
+-    return UTF8Decoder.decode(heapOrArray.subarray(idx, endPtr));
+-  }
+-  var str = "";
+-  // If building with TextDecoder, we have already computed the string length
+-  // above, so test loop end condition against that
+-  while (idx < endPtr) {
+-    // For UTF8 byte structure, see:
+-    // http://en.wikipedia.org/wiki/UTF-8#Description
+-    // https://www.ietf.org/rfc/rfc2279.txt
+-    // https://tools.ietf.org/html/rfc3629
+-    var u0 = heapOrArray[idx++];
+-    if (!(u0 & 128)) {
+-      str += String.fromCharCode(u0);
+-      continue;
+-    }
+-    var u1 = heapOrArray[idx++] & 63;
+-    if ((u0 & 224) == 192) {
+-      str += String.fromCharCode(((u0 & 31) << 6) | u1);
+-      continue;
+-    }
+-    var u2 = heapOrArray[idx++] & 63;
+-    if ((u0 & 240) == 224) {
+-      u0 = ((u0 & 15) << 12) | (u1 << 6) | u2;
+-    } else {
+-      if ((u0 & 248) != 240) warnOnce("Invalid UTF-8 leading byte " + ptrToString(u0) + " encountered when deserializing a UTF-8 string in wasm memory to a JS string!");
+-      u0 = ((u0 & 7) << 18) | (u1 << 12) | (u2 << 6) | (heapOrArray[idx++] & 63);
+-    }
+-    if (u0 < 65536) {
+-      str += String.fromCharCode(u0);
+-    } else {
+-      var ch = u0 - 65536;
+-      str += String.fromCharCode(55296 | (ch >> 10), 56320 | (ch & 1023));
+-    }
+-  }
+-  return str;
+-};
+-
+-/**
+-     * Given a pointer 'ptr' to a null-terminated UTF8-encoded string in the
+-     * emscripten HEAP, returns a copy of that string as a Javascript String object.
+-     *
+-     * @param {number} ptr
+-     * @param {number=} maxBytesToRead - An optional length that specifies the
+-     *   maximum number of bytes to read. You can omit this parameter to scan the
+-     *   string until the first 0 byte. If maxBytesToRead is passed, and the string
+-     *   at [ptr, ptr+maxBytesToReadr[ contains a null byte in the middle, then the
+-     *   string will cut short at that byte index (i.e. maxBytesToRead will not
+-     *   produce a string of exact length [ptr, ptr+maxBytesToRead[) N.B. mixing
+-     *   frequent uses of UTF8ToString() with and without maxBytesToRead may throw
+-     *   JS JIT optimizations off, so it is worth to consider consistently using one
+-     * @return {string}
+-     */ var UTF8ToString = (ptr, maxBytesToRead) => {
+-  assert(typeof ptr == "number", `UTF8ToString expects a number (got ${typeof ptr})`);
+-  return ptr ? UTF8ArrayToString(HEAPU8, ptr, maxBytesToRead) : "";
+-};
+-
+ var __embind_register_std_string = (rawType, name) => {
+   name = readLatin1String(name);
+   var stdStringIsUTF8 = true;
+@@ -3227,183 +3229,11 @@ var GL = {
+   }
+ };
+ 
+-var JSEvents = {
+-  memcpy(target, src, size) {
+-    HEAP8.set(HEAP8.subarray(src, src + size), target);
+-  },
+-  removeAllEventListeners() {
+-    while (JSEvents.eventHandlers.length) {
+-      JSEvents._removeHandler(JSEvents.eventHandlers.length - 1);
+-    }
+-    JSEvents.deferredCalls = [];
+-  },
+-  inEventHandler: 0,
+-  deferredCalls: [],
+-  deferCall(targetFunction, precedence, argsList) {
+-    function arraysHaveEqualContent(arrA, arrB) {
+-      if (arrA.length != arrB.length) return false;
+-      for (var i in arrA) {
+-        if (arrA[i] != arrB[i]) return false;
+-      }
+-      return true;
+-    }
+-    // Test if the given call was already queued, and if so, don't add it again.
+-    for (var call of JSEvents.deferredCalls) {
+-      if (call.targetFunction == targetFunction && arraysHaveEqualContent(call.argsList, argsList)) {
+-        return;
+-      }
+-    }
+-    JSEvents.deferredCalls.push({
+-      targetFunction,
+-      precedence,
+-      argsList
+-    });
+-    JSEvents.deferredCalls.sort((x, y) => x.precedence < y.precedence);
+-  },
+-  removeDeferredCalls(targetFunction) {
+-    JSEvents.deferredCalls = JSEvents.deferredCalls.filter(call => call.targetFunction != targetFunction);
+-  },
+-  canPerformEventHandlerRequests() {
+-    if (navigator.userActivation) {
+-      // Verify against transient activation status from UserActivation API
+-      // whether it is possible to perform a request here without needing to defer. See
+-      // https://developer.mozilla.org/en-US/docs/Web/Security/User_activation#transient_activation
+-      // and https://caniuse.com/mdn-api_useractivation
+-      // At the time of writing, Firefox does not support this API: https://bugzilla.mozilla.org/show_bug.cgi?id=1791079
+-      return navigator.userActivation.isActive;
+-    }
+-    return JSEvents.inEventHandler && JSEvents.currentEventHandler.allowsDeferredCalls;
+-  },
+-  runDeferredCalls() {
+-    if (!JSEvents.canPerformEventHandlerRequests()) {
+-      return;
+-    }
+-    var deferredCalls = JSEvents.deferredCalls;
+-    JSEvents.deferredCalls = [];
+-    for (var call of deferredCalls) {
+-      call.targetFunction(...call.argsList);
+-    }
+-  },
+-  eventHandlers: [],
+-  removeAllHandlersOnTarget: (target, eventTypeString) => {
+-    for (var i = 0; i < JSEvents.eventHandlers.length; ++i) {
+-      if (JSEvents.eventHandlers[i].target == target && (!eventTypeString || eventTypeString == JSEvents.eventHandlers[i].eventTypeString)) {
+-        JSEvents._removeHandler(i--);
+-      }
+-    }
+-  },
+-  _removeHandler(i) {
+-    var h = JSEvents.eventHandlers[i];
+-    h.target.removeEventListener(h.eventTypeString, h.eventListenerFunc, h.useCapture);
+-    JSEvents.eventHandlers.splice(i, 1);
+-  },
+-  registerOrRemoveHandler(eventHandler) {
+-    if (!eventHandler.target) {
+-      err("registerOrRemoveHandler: the target element for event handler registration does not exist, when processing the following event handler registration:");
+-      console.dir(eventHandler);
+-      return -4;
+-    }
+-    if (eventHandler.callbackfunc) {
+-      eventHandler.eventListenerFunc = function(event) {
+-        // Increment nesting count for the event handler.
+-        ++JSEvents.inEventHandler;
+-        JSEvents.currentEventHandler = eventHandler;
+-        // Process any old deferred calls the user has placed.
+-        JSEvents.runDeferredCalls();
+-        // Process the actual event, calls back to user C code handler.
+-        eventHandler.handlerFunc(event);
+-        // Process any new deferred calls that were placed right now from this event handler.
+-        JSEvents.runDeferredCalls();
+-        // Out of event handler - restore nesting count.
+-        --JSEvents.inEventHandler;
+-      };
+-      eventHandler.target.addEventListener(eventHandler.eventTypeString, eventHandler.eventListenerFunc, eventHandler.useCapture);
+-      JSEvents.eventHandlers.push(eventHandler);
+-    } else {
+-      for (var i = 0; i < JSEvents.eventHandlers.length; ++i) {
+-        if (JSEvents.eventHandlers[i].target == eventHandler.target && JSEvents.eventHandlers[i].eventTypeString == eventHandler.eventTypeString) {
+-          JSEvents._removeHandler(i--);
+-        }
+-      }
+-    }
+-    return 0;
+-  },
+-  getNodeNameForTarget(target) {
+-    if (!target) return "";
+-    if (target == window) return "#window";
+-    if (target == screen) return "#screen";
+-    return target?.nodeName || "";
+-  },
+-  fullscreenEnabled() {
+-    return document.fullscreenEnabled || document.webkitFullscreenEnabled;
+-  }
+-};
+-
+-var webglPowerPreferences = [ "default", "low-power", "high-performance" ];
+-
+-var maybeCStringToJsString = cString => cString > 2 ? UTF8ToString(cString) : cString;
+-
+-/** @type {Object} */ var specialHTMLTargets = [ 0, typeof document != "undefined" ? document : 0, typeof window != "undefined" ? window : 0 ];
+-
+-var findEventTarget = target => {
+-  target = maybeCStringToJsString(target);
+-  var domElement = specialHTMLTargets[target] || (typeof document != "undefined" ? document.querySelector(target) : null);
+-  return domElement;
+-};
+-
+-var findCanvasEventTarget = findEventTarget;
+-
+-/** @suppress {duplicate } */ var _emscripten_webgl_do_create_context = (target, attributes) => {
+-  assert(attributes);
+-  var attr32 = ((attributes) >> 2);
+-  var powerPreference = SAFE_HEAP_LOAD((attr32 + (8 >> 2)) * 4, 4, 0);
+-  var contextAttributes = {
+-    "alpha": !!SAFE_HEAP_LOAD(attributes + 0, 1, 0),
+-    "depth": !!SAFE_HEAP_LOAD(attributes + 1, 1, 0),
+-    "stencil": !!SAFE_HEAP_LOAD(attributes + 2, 1, 0),
+-    "antialias": !!SAFE_HEAP_LOAD(attributes + 3, 1, 0),
+-    "premultipliedAlpha": !!SAFE_HEAP_LOAD(attributes + 4, 1, 0),
+-    "preserveDrawingBuffer": !!SAFE_HEAP_LOAD(attributes + 5, 1, 0),
+-    "powerPreference": webglPowerPreferences[powerPreference],
+-    "failIfMajorPerformanceCaveat": !!SAFE_HEAP_LOAD(attributes + 12, 1, 0),
+-    // The following are not predefined WebGL context attributes in the WebGL specification, so the property names can be minified by Closure.
+-    majorVersion: SAFE_HEAP_LOAD((attr32 + (16 >> 2)) * 4, 4, 0),
+-    minorVersion: SAFE_HEAP_LOAD((attr32 + (20 >> 2)) * 4, 4, 0),
+-    enableExtensionsByDefault: SAFE_HEAP_LOAD(attributes + 24, 1, 0),
+-    explicitSwapControl: SAFE_HEAP_LOAD(attributes + 25, 1, 0),
+-    proxyContextToMainThread: SAFE_HEAP_LOAD((attr32 + (28 >> 2)) * 4, 4, 0),
+-    renderViaOffscreenBackBuffer: SAFE_HEAP_LOAD(attributes + 32, 1, 0)
+-  };
+-  //  TODO: Make these into hard errors at some point in the future
+-  if (contextAttributes.majorVersion !== 1 && contextAttributes.majorVersion !== 2) {
+-    err(`Invalid WebGL version requested: ${contextAttributes.majorVersion}`);
+-  }
+-  var canvas = findCanvasEventTarget(target);
+-  var targetStr = UTF8ToString(target);
+-  if (!canvas) {
+-    dbg(`emscripten_webgl_create_context failed: Unknown canvas target "${targetStr}"!`);
+-    return 0;
+-  }
+-  if (contextAttributes.explicitSwapControl) {
+-    dbg("emscripten_webgl_create_context failed: explicitSwapControl is not supported, please rebuild with -sOFFSCREENCANVAS_SUPPORT to enable targeting the experimental OffscreenCanvas specification, or rebuild with -sOFFSCREEN_FRAMEBUFFER to emulate explicitSwapControl in the absence of OffscreenCanvas support!");
+-    return 0;
+-  }
+-  var contextHandle = GL.createContext(canvas, contextAttributes);
+-  return contextHandle;
+-};
+-
+-var _emscripten_webgl_create_context = _emscripten_webgl_do_create_context;
+-
+ var _emscripten_webgl_destroy_context = contextHandle => {
+   if (GL.currentContext == contextHandle) GL.currentContext = 0;
+   GL.deleteContext(contextHandle);
+ };
+ 
+-var _emscripten_webgl_make_context_current = contextHandle => {
+-  var success = GL.makeContextCurrent(contextHandle);
+-  return success ? 0 : -5;
+-};
+-
+ var ENV = {};
+ 
+ var getExecutableName = () => thisProgram || "./this.program";
+@@ -6178,10 +6008,6 @@ function _fd_write(fd, iov, iovcnt, pnum) {
+ 
+ var _glActiveTexture = x0 => GLctx.activeTexture(x0);
+ 
+-var _glAttachShader = (program, shader) => {
+-  GLctx.attachShader(GL.programs[program], GL.shaders[shader]);
+-};
+-
+ var _glBindBuffer = (target, buffer) => {
+   if (target == 34962) {
+     GLctx.currentArrayBufferBinding = buffer;
+@@ -6210,10 +6036,6 @@ var _glBindFramebuffer = (target, framebuffer) => {
+   GLctx.bindFramebuffer(target, GL.framebuffers[framebuffer]);
+ };
+ 
+-var _glBindRenderbuffer = (target, renderbuffer) => {
+-  GLctx.bindRenderbuffer(target, GL.renderbuffers[renderbuffer]);
+-};
+-
+ var _glBindTexture = (target, texture) => {
+   GLctx.bindTexture(target, GL.textures[texture]);
+ };
+@@ -6246,37 +6068,10 @@ var _glBufferData = (target, size, data, usage) => {
+   GLctx.bufferData(target, data ? HEAPU8.subarray(data, data + size) : size, usage);
+ };
+ 
+-var _glCheckFramebufferStatus = x0 => GLctx.checkFramebufferStatus(x0);
+-
+ var _glClear = x0 => GLctx.clear(x0);
+ 
+ var _glClearColor = (x0, x1, x2, x3) => GLctx.clearColor(x0, x1, x2, x3);
+ 
+-var _glCompileShader = shader => {
+-  GLctx.compileShader(GL.shaders[shader]);
+-  var log = (GLctx.getShaderInfoLog(GL.shaders[shader]) || "").trim();
+-  if (log) dbg(`glCompileShader: ${log}`);
+-};
+-
+-var _glCreateProgram = () => {
+-  var id = GL.getNewId(GL.programs);
+-  var program = GLctx.createProgram();
+-  // Store additional information needed for each shader program:
+-  program.name = id;
+-  // Lazy cache results of
+-  // glGetProgramiv(GL_ACTIVE_UNIFORM_MAX_LENGTH/GL_ACTIVE_ATTRIBUTE_MAX_LENGTH/GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH)
+-  program.maxUniformLength = program.maxAttributeLength = program.maxUniformBlockNameLength = 0;
+-  program.uniformIdCounter = 1;
+-  GL.programs[id] = program;
+-  return id;
+-};
+-
+-var _glCreateShader = shaderType => {
+-  var id = GL.getNewId(GL.shaders);
+-  GL.shaders[id] = GLctx.createShader(shaderType);
+-  return id;
+-};
+-
+ var _glDeleteBuffers = (n, buffers) => {
+   for (var i = 0; i < n; i++) {
+     var id = SAFE_HEAP_LOAD((((buffers) + (i * 4)) >> 2) * 4, 4, 0);
+@@ -6332,19 +6127,6 @@ var _glDeleteRenderbuffers = (n, renderbuffers) => {
+   }
+ };
+ 
+-var _glDeleteShader = id => {
+-  if (!id) return;
+-  var shader = GL.shaders[id];
+-  if (!shader) {
+-    // glDeleteShader actually signals an error when deleting a nonexisting
+-    // object, unlike some other GL delete functions.
+-    GL.recordError(1281);
+-    return;
+-  }
+-  GLctx.deleteShader(shader);
+-  GL.shaders[id] = null;
+-};
+-
+ var _glDeleteTextures = (n, textures) => {
+   for (var i = 0; i < n; i++) {
+     var id = SAFE_HEAP_LOAD((((textures) + (i * 4)) >> 2) * 4, 4, 0);
+@@ -6366,8 +6148,6 @@ var _glDeleteVertexArrays = (n, vaos) => {
+   }
+ };
+ 
+-var _glDepthFunc = x0 => GLctx.depthFunc(x0);
+-
+ var _glDisableVertexAttribArray = index => {
+   var cb = GL.currentContext.clientBuffers[index];
+   cb.enabled = false;
+@@ -6437,135 +6217,14 @@ var _glEnableVertexAttribArray = index => {
+   GLctx.enableVertexAttribArray(index);
+ };
+ 
+-var _glFramebufferRenderbuffer = (target, attachment, renderbuffertarget, renderbuffer) => {
+-  GLctx.framebufferRenderbuffer(target, attachment, renderbuffertarget, GL.renderbuffers[renderbuffer]);
+-};
+-
+-var _glFramebufferTexture2D = (target, attachment, textarget, texture, level) => {
+-  GLctx.framebufferTexture2D(target, attachment, textarget, GL.textures[texture], level);
+-};
+-
+ var _glGenBuffers = (n, buffers) => {
+   GL.genObject(n, buffers, "createBuffer", GL.buffers);
+ };
+ 
+-var _glGenFramebuffers = (n, ids) => {
+-  GL.genObject(n, ids, "createFramebuffer", GL.framebuffers);
+-};
+-
+-var _glGenRenderbuffers = (n, renderbuffers) => {
+-  GL.genObject(n, renderbuffers, "createRenderbuffer", GL.renderbuffers);
+-};
+-
+-var _glGenTextures = (n, textures) => {
+-  GL.genObject(n, textures, "createTexture", GL.textures);
+-};
+-
+ var _glGenVertexArrays = (n, arrays) => {
+   GL.genObject(n, arrays, "createVertexArray", GL.vaos);
+ };
+ 
+-var _glGetProgramInfoLog = (program, maxLength, length, infoLog) => {
+-  var log = GLctx.getProgramInfoLog(GL.programs[program]);
+-  if (log === null) log = "(unknown error)";
+-  var numBytesWrittenExclNull = (maxLength > 0 && infoLog) ? stringToUTF8(log, infoLog, maxLength) : 0;
+-  if (length) SAFE_HEAP_STORE(((length) >> 2) * 4, numBytesWrittenExclNull, 4);
+-  checkInt32(numBytesWrittenExclNull);
+-};
+-
+-var _glGetProgramiv = (program, pname, p) => {
+-  if (!p) {
+-    // GLES2 specification does not specify how to behave if p is a null
+-    // pointer. Since calling this function does not make sense if p == null,
+-    // issue a GL error to notify user about it.
+-    GL.recordError(1281);
+-    return;
+-  }
+-  if (program >= GL.counter) {
+-    GL.recordError(1281);
+-    return;
+-  }
+-  program = GL.programs[program];
+-  if (pname == 35716) {
+-    // GL_INFO_LOG_LENGTH
+-    var log = GLctx.getProgramInfoLog(program);
+-    if (log === null) log = "(unknown error)";
+-    SAFE_HEAP_STORE(((p) >> 2) * 4, log.length + 1, 4);
+-    checkInt32(log.length + 1);
+-  } else if (pname == 35719) {
+-    if (!program.maxUniformLength) {
+-      var numActiveUniforms = GLctx.getProgramParameter(program, 35718);
+-      for (var i = 0; i < numActiveUniforms; ++i) {
+-        program.maxUniformLength = Math.max(program.maxUniformLength, GLctx.getActiveUniform(program, i).name.length + 1);
+-      }
+-    }
+-    SAFE_HEAP_STORE(((p) >> 2) * 4, program.maxUniformLength, 4);
+-    checkInt32(program.maxUniformLength);
+-  } else if (pname == 35722) {
+-    if (!program.maxAttributeLength) {
+-      var numActiveAttributes = GLctx.getProgramParameter(program, 35721);
+-      for (var i = 0; i < numActiveAttributes; ++i) {
+-        program.maxAttributeLength = Math.max(program.maxAttributeLength, GLctx.getActiveAttrib(program, i).name.length + 1);
+-      }
+-    }
+-    SAFE_HEAP_STORE(((p) >> 2) * 4, program.maxAttributeLength, 4);
+-    checkInt32(program.maxAttributeLength);
+-  } else if (pname == 35381) {
+-    if (!program.maxUniformBlockNameLength) {
+-      var numActiveUniformBlocks = GLctx.getProgramParameter(program, 35382);
+-      for (var i = 0; i < numActiveUniformBlocks; ++i) {
+-        program.maxUniformBlockNameLength = Math.max(program.maxUniformBlockNameLength, GLctx.getActiveUniformBlockName(program, i).length + 1);
+-      }
+-    }
+-    SAFE_HEAP_STORE(((p) >> 2) * 4, program.maxUniformBlockNameLength, 4);
+-    checkInt32(program.maxUniformBlockNameLength);
+-  } else {
+-    SAFE_HEAP_STORE(((p) >> 2) * 4, GLctx.getProgramParameter(program, pname), 4);
+-    checkInt32(GLctx.getProgramParameter(program, pname));
+-  }
+-};
+-
+-var _glGetShaderInfoLog = (shader, maxLength, length, infoLog) => {
+-  var log = GLctx.getShaderInfoLog(GL.shaders[shader]);
+-  if (log === null) log = "(unknown error)";
+-  var numBytesWrittenExclNull = (maxLength > 0 && infoLog) ? stringToUTF8(log, infoLog, maxLength) : 0;
+-  if (length) SAFE_HEAP_STORE(((length) >> 2) * 4, numBytesWrittenExclNull, 4);
+-  checkInt32(numBytesWrittenExclNull);
+-};
+-
+-var _glGetShaderiv = (shader, pname, p) => {
+-  if (!p) {
+-    // GLES2 specification does not specify how to behave if p is a null
+-    // pointer. Since calling this function does not make sense if p == null,
+-    // issue a GL error to notify user about it.
+-    GL.recordError(1281);
+-    return;
+-  }
+-  if (pname == 35716) {
+-    // GL_INFO_LOG_LENGTH
+-    var log = GLctx.getShaderInfoLog(GL.shaders[shader]);
+-    if (log === null) log = "(unknown error)";
+-    // The GLES2 specification says that if the shader has an empty info log,
+-    // a value of 0 is returned. Otherwise the log has a null char appended.
+-    // (An empty string is falsey, so we can just check that instead of
+-    // looking at log.length.)
+-    var logLength = log ? log.length + 1 : 0;
+-    SAFE_HEAP_STORE(((p) >> 2) * 4, logLength, 4);
+-    checkInt32(logLength);
+-  } else if (pname == 35720) {
+-    // GL_SHADER_SOURCE_LENGTH
+-    var source = GLctx.getShaderSource(GL.shaders[shader]);
+-    // source may be a null, or the empty string, both of which are falsey
+-    // values that we report a 0 length for.
+-    var sourceLength = source ? source.length + 1 : 0;
+-    SAFE_HEAP_STORE(((p) >> 2) * 4, sourceLength, 4);
+-    checkInt32(sourceLength);
+-  } else {
+-    SAFE_HEAP_STORE(((p) >> 2) * 4, GLctx.getShaderParameter(GL.shaders[shader], pname), 4);
+-    checkInt32(GLctx.getShaderParameter(GL.shaders[shader], pname));
+-  }
+-};
+-
+ /** @suppress {checkTypes} */ var jstoi_q = str => parseInt(str);
+ 
+ /** @noinline */ var webglGetLeftBracePos = name => name.slice(-1) == "]" && name.lastIndexOf("[");
+@@ -6654,101 +6313,6 @@ var _glGetUniformLocation = (program, name) => {
+ 
+ var _glLineWidth = x0 => GLctx.lineWidth(x0);
+ 
+-var _glLinkProgram = program => {
+-  program = GL.programs[program];
+-  GLctx.linkProgram(program);
+-  var log = (GLctx.getProgramInfoLog(program) || "").trim();
+-  if (log) dbg(`glLinkProgram: ${log}`);
+-  if (program.uniformLocsById) dbg(`glLinkProgram invalidated ${Object.keys(program.uniformLocsById).length} uniform location mappings`);
+-  // Invalidate earlier computed uniform->ID mappings, those have now become stale
+-  program.uniformLocsById = 0;
+-  // Mark as null-like so that glGetUniformLocation() knows to populate this again.
+-  program.uniformSizeAndIdsByName = {};
+-};
+-
+-var _glRenderbufferStorage = (x0, x1, x2, x3) => GLctx.renderbufferStorage(x0, x1, x2, x3);
+-
+-var _glShaderSource = (shader, count, string, length) => {
+-  var source = GL.getSource(shader, count, string, length);
+-  GLctx.shaderSource(GL.shaders[shader], source);
+-};
+-
+-var computeUnpackAlignedImageSize = (width, height, sizePerPixel) => {
+-  function roundedToNextMultipleOf(x, y) {
+-    return (x + y - 1) & -y;
+-  }
+-  var plainRowSize = (GL.unpackRowLength || width) * sizePerPixel;
+-  var alignedRowSize = roundedToNextMultipleOf(plainRowSize, GL.unpackAlignment);
+-  return height * alignedRowSize;
+-};
+-
+-var colorChannelsInGlTextureFormat = format => {
+-  // Micro-optimizations for size: map format to size by subtracting smallest
+-  // enum value (0x1902) from all values first.  Also omit the most common
+-  // size value (1) from the list, which is assumed by formats not on the
+-  // list.
+-  var colorChannels = {
+-    // 0x1902 /* GL_DEPTH_COMPONENT */ - 0x1902: 1,
+-    // 0x1906 /* GL_ALPHA */ - 0x1902: 1,
+-    5: 3,
+-    6: 4,
+-    // 0x1909 /* GL_LUMINANCE */ - 0x1902: 1,
+-    8: 2,
+-    29502: 3,
+-    29504: 4,
+-    // 0x1903 /* GL_RED */ - 0x1902: 1,
+-    26917: 2,
+-    26918: 2,
+-    // 0x8D94 /* GL_RED_INTEGER */ - 0x1902: 1,
+-    29846: 3,
+-    29847: 4
+-  };
+-  return colorChannels[format - 6402] || 1;
+-};
+-
+-var heapObjectForWebGLType = type => {
+-  // Micro-optimization for size: Subtract lowest GL enum number (0x1400/* GL_BYTE */) from type to compare
+-  // smaller values for the heap, for shorter generated code size.
+-  // Also the type HEAPU16 is not tested for explicitly, but any unrecognized type will return out HEAPU16.
+-  // (since most types are HEAPU16)
+-  type -= 5120;
+-  if (type == 0) return HEAP8;
+-  if (type == 1) return HEAPU8;
+-  if (type == 2) return HEAP16;
+-  if (type == 4) return HEAP32;
+-  if (type == 6) return HEAPF32;
+-  if (type == 5 || type == 28922 || type == 28520 || type == 30779 || type == 30782) return HEAPU32;
+-  return HEAPU16;
+-};
+-
+-var toTypedArrayIndex = (pointer, heap) => pointer >>> (31 - Math.clz32(heap.BYTES_PER_ELEMENT));
+-
+-var emscriptenWebGLGetTexPixelData = (type, format, width, height, pixels, internalFormat) => {
+-  var heap = heapObjectForWebGLType(type);
+-  var sizePerPixel = colorChannelsInGlTextureFormat(format) * heap.BYTES_PER_ELEMENT;
+-  var bytes = computeUnpackAlignedImageSize(width, height, sizePerPixel);
+-  return heap.subarray(toTypedArrayIndex(pixels, heap), toTypedArrayIndex(pixels + bytes, heap));
+-};
+-
+-var _glTexImage2D = (target, level, internalFormat, width, height, border, format, type, pixels) => {
+-  if (GL.currentContext.version >= 2) {
+-    if (GLctx.currentPixelUnpackBufferBinding) {
+-      GLctx.texImage2D(target, level, internalFormat, width, height, border, format, type, pixels);
+-      return;
+-    }
+-    if (pixels) {
+-      var heap = heapObjectForWebGLType(type);
+-      var index = toTypedArrayIndex(pixels, heap);
+-      GLctx.texImage2D(target, level, internalFormat, width, height, border, format, type, heap, index);
+-      return;
+-    }
+-  }
+-  var pixelData = pixels ? emscriptenWebGLGetTexPixelData(type, format, width, height, pixels, internalFormat) : null;
+-  GLctx.texImage2D(target, level, internalFormat, width, height, border, format, type, pixelData);
+-};
+-
+-var _glTexParameteri = (x0, x1, x2) => GLctx.texParameteri(x0, x1, x2);
+-
+ var webglGetUniformLocation = location => {
+   var p = GLctx.currentProgram;
+   if (p) {
+@@ -6848,8 +6412,6 @@ var _glVertexAttribPointer = (index, size, type, normalized, stride, ptr) => {
+   GLctx.vertexAttribPointer(index, size, type, !!normalized, stride, ptr);
+ };
+ 
+-var _glViewport = (x0, x1, x2, x3) => GLctx.viewport(x0, x1, x2, x3);
+-
+ var getCFunc = ident => {
+   var func = Module["_" + ident];
+   // closure exported function
+@@ -6978,6 +6540,7 @@ function checkIncomingModuleAPI() {
+ }
+ 
+ var wasmImports = {
++  /** @export */ __assert_fail: ___assert_fail,
+   /** @export */ __cxa_throw: ___cxa_throw,
+   /** @export */ __handle_stack_overflow: ___handle_stack_overflow,
+   /** @export */ _abort_js: __abort_js,
+@@ -7003,9 +6566,7 @@ var wasmImports = {
+   /** @export */ emscripten_get_now: _emscripten_get_now,
+   /** @export */ emscripten_resize_heap: _emscripten_resize_heap,
+   /** @export */ emscripten_set_main_loop: _emscripten_set_main_loop,
+-  /** @export */ emscripten_webgl_create_context: _emscripten_webgl_create_context,
+   /** @export */ emscripten_webgl_destroy_context: _emscripten_webgl_destroy_context,
+-  /** @export */ emscripten_webgl_make_context_current: _emscripten_webgl_make_context_current,
+   /** @export */ environ_get: _environ_get,
+   /** @export */ environ_sizes_get: _environ_sizes_get,
+   /** @export */ fd_close: _fd_close,
+@@ -7013,51 +6574,29 @@ var wasmImports = {
+   /** @export */ fd_seek: _fd_seek,
+   /** @export */ fd_write: _fd_write,
+   /** @export */ glActiveTexture: _glActiveTexture,
+-  /** @export */ glAttachShader: _glAttachShader,
+   /** @export */ glBindBuffer: _glBindBuffer,
+   /** @export */ glBindFramebuffer: _glBindFramebuffer,
+-  /** @export */ glBindRenderbuffer: _glBindRenderbuffer,
+   /** @export */ glBindTexture: _glBindTexture,
+   /** @export */ glBindVertexArray: _glBindVertexArray,
+   /** @export */ glBlendFunc: _glBlendFunc,
+   /** @export */ glBufferData: _glBufferData,
+-  /** @export */ glCheckFramebufferStatus: _glCheckFramebufferStatus,
+   /** @export */ glClear: _glClear,
+   /** @export */ glClearColor: _glClearColor,
+-  /** @export */ glCompileShader: _glCompileShader,
+-  /** @export */ glCreateProgram: _glCreateProgram,
+-  /** @export */ glCreateShader: _glCreateShader,
+   /** @export */ glDeleteBuffers: _glDeleteBuffers,
+   /** @export */ glDeleteFramebuffers: _glDeleteFramebuffers,
+   /** @export */ glDeleteProgram: _glDeleteProgram,
+   /** @export */ glDeleteRenderbuffers: _glDeleteRenderbuffers,
+-  /** @export */ glDeleteShader: _glDeleteShader,
+   /** @export */ glDeleteTextures: _glDeleteTextures,
+   /** @export */ glDeleteVertexArrays: _glDeleteVertexArrays,
+-  /** @export */ glDepthFunc: _glDepthFunc,
+   /** @export */ glDisableVertexAttribArray: _glDisableVertexAttribArray,
+   /** @export */ glDrawArrays: _glDrawArrays,
+   /** @export */ glDrawElements: _glDrawElements,
+   /** @export */ glEnable: _glEnable,
+   /** @export */ glEnableVertexAttribArray: _glEnableVertexAttribArray,
+-  /** @export */ glFramebufferRenderbuffer: _glFramebufferRenderbuffer,
+-  /** @export */ glFramebufferTexture2D: _glFramebufferTexture2D,
+   /** @export */ glGenBuffers: _glGenBuffers,
+-  /** @export */ glGenFramebuffers: _glGenFramebuffers,
+-  /** @export */ glGenRenderbuffers: _glGenRenderbuffers,
+-  /** @export */ glGenTextures: _glGenTextures,
+   /** @export */ glGenVertexArrays: _glGenVertexArrays,
+-  /** @export */ glGetProgramInfoLog: _glGetProgramInfoLog,
+-  /** @export */ glGetProgramiv: _glGetProgramiv,
+-  /** @export */ glGetShaderInfoLog: _glGetShaderInfoLog,
+-  /** @export */ glGetShaderiv: _glGetShaderiv,
+   /** @export */ glGetUniformLocation: _glGetUniformLocation,
+   /** @export */ glLineWidth: _glLineWidth,
+-  /** @export */ glLinkProgram: _glLinkProgram,
+-  /** @export */ glRenderbufferStorage: _glRenderbufferStorage,
+-  /** @export */ glShaderSource: _glShaderSource,
+-  /** @export */ glTexImage2D: _glTexImage2D,
+-  /** @export */ glTexParameteri: _glTexParameteri,
+   /** @export */ glUniform1f: _glUniform1f,
+   /** @export */ glUniform1i: _glUniform1i,
+   /** @export */ glUniform2f: _glUniform2f,
+@@ -7065,7 +6604,6 @@ var wasmImports = {
+   /** @export */ glUniformMatrix4fv: _glUniformMatrix4fv,
+   /** @export */ glUseProgram: _glUseProgram,
+   /** @export */ glVertexAttribPointer: _glVertexAttribPointer,
+-  /** @export */ glViewport: _glViewport,
+   /** @export */ segfault
+ };
+ 
+@@ -7099,11 +6637,7 @@ var _show_benchmark_report = Module["_show_benchmark_report"] = createExportWrap
+ 
+ var _toggle_debug_mode = Module["_toggle_debug_mode"] = createExportWrapper("toggle_debug_mode", 0);
+ 
+-var _print_model_info = Module["_print_model_info"] = createExportWrapper("print_model_info", 0);
+-
+-var _get_num_scenes = Module["_get_num_scenes"] = createExportWrapper("get_num_scenes", 0);
+-
+-var _get_scene_name = Module["_get_scene_name"] = createExportWrapper("get_scene_name", 2);
++var _get_scene_name = Module["_get_scene_name"] = createExportWrapper("get_scene_name", 1);
+ 
+ var _set_led_size = Module["_set_led_size"] = createExportWrapper("set_led_size", 1);
+ 
+@@ -7181,11 +6715,11 @@ Module["cwrap"] = cwrap;
+ 
+ Module["UTF8ToString"] = UTF8ToString;
+ 
+-var missingLibrarySymbols = [ "writeI53ToI64", "writeI53ToI64Clamped", "writeI53ToI64Signaling", "writeI53ToU64Clamped", "writeI53ToU64Signaling", "readI53FromI64", "readI53FromU64", "convertI32PairToI53", "convertI32PairToI53Checked", "convertU32PairToI53", "getTempRet0", "setTempRet0", "inetPton4", "inetNtop4", "inetPton6", "inetNtop6", "readSockaddr", "writeSockaddr", "emscriptenLog", "readEmAsmArgs", "listenOnce", "autoResumeAudioContext", "getDynCaller", "dynCall", "runtimeKeepalivePush", "runtimeKeepalivePop", "asmjsMangle", "HandleAllocator", "getNativeTypeSize", "STACK_SIZE", "STACK_ALIGN", "POINTER_SIZE", "ASSERTIONS", "uleb128Encode", "sigToWasmTypes", "generateFuncType", "convertJsFunctionToWasm", "getEmptyTableSlot", "updateTableMap", "getFunctionAddress", "addFunction", "removeFunction", "reallyNegative", "strLen", "reSign", "formatString", "intArrayToString", "AsciiToString", "stringToNewUTF8", "registerKeyEventCallback", "getBoundingClientRect", "fillMouseEventData", "registerMouseEventCallback", "registerWheelEventCallback", "registerUiEventCallback", "registerFocusEventCallback", "fillDeviceOrientationEventData", "registerDeviceOrientationEventCallback", "fillDeviceMotionEventData", "registerDeviceMotionEventCallback", "screenOrientation", "fillOrientationChangeEventData", "registerOrientationChangeEventCallback", "fillFullscreenChangeEventData", "registerFullscreenChangeEventCallback", "JSEvents_requestFullscreen", "JSEvents_resizeCanvasForFullscreen", "registerRestoreOldStyle", "hideEverythingExceptGivenElement", "restoreHiddenElements", "setLetterbox", "softFullscreenResizeWebGLRenderTarget", "doRequestFullscreen", "fillPointerlockChangeEventData", "registerPointerlockChangeEventCallback", "registerPointerlockErrorEventCallback", "requestPointerLock", "fillVisibilityChangeEventData", "registerVisibilityChangeEventCallback", "registerTouchEventCallback", "fillGamepadEventData", "registerGamepadEventCallback", "registerBeforeUnloadEventCallback", "fillBatteryEventData", "battery", "registerBatteryEventCallback", "setCanvasElementSize", "getCanvasElementSize", "jsStackTrace", "getCallstack", "convertPCtoSourceLocation", "wasiRightsToMuslOFlags", "wasiOFlagsToMuslOFlags", "safeSetTimeout", "setImmediateWrapped", "safeRequestAnimationFrame", "clearImmediateWrapped", "registerPostMainLoop", "getPromise", "makePromise", "idsToPromises", "makePromiseCallback", "findMatchingCatch", "Browser_asyncPrepareDataCounter", "isLeapYear", "ydayFromDate", "arraySum", "addDays", "getSocketFromFD", "getSocketAddress", "FS_unlink", "FS_mkdirTree", "_setNetworkCallback", "emscriptenWebGLGet", "emscriptenWebGLGetUniform", "emscriptenWebGLGetVertexAttrib", "__glGetActiveAttribOrUniform", "emscriptenWebGLGetBufferBinding", "emscriptenWebGLValidateMapBufferTarget", "writeGLArray", "registerWebGlEventCallback", "runAndAbortIfError", "emscriptenWebGLGetIndexed", "ALLOC_NORMAL", "ALLOC_STACK", "allocate", "writeStringToMemory", "writeAsciiToMemory", "setErrNo", "demangle", "stackTrace", "getFunctionArgsName", "createJsInvokerSignature", "getBasestPointer", "registerInheritedInstance", "unregisterInheritedInstance", "getInheritedInstance", "getInheritedInstanceCount", "getLiveInheritedInstances", "enumReadValueFromPointer", "genericPointerToWireType", "constNoSmartPtrRawPointerToWireType", "nonConstNoSmartPtrRawPointerToWireType", "init_RegisteredPointer", "RegisteredPointer", "RegisteredPointer_fromWireType", "runDestructor", "releaseClassHandle", "detachFinalizer", "attachFinalizer", "makeClassHandle", "init_ClassHandle", "ClassHandle", "throwInstanceAlreadyDeleted", "flushPendingDeletes", "setDelayFunction", "RegisteredClass", "shallowCopyInternalPointer", "downcastPointer", "upcastPointer", "validateThis", "char_0", "char_9", "makeLegalFunctionName", "emval_get_global", "emval_returnValue", "emval_lookupTypes", "emval_addMethodCaller" ];
++var missingLibrarySymbols = [ "writeI53ToI64", "writeI53ToI64Clamped", "writeI53ToI64Signaling", "writeI53ToU64Clamped", "writeI53ToU64Signaling", "readI53FromI64", "readI53FromU64", "convertI32PairToI53", "convertI32PairToI53Checked", "convertU32PairToI53", "getTempRet0", "setTempRet0", "inetPton4", "inetNtop4", "inetPton6", "inetNtop6", "readSockaddr", "writeSockaddr", "emscriptenLog", "readEmAsmArgs", "listenOnce", "autoResumeAudioContext", "getDynCaller", "dynCall", "runtimeKeepalivePush", "runtimeKeepalivePop", "asmjsMangle", "HandleAllocator", "getNativeTypeSize", "STACK_SIZE", "STACK_ALIGN", "POINTER_SIZE", "ASSERTIONS", "uleb128Encode", "sigToWasmTypes", "generateFuncType", "convertJsFunctionToWasm", "getEmptyTableSlot", "updateTableMap", "getFunctionAddress", "addFunction", "removeFunction", "reallyNegative", "strLen", "reSign", "formatString", "intArrayToString", "AsciiToString", "stringToNewUTF8", "registerKeyEventCallback", "maybeCStringToJsString", "findEventTarget", "getBoundingClientRect", "fillMouseEventData", "registerMouseEventCallback", "registerWheelEventCallback", "registerUiEventCallback", "registerFocusEventCallback", "fillDeviceOrientationEventData", "registerDeviceOrientationEventCallback", "fillDeviceMotionEventData", "registerDeviceMotionEventCallback", "screenOrientation", "fillOrientationChangeEventData", "registerOrientationChangeEventCallback", "fillFullscreenChangeEventData", "registerFullscreenChangeEventCallback", "JSEvents_requestFullscreen", "JSEvents_resizeCanvasForFullscreen", "registerRestoreOldStyle", "hideEverythingExceptGivenElement", "restoreHiddenElements", "setLetterbox", "softFullscreenResizeWebGLRenderTarget", "doRequestFullscreen", "fillPointerlockChangeEventData", "registerPointerlockChangeEventCallback", "registerPointerlockErrorEventCallback", "requestPointerLock", "fillVisibilityChangeEventData", "registerVisibilityChangeEventCallback", "registerTouchEventCallback", "fillGamepadEventData", "registerGamepadEventCallback", "registerBeforeUnloadEventCallback", "fillBatteryEventData", "battery", "registerBatteryEventCallback", "setCanvasElementSize", "getCanvasElementSize", "jsStackTrace", "getCallstack", "convertPCtoSourceLocation", "wasiRightsToMuslOFlags", "wasiOFlagsToMuslOFlags", "safeSetTimeout", "setImmediateWrapped", "safeRequestAnimationFrame", "clearImmediateWrapped", "registerPostMainLoop", "getPromise", "makePromise", "idsToPromises", "makePromiseCallback", "findMatchingCatch", "Browser_asyncPrepareDataCounter", "isLeapYear", "ydayFromDate", "arraySum", "addDays", "getSocketFromFD", "getSocketAddress", "FS_unlink", "FS_mkdirTree", "_setNetworkCallback", "heapObjectForWebGLType", "toTypedArrayIndex", "emscriptenWebGLGet", "computeUnpackAlignedImageSize", "colorChannelsInGlTextureFormat", "emscriptenWebGLGetTexPixelData", "emscriptenWebGLGetUniform", "emscriptenWebGLGetVertexAttrib", "__glGetActiveAttribOrUniform", "emscriptenWebGLGetBufferBinding", "emscriptenWebGLValidateMapBufferTarget", "writeGLArray", "registerWebGlEventCallback", "runAndAbortIfError", "emscriptenWebGLGetIndexed", "ALLOC_NORMAL", "ALLOC_STACK", "allocate", "writeStringToMemory", "writeAsciiToMemory", "setErrNo", "demangle", "stackTrace", "getFunctionArgsName", "createJsInvokerSignature", "getBasestPointer", "registerInheritedInstance", "unregisterInheritedInstance", "getInheritedInstance", "getInheritedInstanceCount", "getLiveInheritedInstances", "enumReadValueFromPointer", "genericPointerToWireType", "constNoSmartPtrRawPointerToWireType", "nonConstNoSmartPtrRawPointerToWireType", "init_RegisteredPointer", "RegisteredPointer", "RegisteredPointer_fromWireType", "runDestructor", "releaseClassHandle", "detachFinalizer", "attachFinalizer", "makeClassHandle", "init_ClassHandle", "ClassHandle", "throwInstanceAlreadyDeleted", "flushPendingDeletes", "setDelayFunction", "RegisteredClass", "shallowCopyInternalPointer", "downcastPointer", "upcastPointer", "validateThis", "char_0", "char_9", "makeLegalFunctionName", "emval_get_global", "emval_returnValue", "emval_lookupTypes", "emval_addMethodCaller" ];
+ 
+ missingLibrarySymbols.forEach(missingLibrarySymbol);
+ 
+-var unexportedSymbols = [ "run", "addOnPreRun", "addOnInit", "addOnPreMain", "addOnExit", "addOnPostRun", "addRunDependency", "removeRunDependency", "out", "err", "callMain", "abort", "wasmMemory", "wasmExports", "writeStackCookie", "checkStackCookie", "prettyPrint", "INT53_MAX", "INT53_MIN", "bigintToI53Checked", "stackSave", "stackRestore", "stackAlloc", "ptrToString", "zeroMemory", "exitJS", "getHeapMax", "growMemory", "ENV", "setStackLimits", "ERRNO_CODES", "strError", "DNS", "Protocols", "Sockets", "timers", "warnOnce", "readEmAsmArgsArray", "jstoi_q", "jstoi_s", "getExecutableName", "handleException", "keepRuntimeAlive", "callUserCallback", "maybeExit", "asyncLoad", "alignMemory", "mmapAlloc", "wasmTable", "noExitRuntime", "getCFunc", "freeTableIndexes", "functionsInTableMap", "unSign", "setValue", "getValue", "PATH", "PATH_FS", "UTF8Decoder", "UTF8ArrayToString", "stringToUTF8Array", "stringToUTF8", "lengthBytesUTF8", "intArrayFromString", "stringToAscii", "UTF16Decoder", "UTF16ToString", "stringToUTF16", "lengthBytesUTF16", "UTF32ToString", "stringToUTF32", "lengthBytesUTF32", "stringToUTF8OnStack", "writeArrayToMemory", "JSEvents", "specialHTMLTargets", "maybeCStringToJsString", "findEventTarget", "findCanvasEventTarget", "currentFullscreenStrategy", "restoreOldWindowedStyle", "UNWIND_CACHE", "ExitStatus", "getEnvStrings", "checkWasiClock", "doReadv", "doWritev", "initRandomFill", "randomFill", "emSetImmediate", "emClearImmediate_deps", "emClearImmediate", "registerPreMainLoop", "promiseMap", "uncaughtExceptionCount", "exceptionLast", "exceptionCaught", "ExceptionInfo", "Browser", "getPreloadedImageData__data", "wget", "MONTH_DAYS_REGULAR", "MONTH_DAYS_LEAP", "MONTH_DAYS_REGULAR_CUMULATIVE", "MONTH_DAYS_LEAP_CUMULATIVE", "SYSCALLS", "preloadPlugins", "FS_createPreloadedFile", "FS_modeStringToFlags", "FS_getMode", "FS_stdin_getChar_buffer", "FS_stdin_getChar", "FS_createPath", "FS_createDevice", "FS_readFile", "FS", "FS_createDataFile", "FS_createLazyFile", "MEMFS", "TTY", "PIPEFS", "SOCKFS", "tempFixedLengthArray", "miniTempWebGLFloatBuffers", "miniTempWebGLIntBuffers", "heapObjectForWebGLType", "toTypedArrayIndex", "webgl_enable_ANGLE_instanced_arrays", "webgl_enable_OES_vertex_array_object", "webgl_enable_WEBGL_draw_buffers", "webgl_enable_WEBGL_multi_draw", "webgl_enable_EXT_polygon_offset_clamp", "webgl_enable_EXT_clip_control", "webgl_enable_WEBGL_polygon_mode", "GL", "computeUnpackAlignedImageSize", "colorChannelsInGlTextureFormat", "emscriptenWebGLGetTexPixelData", "webglGetUniformLocation", "webglPrepareUniformLocationsBeforeFirstUse", "webglGetLeftBracePos", "AL", "GLUT", "EGL", "GLEW", "IDBStore", "SDL", "SDL_gfx", "webgl_enable_WEBGL_draw_instanced_base_vertex_base_instance", "webgl_enable_WEBGL_multi_draw_instanced_base_vertex_base_instance", "allocateUTF8", "allocateUTF8OnStack", "print", "printErr", "InternalError", "BindingError", "throwInternalError", "throwBindingError", "registeredTypes", "awaitingDependencies", "typeDependencies", "tupleRegistrations", "structRegistrations", "sharedRegisterType", "whenDependentTypesAreResolved", "embind_charCodes", "embind_init_charCodes", "readLatin1String", "getTypeName", "getFunctionName", "heap32VectorToArray", "requireRegisteredType", "usesDestructorStack", "checkArgCount", "getRequiredArgCount", "createJsInvoker", "UnboundTypeError", "PureVirtualError", "GenericWireTypeSize", "EmValType", "EmValOptionalType", "throwUnboundTypeError", "ensureOverloadTable", "exposePublicSymbol", "replacePublicSymbol", "extendError", "createNamedFunction", "embindRepr", "registeredInstances", "registeredPointers", "registerType", "integerReadValueFromPointer", "floatReadValueFromPointer", "readPointer", "runDestructors", "newFunc", "craftInvokerFunction", "embind__requireFunction", "finalizationRegistry", "detachFinalizer_deps", "deletionQueue", "delayFunction", "emval_freelist", "emval_handles", "emval_symbols", "init_emval", "count_emval_handles", "getStringOrSymbol", "Emval", "emval_methodCallers", "reflectConstruct" ];
++var unexportedSymbols = [ "run", "addOnPreRun", "addOnInit", "addOnPreMain", "addOnExit", "addOnPostRun", "addRunDependency", "removeRunDependency", "out", "err", "callMain", "abort", "wasmMemory", "wasmExports", "writeStackCookie", "checkStackCookie", "prettyPrint", "INT53_MAX", "INT53_MIN", "bigintToI53Checked", "stackSave", "stackRestore", "stackAlloc", "ptrToString", "zeroMemory", "exitJS", "getHeapMax", "growMemory", "ENV", "setStackLimits", "ERRNO_CODES", "strError", "DNS", "Protocols", "Sockets", "timers", "warnOnce", "readEmAsmArgsArray", "jstoi_q", "jstoi_s", "getExecutableName", "handleException", "keepRuntimeAlive", "callUserCallback", "maybeExit", "asyncLoad", "alignMemory", "mmapAlloc", "wasmTable", "noExitRuntime", "getCFunc", "freeTableIndexes", "functionsInTableMap", "unSign", "setValue", "getValue", "PATH", "PATH_FS", "UTF8Decoder", "UTF8ArrayToString", "stringToUTF8Array", "stringToUTF8", "lengthBytesUTF8", "intArrayFromString", "stringToAscii", "UTF16Decoder", "UTF16ToString", "stringToUTF16", "lengthBytesUTF16", "UTF32ToString", "stringToUTF32", "lengthBytesUTF32", "stringToUTF8OnStack", "writeArrayToMemory", "JSEvents", "specialHTMLTargets", "findCanvasEventTarget", "currentFullscreenStrategy", "restoreOldWindowedStyle", "UNWIND_CACHE", "ExitStatus", "getEnvStrings", "checkWasiClock", "doReadv", "doWritev", "initRandomFill", "randomFill", "emSetImmediate", "emClearImmediate_deps", "emClearImmediate", "registerPreMainLoop", "promiseMap", "uncaughtExceptionCount", "exceptionLast", "exceptionCaught", "ExceptionInfo", "Browser", "getPreloadedImageData__data", "wget", "MONTH_DAYS_REGULAR", "MONTH_DAYS_LEAP", "MONTH_DAYS_REGULAR_CUMULATIVE", "MONTH_DAYS_LEAP_CUMULATIVE", "SYSCALLS", "preloadPlugins", "FS_createPreloadedFile", "FS_modeStringToFlags", "FS_getMode", "FS_stdin_getChar_buffer", "FS_stdin_getChar", "FS_createPath", "FS_createDevice", "FS_readFile", "FS", "FS_createDataFile", "FS_createLazyFile", "MEMFS", "TTY", "PIPEFS", "SOCKFS", "tempFixedLengthArray", "miniTempWebGLFloatBuffers", "miniTempWebGLIntBuffers", "webgl_enable_ANGLE_instanced_arrays", "webgl_enable_OES_vertex_array_object", "webgl_enable_WEBGL_draw_buffers", "webgl_enable_WEBGL_multi_draw", "webgl_enable_EXT_polygon_offset_clamp", "webgl_enable_EXT_clip_control", "webgl_enable_WEBGL_polygon_mode", "GL", "webglGetUniformLocation", "webglPrepareUniformLocationsBeforeFirstUse", "webglGetLeftBracePos", "AL", "GLUT", "EGL", "GLEW", "IDBStore", "SDL", "SDL_gfx", "webgl_enable_WEBGL_draw_instanced_base_vertex_base_instance", "webgl_enable_WEBGL_multi_draw_instanced_base_vertex_base_instance", "allocateUTF8", "allocateUTF8OnStack", "print", "printErr", "InternalError", "BindingError", "throwInternalError", "throwBindingError", "registeredTypes", "awaitingDependencies", "typeDependencies", "tupleRegistrations", "structRegistrations", "sharedRegisterType", "whenDependentTypesAreResolved", "embind_charCodes", "embind_init_charCodes", "readLatin1String", "getTypeName", "getFunctionName", "heap32VectorToArray", "requireRegisteredType", "usesDestructorStack", "checkArgCount", "getRequiredArgCount", "createJsInvoker", "UnboundTypeError", "PureVirtualError", "GenericWireTypeSize", "EmValType", "EmValOptionalType", "throwUnboundTypeError", "ensureOverloadTable", "exposePublicSymbol", "replacePublicSymbol", "extendError", "createNamedFunction", "embindRepr", "registeredInstances", "registeredPointers", "registerType", "integerReadValueFromPointer", "floatReadValueFromPointer", "readPointer", "runDestructors", "newFunc", "craftInvokerFunction", "embind__requireFunction", "finalizationRegistry", "detachFinalizer_deps", "deletionQueue", "delayFunction", "emval_freelist", "emval_handles", "emval_symbols", "init_emval", "count_emval_handles", "getStringOrSymbol", "Emval", "emval_methodCallers", "reflectConstruct" ];
+ 
+ unexportedSymbols.forEach(unexportedRuntimeSymbol);
+ 
+diff --git a/build/docs/simulator/simulator.wasm b/build/docs/simulator/simulator.wasm
+index 2a9695e..06bc317 100755
+Binary files a/build/docs/simulator/simulator.wasm and b/build/docs/simulator/simulator.wasm differ
+diff --git a/build_web.sh b/build_web.sh
+index 7aec151..5cd9eb0 100755
+--- a/build_web.sh
++++ b/build_web.sh
+@@ -34,6 +34,8 @@ emcc src/web_simulator.cpp \
+      lib/PixelTheater/src/platform/webgl/mesh.cpp \
+      lib/PixelTheater/src/platform/webgl/shaders.cpp \
+      lib/PixelTheater/src/platform/webgl/renderer.cpp \
++     lib/PixelTheater/src/theater.cpp \
++     lib/PixelTheater/src/scene.cpp \
+      -I"." \
+      -I"lib" \
+      -I"lib/PixelTheater/include" \
+@@ -52,7 +54,7 @@ emcc src/web_simulator.cpp \
+      -s ALLOW_MEMORY_GROWTH=1 \
+      --bind \
+      -s EXPORTED_RUNTIME_METHODS='["UTF8ToString", "ccall", "cwrap"]' \
+-     -s EXPORTED_FUNCTIONS='["_main", "_change_scene", "_get_scene_count", "_get_scene_name", "_set_brightness", "_show_benchmark_report", "_toggle_debug_mode", "_print_model_info", "_get_current_time", "_update_ui_fps", "_update_ui_brightness", "_get_canvas_width", "_get_canvas_height"]' \
++     -s EXPORTED_FUNCTIONS='["_main", "_change_scene", "_get_num_scenes", "_get_scene_name", "_set_brightness", "_show_benchmark_report", "_toggle_debug_mode", "_get_current_time", "_update_ui_fps", "_update_ui_brightness", "_get_canvas_width", "_get_canvas_height", "_resize_canvas"]' \
+      -s INITIAL_MEMORY=32MB \
+      -s MAXIMUM_MEMORY=128MB \
+      -s ASSERTIONS=2 \
+diff --git a/lib/PixelTheater/include/PixelTheater/platform/native_platform.h b/lib/PixelTheater/include/PixelTheater/platform/native_platform.h
+index 8974013..e2d9853 100644
+--- a/lib/PixelTheater/include/PixelTheater/platform/native_platform.h
++++ b/lib/PixelTheater/include/PixelTheater/platform/native_platform.h
+@@ -40,10 +40,10 @@ public:
+     float randomFloat(float max) override; // 0.0 to max
+     float randomFloat(float min, float max) override; // min to max
+ 
+-    // Logging Utilities (Simplified signatures for now)
+-    void logInfo(const char* format) override;
+-    void logWarning(const char* format) override;
+-    void logError(const char* format) override;
++    // Logging Utilities (Updated to match Platform interface)
++    void logInfo(const char* format, ...) override;
++    void logWarning(const char* format, ...) override;
++    void logError(const char* format, ...) override;
+ 
+ private:
+     CRGB* _leds{nullptr};
+diff --git a/lib/PixelTheater/include/PixelTheater/platform/platform.h b/lib/PixelTheater/include/PixelTheater/platform/platform.h
+index 5f1c918..41ff947 100644
+--- a/lib/PixelTheater/include/PixelTheater/platform/platform.h
++++ b/lib/PixelTheater/include/PixelTheater/platform/platform.h
+@@ -39,11 +39,11 @@ public:
+     virtual float randomFloat(float max) = 0; // 0.0 to max
+     virtual float randomFloat(float min, float max) = 0; // min to max
+ 
+-    // Logging Utilities (Simplified signatures for now)
+-    virtual void logInfo(const char* format) = 0;
+-    virtual void logWarning(const char* format) = 0;
+-    virtual void logError(const char* format) = 0;
+-    // TODO: Revisit logging to support variadic arguments if needed
++    // Logging Utilities (Updated to support variadic arguments)
++    virtual void logInfo(const char* format, ...) = 0;
++    virtual void logWarning(const char* format, ...) = 0;
++    virtual void logError(const char* format, ...) = 0;
++    // Removed TODO
+ };
+ 
+ // FastLED-compatible helper function implementations for native environment
+diff --git a/lib/PixelTheater/include/PixelTheater/platform/web_platform.h b/lib/PixelTheater/include/PixelTheater/platform/web_platform.h
+index 049af02..e23f3f4 100644
+--- a/lib/PixelTheater/include/PixelTheater/platform/web_platform.h
++++ b/lib/PixelTheater/include/PixelTheater/platform/web_platform.h
+@@ -22,7 +22,6 @@
+ #endif
+ 
+ namespace PixelTheater {
+-namespace WebGL {
+ 
+ // Add zoom level enum
+ enum class ZoomLevel {
+@@ -147,10 +146,10 @@ public:
+     float randomFloat(float max) override; // 0.0 to max
+     float randomFloat(float min, float max) override; // min to max
+ 
+-    // Logging Utilities (Overrides from Platform)
+-    void logInfo(const char* format) override;
+-    void logWarning(const char* format) override;
+-    void logError(const char* format) override;
++    // Logging Utilities (Overrides from Platform, updated signatures)
++    void logInfo(const char* format, ...) override;
++    void logWarning(const char* format, ...) override;
++    void logError(const char* format, ...) override;
+ 
+ #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+     // WebGL-specific methods - only available in web builds
+@@ -257,7 +256,6 @@ private:
+     uint8_t _dither{0};           // Common platform setting
+ };
+ 
+-} // namespace WebGL
+ } // namespace PixelTheater 
+ 
+ // Outer #endif REMOVED earlier was correct. 
+\ No newline at end of file
+diff --git a/lib/PixelTheater/include/PixelTheater/platform/webgl/mesh.h b/lib/PixelTheater/include/PixelTheater/platform/webgl/mesh.h
+index 1838f32..61400de 100644
+--- a/lib/PixelTheater/include/PixelTheater/platform/webgl/mesh.h
++++ b/lib/PixelTheater/include/PixelTheater/platform/webgl/mesh.h
+@@ -8,7 +8,6 @@
+ #include <cstdint>
+ 
+ namespace PixelTheater {
+-namespace WebGL {
+ 
+ // Type for coordinate provider function
+ using CoordinateProviderFunc = std::function<void(uint16_t, float&, float&, float&)>;
+@@ -51,7 +50,6 @@ private:
+     std::vector<uint16_t> _edge_indices;  // Edge indices
+ };
+ 
+-} // namespace WebGL
+ } // namespace PixelTheater
+ 
+ #endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 
+\ No newline at end of file
+diff --git a/lib/PixelTheater/include/PixelTheater/platform/webgl/web_model.h b/lib/PixelTheater/include/PixelTheater/platform/webgl/web_model.h
+index 1aaaf5b..a2fe606 100644
+--- a/lib/PixelTheater/include/PixelTheater/platform/webgl/web_model.h
++++ b/lib/PixelTheater/include/PixelTheater/platform/webgl/web_model.h
+@@ -7,7 +7,6 @@
+ #include <array>
+ 
+ namespace PixelTheater {
+-namespace WebGL {
+ 
+ // Simple vertex type for web visualization
+ struct WebVertex {
+@@ -43,7 +42,6 @@ struct WebModel {
+     WebGeometry geometry;
+ };
+ 
+-} // namespace WebGL
+ } // namespace PixelTheater
+ 
+ #endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 
+\ No newline at end of file
+diff --git a/lib/PixelTheater/include/PixelTheater/theater.h b/lib/PixelTheater/include/PixelTheater/theater.h
+index 9072e0a..f856678 100644
+--- a/lib/PixelTheater/include/PixelTheater/theater.h
++++ b/lib/PixelTheater/include/PixelTheater/theater.h
+@@ -95,6 +95,14 @@ public:
+     void useFastLEDPlatform(::CRGB* leds, size_t num_leds);
+ #endif
+ 
++    /**
++     * @brief Initialize the Theater to use the WebPlatform.
++     * 
++     * @tparam TModelDef The specific ModelDefinition struct for the geometry.
++     */
++    template<typename TModelDef>
++    void useWebPlatform();
++
+     // --- Scene Management (Task 9) ---
+     template<typename SceneType>
+     void addScene();
+@@ -112,6 +120,13 @@ public:
+     const Scene* currentScene() const;
+     size_t sceneCount() const;
+ 
++    // --- ADDED: Platform Access --- 
++    Platform* platform();
++    const Platform* platform() const;
++
++    // --- ADDED: Scene Control --- 
++    bool setScene(size_t index);
++
+ protected:
+     // Core components managed by the Theater
+     std::unique_ptr<Platform> platform_;
+@@ -208,4 +223,32 @@ void Theater::addScene() {
+     }
+ }
+ 
++// --- ADDED Guarded Implementation for useWebPlatform ---
++#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
++
++// Include WebPlatform definition needed for implementation below
++#include "PixelTheater/platform/web_platform.h"
++
++// Implementation of useWebPlatform (directly in header for template visibility)
++template<typename TModelDef>
++void Theater::useWebPlatform() {
++    if (initialized_) {
++        printf("[WARN] Theater::useWebPlatform called after initialization.\n"); 
++        return; 
++    }
++    auto platform = std::make_unique<PixelTheater::WebPlatform>();
++    // Assume WebPlatform constructor/external call handles its specific init
++    
++    // Use reset/release for derived-to-base unique_ptr assignment
++    platform_.reset(platform.release()); 
++    
++    initialized_ = true; 
++    if (platform_) platform_->logInfo("Theater initialized with WebPlatform (further setup may be needed).");
++    else {
++        printf("[ERROR] Theater::useWebPlatform - Failed to store platform pointer.\n");
++        initialized_ = false; 
++    }
++}
++#endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
++
+ } // namespace PixelTheater 
+\ No newline at end of file
+diff --git a/lib/PixelTheater/src/platform/native_platform.cpp b/lib/PixelTheater/src/platform/native_platform.cpp
+index 88201fb..e482035 100644
+--- a/lib/PixelTheater/src/platform/native_platform.cpp
++++ b/lib/PixelTheater/src/platform/native_platform.cpp
+@@ -5,7 +5,7 @@
+ #include <ctime> // For seeding rand()
+ #include <cmath> // For fmod
+ #include <cstdio> // For printf (logging)
+-#include <cstdarg> // For va_list etc. (if needed later for logging)
++#include <cstdarg> // For va_list etc. (logging)
+ 
+ namespace PixelTheater {
+ 
+@@ -102,17 +102,32 @@ float NativePlatform::randomFloat(float min, float max) { // min to max
+     return min + randomFloat() * (max - min);
+ }
+ 
+-// Simplified logging using printf
+-void NativePlatform::logInfo(const char* format) {
+-    printf("[INFO] %s\n", format);
+-}
+-
+-void NativePlatform::logWarning(const char* format) {
+-     printf("[WARN] %s\n", format);
+-}
+-
+-void NativePlatform::logError(const char* format) {
+-     printf("[ERROR] %s\n", format);
++// Logging implementations using vprintf
++void NativePlatform::logInfo(const char* format, ...) {
++    printf("[INFO] ");
++    va_list args;
++    va_start(args, format);
++    vprintf(format, args);
++    va_end(args);
++    printf("\n");
++}
++
++void NativePlatform::logWarning(const char* format, ...) {
++     printf("[WARN] ");
++    va_list args;
++    va_start(args, format);
++    vprintf(format, args);
++    va_end(args);
++    printf("\n");
++}
++
++void NativePlatform::logError(const char* format, ...) {
++     printf("[ERROR] ");
++    va_list args;
++    va_start(args, format);
++    vprintf(format, args);
++    va_end(args);
++    printf("\n");
+ }
+ 
+ } // namespace PixelTheater 
+\ No newline at end of file
+diff --git a/lib/PixelTheater/src/platform/web_platform.cpp b/lib/PixelTheater/src/platform/web_platform.cpp
+index caf3e53..4483d7d 100644
+--- a/lib/PixelTheater/src/platform/web_platform.cpp
++++ b/lib/PixelTheater/src/platform/web_platform.cpp
+@@ -44,7 +44,6 @@ extern "C" {
+ }
+ 
+ namespace PixelTheater {
+-namespace WebGL {
+ 
+ // Define logging macros for stubs if not in web environment
+ #if !defined(PLATFORM_WEB) && !defined(EMSCRIPTEN)
+@@ -737,35 +736,72 @@ float WebPlatform::randomFloat(float min, float max) {
+ }
+ 
+ // Logging Utilities
+-void WebPlatform::logInfo(const char* format) {
++void WebPlatform::logInfo(const char* format, ...) {
+     #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+-        // Actual implementation using console.log via EM_ASM or similar later
+-        printf("[INFO] %s\\n", format); // Simple printf for now
++        char buffer[256];
++        va_list args;
++        va_start(args, format);
++        vsnprintf(buffer, sizeof(buffer), format, args);
++        va_end(args);
++        // Use EM_ASM for console.log
++        EM_ASM({
++            console.log("[INFO] " + UTF8ToString($0));
++        }, buffer);
+     #else
+-        // Native stub
+-        printf(LOG_STUB_PREFIX "[INFO] %s\\n", format);
++        // Native stub using vprintf
++        printf("[INFO] ");
++        va_list args;
++        va_start(args, format);
++        vprintf(format, args);
++        va_end(args);
++        printf("\n");
+     #endif
+ }
+ 
+-void WebPlatform::logWarning(const char* format) {
++void WebPlatform::logWarning(const char* format, ...) {
+      #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+-        printf("[WARN] %s\\n", format); 
++        char buffer[256];
++        va_list args;
++        va_start(args, format);
++        vsnprintf(buffer, sizeof(buffer), format, args);
++        va_end(args);
++        // Use EM_ASM for console.warn
++        EM_ASM({
++            console.warn("[WARN] " + UTF8ToString($0));
++        }, buffer);
+     #else
+-        // Native stub
+-        printf(LOG_STUB_PREFIX "[WARN] %s\\n", format);
++        // Native stub using vprintf
++        printf("[WARN] ");
++        va_list args;
++        va_start(args, format);
++        vprintf(format, args);
++        va_end(args);
++        printf("\n");
+     #endif
+ }
+ 
+-void WebPlatform::logError(const char* format) {
++void WebPlatform::logError(const char* format, ...) {
+      #if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
+-         printf("[ERR ] %s\\n", format); 
++        char buffer[256];
++        va_list args;
++        va_start(args, format);
++        vsnprintf(buffer, sizeof(buffer), format, args);
++        va_end(args);
++        // Use EM_ASM for console.error
++        EM_ASM({
++            console.error("[ERR ] " + UTF8ToString($0));
++        }, buffer);
+     #else
+-        // Native stub
+-        printf(LOG_STUB_PREFIX "[ERR ] %s\\n", format);
++        // Native stub using vprintf
++        printf("[ERR ] ");
++        va_list args;
++        va_start(args, format);
++        vprintf(format, args);
++        va_end(args);
++        printf("\n");
+     #endif
+ }
+ 
+-} // namespace WebGL
+ } // namespace PixelTheater 
+ 
+ #endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 
+\ No newline at end of file
+diff --git a/lib/PixelTheater/src/platform/webgl/mesh.cpp b/lib/PixelTheater/src/platform/webgl/mesh.cpp
+index 0c0d241..eb66d29 100644
+--- a/lib/PixelTheater/src/platform/webgl/mesh.cpp
++++ b/lib/PixelTheater/src/platform/webgl/mesh.cpp
+@@ -9,7 +9,6 @@
+ #include <utility>
+ 
+ namespace PixelTheater {
+-namespace WebGL {
+ 
+ void MeshGenerator::clear() {
+     _vertices.clear();
+@@ -159,7 +158,6 @@ void MeshGenerator::generateDodecahedronMesh(const std::vector<WebFace>& faces)
+            _vertices.size() / 6, _indices.size() / 3);
+ }
+ 
+-} // namespace WebGL
+ } // namespace PixelTheater
+ 
+ #endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 
+\ No newline at end of file
+diff --git a/lib/PixelTheater/src/theater.cpp b/lib/PixelTheater/src/theater.cpp
+index b040667..9d786c3 100644
+--- a/lib/PixelTheater/src/theater.cpp
++++ b/lib/PixelTheater/src/theater.cpp
+@@ -146,4 +146,72 @@ const Scene& Theater::scene(size_t index) const {
+     return *scenes_[index];
+ }
+ 
+-} // namespace PixelTheater 
+\ No newline at end of file
++// --- ADDED: Platform Accessor ---
++Platform* Theater::platform() {
++    return platform_.get();
++}
++
++const Platform* Theater::platform() const {
++    return platform_.get();
++}
++
++// --- ADDED: Scene Control ---
++bool Theater::setScene(size_t index) {
++    if (!initialized_) {
++        // Log::error should ideally be used, but platform might not be available.
++        printf("[ERROR] Theater::setScene called before initialization.\n");
++        return false;
++    }
++    if (index >= scenes_.size()) {
++        if (platform_) platform_->logWarning("Theater::setScene index out of range: %zu", index);
++        return false;
++    }
++
++    // Get the target scene pointer before potentially changing current_scene_
++    Scene* target_scene = scenes_[index].get(); 
++    
++    if (target_scene == current_scene_) {
++        if (platform_) platform_->logInfo("Theater::setScene called with current scene index: %zu", index);
++        return true; // No change needed
++    }
++
++    current_scene_ = target_scene; 
++
++    if (current_scene_) {
++        // Reset and setup the new scene
++        current_scene_->reset(); 
++        current_scene_->setup(); 
++        if (platform_) platform_->logInfo("Theater scene changed to index %zu: %s", index, current_scene_->name().c_str());
++        return true;
++    } else {
++        // This case should ideally not happen if index check passed
++        if (platform_) platform_->logError("Theater::setScene failed to set scene pointer for index %zu", index);
++        return false; 
++    }
++}
++
++// --- Implementation and instantiation moved back to theater.h ---
++#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
++
++// // Implementation moved to header
++// #include "PixelTheater/platform/web_platform.h"
++// template<typename TModelDef>
++// void Theater::useWebPlatform() { ... }
++
++// // Explicit instantiation removed (not needed when definition is in header)
++// #include "models/DodecaRGBv2/model.h" 
++// template void Theater::useWebPlatform<PixelTheater::Models::DodecaRGBv2>();
++
++#endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
++
++} // namespace PixelTheater 
++
++
++// --- Explicit Template Instantiations ---
++
++#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)
++// // Explicitly instantiate useWebPlatform for the specific ModelDef used in web_simulator // REMOVING
++// // Include the specific model definition header required for instantiation
++// #include "models/DodecaRGBv2/model.h" 
++// template void PixelTheater::Theater::useWebPlatform<PixelTheater::Models::DodecaRGBv2>();
++#endif 
+\ No newline at end of file
+diff --git a/src/scenes/blob_scene.h b/src/scenes/blob_scene.h
+index 6cbf784..daca337 100644
+--- a/src/scenes/blob_scene.h
++++ b/src/scenes/blob_scene.h
+@@ -8,8 +8,8 @@
+ #include <algorithm> // For std::max, std::min, std::clamp
+ #include <string> // For status method (if restored)
+ 
+-using namespace PixelTheater; // Recommended
+-using namespace PixelTheater::Constants; // Recommended for constants
++// using namespace PixelTheater; // Avoid top-level using
++// using namespace PixelTheater::Constants; // Avoid top-level using
+ 
+ namespace Scenes {
+ 
+diff --git a/src/web_simulator.cpp b/src/web_simulator.cpp
+index e619a2c..8ef6ecb 100644
+--- a/src/web_simulator.cpp
++++ b/src/web_simulator.cpp
+@@ -11,9 +11,13 @@
+ #include <cstdio>
+ #include <cmath> // Needed for M_PI
+ #include <algorithm> // Needed for std::find_if
++
++// <<< REMOVED EXTRA INCLUDE BASE PLATFORM >>>
++// #include "PixelTheater/platform/platform.h"
++
+ #include "PixelTheater/theater.h"
+-#include "PixelTheater/platform/web_platform.h"
+-#include "PixelTheater/model/model.h"
++// REMOVED: #include "PixelTheater/platform/web_platform.h" // Should be included via theater.h now
++// #include "PixelTheater/model/model.h" // Not needed directly anymore
+ #include "PixelTheater/core/log.h" // For logging
+ #include "PixelTheater/params/param_value.h" // For ParamValue
+ #include "PixelTheater/params/param_schema.h" // For SceneParameterSchema
+@@ -52,10 +56,10 @@ struct SceneParameter {
+ 
+ // Create a WebSimulator class to encapsulate all the functionality
+ class WebSimulator {
+-private:
++public: // Made public for easier C access
+     // Member variables
+     std::unique_ptr<PixelTheater::Theater> theater;
+-    int current_scene = 0;
++    int current_scene = 0; // Still potentially useful for UI state?
+     int frame_count = 0;
+     
+ public:
+@@ -74,11 +78,11 @@ public:
+             if (!theater) {
+                 theater = std::make_unique<PixelTheater::Theater>();
+                 // Call useWebPlatform to initialize platform, model, leds
+-                theater->useWebPlatform<ModelDef>(); 
++                theater->useWebPlatform<ModelDef>(); // Uses template definition from theater.h
+                 
+                 // Apply initial settings (Platform access through Theater)
+                 if (auto* platform = theater->platform()) { // CORRECT: Use platform()
+-                    auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
++                    auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
+                     if (web_platform) {
+                          web_platform->setBrightness(200); // Example initial brightness
+                          web_platform->setZoomLevel(1); 
+@@ -110,7 +114,7 @@ public:
+             PixelTheater::Log::info("%d scenes added.", theater->sceneCount()); // Use info
+             
+             // Set the default scene (first scene) using Theater::setScene
+-            bool success = theater->setScene(0); // Set initial scene via Theater
++            bool success = theater->setScene(0); // CORRECT: Use setScene
+             if (success) {
+                 current_scene = 0;
+                  PixelTheater::Log::info("Initial scene set via Theater: %s", 
+@@ -139,7 +143,7 @@ public:
+             
+             // Update and render the current scene via Theater
+             BENCHMARK_START("update");
+-            theater->update(); // THEATER handles scene tick and platform show
++            theater->update(); // CORRECT: Call theater update
+             BENCHMARK_END();
+             
+         } catch (const std::exception& e) {
+@@ -149,7 +153,7 @@ public:
+         }
+     }
+     
+-    // Scene management
++    // --- Scene Management --- 
+     void setScene(int sceneIndex) {
+         if (!theater) {
+             PixelTheater::Log::error("Theater not initialized in setScene");
+@@ -166,7 +170,7 @@ public:
+         size_t index = static_cast<size_t>(sceneIndex);
+ 
+         // Delegate scene change to Theater
+-        bool success = theater->setScene(index);
++        bool success = theater->setScene(index); // CORRECT: Use setScene
+ 
+         if (success) {
+             current_scene = sceneIndex;
+@@ -180,12 +184,21 @@ public:
+     int getSceneCount() {
+         return theater ? static_cast<int>(theater->sceneCount()) : 0; // CORRECT: Use sceneCount()
+     }
++
++    // Get a pointer to a specific scene (used by C interface)
++    PixelTheater::Scene* getScene(int scene_index) { 
++        if (!theater) return nullptr;
++        if (scene_index < 0 || static_cast<size_t>(scene_index) >= theater->sceneCount()) { // CORRECT: Use sceneCount()
++            return nullptr;
++        }
++        return &theater->scene(static_cast<size_t>(scene_index)); 
++    }
+     
+-    // Set brightness
++    // --- Platform Interaction (Brightness, Rotation, Zoom, etc.) --- 
+     void setBrightness(float brightness) {
+         if (theater) {
+             if (auto* platform = theater->platform()) { // CORRECT: Use platform()
+-                auto* webPlatform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
++                auto* webPlatform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
+                 if (webPlatform) {
+                     webPlatform->setBrightness(brightness);
+                 } else {
+@@ -197,10 +210,9 @@ public:
+         }
+     }
+     
+-    // Get current brightness
+     float getBrightness() {
+         if (theater && theater->platform()) { // CORRECT: Use platform()
+-            auto* platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(theater->platform()); // CORRECT: Use platform()
++            auto* platform = dynamic_cast<PixelTheater::WebPlatform*>(theater->platform()); // Use PixelTheater::WebPlatform
+              if (platform) {
+                 return platform->getBrightness();
+              } else {
+@@ -210,13 +222,12 @@ public:
+         return 0.0f; // Default or error value
+     }
+     
+-    // Rotation management
+     void updateRotation(float delta_x, float delta_y) {
+         if (theater) {
+             if (auto* platform = theater->platform()) { // CORRECT: Use platform()
+-                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
++                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
+                 if (web_platform) {
+-                    web_platform->updateRotation(-delta_x, -delta_y); // Inverted the deltas
++                    web_platform->updateRotation(-delta_x, -delta_y); 
+                 } else {
+                     PixelTheater::Log::warning("Platform is not a WebPlatform in updateRotation");
+                 }
+@@ -231,7 +242,7 @@ public:
+     void resetRotation() {
+         if (theater) {
+             if (auto* platform = theater->platform()) { // CORRECT: Use platform()
+-                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
++                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
+                 if (web_platform) {
+                     web_platform->resetRotation();
+                 } else {
+@@ -245,11 +256,10 @@ public:
+         }
+     }
+     
+-    // Auto-rotation
+     void setAutoRotation(bool enabled, float speed) {
+         if (theater) {
+             if (auto* platform = theater->platform()) { // CORRECT: Use platform()
+-                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
++                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
+                 if (web_platform) {
+                     web_platform->setAutoRotation(enabled, speed);
+                 }
+@@ -257,11 +267,10 @@ public:
+         }
+     }
+     
+-    // Zoom levels
+     void setZoomLevel(int zoom_level) {
+         if (theater) {
+             if (auto* platform = theater->platform()) { // CORRECT: Use platform()
+-                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
++                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
+                 if (web_platform) {
+                     web_platform->setZoomLevel(zoom_level);
+                 }
+@@ -269,176 +278,47 @@ public:
+         }
+     }
+     
+-    // Benchmarking
++    // --- Debugging & Info --- 
+     void showBenchmarkReport() {
+-        // (Implementation seems okay, uses emscripten_get_now and BENCHMARK_REPORT)
+         static int last_frame_count = 0;
+         static double last_time = emscripten_get_now() / 1000.0;
+-        static double fps = 60.0; // Default assumption
++        static double fps = 60.0; 
+         
+         double current_time = emscripten_get_now() / 1000.0;
+         double elapsed = current_time - last_time;
+         
+-        if (elapsed > 0.5) { // Update FPS calculation every half second
++        if (elapsed > 0.5) { 
+             int frame_diff = frame_count - last_frame_count;
+             fps = frame_diff / elapsed;
+             
+-            // Print benchmark report
+             PixelTheater::Log::info("FPS: %.2f", fps);
+             BENCHMARK_REPORT();
+             
+-            // Reset counters
+             last_frame_count = frame_count;
+             last_time = current_time;
+         }
+     }
+     
+-    // Debug mode toggle
+     void toggleDebugMode() {
+         g_debug_mode = !g_debug_mode;
+         PixelTheater::Log::info("Debug mode: %s", (g_debug_mode ? "ON" : "OFF"));
+     }
+     
+-    // Get scene name by index
+-    void getSceneName(int scene_index, char* buffer, int buffer_size) {
+-        if (!buffer || buffer_size <= 0) {
+-            PixelTheater::Log::error("Invalid buffer provided to getSceneName");
+-            return;
+-        }
+-        
+-        std::string name = "Unknown Scene";
+-        
+-        // Use the simulator's own methods to get count and scene pointer
+-        int count = this->getSceneCount(); // Use simulator's getter
+-        if (theater && scene_index >= 0 && scene_index < count) { // Use count variable
+-            PixelTheater::Scene* scene = this->getScene(scene_index); // Use simulator's getter
+-            if (scene) {
+-                name = scene->name();
+-                PixelTheater::Log::info("Retrieved name for scene %d: '%s'", scene_index, name.c_str());
+-            } else {
+-                PixelTheater::Log::warning("Scene pointer is null for index %d", scene_index);
+-            }
+-        } else {
+-             PixelTheater::Log::error("Invalid scene index or theater not initialized: %d", scene_index);
+-        }
+-        
+-        // Copy name safely
+-        strncpy(buffer, name.c_str(), buffer_size - 1);
+-        buffer[buffer_size - 1] = '\0'; // Ensure null termination
+-        
+-        PixelTheater::Log::info("Copied name to buffer: '%s'", buffer);
+-    }
+-    
+-    // LED appearance settings
+-    void setLEDSize(float size) {
+-        if (theater) {
+-            PixelTheater::Log::info("Setting LED size to: %f", size);
+-            if (auto* platform = theater->platform()) { // CORRECT: Use platform()
+-                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
+-                if (web_platform) {
+-                    web_platform->setLEDSize(size);
+-                }
+-            }
+-        }
+-    }
+-    
+-    float getLEDSize() const {
+-        if (theater && theater->platform()) { // CORRECT: Use platform()
+-            auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(theater->platform()); // CORRECT: Use platform()
+-            if (web_platform) {
+-                return web_platform->getLEDSize();
+-            }
+-        }
+-        return 0.0f;
+-    }
+-    
+-    // Atmosphere effect control
+-    void setAtmosphereIntensity(float intensity) {
+-        if (theater) {
+-             if (auto* platform = theater->platform()) { // CORRECT: Use platform()
+-                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
+-                if (web_platform) {
+-                    web_platform->setAtmosphereIntensity(intensity);
+-                } else {
+-                    PixelTheater::Log::warning("Platform not a WebPlatform in setAtmosphereIntensity");
+-                }
+-             } else {
+-                 PixelTheater::Log::warning("Platform not initialized for atmosphere setting");
+-             }
+-        }
+-    }
+-    
+-    float getAtmosphereIntensity() const {
+-        if (theater && theater->platform()) { // CORRECT: Use platform()
+-             auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(theater->platform()); // CORRECT: Use platform()
+-             if (web_platform) {
+-                return web_platform->getAtmosphereIntensity();
+-            }
+-        }
+-        return PixelTheater::WebGL::WebPlatform::DEFAULT_ATMOSPHERE_INTENSITY;
+-    }
+-    
+-    // Mesh visualization controls
+-    void setShowMesh(bool show) {
+-        if (theater) {
+-            if (auto* platform = theater->platform()) { // CORRECT: Use platform()
+-                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
+-                if (web_platform) {
+-                    web_platform->setShowMesh(show);
+-                     PixelTheater::Log::info("Set mesh visibility: %s", (show ? "ON" : "OFF"));
+-                }
+-            }
+-        }
+-    }
+-    
+-    bool getShowMesh() const {
+-        if (theater && theater->platform()) { // CORRECT: Use platform()
+-            auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(theater->platform()); // CORRECT: Use platform()
+-            if (web_platform) {
+-                return web_platform->getShowMesh();
+-            }
+-        }
+-        return false;
+-    }
+-    
+-    void setMeshOpacity(float opacity) {
+-        if (theater) {
+-             if (auto* platform = theater->platform()) { // CORRECT: Use platform()
+-                auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(platform);
+-                if (web_platform) {
+-                    web_platform->setMeshOpacity(opacity);
+-                     PixelTheater::Log::info("Set mesh opacity: %.2f", opacity);
+-                }
+-            }
+-        }
+-    }
+-    
+-    float getMeshOpacity() const {
+-        if (theater && theater->platform()) { // CORRECT: Use platform()
+-             auto* web_platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(theater->platform()); // CORRECT: Use platform()
+-             if (web_platform) {
+-                return web_platform->getMeshOpacity();
+-            }
+-        }
+-        return 0.3f; // Default value
+-    }
+-    
+-    // LED count
++    // Get LED count from the platform
+     int getLEDCount() const {
+         if (theater && theater->platform()) { // CORRECT: Use platform()
+-            auto* platform = dynamic_cast<PixelTheater::WebGL::WebPlatform*>(theater->platform());
+-            if(platform) return platform->getNumLEDs();
++             auto* platform = dynamic_cast<PixelTheater::WebPlatform*>(theater->platform()); // Use PixelTheater::WebPlatform
++             if(platform) return platform->getNumLEDs();
+         }
+         return 0;
+     }
+     
+-    // Get FPS
++    // Get FPS (Placeholder)
+     float getFPS() const {
+-        // We could implement a better FPS counter here
+         return 60.0f; // Default
+     }
+-    
+-    // Get all parameters for the current scene
++
++    // --- Scene Parameter Interaction --- 
+     std::vector<SceneParameter> getSceneParameters() {
+         std::vector<SceneParameter> result;
+         if (!theater) return result;
+@@ -467,25 +347,14 @@ public:
+                     return 0.01f;
+                 };
+                 
+-                // Get current value via scene->settings proxy
+-                // Note: The original code used scene->settings().get_value() - 
+-                // If the proxy [] operator is intended, that should be used.
+-                // Assuming scene->settings is the SettingsProxy object.
+-                // We need to know if SettingsProxy provides .get_value() or relies on [] operator.
+-                // Let's assume SettingsProxy uses operator[] for now, matching TestScene fix.
+-
+                 if (param.type == "switch") {
+                     p.controlType = "checkbox";
+-                    bool value = scene->settings[param.name]; // Use operator[]
++                    bool value = scene->settings[param.name]; 
+                     p.value = value ? "true" : "false";
+                     PixelTheater::Log::info("  Param %s (switch): %s", param.name.c_str(), p.value.c_str());
+                 } 
+                 else if (param.type == "select") {
+                     p.controlType = "select";
+-                    // Select might store as string or int index, assume string for now
+-                    // ParamValue value = scene->settings.get_value(param.name); // Assuming get_value exists on proxy for non-implicit types
+-                    // p.value = value.as_string(); 
+-                    // Let's defer fixing select/string params until we confirm proxy access method
+                     p.value = "TODO: Fix select access"; // Placeholder
+                     p.options = param.options;
+                     PixelTheater::Log::info("  Param %s (select): %s", param.name.c_str(), p.value.c_str());
+@@ -493,15 +362,15 @@ public:
+                 else { // Numeric types
+                     p.controlType = "slider";
+                     if (param.type == "count") {
+-                        int intValue = scene->settings[param.name]; // Use operator[]
++                        int intValue = scene->settings[param.name]; 
+                         if (intValue == 0 && param.default_int != 0) { 
+                              intValue = param.default_int;
+                              PixelTheater::Log::info("  Param %s (count): using default %d", param.name.c_str(), intValue);
+                         }
+                         p.value = std::to_string(intValue);
+                         PixelTheater::Log::info("  Param %s (count): %s", param.name.c_str(), p.value.c_str());
+-                    } else { // Other numeric (float-based)
+-                        float floatValue = scene->settings[param.name]; // Use operator[]
++                    } else { 
++                        float floatValue = scene->settings[param.name]; 
+                         if (floatValue == 0.0f && param.default_float != 0.0f) { 
+                              floatValue = param.default_float;
+                              PixelTheater::Log::info("  Param %s (%s): using default %f", param.name.c_str(), param.type.c_str(), floatValue);
+@@ -527,7 +396,6 @@ public:
+         return result;
+     }
+     
+-    // Update a parameter in the current scene
+     void updateSceneParameter(std::string param_id, std::string value) {
+         if (!theater) return;
+         auto* scene = theater->currentScene();
+@@ -536,16 +404,14 @@ public:
+             return;
+         }
+         
+-        // Use scene's settings proxy
+         auto& settings = scene->settings;
+         
+-        if (!settings.has_parameter(param_id)) { // Assuming has_parameter is on proxy
++        if (!settings.has_parameter(param_id)) { 
+             PixelTheater::Log::warning("Parameter not found in scene settings: %s", param_id.c_str());
+             return;
+         }
+         
+         try {
+-            // Get schema to know the type
+             auto schema = scene->parameter_schema();
+             auto it = std::find_if(schema.parameters.begin(), schema.parameters.end(),
+                 [&param_id](const auto& param) { return param.name == param_id; });
+@@ -555,16 +421,13 @@ public:
+                 return;
+             }
+             
+-            // Update using the proxy's operator[] = overload
+             if (it->type == "switch") {
+                 settings[param_id] = (value == "true");
+             } else if (it->type == "select") {
+-                // Select might need explicit ParamValue construction or string assignment?
+                  PixelTheater::Log::warning("TODO: Fix select parameter update for %s", param_id.c_str());
+-                 // settings[param_id] = value; // ??? Need to confirm proxy assignment
+             } else if (it->type == "count") {
+                  settings[param_id] = std::stoi(value); 
+-            } else { // Float types
++            } else { 
+                  settings[param_id] = std::stof(value);
+             }
+             
+@@ -579,44 +442,124 @@ public:
+         }
+     }
+ 
+-    // Add this public method to the WebSimulator class (in the public: section)
+-    // This method also needs updating if Scene base class changed
+-    PixelTheater::Scene* getScene(int scene_index) { // Return base Scene*
+-        if (!theater) return nullptr;
+-        if (scene_index < 0 || static_cast<size_t>(scene_index) >= theater->sceneCount()) { // CORRECT: Use sceneCount()
+-            return nullptr;
++    // --- Appearance Settings --- 
++    void setLEDSize(float size) {
++        if (theater) {
++            if (auto* platform = theater->platform()) { // CORRECT: Use platform()
++                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
++                if (web_platform) {
++                    web_platform->setLEDSize(size);
++                }
++            }
++        }
++    }
++    
++    float getLEDSize() const {
++        if (theater && theater->platform()) { // CORRECT: Use platform()
++            auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(theater->platform()); // Use PixelTheater::WebPlatform
++            if (web_platform) {
++                return web_platform->getLEDSize();
++            }
++        }
++        return 0.0f;
++    }
++    
++    void setAtmosphereIntensity(float intensity) {
++        if (theater) {
++             if (auto* platform = theater->platform()) { // CORRECT: Use platform()
++                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
++                if (web_platform) {
++                    web_platform->setAtmosphereIntensity(intensity);
++                } else {
++                    PixelTheater::Log::warning("Platform not a WebPlatform in setAtmosphereIntensity");
++                }
++             } else {
++                 PixelTheater::Log::warning("Platform not initialized for atmosphere setting");
++             }
++        }
++    }
++    
++    float getAtmosphereIntensity() const {
++        if (theater && theater->platform()) { // CORRECT: Use platform()
++             auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(theater->platform()); // Use PixelTheater::WebPlatform
++             if (web_platform) {
++                return web_platform->getAtmosphereIntensity();
++            }
++        }
++        return PixelTheater::WebGL::WebPlatform::DEFAULT_ATMOSPHERE_INTENSITY;
++    }
++    
++    void setShowMesh(bool show) {
++        if (theater) {
++            if (auto* platform = theater->platform()) { // CORRECT: Use platform()
++                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
++                if (web_platform) {
++                    web_platform->setShowMesh(show);
++                     PixelTheater::Log::info("Set mesh visibility: %s", (show ? "ON" : "OFF"));
++                }
++            }
++        }
++    }
++    
++    bool getShowMesh() const {
++        if (theater && theater->platform()) { // CORRECT: Use platform()
++            auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(theater->platform()); // Use PixelTheater::WebPlatform
++            if (web_platform) {
++                return web_platform->getShowMesh();
++            }
++        }
++        return false;
++    }
++    
++    void setMeshOpacity(float opacity) {
++        if (theater) {
++             if (auto* platform = theater->platform()) { // CORRECT: Use platform()
++                auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
++                if (web_platform) {
++                    web_platform->setMeshOpacity(opacity);
++                     PixelTheater::Log::info("Set mesh opacity: %.2f", opacity);
++                }
++            }
++        }
++    }
++    
++    float getMeshOpacity() const {
++        if (theater && theater->platform()) { // CORRECT: Use platform()
++             auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(theater->platform()); // Use PixelTheater::WebPlatform
++             if (web_platform) {
++                return web_platform->getMeshOpacity();
++            }
++        }
++        return 0.3f; // Default value
++    }
++    
++    // Needs to be public to be called from C function
++    void onCanvasResize(int width, int height) {
++        if (theater && theater->platform()) { // CORRECT: Use platform()
++             auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(theater->platform()); // Use PixelTheater::WebPlatform
++             if (web_platform) {
++                 web_platform->onCanvasResize(width, height);
++             }
+         }
+-        // Theater::scene returns Scene&, return its address
+-        return &theater->scene(static_cast<size_t>(scene_index)); 
+     }
+ };
+ 
+-// Create a global WebSimulator instance
+-static std::unique_ptr<WebSimulator> g_simulator;
++// --- Global Instance & Main Loop --- 
+ 
+-// Forward declarations of functions used in main
+-extern "C" {
+-    bool init_simulator();
+-    void update_simulator();
+-}
++// Create a global WebSimulator instance (managed by JS lifecycle)
++static std::unique_ptr<WebSimulator> g_simulator;
+ 
+-// Main function (not extern "C")
++// Main function - sets up Emscripten main loop
+ int main() {
+-    // Initialize the simulator
+-    if (!init_simulator()) {
+-        std::cerr << "Failed to initialize simulator" << std::endl;
+-        return 1;
+-    }
+-    
+-    // Set up the animation loop
++    PixelTheater::Log::info("main() called. Waiting for init_simulator()...");
+     emscripten_set_main_loop([]() {
+-        update_simulator();
+-    }, 0, 1);  // 0 = no FPS limit, 1 = simulate infinite loop
+-    
++        if (g_simulator) { g_simulator->update(); }
++    }, 0, 1); 
+     return 0;
+ }
+ 
+-// JavaScript interface functions
++// --- C Interface Functions (Exported to JS via EXPORTED_FUNCTIONS) --- 
++
+ extern "C" {
+ 
+ EMSCRIPTEN_KEEPALIVE
+@@ -624,7 +567,7 @@ bool init_simulator() {
+     PixelTheater::Log::info("init_simulator() called.");
+     if (g_simulator) {
+         PixelTheater::Log::warning("Simulator already initialized.");
+-        return true; // Or false? Depending on desired re-init behavior
++        return true; 
+     }
+     try {
+         g_simulator = std::make_unique<WebSimulator>();
+@@ -637,7 +580,7 @@ bool init_simulator() {
+         return success;
+     } catch (const std::exception& e) {
+         PixelTheater::Log::error("Exception during simulator initialization: %s", e.what());
+-        g_simulator.reset(); // Ensure simulator is null on failure
++        g_simulator.reset(); 
+         return false;
+     } catch (...) {
+         PixelTheater::Log::error("Unknown exception during simulator initialization.");
+@@ -646,12 +589,9 @@ bool init_simulator() {
+     }
+ }
+ 
+-EMSCRIPTEN_KEEPALIVE
+-void update_simulator() {
+-    if (g_simulator) {
+-        g_simulator->update();
+-    }
+-}
++// update_simulator is called by the main loop setup in main()
++// EMSCRIPTEN_KEEPALIVE
++// void update_simulator() { ... }
+ 
+ EMSCRIPTEN_KEEPALIVE
+ void change_scene(int sceneIndex) {
+@@ -663,12 +603,29 @@ void change_scene(int sceneIndex) {
+ }
+ 
+ EMSCRIPTEN_KEEPALIVE
+-int get_num_scenes() {
++int get_num_scenes() { // Renamed from get_scene_count
+     return g_simulator ? g_simulator->getSceneCount() : 0;
+ }
+ 
+ EMSCRIPTEN_KEEPALIVE
+-void set_brightness(float brightness) {
++const char* get_scene_name(int scene_index) {
++    static std::string sceneNameStr = "Invalid Scene"; 
++    if (g_simulator) {
++        PixelTheater::Scene* scene = g_simulator->getScene(scene_index); 
++        if (scene) {
++             sceneNameStr = scene->name(); 
++             return sceneNameStr.c_str();
++        } else {
++            PixelTheater::Log::warning("get_scene_name: getScene(%d) returned null.", scene_index);
++        }
++    } else {
++         PixelTheater::Log::error("get_scene_name called before simulator initialized.");
++    }
++    return sceneNameStr.c_str(); 
++}
++
++EMSCRIPTEN_KEEPALIVE
++void set_brightness(float brightness) { 
+     if (g_simulator) {
+         g_simulator->setBrightness(brightness);
+     } else {
+@@ -677,7 +634,7 @@ void set_brightness(float brightness) {
+ }
+ 
+ EMSCRIPTEN_KEEPALIVE
+-float get_brightness() {
++float get_brightness() { 
+     return g_simulator ? g_simulator->getBrightness() : 0.0f;
+ }
+ 
+@@ -732,28 +689,17 @@ void toggle_debug_mode() {
+         g_simulator->toggleDebugMode();
+     } else {
+         PixelTheater::Log::error("toggle_debug_mode called before simulator initialized.");
+-        // Toggle global flag anyway? Or require init?
+-        // g_debug_mode = !g_debug_mode; 
+     }
+ }
+ 
+ EMSCRIPTEN_KEEPALIVE
+-const char* get_scene_name(int scene_index) {
+-    static std::string sceneNameStr = "Invalid Scene"; // Default/error value
+-    if (g_simulator) {
+-        // Get the scene pointer using the simulator's helper method
+-        PixelTheater::Scene* scene = g_simulator->getScene(scene_index); // CORRECT: Use simulator's getScene
+-        if (scene) {
+-             sceneNameStr = scene->name(); // Get name from the Scene object
+-             return sceneNameStr.c_str();
+-        } else {
+-            PixelTheater::Log::warning("get_scene_name: getScene(%d) returned null.", scene_index);
+-        }
+-    } else {
+-         PixelTheater::Log::error("get_scene_name called before simulator initialized.");
+-    }
+-    // Return default/error value if simulator not ready or scene not found
+-    return sceneNameStr.c_str(); 
++int get_led_count() {
++    return g_simulator ? g_simulator->getLEDCount() : 0;
++}
++
++EMSCRIPTEN_KEEPALIVE
++float get_fps() {
++    return g_simulator ? g_simulator->getFPS() : 0.0f;
+ }
+ 
+ EMSCRIPTEN_KEEPALIVE
+@@ -812,42 +758,39 @@ float get_mesh_opacity() {
+     return g_simulator ? g_simulator->getMeshOpacity() : 0.3f;
+ }
+ 
+-EMSCRIPTEN_KEEPALIVE
+-int get_led_count() {
+-    return g_simulator ? g_simulator->getLEDCount() : 0;
+-}
+-
+-EMSCRIPTEN_KEEPALIVE
+-float get_fps() {
+-    return g_simulator ? g_simulator->getFPS() : 0.0f;
+-}
+-
+ EMSCRIPTEN_KEEPALIVE
+ void log_message(const char* message) {
+-    // Simple passthrough for JS logging
+     PixelTheater::Log::info("[JS] %s", message);
+ }
+ 
+ // NEW C function to handle canvas resize events from JS
+ EMSCRIPTEN_KEEPALIVE
+ void resize_canvas(int width, int height) {
+-    if (g_simulator) {
+-        // Assuming WebSimulator has an onCanvasResize method
+-        // Need to verify WebSimulator has this method and its signature
+-        // g_simulator->onCanvasResize(width, height); 
+-        PixelTheater::Log::info("resize_canvas called: %d x %d (WebSimulator::onCanvasResize not yet implemented/called)", width, height);
++    if (g_simulator && g_simulator->theater) { 
++        if (auto* platform = g_simulator->theater->platform()) { 
++            auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform); // Use PixelTheater::WebPlatform
++            if (web_platform) {
++                web_platform->onCanvasResize(width, height); // Call the method
++                PixelTheater::Log::info("Called WebPlatform::onCanvasResize(%d, %d)", width, height);
++            } else {
++                PixelTheater::Log::error("resize_canvas: Platform is not a WebPlatform.");
++            }
++        } else {
++            PixelTheater::Log::error("resize_canvas: Theater has no platform.");
++        }
+     } else {
+-        PixelTheater::Log::error("resize_canvas called before simulator initialized.");
++        PixelTheater::Log::error("resize_canvas called before simulator/theater initialized.");
+     }
+ }
+ 
+ } // extern "C"
+ 
+-// Helper functions for Emscripten bindings
++// --- Embind Bindings (For complex types/classes exposed to JS) --- 
++
+ emscripten::val get_scene_parameters_wrapper() {
+     if (!g_simulator) return emscripten::val::array();
+     
+-    auto params = g_simulator->getSceneParameters(); // Calls the C++ method
++    auto params = g_simulator->getSceneParameters(); 
+     auto result = emscripten::val::array();
+     
+     for (size_t i = 0; i < params.size(); i++) {
+@@ -855,13 +798,12 @@ emscripten::val get_scene_parameters_wrapper() {
+         param.set("id", params[i].id);
+         param.set("label", params[i].label);
+         param.set("controlType", params[i].controlType);
+-        param.set("value", params[i].value); // Value is already stringified
++        param.set("value", params[i].value); 
+         param.set("type", params[i].type);  
+         param.set("min", params[i].min);
+         param.set("max", params[i].max);
+         param.set("step", params[i].step);
+         
+-        // Convert options vector to JS array if present
+         if (!params[i].options.empty()) {
+              auto options = emscripten::val::array();
+              for (size_t j = 0; j < params[i].options.size(); j++) {
+@@ -869,7 +811,7 @@ emscripten::val get_scene_parameters_wrapper() {
+              }
+              param.set("options", options);
+         } else {
+-            param.set("options", emscripten::val::null()); // Use null if no options
++            param.set("options", emscripten::val::null()); 
+         }
+         
+         result.set(i, param);
+@@ -880,25 +822,14 @@ emscripten::val get_scene_parameters_wrapper() {
+ 
+ void update_scene_parameter_wrapper(std::string param_id, std::string value) {
+     if (!g_simulator) return;
+-    g_simulator->updateSceneParameter(param_id, value); // Calls the C++ method
++    g_simulator->updateSceneParameter(param_id, value); 
+ }
+ 
+ EMSCRIPTEN_BINDINGS(scene_parameters) {
+     using namespace emscripten;
+     
+-    // Bind the wrapper functions for parameter handling
+     function("getSceneParameters", &get_scene_parameters_wrapper);
+     function("updateSceneParameter", &update_scene_parameter_wrapper);
+ }
+ 
+-// NOTE: Other simple C functions are exported via EXPORTED_FUNCTIONS in the Makefile/
+-// build script, not necessarily requiring explicit EMSCRIPTEN_BINDINGS here unless
+-// complex types (like std::string return for get_scene_name) need special handling.
+-
+-// Binding get_scene_name (returns const char*) doesn't strictly need EMSCRIPTEN_BINDINGS
+-// if it's listed in EXPORTED_FUNCTIONS, but doesn't hurt.
+-// EMSCRIPTEN_BINDINGS(scene_names) {
+-//     emscripten::function("get_scene_name", &get_scene_name);
+-// }
+-
+ #endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 
+\ No newline at end of file

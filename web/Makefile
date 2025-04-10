@@ -45,7 +45,7 @@ EMCC_FLAGS = -std=c++17 \
              -s FULL_ES3=1 \
              -s ALLOW_MEMORY_GROWTH=1 \
              -s EXPORTED_RUNTIME_METHODS='["UTF8ToString"]' \
-             -s EXPORTED_FUNCTIONS='["_main", "_change_scene", "_get_scene_count", "_get_scene_name", "_set_brightness"]'
+             -s EXPORTED_FUNCTIONS='["_main", "_change_scene", "_get_num_scenes", "_get_scene_name", "_set_brightness"]'
 
 # Output files
 OUTPUT = $(WEB_DIR)/simulator.js

@@ -22,11 +22,12 @@ public:
 
     // setup() remains override, base is virtual
     void setup() override {
-        // Metadata setting remains the same using base class methods
-        this->set_name("Test Scene");
-        this->set_description("A simple test scene that cycles through colors");
-        this->set_version("1.0");
-        this->set_author("PixelTheater Team");
+        std::stringstream ss;
+        ss << "\n>>> TestScene::setup() ENTERED <<<"; // Log entry
+        set_name("Test Scene"); 
+        set_description("Simple HSV color cycling test");
+        set_version("1.0");
+        set_author("PixelTheater Dev");
 
         // Parameter definition remains the same using base class protected methods
         this->param("speed", "ratio", 0.5f, "clamp");
@@ -35,10 +36,11 @@ public:
         this->param("brightness", "ratio", 1.0f, "clamp");
 
         // Example log using base class helper
-        std::stringstream ss;
-        ss << "TestScene setup complete. Model has " 
-           << model().faceCount() << " faces."; // Use model() from base class, faceCount() is correct
-        logInfo(ss.str().c_str()); // Use base class logging
+
+        ss << "\nTestScene setup complete check. Model has " // Modified log msg
+           << model().faceCount() << " faces."; 
+        logInfo(ss.str().c_str()); 
+        PixelTheater::Log::info(">>> TestScene::setup() EXITED <<<"); // Log explicit exit
     }
 
     // tick() remains override, base is virtual

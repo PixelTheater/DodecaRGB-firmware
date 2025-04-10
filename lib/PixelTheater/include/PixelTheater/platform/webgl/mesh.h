@@ -7,11 +7,10 @@
 #include "PixelTheater/platform/webgl/web_model.h"
 #include <cstdint>
 
-namespace PixelTheater {
-namespace WebGL {
-
 // Type for coordinate provider function
 using CoordinateProviderFunc = std::function<void(uint16_t, float&, float&, float&)>;
+
+namespace PixelTheater {
 
 class MeshGenerator {
 public:
@@ -49,9 +48,9 @@ private:
     std::vector<uint16_t> _indices;       // Triangle indices
     std::vector<float> _edge_vertices;    // Edge vertex positions and normals
     std::vector<uint16_t> _edge_indices;  // Edge indices
+    std::vector<float> mesh_normals;
 };
 
-} // namespace WebGL
 } // namespace PixelTheater
 
 #endif // defined(PLATFORM_WEB) || defined(EMSCRIPTEN) 

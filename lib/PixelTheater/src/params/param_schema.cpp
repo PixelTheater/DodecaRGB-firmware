@@ -105,4 +105,43 @@ std::string ParamSchema::to_json(const SceneParameterSchema& schema) {
 // Instead, we'll provide explicit instantiations for common model types
 // in a separate file or in the main application code.
 
+// --- Implementations for ParameterSchema --- 
+
+ParameterSchema ParameterSchema::from_param_def(const ParamDef& def) {
+    ParameterSchema schema;
+    schema.name = def.name;
+    schema.type = ParamHandlers::TypeHandler::get_name(def.type);
+    schema.description = def.description;
+    schema.min_value = def.min_value;
+    schema.max_value = def.max_value;
+    schema.default_float = def.default_float;
+    schema.default_int = def.default_int;
+    schema.default_bool = def.default_bool;
+    schema.options = def.options;
+    schema.flags = ParamHandlers::FlagHandler::to_string(def.flags);
+    return schema;
+}
+
+// --- Implementation for ParamSchema namespace functions --- 
+
+SceneParameterSchema ParamSchema::generate_schema(const Scene& scene) {
+    SceneParameterSchema schema;
+    schema.scene_name = scene.name();
+    schema.scene_description = scene.description();
+
+    auto param_names = scene.get_parameter_names();
+    schema.parameters.reserve(param_names.size());
+
+    for (const auto& name : param_names) {
+        const ParamDef& def = scene.get_parameter_metadata(name);
+        if (def.name.empty()) {
+            scene.logError("Error generating schema: Could not find metadata for parameter '%s'", name.c_str());
+        } else {
+            schema.parameters.push_back(ParameterSchema::from_param_def(def));
+        }
+    }
+    
+    return schema;
+}
+
 } // namespace PixelTheater 

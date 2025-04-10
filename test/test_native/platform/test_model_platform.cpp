@@ -13,7 +13,7 @@ TEST_SUITE("Model Platform Integration") {
         BasicPentagonModel def;
         
         platform.clear();  // Start with known state
-        Model<BasicPentagonModel> model(def, platform.getLEDs());
+        Model<BasicPentagonModel> model(platform.getLEDs());
         
         SUBCASE("Platform Requirements") {
             // Verify platform provides required LED array
@@ -27,5 +27,13 @@ TEST_SUITE("Model Platform Integration") {
             auto* model_leds = &model.leds[0];
             CHECK(platform_leds == model_leds);
         }
+    }
+
+    TEST_CASE("platform LEDs are correctly initialized") {
+        BasicPentagonModel def;
+        NativePlatform platform(def.LED_COUNT);
+        Model<BasicPentagonModel> model(platform.getLEDs());
+
+        CHECK(platform.getNumLEDs() == def.LED_COUNT);
     }
 } 

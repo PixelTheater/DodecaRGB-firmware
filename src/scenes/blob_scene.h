@@ -8,8 +8,8 @@
 #include <algorithm> // For std::max, std::min, std::clamp
 #include <string> // For status method (if restored)
 
-using namespace PixelTheater; // Recommended
-using namespace PixelTheater::Constants; // Recommended for constants
+// using namespace PixelTheater; // Avoid top-level using
+// using namespace PixelTheater::Constants; // Avoid top-level using
 
 namespace Scenes {
 
@@ -53,12 +53,12 @@ class BlobScene : public PixelTheater::Scene {
 public:
     BlobScene() = default; 
     
-    static constexpr int DEFAULT_NUM_BLOBS = 8;
-    static constexpr int DEFAULT_MIN_RADIUS = 80;
-    static constexpr int DEFAULT_MAX_RADIUS = 130;
+    static constexpr int DEFAULT_NUM_BLOBS = 15;
+    static constexpr int DEFAULT_MIN_RADIUS = 70;
+    static constexpr int DEFAULT_MAX_RADIUS = 120;
     static constexpr int DEFAULT_MAX_AGE = 4000;
-    static constexpr float DEFAULT_SPEED = 1.0;
-    static constexpr uint8_t DEFAULT_FADE = 2;
+    static constexpr float DEFAULT_SPEED = 0.2;
+    static constexpr uint8_t DEFAULT_FADE = 10;
     
     void setup() override;
     void initBlobs();
@@ -107,7 +107,7 @@ void Blob::reset() {
     age = 0;
     lifespan = scene.random(max_age/2, max_age); // Use two-arg random
     radius = scene.random(min_radius, max_radius);
-    max_accel = scene.randomFloat(0.005f, 0.027f) * speed_scale;  
+    max_accel = scene.randomFloat(0.005f, 0.010f) * speed_scale * 5;
     av = scene.randomFloat(-max_accel, max_accel);
     cv = scene.randomFloat(-max_accel, max_accel);
     using PixelTheater::Constants::PT_PI;
@@ -168,7 +168,7 @@ void Blob::tick() {
 
 // BlobScene Implementation
 void BlobScene::setup() {
-    set_name("Blob Scene");
+    set_name("Blobs");
     set_description("Colorful blobs moving on the surface");
     set_version("1.1");
     set_author("PixelTheater Team");

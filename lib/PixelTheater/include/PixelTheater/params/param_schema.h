@@ -5,11 +5,12 @@
 #include <algorithm>
 #include "param_def.h"
 #include "param_value.h"
+// #include "PixelTheater/scene.h" // REMOVED Include full definition
 
 namespace PixelTheater {
 
 // Forward declarations
-class Scene; // Use forward declaration of non-templated Scene
+class Scene; // ADDED back forward declaration
 // template<typename ModelDef> class Scene;  // Only declare the template version
 
 /**
@@ -36,20 +37,7 @@ struct ParameterSchema {
     std::string flags;
     
     // Create from ParamDef
-    static ParameterSchema from_param_def(const ParamDef& def) {
-        ParameterSchema schema;
-        schema.name = def.name;
-        schema.type = ParamHandlers::TypeHandler::get_name(def.type);
-        schema.description = def.description;
-        schema.min_value = def.min_value;
-        schema.max_value = def.max_value;
-        schema.default_float = def.default_float;
-        schema.default_int = def.default_int;
-        schema.default_bool = def.default_bool;
-        schema.options = def.options;
-        schema.flags = ParamHandlers::FlagHandler::to_string(def.flags);
-        return schema;
-    }
+    static ParameterSchema from_param_def(const ParamDef& def);
     
     // Convert to JSON string
     std::string to_json() const;
@@ -72,12 +60,8 @@ struct SceneParameterSchema {
  */
 namespace ParamSchema {
     // Function to generate the schema from a Scene instance
-    inline SceneParameterSchema generate_schema(const Scene& scene) {
-        SceneParameterSchema schema;
-        // TODO: This implementation needs review/update based on final Scene capabilities
-        // For now, return an empty schema to allow compilation
-        return schema;
-    }
+    // DECLARATION ONLY
+    SceneParameterSchema generate_schema(const Scene& scene);
     
     // Convert schema to JSON
     std::string to_json(const SceneParameterSchema& schema);

@@ -47,9 +47,9 @@ struct ParamSceneFixture {
 
     ParamSceneFixture() {
         platform = std::make_unique<NativePlatform>(BasicPentagonModel::LED_COUNT);
-        BasicPentagonModel model_def_instance;
+        // 3. Create concrete Model
         auto concrete_model = std::make_unique<Model<BasicPentagonModel>>(
-            model_def_instance, platform->getLEDs()
+            platform->getLEDs()
         );
         leds_wrapper = std::make_unique<LedBufferWrapper>(platform->getLEDs(), platform->getNumLEDs());
         model_wrapper = std::make_unique<ModelWrapper<BasicPentagonModel>>(std::move(concrete_model));
