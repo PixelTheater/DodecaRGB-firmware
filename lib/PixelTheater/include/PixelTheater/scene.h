@@ -316,48 +316,58 @@ namespace PixelTheater {
         // Non-const versions
         void logInfo(const char* format, ...) {
             if (!platform_ptr) return;
+            char buffer[256]; // Static buffer, adjust size if needed
             va_list args;
             va_start(args, format);
-            // Assuming platform log methods now handle va_list or we need a vsprintf helper
-            // For simplicity, let's assume platform->logInfo can handle it (may need adjustment)
-            platform_ptr->logInfo(format, args); // NEEDS PLATFORM SUPPORT FOR THIS SIGNATURE
+            vsnprintf(buffer, sizeof(buffer), format, args);
             va_end(args);
+            platform_ptr->logInfo(buffer); // Pass the formatted buffer
         }
         void logWarning(const char* format, ...) {
             if (!platform_ptr) return;
+            char buffer[256];
             va_list args;
             va_start(args, format);
-            platform_ptr->logWarning(format, args); // NEEDS PLATFORM SUPPORT FOR THIS SIGNATURE
+            vsnprintf(buffer, sizeof(buffer), format, args);
             va_end(args);
+            platform_ptr->logWarning(buffer); // Pass the formatted buffer
         }
         void logError(const char* format, ...) {
             if (!platform_ptr) return;
+            char buffer[256];
             va_list args;
             va_start(args, format);
-            platform_ptr->logError(format, args); // NEEDS PLATFORM SUPPORT FOR THIS SIGNATURE
+            vsnprintf(buffer, sizeof(buffer), format, args);
             va_end(args);
+            platform_ptr->logError(buffer); // Pass the formatted buffer
         }
         // Const versions
         void logInfo(const char* format, ...) const {
             if (!platform_ptr) return;
+            char buffer[256];
             va_list args;
             va_start(args, format);
-            platform_ptr->logInfo(format, args); // NEEDS PLATFORM SUPPORT FOR THIS SIGNATURE
+            vsnprintf(buffer, sizeof(buffer), format, args);
             va_end(args);
+            platform_ptr->logInfo(buffer);
         }
         void logWarning(const char* format, ...) const {
             if (!platform_ptr) return;
+            char buffer[256];
             va_list args;
             va_start(args, format);
-            platform_ptr->logWarning(format, args); // NEEDS PLATFORM SUPPORT FOR THIS SIGNATURE
+            vsnprintf(buffer, sizeof(buffer), format, args);
             va_end(args);
+            platform_ptr->logWarning(buffer); 
         }
         void logError(const char* format, ...) const {
             if (!platform_ptr) return;
+            char buffer[256];
             va_list args;
             va_start(args, format);
-            platform_ptr->logError(format, args); // NEEDS PLATFORM SUPPORT FOR THIS SIGNATURE
+            vsnprintf(buffer, sizeof(buffer), format, args);
             va_end(args);
+            platform_ptr->logError(buffer);
         }
         
         // --- End Scene Helper Methods --- 

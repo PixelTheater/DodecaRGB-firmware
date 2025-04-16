@@ -7,9 +7,6 @@
 
 // PixelTheater includes
 #include "PixelTheater.h" // Use the consolidated header
-// #include "PixelTheater/platform/fastled_platform.h"
-// #include "PixelTheater/model/model.h"
-// #include "PixelTheater/stage.h"
 
 // Include the model definition (for use in useFastLEDPlatform template)
 #ifndef DODECARGBV2_MODEL_INCLUDED
@@ -19,9 +16,10 @@
 
 // Include Scene implementations 
 // #include "scenes/blob_scene.h" // Temporarily disabled until refactored <-- REMOVE COMMENT
-#include "scenes/blob_scene.h" // Refactored
+#include "scenes/blobs/blob_scene.h" // Refactored
 #include "scenes/xyz_scanner/xyz_scanner_scene.h" // Refactored
 #include "scenes/wandering_particles/wandering_particles_scene.h" // Refactored
+#include "scenes/boids/boids_scene.h" // Refactored
 #include "benchmark.h" 
 
 #ifndef PROJECT_VERSION
@@ -52,16 +50,8 @@
 #define NUM_SIDES 12
 #define LEDS_PER_SIDE 104
 
-#define NUM_SCENES 1  // We'll increase this as we add more scenes
-
 ::CRGB leds[NUM_LEDS];
 
-// PixelTheater components
-// using DodecaModel = PixelTheater::Models::DodecaRGBv2; // No longer needed
-// std::unique_ptr<PixelTheater::FastLEDPlatform> platform; // Managed by Theater
-// std::unique_ptr<PixelTheater::Model<DodecaModel>> model; // Managed by Theater
-// std::unique_ptr<PixelTheater::Stage<DodecaModel>> stage; // Replaced by Theater
-// Scenes::BlobScene<DodecaModel>* blob_scene = nullptr; // Managed by Theater
 PixelTheater::Theater theater; // Global Theater instance
 
 long random_seed = 0;
@@ -179,21 +169,12 @@ void setup() {
     NUM_LEDS
   );
   
-  // --- Remove old manual setup ---
-  // platform = std::make_unique<PixelTheater::FastLEDPlatform>(...);
-  // model = std::make_unique<PixelTheater::Model<DodecaModel>>(...);
-  // stage = std::make_unique<PixelTheater::Stage<DodecaModel>>(...);
-  
   // Add scenes 
   theater.addScene<Scenes::BlobScene>(); 
   theater.addScene<Scenes::XYZScannerScene>(); 
   theater.addScene<Scenes::WanderingParticlesScene>(); // Add Wandering Particles
+  theater.addScene<Scenes::BoidsScene>(); // Add Boids Scene
   
-  // --- Remove old scene setup --- 
-  // blob_scene = stage->addScene<Scenes::BlobScene<DodecaModel>>(*stage);
-  // blob_scene->setup();
-  // stage->setScene(blob_scene);
-
   // Start the theater 
   theater.start();
 
@@ -243,6 +224,7 @@ void loop() {
     Serial.println("Button released");
     mode = (mode + 1); // Simple counter for now
     Serial.printf("Button pressed, advancing scene...\n");
+    BENCHMARK_RESET();
     theater.nextScene(); // Use Theater to switch scene
   }
 

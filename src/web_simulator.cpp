@@ -27,9 +27,10 @@
 #include "PixelTheater/scene.h" // Correct path for Scene base class pointer
 #include "benchmark.h"
 #include "scenes/test_scene.h"
-#include "scenes/blob_scene.h"
+#include "scenes/blobs/blob_scene.h"
 #include "scenes/wandering_particles/wandering_particles_scene.h"
 #include "scenes/xyz_scanner/xyz_scanner_scene.h"
+#include "scenes/boids/boids_scene.h"
 #include <emscripten/bind.h>
 
 // Include the model definition - we'll use an include guard to prevent multiple definitions
@@ -149,7 +150,7 @@ public:
             theater->addScene<Scenes::BlobScene>();
             theater->addScene<Scenes::WanderingParticlesScene>();
             theater->addScene<Scenes::XYZScannerScene>();
-            
+            theater->addScene<Scenes::BoidsScene>();
             if (theater->sceneCount() == 0) { // CORRECT: Use sceneCount()
                 PixelTheater::Log::error("No scenes were added to the theater!");
                 return false;
