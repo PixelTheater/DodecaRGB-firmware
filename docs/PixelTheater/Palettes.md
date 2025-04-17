@@ -4,120 +4,154 @@ generated: 2025-02-10 00:32
 version: 2.8.2
 ---
 
-# Palette System
+# PixelTheater Palette API
 
 ## Overview
 
-The palette system provides a way to define, store and use color palettes for LED animations. It uses the WLED palette format which is compatible with FastLED's gradient palettes.
+The PixelTheater library provides a platform-transparent API for using 16-entry color palettes within animation scenes. Scenes interact solely with types and functions within the `PixelTheater` namespace, allowing the same code to run on Teensy (using FastLED internally) and native/web platforms (using C++ fallbacks).
 
-## Lifecycle
+## Core Types
 
-1. Palettes are defined as JSON files in the `palettes` directory (by scene, or globally)
-2. Scenes define parameters that can reference palettes
-3. During build:
-    - Python script validates JSON files (format, indices, etc)
-    - Generates separate const structs for each palette
-    - Generates simple name lookup function
-4. When the firmware is built, the palettes are compiled into the image
-5. At runtime:
-    - Scene config() validates palette names exist
-    - settings() returns palette data ready for FastLED use
+### `PixelTheater::CRGBPalette16`
 
-## Palette Format
-
-Palettes are stored in JSON files with a .pal.json extension:
-
-```json
-{
-  "name": "Ocean Breeze",
-  "description": "Cool blues and cyan tones",
-  "palette": [
-    0,   0,   0,   128,   // Dark blue at 0%
-    64,  0,   255, 255,   // Cyan at 25% 
-    128, 255, 255, 255,   // White at 50%
-    192, 0,   255, 255,   // Cyan at 75%
-    255, 0,   0,   128    // Dark blue at 100%
-  ]
-}
-```
-
-The palette file format `*.pal.json` is compatible with [WLED Custom Palettes](https://kno.wled.ge/features/palettes/#custom-palettes).
-
-Each entry in the palette array is 4 numbers:
-
-- Position (0-255, maps to 0-100%)
-- Red (0-255)
-- Green (0-255)
-- Blue (0-255)
-
-## Usage in Scenes
+A 16-entry color palette.
 
 ```cpp
-void config() override {
-    // Reference palette by name - only validates existence
-    param("palette", Palette, "ocean");
-}
+#include <array>
+#include "PixelTheater/core/crgb.h" // Provides PixelTheater::CRGB
 
-void tick() override {
-    // Get palette data and create FastLED palette
-    CRGBPalette16 fastled_pal(pal_data);
-
-    // Use FastLED palette directly
-    CRGB color = ColorFromPalette(fastled_pal, position * 255);
-}
-```
-
-## Built-in Palettes
-
-The system includes the [FastLED Predefined Palettes](https://fastled.io/docs/group___predefined_palettes.html): `CloudColors_p, LavaColors_p, OceanColors_p, ForestColors_p, RainbowColors_p, RainbowStripeColors_p, PartyColors_p, HeatColors_p`.
-
-## Creating Custom Palettes
-
-Custom palettes can be:
-
-1. Added to the global props.yaml:
-
-```yaml
-props:
-  palettes:
-    custom_pal:
-      file: palettes/custom.pal.json
-```
-
-2. Added to a scene's props:
-
-```yaml
-props:
-  scene_pal:
-    file: props/scene.pal.json
-```
-
-Palettes can also be imported from WLED's [PaletteKnife tool](http://fastled.io/tools/paletteknife/), which use a simple json format.
-
-TODO (idea): support CSS3 gradient palettes.
-
-## Palettes and the Build System
-
-The build system will:
-
-1. Load .pal.json files
-2. Convert to FastLED gradient format
-3. Generate C++ palette data
-4. Make palettes available to scenes
-
-```cpp
-// Generated palette_data.h (C++) from pallete file (json)
 namespace PixelTheater {
-    // Each palette is a separate const struct
-    constexpr struct {
-        const uint8_t data[12] = {
-            0,   255, 0,   0,    // red
-            128, 0,   255, 0,    // green
-            255, 0,   0,   255   // blue
-        };
-    } PALETTE_RAINBOW;
-
-    // Simple lookup returns pointer to palette data
-    const uint8_t* get_palette(const char* name);
-} 
+    using CRGBPalette16 = std::array<PixelTheater::CRGB, 16>;
+}
 ```
+
+### `PixelTheater::TBlendType`
+
+Enum defining how colors are retrieved from the palette between the 16 defined entries.
+
+```cpp
+namespace PixelTheater {
+    enum TBlendType {
+        LINEARBLEND = 0, ///< Linear interpolation between palette entries. High quality, slower.
+        NOBLEND = 1      ///< No interpolation between palette entries. Low quality, faster.
+    };
+}
+```
+
+## Available Palettes (`PixelTheater::Palettes`)
+
+The `PixelTheater::Palettes` namespace provides predefined `constexpr PixelTheater::CRGBPalette16` constants. These include standard FastLED palettes and custom ones. Include `<PixelTheater/palettes.h>` to use them.
+
+```cpp
+#include "PixelTheater/palettes.h"
+
+// Example Access:
+const PixelTheater::CRGBPalette16& myPalette = PixelTheater::Palettes::RainbowColors;
+const PixelTheater::CRGBPalette16& customPalette = PixelTheater::Palettes::basePalette;
+```
+
+**Standard Palettes (Equivalent to FastLED `*_p`):**
+
+*   `CloudColors`
+*   `LavaColors`
+*   `OceanColors`
+*   `ForestColors`
+*   `RainbowColors`
+*   `RainbowStripeColors`
+*   `PartyColors`
+*   `HeatColors`
+
+**Custom Palettes:**
+
+*   `basePalette`
+*   `highlightPalette`
+*   `uniquePalette`
+*   *(Others can be added)*
+
+## Core Function (`PixelTheater::colorFromPalette`)
+
+Retrieves a color from a `CRGBPalette16`, handling interpolation and brightness scaling.
+
+```cpp
+#include "PixelTheater/color_api.h" // Include this header
+#include "PixelTheater/palettes.h"  // For palette constants and type
+
+namespace PixelTheater {
+
+/**
+ * @brief Get a color from a 16-entry palette.
+ *
+ * Handles interpolation between entries based on blend type.
+ * Note: Native/Web implementation currently only supports CRGBPalette16,
+ * gradient palette support is Teensy-only via FastLED for now.
+ *
+ * @param pal The 16-entry palette (CRGBPalette16).
+ * @param index The 8-bit index (0-255) into the virtual 256-entry palette.
+ * @param brightness Optional brightness scale (0-255). Defaults to 255.
+ * @param blendType How to blend between the 16 entries (LINEARBLEND or NOBLEND). Defaults to LINEARBLEND.
+ * @return PixelTheater::CRGB The calculated color.
+ */
+CRGB colorFromPalette(const CRGBPalette16& pal,
+                       uint8_t index,
+                       uint8_t brightness = 255,
+                       TBlendType blendType = LINEARBLEND);
+
+} // namespace PixelTheater
+```
+
+*   `index`: Maps the full 0-255 range onto the 16 palette entries. If `blendType` is `LINEARBLEND`, it interpolates between entries `index / 16` and `(index / 16) + 1`.
+*   `brightness`: Scales the final color.
+*   `blendType`: Determines if interpolation occurs (`LINEARBLEND`) or if the color snaps to the nearest lower entry (`NOBLEND`).
+
+## Usage Example
+
+```cpp
+#include "PixelTheater.h" // Includes necessary color/palette headers
+#include "scenes/my_scene.h" // Your scene header
+
+// Bring namespaces into scope (optional)
+using namespace PixelTheater;
+// using namespace PixelTheater::Palettes; // Can use this too
+
+void Scenes::MyScene::tick() {
+    Scene::tick(); // Base class tick
+
+    uint8_t brightness = 180;
+    uint8_t index = tickCount(); // Simple animation index (0-255 wraps)
+
+    // Get color from the standard 'Party' palette
+    CRGB color1 = PixelTheater::colorFromPalette(
+        PixelTheater::Palettes::PartyColors, // Use predefined constant
+        index,
+        brightness,
+        PixelTheater::LINEARBLEND // Use linear blending
+    );
+
+    // Get color from a custom palette without blending
+    CRGB color2 = PixelTheater::colorFromPalette(
+        PixelTheater::Palettes::basePalette,
+        index + 64, // Offset index
+        255,        // Full brightness
+        PixelTheater::NOBLEND // Snap to nearest entry
+    );
+
+    // Use the colors
+    if (ledCount() > 1) {
+      leds[0] = color1;
+      leds[1] = color2;
+    }
+
+    // Fade the rest
+    for(size_t i = 2; i < ledCount(); ++i) {
+        leds[i].fadeToBlackBy(10);
+    }
+}
+```
+
+## Defining Custom Palettes (Advanced)
+
+While scenes *use* palettes via the API above, palettes are *defined* externally.
+
+*   **Format:** Palettes can be defined in JSON files (`*.pal.json`) using a format compatible with [WLED Custom Palettes](https://kno.wled.ge/features/palettes/#custom-palettes). See `util/palettes/` for examples.
+*   **Generation:** A Python script (`util/generate_props.py`) processes these JSON files and generates C++ definitions (currently placed in `lib/PixelTheater/src/palettes.cpp` for built-in ones, or potentially elsewhere for user-added ones).
+*   **Gradient Palettes:** The JSON format defines *gradient* palettes. While these definitions are used to generate the `CRGBPalette16` constants (by sampling the gradient), the `PixelTheater::colorFromPalette` function **does not currently support runtime lookup directly from the raw gradient data** on native/web platforms. Only the pre-sampled 16-entry `CRGBPalette16` constants work universally. Full gradient support relies on FastLED (Teensy only).

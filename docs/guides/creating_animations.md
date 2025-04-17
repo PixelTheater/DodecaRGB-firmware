@@ -4,192 +4,235 @@ generated: 2025-02-13 18:48
 version: 2.8.3
 ---
 
-# Creating Animations
+# Creating Animations Guide
 
-This short guide was made to help you create your own animations for the DodecaRGB. It assumes you are already a bit familiar with the [PixelTheater](PixelTheater/README.md) animation system and the [development environment](development.md).
+This guide covers techniques and best practices for creating animation Scenes using the PixelTheater library. It assumes familiarity with the basic [Scene structure](PixelTheater/SceneAuthorGuide.md) and the [development environment](development.md).
 
-## Getting Started
+*   **Platform Independent:** Code written following this guide, using only the `PixelTheater` namespace API, will run correctly on Teensy, native, and web simulator platforms.
 
-Once you have understood the basics of creating a scene, you might be looking to see what else you can do with the animation system. This guide will cover some of the more advanced features and techniques.
+## LED Management
 
-## Color Palettes
+Scenes access and modify LEDs through the `leds` proxy object, which behaves like an array.
 
-Three default palettes are available:
+*   **Access:** Use `leds[index]` to get/set the `PixelTheater::CRGB` value of an LED. Access is bounds-checked.
+*   **Count:** Use `ledCount()` to get the total number of LEDs.
+*   **Updates:** The framework handles calling the underlying platform's `show()` method after your `tick()` finishes.
 
-- `basePalette`: Rich, saturated colors
-- `highlightPalette`: Bright, light colors
-- `uniquePalette`: Distinct, high-contrast colors
+### Color Modification
 
-Helper functions for color management:
+Use `PixelTheater::CRGB` methods or `PixelTheater` utility functions:
 
 ```cpp
-String colorName = getClosestColorName(CRGB(255, 0, 0));  // Returns "Red"
-String ansiColor = getAnsiColorString(CRGB::Red);         // Terminal color
-float brightness = get_perceived_brightness(color);
+#include "PixelTheater.h"
+using namespace PixelTheater; // Optional, for brevity
+
+void MyScene::tick() {
+    Scene::tick();
+
+    // Get total LED count
+    size_t numLeds = ledCount();
+
+    // Direct assignment
+    leds[0] = CRGB::Red;
+    leds[1] = CHSV(160, 200, 150); // Assign HSV
+
+    // Fade an LED towards black
+    if (numLeds > 2) {
+        leds[2].fadeToBlackBy(32);
+    }
+
+    // Scale brightness of an LED
+    if (numLeds > 3) {
+        leds[3].nscale8(128); // Scale to 50% brightness
+    }
+
+    // Blend between two colors
+    if (numLeds > 4) {
+        CRGB targetColor = CRGB::Blue;
+        // Blend LED 4 25% towards blue
+        leds[4] = PixelTheater::blend(leds[4], targetColor, 64);
+    }
+
+    // Fill a range (e.g., first 10 LEDs)
+    // Note: LedsProxy doesn't support std::fill directly
+    CRGB fillColor = CRGB::Green;
+    for (size_t i = 5; i < 15 && i < numLeds; ++i) {
+        leds[i] = fillColor;
+    }
+    // Or use the template function if available for the range type
+    // PixelTheater::fill_solid(some_led_range, fillColor);
+}
 ```
 
-### Playback Modes
+## Using Color Palettes
 
-- `HOLD`: Stays on current animation until manually changed (default)
-- `ADVANCE`: Automatically advances through playlist in order
-- `RANDOM`: Randomly selects next animation from playlist
-
-## Best Practices
-
-### LED Management
-
-- Access LEDs directly through `leds[]` array
-- Framework handles `FastLED.show()` calls
-- Use `fadeToBlackBy()` or `nscale8()` to manage brightness
-- `nblend()` for safe color mixing
-
-### Animation Flow
-
-- Track time with counters or `millis()`
-- Make speed adjustable via parameters
-- No `delay()` calls in `tick()`
-- Pre-calculate values in `init()`
-
-### Hardware Model Constants
-
-- `numLeds()`: Total LEDs
-- `leds_per_side`: LEDs per face
-- `num_sides`: Number of faces (12)
-
-## Animation Strategies
-
-### Time and Motion
-
-TODO
-
-### Palette-Based Colors
-
-TODO
-
-### Random Effects
-
-The animation framework automatically seeds both the system random number generator and FastLED's random functions during setup() using hardware entropy from the microcontroller, so you don't need to call random.seed() or random16_set_seed() in your animations.
+Use predefined palettes or sample colors from them using `PixelTheater::colorFromPalette`.
 
 ```cpp
-void sparkleEffect() {
-    // Add random sparkles to each face
-    for(int face = 0; face < num_sides; face++) {
-        if(random8() < 40) {  // 40/255 chance per face
-            int led = (face * leds_per_side) + random8(leds_per_side);
-            leds[led] = CRGB::White;
-        }
+#include "PixelTheater.h"
+using namespace PixelTheater;
+
+void MyScene::tick() {
+    Scene::tick();
+    uint8_t index = tickCount(); // 0-255 animation index
+    size_t numLeds = ledCount();
+
+    // Get the Rainbow palette constant
+    const CRGBPalette16& rainbow = Palettes::RainbowColors;
+
+    // Fill LEDs using the palette
+    for (size_t i = 0; i < numLeds; ++i) {
+        // Calculate index for this LED
+        uint8_t ledIndex = index + (i * 10); // Offset index per LED
+
+        // Get color from palette with brightness 200, linear blending
+        leds[i] = colorFromPalette(rainbow, ledIndex, 200, LINEARBLEND);
     }
-    // Fade all LEDs each frame
-    fadeToBlackBy(leds, numLeds(), 64);
+}
+```
+
+*   Include `PixelTheater/palettes.h` (usually via `PixelTheater.h`).
+*   Access palettes via `PixelTheater::Palettes::PaletteName`.
+*   Use `PixelTheater::colorFromPalette` to sample the palette.
+*   Refer to the [Palette API docs](PixelTheater/Palettes.md) for available palettes and function details.
+
+## Random Effects
+
+The framework seeds random number generators (`random8`, `random16`, `randomFloat`, etc.) available directly within the Scene class.
+
+```cpp
+#include "PixelTheater.h"
+using namespace PixelTheater;
+
+void MyScene::tick() {
+    Scene::tick();
+    size_t numLeds = ledCount();
+
+    // --- Sparkle Example ---
+    // Add random white sparkles
+    uint8_t sparkleChance = 20; // Lower is less frequent
+    if (random8() < sparkleChance) {
+        size_t randomLed = random16(numLeds); // Pick random LED index
+        leds[randomLed] = CRGB::White;
+    }
+
+    // Fade all LEDs slowly
+    for (size_t i = 0; i < numLeds; ++i) {
+        leds[i].fadeToBlackBy(10); // Use CRGB method
+    }
 }
 ```
 
 ## Coordinate Systems
 
-The DodecaRGB provides several ways to address LEDs spatially:
+Access LED positions and model geometry via the `model()` helper.
 
-### Linear Addressing
+### Linear Addressing (Index-Based)
 
-The LEDs of each PCB are laid out roughly in a spiral pattern, starting in the center and radiating outwards. Each side connects to the next, so all 12 sides are connected to each other in a single array.
-
-Basic sequential access:
+Access LEDs sequentially using their index (0 to `ledCount()-1`).
 
 ```cpp
-for(int i = 0; i < numLeds(); i++) {
-    leds[i] = CHSV(i * 256/numLeds(), 255, 255);  // Hue varies smoothly across LEDs
+// Example: Simple rainbow across all LEDs
+for(size_t i = 0; i < ledCount(); i++) {
+    uint8_t hue = (i * 256) / ledCount();
+    leds[i] = CHSV(hue, 255, 255);
 }
 ```
 
-![DodecaRGB Linear Addressing](../images/pcb-leds.png)
-
 ### Face-Based Rendering
 
+Iterate through model faces and access LEDs belonging to each face.
+
 ```cpp
-void renderByFace() {
-    for(int face = 0; face < num_sides; face++) {
-        // Calculate LED range for this face
-        int start = face * leds_per_side;
-        int end = start + leds_per_side;
-        
-        // Example: alternate faces between two colors
-        CRGB faceColor = (face % 2 == 0) ? CRGB::Red : CRGB::Blue;
-        fill_solid(leds[start], leds_per_side, faceColor);
+#include "PixelTheater.h"
+using namespace PixelTheater;
+
+void MyScene::tick() {
+    Scene::tick();
+    const IModel& geom = model(); // Get model reference
+
+    for (size_t faceIdx = 0; faceIdx < geom.faceCount(); ++faceIdx) {
+        const Face& face = geom.face(faceIdx); // Get face data
+
+        // Example: Color face based on index
+        CRGB faceColor = (faceIdx % 2 == 0) ? CRGB::Aqua : CRGB::Magenta;
+
+        // Iterate through LEDs ON THIS FACE using its local indices
+        for (size_t localLedIdx = 0; localLedIdx < face.ledCount(); ++localLedIdx) {
+            size_t globalLedIndex = face.ledIndex(localLedIdx); // Get global index
+            leds[globalLedIndex] = faceColor;
+        }
     }
 }
+
 ```
 
 ### 3D Coordinates
 
-Each LED has a mapped position using the `points[]` array. All of the 3D positions of each LED of the DodecaRGB model have been pre-calculated and are available to animation code.
-
-Some examples showing use in a scene:
+Access pre-calculated Cartesian (`x, y, z`) coordinates for each LED via `model().point(index)`.
 
 ```cpp
-        // Access a specific LED point (e.g. LED #42)
-    LED_Point& led = points[42];
-    
-    // Access coordinates
-    float x = led.x;
-    float y = led.y;
-    float z = led.z;
-    
-    // Get which side it's on (0-11)
-    int side = led.side;
-    
-    // Get its label number within that side (they are labelled)
-    int label = led.label_num;
-    
-    // Access neighbors (stored as distance_map structs)
-    for (const auto& neighbor : led.neighbors_map) {
-        // Each neighbor has an LED number, distance, and direction vector
-        int neighbor_led = neighbor.led_number;
-        float distance = neighbor.distance;
-        Vector3d direction = neighbor.direction;
-        
-        // Can look up neighbor's coordinates
-        LED_Point& neighbor_point = points[neighbor_led];
-    }
-    
-    // Calculate distance to another point
-    float dist = led.distance_to(&points[100]);
-    
-    // Or distance to arbitrary XYZ coordinate
-    float dist2 = led.distance_to(1.0f, 0.0f, 0.0f);
-```
+#include "PixelTheater.h"
+using namespace PixelTheater;
 
-![DodecaRGB 3D Coordinates](../images/leds-3d-space.png)
+void MyScene::tick() {
+    Scene::tick();
+    const IModel& geom = model();
+    float time = millis() / 1000.0f; // Time in seconds
 
-### Spherical Coordinates
+    // Example: Sine wave brightness based on Z height
+    for (size_t i = 0; i < ledCount(); ++i) {
+        const Point& p = geom.point(i); // Get point data for LED i
 
-With the x,y,z coordinates in place we can use spherical coordidnates to animate objecgts in a spherical space. This is useful for orbital effects (as seen in Blob animation):
+        // Map z-coordinate (approx -1 to 1) to 0-255 range for sine input
+        uint8_t z_mapped = map(p.z(), -1.0f, 1.0f, 0.0f, 255.0f);
+        // Calculate sine wave offset by time
+        uint8_t sin_val = sin8(z_mapped + (uint8_t)(time * 50));
 
-```cpp
-// Convert angle and elevation to position
-float azimuth = counter * 0.01;          // Horizontal angle
-float elevation = PI/2;                  // Vertical angle (0=top, PI=bottom)
-float radius = sphere_radius;            // Distance from center
-
-// Convert to cartesian
-float x = radius * sin(elevation) * cos(azimuth);
-float y = radius * sin(elevation) * sin(azimuth);
-float z = radius * cos(elevation);
-
-// Light LEDs near this position
-for(int i = 0; i < numLeds(); i++) {
-    if(points[i].distance_to(x, y, z) < radius) {
-        leds[i] = CRGB::Blue;
+        leds[i] = CHSV(100, 200, sin_val); // Greenish color, brightness from sine
     }
 }
 ```
 
-It helps to imagine a sphere inscribed in the DodecaRGB, with the center of the sphere at the center of the DodecaRGB. The `points[]` array contains the 3D coordinates of each LED in this sphere.
+*   `Point` objects contain `x(), y(), z()` methods.
+*   They also provide neighbour information and distance calculations. See `imodel.h` and `point.h`.
 
-![DodecaRGB Sphere](../images/dodeca-sphere.png)
+### Spherical Coordinates
 
-See the `Blob` animation for an example of orbital movement using spherical coordinates, and `XYZScanner` for cartesian coordinate scanning effects.
+Calculate spherical coordinates (azimuth, elevation, radius) from Cartesian coordinates if needed for effects like orbits.
 
-## Scene Lifecycle
+```cpp
+#include "PixelTheater.h"
+#include <cmath> // For atan2, acos, sqrt
+using namespace PixelTheater;
+using namespace PixelTheater::Constants; // For PT_PI
 
-Each animation goes through the following initialization sequence:
+void MyScene::tick() {
+    // ... setup ...
+    const IModel& geom = model();
+    for (size_t i = 0; i < ledCount(); ++i) {
+        const Point& p = geom.point(i);
+        float x = p.x(), y = p.y(), z = p.z();
 
-... TODO
+        // Calculate spherical coords (example)
+        float radius = std::sqrt(x*x + y*y + z*z);
+        float azimuth = std::atan2(y, x); // Angle in XY plane (-PI to PI)
+        float elevation = std::acos(z / radius); // Angle from Z+ axis (0 to PI)
+
+        // Use spherical coords for animation...
+        // Example: Brightness based on angle from X+ axis
+        uint8_t brightness = map(azimuth, -PT_PI, PT_PI, 0.0f, 255.0f);
+        leds[i].setHue(0); // Red hue
+        leds[i].setSaturation(255);
+        leds[i].setValue(brightness); // Set brightness (value)
+    }
+}
+```
+
+## Animation Flow & Best Practices
+
+*   **Time:** Use `millis()` for absolute time or `deltaTime()` for time since the last frame. Access the frame count via `tickCount()`.
+*   **Avoid `delay()`:** Never use `delay()` inside `tick()`, as it blocks the animation loop.
+*   **Parameters:** Use parameters (`param()`, `settings[]`) for configurable values like speed, intensity, color choices.
+*   **State:** Store animation state in Scene member variables.
+*   **Performance:** Pre-calculate complex values in `setup()` or `reset()` if they don't change per frame. Be mindful of calculations within loops in `tick()`.

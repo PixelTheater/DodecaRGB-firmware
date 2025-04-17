@@ -6,24 +6,29 @@ version: 2.8.2
 
 # PixelTheater Animation System
 
+![PixelTheater Logo](../../images/pixeltheater-logo.png)
+
 ## Overview
 
-The PixelTheater library provides a flexible framework for creating LED animations (Scenes) on three-dimensional objects. It simplifies hardware interaction and scene management through a central `Theater` facade.
+PixelTheater is a C++ library designed for creating interactive, 3D LED animations. It provides a platform-independent framework, allowing animations (Scenes) to run on different hardware (like Teensy/FastLED) or simulators (native C++, WebAssembly) with minimal code changes.
 
-Key features:
-- Define complex 3D models from configuration files.
-- Create modular, reusable animation Scenes inheriting from `PixelTheater::Scene`.
-- Access LEDs and geometry easily via Scene helper methods (`leds[i]`, `model().point(i)`).
-- Use common utilities (`millis()`, `random8()`, etc.) directly within Scenes.
-- Configure scenes with runtime parameters.
-- Integrate with different hardware platforms (FastLED, native testing) via the `Theater`.
+**Key Features:**
+
+*   **Platform-Independent Scenes:** Write animation logic once using the `PixelTheater` API; run on multiple platforms.
+*   **3D Model Abstraction:** Define complex LED geometry and access LED positions and relationships easily.
+*   **Simplified Scene API:** Create modular `PixelTheater::Scene` classes with helpers for LEDs, geometry, time, parameters, and utilities.
+*   **Color & Palette API:** Unified API (`PixelTheater::CRGB`, `PixelTheater::CHSV`, `PixelTheater::Palettes`, `PixelTheater::colorFromPalette`) for handling colors and palettes across platforms.
+*   **Parameter System:** Define runtime-configurable parameters for scenes.
+*   **Central `Theater` Facade:** Manages platform setup, scene lifecycles, and the main animation loop.
 
 ### Architecture
 
+The `Theater` acts as a central coordinator, connecting the chosen hardware `Platform`, the 3D `Model` geometry, and the active animation `Scene`. Scenes interact with the system exclusively through the `PixelTheater::Scene` base class helpers and the `PixelTheater` namespace API.
+
 ```text
                            ┌───────────┐
-                           │ User Code │
-                           │ (main.cpp)│
+                           │ User Code │ // e.g., main.cpp
+                           │ (Setup)   │
                            └─────┬─────┘
                                  │ Uses
                                  ▼
@@ -50,107 +55,70 @@ Key features:
                                                            │  millis(), etc.)
 ```
 
-### Key Concepts 
+### Core Concepts
 
-- **Theater**: The main entry point. Initializes the system (`useNativePlatform`, `useFastLEDPlatform`), adds scenes (`addScene`), and runs the animation loop (`update`).
-- **Scene**: Base class for all animations. Provides helpers to access LEDs (`leds[i]`), geometry (`model().point(i)`), utilities (`millis()`), and parameters (`settings[]`). You inherit from this to create your animation.
-- **Platform**: Abstract base class for hardware/environment interaction (e.g., `NativePlatform`, `FastLEDPlatform`). Managed by `Theater`.
-- **IModel/ILedBuffer**: Interfaces providing access to model geometry and LED data buffers. Managed by `Theater`, accessed via `Scene` helpers.
-- **ModelWrapper/LedBufferWrapper**: Internal classes implementing the interfaces, wrapping the concrete `Model` and LED buffer. Managed by `Theater`.
-- **Model**: Defines the LED geometry (points, faces). Generated from config files.
-- **Parameters/Settings**: Mechanism for runtime configuration of scenes.
+*   **Theater**: The main entry point (`PixelTheater::Theater`). Initializes the platform and model, adds scenes, and runs the animation loop.
+*   **Scene**: Base class (`PixelTheater::Scene`) for all animations. Implement `setup()` and `tick()`. Provides platform-independent helpers to access LEDs (`leds[]`), geometry (`model()`), time (`millis()`), parameters (`settings[]`), and utilities (`random8()`).
+*   **Platform**: Abstraction layer for hardware/environment interaction (e.g., `FastLEDPlatform`, `NativePlatform`). Usually configured once via `Theater`.
+*   **Model**: Defines the 3D LED geometry (`IModel` interface, accessed via `Scene::model()`). Generated from configuration files. See [Model System](Model.md).
+*   **Parameters/Settings**: Mechanism for runtime configuration of scenes via `param()` and `settings[]`. See [Parameters](Parameters.md).
+*   **Color API**: Platform-independent types (`PixelTheater::CRGB`, `PixelTheater::CHSV`) and functions (`PixelTheater::blend`, `PixelTheater::colorFromPalette`). See [Palettes API](Palettes.md).
 
-## Getting Started
+## Getting Started (Scene Author Focus)
 
-1.  **Include Header:** Add `#include "PixelTheater.h"` to your main file (`src/main.cpp`).
-2.  **Define Model:** Ensure your model definition header (e.g., `models/MyModel/model.h`) exists.
-3.  **Create Theater:** Instantiate `PixelTheater::Theater theater;` globally.
-4.  **Initialize Theater:** In `setup()`, call the appropriate method, e.g.:
+1.  **Include Header:** Add `#include "PixelTheater.h"` to your scene file. This typically includes everything needed for scene development.
+2.  **Create Scene Class:** Define a class inheriting from `PixelTheater::Scene`.
     ```cpp
-    // For Teensy/FastLED:
-    #include "models/DodecaRGBv2/model.h" // Include your specific model
-    extern ::CRGB leds[]; // Assuming global FastLED array
-    extern const size_t NUM_LEDS;
-    theater.useFastLEDPlatform<PixelTheater::Models::DodecaRGBv2>(leds, NUM_LEDS);
+    #pragma once
+    #include "PixelTheater.h"
 
-    // For Native testing:
-    // #include "fixtures/models/basic_pentagon_model.h"
-    // theater.useNativePlatform<PixelTheater::Fixtures::BasicPentagonModel>(/*led count*/);
+    namespace Scenes { // Optional, but recommended
+    class MyScene : public PixelTheater::Scene {
+    public:
+        MyScene() = default;
+        ~MyScene() override = default;
+
+        void setup() override;
+        void tick() override;
+    private:
+        // Scene-specific state variables
+    };
+    } // namespace Scenes
     ```
-5.  **Create Scenes:** Define classes inheriting from `PixelTheater::Scene` in separate header files (e.g., `src/scenes/my_scene.h`). Implement `setup()` and `tick()`.
-6.  **Add Scenes:** In `setup()`, include your scene headers and add instances to the theater:
+3.  **Implement `setup()`:** Set metadata (`set_name`, etc.) and define parameters (`param`).
+4.  **Implement `tick()`:** Write your animation logic using helpers like `leds[]`, `model()`, `millis()`, `settings[]`, `PixelTheater::colorFromPalette`, etc.
+5.  **Register Scene:** In your main application file (`main.cpp`), include your scene's header and add it to the `Theater` instance after initializing the platform.
     ```cpp
-    #include "scenes/my_scene.h"
-    #include "scenes/another_scene.h"
-    // ... 
-    theater.addScene<Scenes::MyScene>(); 
-    theater.addScene<Scenes::AnotherScene>();
+    // --- main.cpp ---
+    #include "PixelTheater.h"
+    #include "scenes/my_scene.h" // Include your scene
+
+    PixelTheater::Theater theater;
+
+    void setup() {
+        // Platform setup (specific to project/hardware)
+        // theater.useFastLEDPlatform<...>(...);
+        // theater.useNativePlatform<...>(...);
+
+        // Add scenes
+        theater.addScene<Scenes::MyScene>();
+        // theater.addScene<...>();
+
+        theater.start();
+    }
+
+    void loop() {
+        theater.update();
+    }
     ```
-7.  **Start Theater:** Call `theater.start();` after adding scenes.
-8.  **Update Loop:** In `loop()`, call `theater.update();`.
 
-See `creating_animations.md` and `SceneAuthorGuide.md` for more details.
+*   For detailed guides, see [Scene Author Guide](SceneAuthorGuide.md) and [Creating Animations Guide](../guides/creating_animations.md).
 
-## Parameter System
+## Key Subsystems Documentation
 
-Parameters allow scenes to be configured at runtime. They are defined in the scene's `setup()` method using `param()`:
-
-```cpp
-// Inside MyScene::setup()
-param("speed", "ratio", 0.5f); // Float 0.0-1.0
-param("count", "count", 1, 10, 5); // Integer 1-10, default 5
-```
-
-Access values in `tick()` using the `settings` proxy:
-
-```cpp
-float speed = settings["speed"];
-int count = settings["count"];
-```
-
-See `Parameters.md` for full details.
-
-## Advanced Configuration & Features
-
-*   **Models:** Define custom LED geometry. See `Model.md`.
-*   **Palettes:** Use predefined or custom color palettes. See `Palettes.md`.
-*   **Build System:** Understand how models and code are compiled. See `build-system.md`.
-*   **Logging:** Use `logInfo()`, `logWarning()`, `logError()` within scenes.
-*   **Utilities:** Leverage math functions (`map`, `sin8`, `blend8`), color functions (`hsv2rgb_rainbow`), and constants (`Constants::PT_PI`) provided via `PixelTheater.h`.
-
-### Build Process
-
-The build system compiles scenes and models into the firmware:
-
-1. Each scene is compiled as a separate class
-2. Models are generated from their definitions into C++ header files
-3. The firmware links everything together at compile time
-
-### Customization
-
-PixelTheater can be customized in several ways:
-
-1. Creating new scenes
-2. Defining new models
-3. Extending the core library with new features
-
-See the individual documentation pages for more details on each aspect of the system.
-
-### [14] Palettes
-
-Palettes define color schemes that can be used in animations. See [Palettes.md](Palettes.md)
-for detailed documentation on:
-
-- Available built-in palettes
-- Creating custom palettes
-- Using palettes in animations
-- Memory and performance considerations
-
-### Bitmaps
-
-Bitmap resources can be used for textures, masks, or lookup tables:
-
-- Supported formats: 8-bit grayscale, 24-bit RGB
-- Images are converted to binary data at build time
-- Access via resource manager to save RAM
-- Consider memory limits when using large images
+*   **[Scene API](SceneAuthorGuide.md):** How to structure and write animation scenes.
+*   **[Color & Palettes](Palettes.md):** Using `CRGB`/`CHSV`, predefined palettes, and `colorFromPalette`.
+*   **[Parameters](Parameters.md):** Defining and using runtime parameters.
+*   **[Model System](Model.md):** Accessing 3D geometry (`model()`, `Point`, `Face`).
+*   **[Utilities](../guides/creating_animations.md#led-management):** Overview of helpers for time, random numbers, color math (`blend`, `nscale8`), etc. available in scenes.
+*   **[Build System](build-system.md):** How code and models are compiled.
