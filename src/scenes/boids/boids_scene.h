@@ -6,6 +6,8 @@
 #include <memory>
 #include <cmath>
 #include <string>
+#include "PixelTheater/palettes.h"   // Include for PixelTheater::Palettes::*
+#include "PixelTheater/color_api.h"  // Include for PixelTheater::colorFromPalette
 
 // Use shorter Eigen types
 using Vector3f = Eigen::Vector3f;
@@ -28,19 +30,23 @@ public:
 
     // Define default values used in setup()
     static constexpr int DEFAULT_NUM_BOIDS = 80;
-    static constexpr float DEFAULT_VISUAL_RANGE = 0.90f;
-    static constexpr float DEFAULT_PROTECTED_RANGE = 0.75f;
+    static constexpr float DEFAULT_VISUAL_RANGE = 0.40f;
+    static constexpr float DEFAULT_PROTECTED_RANGE = 0.35f;
     static constexpr float DEFAULT_CENTERING_FACTOR = 0.10f;
-    static constexpr float DEFAULT_AVOID_FACTOR = 0.45f;
-    static constexpr float DEFAULT_MATCHING_FACTOR = 0.25f;
-    static constexpr float DEFAULT_SPEED_LIMIT = 5.0f;
-    static constexpr int DEFAULT_FADE = 25;
-    static constexpr float DEFAULT_CHAOS = 0.25f;
-    static constexpr int DEFAULT_SIZE = 20; // Size needs review
+    static constexpr float DEFAULT_AVOID_FACTOR = 0.75f;
+    static constexpr float DEFAULT_MATCHING_FACTOR = 0.10f;
+    static constexpr float DEFAULT_SPEED_LIMIT = 6.0f;
+    static constexpr int DEFAULT_FADE = 30;
+    static constexpr float DEFAULT_CHAOS = 0.55f;
     static constexpr float DEFAULT_INTENSITY = 0.60f;
 
 private:
     std::vector<std::unique_ptr<Boid>> boids;
+
+    // Add members to store last used parameter values
+    int last_num_boids = -1; // Initialize to ensure first check triggers update
+    float last_speed_limit = -1.0f;
+    float last_chaos_factor = -1.0f;
 
     // Parameters are now stored in the 'settings' map from the base Scene class
     // float visual_range = 0.9f; // MOVED to settings
@@ -142,12 +148,18 @@ inline void BoidsScene::initBoids() {
     boids.reserve(num_boids_setting);
     for (int i = 0; i < num_boids_setting; ++i) {
         auto boid = std::make_unique<Boid>(*this, i, speed_limit_setting, chaos_setting);
-        // Assign color from palette using PixelTheater::CHSV and hsv2rgb_rainbow
-        // Mimics FastLED ColorFromPalette behavior for a standard rainbow
-        uint8_t hue = i * (255 / num_boids_setting);
-        boid->color = PixelTheater::CHSV(hue, 240, 255); // Use CHSV constructor, then implicit conversion
+        // Assign color from the Ocean palette instead
+        uint8_t palette_index = i * 255 / num_boids_setting;
+        boid->color = PixelTheater::colorFromPalette(PixelTheater::Palettes::OceanColors, palette_index);
+
         boids.push_back(std::move(boid));
     }
+
+    // Store the values used for this initialization
+    last_num_boids = num_boids_setting;
+    last_speed_limit = speed_limit_setting;
+    last_chaos_factor = chaos_setting;
+
     // Explicitly cast to int for the logger
     snprintf(log_buffer, sizeof(log_buffer), "BoidsScene::initBoids() complete, created %d boids", (int)num_boids_setting);
     logInfo(log_buffer);
@@ -338,7 +350,7 @@ inline void Boid::updateState() {
             // Use random direction and chaos factor
             Vector3f random_dir(scene.getRandomFloat(-1.0f, 1.0f), scene.getRandomFloat(-1.0f, 1.0f), scene.getRandomFloat(-1.0f, 1.0f));
             if (random_dir.norm() > 1e-6f) {
-                Vector3f chaos_force = random_dir.normalized() * chaos_factor * 0.1f; // Reduced chaos effect
+                Vector3f chaos_force = random_dir.normalized() * chaos_factor * 0.2f; // Reduced chaos effect
                 applyForce(chaos_force);
             }
             // Reset heading timer
@@ -408,7 +420,6 @@ inline void BoidsScene::setup() {
     param("fade", "count", 1, 100, DEFAULT_FADE, "clamp", "Trail fade amount");
     param("chaos", "range", 0.0f, 1.0f, DEFAULT_CHAOS, "clamp", "Probability of random movement");
     // Corrected size parameter description and range based on original comments
-    param("size", "count", 5, 100, DEFAULT_SIZE, "clamp", "Boid light spread size (% radius?)"); 
     param("intensity", "range", 0.1f, 1.0f, DEFAULT_INTENSITY, "clamp", "LED brightness multiplier");
     // Note: Original had palette parameter, hardcoded here for now
 
@@ -441,6 +452,37 @@ inline void BoidsScene::estimateSphereRadius() {
 
 inline void BoidsScene::tick() {
     Scene::tick(); // Call base class tick first
+
+    // --- Check for parameter changes --- 
+    int current_num_boids = settings["num_boids"];
+    float current_speed_limit = settings["speed_limit"];
+    float current_chaos_factor = settings["chaos"];
+
+    // Re-initialize if num_boids changed
+    if (current_num_boids != last_num_boids) {
+        logInfo("num_boids changed (%d -> %d), re-initializing.", last_num_boids, current_num_boids);
+        initBoids(); // This will update last_num_boids, last_speed_limit, last_chaos_factor
+    } else {
+        // Otherwise, check if speed limit or chaos changed and update existing boids
+        bool params_updated = false;
+        if (current_speed_limit != last_speed_limit) {
+            logInfo("speed_limit changed (%.2f -> %.2f), updating boids.", last_speed_limit, current_speed_limit);
+            for (auto& boid : boids) {
+                boid->max_speed = current_speed_limit;
+            }
+            last_speed_limit = current_speed_limit;
+            params_updated = true;
+        }
+        if (current_chaos_factor != last_chaos_factor) {
+             logInfo("chaos_factor changed (%.2f -> %.2f), updating boids.", last_chaos_factor, current_chaos_factor);
+            for (auto& boid : boids) {
+                boid->chaos_factor = current_chaos_factor;
+            }
+            last_chaos_factor = current_chaos_factor;
+             params_updated = true;
+        }
+    }
+    // --- End parameter change check ---
 
     uint8_t fade_amount = settings["fade"];
 

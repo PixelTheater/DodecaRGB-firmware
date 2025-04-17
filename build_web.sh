@@ -30,6 +30,8 @@ emcc src/web_simulator.cpp \
      lib/PixelTheater/src/core/crgb.cpp \
      lib/PixelTheater/src/model/point.cpp \
      lib/PixelTheater/src/palette.cpp \
+     lib/PixelTheater/src/palettes.cpp \
+     lib/PixelTheater/src/color_api.cpp \
      lib/PixelTheater/src/params/handlers/flag_handler.cpp \
      lib/PixelTheater/src/params/handlers/type_handler.cpp \
      lib/PixelTheater/src/params/param_types.cpp \
