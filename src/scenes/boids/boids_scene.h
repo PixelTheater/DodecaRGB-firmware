@@ -446,7 +446,8 @@ inline void BoidsScene::tick() {
 
     size_t count = ledCount();
     for (size_t i = 0; i < count; ++i) {
-        PixelTheater::fadeToBlackBy(leds[i], fade_amount); 
+        // Use the CRGB method for fading
+        leds[i].fadeToBlackBy(fade_amount); 
     }
 
     BENCHMARK_START("boid_update");

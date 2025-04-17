@@ -40,7 +40,6 @@ public:
 
             // Non-numeric types - no flags
             {"switch", false, false, false, "Boolean value", Flags::NONE},
-            {"palette", false, false, true, "Color palette resource", Flags::NONE},
             {"bitmap", false, false, true, "Image resource", Flags::NONE}
         };
         return type_info[static_cast<size_t>(type)];
@@ -67,7 +66,6 @@ public:
             case ParamType::angle:
             case ParamType::signed_angle:
             case ParamType::switch_type:
-            case ParamType::palette:
             case ParamType::count:  // Allow count type
             case ParamType::range:  // Allow range type
                 return true;

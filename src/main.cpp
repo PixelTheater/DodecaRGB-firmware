@@ -20,6 +20,7 @@
 #include "scenes/xyz_scanner/xyz_scanner_scene.h" // Refactored
 #include "scenes/wandering_particles/wandering_particles_scene.h" // Refactored
 #include "scenes/boids/boids_scene.h" // Refactored
+#include "scenes/test_scene/test_scene.h" // Include Test Scene
 #include "benchmark.h" 
 
 #ifndef PROJECT_VERSION
@@ -170,6 +171,7 @@ void setup() {
   );
   
   // Add scenes 
+  theater.addScene<Scenes::TestScene>(); // Add Test Scene first
   theater.addScene<Scenes::BlobScene>(); 
   theater.addScene<Scenes::XYZScannerScene>(); 
   theater.addScene<Scenes::WanderingParticlesScene>(); // Add Wandering Particles

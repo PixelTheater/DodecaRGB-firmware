@@ -27,9 +27,6 @@ public:
     // Add default constructor - initialize as float 0.0
     constexpr ParamValue() : _type(ParamType::range), _float_val(0.0f) {}
 
-    // Add string constructor
-    constexpr ParamValue(const char* v) : _type(ParamType::palette), _str_val(v) {}
-
     // Type-safe getters
     constexpr float as_float() const {
         switch (_type) {
@@ -65,12 +62,13 @@ public:
         return SentinelHandler::get_sentinel<bool>();
     }
 
-    // Add string accessor
-    constexpr const char* as_string() const {
-        if (_type == ParamType::palette) {
-            return _str_val;
-        }
-        return SentinelHandler::get_sentinel<const char*>();  // Returns nullptr
+    // String getter (returns empty string for non-string types)
+    const char* as_string() const {
+        // if (_type == ParamType::palette) { // <<< REMOVED CHECK
+        //     return _str_val;              // <<< REMOVED CHECK
+        // }                                 // <<< REMOVED CHECK
+        // TODO: Handle 'select' type if it stores string internally?
+        return ""; // Return empty string for non-string types currently
     }
 
     ParamType type() const { return _type; }
@@ -99,7 +97,7 @@ private:
         float _float_val;
         int _int_val;
         bool _bool_val;
-        const char* _str_val;  // Add string storage
+        // const char* _str_val;  // Add string storage
     };
 };
 

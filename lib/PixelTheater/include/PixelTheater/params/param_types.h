@@ -20,11 +20,10 @@ enum class ParamType {
     count,          // min .. max (int)
     
     // Choice types
-    select,         // Named options
-    switch_type,    // Boolean
+    select,         // Dropdown selection from a list of strings
+    switch_type,    // Boolean toggle (on/off)
     
     // Resource types
-    palette,        // Color palette
     bitmap          // Image data
 };
 

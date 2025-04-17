@@ -37,8 +37,14 @@ TEST_CASE("SentinelHandler") {
 TEST_CASE("TypeHandler") {
     SUBCASE("Type names") {
         CHECK(std::string(TypeHandler::get_name(ParamType::ratio)) == "ratio");
+        CHECK(std::string(TypeHandler::get_name(ParamType::signed_ratio)) == "signed_ratio");
+        CHECK(std::string(TypeHandler::get_name(ParamType::angle)) == "angle");
+        CHECK(std::string(TypeHandler::get_name(ParamType::signed_angle)) == "signed_angle");
+        CHECK(std::string(TypeHandler::get_name(ParamType::range)) == "range");
+        CHECK(std::string(TypeHandler::get_name(ParamType::count)) == "count");
+        CHECK(std::string(TypeHandler::get_name(ParamType::select)) == "select");
         CHECK(std::string(TypeHandler::get_name(ParamType::switch_type)) == "switch");
-        CHECK(std::string(TypeHandler::get_name(ParamType::palette)) == "palette");
+        CHECK(std::string(TypeHandler::get_name(ParamType::bitmap)) == "bitmap");
     }
 
     SUBCASE("Type conversion rules") {
@@ -67,19 +73,16 @@ TEST_CASE("TypeHandler") {
         // Check helper methods
         CHECK(TypeHandler::has_range(ParamType::range));
         CHECK(TypeHandler::has_options(ParamType::select));
-        CHECK(TypeHandler::is_resource(ParamType::palette));
+        CHECK(TypeHandler::is_resource(ParamType::bitmap));
     }
 
     SUBCASE("Type classification") {
-        // Test type classification through public interface
-        const auto& ratio_info = TypeHandler::get_type_info(ParamType::ratio);
-        CHECK(ratio_info.has_range == true);
-        CHECK(ratio_info.has_options == false);
-        CHECK(ratio_info.is_resource == false);
-
-        const auto& select_info = TypeHandler::get_type_info(ParamType::select);
-        CHECK(select_info.has_range == false);
-        CHECK(select_info.has_options == true);
+        CHECK(TypeHandler::has_range(ParamType::range));
+        CHECK(!TypeHandler::has_range(ParamType::switch_type));
+        CHECK(TypeHandler::has_options(ParamType::select));
+        CHECK(!TypeHandler::has_options(ParamType::count));
+        CHECK(TypeHandler::is_resource(ParamType::bitmap));
+        CHECK(!TypeHandler::is_resource(ParamType::ratio));
     }
 
     SUBCASE("Complete conversion matrix") {
@@ -330,4 +333,4 @@ TEST_CASE("FlagHandler") {
             CHECK_FALSE(FlagHandler::validate_flags(Flags::SLEW, ParamType::select));
         }
     }
-} 
+}

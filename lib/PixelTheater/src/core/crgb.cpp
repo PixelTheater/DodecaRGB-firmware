@@ -1,4 +1,10 @@
 #include "PixelTheater/core/crgb.h"
+#include "PixelTheater/color_utils.h" // For scale8
+
+// Include FastLED if on Teensy for CRGB methods
+#ifdef PLATFORM_TEENSY
+#include <FastLED.h>
+#endif
 
 namespace PixelTheater {
 
@@ -161,5 +167,49 @@ const CRGB CRGB::YellowGreen = CRGB(0x9ACD32);
 const CRGB CRGB::FairyLight = CRGB(0xFFE42D);
 const CRGB CRGB::FairyLightNCC = CRGB(0xFF9D2A);  // No color correction
 
+// Implementation for fadeToBlackBy
+CRGB& CRGB::fadeToBlackBy(uint8_t fadeBy) {
+#ifdef PLATFORM_TEENSY
+    // FastLED handles this directly on the CRGB object
+    reinterpret_cast<::CRGB*>(this)->fadeToBlackBy(fadeBy);
+#else
+    // Use the scale8 function from color_utils
+    uint8_t scale = 255 - fadeBy;
+    r = scale8(r, scale);
+    g = scale8(g, scale);
+    b = scale8(b, scale);
+#endif
+    return *this;
+}
+
+// Implementation for nscale8
+CRGB& CRGB::nscale8(uint8_t scaledown) {
+#ifdef PLATFORM_TEENSY
+    // FastLED handles this directly on the CRGB object
+    reinterpret_cast<::CRGB*>(this)->nscale8(scaledown);
+#else
+    // Use the scale8 function from color_utils
+    r = scale8(r, scaledown);
+    g = scale8(g, scaledown);
+    b = scale8(b, scaledown);
+#endif
+    return *this;
+}
+
+#ifdef PLATFORM_TEENSY
+// Implementation for FastLED conversion operators/constructors
+CRGB::operator ::CRGB() const {
+    return ::CRGB(r, g, b);
+}
+
+CRGB::CRGB(const ::CRGB& rhs) : r(rhs.r), g(rhs.g), b(rhs.b) {}
+
+CRGB& CRGB::operator=(const ::CRGB& rhs) {
+    r = rhs.r;
+    g = rhs.g;
+    b = rhs.b;
+    return *this;
+}
+#endif
 
 } // namespace PixelTheater 

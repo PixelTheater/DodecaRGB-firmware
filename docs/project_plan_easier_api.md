@@ -1,222 +1,202 @@
 # PixelTheater Easier API Refactoring - Project Plan
 
-This document outlines the steps required to implement the API simplification refactoring as detailed in `docs/easier_api_refactoring.md`. **All steps involving code changes should be followed by running the test suite (`~/.platformio/penv/bin/pio test -e native`) to ensure no regressions.**
+## Palette Restructuring (Platform Transparent API)
 
-## Design Overview
+### Goal Summary
 
-This refactoring introduces a `Theater` facade class to simplify top-level API usage. Initialization is done via platform-specific methods (e.g., `useFastLEDPlatform<ModelDef>`). It decouples `Scene` implementations from specific `ModelDef` templates by introducing `IModel` and `ILedBuffer` interfaces. 
+To provide a simple, reliable, and **platform-transparent** way for scenes to use color palettes and utilities. Scenes will interact solely with the `PixelTheater` namespace, which will internally handle platform differences (FastLED on Teensy, C++ emulation/fallbacks elsewhere) without requiring conditional compilation within scene code.
 
-**Geometry Access:** Scenes access model geometry via `scene.model()`, which returns a `const IModel&`. The `IModel` interface provides direct indexed access methods (`point(i)`, `face(i)`) and count methods (`pointCount()`, `faceCount()`). Bounds checking uses clamping or returns dummy objects. Iteration over geometry is done using the LED index (`for(i=0; i<ledCount()...)`).
+### Core Principles
 
-Concrete wrapper classes (`ModelWrapper`, `LedBufferWrapper`) implement these interfaces internally within `Theater`. Scene authors interact with a non-templated `Scene` base class, accessing LEDs (via `leds[i]` proxy or `led(i)` helper), Model geometry (via `model().point(i)` etc.), and Platform utilities (via direct `Scene` helpers like `millis()`).
+1.  **Consistent `PixelTheater` Namespace**: All types (`CRGB`, `CHSV`, `CRGBPalette16`) and core functions (`colorFromPalette`, `blend`, etc.) used by scenes reside within and are accessed via the `PixelTheater` namespace.
+2.  **Internal Platform Handling**: The *implementation* of `PixelTheater` types and functions will conditionally use FastLED natives (when `PLATFORM_TEENSY`) or C++ fallback/emulation logic.
+3.  **API Abstraction**: Scenes include only `PixelTheater` headers, insulating them from underlying FastLED details or fallback implementations.
+4.  **Unified Palette Access**: All standard FastLED palettes and project-specific custom palettes will be exposed as `constexpr` or `extern const` constants within the `PixelTheater::Palettes` namespace (e.g., `PixelTheater::Palettes::Rainbow`, `PixelTheater::Palettes::basePalette`).
 
-See `docs/easier_api_refactoring.md` for the original goals and the final Target API Summary.
+### Essential Information
 
-## Phase 1: Core Infrastructure (Interfaces & Wrappers - Simplified Model Access)
+Native tests are run with: `~/.platformio/penv/bin/pio test -e native`
+Teensy41 build is run with: `~/.platformio/penv/bin/pio run -e teensy41`
+Web build can be checked with `./build_web.sh`
+The native tests do not test `/src` or the scenes. To test these, we must run the teensy41 build.
+You can run `git diff` to see what's been changed since the tests were last passing.
+Python tests can be run with `python -m util.tests.run_tests`
 
-**Goal:** Establish the interfaces (`ILedBuffer`, simplified `IModel`), concrete wrappers (`LedBufferWrapper`, `ModelWrapper`), and ensure testability using existing fixtures.
+### Implementation Plan
 
-1. **Define Interfaces:**
-    * [X] **Task:** Verify/Update `ILedBuffer` interface file (`lib/.../core/iled_buffer.h`). Define `led(i)`, `ledCount()`. Ensure bounds checks use clamping/dummy return.
-    * [X] **Task:** Create/Update `IModel` interface file (`lib/.../core/imodel.h`). Define virtual methods `point(i)`, `face(i)`, `pointCount()`, `faceCount()`. Ensure necessary includes (`Point`, `Face`).
+1.  **Solidify Core Types (`core/crgb.h`, `core/crgb.cpp`)**:
+    *   **Action**: Ensure `PixelTheater::CRGB` and `PixelTheater::CHSV` class definitions in `core/crgb.h` serve all platforms.
+    *   **Action**: Define static color constants (`PixelTheater::CRGB::Red`, etc.) in `core/crgb.cpp`.
+    *   **Action (Teensy Opt.)**: Add conversion operators (`operator ::CRGB() const`, `PixelTheater::CRGB(const ::CRGB&)`) within `PixelTheater::CRGB` guarded by `#ifdef PLATFORM_TEENSY` to facilitate efficient calls to underlying FastLED functions.
+    *   **Testing/Verification**: Build succeeds for native and Teensy targets. Basic instantiation tests pass.
 
-2. **Implement `Face` Move Semantics:** 
-    * [X] **Task:** Add explicit move/copy constructors/assignment to `Face` class.
-    * [X] **Task:** Provide explicit `Face()` default constructor.
-    * [X] **Testing:** Native tests pass. **Run tests.**
+2.  **Define Palette Type & Constants (`palettes.h`, `palettes.cpp`)**:
+    *   **Action**: Create/Update `lib/PixelTheater/include/PixelTheater/palettes.h`.
+        *   Include `PixelTheater/core/crgb.h`.
+        *   Define `using CRGBPalette16 = std::array<PixelTheater::CRGB, 16>;` (platform-independent).
+        *   Declare *all* required palettes (standard + custom) as `extern const PixelTheater::CRGBPalette16 PixelTheater::Palettes::XYZ;`. Use a nested `Palettes` namespace for organization.
+    *   **Action**: Create `lib/PixelTheater/src/palettes.cpp`.
+        *   Include `palettes.h`.
+        *   Define the actual palette arrays using `PixelTheater::CRGB` values (copying FastLED source values for standard palettes like `Rainbow`, `Party`, etc., and defining custom ones like `basePalette`).
+    *   **Testing/Verification**: Build succeeds. Native tests can access `PixelTheater::Palettes::basePalette` etc. Teensy build confirms standard FastLED palettes (e.g., `PartyColors_p`) are accessible globally *if* `palettes.h` includes `<FastLED.h>` under `#ifdef PLATFORM_TEENSY` (Confirm this include is needed/desired here or only where used).
 
-3. **Create Interface Wrappers:**
-    * [X] **Task:** Create/Update `LedBufferWrapper : public ILedBuffer` (`lib/.../core/led_buffer_wrapper.h`). Implement `led(i)`, `ledCount()`. Ensure bounds checks use clamping/dummy return.
-    * [X] **Task:** Create/Update `template<typename TModelDef> class ModelWrapper : public IModel` (`lib/.../core/model_wrapper.h`). Implement the *simplified* `IModel` interface, delegating to `concrete_model_->points[i]` etc. Implement clamping/dummy returns for bounds checks.
-    * [X] **Testing:** Create/Update `test/test_native/core/test_interface_wrappers.cpp`. Test `ILedBuffer` access. Test `IModel` access via `model_if->point(i)`, `model_if->face(i)`, `model_if->pointCount()`, etc. **Run tests.**
+3.  **Implement Abstracted API (`color_api.h`/`.cpp`, `core/crgb.h`/`.cpp`)**:
+    *   **Action**: Define platform-independent function signatures in a suitable header (e.g., `color_api.h` or `color_utils.h`). Key functions:
+        *   `PixelTheater::CRGB PixelTheater::colorFromPalette(const PixelTheater::CRGBPalette16& pal, uint8_t index, uint8_t brightness = 255, TBlendType blendType = LINEARBLEND);` (Define `PixelTheater::TBlendType` enum: `LINEARBLEND`, `NOBLEND`).
+        *   `PixelTheater::CRGB PixelTheater::blend(const PixelTheater::CRGB& p1, const PixelTheater::CRGB& p2, uint8_t amount);`
+        *   (Add others as needed, like `nblend`).
+    *   **Action**: Add core methods to `PixelTheater::CRGB` in `core/crgb.h`:
+        *   `CRGB& fadeToBlackBy(uint8_t fade);`
+        *   `CRGB& nscale8(uint8_t scale);`
+        *   (Add operators like `+=`, `-=`, `*=`, etc. if not already present).
+    *   **Action**: Implement these functions and methods in their respective `.cpp` files.
+        *   Use `#ifdef PLATFORM_TEENSY` to call the corresponding FastLED global function or `::CRGB` method (using conversion operators if needed).
+        *   In the `#else` block, implement the logic using standard C++ (e.g., manual interpolation for `colorFromPalette`, component-wise math for `blend`, `fade`, `scale`).
+    *   **Action**: Fixed template `fill_solid` implementation in `core/color.h` to work with `LedsProxy`.
+    *   **Testing/Verification**: Native tests verify C++ fallback implementations (blending math, scaling, fading, palette lookup). Teensy build checks confirm API calls delegate to FastLED correctly (may require inspection or specific Teensy tests if possible). Build succeeds.
+    *   **Status**: COMPLETE
 
-4. **Refactor `Scene` Base Class:**
-    * [X] **Task:** Change `Scene` to be non-templated.
-    * [X] **Task:** Add `protected` members: `model_ptr`, `leds_ptr`, `platform_ptr`, `_tick_count`.
-    * [X] **Task:** Add `protected: void connect(...)`.
-    * [X] **Task:** Remove direct geometry helpers. Add `public: const IModel& model() const;`. 
-    * [X] **Task:** Ensure `LedsProxy leds;` member works.
-    * [X] **Task:** Adapt `param_schema.h`, stub/comment out `Stage`-related code.
-    * [X] **Testing:** Deferred to Task 11. **(Now complete for test scenes)**
+4.  **Refactor Color Utilities (`color_utils.h`/`.cpp`)**: (IN PROGRESS)
+    *   **Action**: Ensure all functions use only `PixelTheater` types (`CRGB`, `CHSV`, `std::string`).
+    *   **Action**: Remove any internal platform-specific stubs (like the fallback `rgb2hsv_approximate` or `get_perceived_brightness`) as the type/API abstraction now handles platform differences. Ensure `color_utils.cpp` includes the necessary headers to use the abstracted API (e.g., for `rgb2hsv`).
+    *   **Testing/Verification**: Existing native tests in `test_color_utils.cpp` should still pass using the abstracted API underlyingly.
 
-5. **Implement Scene Base Helpers & Test:**
-    * [X] **Task:** Add/verify public helpers for LEDs (`led`, `ledCount`) and Utilities (`millis`, `random*`, `log*`). Ensure no exceptions.
-    * [X] **Task:** Add/verify `Platform` interface utility methods and implementations.
-    * [X] **Task:** Ensure `param()`/`meta()`/`settings` work.
-    * [X] **Testing:** Create/Update `test_scene_helpers.cpp`. Test LED/Utility/model() helpers. **Run tests.**
+5.  **Update Python Generator (`util/generate_props.py`)**: (COMPLETE)
+    *   **Action**: Update validation logic (2-16 entries, index rules). (COMPLETE)
+    *   **Action**: Output C++ code defining `constexpr PixelTheater::GradientPaletteData { const uint8_t* data; size_t size; };` structs into `extra_palettes.h` (filename changed from `generated_palettes.h`). (COMPLETE)
+    *   **Action**: Moved palette JSON source files to `util/palettes/`. (COMPLETE)
+    *   **Action**: Added new palettes (Party, Rainbow, Forest). (COMPLETE)
+    *   **Testing/Verification**: Python unit tests (`test_generate_props.py`) pass for validation and output format. Generated header compiles. (COMPLETE)
+    *   **Note**: Using these generated gradients will require platform-specific code (`#ifdef PLATFORM_TEENSY`) in scenes for now, as the native `colorFromPalette` won't support them initially.
 
-6. **Consolidated Include:**
-    * [X] **Task:** Create/update `PixelTheater.h`.
-    * [X] **Testing:** Verified compilation. **(Confirmed by passing tests)**
+6.  **Remove Deprecated Palette Param Type**: (COMPLETE)
+    *   **Action**: Clean up `ParamType::palette` and related logic from the parameter system files.
+    *   **Testing/Verification**: Build succeeds. Parameter system tests (if any) pass.
+    *   **Status**: COMPLETE
 
-## Phase 2: Theater Implementation & Integration
+7.  **Refactor Active Scenes (`src/scenes/`)**: (IN PROGRESS)
+    *   **Action**: Update includes (`color_api.h`, `palettes.h`, etc.).
+    *   **Action**: Ensure all color/palette/math operations use the `PixelTheater` namespace and abstracted API/methods.
+    *   **Testing/Verification**: Scenes compile and run correctly in native (using fallbacks) and Teensy (using FastLED) environments.
+    *   **Refactored**: `blob_scene.h`, `xyz_scanner.h`, `wandering_particles.h`, `test_scene.h`, `boids_scene.h`
 
-**Goal:** Implement the `Theater` facade and integrate it, ensuring scenes can be added and run.
+8.  **Documentation (`docs/PixelTheater/Palettes.md`, examples)**:
+    *   **Action**: Rewrite documentation to reflect the platform-transparent `PixelTheater` API.
+    *   **Action**: Emphasize using `PixelTheater::Palettes::XYZ`, `PixelTheater::colorFromPalette`, `PixelTheater::blend`, `PixelTheater::CRGB::fadeToBlackBy`, etc.
+    *   **Action**: Remove platform conditional compilation from examples. Explain the Python generator utility and the current limitation of generated gradients for non-Teensy platforms.
+    *   **Testing/Verification**: Documentation accurately reflects the final API and usage patterns.
 
-7. **Implement `Theater` Class Structure:**
-    * [X] **Task:** Create `Theater` class (`theater.h`, `theater.cpp`). Define members: `std::unique_ptr<Platform> platform_`, `std::unique_ptr<IModel> model_`, `std::unique_ptr<ILedBuffer> leds_`, `std::vector<std::unique_ptr<Scene>> scenes_`, `Scene* current_scene_ = nullptr;`.
-    * [X] **Testing:** Create `test/test_native/test_theater.cpp`. Write tests for basic construction/destruction. **Run tests.**
+### Scene Usage Pattern Examples (Revised for Abstraction)
 
-8. **Implement `Theater::useXPlatform` Methods:**
-    * [X] **Task:** Implement public platform-specific methods like `template<typename TModelDef> void useNativePlatform(size_t num_leds)`. (Implemented Native variant).
-    * [X] **Task:** These methods create the corresponding `Platform` type and call a private `template<typename TModelDef, typename TPlatform> void internal_prepare(std::unique_ptr<TPlatform> platform)` method.
-    * [X] **Task:** The `internal_prepare` method stores the platform, instantiates the concrete `Model<TModelDef>`, creates and stores the `ModelWrapper` (as `model_`) and `LedBufferWrapper` (as `leds_`) unique_ptrs.
-    * [X] **Testing:** Add tests in `test_theater.cpp` to verify `useNativePlatform` successfully calls `internal_prepare` and creates the required internal objects (platform, model wrapper, leds wrapper). Use `BasicPentagonModel` and appropriate args. **Run tests.**
+```cpp
+// Include necessary PixelTheater headers
+#include "PixelTheater/palettes.h"   // Provides PixelTheater::Palettes::* constants & CRGBPalette16 type
+#include "PixelTheater/color_api.h"  // Provides PixelTheater::colorFromPalette, blend, etc.
+#include "PixelTheater/color_utils.h" // Provides PixelTheater::ColorUtils::* helpers
 
-9. **Implement `Theater::addScene` & Scene Management:**
-    * [X] **Task:** Implement `template<typename SceneType> void addScene()`. Check initialization, create scene, call `connect()`, store pointer, handle first scene.
-    * [X] **Task:** Implement `start()`, `nextScene()`, `previousScene()`, `update()` (call `current_scene_->tick()` and `platform_->show()`).
-    * [X] **Task:** Implement scene info/access methods: `scene(index)`, `scenes()`, `currentScene()`, `sceneCount()`. 
-    * [X] **Testing:** Add tests in `test_theater.cpp` for adding scenes, switching scenes, checking current scene, accessing scenes by index, and calling update. **Run tests.**
+// Within your scene class (no #ifdefs needed for platform)
 
-10. **Refactor `main.cpp`:** 
-    * [ ] **Task:** Remove manual `Model`/`Stage`/`Platform`. Instantiate `Theater`. Call the appropriate `theater.useXPlatform<ModelDef>(...)` method (e.g., `useFastLEDPlatform`). Replace `stage->addScene` with `theater.addScene<Type>()`. Replace `stage->update` with `theater.update()`. Adapt scene switching and parameter setting using `theater.scene(index)`. 
-    * [ ] **Testing:** Verify `main.cpp` compiles. Native tests verify library integrity. Hardware testing needed for full validation. (Teensy build successful but runtime untested). **Run tests.**
+void MyScene::tick() {
+    uint8_t brightness = 255;
+    uint8_t index1 = millis() / 20; 
+    uint8_t index2 = millis() / 30;
 
-## Phase 3: Refactor Scenes & Documentation
+    // --- Using Palettes (Always via PixelTheater namespace) ---
 
-**Goal:** Adapt existing scenes to the new API and update documentation.
+    // 1. Using a standard palette (e.g., PartyColors from FastLED)
+    PixelTheater::CRGB color1 = PixelTheater::colorFromPalette(
+        PixelTheater::Palettes::Party, // Constant defined in palettes.cpp
+        index1, brightness, PixelTheater::LINEARBLEND);
+    leds[0] = color1;
 
-11. **Refactor Example Scenes (One by One):**
-    * [X] **Task:** Refactor test scenes (`TestScene`, `LEDTestScene`, `MetadataTestScene`, `ParamTestScene`, etc.) in `test_scene.cpp` / `test_scene_parameters.cpp`.
-    * [X] **Task:** Apply refactoring: remove template, inherit `Scene`, use `PixelTheater.h`, use helpers (`leds[i]`, `model().point(i)`, `random8`, etc.).
-    * [X] **Testing:** Adapt related tests (`test_scene.cpp`, `test_scene_parameters.cpp`) using manual setup or new fixture. **Run tests.** (Native tests pass).
-    * [X] **Repeat** for `blob_scene.h`. (Compiled for teensy41)
-    * [X] **Repeat** for `xyz_scanner`. (Compiled for teensy41)
-    * [X] **Repeat** for `wandering_particles`. (Compiled for teensy41)
+    // 2. Using a custom built-in palette 
+    PixelTheater::CRGB color2 = PixelTheater::colorFromPalette(
+        PixelTheater::Palettes::basePalette, // Constant defined in palettes.cpp
+        index2, brightness, PixelTheater::LINEARBLEND);
+    leds[1] = color2;
 
-12. **Update Documentation:**
-    * [ ] **Task:** Create `docs/PixelTheater/SceneAuthorGuide.md` using the target API content previously drafted.
-    * [ ] **Task:** Update `docs/PixelTheater/Scenes.md` to be a higher-level overview linking to the new guide.
-    * [ ] **Task:** Review/update `docs/PixelTheater/README.md` (architecture diagram/text).
-    * [ ] **Task:** Update examples in docs (`README.md`, etc.) to use `Theater`.
+    // --- Using Color Utilities ---
+    PixelTheater::CRGB currentColor = leds[1];
+    PixelTheater::CHSV currentHSV = PixelTheater::ColorUtils::rgb2hsv_approximate(currentColor); 
+    std::string colorName = PixelTheater::ColorUtils::getClosestColorName(currentColor);
+    // Serial.printf("LED 1 (%s) - HSV: %d,%d,%d\n", colorName.c_str(), currentHSV.h, currentHSV.s, currentHSV.v);
 
-13. **Final Review and Cleanup:**
-    * [ ] **Testing:** Perform thorough testing on hardware with multiple scenes.
-    * [ ] **Task:** Review code for clarity, comments, style, null checks, error handling (`addScene` before initialization).
-    * [ ] **Task:** Remove dead code (old `Stage`? `scene.h` template remnants?).
-    * [ ] **Task:** Archive or delete `docs/easier_api_refactoring.md`.
-    * [ ] **Testing:** **Run final tests.** (Native tests pass, others pending)
+    // --- Blending/Modifying Colors (Using PixelTheater API/Methods) ---
 
-## Target Scene API Summary
+    // Fade all LEDs slightly
+    for(int i=0; i<numLeds(); ++i) {
+        leds[i].fadeToBlackBy(10); // Uses PixelTheater::CRGB::fadeToBlackBy
+    }
+    
+    // Blend LED 0 towards white
+    leds[0] = PixelTheater::blend(leds[0], PixelTheater::CRGB::White, 32); // Uses PixelTheater::blend
+}
+```
 
-*(This section summarizes the intended API available to Scene Authors within their `Scene` subclass)*
+### Pending Decisions / Future Considerations
 
-**Core Setup:**
-* `#include "PixelTheater.h"`
-* `using namespace PixelTheater;` (Recommended)
-* `using namespace PixelTheater::Constants;` (Recommended)
-* `class MyScene : public PixelTheater::Scene { ... };`
+-   **Native Gradient Support**: Implementing `PixelTheater::colorFromPalette` for gradient data (`uint8_t[]`) in the native C++ fallback is deferred.
+-   **Optional Name Lookup**: Parameter handling via name lookup (`param("palette_name", ...)`) remains deferred.
 
-**Lifecycle:**
-* `virtual void setup();`
-* `virtual void tick();`
+### Non-Goals
 
-**Parameters & Metadata:**
-* `param(...)` (Multiple overloads as per `Parameters.md`)
-* `meta(key, value)`
-* `settings[key]` (Read access, returns `std::any` wrapper)
-* `name()` (Returns title metadata)
+-   Runtime palette loading, modification, or complex management in C++.
+-   Automatic C++ lookup generation by the Python script.
 
-**LED Access:**
-* `CRGB& led(size_t index);` (Bounds-checked)
-* `const CRGB& led(size_t index) const;`
-* `std::span<CRGB> leds();` (Or similar span/wrapper)
-* `const std::span<const CRGB> leds() const;`
-* `size_t ledCount() const;`
+### Migration Plan
 
-**Model Geometry Access:**
-* `const Point& point(size_t index) const;` (Bounds-checked)
-* `const Face& face(size_t index) const;` (Bounds-checked)
-* `size_t faceCount() const;`
+1.  Update existing scenes to use the new `param("palette", ...)` API.
+2.  Deprecate and eventually remove any old palette access methods.
+3.  Ensure all documentation is updated.
+4.  Provide examples or a brief migration guide if changes are significant for scene developers.
 
-**Timing Utilities:**
-* `float deltaTime() const;`
-* `uint32_t millis() const;`
-* `uint32_t tickCount() const;` (Frame counter for current activation)
+### Success Metrics
 
-**Math/Random Utilities:**
-* `uint8_t random8();`
-* `uint16_t random16();`
-* `uint32_t random(uint32_t max = RAND_MAX);`
-* `uint32_t random(uint32_t min, uint32_t max);`
-* `float randomFloat();` (0.0 to 1.0)
-* `float randomFloat(float max);` (0.0 to max)
-* `float randomFloat(float min, float max);`
-* *(Access to global utilities like `map`, `blend`, `fadeToBlackBy` via `using namespace`)*
+1.  **Technical**: All Python and C++ tests pass; validation rules are consistent; build system generates correct code; documentation is accurate.
+2.  **User Experience**: Scene developers find it easier and more reliable to configure and use palettes; error messages are clear; behavior is predictable.
 
-**Logging Utilities:**
-* `logInfo(format, ...);`
-* `logWarning(format, ...);`
-* `logError(format, ...);`
+### API Examples
 
----
+```cpp
+// Scene palette usage
+void config() override {
+    param("palette", Palette, "ocean");  // Simple palette reference
+}
 
-**Notes:**
+void tick() override {
+    // Easy FastLED conversion
+    auto colors = palette().to_fastled();
+    
+    // Direct color access
+    CRGB color = palette().color_at(position);
+}
+```
 
-* Error handling: No exceptions. Clamping/dummy returns for invalid access, logging for errors.
-* **Decisions Log:**
-    * Use `Theater` facade.
-    * Use non-templated `Scene`.
-    * Use `ILedBuffer`/`IModel` interfaces.
-    * Scene access: `leds[i]`/`led(i)`, Utils helpers, `model()` method.
-    * `model()` returns `const IModel&`.
-    * `IModel` provides indexed access: `point(i)`, `face(i)`, `pointCount()`, `faceCount()`. No proxies.
-    * `useXPlatform<ModelDef>()` / `addScene<SceneType>()`.
+### Validation Rules
 
-## Phase 4: Web Platform Integration (Native-Testable Parts First)
+1.  **Palette File Format**
+    *   Must contain 'name' and 'palette' fields
+    *   Palette must have 2-16 entries (8-64 bytes)
+    *   Each entry must have index, R, G, B values (0-255)
+    *   Indices must be ascending (0 to 255)
+    *   First index must be 0, last must be 255
 
-**Goal:** Adapt the C++ components for web integration, prioritizing changes testable in the native environment before addressing web-specific build and runtime issues. **Run native tests (`~/.platformio/penv/bin/pio test -e native`) after each C++ refactoring step.**
+2.  **Runtime Validation**
+    *   Palette data must match format requirements
+    *   Names must be unique within scope
+    *   Scene palette references must exist
+    *   FastLED conversion must preserve color accuracy
 
-*   **Sub-Phase 4.1: C++ Core Changes (Native Testable)**
-    *   14. **Implement `WebPlatform` Utilities (Stubs for Native Testing):**
-        *   [X] **Task:** Add *declarations* for missing `Platform` virtual methods (`deltaTime`, `millis`, `random*`, `log*`) in `WebPlatform` (`lib/PixelTheater/platform/web_platform.h`).
-        *   [X] **Task:** Add *dummy implementations* or basic native equivalents for these methods in `lib/PixelTheater/src/platform/web_platform.cpp`.
-        *   [X] **Task:** Ensure `WebPlatform::getLEDs()` and `WebPlatform::initializeWithModel<ModelDef>()` method signatures exist in the header with minimal stub implementations in the `.cpp` file.
-        *   [X] **Native Testing:** Updated tests in `test/test_web/test_web_platform.cpp` verify existence and native compilation of stubs. **Native tests passed.**
-    *   15. **Implement `Theater::useWebPlatform`:**
-        *   [X] **Task:** Added `template<typename TModelDef> void Theater::useWebPlatform()` method declaration to `theater.h` and implementation (using stubs) to `theater.cpp` (guarded by `#ifdef`).
-        *   [X] **Task:** Implementation creates `WebPlatform`, calls its (stubbed) `initializeWithModel`, and passes to `internal_prepare`.
-        *   [X] **Native Testing:** Added guarded test case (`test_native/test_theater.cpp`) verifying compilation and basic calls for `useWebPlatform` in web environment (excluded from native run). **Native tests passed.**
-    *   16. **Refactor `WebSimulator` Class (C++ Logic):**
-        *   [X] **Task:** Replace `Stage`, `Platform`, `Model` members in `WebSimulator` (`src/web_simulator.cpp`) with `std::unique_ptr<Theater> theater`.
-        *   [X] **Task:** Update `WebSimulator::initialize()` C++ logic to instantiate `Theater` and call `theater->useWebPlatform<ModelDef>(...)`.
-        *   [X] **Task:** Update `WebSimulator::update()` C++ logic to call `theater->update()`.
-        *   [X] **Task:** Add `bool Theater::setScene(size_t index)` method declaration to `theater.h` and basic implementation (e.g., setting `current_scene_`) to `theater.cpp`. Update `WebSimulator::setScene(int sceneIndex)` C++ logic to use `theater->setScene(index)`.
-        *   [X] **Task:** Update `addScene` calls within `WebSimulator::initialize`'s C++ logic to use `theater->addScene<SceneType>()`.
-        *   [X] **Task:** Update parameter methods (`getSceneParameters`, `updateSceneParameter`) and their Embind wrappers C++ logic to use `theater->currentScene()`/`theater->scene(index)` and the associated parameter schema/settings storage.
-        *   [X] **Task:** Update C++ methods bound to JS for platform features (brightness, rotation, etc.) to access the platform via `theater->platform()` and `dynamic_cast<WebPlatform*>(...)`.
-        *   [ ] **Native Testing:** Ensure `web_simulator.cpp` compiles cleanly within the *native* test environment build process. Expand tests in `test/test_web/test_main.cpp` (or a new `test_web_simulator.cpp`) to test the *refactored C++ logic* of `WebSimulator`. Verify that:
-            *   `initialize` creates the `Theater` instance and calls `useWebPlatform`.
-            *   `update` calls `theater->update`.
-            *   `addScene` calls `theater->addScene`.
-            *   `setScene` calls `theater->setScene`.
-            *   Parameter methods correctly interact with `theater->currentScene()->parameter_schema()` and `_settings_storage`.
-            *   Platform feature methods correctly retrieve the platform via `theater->platform()` and attempt `dynamic_cast`.
-            *   Use the stubbed `WebPlatform` provided by `Theater` for these native tests. **Run native tests.** (Testing the Emscripten bindings and JS interaction will happen in Sub-Phase 4.2).
+### Future Considerations
 
-*   **Sub-Phase 4.2: Web Build & Runtime Integration**
-    *   17. **Update Build System:**
-        *   [ ] **Task:** Add `$(PIXELTHEATER_DIR)/src/theater.cpp` to `SOURCES` in `web/Makefile`.
-        *   [ ] **Task:** Add `$(PIXELTHEATER_DIR)/src/platform/web_platform.cpp` to `SOURCES` in `web/Makefile`.
-        *   [ ] **Task:** Review and update `EXPORTED_FUNCTIONS` and `EMSCRIPTEN_BINDINGS` in `web_simulator.cpp` and the `Makefile` flags to ensure all necessary C++ functions/bindings called by JavaScript (`simulator-ui.js`) are still correctly exported and functional after refactoring `WebSimulator`.
-        *   [ ] **Testing:** Attempt to run the web build script (`build_web.sh` or `python build_docs.py`). Address compilation and linking errors.
-    *   18. **Finalize `WebPlatform` Utilities:**
-        *   [ ] **Task:** Replace dummy implementations in `lib/PixelTheater/src/platform/web_platform.cpp` with actual Emscripten/browser API calls (`performance.now()`, `Math.random()`, `console.log`, etc.) guarded by `#if defined(PLATFORM_WEB) || defined(EMSCRIPTEN)`.
-        *   [ ] **Task:** Ensure the implementations of `initializeWithModel` and `getLEDs` correctly interact with the WebGL setup and buffer management within the `#ifdef` guards.
-        *   [ ] **Testing:** Re-run the web build script. Browser testing deferred.
-    *   19. **Web Simulator Testing & Documentation:**
-        *   [ ] **Testing:** Perform thorough testing of the web simulator in a browser (rendering, scenes, parameters, controls, console errors).
-        *   [ ] **Task:** Update `docs/guides/web-simulator.md` to reflect the use of `Theater`.
-        *   [ ] **Task:** Update any relevant diagrams or code snippets in documentation.
+1.  **Potential Enhancements**
+    *   CSS3 gradient support
+    *   Runtime palette modification
+    *   Palette interpolation methods
+    *   Palette animation support
 
-## Phase 5: Final Review and Cleanup
+2.  **Performance Optimization**
+    *   Evaluate memory usage
+    *   Consider caching strategies
+    *   Optimize FastLED conversion
 
-**Goal:** Consolidate changes, remove obsolete code, and perform final verification across all platforms.
-
-*   20. **Final Review and Cleanup:**
-    *   [ ] **Testing:** Perform thorough testing on **all platforms** (native, hardware, web).
-    *   [ ] **Task:** Review code across the project (core lib, `main.cpp`, `web_simulator.cpp`, tests) for clarity, comments, style, null checks, error handling.
-    *   [ ] **Task:** Remove `Stage` class (`stage.h`, `stage.cpp`) and any remaining unused code related to the old architecture.
-    *   [ ] **Task:** Archive or delete `docs/easier_api_refactoring.md`.
-    *   [ ] **Testing:** **Run final tests on all platforms.** Build the web simulator and documentation (`python build_docs.py`).

@@ -6,9 +6,9 @@ OUTPUT_DIR=${1:-"web"}
 echo "Building web simulator to: $OUTPUT_DIR"
 
 # --- ADDED: Clear Emscripten cache ---
-echo "Clearing Emscripten cache..."
-emcc --clear-cache
-echo "Cache cleared."
+# echo "Clearing Emscripten cache..."
+# emcc --clear-cache
+# echo "Cache cleared."
 # --- END ADDED ---
 
 # Create output directory if it doesn't exist

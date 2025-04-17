@@ -26,7 +26,7 @@
 #include "PixelTheater/params/param_schema.h" // For SceneParameterSchema
 #include "PixelTheater/scene.h" // Correct path for Scene base class pointer
 #include "benchmark.h"
-#include "scenes/test_scene.h"
+#include "scenes/test_scene/test_scene.h"
 #include "scenes/blobs/blob_scene.h"
 #include "scenes/wandering_particles/wandering_particles_scene.h"
 #include "scenes/xyz_scanner/xyz_scanner_scene.h"

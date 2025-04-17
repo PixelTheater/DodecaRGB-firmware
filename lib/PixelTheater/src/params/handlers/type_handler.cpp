@@ -56,7 +56,6 @@ bool TypeHandler::can_convert(ParamType from, ParamType to) {
         case ParamType::switch_type:
             return to == ParamType::switch_type;
 
-        case ParamType::palette:
         case ParamType::bitmap:
             return is_resource_type(to);
 
@@ -93,7 +92,6 @@ const char* TypeHandler::get_name(ParamType type) {
         case ParamType::count: return "count";
         case ParamType::select: return "select";
         case ParamType::switch_type: return "switch";
-        case ParamType::palette: return "palette";
         case ParamType::bitmap: return "bitmap";
         default: return "unknown";
     }
@@ -113,8 +111,7 @@ bool TypeHandler::is_integer_type(ParamType type) {
 }
 
 bool TypeHandler::is_resource_type(ParamType type) {
-    return type == ParamType::palette ||
-           type == ParamType::bitmap;
+    return type == ParamType::bitmap;
 }
 
 }} // namespace PixelTheater::ParamHandlers 

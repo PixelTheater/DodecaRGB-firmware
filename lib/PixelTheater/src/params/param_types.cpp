@@ -15,7 +15,6 @@ ParamType from_string(const std::string& type) {
     if (type == "range") return ParamType::range;
     if (type == "count") return ParamType::count;
     if (type == "select") return ParamType::select;
-    if (type == "palette") return ParamType::palette;
     if (type == "bitmap") return ParamType::bitmap;
     
     Log::warning("[WARNING] Unknown parameter type: %s\n", type.c_str());

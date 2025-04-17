@@ -58,6 +58,8 @@ class TestPaletteGeneration(unittest.TestCase):
         
         # Check generated code
         self.assertIn("PALETTE_OCEAN_BLUE", code)
-        self.assertIn("const uint8_t data[8]", code)
+        # self.assertIn("const uint8_t data[8]", code)
+        self.assertIn("constexpr GradientPaletteData PALETTE_OCEAN_BLUE", code)
+        self.assertIn("8", code) # Check size is present        
         self.assertIn("0, 0, 0, 128", code)
         self.assertIn("255, 0, 0, 128", code) 

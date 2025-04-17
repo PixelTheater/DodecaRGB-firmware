@@ -185,12 +185,12 @@ void Settings::add_parameter_from_strings(const std::string& name, const std::st
     ParamDef param_def;
     
     // Handle deprecated types
-    if (param_type == ParamType::palette) {
-        Log::warning("Palette parameters are deprecated and will be removed in a future version");
-        param_def = ParamDef::create_ratio(name, 0.5f, Flags::NONE, description);
-    }
+    // if (param_type == ParamType::palette) {
+    //     Log::warning("Palette parameters are deprecated and will be removed in a future version");
+    //     param_def = ParamDef::create_ratio(name, 0.5f, Flags::NONE, description);
+    // }
     // Handle types with custom ranges
-    else if (param_type == ParamType::range) {
+    if (param_type == ParamType::range) {
         param_def = ParamDef::create_range(name, min_f, max_f, default_val.as_float(), param_flags, description);
     }
     else if (param_type == ParamType::count) {

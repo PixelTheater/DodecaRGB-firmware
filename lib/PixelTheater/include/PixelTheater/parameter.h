@@ -136,9 +136,6 @@ public:
             case ParamType::select:
                 return value >= 0 && value < _option_count;  // Must be valid index
 
-            case ParamType::palette:
-                return value.is_valid();  // Delegate to Palette type
-
             default:
                 return false;
         }

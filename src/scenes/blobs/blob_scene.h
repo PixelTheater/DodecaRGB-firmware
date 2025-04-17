@@ -207,7 +207,7 @@ void BlobScene::initBlobs() {
     for (int i = 0; i < num_blobs; i++) {
         auto blob = std::make_unique<Blob>(*this, i, min_radius, max_radius, max_age, speed);
         PixelTheater::CHSV hsv(random8(), 255, 255);  
-        PixelTheater::hsv2rgb_rainbow(hsv, blob->color);
+        blob->color = hsv; // Assign CHSV, relies on CRGB(CHSV) constructor
         blobs.push_back(std::move(blob));
     }
     logInfo("Blobs created.");
@@ -217,7 +217,7 @@ void BlobScene::initBlobs() {
         for (int i = 0; i < 3; i++) { // Fewer fallback blobs
             auto blob = std::make_unique<Blob>(*this, i, 50, 80, 4000, 1.0f);
             PixelTheater::CHSV hsv(i * 85, 255, 255); // Spread hues
-            PixelTheater::hsv2rgb_rainbow(hsv, blob->color);
+            blob->color = hsv; // Assign CHSV, relies on CRGB(CHSV) constructor
             blobs.push_back(std::move(blob));
         }
         logWarning("Fallback blobs created");
@@ -243,7 +243,7 @@ void BlobScene::tick() {
     BENCHMARK_START("fade_leds");
     size_t count = ledCount();
     for(size_t i = 0; i < count; ++i) {
-        PixelTheater::fadeToBlackBy(leds[i], fade_amount); // Use leds[] proxy is fine too
+        leds[i].fadeToBlackBy(fade_amount); // Use CRGB method
     }
     BENCHMARK_END();
         
@@ -298,7 +298,7 @@ void BlobScene::drawBlobs() {
                 PixelTheater::CRGB c = blob->color;
                 if (blob->age < 150) { // Fade in new blobs
                     uint8_t fade = PixelTheater::map(blob->age, 0, 150, 180, 0); // Fade from mostly black
-                    PixelTheater::fadeToBlackBy(c, fade);
+                    c.fadeToBlackBy(fade); // Use CRGB method
                 }
                 // Blend based on distance (closer is brighter/more opaque)
                 uint8_t blend = PixelTheater::map(dist, 0, rad_sq, 255, 8); // Stronger blend

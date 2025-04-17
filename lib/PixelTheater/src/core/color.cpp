@@ -145,10 +145,4 @@ void hsv2rgb_rainbow(const CHSV& hsv, CRGB& rgb) {
     rgb.b = b;
 }
 
-void nscale8(CRGB* leds, uint16_t count, uint8_t scale) {
-    for(uint16_t i = 0; i < count; i++) {
-        nscale8(leds[i], scale);
-    }
-}
-
 } // namespace PixelTheater 

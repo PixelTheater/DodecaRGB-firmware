@@ -132,7 +132,7 @@ public:
         
         // Apply fade using leds[] proxy
         for (size_t i = 0; i < count; ++i) {
-            PixelTheater::fadeToBlackBy(leds[i], fade_amount);
+            leds[i].fadeToBlackBy(fade_amount);
         }
         counter++;
     }

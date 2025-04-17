@@ -1,7 +1,20 @@
 #pragma once
+
+// Include FastLED first on Teensy to define ::CRGB before use
+#ifdef PLATFORM_TEENSY
+#include <FastLED.h>
+#endif
+
 #include <cstdint>
 #include <algorithm>  // For std::fill
 #include "color_utils.h"  // For helper functions
+
+// Forward declare FastLED CRGB type when on Teensy
+#ifdef PLATFORM_TEENSY
+namespace {
+    class CRGB; // Forward declaration for ::CRGB
+}
+#endif
 
 namespace PixelTheater {
 
@@ -64,11 +77,10 @@ public:
     // Simple initialization
     constexpr CRGB() : r(0), g(0), b(0) {}
     constexpr CRGB(uint8_t r_, uint8_t g_, uint8_t b_) : r(r_), g(g_), b(b_) {}
-    CRGB(uint32_t colorcode) {
-        r = (colorcode >> 16) & 0xFF;
-        g = (colorcode >> 8) & 0xFF;
-        b = colorcode & 0xFF;
-    }
+    constexpr CRGB(uint32_t colorcode) :
+        r((colorcode >> 16) & 0xFF),
+        g((colorcode >> 8) & 0xFF),
+        b(colorcode & 0xFF) {}
 
     // Allow construction from HSV
     inline CRGB(const CHSV& rhs) {
@@ -108,6 +120,14 @@ public:
     inline uint8_t& operator[] (uint8_t x) { return raw[x]; }
     inline const uint8_t& operator[] (uint8_t x) const { return raw[x]; }
 
+    // Conversion operators/constructors for FastLED compatibility (Teensy only)
+    #ifdef PLATFORM_TEENSY
+    // Declarations only - implementation in crgb.cpp
+    operator ::CRGB() const; 
+    CRGB(const ::CRGB& rhs); 
+    CRGB& operator=(const ::CRGB& rhs);
+    #endif
+
     // Add math operators
     inline CRGB& operator+= (const CRGB& rhs) {
         r = qadd8(r, rhs.r);
@@ -142,6 +162,12 @@ public:
     bool operator!=(const CRGB& rhs) const {
         return !(*this == rhs);
     }
+
+    // Fading and Scaling methods
+    // Mimic FastLED methods
+    CRGB& fadeToBlackBy(uint8_t fadeBy);
+    CRGB& nscale8(uint8_t scaledown);
+    // Can add other scale methods (nscale8_video) if needed
 
     // basic colors
     static const CRGB Black;

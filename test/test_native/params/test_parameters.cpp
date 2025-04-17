@@ -114,15 +114,18 @@ TEST_SUITE("Parameter System") {
         }
 
         SUBCASE("Invalid string conversion returns sentinel") {
-            ParamValue float_val(0.5f);
-            ParamValue int_val(42);
+            // Check that string conversions return sentinels for non-string types
+            // UPDATE: as_string() now returns "" for non-string types, not nullptr.
+            ParamValue float_val(1.0f);
+            ParamValue int_val(1);
             ParamValue bool_val(true);
-            ParamValue str_val("test");  // PALETTE type
+            // ParamValue str_val("test"); // No longer a palette type
             
-            CHECK(str_val.as_string() != nullptr);  // Valid
-            CHECK(float_val.as_string() == nullptr);  // Invalid
-            CHECK(int_val.as_string() == nullptr);  // Invalid
-            CHECK(bool_val.as_string() == nullptr);  // Invalid
+            // CHECK( str_val.as_string() != nullptr ); // No longer relevant
+            // CHECK( strcmp(str_val.as_string(), "test") == 0 ); // No longer relevant
+            CHECK( strcmp(float_val.as_string(), "") == 0 ); // Check for empty string
+            CHECK( strcmp(int_val.as_string(), "") == 0 );   // Check for empty string
+            CHECK( strcmp(bool_val.as_string(), "") == 0 );  // Check for empty string
         }
 
         SUBCASE("Invalid float values use sentinel") {
