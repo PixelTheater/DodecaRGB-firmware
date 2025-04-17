@@ -49,7 +49,7 @@ A Model consists of three main collections that work together to represent the p
 2. **Point Geometry** (`points`):
    - 3D coordinates for each LED
    - Face assignments
-   - Neighbor relationships
+   - Access to pre-calculated neighbor relationships (`getNeighbors()`)
    - Distance calculations
 
 3. **Face Hierarchy** (`faces`):
@@ -79,6 +79,36 @@ These arrays are always synchronized:
 - Same indexing scheme (leds[i] and points[i] refer to same LED)
 - Consistent face assignments
 - Maintained automatically by the Model class
+
+### Neighbor Data
+
+In addition to coordinates and face assignments, each `Point` object stores a list of its nearest neighbors, pre-calculated during model generation. This allows for efficient traversal of the model's topology without expensive runtime distance calculations.
+
+```cpp
+// Access a point
+const Point& p = model.points[42];
+
+// Get its neighbors (returns a const reference to an array)
+const auto& neighbors = p.getNeighbors();
+
+// Iterate through neighbors
+for (const auto& neighbor : neighbors) {
+    // Check if the neighbor entry is valid (using sentinel check from point.cpp)
+    if (neighbor.id == 0xFFFF || neighbor.distance <= 0.0f) continue; 
+
+    // Access neighbor info
+    uint16_t neighbor_id = neighbor.id;
+    float distance_to_neighbor = neighbor.distance;
+
+    // Access the neighbor point itself
+    if (neighbor_id < model.points.size()) { // Bounds check
+        const Point& neighbor_point = model.points[neighbor_id];
+        // ... use neighbor_point.x(), neighbor_point.y(), etc. ...
+    }
+}
+```
+
+The neighbor list is ordered by distance, with the closest neighbor first. The size of the neighbor list is fixed at compile time (`PixelTheater::Limits::MAX_NEIGHBORS`).
 
 ## Coordinate Systems
 

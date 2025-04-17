@@ -112,43 +112,45 @@ void Particle::findNextLed() {
          reset(); // Reset if current LED is invalid
          return;
     }
+    // Access the current point and its pre-calculated neighbors
     const auto& current_point = scene.model().point(led_number);
+    const auto& neighbors = current_point.getNeighbors(); 
     
     float closest_dist_sq = 1e18f; // Use squared distance
     int closest_led = -1;
-    const int SEARCH_RADIUS_SQ = 30 * 30; 
-    const int MAX_CANDIDATES = 7;
-    int candidates_checked = 0;
-        
-    // Iterate through LEDs to find potential neighbors
-    // This is inefficient, ideally model provides neighbors
-    for (size_t i = 0; i < scene.ledCount() && candidates_checked < MAX_CANDIDATES; ++i) {
-        int led_idx = (led_number + i) % scene.ledCount(); // Start search near current
-        if (led_idx == led_number) continue;
+    
+    // Iterate through the pre-calculated neighbors
+    for (const auto& neighbor : neighbors) {
+        // Check if the neighbor is valid (using the sentinel ID from point.cpp)
+        if (neighbor.id == 0xFFFF || neighbor.distance <= 0.0f) {
+            continue; // Skip invalid or padding entries
+        }
 
-        // Check recent path
+        int led_idx = neighbor.id;
+
+        // Check if this neighbor is in the recent path
         bool in_path = false;
         for(size_t p_idx = 0; p_idx < std::min(size_t(3), path.size()); ++p_idx) {
             if (path[p_idx] == led_idx) { in_path = true; break; }
         }
         if (in_path) continue;
 
-        const auto& point = scene.model().point(led_idx);
-        float dx = point.x() - current_point.x();
-        float dy = point.y() - current_point.y();
-        float dz = point.z() - current_point.z();
-        float point_dist_sq = dx*dx + dy*dy + dz*dz;
+        // Get the neighbor's point data
+        // Check bounds just in case generated data is bad
+        if (led_idx >= (int)scene.ledCount()) continue;
 
-        if (point_dist_sq < SEARCH_RADIUS_SQ) {
-            candidates_checked++;
-            dx = point.x() - px;
-            dy = point.y() - py;
-            dz = point.z() - pz;
-            float dist_sq = dx*dx + dy*dy + dz*dz;
-            if (dist_sq < closest_dist_sq) {
-                closest_dist_sq = dist_sq;
-                closest_led = led_idx;
-            }
+        const auto& neighbor_point = scene.model().point(led_idx);
+
+        // Calculate distance from the particle's target position to the neighbor point
+        float dx = neighbor_point.x() - px;
+        float dy = neighbor_point.y() - py;
+        float dz = neighbor_point.z() - pz;
+        float dist_sq = dx*dx + dy*dy + dz*dz;
+
+        // If this neighbor is closer to the target position, select it
+        if (dist_sq < closest_dist_sq) {
+            closest_dist_sq = dist_sq;
+            closest_led = led_idx;
         }
     }
         

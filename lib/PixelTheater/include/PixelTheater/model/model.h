@@ -69,7 +69,8 @@ private:
     void initialize() {
         // Initialize points
         // Access ModelDef statically
-        for(const auto& point_data : ModelDef::POINTS) {
+        for(size_t i = 0; i < ModelDef::LED_COUNT; ++i) {
+            const auto& point_data = ModelDef::POINTS[i];
             _points[point_data.id] = Point(
                 point_data.id,
                 point_data.face_id,
@@ -107,6 +108,22 @@ private:
             }
 
             led_offset += face_type.num_leds;
+        }
+
+        // Initialize neighbors for each point
+        // Check if NEIGHBORS exists and has data before iterating
+        if constexpr (sizeof(ModelDef::NEIGHBORS) > 0) {
+            for(const auto& neighbor_data : ModelDef::NEIGHBORS) {
+                // Ensure point_id is within bounds
+                if (neighbor_data.point_id < ModelDef::LED_COUNT) {
+                    // Assuming NeighborData::neighbors is a C-style array
+                    // Pass pointer to the first element and the max count
+                    _points[neighbor_data.point_id].setNeighbors(
+                        reinterpret_cast<const Point::Neighbor*>(neighbor_data.neighbors), // Array decays to pointer, cast its type
+                        ModelDef::NeighborData::MAX_NEIGHBORS // Pass the max size defined in ModelDef
+                    );
+                }
+            }
         }
     }
 

@@ -170,6 +170,7 @@ public:
         // Allow iteration
         CRGB* begin() const { return _data + _offset; }
         CRGB* end() const { return _data + _offset + _count; }
+        size_t size() const { return _count; }
     } leds;  // Direct member access
 
     // Vertex array access
