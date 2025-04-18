@@ -31,6 +31,7 @@ emcc src/web_simulator.cpp \
      lib/PixelTheater/src/color/palettes.cpp \
      lib/PixelTheater/src/color/palette_api.cpp \
      lib/PixelTheater/src/color/conversions.cpp \
+     lib/PixelTheater/src/color/measurement.cpp \
      lib/PixelTheater/src/core/crgb.cpp \
      lib/PixelTheater/src/core/math_utils.cpp \
      lib/PixelTheater/src/model/point.cpp \

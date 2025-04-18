@@ -31,6 +31,7 @@
 #include "scenes/wandering_particles/wandering_particles_scene.h"
 #include "scenes/xyz_scanner/xyz_scanner_scene.h"
 #include "scenes/boids/boids_scene.h"
+#include "scenes/orientation_grid/orientation_grid_scene.h"
 #include <emscripten/bind.h>
 
 // Include the model definition - we'll use an include guard to prevent multiple definitions
@@ -146,6 +147,7 @@ public:
             PixelTheater::Log::info("Adding scenes to Theater...");
             
             // Add all scenes using Theater::addScene
+            theater->addScene<Scenes::OrientationGridScene>();
             theater->addScene<Scenes::TestScene>();
             theater->addScene<Scenes::BlobScene>();
             theater->addScene<Scenes::WanderingParticlesScene>();
