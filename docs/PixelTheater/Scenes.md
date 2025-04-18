@@ -8,10 +8,12 @@ version: 2.8.3
 
 This document provides a quick reference to the API available to authors creating custom animations by inheriting from `PixelTheater::Scene`.
 
-For a tutorial on creating scenes, see `docs/creating_animations.md`.
-For a more detailed guide, see `docs/PixelTheater/SceneAuthorGuide.md`.
+- For a tutorial on creating scenes, see the [Creating Animations Guide](../creating_animations.md).
+- For details on Parameters, see the [Parameters Guide](Parameters.md).
+- For Color/Palette details, see [Color System](Color.md) and [Palettes API](Palettes.md).
+- For Model/Geometry details, see [Model System](Model.md).
 
-## Basic Structure & `setup()` Example
+## Basic Structure & Example
 
 All scenes must inherit from `PixelTheater::Scene` and implement the `setup()` and `tick()` methods.
 
@@ -20,108 +22,142 @@ All scenes must inherit from `PixelTheater::Scene` and implement the `setup()` a
 
 #include "PixelTheater.h" 
 
-// Optional: Bring namespaces into scope for convenience,
-// but explicit qualification (e.g., PixelTheater::CRGB) is often preferred.
+// Optional: Bring namespaces into scope for convenience
 // using namespace PixelTheater;
-// using namespace PixelTheater::Constants;
+// using namespace PixelTheater::Constants; // For PT_PI, PT_TWO_PI etc.
 
 namespace Scenes {
 
-// Note: Inherit from PixelTheater::Scene explicitly
+// Note: Inherit PUBLICLY from PixelTheater::Scene
 class MyScene : public PixelTheater::Scene {
 public:
+    // --- Required ---
     // Constructor (usually default is fine)
-    MyScene() = default;
+    MyScene() = default; 
+    // Virtual destructor is important for proper cleanup
+    ~MyScene() override = default; 
 
-    // Setup is called once when the scene is added to the Theater.
-    // Use it to define metadata and parameters.
-    void setup() override {
-        // 1. Define Metadata (Name, Author, etc.)
-        set_name("My Awesome Scene");
-        set_author("Your Name");
-        set_description("Briefly describe what the scene does.");
-        // set_version("1.0"); // Optional
+    // Called once when scene added or reset. Define metadata/params here.
+    void setup() override; 
+    // Called every frame. Implement animation logic here.
+    void tick() override; 
 
-        // 2. Define Parameters (Controls)
-        // See Parameters.md for detailed options
-        param("speed", "ratio", 0.5f, "clamp", "Animation speed (0-1)");
-        param("color_hue", "ratio", 0.0f, "wrap", "Base color hue (0-1 maps to 0-255)");
-        param("enabled", "switch", true, "", "Enable the main effect");
-        param("mode", "select", {"A", "B", "C"}, "A", "", "Select operation mode");
-
-        // 3. Initialize any internal state variables if needed
-        // my_internal_state = 0;
-    }
-
-    // Tick is called repeatedly for each frame.
-    // Implement animation logic here.
-    void tick() override {
-        Scene::tick(); // Recommended: Call base tick to increment tick_count()
-
-        // Access parameter values via settings proxy
-        float current_speed = settings["speed"];
-        float current_hue_norm = settings["color_hue"];
-        bool is_enabled = settings["enabled"];
-        int selected_mode_index = settings["mode"]; // select returns index
-
-        // Convert normalized hue to 0-255
-        uint8_t current_hue = current_hue_norm * 255.0f;
-
-        // --- Animation logic based on parameters and time ---
-        if (!is_enabled) {
-            fill_solid(leds, CRGB::Black);
-            return;
-        }
-
-        for (size_t i = 0; i < ledCount(); ++i) {
-            // Example: Simple traveling sine wave
-            uint8_t phase = tickCount() * 5 + i * 10;
-            uint8_t val = sin8(phase * current_speed);
-            leds[i] = CHSV(current_hue, 255, val);
-        }
-    }
-
-    // Optional: Override reset() if custom logic needed when scene reactivates
-    // void reset() override { 
-    //     Scene::reset(); // Calls base reset (resets tick_count, parameters)
-    //     // Add custom reset logic here
-    // }
+    // --- Optional Overrides ---
     
-    // Optional: Provide a status string for debugging/logging
-    // std::string status() const override {
-    //     return "Mode: " + std::to_string(static_cast<int>(settings["mode"])) + "; Speed: " + std::to_string(static_cast<float>(settings["speed"]));
-    // }
+    // Called when switching back to this scene after it was inactive.
+    // Default resets tick_count and parameter values to defaults.
+    // Call Scene::reset() if overriding.
+    void reset() override { 
+        Scene::reset(); // Call base implementation first
+        // ... custom reset logic ... 
+    }
+
+    // If parameter definitions become too numerous for setup(), 
+    // you can optionally define them here instead.
+    void config() override {
+       param(...);
+       // ... other params ...
+    }
+    
+    // Provide a concise status string for debugging/logging.
+    // (Currently not used by default logging).
+    std::string status() const override {
+        return "Mode: " + std::to_string(static_cast<int>(settings["mode"]));
+    }
+
+private:
+    // Scene-specific state variables
+    // float my_internal_state = 0.0f;
 };
 
 } // namespace Scenes
+```
+
+**`setup()` Implementation Example:**
+
+```cpp
+void MyScene::setup() {
+    // 1. Define Metadata (Used by UI/logging)
+    set_name("My Awesome Scene");
+    set_author("Your Name");
+    set_description("Briefly describe what the scene does.");
+    // set_version("1.0"); // Optional
+    // meta("CustomKey", "CustomValue"); // Optional key-value metadata
+
+    // 2. Define Parameters (Controls) - See Parameters.md for details
+    param("speed", "ratio", 0.5f, "clamp", "Animation speed (0-1)");
+    param("color_hue", "ratio", 0.0f, "wrap", "Base color hue (0-1 maps to 0-255)");
+    param("enabled", "switch", true, "", "Enable the main effect");
+    param("mode", "select", {"A", "B", "C"}, "A", "", "Select operation mode");
+
+    // 3. Initialize any internal state variables if needed
+    // my_internal_state = 0;
+}
+```
+
+**`tick()` Implementation Example:**
+
+```cpp
+void MyScene::tick() {
+    Scene::tick(); // Recommended: Call base tick to increment tick_count()
+
+    // Access parameter values via settings proxy
+    float current_speed = settings["speed"];
+    float current_hue_norm = settings["color_hue"];
+    bool is_enabled = settings["enabled"];
+    int selected_mode_index = settings["mode"]; // select returns index
+
+    // --- Animation logic based on parameters and time ---
+    if (!is_enabled) {
+        fill_solid(leds, CRGB::Black); // Assumes fill_solid is available
+        return;
+    }
+
+    // Convert normalized hue to 0-255
+    uint8_t current_hue = current_hue_norm * 255.0f;
+
+    for (size_t i = 0; i < ledCount(); ++i) {
+        // Example: Simple traveling sine wave using time and index
+        uint32_t time_ms = millis();
+        uint8_t phase = (time_ms / 20) + i * 10; // Combine time and position
+        uint8_t val = sin8(static_cast<uint8_t>(phase * current_speed)); // Use speed param
+        leds[i] = CHSV(current_hue, 255, val); // Use hue param (assumes CHSV is available)
+    }
+}
 ```
 
 ## Available API within Scene Subclass
 
 ### Lifecycle Methods (Override)
 
-*   `virtual void setup()`: (Pure Virtual) Called once when the scene is added or reset. **Define metadata and parameters here.** Initialize internal state. This configures how the scene appears in UIs and what controls are available.
-*   `virtual void tick()`: (Pure Virtual) Called every frame. **Implement animation logic here.** Access parameters via `settings` to make the animation react to runtime changes.
-*   `virtual void reset()`: Optional override. Called when scene becomes active after being inactive. Default implementation resets `tick_count` and parameter values to their defaults. Call `Scene::reset()` if overriding.
+*   `virtual void setup()`: **(Required)** Called once when the scene is added or reset. Define metadata and parameters here. Initialize internal state.
+*   `virtual void tick()`: **(Required)** Called every frame. Implement animation logic here. Access parameters via `settings` to make the animation react to runtime changes.
+*   `virtual void reset()`: **(Optional)** Called when scene becomes active after being inactive. Default implementation resets `tick_count` and parameter values to their defaults. Call `Scene::reset()` if overriding.
+*   `virtual void config()`: **(Optional)** Alternative place to define parameters using `param(...)` if `setup()` becomes too complex. Called after the constructor.
+*   `virtual ~Scene()`: **(Required override, usually `= default`)** Virtual destructor ensures proper cleanup if subclass adds members needing destruction.
 
-### Metadata Definition (in `setup()`)
+### Metadata Definition (in `setup()` or `config()`)
 
-Define these in `setup()` to identify your scene. They are used by logging systems (`main.cpp`) and UIs (like the Web Simulator) to display information about the scene.
+Define these to identify your scene. They are used by logging systems and UIs.
 
 *   `set_name(const std::string& name)`
 *   `set_description(const std::string& desc)`
 *   `set_version(const std::string& ver)`
 *   `set_author(const std::string& author)`
-*   `meta(const std::string& key, const std::string& value)`: For custom key-value metadata.
+*   `meta(const std::string& key, const std::string& value)`: For custom key-value metadata (e.g., `meta("Source", "URL")`).
 
-### Parameter Definition & Access (in `setup()` / `tick()`)
+### Parameter Definition & Access
 
-Parameters define the user-controllable aspects of your scene. Define them in `setup()` using `param()`. The definitions (type, range, description) are used by UIs (like the Web Simulator) to automatically generate controls. Read the current values in `tick()` using `settings["param_name"]` to make your animation respond. These values can be changed *while the scene is running* via the UI or other control mechanisms.
+Parameters define the user-controllable aspects of your scene. Define them in `setup()` or `config()` using `param()`. Read the current values in `tick()` using `settings["param_name"]`.
 
-*   `param(...)` (Protected method in `setup()`): Define parameters. Multiple overloads exist for different types (`ratio`, `count`, `range`, `switch`, `select`). The `description` argument is important as it often appears as a label or tooltip in UIs. See the example above and the detailed [Parameters Guide](Parameters.md) for signatures and options.
-*   `settings["param_name"]` (`SettingsProxy` member, typically used in `tick()`): Access/modify current parameter values. Provides implicit type conversion.
+*   `param(...)` (Protected method): Define parameters. Multiple overloads exist for different types (`ratio`, `count`, `range`, `switch`, `select`, `color`, `gradient`). The `description` argument is important for UI labels/tooltips. See the [Parameters Guide](Parameters.md) for signatures and options.
+*   `settings["param_name"]` (`SettingsProxy` member): Access/modify current parameter values. Provides implicit type conversion.
     *   Example: `float speed = settings["speed"];`
-    *   See [Parameters Guide](Parameters.md) for details on accessing metadata and iterating parameters.
+    *   Supports iteration: `for (const auto& pair : settings) { ... }`
+    *   See [Parameters Guide](Parameters.md) for details.
+*   `has_parameter(const std::string& name) const`: Check if a parameter exists.
+*   `get_parameter_value(const std::string& name) const`: Get raw parameter value (variant).
+*   `get_parameter_metadata(...)`: Access metadata associated with a parameter.
 
 ### Metadata Accessors (Read-only)
 
@@ -129,46 +165,50 @@ Parameters define the user-controllable aspects of your scene. Define them in `s
 *   `description()` (`const std::string&`)
 *   `version()` (`const std::string&`)
 *   `author()` (`const std::string&`)
+*   `get_meta(const std::string& key) const`: Retrieve value set by `meta()`.
 
 ### LED Access
 
-*   `leds[index]` (`LedsProxy` member): Provides `CRGB&`. Bounds-clamped.
-*   `led(index)` (`CRGB&` method): Helper access. Bounds-clamped.
+*   `leds[index]` (`LedsProxy` member): Provides `CRGB&`. Index is bounds-clamped.
+*   `led(index)` (`CRGB&` method): Helper access. Index is bounds-clamped.
 *   `ledCount()` (`size_t` method): Returns total number of LEDs.
 
 ### Model Geometry Access
 
 *   `model()` (`const IModel&` method): Returns reference to the model interface.
-*   `model().point(index)` (`const Point&`): Get point data for LED `index`. Bounds-clamped.
-*   `model().face(index)` (`const Face&`): Get face data for face `index`. Bounds-clamped.
+*   `model().point(index)` (`const Point&`): Get point data for LED `index`. Index is bounds-clamped.
+*   `model().face(index)` (`const Face&`): Get face data for face `index`. Index is bounds-clamped.
 *   `model().pointCount()` (`size_t`): Total number of points (usually == `ledCount()`).
 *   `model().faceCount()` (`size_t`): Total number of faces.
 
 ### Timing Utilities
 
-*   `millis()` (`uint32_t`): Milliseconds since program start.
-*   `deltaTime()` (`float`): Time elapsed since the last frame (in seconds).
-*   `tick_count()` (`size_t`): Number of `tick()` calls since the scene was last activated/reset.
+*   `millis()` (`uint32_t`): Milliseconds since program start (provided by Platform).
+*   `deltaTime()` (`float`): Time elapsed since the last frame (in seconds, provided by Platform).
+*   `tick_count()` (`size_t`): Number of `tick()` calls since the scene was last activated/reset. Incremented by `Scene::tick()`.
 
-### Math/Random Utilities
+### Math/Random Utilities (provided via `PixelTheater.h`)
 
-*   `random8()`
-*   `random16()`
-*   `random(max)`
-*   `random(min, max)`
-*   `randomFloat()` (0.0-1.0)
-*   `randomFloat(max)` (0.0-max)
-*   `randomFloat(min, max)`
-*   *(Global utilities like `map`, `nblend`, `fadeToBlackBy`, `CHSV`, `fill_solid`, etc., are available via `PixelTheater.h` and `using namespace PixelTheater;`. See `Color.md` and `creating_animations.md`.)*
-*   *(Constants like `PT_PI`, `PT_TWO_PI` are available via the `PixelTheater::Constants` namespace. Use them directly (e.g., `PixelTheater::Constants::PT_PI`) or bring them into scope locally (e.g., `using PixelTheater::Constants::PT_PI;` within a function).)*
-*   *(Note: Using certain library utilities might require ensuring their corresponding `.cpp` source file is included in platform-specific build scripts, like `build_web.sh`.)*
+*   `random8()`: Random `uint8_t` (0-255).
+*   `random16()`: Random `uint16_t` (0-65535).
+*   `random(max)`: Random `long` (0 to max-1).
+*   `random(min, max)`: Random `long` (min to max-1).
+*   `randomFloat()`: Random `float` (0.0 to 1.0).
+*   `randomFloat(max)`: Random `float` (0.0 to max).
+*   `randomFloat(min, max)`: Random `float` (min to max).
+*   Global math/color utilities: `map()`, `nblend()`, `fadeToBlackBy()`, `fill_solid()`, `colorFromPalette()`, `CRGB`, `CHSV`, etc., are available via `PixelTheater.h` (may require `using namespace PixelTheater;`). See [Color System](Color.md), [Palettes API](Palettes.md), and the [Creating Animations Guide](../creating_animations.md).
+*   Constants: `PT_PI`, `PT_TWO_PI`, etc., are in the `PixelTheater::Constants` namespace. Use `PixelTheater::Constants::PT_PI` or `using namespace PixelTheater::Constants;`.
+
+### Logging Utilities
+
+Requires a `LogProvider` configured in the `Platform`. Format string support is basic (like `printf`).
+
+*   `logInfo(const char* format, ...)`
+*   `logWarning(const char* format, ...)`
+*   `logError(const char* format, ...)`
 
 ### Other Utility Methods
 
-*   `virtual std::string status() const`: Optional override. Intended to return a concise string representing the current internal state of the scene for debugging or detailed logging. (Note: Currently not used by the default logging in `main.cpp`.)
-*   `logInfo(const char* format, ...)`: Log informational messages.
-*   `logWarning(const char* format, ...)`: Log warning messages.
-*   `logError(const char* format, ...)`: Log error messages.
-*   *(Note: Logging requires a `LogProvider` to be configured in the `Platform`. Format string support is basic; avoid complex specifiers.)*
+*   `virtual std::string status() const`: **(Optional)** Override to return a concise string representing the scene's internal state for debugging/logging.
 
 Refer to the source code headers (`scene.h`, `imodel.h`, `platform.h`, `parameters.h`, etc.) for precise signatures and implementation details.

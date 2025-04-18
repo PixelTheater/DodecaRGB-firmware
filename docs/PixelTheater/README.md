@@ -64,7 +64,7 @@ The `Theater` acts as a central coordinator, connecting the chosen hardware `Pla
 *   **Parameters/Settings**: Mechanism for runtime configuration of scenes via `param()` and `settings[]`. See [Parameters](Parameters.md).
 *   **Color API**: Platform-independent types (`PixelTheater::CRGB`, `PixelTheater::CHSV`) and functions (`PixelTheater::blend`, `PixelTheater::colorFromPalette`). Methods like `CRGB::nscale8` and `CRGB::fadeToBlackBy` provide direct color manipulation. See [Color System](Color.md) and [Palettes API](Palettes.md).
 
-## Getting Started (Scene Author Focus)
+## Getting Started
 
 1.  **Include Header:** Add `#include "PixelTheater.h"` to your scene file. This typically includes everything needed for scene development.
 2.  **Create Scene Class:** Define a class inheriting from `PixelTheater::Scene`.
@@ -112,11 +112,11 @@ The `Theater` acts as a central coordinator, connecting the chosen hardware `Pla
     }
     ```
 
-*   For detailed guides, see [Scene Author Guide](SceneAuthorGuide.md) and [Creating Animations Guide](../guides/creating_animations.md).
+*   For a more detailed guides, see [Creating Animations Guide](../guides/creating_animations.md).
 
 ## Key Subsystems Documentation
 
-*   **[Scene API](SceneAuthorGuide.md):** How to structure and write animation scenes.
+*   **[Scene API](Scenes.md):** How to structure and write animation scenes.
 *   **[Color & Palettes](Color.md):** Using `CRGB`/`CHSV`, predefined palettes, and color utilities.
 *   **[Palettes API](Palettes.md):** Specific details on using `CRGBPalette16` and `colorFromPalette`.
 *   **[Parameters](Parameters.md):** Defining and using runtime parameters.
