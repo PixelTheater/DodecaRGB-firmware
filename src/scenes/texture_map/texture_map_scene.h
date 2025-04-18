@@ -1,7 +1,5 @@
 #pragma once
 
-#include "PixelTheater/Scene.h"
-// #include "PixelTheater/PixelTheater.h" // Includes core types like CRGB - INCORRECT PATH
 #include "PixelTheater.h" // Corrected include path
 #include "texture_data.h" // Includes the generated texture data
 #include <vector> // Added for std::vector

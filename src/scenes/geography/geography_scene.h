@@ -21,7 +21,11 @@ public:
 
     void setup() override;
     void tick() override;
-    virtual std::string status() const;
+    virtual std::string status() const override;
+
+    void update_attractor(float dt);
+    void draw_lorenz();
+    void draw_texture_mapped();
 
 private:
     // Lorenz attractor parameters

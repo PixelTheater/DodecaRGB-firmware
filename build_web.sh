@@ -20,35 +20,24 @@ if [ -f "./version" ]; then
   mv ./version ./version.bak
 fi
 
+# --- ADDED: Find source files automatically --- 
+echo "Finding source files..."
+# CPP_FILES=$(find src lib/PixelTheater/src -name '*.cpp')
+# Find files, excluding specific ones and the _old_scenes directory
+CPP_FILES=$(find src lib/PixelTheater/src -name '*.cpp' \
+                -not -path 'src/_old_scenes/*' \
+                -not -name 'main.cpp' \
+                -not -name 'web_build_proxy.cpp')
+# You might want to add other filters here if needed, e.g.:
+# -not -path '*/test/*'
+echo "Using files:"
+echo "$CPP_FILES"
+# --- END ADDED ---
+
 echo "Building WebGL LED Simulator with debugging options..."
 
 # Compile the C++ code to WebAssembly with debugging information
-emcc src/web_simulator.cpp \
-     src/benchmark.cpp \
-     src/math_provider.cpp \
-     src/scenes/boids/boids_scene.cpp \
-     lib/PixelTheater/src/color/fill.cpp \
-     lib/PixelTheater/src/color/definitions.cpp \
-     lib/PixelTheater/src/color/palettes.cpp \
-     lib/PixelTheater/src/color/palette_api.cpp \
-     lib/PixelTheater/src/color/conversions.cpp \
-     lib/PixelTheater/src/color/measurement.cpp \
-     lib/PixelTheater/src/core/crgb.cpp \
-     lib/PixelTheater/src/core/math_utils.cpp \
-     lib/PixelTheater/src/model/point.cpp \
-     lib/PixelTheater/src/params/handlers/flag_handler.cpp \
-     lib/PixelTheater/src/params/handlers/type_handler.cpp \
-     lib/PixelTheater/src/params/param_types.cpp \
-     lib/PixelTheater/src/params/param_schema.cpp \
-     lib/PixelTheater/src/platform/web_platform.cpp \
-     lib/PixelTheater/src/settings.cpp \
-     lib/PixelTheater/src/platform/webgl/util.cpp \
-     lib/PixelTheater/src/platform/webgl/camera.cpp \
-     lib/PixelTheater/src/platform/webgl/mesh.cpp \
-     lib/PixelTheater/src/platform/webgl/shaders.cpp \
-     lib/PixelTheater/src/platform/webgl/renderer.cpp \
-     lib/PixelTheater/src/theater.cpp \
-     lib/PixelTheater/src/scene.cpp \
+emcc ${CPP_FILES} \
      -I"." \
      -I"lib" \
      -I"lib/PixelTheater/include" \

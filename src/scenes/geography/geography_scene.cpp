@@ -94,9 +94,9 @@ void GeographyScene::tick() {
     updateLorenz();
 
     // Normalize Lorenz state for rotation control
-    float norm_x = map(lorenz_x, -25.0f, 25.0f, -1.0f, 1.0f);
-    float norm_y = map(lorenz_y, -35.0f, 35.0f, -1.0f, 1.0f);
-    float norm_z = map(lorenz_z, 0.0f, 50.0f, -1.0f, 1.0f); // Z usually positive
+    float norm_x = PixelTheater::map(lorenz_x, -25.0f, 25.0f, -1.0f, 1.0f);
+    float norm_y = PixelTheater::map(lorenz_y, -35.0f, 35.0f, -1.0f, 1.0f);
+    float norm_z = PixelTheater::map(lorenz_z, 0.0f, 50.0f, -1.0f, 1.0f); // Z usually positive
     norm_x = std::clamp(norm_x, -1.0f, 1.0f);
     norm_y = std::clamp(norm_y, -1.0f, 1.0f);
     norm_z = std::clamp(norm_z, -1.0f, 1.0f);
@@ -168,9 +168,9 @@ void GeographyScene::tick() {
         float dot3 = p_vec.dot(gradient_axis3);
 
         // Map dot product [-radius, +radius] to palette index [0, 255]
-        uint8_t index1 = static_cast<uint8_t>(map(dot1, -model_radius, model_radius, 0.0f, 255.0f));
-        uint8_t index2 = static_cast<uint8_t>(map(dot2, -model_radius, model_radius, 0.0f, 255.0f));
-        uint8_t index3 = static_cast<uint8_t>(map(dot3, -model_radius, model_radius, 0.0f, 255.0f));
+        uint8_t index1 = static_cast<uint8_t>(PixelTheater::map(dot1, -model_radius, model_radius, 0.0f, 255.0f));
+        uint8_t index2 = static_cast<uint8_t>(PixelTheater::map(dot2, -model_radius, model_radius, 0.0f, 255.0f));
+        uint8_t index3 = static_cast<uint8_t>(PixelTheater::map(dot3, -model_radius, model_radius, 0.0f, 255.0f));
 
         // Get colors from the palettes
         PixelTheater::CRGB color1 = PixelTheater::colorFromPalette(palette1, index1);

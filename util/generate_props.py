@@ -208,12 +208,29 @@ def process_images(image_dir, max_width, max_height):
 // Max Resolution Constraint: {max_width}x{max_height}
 // Source Images Processed: {len(image_blocks)}"""
 
+    # --- Define the conditional include block --- 
+    conditional_include = """\
+// Conditionally include pgmspace.h only for AVR/Teensy platforms
+#if defined(TEENSYDUINO) || defined(ARDUINO_TEENSY41) // More robust check
+  #include <avr/pgmspace.h>
+#else
+  // Define PROGMEM as empty for non-AVR platforms like the web build
+  #ifndef PROGMEM
+    #define PROGMEM
+  #endif
+  // Define pgm_read_byte macro for direct access on non-AVR platforms
+  #ifndef pgm_read_byte
+    #define pgm_read_byte(addr) (*(const uint8_t *)(addr))
+  #endif
+  // Add similar defines for pgm_read_word, pgm_read_dword, memcpy_P if needed
+#endif
+"""
+
     header_content = f"""{header_comment}
 #pragma once
 #include <cstdint>
 #include <cstddef> // For size_t
-#include <avr/pgmspace.h> // Include for PROGMEM - <<< ADDED FOR C++ COMPATIBILITY CHECK >>>
-
+{conditional_include}
 namespace PixelTheater {{
 
 // Definition for the Texture Data structure

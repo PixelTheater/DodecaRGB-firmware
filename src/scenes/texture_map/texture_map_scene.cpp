@@ -1,7 +1,6 @@
 #include "texture_map_scene.h"
 // #include "PixelTheater/mapping/coordinate_map.h" // Removed - Assume mapping comes from base Scene/Model
 #include <cmath> // For std::fmod, atan2, acos, sqrt, max, min
-#include <avr/pgmspace.h> // <<< ADDED FOR PROGMEM ACCESS >>>
 #include <vector> // Include vector for safety, though already in .h
 
 // Use shorter Eigen types (assuming Eigen headers included via PixelTheater.h)
