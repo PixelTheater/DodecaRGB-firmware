@@ -137,17 +137,24 @@ public:
         counter++;
     }
     
-    std::string status() const {
-        std::string output;
-        // Ensure settings access is correctly handled here (might need PixelTheater:: qualification if not inherited?)
+    std::string status() const override {
+        // Ensure settings access is correctly handled here
+        // Access settings *before* using them in snprintf
         float speed = settings["speed"];
         int blend = static_cast<int>(settings["blend"]);
         uint8_t fade = static_cast<uint8_t>(settings["fade"]);
-        output += "XYZ Scanner: counter=" + std::to_string(counter) + "\n";
-        output += "Positions: x=" + std::to_string(xi) + " y=" + std::to_string(yi) + " z=" + std::to_string(zi) + "\n";
-        output += "Target: " + std::to_string(target) + " Speed: " + std::to_string(speed) + 
-                  " Blend: " + std::to_string(blend) + " Fade: " + std::to_string(fade);
-        return output;
+
+        char buffer[256]; // Increased buffer size for more info
+        snprintf(buffer, sizeof(buffer), 
+                 "XYZScanner: Ctr=%d | Pos=(%.1f, %.1f, %.1f) | Tgt=%.1f | Spd=%.2f | Blnd=%d | Fade=%d",
+                 counter,
+                 xi, yi, zi, // Positions
+                 target, 
+                 speed, 
+                 blend, 
+                 fade
+                );
+        return std::string(buffer);
     }
     
 private:

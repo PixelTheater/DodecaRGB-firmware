@@ -282,7 +282,7 @@ public:
 
     // The Scene class might not have a status() method to override
     // Let's provide it without the override keyword
-    std::string status() const {
+    std::string status() const override {
         std::string phase_name = "Unknown";
         switch(current_phase_) {
             case FADE_IN: phase_name = "Fade In"; break;
@@ -295,6 +295,8 @@ public:
         return "Diagnostic Test Phase: " + phase_name + 
                " (" + std::to_string((int)phase_timer_) + "s)";
     }
+
+    const char* author() const { return "Test Author"; }
 };
 
 } // namespace Scenes 

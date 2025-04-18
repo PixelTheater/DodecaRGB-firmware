@@ -266,6 +266,14 @@ namespace PixelTheater {
             return parameter_schema().to_json();
         }
 
+        // --- ADDED: Virtual status method ---
+        /**
+         * @brief Get a string representing the current internal state of the scene.
+         * Optional override for debugging/logging.
+         * @return Status string.
+         */
+        virtual std::string status() const { return "(No status)"; } // Base implementation
+
         // --- Scene Helper Methods --- 
         size_t ledCount() const { return leds_ptr ? leds_ptr->ledCount() : 0; }
         CRGB& led(size_t index) {

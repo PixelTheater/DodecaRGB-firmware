@@ -53,7 +53,7 @@ public:
     void initParticles();
     void estimateSphereRadius();
     void tick() override;
-    std::string status() const;
+    std::string status() const override;
     
     friend class Particle; // Allow Particle to access helpers and sphere_radius
 

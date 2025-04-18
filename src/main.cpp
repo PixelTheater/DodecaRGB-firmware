@@ -23,6 +23,7 @@
 #include "scenes/test_scene/test_scene.h" // Include Test Scene
 #include "scenes/geography/geography_scene.h" // Include the new scene
 #include "scenes/orientation_grid/orientation_grid_scene.h" // ADDED
+#include "scenes/sparkles/sparkles.h" // ADDED
 #include "benchmark.h" 
 
 #ifndef PROJECT_VERSION
@@ -70,11 +71,15 @@ void timerStatusMessage(){
   // uint8_t scene_number = 0; // TODO: Get current scene index from Theater?
   size_t scene_number = 0; // Default to 0 if no scene
   String scene_name = "Unknown";
+  std::string scene_status = "(No Scene)"; // Default status
   
-  // Get current scene name from Theater
+  // Get current scene name and status from Theater
   PixelTheater::Scene* current = theater.currentScene();
   if (current) { 
     scene_name = current->name().c_str(); 
+    scene_status = current->status(); // Get status from the current scene
+    if (scene_status.empty()) { scene_status = "(empty)"; } // Handle empty status
+    
     // Find the index of the current scene
     const auto& all_scenes = theater.scenes();
     for(size_t i = 0; i < all_scenes.size(); ++i) {
@@ -91,8 +96,8 @@ void timerStatusMessage(){
     FastLED.getFPS() 
   );
 
-  String status = "running"; // TODO: get status from running scene?
-  Serial.printf("%s\n", status.c_str());
+  // Print the fetched scene status
+  Serial.printf("Status: %s\n", scene_status.c_str());
 
   Serial.printf("Est Power: %0.1f W (%.1f%% brightness)\n", 
     calculate_power_usage()/1000.0,
@@ -174,6 +179,7 @@ void setup() {
   
   // Add scenes 
   //theater.addScene<Scenes::TestScene>(); // Add Test Scene first
+  theater.addScene<Scenes::Sparkles>(); // ADDED
   theater.addScene<Scenes::OrientationGridScene>(); // ADDED
   theater.addScene<Scenes::BlobScene>(); 
   theater.addScene<Scenes::XYZScannerScene>(); 

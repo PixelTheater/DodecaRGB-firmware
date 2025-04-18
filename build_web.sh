@@ -26,6 +26,7 @@ echo "Building WebGL LED Simulator with debugging options..."
 emcc src/web_simulator.cpp \
      src/benchmark.cpp \
      src/math_provider.cpp \
+     src/scenes/boids/boids_scene.cpp \
      lib/PixelTheater/src/color/fill.cpp \
      lib/PixelTheater/src/color/definitions.cpp \
      lib/PixelTheater/src/color/palettes.cpp \
