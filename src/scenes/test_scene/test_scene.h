@@ -36,16 +36,20 @@ private:
     bool is_pulsing_ = false;
 
     // Phase durations (approximate seconds)
-    const float DURATION_FADE_IN = 2.0f;
-    const float DURATION_FACE_CYCLE = 30.0f;
-    const float DURATION_LED_CHASE = 30.0f;
-    const float DURATION_BRIGHTNESS_PULSE = 30.0f;
-    const float DURATION_RAINBOW_CYCLE = 30.0f;
+    const float DURATION_FADE_IN = 3.0f;
+    const float DURATION_FACE_CYCLE = 20.0f;
+    const float DURATION_LED_CHASE = 20.0f;
+    const float DURATION_BRIGHTNESS_PULSE = 20.0f;
+    const float DURATION_RAINBOW_CYCLE = 20.0f;
+    const float FACE_TRANSITION_DURATION = 0.5f; // Duration of crossfade between faces
 
-    const uint8_t MAX_BRIGHTNESS = 100; // General brightness limit (0-255)
-    const uint8_t PULSE_BRIGHTNESS = 255; // Full brightness for pulses
-    const float PULSE_INTERVAL = 3.0f; // Seconds between pulses
-    const float PULSE_DURATION = 0.15f; // Seconds pulse stays at max bright
+    // Constants for the pulse effect
+    static constexpr float PULSE_INTERVAL = 3.0f; // Time between starts of pulses (seconds)
+    static constexpr float PULSE_DURATION = 0.3f; // Total duration of the pulse (seconds) - controls speed
+
+    // Define start and end colors for the pulse
+    const PixelTheater::CRGB START_COLOR = PixelTheater::CRGB(0, 0, 50); // Deep dark blue
+    const PixelTheater::CRGB END_COLOR = PixelTheater::CRGB::White;      // Bright white
 
 public:
     TestScene() : PixelTheater::Scene() {} 
@@ -130,24 +134,57 @@ public:
         // Simple fade in - already handled by clearing initially and letting next phase draw
         // Or, add a slow brightness ramp here if desired.
         float brightness_factor = std::min(1.0f, phase_timer_ / DURATION_FADE_IN);
-        uint8_t brightness = brightness_factor * MAX_BRIGHTNESS;
+        uint8_t brightness = brightness_factor * 255;
         PixelTheater::fill_solid(leds, PixelTheater::CHSV(0, 0, brightness)); // Fade white in
     }
 
     void runFaceCycle(float dt) {
+        // Prevent division by zero if faceCount is 0
+        if (model().faceCount() == 0) return;
+
         float time_per_face = DURATION_FACE_CYCLE / model().faceCount();
-        current_face_ = static_cast<int>(phase_timer_ / time_per_face) % model().faceCount();
-        uint8_t face_hue = (current_face_ * 255) / model().faceCount(); 
-        PixelTheater::CHSV face_color_hsv = PixelTheater::CHSV(face_hue, 255, MAX_BRIGHTNESS);
-        PixelTheater::CRGB face_color_rgb = face_color_hsv;
+        // Ensure transition is not longer than time spent on face
+        float effective_transition_duration = std::min(time_per_face, FACE_TRANSITION_DURATION);
+
+        int current_face_idx = static_cast<int>(phase_timer_ / time_per_face) % model().faceCount();
+        int next_face_idx = (current_face_idx + 1) % model().faceCount();
+        float time_on_current_face = fmod(phase_timer_, time_per_face);
+
+        // Calculate colors for current and next faces
+        uint8_t current_face_hue = (current_face_idx * 255) / model().faceCount();
+        PixelTheater::CRGB current_face_color = PixelTheater::CHSV(current_face_hue, 255, 255);
+
+        uint8_t next_face_hue = (next_face_idx * 255) / model().faceCount();
+        PixelTheater::CRGB next_face_color = PixelTheater::CHSV(next_face_hue, 255, 255);
+
+        uint8_t current_face_brightness = 255;
+        uint8_t next_face_brightness = 0;
+
+        // Check if we are in the transition period at the end of the face display time
+        float transition_start_time = time_per_face - effective_transition_duration;
+        if (time_on_current_face >= transition_start_time && effective_transition_duration > 1e-6f) {
+            float transition_progress = (time_on_current_face - transition_start_time) / effective_transition_duration;
+            transition_progress = std::clamp(transition_progress, 0.0f, 1.0f);
+
+            // Linear crossfade: current fades out (255 -> 0), next fades in (0 -> 255)
+            current_face_brightness = static_cast<uint8_t>((1.0f - transition_progress) * 255.0f);
+            next_face_brightness = static_cast<uint8_t>(transition_progress * 255.0f);
+        }
 
         // Clear all LEDs first
         PixelTheater::fill_solid(leds, PixelTheater::CRGB::Black);
         
         // Light up LEDs belonging to the current face
         for (size_t i = 0; i < ledCount(); ++i) {
-            if (model().point(i).face_id() == current_face_) {
-                leds[i] = face_color_rgb;
+            int led_face_id = model().point(i).face_id();
+
+            if (led_face_id == current_face_idx && current_face_brightness > 0) {
+                leds[i] = current_face_color;
+                leds[i].nscale8(current_face_brightness); // Apply fade out scale
+            } else if (led_face_id == next_face_idx && next_face_brightness > 0) {
+                // Only light up next face during transition (or if brightness > 0)
+                leds[i] = next_face_color;
+                leds[i].nscale8(next_face_brightness); // Apply fade in scale
             }
         }
     }
@@ -168,14 +205,15 @@ public:
         // Draw the head of the chase
         for(int i=0; i < leds_to_advance; ++i) {
             int current_pos = (chase_position_ + i) % ledCount();
-            leds[current_pos] = PixelTheater::CHSV(base_hue_, 255, MAX_BRIGHTNESS);
+            leds[current_pos] = PixelTheater::CHSV(base_hue_, 255, 255);
         }
         chase_position_ = (chase_position_ + leds_to_advance) % ledCount();
     }
 
     void runBrightnessPulse(float dt) {
         pulse_timer_ += dt;
-        uint8_t current_brightness = MAX_BRIGHTNESS;
+
+        PixelTheater::CRGB current_color = START_COLOR;
 
         // Check if it's time to start a pulse
         if (!is_pulsing_ && pulse_timer_ >= PULSE_INTERVAL) {
@@ -185,34 +223,60 @@ public:
 
         // Handle pulsing state
         if (is_pulsing_) {
-            if (pulse_timer_ <= PULSE_DURATION) {
-                // Ramp up quickly to max brightness (optional, could just snap)
-                // float pulse_factor = pulse_timer_ / (PULSE_DURATION * 0.2f); // Quick ramp up
-                // current_brightness = MAX_BRIGHTNESS + (PULSE_BRIGHTNESS - MAX_BRIGHTNESS) * std::min(1.0f, pulse_factor);
-                current_brightness = PULSE_BRIGHTNESS; // Snap to full bright
+            if (pulse_timer_ >= PULSE_DURATION) {
+                // Pulse finished, reset state
+                current_color = START_COLOR;
+                is_pulsing_ = false;
+                pulse_timer_ = 0.0f; // Reset timer for next interval
             } else {
-                 // Fade back down after pulse duration
-                 float fade_factor = (pulse_timer_ - PULSE_DURATION) / (PULSE_INTERVAL * 0.1f); // Faster fade down
-                 current_brightness = PULSE_BRIGHTNESS - (PULSE_BRIGHTNESS - MAX_BRIGHTNESS) * std::min(1.0f, fade_factor);
-                 if (current_brightness <= MAX_BRIGHTNESS) {
-                     current_brightness = MAX_BRIGHTNESS;
-                     is_pulsing_ = false; // End pulse state
-                     pulse_timer_ = 0.0f; // Reset timer for interval
-                 }
+                // Calculate blend amount (0-255) for ramp up/down
+                float progress = pulse_timer_ / PULSE_DURATION; // 0.0 to 1.0
+                float blend_factor = 0.0f;
+                if (progress < 0.5f) {
+                    // Ramp up phase (0.0 to 0.5 progress -> 0.0 to 1.0 factor)
+                    blend_factor = progress * 2.0f;
+                } else {
+                    // Ramp down phase (0.5 to 1.0 progress -> 1.0 to 0.0 factor)
+                    blend_factor = (1.0f - progress) * 2.0f;
+                }
+                uint8_t blend_amount = static_cast<uint8_t>(std::clamp(blend_factor * 255.0f, 0.0f, 255.0f));
+
+                // Blend between START_COLOR and END_COLOR
+                current_color = PixelTheater::blend(START_COLOR, END_COLOR, blend_amount);
             }
         }
 
         // Set all LEDs to the base color with current brightness
-        PixelTheater::CHSV base_color_hsv(160, 200, current_brightness); // Blue-ish base
-        PixelTheater::fill_solid(leds, PixelTheater::CRGB(base_color_hsv));
+        PixelTheater::fill_solid(leds, current_color);
     }
 
      void runRainbowCycle(float dt) {
-        base_hue_ += 2; // Speed of hue shift
-        uint8_t delta_hue = 255 / std::max(1, (int)ledCount() / 10); // Spread rainbow
+        // Get elapsed time in this phase for animation
+        float time = phase_timer_;
+        const float base_speed = 30.0f; // Base animation speed factor
 
         for(size_t i=0; i < ledCount(); ++i) {
-            leds[i] = PixelTheater::CHSV(base_hue_ + i * delta_hue, 255, MAX_BRIGHTNESS);
+            int face_id = model().point(i).face_id();
+
+            if (face_id >= 0) {
+                // Deterministically calculate animation parameters based on face_id
+                float speed_mod = 1.0f + fmodf(face_id, 5.0f) * 0.3f; // Speed varies slightly per face (0-4 pattern)
+                float direction = (face_id % 2 == 0) ? 1.0f : -1.0f;    // Direction alternates per face
+                float face_base_hue = fmodf(face_id * (255.0f / std::max(1, (int)model().faceCount())), 255.0f);
+
+                // Calculate current hue, wrapping around 0-255
+                float hue = face_base_hue + direction * speed_mod * time * base_speed;
+                hue = fmodf(hue/10.0f, 255.0f);
+                if (hue < 0.0f) {
+                    hue += 255.0f; // Ensure hue is positive
+                }
+
+                // Set LED color using CHSV
+                leds[i] = PixelTheater::CHSV(static_cast<uint8_t>(hue), 255, 255);
+            } else {
+                // LEDs not belonging to a face are off
+                leds[i] = PixelTheater::CRGB::Black;
+            }
         }
     }
 

@@ -21,6 +21,7 @@
 #include "scenes/wandering_particles/wandering_particles_scene.h" // Refactored
 #include "scenes/boids/boids_scene.h" // Refactored
 #include "scenes/test_scene/test_scene.h" // Include Test Scene
+#include "scenes/geography/geography_scene.h" // Include the new scene
 #include "benchmark.h" 
 
 #ifndef PROJECT_VERSION
@@ -176,6 +177,7 @@ void setup() {
   theater.addScene<Scenes::XYZScannerScene>(); 
   theater.addScene<Scenes::WanderingParticlesScene>(); // Add Wandering Particles
   theater.addScene<Scenes::BoidsScene>(); // Add Boids Scene
+  theater.addScene<Scenes::GeographyScene>(); // Add the new scene instance
   
   // Start the theater 
   theater.start();
