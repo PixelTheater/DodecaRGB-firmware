@@ -108,14 +108,12 @@ void BoidsScene::tick() {
         logInfo("num_boids changed (%d -> %d), re-initializing.", last_num_boids, current_num_boids);
         initBoids(); 
     } else {
-        bool params_updated = false;
         if (current_speed_limit != last_speed_limit) {
             logInfo("speed_limit changed (%.2f -> %.2f), updating boids.", last_speed_limit, current_speed_limit);
             for (auto& boid : boids) {
                 boid->max_speed = current_speed_limit;
             }
             last_speed_limit = current_speed_limit;
-            params_updated = true;
         }
         if (current_chaos_factor != last_chaos_factor) {
              logInfo("chaos_factor changed (%.2f -> %.2f), updating boids.", last_chaos_factor, current_chaos_factor);
@@ -123,7 +121,6 @@ void BoidsScene::tick() {
                 boid->chaos_factor = current_chaos_factor;
             }
             last_chaos_factor = current_chaos_factor;
-             params_updated = true;
         }
     }
     // --- End parameter change check ---

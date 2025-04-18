@@ -1,7 +1,7 @@
 #pragma once
 
 #include "PixelTheater.h" // Corrected include path
-#include "texture_data.h" // Includes the generated texture data
+#include "textures/texture_data.h" // Includes the generated texture data
 #include <vector> // Added for std::vector
 
 namespace PixelTheater {
