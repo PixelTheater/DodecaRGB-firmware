@@ -27,7 +27,7 @@
 #include "benchmark.h" 
 
 #ifndef PROJECT_VERSION
-#define PROJECT_VERSION "0.0.1"
+#define PROJECT_VERSION "0.2.0"
 #endif
 
 // LED configs

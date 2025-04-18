@@ -1,5 +1,13 @@
 # Change Log
 
+0.2 - Apr 18
+- refactored colors and palletes
+- added back neighbor info
+- ported more scenes
+- cleaned up usage api 
+- updated documentation
+- web simulator refactoring
+
 0.1 - Mar 4
 - retire old versioning, completely new codebase for "PixelTheater" library (v0.1)
 - introduce web simulator
