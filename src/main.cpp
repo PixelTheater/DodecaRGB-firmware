@@ -24,6 +24,7 @@
 #include "scenes/geography/geography_scene.h" // Include the new scene
 #include "scenes/orientation_grid/orientation_grid_scene.h" // ADDED
 #include "scenes/sparkles/sparkles.h" // ADDED
+#include "scenes/texture_map/texture_map_scene.h" // ADDED NEW SCENE
 #include "benchmark.h" 
 
 #ifndef PROJECT_VERSION
@@ -179,6 +180,7 @@ void setup() {
   
   // Add scenes 
   //theater.addScene<Scenes::TestScene>(); // Add Test Scene first
+  theater.addScene<PixelTheater::TextureMapScene>(); // ADDED NEW SCENE
   theater.addScene<Scenes::Sparkles>(); // ADDED
   theater.addScene<Scenes::OrientationGridScene>(); // ADDED
   theater.addScene<Scenes::BlobScene>(); 

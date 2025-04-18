@@ -24,41 +24,7 @@ Python tests can be run with `python -m util.tests.run_tests`
 
 ### Implementation Plan
 
-1.  **Solidify Core Types (`core/crgb.h`, `core/crgb.cpp`)**: (COMPLETE)
-    *   **Action**: Ensure `PixelTheater::CRGB` and `PixelTheater::CHSV` class definitions in `core/crgb.h` serve all platforms.
-    *   **Action**: Define static color constants (`PixelTheater::CRGB::Red`, etc.) in `core/crgb.cpp`.
-    *   **Action (Teensy Opt.)**: Add conversion operators (`operator ::CRGB() const`, `PixelTheater::CRGB(const ::CRGB&)`) within `PixelTheater::CRGB` guarded by `#ifdef PLATFORM_TEENSY` to facilitate efficient calls to underlying FastLED functions.
-    *   **Testing/Verification**: Build succeeds for native and Teensy targets. Basic instantiation tests pass.
-    *   **Status**: COMPLETE
-
-2.  **Define Palette Type & Constants (`palettes.h`, `palettes.cpp`)**: (COMPLETE)
-    *   **Action**: Create/Update `lib/PixelTheater/include/PixelTheater/palettes.h`.
-        *   Include `PixelTheater/core/crgb.h`.
-        *   Define `using CRGBPalette16 = std::array<PixelTheater::CRGB, 16>;` (platform-independent).
-        *   Declare *all* required palettes (standard + custom) as `extern const PixelTheater::CRGBPalette16 PixelTheater::Palettes::XYZ;`. Use a nested `Palettes` namespace for organization.
-    *   **Action**: Create `lib/PixelTheater/src/palettes.cpp`.
-        *   Include `palettes.h`.
-        *   Define the actual palette arrays using `PixelTheater::CRGB` values (copying FastLED source values for standard palettes like `Rainbow`, `Party`, etc., and defining custom ones like `basePalette`).
-    *   **Testing/Verification**: Build succeeds. Native tests can access `PixelTheater::Palettes::basePalette` etc. Teensy build confirms standard FastLED palettes (e.g., `PartyColors_p`) are accessible globally *if* `palettes.h` includes `<FastLED.h>` under `#ifdef PLATFORM_TEENSY` (Confirm this include is needed/desired here or only where used).
-    *   **Status**: COMPLETE
-
-3.  **Implement Abstracted API (`color_api.h`/`.cpp`, `core/crgb.h`/`.cpp`)**: (COMPLETE)
-    *   **Action**: Define platform-independent function signatures in a suitable header (e.g., `color_api.h` or `color_utils.h`). Key functions:
-        *   `PixelTheater::CRGB PixelTheater::colorFromPalette(const PixelTheater::CRGBPalette16& pal, uint8_t index, uint8_t brightness = 255, TBlendType blendType = LINEARBLEND);` (Define `PixelTheater::TBlendType` enum: `LINEARBLEND`, `NOBLEND`).
-        *   `PixelTheater::CRGB PixelTheater::blend(const PixelTheater::CRGB& p1, const PixelTheater::CRGB& p2, uint8_t amount);`
-        *   (Add others as needed, like `nblend`).
-    *   **Action**: Add core methods to `PixelTheater::CRGB` in `core/crgb.h`:
-        *   `CRGB& fadeToBlackBy(uint8_t fade);`
-        *   `CRGB& nscale8(uint8_t scale);`
-        *   (Add operators like `+=`, `-=`, `*=`, etc. if not already present).
-    *   **Action**: Implement these functions and methods in their respective `.cpp` files.
-        *   Use `#ifdef PLATFORM_TEENSY` to call the corresponding FastLED global function or `::CRGB` method (using conversion operators if needed).
-        *   In the `#else` block, implement the logic using standard C++ (e.g., manual interpolation for `colorFromPalette`, component-wise math for `blend`, `fade`, `scale`).
-    *   **Action**: Fixed template `fill_solid` implementation in `core/color.h` to work with `LedsProxy`.
-    *   **Testing/Verification**: Native tests verify C++ fallback implementations (blending math, scaling, fading, palette lookup). Teensy build checks confirm API calls delegate to FastLED correctly (may require inspection or specific Teensy tests if possible). Build succeeds.
-    *   **Status**: COMPLETE
-
-4.  **Restructure Color Library Files**: (IN PROGRESS - Fixing Includes)
+1.  **Restructure Color Library Files**: (IN PROGRESS - Fixing Includes)
     *   **Goal**: Group color functionality logically within `lib/PixelTheater/include/PixelTheater/color/` and `lib/PixelTheater/src/color/`, keeping `core/` for fundamental types.
     *   **Action**: Create directories: `lib/PixelTheater/include/PixelTheater/color` and `lib/PixelTheater/src/color`.
     *   **Action**: Delete superseded/unused files: `lib/PixelTheater/include/PixelTheater/core/color_utils.h`, `lib/PixelTheater/include/PixelTheater/palette.h`, `lib/PixelTheater/include/PixelTheater/palette_wrapper.h`, `lib/PixelTheater/src/palette.cpp`, `lib/PixelTheater/src/palette_wrapper.cpp`.
@@ -91,27 +57,22 @@ Python tests can be run with `python -m util.tests.run_tests`
     *   **Action**: Update Includes: Thoroughly check and update all `#include` statements across the library and tests to reflect the new file locations. (CURRENT)
     *   **Testing/Verification**: Native tests (`~/.platformio/penv/bin/pio test -e native`) pass after restructuring. (PENDING)
 
-5.  **Update Python Generator (`util/generate_props.py`)**: (COMPLETE)
-    *   **Action**: Update validation logic (2-16 entries, index rules). (COMPLETE)
-    *   **Action**: Output C++ code defining `constexpr PixelTheater::GradientPaletteData { const uint8_t* data; size_t size; };` structs into `extra_palettes.h` (filename changed from `generated_palettes.h`). (COMPLETE)
-    *   **Action**: Moved palette JSON source files to `util/palettes/`. (COMPLETE)
-    *   **Action**: Added new palettes (Party, Rainbow, Forest). (COMPLETE)
-    *   **Testing/Verification**: Python unit tests (`test_generate_props.py`) pass for validation and output format. Generated header compiles. (COMPLETE)
-    *   **Note**: Using these generated gradients will require platform-specific code (`#ifdef PLATFORM_TEENSY`) in scenes for now, as the native `colorFromPalette` won't support them initially.
-    *   **Status**: COMPLETE
-
-6.  **Remove Deprecated Palette Param Type**: (COMPLETE)
-    *   **Action**: Clean up `ParamType::palette` and related logic from the parameter system files.
-    *   **Testing/Verification**: Build succeeds. Parameter system tests (if any) pass.
-    *   **Status**: COMPLETE
-
-7.  **Refactor Active Scenes (`src/scenes/`)**: (IN PROGRESS)
+2.  **Refactor Active Scenes (`src/scenes/`)**: (IN PROGRESS)
     *   **Action**: Update includes (`color/palette_api.h`, `color/palettes.h`, etc.).
     *   **Action**: Ensure all color/palette/math operations use the `PixelTheater` namespace and abstracted API/methods.
     *   **Testing/Verification**: Scenes compile and run correctly in native (using fallbacks) and Teensy (using FastLED) environments.
     *   **Refactored**: `blob_scene.h`, `xyz_scanner.h`, `wandering_particles.h`, `test_scene.h`, `boids_scene.h`
 
-8.  **Documentation (`docs/PixelTheater/Palettes.md`, examples)**:
+3.  **Implement Texture Mapping Feature**: (NEW)
+    *   **Goal**: Allow scenes to load and display bitmap textures mapped onto the virtual sphere.
+    *   **Action**: Update Python generator (`util/generate_props.py`) to process image files (PNG, BMP, GIF) and generate a C++ header (`image_data.h`) with `TextureData` structs containing width, height, and RGB pixel data. (IN PROGRESS)
+    *   **Action**: Add `Pillow` dependency to `requirements.txt`. (PENDING)
+    *   **Action**: Create a new scene `TextureMapScene` (`src/scenes/texture_map/`) to demonstrate loading an image (e.g., `earth-600-300.png`) and displaying it on the sphere. (PENDING)
+    *   **Action**: Implement texture sampling logic (e.g., `getColorAtUV(u, v)`) within the scene or a utility class to retrieve pixel color based on spherical coordinates. (PENDING)
+    *   **Action**: Add Python tests for image generation in `util/tests/`. (PENDING)
+    *   **Testing/Verification**: Generated `image_data.h` compiles. `TextureMapScene` displays the earth image correctly mapped and rotating on the sphere in the simulator. Python tests pass.
+
+4.  **Documentation (`docs/PixelTheater/Palettes.md`, examples)**:
     *   **Action**: Rewrite documentation to reflect the platform-transparent `PixelTheater` API.
     *   **Action**: Emphasize using `PixelTheater::Palettes::XYZ`, `PixelTheater::colorFromPalette`, `PixelTheater::blend`, `PixelTheater::CRGB::fadeToBlackBy`, etc.
     *   **Action**: Remove platform conditional compilation from examples. Explain the Python generator utility and the current limitation of generated gradients for non-Teensy platforms.
