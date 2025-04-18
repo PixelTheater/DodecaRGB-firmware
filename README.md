@@ -12,7 +12,7 @@ To create an awesome open-source animation and interaction platform for running 
 
 DodecaRGB V2 is a modular, high-resolution programmable blinky gadget that was made for the hacker community, especially for coders that want to do spherical animations. Typically, this is quite hard - you either need to make a spinning POV globe, or wire up custom solutions - not to mention power and performance challenges.
 
-This project aims to create a standard platform for resolution-indpendent animations based on spherical models (a developing library here called [PixelTheater](docs/PixelTheater.md)). DodecaRGB V2 is the second iteration of this platform, and serves as a reference implementation.
+This project aims to create a standard platform for resolution-indpendent animations based on spherical models (a developing library here called [PixelTheater](docs/PixelTheater/README.md)). DodecaRGB V2 is the second iteration of this platform, and serves as a reference implementation.
 
 The firmware, 3d models and tooling are open source and free to use and modify. The hardware PCBs will are planned as a kit for 2025, which will include most of the parts needed to 3d print and assemble your own.
 
