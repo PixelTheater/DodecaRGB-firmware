@@ -7,7 +7,8 @@
 
 #include <cstdint>
 #include <algorithm>  // For std::fill
-#include "color_utils.h"  // For helper functions
+#include "math_utils.h" // For qadd8, qsub8, scale8
+#include "../color/conversions.h" // For hsv2rgb_rainbow
 
 // Forward declare FastLED CRGB type when on Teensy
 #ifdef PLATFORM_TEENSY
@@ -83,9 +84,7 @@ public:
         b(colorcode & 0xFF) {}
 
     // Allow construction from HSV
-    inline CRGB(const CHSV& rhs) {
-        hsv2rgb_rainbow(rhs, *this);
-    }
+    CRGB(const CHSV& rhs);
 
     // Explicitly define assignment operator
     inline CRGB& operator= (const CRGB& rhs) {
@@ -103,10 +102,7 @@ public:
         return *this;
     }
 
-    inline CRGB& operator= (const CHSV& rhs) {
-        hsv2rgb_rainbow(rhs, *this);
-        return *this;
-    }
+    CRGB& operator= (const CHSV& rhs);
 
     // Utility method for setting RGB values
     inline CRGB& setRGB(uint8_t nr, uint8_t ng, uint8_t nb) {
@@ -131,7 +127,7 @@ public:
     // Add math operators
     inline CRGB& operator+= (const CRGB& rhs) {
         r = qadd8(r, rhs.r);
-        g = qadd8(g, rhs.g); 
+        g = qadd8(g, rhs.g);
         b = qadd8(b, rhs.b);
         return *this;
     }
@@ -169,7 +165,8 @@ public:
     CRGB& nscale8(uint8_t scaledown);
     // Can add other scale methods (nscale8_video) if needed
 
-    // basic colors
+    // --- Static Color Constants ---
+    // Basic Colors
     static const CRGB Black;
     static const CRGB White;
     static const CRGB Red;
@@ -179,7 +176,10 @@ public:
     static const CRGB Magenta;
     static const CRGB Cyan;
 
-    // extended colors
+    // Extended Colors (Add others as needed from definitions.cpp)
+    static const CRGB Orange;
+    static const CRGB Purple;
+    static const CRGB Pink;
     static const CRGB AliceBlue;
     static const CRGB Amethyst;
     static const CRGB AntiqueWhite;
@@ -280,7 +280,6 @@ public:
     static const CRGB OldLace;
     static const CRGB Olive;
     static const CRGB OliveDrab;
-    static const CRGB Orange;
     static const CRGB OrangeRed;
     static const CRGB Orchid;
     static const CRGB PaleGoldenrod;
@@ -290,11 +289,9 @@ public:
     static const CRGB PapayaWhip;
     static const CRGB PeachPuff;
     static const CRGB Peru;
-    static const CRGB Pink;
     static const CRGB Plaid;
     static const CRGB Plum;
     static const CRGB PowderBlue;
-    static const CRGB Purple;
     static const CRGB RosyBrown;
     static const CRGB RoyalBlue;
     static const CRGB SaddleBrown;
@@ -320,12 +317,33 @@ public:
     static const CRGB Wheat;
     static const CRGB WhiteSmoke;
     static const CRGB YellowGreen;
-
     static const CRGB FairyLight;
     static const CRGB FairyLightNCC;
+
+    // basic colors - DECLARATIONS MOVED to color/definitions.h
+    /*
+    static const CRGB Black;
+    static const CRGB White;
+    static const CRGB Red;
+    static const CRGB Green;
+    static const CRGB Blue;
+    static const CRGB Yellow;
+    static const CRGB Magenta;
+    static const CRGB Cyan;
+    */
+
+    // extended colors - DECLARATIONS MOVED to color/definitions.h
+    /*
+    static const CRGB AliceBlue;
+    static const CRGB Amethyst;
+    // ... (rest of declarations commented out or removed)
+    static const CRGB FairyLight;
+    static const CRGB FairyLightNCC;
+    */
 };
 
-// Common colors namespace
+// Common colors namespace - DECLARATIONS MOVED to color/definitions.h
+/*
 namespace Colors {
     extern const CRGB White;
     extern const CRGB Red;
@@ -333,8 +351,10 @@ namespace Colors {
     extern const CRGB Blue;
     extern const CRGB Black;
 }
+*/
 
-// HSV-RGB conversion operators (these belong with CRGB since they're core conversion)
+// HSV-RGB conversion operators - DECLARATIONS MOVED to color/conversions.h
+/*
 inline CRGB operator|(const CHSV& hsv, const CRGB&) {
     CRGB rgb;
     hsv2rgb_rainbow(hsv, rgb);
@@ -345,5 +365,6 @@ inline CRGB& operator%=(CRGB& rgb, const CHSV& hsv) {
     hsv2rgb_rainbow(hsv, rgb);
     return rgb;
 }
+*/
 
 } // namespace PixelTheater 

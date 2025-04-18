@@ -8,30 +8,27 @@
  * including defining Scenes and setting up the Theater.
  */
 
-// Core Scene Definition
-#include "PixelTheater/scene.h"
+// --- Core --- 
+#include "PixelTheater/platform/platform.h" // Platform Abstraction (time, random, log)
+#include "PixelTheater/scene.h"      // Base Scene class
+#include "PixelTheater/core/crgb.h"           // CRGB color struct
+#include "PixelTheater/core/math_utils.h"     // Math utilities (lerp, etc.)
+#include "PixelTheater/constants.h"      // Constants (PI, TWO_PI)
 
-// Core Data Types
-#include "PixelTheater/core/crgb.h"
-#include "PixelTheater/model/point.h"
-#include "PixelTheater/model/face.h"
+// --- Model --- 
+#include "PixelTheater/model/point.h"         // Point struct
+#include "PixelTheater/model/face.h"          // Face struct
+#include "PixelTheater/model/model.h"         // Model class
 
-// Interfaces (primarily for reference, not direct user interaction)
-#include "PixelTheater/core/imodel.h"
-#include "PixelTheater/core/iled_buffer.h"
+// --- Theater --- 
+#include "PixelTheater/theater.h"      // Main Theater controller class
 
-// Platform Abstraction (may not be needed directly by user if using Theater)
-#include "PixelTheater/platform/platform.h"
-
-// Common Utilities & Helpers
-#include "PixelTheater/core/color.h" 
-#include "PixelTheater/core/math.h"
-#include "PixelTheater/core/log.h"   // If Log:: or global logging is used
-#include "PixelTheater/core/time.h"  // If global time functions are used
-// #include "PixelTheater/core/constants.h" // If constants are needed
-
-// Theater Facade (Once implemented)
-#include "PixelTheater/theater.h" 
-
-// Namespace alias for convenience (optional for user)
-// namespace pt = PixelTheater; 
+// --- Color API --- 
+#include "PixelTheater/color/palettes.h"    // Standard Palettes enum & data
+#include "PixelTheater/color/gradients.h"   // Generated Gradient palette data
+#include "PixelTheater/color/palette_api.h" // Core palette functions (colorFromPalette, blend)
+#include "PixelTheater/color/definitions.h" // Static color definitions (CRGB::Red, etc.)
+#include "PixelTheater/color/conversions.h" // Color conversion functions (rgb2hsv, hsv2rgb)
+#include "PixelTheater/color/measurement.h" // Color measurement functions (distance, brightness)
+#include "PixelTheater/color/identity.h"    // Color identity functions (name, ANSI)
+#include "PixelTheater/color/fill.h"        // Fill functions (fill_solid, fill_gradient)

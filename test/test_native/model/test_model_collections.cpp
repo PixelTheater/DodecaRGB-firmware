@@ -1,7 +1,10 @@
 #include <doctest/doctest.h>
 #include "PixelTheater/platform/native_platform.h"
 #include "PixelTheater/model/model.h"
+#include "PixelTheater/color/definitions.h"
 #include "../../fixtures/models/basic_pentagon_model.h"
+#include "PixelTheater/core/crgb.h"
+#include "PixelTheater/color/fill.h"
 
 using namespace PixelTheater;
 using namespace PixelTheater::Fixtures;

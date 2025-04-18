@@ -1,11 +1,10 @@
 #pragma once
 
 #include "PixelTheater.h"
+
+#include <vector>
 #include <cmath>
 #include <string>
-#include "PixelTheater/palettes.h"   // Include for Palettes
-#include "PixelTheater/color_api.h"  // Include for colorFromPalette
-#include "PixelTheater/core/math.h" // Include core math definitions (likely includes Vector3d)
 
 // Use shorter Eigen types like in boids_scene.h
 using Vector3f = Eigen::Vector3f;

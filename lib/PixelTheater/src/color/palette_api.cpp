@@ -1,6 +1,8 @@
-#include "PixelTheater/color_api.h"
-#include "PixelTheater/core/color.h" // For inline blend8, scale8 etc. and hsv2rgb_rainbow impl
-#include "PixelTheater/color_utils.h" // For fallback implementations?
+#include "PixelTheater/color/palette_api.h"
+#include "PixelTheater/core/crgb.h"
+#include "PixelTheater/core/math_utils.h" // For lerp8by8
+
+#include <cstdint>
 
 // Include FastLED if on Teensy
 #ifdef PLATFORM_TEENSY
@@ -61,9 +63,9 @@ CRGB colorFromPalette(const CRGBPalette16& pal,
         // FastLED uses a slightly different blend for palettes:
         // blended = entry1 + (entry2 - entry1) * (blend_amount / 256)
         // which simplifies to lerp8
-        blended_color.r = ColorUtils::lerp8by8(entry1.r, entry2.r, blend_amount);
-        blended_color.g = ColorUtils::lerp8by8(entry1.g, entry2.g, blend_amount);
-        blended_color.b = ColorUtils::lerp8by8(entry1.b, entry2.b, blend_amount);
+        blended_color.r = lerp8by8(entry1.r, entry2.r, blend_amount);
+        blended_color.g = lerp8by8(entry1.g, entry2.g, blend_amount);
+        blended_color.b = lerp8by8(entry1.b, entry2.b, blend_amount);
     } else { // NOBLEND
         blended_color = entry1; // No blending needed
     }

@@ -12,13 +12,14 @@ To create an awesome open-source animation and interaction platform for running 
 ### Pixeltheater
 
 - [Build System](PixelTheater/build-system.html)
+- [Color System](PixelTheater/Color.html)
 - [Model System](PixelTheater/Model.html)
 - [Parameter System Refactoring](PixelTheater/param-refactoring.html)
 - [PixelTheater Animation System](PixelTheater/README.html)
 - [Scene System](PixelTheater/Scenes.html)
 - [Stage System](PixelTheater/Stage.html)
-- [[14] Palette System](PixelTheater/Palettes.html)
-- [[3] Parameters](PixelTheater/Parameters.html)
+- [Palette System](PixelTheater/Palettes.html)
+- [Parameters](PixelTheater/Parameters.html)
 
 ### Main Documentation
 

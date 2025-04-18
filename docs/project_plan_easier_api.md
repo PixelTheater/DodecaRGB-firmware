@@ -24,13 +24,14 @@ Python tests can be run with `python -m util.tests.run_tests`
 
 ### Implementation Plan
 
-1.  **Solidify Core Types (`core/crgb.h`, `core/crgb.cpp`)**:
+1.  **Solidify Core Types (`core/crgb.h`, `core/crgb.cpp`)**: (COMPLETE)
     *   **Action**: Ensure `PixelTheater::CRGB` and `PixelTheater::CHSV` class definitions in `core/crgb.h` serve all platforms.
     *   **Action**: Define static color constants (`PixelTheater::CRGB::Red`, etc.) in `core/crgb.cpp`.
     *   **Action (Teensy Opt.)**: Add conversion operators (`operator ::CRGB() const`, `PixelTheater::CRGB(const ::CRGB&)`) within `PixelTheater::CRGB` guarded by `#ifdef PLATFORM_TEENSY` to facilitate efficient calls to underlying FastLED functions.
     *   **Testing/Verification**: Build succeeds for native and Teensy targets. Basic instantiation tests pass.
+    *   **Status**: COMPLETE
 
-2.  **Define Palette Type & Constants (`palettes.h`, `palettes.cpp`)**:
+2.  **Define Palette Type & Constants (`palettes.h`, `palettes.cpp`)**: (COMPLETE)
     *   **Action**: Create/Update `lib/PixelTheater/include/PixelTheater/palettes.h`.
         *   Include `PixelTheater/core/crgb.h`.
         *   Define `using CRGBPalette16 = std::array<PixelTheater::CRGB, 16>;` (platform-independent).
@@ -39,8 +40,9 @@ Python tests can be run with `python -m util.tests.run_tests`
         *   Include `palettes.h`.
         *   Define the actual palette arrays using `PixelTheater::CRGB` values (copying FastLED source values for standard palettes like `Rainbow`, `Party`, etc., and defining custom ones like `basePalette`).
     *   **Testing/Verification**: Build succeeds. Native tests can access `PixelTheater::Palettes::basePalette` etc. Teensy build confirms standard FastLED palettes (e.g., `PartyColors_p`) are accessible globally *if* `palettes.h` includes `<FastLED.h>` under `#ifdef PLATFORM_TEENSY` (Confirm this include is needed/desired here or only where used).
+    *   **Status**: COMPLETE
 
-3.  **Implement Abstracted API (`color_api.h`/`.cpp`, `core/crgb.h`/`.cpp`)**:
+3.  **Implement Abstracted API (`color_api.h`/`.cpp`, `core/crgb.h`/`.cpp`)**: (COMPLETE)
     *   **Action**: Define platform-independent function signatures in a suitable header (e.g., `color_api.h` or `color_utils.h`). Key functions:
         *   `PixelTheater::CRGB PixelTheater::colorFromPalette(const PixelTheater::CRGBPalette16& pal, uint8_t index, uint8_t brightness = 255, TBlendType blendType = LINEARBLEND);` (Define `PixelTheater::TBlendType` enum: `LINEARBLEND`, `NOBLEND`).
         *   `PixelTheater::CRGB PixelTheater::blend(const PixelTheater::CRGB& p1, const PixelTheater::CRGB& p2, uint8_t amount);`
@@ -56,10 +58,38 @@ Python tests can be run with `python -m util.tests.run_tests`
     *   **Testing/Verification**: Native tests verify C++ fallback implementations (blending math, scaling, fading, palette lookup). Teensy build checks confirm API calls delegate to FastLED correctly (may require inspection or specific Teensy tests if possible). Build succeeds.
     *   **Status**: COMPLETE
 
-4.  **Refactor Color Utilities (`color_utils.h`/`.cpp`)**: (IN PROGRESS)
-    *   **Action**: Ensure all functions use only `PixelTheater` types (`CRGB`, `CHSV`, `std::string`).
-    *   **Action**: Remove any internal platform-specific stubs (like the fallback `rgb2hsv_approximate` or `get_perceived_brightness`) as the type/API abstraction now handles platform differences. Ensure `color_utils.cpp` includes the necessary headers to use the abstracted API (e.g., for `rgb2hsv`).
-    *   **Testing/Verification**: Existing native tests in `test_color_utils.cpp` should still pass using the abstracted API underlyingly.
+4.  **Restructure Color Library Files**: (IN PROGRESS - Fixing Includes)
+    *   **Goal**: Group color functionality logically within `lib/PixelTheater/include/PixelTheater/color/` and `lib/PixelTheater/src/color/`, keeping `core/` for fundamental types.
+    *   **Action**: Create directories: `lib/PixelTheater/include/PixelTheater/color` and `lib/PixelTheater/src/color`.
+    *   **Action**: Delete superseded/unused files: `lib/PixelTheater/include/PixelTheater/core/color_utils.h`, `lib/PixelTheater/include/PixelTheater/palette.h`, `lib/PixelTheater/include/PixelTheater/palette_wrapper.h`, `lib/PixelTheater/src/palette.cpp`, `lib/PixelTheater/src/palette_wrapper.cpp`.
+    *   **Action**: Move & Rename Files:
+        *   `lib/PixelTheater/include/PixelTheater/palettes.h` -> `lib/PixelTheater/include/PixelTheater/color/palettes.h`
+        *   `lib/PixelTheater/include/PixelTheater/extra_palettes.h` -> `lib/PixelTheater/include/PixelTheater/color/gradients.h`
+        *   `lib/PixelTheater/include/PixelTheater/color_api.h` -> `lib/PixelTheater/include/PixelTheater/color/palette_api.h`
+        *   `lib/PixelTheater/src/core/color.cpp` -> `lib/PixelTheater/src/color/fill.cpp`
+        *   `lib/PixelTheater/src/palettes.cpp` -> `lib/PixelTheater/src/color/palettes.cpp`
+        *   `lib/PixelTheater/src/color_api.cpp` -> `lib/PixelTheater/src/color/palette_api.cpp`
+    *   **Action**: Split & Move Code (Requires Edits):
+        *   From `lib/PixelTheater/include/PixelTheater/color_utils.h`:
+            *   Move `lerp8by8` signature -> `lib/PixelTheater/include/PixelTheater/core/math_utils.h`.
+            *   Move analysis signatures (`distance`, `brightness`, `contrast`, `hue_distance`) -> `lib/PixelTheater/include/PixelTheater/color/measurement.h`.
+            *   Move `rgb2hsv_approximate` signature -> `lib/PixelTheater/include/PixelTheater/color/conversions.h`.
+            *   Move identity signatures (`name`, `ANSI`) -> `lib/PixelTheater/include/PixelTheater/color/identity.h`.
+        *   From `lib/PixelTheater/src/color_utils.cpp`:
+            *   Move `lerp8by8` implementation -> `lib/PixelTheater/src/core/math_utils.cpp`.
+            *   Move analysis implementations (`distance`, `brightness`, `contrast`, `hue_distance`) -> `lib/PixelTheater/src/color/measurement.cpp`.
+            *   Move `rgb2hsv_approximate` implementation -> `lib/PixelTheater/src/color/conversions.cpp`.
+            *   Move identity implementations (`name`, `ANSI`, lookup table) -> `lib/PixelTheater/src/color/identity.cpp`.
+        *   From `lib/PixelTheater/include/PixelTheater/core/crgb.h`:
+            *   Move static color *declarations* (`static const CRGB Red;`) -> `lib/PixelTheater/include/PixelTheater/color/definitions.h`.
+            *   Move `hsv2rgb_rainbow` signature -> `lib/PixelTheater/include/PixelTheater/color/conversions.h`.
+        *   From `lib/PixelTheater/src/core/crgb.cpp`:
+            *   Move static color *definitions* (`const CRGB CRGB::Red = ...;`) -> `lib/PixelTheater/src/color/definitions.cpp`.
+    *   **Action**: Create New Header Files & Add Signatures:
+        *   `lib/PixelTheater/include/PixelTheater/core/math_utils.h` (Add `qadd8`, `qsub8`, `scale8` signatures from old `core/color_utils.h` + `lerp8by8`).
+        *   `lib/PixelTheater/include/PixelTheater/color/fill.h` (Add signatures for functions moved to `color/fill.cpp`).
+    *   **Action**: Update Includes: Thoroughly check and update all `#include` statements across the library and tests to reflect the new file locations. (CURRENT)
+    *   **Testing/Verification**: Native tests (`~/.platformio/penv/bin/pio test -e native`) pass after restructuring. (PENDING)
 
 5.  **Update Python Generator (`util/generate_props.py`)**: (COMPLETE)
     *   **Action**: Update validation logic (2-16 entries, index rules). (COMPLETE)
@@ -68,6 +98,7 @@ Python tests can be run with `python -m util.tests.run_tests`
     *   **Action**: Added new palettes (Party, Rainbow, Forest). (COMPLETE)
     *   **Testing/Verification**: Python unit tests (`test_generate_props.py`) pass for validation and output format. Generated header compiles. (COMPLETE)
     *   **Note**: Using these generated gradients will require platform-specific code (`#ifdef PLATFORM_TEENSY`) in scenes for now, as the native `colorFromPalette` won't support them initially.
+    *   **Status**: COMPLETE
 
 6.  **Remove Deprecated Palette Param Type**: (COMPLETE)
     *   **Action**: Clean up `ParamType::palette` and related logic from the parameter system files.
@@ -75,7 +106,7 @@ Python tests can be run with `python -m util.tests.run_tests`
     *   **Status**: COMPLETE
 
 7.  **Refactor Active Scenes (`src/scenes/`)**: (IN PROGRESS)
-    *   **Action**: Update includes (`color_api.h`, `palettes.h`, etc.).
+    *   **Action**: Update includes (`color/palette_api.h`, `color/palettes.h`, etc.).
     *   **Action**: Ensure all color/palette/math operations use the `PixelTheater` namespace and abstracted API/methods.
     *   **Testing/Verification**: Scenes compile and run correctly in native (using fallbacks) and Teensy (using FastLED) environments.
     *   **Refactored**: `blob_scene.h`, `xyz_scanner.h`, `wandering_particles.h`, `test_scene.h`, `boids_scene.h`

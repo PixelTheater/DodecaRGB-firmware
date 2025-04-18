@@ -17,7 +17,7 @@ PixelTheater is a C++ library designed for creating interactive, 3D LED animatio
 *   **Platform-Independent Scenes:** Write animation logic once using the `PixelTheater` API; run on multiple platforms.
 *   **3D Model Abstraction:** Define complex LED geometry and access LED positions and relationships easily.
 *   **Simplified Scene API:** Create modular `PixelTheater::Scene` classes with helpers for LEDs, geometry, time, parameters, and utilities.
-*   **Color & Palette API:** Unified API (`PixelTheater::CRGB`, `PixelTheater::CHSV`, `PixelTheater::Palettes`, `PixelTheater::colorFromPalette`) for handling colors and palettes across platforms.
+*   **Color & Palette API:** Platform-independent types (`PixelTheater::CRGB`, `PixelTheater::CHSV`) and functions (`PixelTheater::blend`, `PixelTheater::colorFromPalette`). Methods like `CRGB::nscale8` and `CRGB::fadeToBlackBy` provide direct color manipulation. See [Color System](Color.md) and [Palettes API](Palettes.md).
 *   **Parameter System:** Define runtime-configurable parameters for scenes.
 *   **Central `Theater` Facade:** Manages platform setup, scene lifecycles, and the main animation loop.
 
@@ -62,7 +62,7 @@ The `Theater` acts as a central coordinator, connecting the chosen hardware `Pla
 *   **Platform**: Abstraction layer for hardware/environment interaction (e.g., `FastLEDPlatform`, `NativePlatform`). Usually configured once via `Theater`.
 *   **Model**: Defines the 3D LED geometry (`IModel` interface, accessed via `Scene::model()`). Generated from configuration files. See [Model System](Model.md).
 *   **Parameters/Settings**: Mechanism for runtime configuration of scenes via `param()` and `settings[]`. See [Parameters](Parameters.md).
-*   **Color API**: Platform-independent types (`PixelTheater::CRGB`, `PixelTheater::CHSV`) and functions (`PixelTheater::blend`, `PixelTheater::colorFromPalette`). See [Palettes API](Palettes.md).
+*   **Color API**: Platform-independent types (`PixelTheater::CRGB`, `PixelTheater::CHSV`) and functions (`PixelTheater::blend`, `PixelTheater::colorFromPalette`). Methods like `CRGB::nscale8` and `CRGB::fadeToBlackBy` provide direct color manipulation. See [Color System](Color.md) and [Palettes API](Palettes.md).
 
 ## Getting Started (Scene Author Focus)
 
@@ -117,8 +117,9 @@ The `Theater` acts as a central coordinator, connecting the chosen hardware `Pla
 ## Key Subsystems Documentation
 
 *   **[Scene API](SceneAuthorGuide.md):** How to structure and write animation scenes.
-*   **[Color & Palettes](Palettes.md):** Using `CRGB`/`CHSV`, predefined palettes, and `colorFromPalette`.
+*   **[Color & Palettes](Color.md):** Using `CRGB`/`CHSV`, predefined palettes, and color utilities.
+*   **[Palettes API](Palettes.md):** Specific details on using `CRGBPalette16` and `colorFromPalette`.
 *   **[Parameters](Parameters.md):** Defining and using runtime parameters.
 *   **[Model System](Model.md):** Accessing 3D geometry (`model()`, `Point`, `Face`).
-*   **[Utilities](../guides/creating_animations.md#led-management):** Overview of helpers for time, random numbers, color math (`blend`, `nscale8`), etc. available in scenes.
+*   **[Utilities](../guides/creating_animations.md#led-management):** Overview of helpers for time, random numbers, color math (`blend`, `CRGB::nscale8`), etc. available in scenes.
 *   **[Build System](build-system.md):** How code and models are compiled.

@@ -1,0 +1,166 @@
+#pragma once
+
+#include "../core/crgb.h" // Include core type definitions
+
+namespace PixelTheater {
+
+    // Declare static color constants - MOVED inside CRGB class definition in core/crgb.h
+    /*
+    // Basic Colors
+    extern const CRGB Black;
+    extern const CRGB White;
+    extern const CRGB Red;
+    extern const CRGB Green;
+    extern const CRGB Blue;
+    extern const CRGB Yellow;
+    extern const CRGB Magenta;
+    extern const CRGB Cyan;
+
+    // Extended Colors (Add others as needed)
+    extern const CRGB Orange;
+    extern const CRGB Purple;
+    extern const CRGB Pink;
+    // ... include declarations for all colors defined in definitions.cpp
+    extern const CRGB AliceBlue;
+    extern const CRGB Amethyst;
+    extern const CRGB AntiqueWhite;
+    extern const CRGB Aqua;
+    extern const CRGB Aquamarine;
+    extern const CRGB Azure;
+    extern const CRGB Beige;
+    extern const CRGB Bisque;
+    extern const CRGB BlanchedAlmond;
+    extern const CRGB BlueViolet;
+    extern const CRGB Brown;
+    extern const CRGB BurlyWood;
+    extern const CRGB CadetBlue;
+    extern const CRGB Chartreuse;
+    extern const CRGB Chocolate;
+    extern const CRGB Coral;
+    extern const CRGB CornflowerBlue;
+    extern const CRGB Cornsilk;
+    extern const CRGB Crimson;
+    extern const CRGB DarkBlue;
+    extern const CRGB DarkCyan;
+    extern const CRGB DarkGoldenrod;
+    extern const CRGB DarkGray;
+    extern const CRGB DarkGrey;
+    extern const CRGB DarkGreen;
+    extern const CRGB DarkKhaki;
+    extern const CRGB DarkMagenta;
+    extern const CRGB DarkOliveGreen;
+    extern const CRGB DarkOrange;
+    extern const CRGB DarkOrchid;
+    extern const CRGB DarkRed;
+    extern const CRGB DarkSalmon;
+    extern const CRGB DarkSeaGreen;
+    extern const CRGB DarkSlateBlue;
+    extern const CRGB DarkSlateGray;
+    extern const CRGB DarkSlateGrey;
+    extern const CRGB DarkTurquoise;
+    extern const CRGB DarkViolet;
+    extern const CRGB DeepPink;
+    extern const CRGB DeepSkyBlue;
+    extern const CRGB DimGray;
+    extern const CRGB DimGrey;
+    extern const CRGB DodgerBlue;
+    extern const CRGB FireBrick;
+    extern const CRGB FloralWhite;
+    extern const CRGB ForestGreen;
+    extern const CRGB Fuchsia;
+    extern const CRGB Gainsboro;
+    extern const CRGB GhostWhite;
+    extern const CRGB Gold;
+    extern const CRGB Goldenrod;
+    extern const CRGB Gray;
+    extern const CRGB Grey;
+    extern const CRGB GreenYellow;
+    extern const CRGB Honeydew;
+    extern const CRGB HotPink;
+    extern const CRGB IndianRed;
+    extern const CRGB Indigo;
+    extern const CRGB Ivory;
+    extern const CRGB Khaki;
+    extern const CRGB Lavender;
+    extern const CRGB LavenderBlush;
+    extern const CRGB LawnGreen;
+    extern const CRGB LemonChiffon;
+    extern const CRGB LightBlue;
+    extern const CRGB LightCoral;
+    extern const CRGB LightCyan;
+    extern const CRGB LightGoldenrodYellow;
+    extern const CRGB LightGreen;
+    extern const CRGB LightGrey;
+    extern const CRGB LightPink;
+    extern const CRGB LightSalmon;
+    extern const CRGB LightSeaGreen;
+    extern const CRGB LightSkyBlue;
+    extern const CRGB LightSlateGray;
+    extern const CRGB LightSlateGrey;
+    extern const CRGB LightSteelBlue;
+    extern const CRGB LightYellow;
+    extern const CRGB Lime;
+    extern const CRGB LimeGreen;
+    extern const CRGB Linen;
+    extern const CRGB Maroon;
+    extern const CRGB MediumAquamarine;
+    extern const CRGB MediumBlue;
+    extern const CRGB MediumOrchid;
+    extern const CRGB MediumPurple;
+    extern const CRGB MediumSeaGreen;
+    extern const CRGB MediumSlateBlue;
+    extern const CRGB MediumSpringGreen;
+    extern const CRGB MediumTurquoise;
+    extern const CRGB MediumVioletRed;
+    extern const CRGB MidnightBlue;
+    extern const CRGB MintCream;
+    extern const CRGB MistyRose;
+    extern const CRGB Moccasin;
+    extern const CRGB NavajoWhite;
+    extern const CRGB Navy;
+    extern const CRGB OldLace;
+    extern const CRGB Olive;
+    extern const CRGB OliveDrab;
+    extern const CRGB OrangeRed;
+    extern const CRGB Orchid;
+    extern const CRGB PaleGoldenrod;
+    extern const CRGB PaleGreen;
+    extern const CRGB PaleTurquoise;
+    extern const CRGB PaleVioletRed;
+    extern const CRGB PapayaWhip;
+    extern const CRGB PeachPuff;
+    extern const CRGB Peru;
+    extern const CRGB Plaid;
+    extern const CRGB Plum;
+    extern const CRGB PowderBlue;
+    extern const CRGB RosyBrown;
+    extern const CRGB RoyalBlue;
+    extern const CRGB SaddleBrown;
+    extern const CRGB Salmon;
+    extern const CRGB SandyBrown;
+    extern const CRGB SeaGreen;
+    extern const CRGB Seashell;
+    extern const CRGB Sienna;
+    extern const CRGB Silver;
+    extern const CRGB SkyBlue;
+    extern const CRGB SlateBlue;
+    extern const CRGB SlateGray;
+    extern const CRGB SlateGrey;
+    extern const CRGB Snow;
+    extern const CRGB SpringGreen;
+    extern const CRGB SteelBlue;
+    extern const CRGB Tan;
+    extern const CRGB Teal;
+    extern const CRGB Thistle;
+    extern const CRGB Tomato;
+    extern const CRGB Turquoise;
+    extern const CRGB Violet;
+    extern const CRGB Wheat;
+    extern const CRGB WhiteSmoke;
+    extern const CRGB YellowGreen;
+
+    extern const CRGB FairyLight;
+    extern const CRGB FairyLightNCC;
+    */
+
+} // namespace PixelTheater 

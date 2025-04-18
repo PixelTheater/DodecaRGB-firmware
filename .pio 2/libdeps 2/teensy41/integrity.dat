@@ -1,0 +1,5 @@
+fastled/FastLED @ ~3.9.12
+doctest/doctest@^2.4.11
+https://github.com/adafruit/Adafruit_LSM6DS
+https://github.com/LAtimes2/InternalTemperature
+https://github.com/hideakitai/ArduinoEigen

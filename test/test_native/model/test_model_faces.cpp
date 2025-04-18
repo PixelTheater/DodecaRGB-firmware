@@ -3,6 +3,8 @@
 #include "PixelTheater/model/model.h"
 #include "../../fixtures/models/basic_pentagon_model.h"
 #include "../helpers/model_test_fixture.h"
+#include "PixelTheater/color/definitions.h"
+#include "PixelTheater/core/crgb.h"
 
 using namespace PixelTheater;
 using namespace PixelTheater::Fixtures;

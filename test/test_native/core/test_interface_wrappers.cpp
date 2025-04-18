@@ -13,6 +13,7 @@
 #include "PixelTheater/model/model.h"
 #include "PixelTheater/platform/native_platform.h"
 #include "../../fixtures/models/basic_pentagon_model.h" // BasicPentagonModel
+#include "PixelTheater/color/definitions.h" // Added for CRGB constants
 
 using namespace PixelTheater;
 

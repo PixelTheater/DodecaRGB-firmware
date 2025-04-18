@@ -1,7 +1,9 @@
 #pragma once
 #include <cstdint>
 #include "crgb.h"
-#include "color_utils.h"
+// #include "color_utils.h" // MOVED - Include specific headers below
+#include "math_utils.h" // For scale8, blend8 implementation might need lerp8by8?
+#include "../color/conversions.h" // For hsv2rgb_rainbow used in some declarations
 
 namespace PixelTheater {
 

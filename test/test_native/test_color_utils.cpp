@@ -1,10 +1,15 @@
 // #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN // Remove: Implementation should be in only one file (e.g., test_main.cpp)
 #include <doctest/doctest.h>
-#include "PixelTheater/color_utils.h"
-#include "PixelTheater/core/crgb.h" // Include core types directly
+#include <string>
+// #include "PixelTheater/color_utils.h" // OLD
+#include "PixelTheater/color/measurement.h" // NEW - for distance, brightness, contrast, hue_distance
+#include "PixelTheater/color/identity.h"    // NEW - for name, ansi string
+#include "PixelTheater/core/crgb.h"         // For CRGB/CHSV types
+#include "PixelTheater/color/definitions.h" // Added for CRGB constants
 // #include "helpers/fastled_test_helper.h" // Maybe not needed if using fallbacks
-#include <string> // Include for std::string
 
+using namespace PixelTheater;
+using namespace PixelTheater::ColorUtils;
 using PixelTheater::ColorUtils::colorDistance;
 using PixelTheater::ColorUtils::getClosestColorName;
 using PixelTheater::ColorUtils::getAnsiColorString;

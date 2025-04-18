@@ -2,6 +2,7 @@
 
 #include "PixelTheater/core/iled_buffer.h" // Correct path
 #include "PixelTheater/core/crgb.h"      // Correct path
+#include "PixelTheater/color/definitions.h"
 #include <cstddef> // size_t
 #include <stdexcept> // std::out_of_range
 #include <cassert> // For assert()

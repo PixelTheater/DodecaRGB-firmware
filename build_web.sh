@@ -26,12 +26,14 @@ echo "Building WebGL LED Simulator with debugging options..."
 emcc src/web_simulator.cpp \
      src/benchmark.cpp \
      src/math_provider.cpp \
-     lib/PixelTheater/src/core/color.cpp \
+     lib/PixelTheater/src/color/fill.cpp \
+     lib/PixelTheater/src/color/definitions.cpp \
+     lib/PixelTheater/src/color/palettes.cpp \
+     lib/PixelTheater/src/color/palette_api.cpp \
+     lib/PixelTheater/src/color/conversions.cpp \
      lib/PixelTheater/src/core/crgb.cpp \
+     lib/PixelTheater/src/core/math_utils.cpp \
      lib/PixelTheater/src/model/point.cpp \
-     lib/PixelTheater/src/palette.cpp \
-     lib/PixelTheater/src/palettes.cpp \
-     lib/PixelTheater/src/color_api.cpp \
      lib/PixelTheater/src/params/handlers/flag_handler.cpp \
      lib/PixelTheater/src/params/handlers/type_handler.cpp \
      lib/PixelTheater/src/params/param_types.cpp \

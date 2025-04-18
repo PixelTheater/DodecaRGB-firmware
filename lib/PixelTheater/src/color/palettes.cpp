@@ -1,4 +1,4 @@
-#include "PixelTheater/palettes.h"
+#include "PixelTheater/color/palettes.h"
 #include "PixelTheater/core/crgb.h" // For CRGB constants
 
 // Use fully qualified names to define the constants declared in the header

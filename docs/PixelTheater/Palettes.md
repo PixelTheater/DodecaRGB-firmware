@@ -8,7 +8,9 @@ version: 2.8.2
 
 ## Overview
 
-The PixelTheater library provides a platform-transparent API for using 16-entry color palettes within animation scenes. Scenes interact solely with types and functions within the `PixelTheater` namespace, allowing the same code to run on Teensy (using FastLED internally) and native/web platforms (using C++ fallbacks).
+The PixelTheater library provides a platform-transparent API for using 16-entry color palettes within animation scenes. This document focuses specifically on the palette types, constants, and the `colorFromPalette` function. For general color handling (`CRGB`, `CHSV`, blending, fading, etc.), see the main [Using Color in PixelTheater Scenes](Color.md) guide.
+
+Scenes interact solely with types and functions within the `PixelTheater` namespace, allowing the same code to run on Teensy (using FastLED internally) and native/web platforms (using C++ fallbacks).
 
 ## Core Types
 

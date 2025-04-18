@@ -1,7 +1,11 @@
 #include <doctest/doctest.h>
+#include <vector>
 #include "PixelTheater/platform/platform.h"
 #include "PixelTheater/platform/native_platform.h"
 #include "PixelTheater/core/crgb.h"
+#include "PixelTheater/core/color.h"
+#include "PixelTheater/color/definitions.h"
+#include "PixelTheater/color/fill.h"
 
 using namespace PixelTheater;
 

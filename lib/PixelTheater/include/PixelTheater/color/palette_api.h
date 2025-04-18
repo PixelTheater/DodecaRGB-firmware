@@ -1,7 +1,8 @@
-#pragma once
+#ifndef PIXELTHEATER_PALETTE_API_H_
+#define PIXELTHEATER_PALETTE_API_H_
 
-#include "core/crgb.h"
-#include "palettes.h" // For CRGBPalette16
+#include "PixelTheater/core/crgb.h"
+#include "PixelTheater/color/palettes.h" // For CRGBPalette16
 #include <cstdint>
 
 namespace PixelTheater {
@@ -71,3 +72,5 @@ void hsv2rgb_rainbow(const CHSV& hsv, CRGB& rgb);
 // Add other necessary API functions here (e.g., fill_solid, fill_rainbow?)
 
 } // namespace PixelTheater 
+
+#endif // PIXELTHEATER_PALETTE_API_H_ 

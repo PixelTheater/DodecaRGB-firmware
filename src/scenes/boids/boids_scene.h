@@ -2,12 +2,11 @@
 
 #include "PixelTheater.h"
 #include "benchmark.h"
+
 #include <vector>
 #include <memory>
 #include <cmath>
 #include <string>
-#include "PixelTheater/palettes.h"   // Include for PixelTheater::Palettes::*
-#include "PixelTheater/color_api.h"  // Include for PixelTheater::colorFromPalette
 
 // Use shorter Eigen types
 using Vector3f = Eigen::Vector3f;
