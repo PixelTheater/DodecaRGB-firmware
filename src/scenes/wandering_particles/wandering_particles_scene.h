@@ -25,9 +25,9 @@ public:
     
     // Static constants for default parameters
     static constexpr int DEFAULT_NUM_PARTICLES = 80;
-    static constexpr uint8_t DEFAULT_FADE = 20;
-    static constexpr float DEFAULT_BLEND = 80.0f;
-    static constexpr int DEFAULT_RESET_CHANCE = 2;    
+    static constexpr uint8_t DEFAULT_FADE = 30;
+    static constexpr float DEFAULT_BLEND = 130.0f;
+    static constexpr float DEFAULT_GRAVITY = 2.2f; // Default no gravity
     static constexpr int MAX_RESET = 20; // Define MAX_RESET here
     
     // Member accessible by Particle (can be private if Particle is friend)

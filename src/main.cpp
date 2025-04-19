@@ -180,12 +180,12 @@ void setup() {
   
   // Add scenes 
   //theater.addScene<Scenes::TestScene>(); // Add Test Scene first
+  theater.addScene<Scenes::WanderingParticlesScene>(); // Add Wandering Particles
   theater.addScene<PixelTheater::TextureMapScene>(); // ADDED NEW SCENE
   theater.addScene<Scenes::Sparkles>(); // ADDED
   theater.addScene<Scenes::OrientationGridScene>(); // ADDED
   theater.addScene<Scenes::BlobScene>(); 
   theater.addScene<Scenes::XYZScannerScene>(); 
-  theater.addScene<Scenes::WanderingParticlesScene>(); // Add Wandering Particles
   theater.addScene<Scenes::BoidsScene>(); // Add Boids Scene
   theater.addScene<Scenes::GeographyScene>(); // Add the new scene instance
   

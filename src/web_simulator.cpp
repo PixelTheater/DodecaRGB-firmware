@@ -32,6 +32,7 @@
 #include "scenes/xyz_scanner/xyz_scanner_scene.h"
 #include "scenes/boids/boids_scene.h"
 #include "scenes/orientation_grid/orientation_grid_scene.h"
+#include "scenes/texture_map/texture_map_scene.h"
 #include <emscripten/bind.h>
 
 // Include the model definition - we'll use an include guard to prevent multiple definitions
@@ -153,6 +154,7 @@ public:
             theater->addScene<Scenes::WanderingParticlesScene>();
             theater->addScene<Scenes::XYZScannerScene>();
             theater->addScene<Scenes::BoidsScene>();
+            theater->addScene<PixelTheater::TextureMapScene>();
             if (theater->sceneCount() == 0) { // CORRECT: Use sceneCount()
                 PixelTheater::Log::error("No scenes were added to the theater!");
                 return false;

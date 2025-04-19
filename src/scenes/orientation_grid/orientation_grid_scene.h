@@ -163,8 +163,10 @@ public:
     }
 
     void setup() override {
-        // Scene::setup(); // REMOVED - Base class call seems unnecessary/problematic
-
+        set_name("Orientation Grid");
+        set_description("Rotating spherical grid with color transitions");
+        set_version("1.0");
+        set_author("PixelTheater User");
         // Define parameters using snake_case names and descriptions, pass "" for flags
         param("latitude_lines", "count", 2, 20, 5, "", "Number of latitude lines");
         param("longitude_lines", "count", 2, 20, 4, "", "Number of longitude lines");

@@ -15,21 +15,21 @@ namespace Scenes {
 
 void WanderingParticlesScene::setup() {
     set_name("Wandering Particles");
-    set_description("Particles that wander across the model surface");
-    set_version("1.0");
+    set_description("Particles that wander across the model surface, affected by gravity.");
+    set_version("1.1"); // Version bump
     set_author("PixelTheater Team");
     
     // Define parameter ranges and defaults
     const int MIN_PARTICLES = 5, MAX_PARTICLES = 200;  
     const int MIN_FADE = 1, MAX_FADE = 50;
     const float MIN_BLEND = 10.0f, MAX_BLEND = 200.0f;
-    const int MIN_RESET = 1, MAX_RESET = 20; // Note: Old version used 0-255 random check
+    const float MIN_GRAVITY = -2.5f, MAX_GRAVITY = 2.5f; // Gravity range
         
     // Define parameters
     param("num_particles", "count", MIN_PARTICLES, MAX_PARTICLES, DEFAULT_NUM_PARTICLES, "clamp", "Number of particles");
     param("fade_amount", "count", MIN_FADE, MAX_FADE, DEFAULT_FADE, "clamp", "Fade amount per frame");
     param("blend_amount", "range", MIN_BLEND, MAX_BLEND, DEFAULT_BLEND, "clamp", "Blend intensity");
-    param("reset_chance", "count", MIN_RESET, MAX_RESET, DEFAULT_RESET_CHANCE, "clamp", "Chance of particle reset (1-20)");
+    param("gravity", "range", MIN_GRAVITY, MAX_GRAVITY, DEFAULT_GRAVITY, "clamp", "Z-axis gravity (+down/-up)"); // Add gravity param
     
     // Estimate model radius (affects particle x,y,z calculations)
     estimateSphereRadius(); 
@@ -80,10 +80,10 @@ void WanderingParticlesScene::tick() {
     // Get current parameter values
     uint8_t fade_amount = static_cast<uint8_t>(settings["fade_amount"]);
     float blend_amount = settings["blend_amount"];
-    int reset_chance = settings["reset_chance"]; // This is 1-20
+    // int reset_chance = settings["reset_chance"]; // Remove usage
     // Convert reset_chance (1-20) to a probability check (approx 0-255)
     // A higher reset_chance param value means MORE resets
-    int reset_check_threshold = reset_chance * (255 / MAX_RESET); 
+    // int reset_check_threshold = settings["reset_chance"] * (255 / MAX_RESET); // Remove usage
 
     // Fade all LEDs first
     size_t count = ledCount();
@@ -93,37 +93,80 @@ void WanderingParticlesScene::tick() {
     }
         
     // Update and draw each particle
-    for (auto& particle : particles) {
-        particle->tick(); // Update particle state (position, LED)
+    for (auto& particle_ptr : particles) {
+        if (!particle_ptr) continue; // Skip if unique_ptr is null for some reason
+        Particle& particle = *particle_ptr; // Dereference for easier access
+
+        particle.tick(); // Update particle state (position, LED, age, state)
+        
+        // --- Calculate brightness multiplier based on state ---
+        float brightness_multiplier = 1.0f;
+        if (particle.state == ParticleState::FADING_IN) {
+            brightness_multiplier = std::clamp((float)particle.age / Particle::FADE_IN_DURATION, 0.0f, 1.0f);
+        } else if (particle.state == ParticleState::FADING_OUT) {
+            brightness_multiplier = std::clamp((float)(particle.lifespan - particle.age) / Particle::FADE_OUT_DURATION, 0.0f, 1.0f);
+        }
+        // --- End brightness calculation ---
         
         // Draw particle head
-        int head_led = particle->led_number;
+        int head_led = particle.led_number;
         if (head_led >= 0 && head_led < (int)count) {
-            // Calculate blend amount based on age within hold_time
-            uint8_t blend = 255; // Default to full brightness
-            if (particle->hold_time > 0) {
+            uint8_t blend = 255; 
+            if (particle.hold_time > 0) {
                  blend = std::min(255.0f, std::max(1.0f, 
-                    blend_amount / (particle->hold_time - particle->age + 1)));
+                    blend_amount / (particle.hold_time - particle.age + 1)));
             }
-            PixelTheater::nblend(leds[head_led], particle->color, blend);
+            // Apply brightness multiplier
+            uint8_t final_blend = static_cast<uint8_t>(blend * brightness_multiplier);
+            if (final_blend > 0) { // Avoid blending black
+                 PixelTheater::nblend(leds[head_led], particle.color, final_blend/2);
+            }
         }
         
         // Draw particle trail
-        for (size_t i = 1; i < particle->path.size(); i++) {
-            int trail_led = particle->path[i];
+        for (size_t i = 1; i < particle.path.size(); i++) {
+            int trail_led = particle.path[i];
             if (trail_led >= 0 && trail_led < (int)count) {
-                // Blend amount decreases along the trail
                 uint8_t trail_blend = std::min(255.0f, std::max(1.0f, 
-                    blend_amount / (i * 3 + 1))); // Trail fades faster
-                PixelTheater::nblend(leds[trail_led], particle->color, trail_blend);
+                    blend_amount / (i * 3 + 1))); 
+                // Apply brightness multiplier to trail as well, but less harshly
+                // Blend the multiplier towards 1.0 so the trail dims slower than the head
+                float trail_brightness_mult = (brightness_multiplier + 1.0f) / 2.0f; // Average with 1.0
+                uint8_t final_trail_blend = static_cast<uint8_t>(trail_blend * trail_brightness_mult);
+                if (final_trail_blend > 0) { // Avoid blending black
+                    PixelTheater::nblend(leds[trail_led], particle.color, final_trail_blend);
+                }
             }
         }
-        
-        // Randomly reset particles based on chance
-        if (random(256) < static_cast<uint32_t>(reset_check_threshold)) {
-            particle->reset();
+    }
+    
+    // --- ADD PARTICLE INTERACTION LOGIC HERE --- 
+    // Check for collisions after all particles have been updated and drawn for this tick
+    for (size_t i = 0; i < particles.size(); ++i) {
+        if (!particles[i] || particles[i]->led_number < 0) continue; // Skip invalid particles
+        for (size_t j = i + 1; j < particles.size(); ++j) {
+            if (!particles[j] || particles[j]->led_number < 0) continue; // Skip invalid particles
+            
+            // Check if particles are on the same LED
+            if (particles[i]->led_number == particles[j]->led_number) {
+                // Collision! Randomize angular velocities (direction tendencies) for both
+                float max_rand_av = 0.02f; // Adjust magnitude as needed
+                float max_rand_cv = 0.02f;
+                
+                particles[i]->av = randomFloat(-max_rand_av, max_rand_av);
+                particles[i]->cv = randomFloat(-max_rand_cv, max_rand_cv);
+                
+                particles[j]->av = randomFloat(-max_rand_av, max_rand_av);
+                particles[j]->cv = randomFloat(-max_rand_cv, max_rand_cv);
+                
+                // Optional: Reset their age/hold timer to force immediate movement next tick?
+                // particles[i]->age = particles[i]->hold_time; 
+                // particles[j]->age = particles[j]->hold_time; 
+            }
         }
     }
+    // --- END PARTICLE INTERACTION LOGIC --- 
+
 }
 
 // Implementation for the status string    
@@ -133,15 +176,16 @@ std::string WanderingParticlesScene::status() const {
     int num_particles = particles.size(); // Use actual size
     int fade_amount = 0; 
     float blend_amount = 0.0f;
-    int reset_chance = 0;
+    // int reset_chance = 0; // Removed
     if (has_parameter("fade_amount")) fade_amount = settings["fade_amount"];
     if (has_parameter("blend_amount")) blend_amount = settings["blend_amount"];
-    if (has_parameter("reset_chance")) reset_chance = settings["reset_chance"];
+    // if (has_parameter("reset_chance")) reset_chance = settings["reset_chance"]; // Removed
     
     output += "Particles: " + std::to_string(num_particles) + 
               " (fade=" + std::to_string(fade_amount) + 
               ", blend=" + std::to_string(static_cast<int>(blend_amount)) + // Cast float for display
-              ", reset=" + std::to_string(reset_chance) + ")\n";
+              // ", reset=" + std::to_string(reset_chance) + ")\n"; // Removed reset part
+              ")\n";
               
     // Show info for first 3 particles if they exist
     for (size_t i = 0; i < std::min(size_t(3), particles.size()); i++) {
