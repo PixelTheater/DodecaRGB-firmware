@@ -26,7 +26,7 @@ public:
     std::string status() const override;
 
     // Make sphere radius accessible, maybe calculate based on model?
-    float sphere_radius = 300.0f; // Placeholder
+    // float sphere_radius = 300.0f; // Removed - Use model().getSphereRadius()
 
     // Define default values used in setup()
     static constexpr int DEFAULT_NUM_BOIDS = 80;
@@ -53,7 +53,6 @@ private:
     void updateBoid(Boid& boid);
     void drawBoid(const Boid& boid);
     float sphericalDistance(const Boid& b1, const Boid& b2) const;
-    void estimateSphereRadius();
 
     friend class Boid; // Allow Boid to access Scene members
 
@@ -118,11 +117,13 @@ inline void Boid::reset() {
     state = State::FOLLOWING;
     setRandomTimer();
 
-    scene.logInfo("Boid %d reset: Using radius %.2f", boid_id, scene.sphere_radius); 
+    // Use model().getSphereRadius() instead of scene.sphere_radius
+    scene.logInfo("Boid %d reset: Using radius %.2f", boid_id, scene.model().getSphereRadius()); 
 
     Vector3f random_dir(scene.getRandomFloat(-1.0f, 1.0f), scene.getRandomFloat(-1.0f, 1.0f), scene.getRandomFloat(-1.0f, 1.0f));
     if (random_dir.norm() > 1e-6f) { 
-        pos = random_dir.normalized() * scene.sphere_radius;
+        // Use model().getSphereRadius()
+        pos = random_dir.normalized() * scene.model().getSphereRadius();
     }
 
     Vector3f random_dir2(scene.getRandomFloat(-1.0f, 1.0f), scene.getRandomFloat(-1.0f, 1.0f), scene.getRandomFloat(-1.0f, 1.0f));
@@ -150,7 +151,8 @@ inline void Boid::tick() {
 
     pos += vel;
     pos.normalize();
-    pos *= scene.sphere_radius;
+    // Use model().getSphereRadius()
+    pos *= scene.model().getSphereRadius();
 
     constrainToSphere();
     limitSpeed();

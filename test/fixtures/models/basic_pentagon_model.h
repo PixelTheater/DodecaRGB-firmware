@@ -15,6 +15,7 @@ struct BasicPentagonModel : public ModelDefinition<15, 3> {  // 15 total LEDs (5
 
     static constexpr size_t LED_COUNT = 15;
     static constexpr size_t FACE_COUNT = 3;
+    static constexpr float SPHERE_RADIUS = 100.0f;
 
     // Face type definitions - each face has 5 LEDs
     static constexpr std::array<FaceTypeData, 1> FACE_TYPES{{

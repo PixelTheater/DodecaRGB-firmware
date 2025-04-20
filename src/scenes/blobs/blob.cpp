@@ -19,30 +19,7 @@ Blob::Blob(BlobScene& parent_scene, uint16_t unique_id, int min_r, int max_r, in
       color(PixelTheater::CRGB::White) // Initialize color here
 { 
     // Note: color is set properly in BlobScene::initBlobs after construction
-    estimateSphereRadius();
     reset();
-}
-
-void Blob::estimateSphereRadius() {
-    int max_dist_sq = 0;
-    size_t count = scene.ledCount(); // Use scene reference
-    if (count == 0) { // Handle case with no LEDs
-        scene.logWarning("Cannot estimate radius: No LEDs found.");
-        sphere_radius = 100; // Default fallback
-        return;
-    }
-    for (size_t i = 0; i < count; i++) { 
-        const auto& p = scene.model().point(i); // Use scene reference
-        int dist_sq = p.x() * p.x() + p.y() * p.y() + p.z() * p.z();
-        max_dist_sq = std::max(max_dist_sq, dist_sq);
-    }
-    if (max_dist_sq > 0) {
-        sphere_radius = static_cast<int>(sqrt(static_cast<float>(max_dist_sq)));
-        // scene.logInfo("Blob %d: Estimated sphere radius: %d", blob_id, sphere_radius);
-    } else {
-        scene.logWarning("Blob %d: Could not estimate sphere radius, using default 100", blob_id);
-        sphere_radius = 100; // Default fallback
-    }
 }
 
 void Blob::reset() {
@@ -62,13 +39,16 @@ void Blob::reset() {
 
 int Blob::x() const { 
     // Ensure sphere_radius is positive before calculations
-    return (sphere_radius > 0) ? static_cast<int>(sphere_radius * sin(c) * cos(a)) : 0;
+    float radius = scene.model().getSphereRadius();
+    return (radius > 0) ? static_cast<int>(radius * sin(c) * cos(a)) : 0;
 }
 int Blob::y() const { 
-    return (sphere_radius > 0) ? static_cast<int>(sphere_radius * sin(c) * sin(a)) : 0;
+    float radius = scene.model().getSphereRadius();
+    return (radius > 0) ? static_cast<int>(radius * sin(c) * sin(a)) : 0;
 }
 int Blob::z() const { 
-    return (sphere_radius > 0) ? static_cast<int>(sphere_radius * cos(c)) : 0;
+    float radius = scene.model().getSphereRadius();
+    return (radius > 0) ? static_cast<int>(radius * cos(c)) : 0;
 }
 
 void Blob::applyForce(float af, float cf) {

@@ -199,7 +199,7 @@ void MyScene::tick() {
 
 ### Spherical Coordinates
 
-Calculate spherical coordinates (azimuth, elevation, radius) from Cartesian coordinates if needed for effects like orbits.
+Calculate spherical coordinates (azimuth, elevation, radius) from Cartesian coordinates if needed for effects like orbits. The model's overall radius can be obtained using `model().getSphereRadius()`.
 
 ```cpp
 #include "PixelTheater.h"
@@ -215,9 +215,12 @@ void MyScene::tick() {
         float x = p.x(), y = p.y(), z = p.z();
 
         // Calculate spherical coords (example)
-        float radius = std::sqrt(x*x + y*y + z*z);
+        // Note: For effects relative to the overall model radius, use model().getSphereRadius()
+        // For the individual point's distance from origin:
+        float point_radius = std::sqrt(x*x + y*y + z*z); 
         float azimuth = std::atan2(y, x); // Angle in XY plane (-PI to PI)
-        float elevation = std::acos(z / radius); // Angle from Z+ axis (0 to PI)
+        // Use point_radius here if needed for normalization to individual point
+        float elevation = (point_radius > 1e-6f) ? std::acos(z / point_radius) : 0.0f; // Angle from Z+ axis (0 to PI)
 
         // Use spherical coords for animation...
         // Example: Brightness based on angle from X+ axis

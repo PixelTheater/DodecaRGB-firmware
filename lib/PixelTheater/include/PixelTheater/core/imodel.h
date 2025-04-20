@@ -47,6 +47,12 @@ public:
      */
     virtual size_t faceCount() const noexcept = 0;
 
+    /**
+     * @brief Get the calculated radius of the sphere encompassing the model.
+     * @return The sphere radius (typically in the same units as point coordinates).
+     */
+    virtual float getSphereRadius() const = 0;
+
 };
 
 } // namespace PixelTheater 

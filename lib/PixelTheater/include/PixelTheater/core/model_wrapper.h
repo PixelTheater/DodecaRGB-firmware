@@ -80,6 +80,19 @@ public:
         return concrete_model_ ? concrete_model_->faces.size() : 0;
     }
 
+    /**
+     * @brief Get the pre-calculated sphere radius from the model definition.
+     * @return The sphere radius.
+     */
+    float getSphereRadius() const override {
+        // Check if concrete model exists and then access the static member
+        if (!concrete_model_) { 
+            // Log::warning("getSphereRadius called on uninitialized ModelWrapper"); // RTTI/Logging might not be available here
+            return 0.0f; 
+        } 
+        return TModelDef::SPHERE_RADIUS;
+    }
+
     // Potential helper to access the underlying concrete model if needed 
     // elsewhere (e.g., during Theater setup), but maybe not ideal 
     // to expose publicly if strict interface separation is desired.

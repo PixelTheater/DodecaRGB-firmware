@@ -156,7 +156,7 @@ While `Scenes.md` lists basic math utilities, understanding how to combine them 
 
 *   **Using Geometry & Coordinates:** Access LED positions via `model().point(i).x()`, `.y()`, `.z()`. These coordinates are essential for making animations react to the physical layout.
     *   **Cartesian:** Use `x, y, z` directly for effects based on position (e.g., brightness based on height).
-    *   **Spherical:** Convert Cartesian coordinates to spherical (azimuth, elevation) using `std::atan2(y, x)` and `std::acos(z / radius)`. This is useful for effects that wrap around a sphere, like latitude/longitude grids (`OrientationGridScene`) or mapping angles to colors.
+    *   **Spherical:** Convert Cartesian coordinates to spherical (azimuth, elevation) using `std::atan2(y, x)` and `std::acos(z / radius)`. This is useful for effects that wrap around a sphere, like latitude/longitude grids (`OrientationGridScene`) or mapping angles to colors. The model's bounding sphere radius is available via `model().getSphereRadius()`.
 
 *   **Rotations:** To rotate the entire model or parts of it:
     *   Define rotation angles (e.g., `spin += speed * deltaTime();`).

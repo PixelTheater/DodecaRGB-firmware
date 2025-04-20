@@ -12,12 +12,6 @@
 
 namespace Scenes {
 
-// Forward declaration removed (now included via particle.h)
-// class WanderingParticlesScene;
-
-// Particle class definition removed 
-// ...
-
 // WanderingParticlesScene class
 class WanderingParticlesScene : public Scene { 
 public:
@@ -29,10 +23,7 @@ public:
     static constexpr float DEFAULT_BLEND = 130.0f;
     static constexpr float DEFAULT_GRAVITY = 2.2f; // Default no gravity
     static constexpr int MAX_RESET = 20; // Define MAX_RESET here
-    
-    // Member accessible by Particle (can be private if Particle is friend)
-    int sphere_radius = 100; 
-    
+        
     // Scene lifecycle methods (Declarations only)
     void setup() override;
     void tick() override;
@@ -41,7 +32,6 @@ public:
 
     // Scene-specific logic (Declarations only)
     void initParticles();
-    void estimateSphereRadius();
 
     // Allow Particle to access private members if necessary (e.g., sphere_radius if private)
     friend class Particle; 

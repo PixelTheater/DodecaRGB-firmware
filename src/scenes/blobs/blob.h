@@ -20,7 +20,6 @@ public:
     // color will be declared after the private members it follows in the init list
     
     // --- Other public members (state, calculated, etc.) ---
-    int sphere_radius = 100;  
     int radius = 0;           
     float a = 0.0f, c = 0.0f; 
     float av = 0.0f, cv = 0.0f; 
@@ -32,7 +31,6 @@ public:
     Blob(BlobScene& parent_scene, uint16_t unique_id, int min_r, int max_r, int max_a, float speed);
     
     // Methods
-    void estimateSphereRadius();
     void reset();
     int x() const; 
     int y() const; 

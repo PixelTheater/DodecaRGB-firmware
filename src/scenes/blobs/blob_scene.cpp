@@ -70,7 +70,7 @@ void BlobScene::initBlobs() {
         logWarning("No blobs created based on parameters, creating fallback blobs.");
         num_blobs = 3; // Create a small number of fallback blobs
         for (int i = 0; i < num_blobs; i++) { 
-            auto blob = std::make_unique<Blob>(*this, i, 50, 80, 4000, 1.0f); // Use fixed defaults
+            auto blob = std::make_unique<Blob>(*this, i, 50, 80, 4000, 1.0f);
             CHSV hsv(i * 85, 255, 255); // Spread hues for fallback blobs
             blob->color = hsv; 
             blobs.push_back(std::move(blob));

@@ -192,6 +192,18 @@ class DodecaModel:
         # Get current date and time
         generation_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
+        # Calculate sphere radius
+        max_dist_sq = 0.0
+        if not self.model_def.leds:
+            print("Warning: No LEDs generated, cannot calculate sphere radius.", file=sys.stderr)
+            sphere_radius = 0.0
+        else:
+            for led in self.model_def.leds:
+                dist_sq = led.position.x**2 + led.position.y**2 + led.position.z**2
+                if dist_sq > max_dist_sq:
+                    max_dist_sq = dist_sq
+            sphere_radius = math.sqrt(max_dist_sq) if max_dist_sq > 1e-9 else 0.0 # Avoid sqrt(0) or tiny negatives
+
         print("#pragma once", file=file)
         print("#include \"PixelTheater/model_def.h\"", file=file)
         print("#include \"PixelTheater/model/face_type.h\"", file=file)
@@ -227,6 +239,7 @@ class DodecaModel:
         # Required constants
         print(f"\n    static constexpr size_t LED_COUNT = {led_count};", file=file)
         print(f"    static constexpr size_t FACE_COUNT = {face_count};", file=file)
+        print(f"    static constexpr float SPHERE_RADIUS = {sphere_radius:.3f}f;", file=file)
 
         # Face types with vertices
         print(f"\n    // Face type definitions with vertex geometry", file=file)

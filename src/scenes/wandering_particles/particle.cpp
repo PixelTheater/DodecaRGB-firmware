@@ -81,7 +81,7 @@ void Particle::reset() {
 void Particle::resetAtOppositePole(bool stuck_at_north_pole) {
     // scene.logInfo(...); // Logging removed for brevity
 
-    float target_z = stuck_at_north_pole ? -scene.sphere_radius : scene.sphere_radius;
+    float target_z = stuck_at_north_pole ? -scene.model().getSphereRadius() : scene.model().getSphereRadius();
     int best_led = -1;
     float min_dist_sq = 1e18f;
 
@@ -106,9 +106,9 @@ void Particle::resetAtOppositePole(bool stuck_at_north_pole) {
 
 // Calculated Cartesian position based on angular coords and scene radius
 // Note: These are less relevant now as movement is LED-to-LED, but keep for potential future use or debugging
-float Particle::x() const { return scene.sphere_radius * sin(c) * cos(a); }
-float Particle::y() const { return scene.sphere_radius * sin(c) * sin(a); }
-float Particle::z() const { return scene.sphere_radius * cos(c); }
+float Particle::x() const { return scene.model().getSphereRadius() * sin(c) * cos(a); }
+float Particle::y() const { return scene.model().getSphereRadius() * sin(c) * sin(a); }
+float Particle::z() const { return scene.model().getSphereRadius() * cos(c); }
 
 void Particle::tick() {
     age++;
@@ -157,8 +157,9 @@ void Particle::tick() {
     if (abs(gravity_strength) > GRAVITY_THRESHOLD && led_number >= 0) {
         const auto& p = scene.model().point(led_number);
         float z_norm = 0.0f;
-        if (scene.sphere_radius > 1e-6f) {
-             z_norm = p.z() / scene.sphere_radius;
+        float model_radius = scene.model().getSphereRadius();
+        if (model_radius > 1e-6f) {
+             z_norm = p.z() / model_radius;
         }
 
         bool at_north_pole = (gravity_strength < 0 && z_norm > POLE_ZONE_THRESHOLD); // Negative gravity pulls up
@@ -219,8 +220,9 @@ void Particle::findNextLed(float gravity_strength) {
     // --- Gravity Influence Calculation (same as before) ---
     Vector3f gravity_vector(0.0f, 0.0f, -gravity_strength); 
     float z_norm = 0.0f;
-    if (scene.sphere_radius > 1e-6f) {
-        z_norm = std::clamp(p_current.z() / scene.sphere_radius, -1.0f, 1.0f);
+    float model_radius = scene.model().getSphereRadius();
+    if (model_radius > 1e-6f) {
+        z_norm = std::clamp(p_current.z() / model_radius, -1.0f, 1.0f);
     }
     float equator_factor_sq = 1.0f - z_norm * z_norm;
     float equator_factor = (equator_factor_sq > 0.0f) ? sqrt(equator_factor_sq) : 0.0f;

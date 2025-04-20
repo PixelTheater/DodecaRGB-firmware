@@ -16,6 +16,7 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
     static constexpr const char* VERSION = "2.0.0";
     static constexpr const char* DESCRIPTION = "12-sided RGB LED dodecahedron";
     static constexpr const char* MODEL_TYPE = "dodecahedron";
+    static constexpr float SPHERE_RADIUS = 168.250f; // Example value
     // ... model-specific data ...
 };
 
@@ -198,10 +199,12 @@ The model generator:
 2. Loads PCB pick-and-place data to get LED positions
 3. Transforms LED positions based on face positions and rotations
 4. Calculates neighbor relationships between LEDs
-5. Generates a C++ header file with the complete model definition
+5. Calculates the model's bounding sphere radius
+6. Generates a C++ header file with the complete model definition
 
 This creates `model.h` with:
 - LED count and face count as template parameters
+- Compile-time constants like `SPHERE_RADIUS`
 - Face type definitions with vertices
 - Point coordinates and face assignments
 - Neighbor relationships
@@ -255,7 +258,7 @@ To create a new model:
    python util/generate_model.py -d src/models/YourModel
    ```
 5. Create a README.md documenting:
-   - Physical dimensions
+   - Physical dimensions (including the generated SPHERE_RADIUS)
    - LED arrangement
    - Coordinate system
    - Special considerations

@@ -18,7 +18,7 @@ void BoidsScene::setup() {
     set_author("PixelTheater Team (Refactored)");
 
     // Estimate radius based on model
-    estimateSphereRadius(); // Call the estimation function
+    // estimateSphereRadius(); // Removed call
 
     // Define parameters using the base class method
     param("num_boids", "count", 10, 200, DEFAULT_NUM_BOIDS, "clamp", "Number of boids");
@@ -33,29 +33,6 @@ void BoidsScene::setup() {
     param("intensity", "range", 0.1f, 1.0f, DEFAULT_INTENSITY, "clamp", "LED brightness multiplier");
 
     initBoids(); // Call initialization after params are set
-}
-
-void BoidsScene::estimateSphereRadius() {
-    float max_dist_sq = 0.0f;
-    size_t count = model().pointCount();
-    if (count == 0) { 
-        logWarning("Cannot estimate sphere radius: No points in model. Using default: %.1f", sphere_radius);
-        return; 
-    }
-    // Find the point furthest from the origin (0,0,0)
-    for (size_t i = 0; i < count; i++) { 
-        const auto& p = model().point(i);
-        // Assuming point coordinates are floats now
-        float dist_sq = p.x() * p.x() + p.y() * p.y() + p.z() * p.z(); 
-        max_dist_sq = std::max(max_dist_sq, dist_sq);
-    }
-    if (max_dist_sq > 1e-6f) { // Check against small epsilon for floating point
-        sphere_radius = sqrt(max_dist_sq);
-        logInfo("Estimated sphere radius: %.2f", sphere_radius);
-    } else {
-        logWarning("Could not estimate sphere radius (max_dist_sq=%.2f), using default: %.1f", max_dist_sq, sphere_radius);
-        // Keep the default sphere_radius if estimation fails
-    }
 }
 
 void BoidsScene::initBoids() {

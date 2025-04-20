@@ -32,7 +32,7 @@ void WanderingParticlesScene::setup() {
     param("gravity", "range", MIN_GRAVITY, MAX_GRAVITY, DEFAULT_GRAVITY, "clamp", "Z-axis gravity (+down/-up)"); // Add gravity param
     
     // Estimate model radius (affects particle x,y,z calculations)
-    estimateSphereRadius(); 
+    // estimateSphereRadius(); // Removed call
     
     // Initialize particles based on parameters
     initParticles();
@@ -40,27 +40,8 @@ void WanderingParticlesScene::setup() {
     logInfo("WanderingParticlesScene setup complete");
 }
 
-void WanderingParticlesScene::estimateSphereRadius() {
-    int max_dist_sq = 0;
-    size_t count = model().pointCount(); // Use model().pointCount() for safety
-    if (count == 0) { 
-        logWarning("Cannot estimate sphere radius: No points in model");
-        sphere_radius = 100; // Use default if no points
-        return; 
-    }
-    for (size_t i = 0; i < count; i++) { 
-        const auto& p = model().point(i);
-        int dist_sq = p.x() * p.x() + p.y() * p.y() + p.z() * p.z();
-        max_dist_sq = std::max(max_dist_sq, dist_sq);
-    }
-    if (max_dist_sq > 1) { // Use > 1 to avoid issues with tiny models
-        sphere_radius = static_cast<int>(sqrt(static_cast<float>(max_dist_sq)));
-        logInfo("Estimated sphere radius: %d", sphere_radius);
-    } else {
-        logWarning("Could not estimate sphere radius or radius too small, using default %d", sphere_radius);
-        // Keep default sphere_radius = 100 if estimation fails or is too small
-    }
-}
+/* // Removed estimateSphereRadius function body
+*/
 
 void WanderingParticlesScene::initParticles() {
     int num_particles = settings["num_particles"];

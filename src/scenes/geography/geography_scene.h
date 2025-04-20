@@ -47,9 +47,6 @@ private:
 
     float model_radius = 150.0f; // Estimate or calculate in setup
 
-    // Store estimated sphere radius if needed (Geography seems to use it indirectly)
-    // float sphere_radius = 1.0f; // Default or estimate in setup
-
     // Helper for Lorenz calculation
     void updateLorenz();
 };
