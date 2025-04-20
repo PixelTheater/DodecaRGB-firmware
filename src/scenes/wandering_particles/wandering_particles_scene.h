@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PixelTheater.h" 
+#include "PixelTheater/SceneKit.h" 
 #include "benchmark.h"
 #include "particle.h" // Include the new particle header
 
@@ -19,7 +19,7 @@ namespace Scenes {
 // ...
 
 // WanderingParticlesScene class
-class WanderingParticlesScene : public PixelTheater::Scene { 
+class WanderingParticlesScene : public Scene { 
 public:
     WanderingParticlesScene() = default;
     

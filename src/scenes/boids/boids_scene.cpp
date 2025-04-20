@@ -1,7 +1,8 @@
 #include "boids_scene.h"
 #include <memory> // For std::make_unique
 #include <cmath> // For std::clamp, std::sqrt, std::acos
-#include <cstdio> // For snprintf
+#include <cstdio>
+#include "PixelTheater/SceneKit.h"
 
 // Use shorter Eigen types (already in header, but good practice here too?)
 using Vector3f = Eigen::Vector3f;
@@ -84,7 +85,7 @@ void BoidsScene::initBoids() {
     for (int i = 0; i < num_boids_setting; ++i) {
         auto boid = std::make_unique<Boid>(*this, i, speed_limit_setting, chaos_setting);
         uint8_t palette_index = i * 255 / num_boids_setting;
-        boid->color = PixelTheater::colorFromPalette(PixelTheater::Palettes::OceanColors, palette_index);
+        boid->color = colorFromPalette(PixelTheater::Palettes::OceanColors, palette_index);
         boids.push_back(std::move(boid));
     }
 

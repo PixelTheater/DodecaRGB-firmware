@@ -15,50 +15,47 @@ This document provides a quick reference to the API available to authors creatin
 
 ## Basic Structure & Example
 
-All scenes must inherit from `PixelTheater::Scene` and implement the `setup()` and `tick()` methods.
+All scenes must inherit from the `Scene` base class provided by `PixelTheater/SceneKit.h` and implement the `setup()` and `tick()` methods.
 
 ```cpp
 #pragma once
 
-#include "PixelTheater.h" 
-
-// Optional: Bring namespaces into scope for convenience
-// using namespace PixelTheater;
-// using namespace PixelTheater::Constants; // For PT_PI, PT_TWO_PI etc.
+// Include SceneKit for core types and helpers
+#include "PixelTheater/SceneKit.h"
 
 namespace Scenes {
 
-// Note: Inherit PUBLICLY from PixelTheater::Scene
-class MyScene : public PixelTheater::Scene {
+// Note: Inherit PUBLICLY from the aliased `Scene` type
+class MyScene : public Scene {
 public:
     // --- Required ---
     // Constructor (usually default is fine)
-    MyScene() = default; 
+    MyScene() = default;
     // Virtual destructor is important for proper cleanup
-    ~MyScene() override = default; 
+    ~MyScene() override = default;
 
     // Called once when scene added or reset. Define metadata/params here.
-    void setup() override; 
+    void setup() override;
     // Called every frame. Implement animation logic here.
-    void tick() override; 
+    void tick() override;
 
     // --- Optional Overrides ---
-    
+
     // Called when switching back to this scene after it was inactive.
     // Default resets tick_count and parameter values to defaults.
     // Call Scene::reset() if overriding.
-    void reset() override { 
+    void reset() override {
         Scene::reset(); // Call base implementation first
-        // ... custom reset logic ... 
+        // ... custom reset logic ...
     }
 
-    // If parameter definitions become too numerous for setup(), 
+    // If parameter definitions become too numerous for setup(),
     // you can optionally define them here instead.
     void config() override {
        param(...);
        // ... other params ...
     }
-    
+
     // Provide a concise status string for debugging/logging.
     // (Currently not used by default logging).
     std::string status() const override {
@@ -67,7 +64,8 @@ public:
 
 private:
     // Scene-specific state variables
-    // float my_internal_state = 0.0f;
+    // float position = 0.0f;
+    // float velocity = 0.0f;
 };
 
 } // namespace Scenes
@@ -91,7 +89,8 @@ void MyScene::setup() {
     param("mode", "select", {"A", "B", "C"}, "A", "", "Select operation mode");
 
     // 3. Initialize any internal state variables if needed
-    // my_internal_state = 0;
+    // position = 0.0f;
+    // velocity = randomFloat(-10.0f, 10.0f); // Use member random
 }
 ```
 
@@ -107,21 +106,28 @@ void MyScene::tick() {
     bool is_enabled = settings["enabled"];
     int selected_mode_index = settings["mode"]; // select returns index
 
+    // Get time delta for frame-rate independent movement
+    float dt = deltaTime();
+
     // --- Animation logic based on parameters and time ---
     if (!is_enabled) {
-        fill_solid(leds, CRGB::Black); // Assumes fill_solid is available
+        fill_solid(leds, CRGB::Black); // Use aliases from SceneKit
         return;
     }
+
+    // Example: Update position based on velocity and deltaTime
+    // position += velocity * current_speed * dt;
 
     // Convert normalized hue to 0-255
     uint8_t current_hue = current_hue_norm * 255.0f;
 
     for (size_t i = 0; i < ledCount(); ++i) {
-        // Example: Simple traveling sine wave using time and index
+        // Example: Simple traveling sine wave using time (millis) and index
         uint32_t time_ms = millis();
         uint8_t phase = (time_ms / 20) + i * 10; // Combine time and position
-        uint8_t val = sin8(static_cast<uint8_t>(phase * current_speed)); // Use speed param
-        leds[i] = CHSV(current_hue, 255, val); // Use hue param (assumes CHSV is available)
+        // Note: sin8 requires PixelTheater:: qualifier
+        uint8_t val = PixelTheater::sin8(static_cast<uint8_t>(phase * current_speed)); // Use speed param
+        leds[i] = CHSV(current_hue, 255, val); // Use hue param (SceneKit provides CHSV)
     }
 }
 ```
@@ -184,20 +190,16 @@ Parameters define the user-controllable aspects of your scene. Define them in `s
 ### Timing Utilities
 
 *   `millis()` (`uint32_t`): Milliseconds since program start (provided by Platform).
-*   `deltaTime()` (`float`): Time elapsed since the last frame (in seconds, provided by Platform).
+*   `deltaTime()` (`float`): Time elapsed since the last frame (in seconds, provided by Platform). Essential for frame-rate independent physics/movement.
 *   `tick_count()` (`size_t`): Number of `tick()` calls since the scene was last activated/reset. Incremented by `Scene::tick()`.
 
-### Math/Random Utilities (provided via `PixelTheater.h`)
+### Math/Random Utilities (provided by PixelTheater, some aliased by SceneKit)
 
-*   `random8()`: Random `uint8_t` (0-255).
-*   `random16()`: Random `uint16_t` (0-65535).
-*   `random(max)`: Random `long` (0 to max-1).
-*   `random(min, max)`: Random `long` (min to max-1).
-*   `randomFloat()`: Random `float` (0.0 to 1.0).
-*   `randomFloat(max)`: Random `float` (0.0 to max).
-*   `randomFloat(min, max)`: Random `float` (min to max).
-*   Global math/color utilities: `map()`, `nblend()`, `fadeToBlackBy()`, `fill_solid()`, `colorFromPalette()`, `CRGB`, `CHSV`, etc., are available via `PixelTheater.h` (may require `using namespace PixelTheater;`). See [Color System](Color.md), [Palettes API](Palettes.md), and the [Creating Animations Guide](../creating_animations.md).
-*   Constants: `PT_PI`, `PT_TWO_PI`, etc., are in the `PixelTheater::Constants` namespace. Use `PixelTheater::Constants::PT_PI` or `using namespace PixelTheater::Constants;`.
+*   **Random Functions:**
+    *   *Member Functions (Recommended):* The `Scene` base class provides convenient member functions like `random(max)`, `random(min, max)`, `randomFloat()`, `randomFloat(min, max)`. Use these directly without a qualifier (e.g., `float speed = randomFloat(-1.0f, 1.0f);`).
+    *   *Global Functions:* `PixelTheater` also provides global random functions like `PixelTheater::random8()`, `PixelTheater::random16()`, `PixelTheater::randomFloat()`. These require the `PixelTheater::` qualifier and are generally less convenient within a scene than the member functions.
+*   **Global Math/Color Utilities:** `map()`, `nblend()`, `fadeToBlackBy()`, `fill_solid()`, `colorFromPalette()`, `CRGB`, `CHSV`, etc., are available via `PixelTheater/SceneKit.h` within `namespace Scenes`. Functions *not* explicitly aliased by `SceneKit` (e.g., `PixelTheater::sin8`, `PixelTheater::cos8`) require the `PixelTheater::` qualifier. See [Color System](Color.md), [Palettes API](Palettes.md), and the [Creating Animations Guide](../creating_animations.md).
+*   **Constants:** `PT_PI`, `PT_TWO_PI`, etc., are aliased by `SceneKit.h` within `namespace Scenes`. Direct use (e.g., `PT_PI`) is recommended.
 
 ### Logging Utilities
 

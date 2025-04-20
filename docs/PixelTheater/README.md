@@ -16,14 +16,14 @@ PixelTheater is a C++ library designed for creating interactive, 3D LED animatio
 
 *   **Platform-Independent Scenes:** Write animation logic once using the `PixelTheater` API; run on multiple platforms.
 *   **3D Model Abstraction:** Define complex LED geometry and access LED positions and relationships easily.
-*   **Simplified Scene API:** Create modular `PixelTheater::Scene` classes with helpers for LEDs, geometry, time, parameters, and utilities.
+*   **Simplified Scene API:** Create modular `PixelTheater::Scene` classes with helpers for LEDs, geometry, time, parameters, and utilities. Using `PixelTheater/SceneKit.h` provides convenient aliases (e.g., `Scene`, `CRGB`, `CHSV`, `PT_PI`).
 *   **Color & Palette API:** Platform-independent types (`PixelTheater::CRGB`, `PixelTheater::CHSV`) and functions (`PixelTheater::blend`, `PixelTheater::colorFromPalette`). Methods like `CRGB::nscale8` and `CRGB::fadeToBlackBy` provide direct color manipulation. See [Color System](Color.md) and [Palettes API](Palettes.md).
 *   **Parameter System:** Define runtime-configurable parameters for scenes.
 *   **Central `Theater` Facade:** Manages platform setup, scene lifecycles, and the main animation loop.
 
 ### Architecture
 
-The `Theater` acts as a central coordinator, connecting the chosen hardware `Platform`, the 3D `Model` geometry, and the active animation `Scene`. Scenes interact with the system exclusively through the `PixelTheater::Scene` base class helpers and the `PixelTheater` namespace API.
+The `Theater` acts as a central coordinator, connecting the chosen hardware `Platform`, the 3D `Model` geometry, and the active animation `Scene`. Scenes interact with the system exclusively through the `PixelTheater::Scene` base class helpers (often via aliases from `SceneKit.h`) and the `PixelTheater` namespace API.
 
 ```text
                            ┌───────────┐
@@ -53,12 +53,13 @@ The `Theater` acts as a central coordinator, connecting the chosen hardware `Pla
                                                            │ Provides Helpers
                                                            │ (leds[], model(),
                                                            │  millis(), etc.)
+                                                           │ + SceneKit Aliases
 ```
 
 ### Core Concepts
 
 *   **Theater**: The main entry point (`PixelTheater::Theater`). Initializes the platform and model, adds scenes, and runs the animation loop.
-*   **Scene**: Base class (`PixelTheater::Scene`) for all animations. Implement `setup()` and `tick()`. Provides platform-independent helpers to access LEDs (`leds[]`), geometry (`model()`), time (`millis()`), parameters (`settings[]`), and utilities (`random8()`).
+*   **Scene**: Base class (`PixelTheater::Scene`) for all animations. Implement `setup()` and `tick()`. Provides platform-independent helpers to access LEDs (`leds[]`), geometry (`model()`), time (`millis()`), parameters (`settings[]`), and utilities (`random8()`). Use `PixelTheater/SceneKit.h` for convenient aliases.
 *   **Platform**: Abstraction layer for hardware/environment interaction (e.g., `FastLEDPlatform`, `NativePlatform`). Usually configured once via `Theater`.
 *   **Model**: Defines the 3D LED geometry (`IModel` interface, accessed via `Scene::model()`). Generated from configuration files. See [Model System](Model.md).
 *   **Parameters/Settings**: Mechanism for runtime configuration of scenes via `param()` and `settings[]`. See [Parameters](Parameters.md).
@@ -66,14 +67,14 @@ The `Theater` acts as a central coordinator, connecting the chosen hardware `Pla
 
 ## Getting Started
 
-1.  **Include Header:** Add `#include "PixelTheater.h"` to your scene file. This typically includes everything needed for scene development.
-2.  **Create Scene Class:** Define a class inheriting from `PixelTheater::Scene`.
+1.  **Include Header:** Add `#include "PixelTheater/SceneKit.h"` to your scene file. This provides core types and helpers within the `Scenes` namespace.
+2.  **Create Scene Class:** Define a class inheriting from the aliased `Scene` type provided by SceneKit.
     ```cpp
     #pragma once
-    #include "PixelTheater.h"
+    #include "PixelTheater/SceneKit.h" // Recommended include for scenes
 
     namespace Scenes { // Optional, but recommended
-    class MyScene : public PixelTheater::Scene {
+    class MyScene : public Scene { // Inherit from aliased Scene
     public:
         MyScene() = default;
         ~MyScene() override = default;
@@ -86,12 +87,12 @@ The `Theater` acts as a central coordinator, connecting the chosen hardware `Pla
     } // namespace Scenes
     ```
 3.  **Implement `setup()`:** Set metadata (`set_name`, etc.) and define parameters (`param`).
-4.  **Implement `tick()`:** Write your animation logic using helpers like `leds[]`, `model()`, `millis()`, `settings[]`, `PixelTheater::colorFromPalette`, etc.
+4.  **Implement `tick()`:** Write your animation logic using helpers like `leds[]`, `model()`, `millis()`, `settings[]`, `colorFromPalette`, and other aliases provided by SceneKit.
 5.  **Register Scene:** In your main application file (`main.cpp`), include your scene's header and add it to the `Theater` instance after initializing the platform.
     ```cpp
     // --- main.cpp ---
-    #include "PixelTheater.h"
-    #include "scenes/my_scene.h" // Include your scene
+    #include "PixelTheater.h" // Main app setup still uses this
+    #include "scenes/my_scene.h" // Include your scene (uses SceneKit internally)
 
     PixelTheater::Theater theater;
 

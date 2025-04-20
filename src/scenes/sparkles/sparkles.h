@@ -1,18 +1,18 @@
 #pragma once
 
-#include "PixelTheater.h" // Includes base Scene, CRGB, palettes etc.
+#include "PixelTheater/SceneKit.h" // SceneKit helpers
 #include <cmath>       // For std::sin, std::cos, std::abs
 #include <algorithm>   // For std::clamp
 
 namespace Scenes {
 
-class Sparkles : public PixelTheater::Scene {
+class Sparkles : public Scene {
 private:
     // Parameters handled by base class 'settings'
 
     // Palettes
-    PixelTheater::CRGBPalette16 palette1; // CloudColors
-    PixelTheater::CRGBPalette16 palette2; // HeatColors
+    CRGBPalette16 palette1; // CloudColors
+    CRGBPalette16 palette2; // HeatColors
 
     // Palette Index State
     uint8_t index1 = 128;

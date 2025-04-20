@@ -1,5 +1,5 @@
 #include "blob_scene.h"
-#include "PixelTheater.h" // Include base library for Scene members, types, utils
+#include "PixelTheater/SceneKit.h" // SceneKit provides short aliases
 #include "benchmark.h"   // Include benchmark helpers if used
 
 // Include standard libraries used by the implementations
@@ -58,7 +58,7 @@ void BlobScene::initBlobs() {
         auto blob = std::make_unique<Blob>(*this, i, min_radius, max_radius, max_age, speed);
         
         // Assign a unique color to each blob
-        PixelTheater::CHSV hsv(random8(), 255, 255); // Use Scene's random8()
+        CHSV hsv(random8(), 255, 255);
         blob->color = hsv; // Assign CHSV, relies on CRGB(CHSV) constructor in CRGB class
         
         blobs.push_back(std::move(blob)); // Move ownership to the vector
@@ -71,7 +71,7 @@ void BlobScene::initBlobs() {
         num_blobs = 3; // Create a small number of fallback blobs
         for (int i = 0; i < num_blobs; i++) { 
             auto blob = std::make_unique<Blob>(*this, i, 50, 80, 4000, 1.0f); // Use fixed defaults
-            PixelTheater::CHSV hsv(i * 85, 255, 255); // Spread hues for fallback blobs
+            CHSV hsv(i * 85, 255, 255); // Spread hues for fallback blobs
             blob->color = hsv; 
             blobs.push_back(std::move(blob));
         }
@@ -149,7 +149,7 @@ void BlobScene::drawBlobs() {
     // For each LED, check its proximity to each blob and blend colors
     for (size_t i = 0; i < count; ++i) {
         const auto& p = model().point(i); // Get the 3D position of the current LED
-        PixelTheater::CRGB& current_led = leds[i]; // Get reference to the LED's color object
+        CRGB& current_led = leds[i]; // Get reference to the LED's color object
 
         for (auto& blob : blobs) {
             // Calculate squared distance from LED to blob center
@@ -161,24 +161,24 @@ void BlobScene::drawBlobs() {
 
             // If the LED is within the blob's radius...
             if (dist_sq < rad_sq) {
-                PixelTheater::CRGB blob_draw_color = blob->color;
+                CRGB blob_draw_color = blob->color;
                 
                 // Fade in new blobs over the first 150 frames
                 if (blob->age < 150) { 
                     // Map age (0-150) to fade amount (180 -> 0)
-                    uint8_t fade_in_amount = PixelTheater::map(blob->age, 0, 150, 180, 0); 
+                    uint8_t fade_in_amount = map(blob->age, 0, 150, 180, 0); 
                     blob_draw_color.fadeToBlackBy(fade_in_amount); // Apply fade
                 }
                 
                 // Blend the blob's color onto the LED
                 // Closer distance = stronger blend (more opaque)
                 // Map distance squared (0-rad_sq) to blend amount (255 -> 8)
-                uint8_t blend_amount = PixelTheater::map(dist_sq, 0, rad_sq, 255, 8); 
+                uint8_t blend_amount = map(dist_sq, 0, rad_sq, 255, 8); 
                 
                 // Use blend8 for efficient 8-bit per channel blending
-                current_led.r = PixelTheater::blend8(current_led.r, blob_draw_color.r, blend_amount);
-                current_led.g = PixelTheater::blend8(current_led.g, blob_draw_color.g, blend_amount);
-                current_led.b = PixelTheater::blend8(current_led.b, blob_draw_color.b, blend_amount);
+                current_led.r = blend8(current_led.r, blob_draw_color.r, blend_amount);
+                current_led.g = blend8(current_led.g, blob_draw_color.g, blend_amount);
+                current_led.b = blend8(current_led.b, blob_draw_color.b, blend_amount);
             }
         } 
     }

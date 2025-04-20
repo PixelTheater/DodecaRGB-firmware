@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PixelTheater.h" // Use consolidated header
+#include "PixelTheater/SceneKit.h"
 #include "benchmark.h"
 #include <cmath>
 #include <algorithm> // For std::max, std::min
@@ -24,7 +24,7 @@ namespace Scenes {
  * the model along the X, Y, and Z axes. The planes create interesting visual effects
  * as they intersect and blend.
  */
-class XYZScannerScene : public PixelTheater::Scene { // Inherit non-templated Scene
+class XYZScannerScene : public Scene {
 public:
     XYZScannerScene() = default; // Add default constructor
     
@@ -77,7 +77,7 @@ public:
     }
     
     void tick() override {
-        PixelTheater::Scene::tick();  
+        Scene::tick();  
         
         float speed = settings["speed"];
         int blend = static_cast<int>(settings["blend"]);
@@ -85,35 +85,35 @@ public:
         
         size_t count = ledCount();
         for (size_t i = 0; i < count; ++i) {
-            leds[i] = PixelTheater::CRGB(0, 0, 0); 
+            leds[i] = CRGB(0, 0, 0); 
         }
         
         target = 100.0f + std::cos(counter / 700.0f) * 90.0f;
         target = std::clamp(target, 0.0f, 255.0f); 
         
-        PixelTheater::CRGB c(0, 0, 0); // Declare qualified c outside the loop
+        CRGB c(0, 0, 0); // Declare qualified c outside the loop
         for (size_t i = 0; i < count; i++) {
             const auto& point = model().point(i); 
             
             float dz = (zi - point.z());
             if (std::abs(dz) < target) {
                 float off = std::clamp(target - std::abs(dz), min_off, max_range); 
-                c = PixelTheater::CRGB(0, 0, PixelTheater::map(off, min_off, target, 0.0f, 200.0f)); 
-                PixelTheater::nblend(leds[i], c, blend); 
+                c = CRGB(0, 0, map(off, min_off, target, 0.0f, 200.0f)); 
+                nblend(leds[i], c, blend); 
             }
             
             float dy = (yi - point.y());
             if (std::abs(dy) < target) {
                 float off = std::clamp(target - std::abs(dy), min_off, max_range); 
-                c = PixelTheater::CRGB(PixelTheater::map(off, min_off, target, 0.0f, 200.0f), 0, 0); 
-                PixelTheater::nblend(leds[i], c, blend); 
+                c = CRGB(map(off, min_off, target, 0.0f, 200.0f), 0, 0); 
+                nblend(leds[i], c, blend); 
             }
             
             float dx = (xi - point.x());
             if (std::abs(dx) < target) {
                 float off = std::clamp(target - std::abs(dx), min_off, max_range); 
-                c = PixelTheater::CRGB(0, PixelTheater::map(off, min_off, target, 0.0f, 200.0f), 0); 
-                PixelTheater::nblend(leds[i], c, blend); 
+                c = CRGB(0, map(off, min_off, target, 0.0f, 200.0f), 0); 
+                nblend(leds[i], c, blend); 
             }
         }
         

@@ -1,5 +1,5 @@
 #include "wandering_particles_scene.h"
-#include "PixelTheater.h" // Include base library for Scene members, types, utils
+#include "PixelTheater/SceneKit.h" // shorter aliases
 #include "benchmark.h"   // Include benchmark helpers if used
 
 // Include standard libraries used by the implementations
@@ -89,7 +89,7 @@ void WanderingParticlesScene::tick() {
     size_t count = ledCount();
     for(size_t i = 0; i < count; ++i) {
         // Using the global fade utility function
-        PixelTheater::fadeToBlackBy(leds[i], fade_amount);
+        fadeToBlackBy(leds[i], fade_amount);
     }
         
     // Update and draw each particle
@@ -119,7 +119,7 @@ void WanderingParticlesScene::tick() {
             // Apply brightness multiplier
             uint8_t final_blend = static_cast<uint8_t>(blend * brightness_multiplier);
             if (final_blend > 0) { // Avoid blending black
-                 PixelTheater::nblend(leds[head_led], particle.color, final_blend/2);
+                 nblend(leds[head_led], particle.color, final_blend/2);
             }
         }
         
@@ -134,7 +134,7 @@ void WanderingParticlesScene::tick() {
                 float trail_brightness_mult = (brightness_multiplier + 1.0f) / 2.0f; // Average with 1.0
                 uint8_t final_trail_blend = static_cast<uint8_t>(trail_blend * trail_brightness_mult);
                 if (final_trail_blend > 0) { // Avoid blending black
-                    PixelTheater::nblend(leds[trail_led], particle.color, final_trail_blend);
+                    nblend(leds[trail_led], particle.color, final_trail_blend);
                 }
             }
         }

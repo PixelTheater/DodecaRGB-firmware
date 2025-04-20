@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PixelTheater.h" 
+#include "PixelTheater/SceneKit.h" 
 #include "benchmark.h"
 #include "blob.h" // Include the extracted Blob class definition
 
@@ -19,7 +19,7 @@ namespace Scenes {
 class BlobScene;
 
 // BlobScene class
-class BlobScene : public PixelTheater::Scene { 
+class BlobScene : public Scene { 
 public:
     BlobScene() = default; 
     

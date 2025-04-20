@@ -1,10 +1,10 @@
 #pragma once
 
-#include "PixelTheater.h" // Main library include
 #include "benchmark.h"
 #include "models/DodecaRGBv2/model.h" // Correct path to model header
 #include <cmath> // For sin/cos
 #include <vector> // For storing face LEDs if needed
+#include "PixelTheater/SceneKit.h" // SceneKit convenience header
 
 // External declaration of debug mode flag
 extern bool g_debug_mode;

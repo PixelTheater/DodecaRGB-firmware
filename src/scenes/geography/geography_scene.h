@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PixelTheater.h"
+#include "PixelTheater/SceneKit.h"
 
 #include <vector>
 #include <cmath>

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "PixelTheater.h" // Corrected include path
+#include "PixelTheater/SceneKit.h" // Convenience aliases
 #include "textures/texture_data.h" // Includes the generated texture data
 #include <vector> // Added for std::vector
 
-namespace PixelTheater {
+namespace Scenes {
 
-class TextureMapScene : public Scene {
+class TextureMapScene : public PixelTheater::Scene {
 public:
     // Constructor: Use default name or allow override
     TextureMapScene() = default;
@@ -20,7 +20,7 @@ private:
     CRGB getColorFromUV(float u, float v);
 
     // Texture management
-    std::vector<const TextureData*> textures_; // Vector to hold pointers to available textures
+    std::vector<const PixelTheater::TextureData*> textures_; // Vector of texture pointers
     size_t current_texture_index_ = 0;      // Index of the currently displayed texture
     float time_since_last_switch_ = 0.0f;    // Timer for switching textures
 
@@ -31,4 +31,9 @@ private:
     // Parameters - Registered in setup() now
 };
 
-} // namespace PixelTheater 
+} // namespace Scenes
+
+// Provide backward‑compatibility alias so existing code using PixelTheater::TextureMapScene keeps compiling
+namespace PixelTheater {
+    using TextureMapScene = Scenes::TextureMapScene;
+} 

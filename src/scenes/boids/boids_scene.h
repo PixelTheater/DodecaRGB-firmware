@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PixelTheater.h"
+#include "PixelTheater/SceneKit.h"
 #include "benchmark.h"
 
 #include <vector>
@@ -16,7 +16,7 @@ namespace Scenes {
 // Forward declare the Boid class
 class Boid;
 
-class BoidsScene : public PixelTheater::Scene {
+class BoidsScene : public Scene {
 public:
     BoidsScene() = default;
 
@@ -72,7 +72,7 @@ public:
 
     BoidsScene& scene; // Reference to the parent scene
     uint16_t boid_id = 0;
-    PixelTheater::CRGB color = PixelTheater::CRGB::White;
+    CRGB color = CRGB::White;
 
     Vector3f pos; // Current position (Cartesian)
     Vector3f vel; // Current velocity (Cartesian)

@@ -154,7 +154,7 @@ public:
             theater->addScene<Scenes::WanderingParticlesScene>();
             theater->addScene<Scenes::XYZScannerScene>();
             theater->addScene<Scenes::BoidsScene>();
-            theater->addScene<PixelTheater::TextureMapScene>();
+            theater->addScene<Scenes::TextureMapScene>();
             if (theater->sceneCount() == 0) { // CORRECT: Use sceneCount()
                 PixelTheater::Log::error("No scenes were added to the theater!");
                 return false;

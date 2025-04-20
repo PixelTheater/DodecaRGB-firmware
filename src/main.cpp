@@ -181,7 +181,7 @@ void setup() {
   // Add scenes 
   //theater.addScene<Scenes::TestScene>(); // Add Test Scene first
   theater.addScene<Scenes::WanderingParticlesScene>(); // Add Wandering Particles
-  theater.addScene<PixelTheater::TextureMapScene>(); // ADDED NEW SCENE
+  theater.addScene<Scenes::TextureMapScene>(); // TextureMapScene moved to Scenes namespace
   theater.addScene<Scenes::Sparkles>(); // ADDED
   theater.addScene<Scenes::OrientationGridScene>(); // ADDED
   theater.addScene<Scenes::BlobScene>(); 

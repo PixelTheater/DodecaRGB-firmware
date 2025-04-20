@@ -2,11 +2,14 @@
 // #include "PixelTheater/mapping/coordinate_map.h" // Removed - Assume mapping comes from base Scene/Model
 #include <cmath> // For std::fmod, atan2, acos, sqrt, max, min
 #include <vector> // Include vector for safety, though already in .h
+#include <algorithm>
 
 // Use shorter Eigen types (assuming Eigen headers included via PixelTheater.h)
 using Vector3f = Eigen::Vector3f;
+// Note: SceneKit already brings common PixelTheater symbols into namespace Scenes.
+// Avoid pulling them into the global namespace to prevent collisions with FastLED types.
 
-namespace PixelTheater {
+namespace Scenes {
 
 // Use library constant for PI if available, otherwise define
 #ifndef PT_PI
@@ -39,7 +42,7 @@ void TextureMapScene::setup() {
     textures_.clear(); // Ensure list is empty before adding
     // Add textures IF they are defined (check preprocessor? or rely on linker error if missing?)
     // For now, assume they exist based on generator output log.
-    textures_.push_back(&TEXTURE_EARTH_600_300);
+    textures_.push_back(&PixelTheater::TEXTURE_EARTH_600_300);
     //textures_.push_back(&TEXTURE_EYEBALL_600_300);
     //textures_.push_back(&TEXTURE_BASKETBALL_600_300);
     //textures_.push_back(&TEXTURE_MOON_600_300);
@@ -60,11 +63,11 @@ void TextureMapScene::reset() {
     last_rotation_update_ms_ = millis(); // Reset rotation timer
 }
 
-CRGB TextureMapScene::getColorFromUV(float u, float v) {
+PixelTheater::CRGB TextureMapScene::getColorFromUV(float u, float v) {
     if (textures_.empty() || current_texture_index_ >= textures_.size()) {
-        return CRGB::Magenta; // Error color if no textures or index out of bounds
+        return PixelTheater::CRGB::Magenta; // Error color if no textures or index out of bounds
     }
-    const TextureData* currentTexture = textures_[current_texture_index_];
+    const PixelTheater::TextureData* currentTexture = textures_[current_texture_index_];
 
     // Clamp/wrap UV coordinates
     u = std::fmod(u, 1.0f);
@@ -85,7 +88,7 @@ CRGB TextureMapScene::getColorFromUV(float u, float v) {
 
     // Ensure index is within bounds (should be, but good practice)
     if (index < 0 || index + 2 >= static_cast<int>(currentTexture->width * currentTexture->height * 3)) {
-        return CRGB::DarkRed; // Different Error color for index bounds issue
+        return PixelTheater::CRGB::DarkRed; // Different Error color for index bounds issue
     }
 
     // Retrieve the RGB color from PROGMEM
@@ -93,13 +96,11 @@ CRGB TextureMapScene::getColorFromUV(float u, float v) {
     uint8_t g = pgm_read_byte(&(currentTexture->data[index + 1]));
     uint8_t b = pgm_read_byte(&(currentTexture->data[index + 2]));
     
-    CRGB color = CRGB(r, g, b);
+    PixelTheater::CRGB color = PixelTheater::CRGB(r, g, b);
 
     // Apply brightness scaling
     float brightness_param = settings["brightness"]; // Get brightness value
     uint8_t scale = static_cast<uint8_t>(brightness_param * 255.0f);
-    // color.nscale8_video(scale); // Incorrect: CRGB class doesn't have this member
-    // Use standalone scale8_video function from core/color.h
     color.r = scale8_video(color.r, scale);
     color.g = scale8_video(color.g, scale);
     color.b = scale8_video(color.b, scale);
@@ -109,12 +110,12 @@ CRGB TextureMapScene::getColorFromUV(float u, float v) {
 
 void TextureMapScene::tick() {
     // Recommended: Call base tick first (updates tick_count, deltaTime, etc.)
-    Scene::tick(); 
+    PixelTheater::Scene::tick(); 
 
     // --- Handle Texture Switching --- 
-    float switch_interval = settings["switch_interval"];
+    float switch_interval = this->settings["switch_interval"];
     // Use deltaTime() for intervals tied to frame processing if needed
-    time_since_last_switch_ += deltaTime(); 
+    time_since_last_switch_ += this->deltaTime(); 
     if (time_since_last_switch_ >= switch_interval) {
         if (!textures_.empty()) {
             current_texture_index_ = (current_texture_index_ + 1) % textures_.size();
@@ -124,7 +125,7 @@ void TextureMapScene::tick() {
     // --- End Texture Switching ---
 
     // --- Rotation Update based on millis() --- 
-    float speed = settings["rotation_speed"]; 
+    float speed = this->settings["rotation_speed"]; 
     uint32_t current_millis = millis();
     uint32_t elapsed_ms = current_millis - last_rotation_update_ms_;
     // Only update if time has actually passed to avoid large jumps if millis() wraps or glitches
@@ -137,21 +138,21 @@ void TextureMapScene::tick() {
     // --- DEBUG LOGGING --- Update log to show elapsed_ms
     static uint32_t last_log_time = 0;
     if (current_millis - last_log_time > 1000) { // Log approx every second
-        logInfo("TextureMap Debug: Speed=%.2f, ElapsedMs=%lu, Angle=%.2f", speed, elapsed_ms, rotation_angle_);
+        this->logInfo("TextureMap Debug: Speed=%.2f, ElapsedMs=%lu, Angle=%.2f", speed, elapsed_ms, rotation_angle_);
         last_log_time = current_millis;
     }
     // --- END DEBUG LOGGING ---
     
-    for (size_t i = 0; i < ledCount(); ++i) { // Use ledCount()
+    for (size_t i = 0; i < this->ledCount(); ++i) { // Use ledCount()
         // Get the 3D cartesian coordinates of the LED
-        const Point& p = model().point(i); 
+        const PixelTheater::Point& p = this->model().point(i); 
         // Convert PixelTheater::Point to Eigen::Vector3f
         Vector3f p_vec(p.x(), p.y(), p.z());
 
         // Convert cartesian to spherical coordinates (theta, phi)
         float r = p_vec.norm(); // Use Eigen norm()
         if (r < 1e-6f) { // Check against small epsilon
-            leds[i] = CRGB::Black; // Center point, map to black
+            this->leds[i] = PixelTheater::CRGB::Black; // Center point, map to black
             continue;
         }
         float theta = std::atan2(p_vec.y(), p_vec.x()); // Azimuth
@@ -173,8 +174,13 @@ void TextureMapScene::tick() {
         float v = phi / PT_PI;                
 
         // Get color from texture
-        leds[i] = getColorFromUV(u, v);
+        this->leds[i] = getColorFromUV(u, v);
     }
 }
 
-} // namespace PixelTheater 
+} // namespace Scenes
+
+// Provide backward‑compatibility alias so existing code using PixelTheater::TextureMapScene keeps compiling
+namespace PixelTheater {
+    using TextureMapScene = Scenes::TextureMapScene;
+} 

@@ -2,7 +2,8 @@
 #include <cmath> // For fmodf
 // #include <fmt/core.h> // Remove dependency - not available in Teensy build
 #include <string> // Include for std::string and std::to_string
-#include "PixelTheater/color/measurement.h" // Include for get_perceived_brightness
+#include "PixelTheater/SceneKit.h"
+#include "PixelTheater/color/measurement.h"
 #include <algorithm> // For std::clamp
 #include <cmath> // For std::abs
 // Assuming PixelTheater.h includes necessary palette/color utils
@@ -11,9 +12,6 @@
 
 // Bring namespaces into scope for convenience
 using namespace Scenes;
-using namespace PixelTheater;
-using namespace PixelTheater::Constants; // For PT_PI etc. if needed
-// using namespace PixelTheater::ColorUtils; // Optional: Or qualify below
 
 void Sparkles::setup() {
     // Define Metadata
@@ -122,8 +120,8 @@ void Sparkles::tick() {
     index2 = static_cast<uint8_t>(std::clamp(pos2, 128.0f - scaled_range, 128.0f + scaled_range));
 
     // --- Calculate Momentary Colors ---
-    PixelTheater::CRGB color1 = PixelTheater::colorFromPalette(palette1, index1, 255, PixelTheater::LINEARBLEND);
-    PixelTheater::CRGB color2 = PixelTheater::colorFromPalette(palette2, index2, 255, PixelTheater::LINEARBLEND);
+    CRGB color1 = colorFromPalette(palette1, index1, 255, PixelTheater::LINEARBLEND);
+    CRGB color2 = colorFromPalette(palette2, index2, 255, PixelTheater::LINEARBLEND);
 
     // --- Apply Pixel Updates ---
     int num_leds = ledCount();

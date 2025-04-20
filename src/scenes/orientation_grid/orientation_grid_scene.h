@@ -1,15 +1,17 @@
 #pragma once
 
-#include "PixelTheater.h"
+#include "PixelTheater/SceneKit.h"
 #include <cmath> // For std::atan2, std::acos, std::fmod, std::min, std::abs, std::round, std::sin, std::cos
 
 // Use shorter Eigen types (Available via ArduinoEigen dependency)
 using Vector3f = Eigen::Vector3f;
 using Matrix3f = Eigen::Matrix3f;
 
+// No global using directives to avoid name clashes
+
 namespace Scenes {
 
-class OrientationGridScene : public PixelTheater::Scene {
+class OrientationGridScene : public Scene {
 private:
     // --- Parameters (Cached from settings) ---
     int lat_lines_ = 5;
@@ -20,12 +22,12 @@ private:
     float previous_target_line_width_ = 0.14f; // Store width before transition
 
     // --- Colors ---
-    PixelTheater::CRGB bg_color_;
-    PixelTheater::CRGB line_color_;
-    PixelTheater::CRGB target_bg_color_;
-    PixelTheater::CRGB target_line_color_;
-    PixelTheater::CRGB bg_color_prev_;
-    PixelTheater::CRGB line_color_prev_;
+    CRGB bg_color_;
+    CRGB line_color_;
+    CRGB target_bg_color_;
+    CRGB target_line_color_;
+    CRGB bg_color_prev_;
+    CRGB line_color_prev_;
 
     // --- State ---
     bool dark_lines_ = true;
@@ -50,8 +52,8 @@ private:
         previous_target_line_width_ = target_line_width_;
         target_line_width_ = settings["line_width"]; // Get potentially updated target width
 
-        PixelTheater::CHSV best_hsv1, best_hsv2; // Store the best pair found based on hue
-        PixelTheater::CRGB best_rgb1, best_rgb2; // Store corresponding RGBs (unused currently, but kept for potential future logic)
+        CHSV best_hsv1, best_hsv2; // Store the best pair found based on hue
+        CRGB best_rgb1, best_rgb2; // Store corresponding RGBs (unused currently, but kept for potential future logic)
         bool found_hue_pair = false;
         float best_hue_dist = 0.0f;
 
@@ -62,11 +64,11 @@ private:
 
         for (int attempt = 0; attempt < MAX_RANDOM_ATTEMPTS; ++attempt) {
             // Pick from two different palettes
-            PixelTheater::CRGB current_rgb1 = PixelTheater::colorFromPalette(PixelTheater::Palettes::RainbowStripeColors, random8());
-            PixelTheater::CRGB current_rgb2 = PixelTheater::colorFromPalette(PixelTheater::Palettes::PartyColors, random8());
+            CRGB current_rgb1 = colorFromPalette(PixelTheater::Palettes::RainbowStripeColors, random8());
+            CRGB current_rgb2 = colorFromPalette(PixelTheater::Palettes::PartyColors, random8());
 
-            PixelTheater::CHSV current_hsv1 = PixelTheater::rgb2hsv_approximate(current_rgb1);
-            PixelTheater::CHSV current_hsv2 = PixelTheater::rgb2hsv_approximate(current_rgb2);
+            CHSV current_hsv1 = PixelTheater::rgb2hsv_approximate(current_rgb1);
+            CHSV current_hsv2 = PixelTheater::rgb2hsv_approximate(current_rgb2);
 
             // Check for sufficient Hue difference
             float hue_dist = PixelTheater::ColorUtils::get_hue_distance(current_hsv1, current_hsv2);
@@ -91,12 +93,12 @@ private:
             }
         }
 
-        PixelTheater::CRGB final_bright_rgb;
-        PixelTheater::CRGB final_dark_rgb;
+        CRGB final_bright_rgb;
+        CRGB final_dark_rgb;
 
         if (found_hue_pair) {
             // We have a pair with good hue distance, now enforce brightness separation
-            PixelTheater::CHSV bright_hsv, dark_hsv;
+            CHSV bright_hsv, dark_hsv;
 
             // Identify initially brighter/darker based on the stored best pair
             if (best_hsv1.v >= best_hsv2.v) {
@@ -118,8 +120,8 @@ private:
         } else {
             // Fallback if no suitable pair (even based on hue) found after attempts
             logWarning("Could not find color pair with sufficient hue distance after %d attempts, using default White/Black.", MAX_RANDOM_ATTEMPTS);
-            final_bright_rgb = PixelTheater::CRGB::White;
-            final_dark_rgb = PixelTheater::CRGB::Black;
+            final_bright_rgb = CRGB::White;
+            final_dark_rgb = CRGB::Black;
         }
 
         // NO final nscale8/fade adjustments needed here.
@@ -141,14 +143,14 @@ private:
 
     void blendToTarget(float blend_amount_0_1) {
         uint8_t blend_u8 = static_cast<uint8_t>(blend_amount_0_1 * 255.0f);
-        bg_color_ = PixelTheater::blend(bg_color_prev_, target_bg_color_, blend_u8);
-        line_color_ = PixelTheater::blend(line_color_prev_, target_line_color_, blend_u8);
+        bg_color_ = Scenes::blend(bg_color_prev_, target_bg_color_, blend_u8);
+        line_color_ = Scenes::blend(line_color_prev_, target_line_color_, blend_u8);
     }
 
     // Helper to find the shortest angle difference (-PI to PI) -> (0 to PI)
     static inline float angleDiff(float a1, float a2) {
         // Use multiplication by 2.0f to avoid TWO_PI macro collision
-        float diff = std::fmod(a1 - a2 + PixelTheater::Constants::PT_PI, (2.0f * PixelTheater::Constants::PT_PI)) - PixelTheater::Constants::PT_PI;
+        float diff = std::fmod(a1 - a2 + Scenes::PT_PI, (2.0f * Scenes::PT_PI)) - Scenes::PT_PI;
         return std::abs(diff);
     }
 
@@ -222,7 +224,7 @@ public:
                 current_line_width_ = target_line_width_; // Ensure final width is set
             } else {
                 // During transition: blend colors and line width
-                float blend_amount_0_1 = PixelTheater::map(
+                float blend_amount_0_1 = Scenes::map(
                     static_cast<float>(transition_timer_),
                     0.0f,
                     static_cast<float>(transition_duration_frames_),
@@ -234,7 +236,7 @@ public:
                 current_line_width_ = previous_target_line_width_ + (target_line_width_ - previous_target_line_width_) * blend_amount_0_1;
 
                 // Vary rotation speed during transition
-                rotation_speed = 0.7f + std::sin(blend_amount_0_1 * PixelTheater::Constants::PT_PI) * 1.4f;
+                rotation_speed = 0.7f + std::sin(blend_amount_0_1 * Scenes::PT_PI) * 1.4f;
             }
         }
 
@@ -273,8 +275,8 @@ public:
 
         // --- Render Grid ---
         // Use multiplication by 2.0f to avoid TWO_PI macro collision
-        const float lat_spacing = (2.0f * PixelTheater::Constants::PT_PI) / static_cast<float>(lat_lines_);
-        const float lon_spacing = PixelTheater::Constants::PT_PI / static_cast<float>(lon_lines_);
+        const float lat_spacing = (2.0f * Scenes::PT_PI) / static_cast<float>(lat_lines_);
+        const float lon_spacing = Scenes::PT_PI / static_cast<float>(lon_lines_);
 
         for (size_t i = 0; i < ledCount(); ++i) {
             const PixelTheater::Point& p = model().point(i);
@@ -315,7 +317,7 @@ public:
                 // Apply ease-in/out curve (smoothstep)
                 blend_factor = blend_factor * blend_factor * (3.0f - 2.0f * blend_factor);
                 uint8_t blend_u8 = static_cast<uint8_t>(blend_factor * 255.0f);
-                leds[i] = PixelTheater::blend(bg_color_, line_color_, blend_u8);
+                leds[i] = Scenes::blend(bg_color_, line_color_, blend_u8);
             } else {
                 // Background
                 leds[i] = bg_color_;
