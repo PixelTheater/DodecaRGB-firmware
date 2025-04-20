@@ -1,6 +1,6 @@
 {
     "name": "DodecaRGB",
-    "version": "2.0.0",
+    "version": "0.3.0",
     "description": "LED animation framework for dodecahedron display",
     "keywords": "led, animation, fastled, teensy",
     "repository": {

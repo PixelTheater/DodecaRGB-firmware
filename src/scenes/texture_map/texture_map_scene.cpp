@@ -30,7 +30,7 @@ void TextureMapScene::setup() {
     // Set scene metadata
     set_name("Texture Map");
     set_description("Displays the Earth texture mapped onto the sphere.");
-    set_version("1.0");
+    set_version("2.1");
     set_author("PixelTheater User");
 
     // Register parameters

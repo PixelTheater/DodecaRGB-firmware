@@ -16,7 +16,7 @@ namespace Scenes {
 void WanderingParticlesScene::setup() {
     set_name("Wandering Particles");
     set_description("Particles that wander across the model surface, affected by gravity.");
-    set_version("1.1"); // Version bump
+    set_version("2.1"); // Update version
     set_author("PixelTheater Team");
     
     // Define parameter ranges and defaults

@@ -14,7 +14,7 @@ namespace Scenes {
 void BoidsScene::setup() {
     set_name("Boids");
     set_description("Flocking simulation on a sphere");
-    set_version("1.0");
+    set_version("2.1");
     set_author("PixelTheater Team (Refactored)");
 
     // Estimate radius based on model

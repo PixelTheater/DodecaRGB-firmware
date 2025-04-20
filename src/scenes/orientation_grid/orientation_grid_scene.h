@@ -167,7 +167,7 @@ public:
     void setup() override {
         set_name("Orientation Grid");
         set_description("Rotating spherical grid with color transitions");
-        set_version("1.0");
+        set_version("2.1");
         set_author("PixelTheater User");
         // Define parameters using snake_case names and descriptions, pass "" for flags
         param("latitude_lines", "count", 2, 20, 5, "", "Number of latitude lines");

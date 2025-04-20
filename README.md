@@ -1,5 +1,6 @@
 # DodecaRGB V2
 
+Apr 2025: V2.1 progresses: current firmware should build and run on teensy41. Native tests, web simulator and docs also updated. New animation: texture map, featuring a rotating globe demo.
 Jan 2025: *V2 in development!* Version two introduces higher density micro-pixels (1248 in total!) and a slightly smaller size overall. Click below to see a teaser video.
 
 [![DodecaRGB v2 Teaser Video](images/yt-preview-thumb.png)](https://www.youtube.com/watch?v=RErgt5O7D7U)

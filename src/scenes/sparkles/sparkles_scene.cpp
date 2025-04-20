@@ -1,4 +1,4 @@
-#include "sparkles.h"
+#include "sparkles_scene.h"
 #include <cmath> // For fmodf
 // #include <fmt/core.h> // Remove dependency - not available in Teensy build
 #include <string> // Include for std::string and std::to_string
@@ -13,11 +13,12 @@
 // Bring namespaces into scope for convenience
 using namespace Scenes;
 
-void Sparkles::setup() {
+void SparklesScene::setup() {
     // Define Metadata
-    set_name("Sparkles (New Spec)");
+    set_name("Sparkles");
     set_description("Oscillating palettes blended with chaotic influence.");
-    set_author("AI Assistant (New Spec)");
+    set_author("J.Seitz using Gemini 2.5 pro");
+    set_version("2.1");
 
     // --- Define New Parameters ---
     // Speed for blend oscillation (lower = slower cycle)
@@ -55,7 +56,7 @@ void Sparkles::setup() {
     chaos_timer = millis(); // Start timer now
 }
 
-void Sparkles::tick() {
+void SparklesScene::tick() {
     Scene::tick(); // Base tick increments tick_count() and calculates deltaTime()
     float dt = deltaTime(); // Get time delta for physics updates
     uint32_t now = millis();
@@ -153,7 +154,7 @@ void Sparkles::tick() {
     }
 }
 
-std::string Sparkles::status() const {
+std::string SparklesScene::status() const {
     // Use snprintf for safe formatting (avoid fmt dependency)
     char buffer[256];
     snprintf(buffer, sizeof(buffer),

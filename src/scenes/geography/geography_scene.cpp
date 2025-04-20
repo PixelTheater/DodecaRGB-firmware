@@ -18,7 +18,7 @@ using Matrix3f = Eigen::Matrix3f; // Add alias for Matrix3f
 void GeographyScene::setup() {
     set_name("Geography");
     set_description("Lorenz attractor driving 3 rotating color gradients");
-    set_version("1.1"); // Incremented version
+    set_version("2.1"); // Update version
     set_author("Original Author (Refactored)");
 
     // Define parameters
@@ -55,19 +55,20 @@ void GeographyScene::setup() {
     spin_y = 0.0f;
     spin_z = 0.0f;
 
-    // Estimate model radius based on points
-    float max_r_sq = 0.0f;
-    for(size_t i=0; i < model().pointCount(); ++i) {
-        const auto& pt = model().point(i);
-        float r_sq = pt.x()*pt.x() + pt.y()*pt.y() + pt.z()*pt.z();
-        if (r_sq > max_r_sq) max_r_sq = r_sq;
-    }
-    if (max_r_sq > 1e-6f) {
-        model_radius = sqrt(max_r_sq);
-        logInfo("Estimated model radius: %.2f", model_radius);
-    } else {
-        logWarning("Could not estimate model radius, using default: %.1f", model_radius);
-    }
+    // Estimate model radius based on points - REMOVED
+    // float max_r_sq = 0.0f;
+    // for(size_t i=0; i < model().pointCount(); ++i) {
+    //     const auto& pt = model().point(i);
+    //     float r_sq = pt.x()*pt.x() + pt.y()*pt.y() + pt.z()*pt.z();
+    //     if (r_sq > max_r_sq) max_r_sq = r_sq;
+    // }
+    // if (max_r_sq > 1e-6f) {
+    //     model_radius = sqrt(max_r_sq); // Use member variable directly
+    //     logInfo("Estimated model radius: %.2f", model_radius);
+    // } else {
+    //     logWarning("Could not estimate model radius, using default: %.1f", model_radius);
+    // }
+    // Now we can directly use model().getSphereRadius() where model_radius was used
 }
 
 void GeographyScene::updateLorenz() {
@@ -168,9 +169,10 @@ void GeographyScene::tick() {
         float dot3 = p_vec.dot(gradient_axis3);
 
         // Map dot product [-radius, +radius] to palette index [0, 255]
-        uint8_t index1 = static_cast<uint8_t>(PixelTheater::map(dot1, -model_radius, model_radius, 0.0f, 255.0f));
-        uint8_t index2 = static_cast<uint8_t>(PixelTheater::map(dot2, -model_radius, model_radius, 0.0f, 255.0f));
-        uint8_t index3 = static_cast<uint8_t>(PixelTheater::map(dot3, -model_radius, model_radius, 0.0f, 255.0f));
+        float radius = model().getSphereRadius();
+        uint8_t index1 = static_cast<uint8_t>(PixelTheater::map(dot1, -radius, radius, 0.0f, 255.0f));
+        uint8_t index2 = static_cast<uint8_t>(PixelTheater::map(dot2, -radius, radius, 0.0f, 255.0f));
+        uint8_t index3 = static_cast<uint8_t>(PixelTheater::map(dot3, -radius, radius, 0.0f, 255.0f));
 
         // Get colors from the palettes
         PixelTheater::CRGB color1 = PixelTheater::colorFromPalette(palette1, index1);

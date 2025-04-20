@@ -45,8 +45,6 @@ private:
     float spin_y = 0.0f;
     float spin_z = 0.0f;
 
-    float model_radius = 150.0f; // Estimate or calculate in setup
-
     // Helper for Lorenz calculation
     void updateLorenz();
 };

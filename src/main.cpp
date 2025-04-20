@@ -23,12 +23,12 @@
 #include "scenes/test_scene/test_scene.h" // Include Test Scene
 #include "scenes/geography/geography_scene.h" // Include the new scene
 #include "scenes/orientation_grid/orientation_grid_scene.h" // ADDED
-#include "scenes/sparkles/sparkles.h" // ADDED
+#include "scenes/sparkles/sparkles_scene.h" // UPDATED
 #include "scenes/texture_map/texture_map_scene.h" // ADDED NEW SCENE
 #include "benchmark.h" 
 
 #ifndef PROJECT_VERSION
-#define PROJECT_VERSION "0.2.0"
+#define PROJECT_VERSION "0.2.1"
 #endif
 
 // LED configs
@@ -182,7 +182,7 @@ void setup() {
   //theater.addScene<Scenes::TestScene>(); // Add Test Scene first
   theater.addScene<Scenes::WanderingParticlesScene>(); // Add Wandering Particles
   theater.addScene<Scenes::TextureMapScene>(); // TextureMapScene moved to Scenes namespace
-  theater.addScene<Scenes::Sparkles>(); // ADDED
+  theater.addScene<Scenes::SparklesScene>(); // UPDATED
   theater.addScene<Scenes::OrientationGridScene>(); // ADDED
   theater.addScene<Scenes::BlobScene>(); 
   theater.addScene<Scenes::XYZScannerScene>(); 

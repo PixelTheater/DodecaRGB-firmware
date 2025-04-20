@@ -57,7 +57,7 @@ public:
     void setup() override {
         set_name("Diagnostic Test"); 
         set_description("Cycles through visual tests for model/LEDs");
-        set_version("1.1");
+        set_version("2.1");
         set_author("PixelTheater Dev");
 
         // No parameters needed for this version

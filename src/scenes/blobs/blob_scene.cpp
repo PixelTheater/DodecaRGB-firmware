@@ -15,7 +15,7 @@ namespace Scenes {
 void BlobScene::setup() {
     set_name("Blobs");
     set_description("Colorful blobs moving on the surface");
-    set_version("1.1");
+    set_version("2.1");
     set_author("PixelTheater Team");
     
     // Parameter ranges

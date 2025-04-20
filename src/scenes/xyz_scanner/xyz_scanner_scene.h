@@ -47,7 +47,7 @@ public:
         // <<< ADDED METADATA >>>
         set_name("XYZ Scanner");
         set_description("Scans through the model along the X, Y, and Z axes with colorful planes of light");
-        set_version("1.0");
+        set_version("2.1");
         set_author("PixelTheater Team");
         // <<< END ADDED METADATA >>>
         

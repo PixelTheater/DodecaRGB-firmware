@@ -1,5 +1,12 @@
 # Change Log
 
+0.3 - Apr 20
+- ported remaining scenes
+- introduced SceneKit, simplifying access to API and reducing namespace prefixes
+- added sphere radius calculation to model generation, available in scenes
+- updated tests to test new api
+- Bump scene/project version to 2.1
+
 0.2 - Apr 18
 - refactored colors and palletes
 - added back neighbor info

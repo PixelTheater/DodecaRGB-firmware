@@ -6,7 +6,7 @@
 
 namespace Scenes {
 
-class Sparkles : public Scene {
+class SparklesScene : public Scene {
 private:
     // Parameters handled by base class 'settings'
 
@@ -34,7 +34,7 @@ private:
 
 public:
     // Constructor
-    Sparkles() = default;
+    SparklesScene() = default;
 
     // Required lifecycle methods
     void setup() override;
