@@ -92,15 +92,11 @@ void WanderingParticlesScene::tick() {
         // Draw particle head
         int head_led = particle.led_number;
         if (head_led >= 0 && head_led < (int)count) {
-            uint8_t blend = 255; 
-            if (particle.hold_time > 0) {
-                 blend = std::min(255.0f, std::max(1.0f, 
-                    blend_amount / (particle.hold_time - particle.age + 1)));
-            }
-            // Apply brightness multiplier
-            uint8_t final_blend = static_cast<uint8_t>(blend * brightness_multiplier);
+            // Simplified head brightness: Use full brightness scaled only by fade in/out
+            uint8_t final_blend = static_cast<uint8_t>(255 * brightness_multiplier);
             if (final_blend > 0) { // Avoid blending black
-                 nblend(leds[head_led], particle.color, final_blend/2);
+                // Blend slightly less strongly than trail to make head pop
+                nblend(leds[head_led], particle.color, final_blend);
             }
         }
         
@@ -108,12 +104,19 @@ void WanderingParticlesScene::tick() {
         for (size_t i = 1; i < particle.path.size(); i++) {
             int trail_led = particle.path[i];
             if (trail_led >= 0 && trail_led < (int)count) {
-                uint8_t trail_blend = std::min(255.0f, std::max(1.0f, 
-                    blend_amount / (i * 3 + 1))); 
-                // Apply brightness multiplier to trail as well, but less harshly
-                // Blend the multiplier towards 1.0 so the trail dims slower than the head
-                float trail_brightness_mult = (brightness_multiplier + 1.0f) / 2.0f; // Average with 1.0
+                // --- NEW FADE LOGIC ---
+                float base_brightness = 255.0f; // Start with full brightness potential
+                float exponent = 2.0f; // Controls fade speed (higher=faster)
+                // Calculate fade factor using power function: 1 / (segment_index + 1)^exponent
+                // segment_index 'i' starts at 1 for the first trail segment
+                float fade_factor = 1.0f / powf(static_cast<float>(i) + 1.0f, exponent);
+                uint8_t trail_blend = static_cast<uint8_t>(std::clamp(base_brightness * fade_factor, 1.0f, 255.0f));
+                // --- END NEW FADE LOGIC ---
+                
+                // Apply overall particle brightness (fade in/out) to trail
+                float trail_brightness_mult = brightness_multiplier; 
                 uint8_t final_trail_blend = static_cast<uint8_t>(trail_blend * trail_brightness_mult);
+                
                 if (final_trail_blend > 0) { // Avoid blending black
                     nblend(leds[trail_led], particle.color, final_trail_blend);
                 }

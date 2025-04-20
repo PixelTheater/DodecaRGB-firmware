@@ -8,6 +8,11 @@ namespace Scenes {
 
 class TextureMapScene : public PixelTheater::Scene {
 public:
+    // --- Constants ---
+    static constexpr float DEFAULT_ROTATION_SPEED = -0.3f;
+    static constexpr float DEFAULT_BRIGHTNESS = 0.6f;
+    static constexpr float DEFAULT_SWITCH_INTERVAL = 20.0f;
+
     // Constructor: Use default name or allow override
     TextureMapScene() = default;
 

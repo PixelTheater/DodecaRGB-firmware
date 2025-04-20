@@ -33,10 +33,10 @@ void TextureMapScene::setup() {
     set_version("2.1");
     set_author("PixelTheater User");
 
-    // Register parameters
-    param("rotation_speed", "speed", 0.0f, 2.0f, 0.3f, "clamp", "Rotation speed (radians/sec)");
-    param("brightness", "range", 0.0f, 1.0f, 0.6f, "clamp", "Texture brightness multiplier");
-    param("switch_interval", "range", 5.0f, 120.0f, 20.0f, "clamp", "Texture switch interval (sec)");
+    // Register parameters using constants defined in the header
+    param("rotation_speed", "range", -2.0f, 2.0f, DEFAULT_ROTATION_SPEED, "clamp", "Rotation speed (radians/sec)");
+    param("brightness", "range", 0.0f, 1.0f, DEFAULT_BRIGHTNESS, "clamp", "Texture brightness multiplier");
+    param("switch_interval", "range", 5.0f, 120.0f, DEFAULT_SWITCH_INTERVAL, "clamp", "Texture switch interval (sec)");
 
     // Populate the texture list (adjust names if generate_props changes them)
     textures_.clear(); // Ensure list is empty before adding
