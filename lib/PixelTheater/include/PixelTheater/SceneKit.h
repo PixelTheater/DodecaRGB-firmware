@@ -49,6 +49,7 @@ inline uint8_t scale8_video(uint8_t i, uint8_t scale) {
 using PixelTheater::fadeToBlackBy;
 using PixelTheater::nblend;
 using PixelTheater::blend8;
+using PixelTheater::lerp8by8;
 using PixelTheater::blend;
 
 // ─── Easing Functions ──────────────────────────────────────────────────────

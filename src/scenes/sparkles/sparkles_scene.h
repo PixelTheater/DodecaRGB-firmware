@@ -1,36 +1,49 @@
 #pragma once
 
 #include "PixelTheater/SceneKit.h" // SceneKit helpers
-#include <cmath>       // For std::sin, std::cos, std::abs
+#include <cmath>       // For std::sin, std::fmod, std::max
 #include <algorithm>   // For std::clamp
+#include <vector>      // For std::max used with initializer list
 
 namespace Scenes {
 
 class SparklesScene : public Scene {
 private:
-    // Parameters handled by base class 'settings'
+    // --- Parameters (handled by base class 'settings') ---
+    // Settings like "Speed", "Glitter", "Chaos", "Intensity"
+    // will be accessed via settings["ParamName"]
 
-    // Palettes
-    CRGBPalette16 palette1; // CloudColors
-    CRGBPalette16 palette2; // HeatColors
+    // --- Palettes ---
+    CRGBPalette16 palette1; // Will be initialized in setup()
+    CRGBPalette16 palette2; // Will be initialized in setup()
 
-    // Palette Index State
-    uint8_t index1 = 128;
-    uint8_t index2 = 128;
-    float pos1 = 128.0f; // Current position for oscillation (around 128)
-    float pos2 = 128.0f;
-    float speed1 = 0.0f; // Current speed for oscillation
-    float speed2 = 0.0f;
+    // --- Color State & Transition ---
+    CRGB colorA = CRGB::Black;             // Current transitioning color A
+    CRGB colorB = CRGB::Black;             // Current transitioning color B
 
-    // Color Blend State
-    uint8_t color_blend = 128;
-    float blend_pos = 128.0f; // Current position for oscillation (around 128)
-    float blend_speed = 0.0f; // Current speed for oscillation
+    CRGB colorATarget = CRGB::Black;         // Target color for A's transition
+    CRGB colorBTarget = CRGB::Black;         // Target color for B's transition
 
-    // Chaos State
-    float chaos_offset = 0.0f; // Current random offset (-1 to 1, scaled by chaos param)
-    float chaos_target = 0.0f; // Target for smooth random walk
-    uint32_t chaos_timer = 0;  // Timer for picking new chaos target
+    CRGB previousColorATarget = CRGB::Black; // Previous target A (start of lerp)
+    CRGB previousColorBTarget = CRGB::Black; // Previous target B (start of lerp)
+
+    float colorChangeTimer = 0.0f;        // Countdown (seconds) to *end* of current transitions
+    float colorATransitionDuration = 0.0f;// Duration (seconds) for A's current transition
+    float colorBTransitionDuration = 0.0f;// Duration (seconds) for B's current transition
+
+    // --- Mix Ratio Oscillation ---
+    float mixOscillatorPhase = 0.0f;      // Phase (radians) for the mix calculation
+
+    // --- Helper Methods --- 
+    void startNewColorTransition();
+    CRGB selectNewColorFromPalette(const CRGBPalette16& palette);
+    float calculateBaseTransitionDuration() const;
+    float randomizeDuration(float baseDuration);
+    CRGB lerpColor(const CRGB& start, const CRGB& end, float factor) const;
+    uint8_t calculateFadeAmount() const;
+    uint8_t calculateSparkleStrength() const;
+    float calculateMixRatio();
+    uint8_t calculateSparkleBrightness();
 
 public:
     // Constructor

@@ -58,6 +58,12 @@ public:
             leds[0] = CRGB::Red; // Aliased CRGB struct
             leds[0] = CHSV(100, 200, 150); // Aliased CHSV struct
             leds[0].fadeToBlackBy(10); // Aliased member function
+
+            // Check CRGB += operator
+            leds[0] = CRGB::Red;
+            leds[0] += CRGB(0, 50, 0); // Add some green
+            CHECK(leds[0].r == 255);
+            CHECK(leds[0].g == 50);
         }
 
         // Model access
@@ -83,6 +89,11 @@ public:
         CHECK(r1 >= 0.0f);
         CHECK(r2 >= 0);
         CHECK(mapped == mapped); // Dummy check
+
+        // Check lerp8by8 alias
+        uint8_t lerped = lerp8by8(0, 255, 128); // Use unqualified alias
+        CHECK(lerped >= 127); // Approx check for midpoint
+        CHECK(lerped <= 129);
 
         // Constants
         float angle = PT_PI / 2.0f; // Aliased constant
