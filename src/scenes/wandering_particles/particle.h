@@ -21,8 +21,9 @@ enum class ParticleState {
 class Particle {
 public:
     // Constants for fade durations (in ticks)
-    static constexpr int FADE_IN_DURATION = 20;
-    static constexpr int FADE_OUT_DURATION = 30;
+    static constexpr int FADE_IN_DURATION = 80;
+    static constexpr int FADE_OUT_DURATION = 150;
+    static constexpr int TRANSITION_FRAMES = 10;
 
     WanderingParticlesScene& scene; // Reference to the parent scene
     uint16_t particle_id = 0;
@@ -31,7 +32,9 @@ public:
     int age = 0;
     int hold_time = 0;
     int lifespan = 500; // Add lifespan member
-    int led_number = -1; // Current LED index the particle occupies
+    int current_led_number = -1; // Current LED index the particle occupies
+    int target_led_number = -1; // Next LED target
+    float transition_progress = 0.0f; // Progress towards target_led (0.0 to 1.0)
     static constexpr size_t MAX_PATH_LENGTH = 10;
     std::vector<int> path; // Recent path (trail) of LED indices
     PixelTheater::CRGB color = PixelTheater::CRGB::White;

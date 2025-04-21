@@ -231,11 +231,15 @@ public:
                     0.0f,
                     1.0f
                 );
-                blendToTarget(blend_amount_0_1);
-                // Smoothly interpolate line width using standard lerp
-                current_line_width_ = previous_target_line_width_ + (target_line_width_ - previous_target_line_width_) * blend_amount_0_1;
+                // Apply easing to the linear blend amount
+                float eased_blend_amount = inOutSineF(blend_amount_0_1);
+                
+                // Use the eased amount for color and width
+                blendToTarget(eased_blend_amount);
+                // Smoothly interpolate line width using standard lerp with the eased amount
+                current_line_width_ = previous_target_line_width_ + (target_line_width_ - previous_target_line_width_) * eased_blend_amount;
 
-                // Vary rotation speed during transition
+                // Vary rotation speed during transition (still using linear amount for sin input)
                 rotation_speed = 0.7f + std::sin(blend_amount_0_1 * Scenes::PT_PI) * 1.4f;
             }
         }

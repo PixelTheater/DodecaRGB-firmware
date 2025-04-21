@@ -81,45 +81,62 @@ void WanderingParticlesScene::tick() {
         particle.tick(); // Update particle state (position, LED, age, state)
         
         // --- Calculate brightness multiplier based on state ---
+        // (This now controls the OVERALL brightness during initial fade-in and final fade-out)
         float brightness_multiplier = 1.0f;
         if (particle.state == ParticleState::FADING_IN) {
-            brightness_multiplier = std::clamp((float)particle.age / Particle::FADE_IN_DURATION, 0.0f, 1.0f);
+            float t = std::clamp(static_cast<float>(particle.age) / static_cast<float>(Particle::FADE_IN_DURATION), 0.0f, 1.0f);
+            brightness_multiplier = outQuadF(t); // Use unqualified via SceneKit
         } else if (particle.state == ParticleState::FADING_OUT) {
-            brightness_multiplier = std::clamp((float)(particle.lifespan - particle.age) / Particle::FADE_OUT_DURATION, 0.0f, 1.0f);
+            float t = std::clamp(static_cast<float>(particle.lifespan - particle.age) / static_cast<float>(Particle::FADE_OUT_DURATION), 0.0f, 1.0f);
+            brightness_multiplier = 1.0f - inQuadF(t); // Use unqualified via SceneKit
         }
         // --- End brightness calculation ---
         
-        // Draw particle head
-        int head_led = particle.led_number;
-        if (head_led >= 0 && head_led < (int)count) {
-            // Simplified head brightness: Use full brightness scaled only by fade in/out
-            uint8_t final_blend = static_cast<uint8_t>(255 * brightness_multiplier);
-            if (final_blend > 0) { // Avoid blending black
-                // Blend slightly less strongly than trail to make head pop
-                nblend(leds[head_led], particle.color, final_blend);
+        // --- Draw Particle Head (Cross-Fade) ---
+        float eased_progress = inOutSineF(particle.transition_progress); // Use unqualified
+        float current_led_brightness = (1.0f - eased_progress) * brightness_multiplier;
+        float target_led_brightness = eased_progress * brightness_multiplier;
+
+        // Draw current LED (fading out)
+        int current_led_idx = particle.current_led_number;
+        if (current_led_idx >= 0 && current_led_idx < (int)count) {
+            uint8_t blend_amount = static_cast<uint8_t>(current_led_brightness * 255.0f);
+            if (blend_amount > 0) {
+                nblend(leds[current_led_idx], particle.color, blend_amount);
             }
         }
         
-        // Draw particle trail
-        for (size_t i = 1; i < particle.path.size(); i++) {
-            int trail_led = particle.path[i];
-            if (trail_led >= 0 && trail_led < (int)count) {
-                // --- NEW FADE LOGIC ---
-                float base_brightness = 255.0f; // Start with full brightness potential
-                float exponent = 2.0f; // Controls fade speed (higher=faster)
-                // Calculate fade factor using power function: 1 / (segment_index + 1)^exponent
-                // segment_index 'i' starts at 1 for the first trail segment
-                float fade_factor = 1.0f / powf(static_cast<float>(i) + 1.0f, exponent);
-                uint8_t trail_blend = static_cast<uint8_t>(std::clamp(base_brightness * fade_factor, 1.0f, 255.0f));
-                // --- END NEW FADE LOGIC ---
-                
-                // Apply overall particle brightness (fade in/out) to trail
-                float trail_brightness_mult = brightness_multiplier; 
-                uint8_t final_trail_blend = static_cast<uint8_t>(trail_blend * trail_brightness_mult);
-                
-                if (final_trail_blend > 0) { // Avoid blending black
-                    nblend(leds[trail_led], particle.color, final_trail_blend);
-                }
+        // Draw target LED (fading in)
+        int target_led_idx = particle.target_led_number;
+        if (target_led_idx >= 0 && target_led_idx < (int)count) {
+             uint8_t blend_amount = static_cast<uint8_t>(target_led_brightness * 255.0f);
+             if (blend_amount > 0) {
+                nblend(leds[target_led_idx], particle.color, blend_amount);
+             }
+        }
+        // --- End Particle Head Drawing ---
+        
+        // Draw particle trail (Based on discrete path history)
+        for (size_t i = 0; i < particle.path.size(); i++) { // Start from i=0 (current_led) for trail fade relative to head
+            int trail_led_idx = particle.path[i];
+            if (trail_led_idx < 0 || trail_led_idx >= (int)count) continue; // Skip invalid indices
+            
+            // Skip drawing the current/target head LEDs again in the trail loop
+            if (trail_led_idx == current_led_idx || trail_led_idx == target_led_idx) continue; 
+            
+            // --- Trail Fade Logic (Power Function) ---
+            float base_brightness = 255.0f; 
+            float exponent = 2.0f; 
+            // Fade based on discrete steps 'i' behind the head in the path history
+            float fade_factor = 1.0f / powf(static_cast<float>(i) + 1.0f, exponent); // +1 because i=0 is head
+            uint8_t trail_blend = static_cast<uint8_t>(std::clamp(base_brightness * fade_factor, 1.0f, 255.0f));
+            // --- End Trail Fade Logic ---
+            
+            // Apply overall particle brightness (fade in/out) to trail
+            uint8_t final_trail_blend = static_cast<uint8_t>(trail_blend * brightness_multiplier);
+            
+            if (final_trail_blend > 0) { 
+                nblend(leds[trail_led_idx], particle.color, final_trail_blend);
             }
         }
     }
@@ -127,14 +144,15 @@ void WanderingParticlesScene::tick() {
     // --- ADD PARTICLE INTERACTION LOGIC HERE --- 
     // Check for collisions after all particles have been updated and drawn for this tick
     for (size_t i = 0; i < particles.size(); ++i) {
-        if (!particles[i] || particles[i]->led_number < 0) continue; // Skip invalid particles
+        if (!particles[i] || particles[i]->current_led_number < 0) continue; // Use current_led_number
         for (size_t j = i + 1; j < particles.size(); ++j) {
-            if (!particles[j] || particles[j]->led_number < 0) continue; // Skip invalid particles
+            if (!particles[j] || particles[j]->current_led_number < 0) continue; // Use current_led_number
             
-            // Check if particles are on the same LED
-            if (particles[i]->led_number == particles[j]->led_number) {
+            // Check if particles are on the same LED (or potentially transitioning to the same target?)
+            // Simplest check: are they both primarily occupying the same LED?
+            if (particles[i]->current_led_number == particles[j]->current_led_number) { // Use current_led_number
                 // Collision! Randomize angular velocities (direction tendencies) for both
-                float max_rand_av = 0.02f; // Adjust magnitude as needed
+                float max_rand_av = 0.02f; 
                 float max_rand_cv = 0.02f;
                 
                 particles[i]->av = randomFloat(-max_rand_av, max_rand_av);
@@ -176,8 +194,10 @@ std::string WanderingParticlesScene::status() const {
         const auto& p = particles[i];
         if (p) { // Check if unique_ptr is valid
             output += "P" + std::to_string(p->particle_id) + 
-                      ": age=" + std::to_string(p->age) + "/" + std::to_string(p->hold_time) + 
-                      " led=" + std::to_string(p->led_number) + "\n";
+                      ": age=" + std::to_string(p->age) + 
+                      " led=" + std::to_string(p->current_led_number) + // Use current_led_number
+                      " tgt=" + std::to_string(p->target_led_number) + // Show target
+                      " prg=" + std::to_string(static_cast<int>(p->transition_progress * 100)) + "%\n"; // Show progress
         }
     }
     return output;

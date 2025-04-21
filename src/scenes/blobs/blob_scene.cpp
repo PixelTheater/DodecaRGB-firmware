@@ -32,7 +32,7 @@ void BlobScene::setup() {
     param("max_age", "count", MIN_AGE, MAX_AGE, DEFAULT_MAX_AGE, "clamp", "Max blob lifetime (frames)");
     param("speed", "ratio", DEFAULT_SPEED, "clamp", "Animation speed scale");
     param("fade", "count", MIN_FADE, MAX_FADE, DEFAULT_FADE, "clamp", "Fade amount per frame (1-20)");
-    
+
     logInfo("BlobScene Parameters defined"); 
 
     BENCHMARK_RESET(); // Reset benchmark counters if used
@@ -112,7 +112,7 @@ void BlobScene::updateBlobs() {
     }
 
     // Apply pairwise repulsion between blobs
-    static const float forceStrength = 0.000005f; // Strength of repulsion
+    static const float forceStrength = 0.000002f; // Strength of repulsion
     for (size_t i = 0; i < blobs.size(); ++i) {
         for (size_t j = i + 1; j < blobs.size(); ++j) { // Avoid self-comparison and duplicate pairs
             // Calculate desired minimum distance based on radii
@@ -126,7 +126,7 @@ void BlobScene::updateBlobs() {
             float dist_sq = dx*dx + dy*dy + dz*dz;
             
             // Apply repulsion only if closer than min_dist and not exactly overlapping
-            if (dist_sq < min_dist_sq && dist_sq > 20.0f) { // Restore original distance check
+            if (dist_sq < min_dist_sq && dist_sq > 30.0f) { // Restore original distance check
                 float dist = sqrt(dist_sq);
                 // Calculate force magnitude (stronger the closer they are)
                 float force = ((min_dist - dist) / min_dist) * forceStrength; 
@@ -163,22 +163,34 @@ void BlobScene::drawBlobs() {
             if (dist_sq < rad_sq) {
                 CRGB blob_draw_color = blob->color;
                 
-                // Fade in new blobs over the first 150 frames
-                if (blob->age < 150) { 
-                    // Map age (0-150) to fade amount (180 -> 0)
-                    uint8_t fade_in_amount = map(blob->age, 0, 150, 180, 0); 
-                    blob_draw_color.fadeToBlackBy(fade_in_amount); // Apply fade
+                // --- Eased Fade-In --- 
+                if (blob->age < FADE_IN_DURATION) { 
+                    float t = static_cast<float>(blob->age) / static_cast<float>(FADE_IN_DURATION);
+                    // Use a specific easing function directly
+                    float progress = PixelTheater::Easing::outSineF(t);
+                    uint8_t brightness = static_cast<uint8_t>(progress * 255.0f);
+                    blob_draw_color.nscale8(brightness); // Apply brightness instead of fade
                 }
+                // --- End Eased Fade-In ---
                 
-                // Blend the blob's color onto the LED
-                // Closer distance = stronger blend (more opaque)
-                // Map distance squared (0-rad_sq) to blend amount (255 -> 8)
-                uint8_t blend_amount = map(dist_sq, 0, rad_sq, 255, 8); 
+                // --- Eased Blend Falloff ---
+                // Map distance squared (0-rad_sq) to blend amount (100 -> 4)
+                uint8_t blend_amount = 4; // Default to minimum blend
+                if (rad_sq > 0) { // Avoid division by zero
+                    float t = static_cast<float>(dist_sq) / static_cast<float>(rad_sq);
+                    // Invert t for falloff (1=center, 0=edge), then ease
+                    float inverted_t = 1.0f - t;
+                    // Use an ease-out function for softer edges
+                    float eased_falloff = PixelTheater::Easing::outSineF(inverted_t);
+                    
+                    // Map eased falloff [0, 1] back to blend range [4, 100]
+                    blend_amount = static_cast<uint8_t>(4.0f + eased_falloff * (100.0f - 4.0f));
+                    blend_amount = std::max((uint8_t)4, std::min((uint8_t)100, blend_amount)); // Clamp just in case
+                }
+                // --- End Eased Blend Falloff ---
                 
-                // Use blend8 for efficient 8-bit per channel blending
-                current_led.r = blend8(current_led.r, blob_draw_color.r, blend_amount);
-                current_led.g = blend8(current_led.g, blob_draw_color.g, blend_amount);
-                current_led.b = blend8(current_led.b, blob_draw_color.b, blend_amount);
+                // Use nblend for efficient blending of the whole color
+                nblend(current_led, blob_draw_color, blend_amount);
             }
         } 
     }

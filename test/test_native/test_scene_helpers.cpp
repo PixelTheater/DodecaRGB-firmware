@@ -3,7 +3,7 @@
 #include <cstring> // memcmp
 
 // Class under test
-#include "PixelTheater/scene.h"
+#include "PixelTheater/SceneKit.h" // For scene access + unqualified helpers
 
 // Interfaces and Wrappers needed for testing
 #include "PixelTheater/core/iled_buffer.h"
@@ -139,6 +139,28 @@ TEST_SUITE("Scene Helpers") {
         CHECK(rf_max <= 50.0f);
         CHECK(rf_min_max >= -10.0f);
         CHECK(rf_min_max <= 10.0f);
+    }
+
+    TEST_CASE_FIXTURE(SceneHelperFixture, "SceneKit Utilities Access") {
+        // Verify access to functions brought in by SceneKit.h using unqualified names
+        // We don't need to re-test the logic, just compilation/linking.
+        
+        // Easing Function Check (Use Scenes:: prefix)
+        float eased_val = Scenes::outQuad(0.0f, 1.0f, 0.5f);
+        float eased_frac = Scenes::outQuadF(0.5f);
+        CHECK(eased_val == doctest::Approx(0.75f).epsilon(0.001f));
+        CHECK(eased_frac == doctest::Approx(0.75f).epsilon(0.001f));
+        
+        // Other SceneKit Check (e.g., map - already tested indirectly but good to be explicit)
+        int mapped_val = Scenes::map(50, 0, 100, 0, 200); // Use map directly (implicitly via SceneKit)
+        CHECK(mapped_val == 100);
+        
+        // Color blending check
+        CRGB c1 = CRGB::Red;
+        Scenes::nblend(c1, CRGB::Blue, 128); // Use nblend directly (implicitly via SceneKit)
+        // Check that color changed (approximate check)
+        CHECK(c1.r < 200);
+        CHECK(c1.b > 50);
     }
 
     // TEST_CASE_FIXTURE(SceneHelperFixture, "Logging Helpers") {

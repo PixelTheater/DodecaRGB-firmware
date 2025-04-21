@@ -2,16 +2,10 @@
 
 #include "PixelTheater/SceneKit.h" 
 #include "benchmark.h"
-#include "blob.h" // Include the extracted Blob class definition
+#include "blob.h" // Individual Blob class definition
 
 #include <vector>
 #include <memory>
-#include <cmath>
-#include <algorithm> // For std::max, std::min, std::clamp
-#include <string> // For status method (if restored)
-
-// using namespace PixelTheater; // Avoid top-level using
-// using namespace PixelTheater::Constants; // Avoid top-level using
 
 namespace Scenes {
 
@@ -24,12 +18,13 @@ public:
     BlobScene() = default; 
     
     // Static constants for default parameters
-    static constexpr int DEFAULT_NUM_BLOBS = 15;
+    static constexpr int DEFAULT_NUM_BLOBS = 8;
     static constexpr int DEFAULT_MIN_RADIUS = 70;
-    static constexpr int DEFAULT_MAX_RADIUS = 120;
+    static constexpr int DEFAULT_MAX_RADIUS = 130;
     static constexpr int DEFAULT_MAX_AGE = 4000;
-    static constexpr float DEFAULT_SPEED = 0.2;
-    static constexpr uint8_t DEFAULT_FADE = 10;
+    static constexpr float DEFAULT_SPEED = 0.25f;
+    static constexpr uint8_t DEFAULT_FADE = 8; // Reverted type to uint8_t
+    static constexpr int FADE_IN_DURATION = 150; // Frames for fade-in
     
     // Scene lifecycle methods (Declarations only)
     void setup() override;

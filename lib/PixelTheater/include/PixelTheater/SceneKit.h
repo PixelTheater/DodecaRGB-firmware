@@ -19,6 +19,7 @@
 //   }
 
 #include "PixelTheater.h"
+#include "PixelTheater/easing.h"
 
 namespace Scenes {
 
@@ -49,5 +50,23 @@ using PixelTheater::fadeToBlackBy;
 using PixelTheater::nblend;
 using PixelTheater::blend8;
 using PixelTheater::blend;
+
+// ─── Easing Functions ──────────────────────────────────────────────────────
+using PixelTheater::Easing::linear;
+using PixelTheater::Easing::linearF;
+using PixelTheater::Easing::inSine;
+using PixelTheater::Easing::inSineF;
+using PixelTheater::Easing::outSine;
+using PixelTheater::Easing::outSineF;
+using PixelTheater::Easing::inOutSine;
+using PixelTheater::Easing::inOutSineF;
+using PixelTheater::Easing::inQuad;
+using PixelTheater::Easing::inQuadF;
+using PixelTheater::Easing::outQuad;
+using PixelTheater::Easing::outQuadF;
+using PixelTheater::Easing::inOutQuad;
+using PixelTheater::Easing::inOutQuadF;
+// Note: Add more 'using' directives here as more easing functions
+// are added to PixelTheater/easing.h
 
 } // namespace Scenes 

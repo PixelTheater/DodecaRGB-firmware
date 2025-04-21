@@ -25,12 +25,14 @@ Particle::Particle(WanderingParticlesScene& parent_scene, uint16_t unique_id)
 
 // Common initialization logic used by reset() and resetAtOppositePole()
 void Particle::initializeParticleState(int start_led_number) {
-    led_number = start_led_number;
+    current_led_number = start_led_number;
+    target_led_number = -1; // Initialize target as invalid
+    transition_progress = 0.0f; // Start progress at 0
     std::fill(path.begin(), path.end(), -1); 
 
-    if (led_number >= 0 && led_number < (int)scene.ledCount()) {
-        path[0] = led_number; 
-        const auto& p = scene.model().point(led_number);
+    if (current_led_number >= 0 && current_led_number < (int)scene.ledCount()) {
+        path[0] = current_led_number; 
+        const auto& p = scene.model().point(current_led_number);
         float r = sqrt(p.x()*p.x() + p.y()*p.y() + p.z()*p.z());
         if (r > 1e-6) { 
             c = acos(std::clamp(p.z() / r, -1.0f, 1.0f)); 
@@ -40,10 +42,10 @@ void Particle::initializeParticleState(int start_led_number) {
         }
     } else {
         // Invalid start LED, maybe default to 0?
-        led_number = 0; 
-        if (led_number < (int)scene.ledCount()) { // Check if LED 0 is valid
-             path[0] = led_number;
-             const auto& p = scene.model().point(led_number);
+        current_led_number = 0; 
+        if (current_led_number < (int)scene.ledCount()) { // Check if LED 0 is valid
+             path[0] = current_led_number;
+             const auto& p = scene.model().point(current_led_number);
              float r = sqrt(p.x()*p.x() + p.y()*p.y() + p.z()*p.z());
              if (r > 1e-6) { 
                  c = acos(std::clamp(p.z() / r, -1.0f, 1.0f)); 
@@ -51,7 +53,7 @@ void Particle::initializeParticleState(int start_led_number) {
              } else { a = 0; c = 0; }
         } else {
              a = 0; c = 0; // Still default angles if LED 0 invalid
-             led_number = -1; // Mark as invalid
+             current_led_number = -1; // Mark as invalid
         }
     }
 
@@ -70,6 +72,11 @@ void Particle::initializeParticleState(int start_led_number) {
     hold_time = scene.random(4, 12);
     lifespan = scene.random(200, 701); 
     state = ParticleState::FADING_IN; // Start in fade-in state
+
+    // --- Find initial target LED --- 
+    // Call findNextLed immediately after initializing position etc.
+    // This ensures target_led_number is set before the first tick.
+    findNextLed(scene.settings["gravity"]); 
 }
 
 // Standard reset: pick a random LED and initialize
@@ -127,82 +134,83 @@ void Particle::tick() {
     }
     // --- End State transition logic ---
 
-    // Check hold time for movement
-    if (age > hold_time) {
-        // --- NEW MOVEMENT LOGIC --- 
-        float gravity_strength = scene.settings["gravity"]; // Read gravity from scene
-        findNextLed(gravity_strength); // Pass gravity to the updated function
-        // --- END NEW MOVEMENT LOGIC ---
-        
-        // Update path history
-        if (led_number >= 0) { // Only update path if a valid LED was chosen
+    // --- Transition Progress Update ---
+    float step = 1.0f / static_cast<float>(TRANSITION_FRAMES);
+    transition_progress += step; // Increment progress
+
+    // --- Handle Reaching Target LED ---
+    if (transition_progress >= 1.0f) {
+        // Arrived at target
+        current_led_number = target_led_number; // Old target becomes current
+        transition_progress -= 1.0f; // Keep the overshoot for next frame
+
+        // Find a *new* target LED
+        float gravity_strength = scene.settings["gravity"]; 
+        findNextLed(gravity_strength); // This sets the new target_led_number
+
+        // Update path history ONLY when a new LED is fully reached
+        if (current_led_number >= 0) { 
             // Shift elements down: path[i] = path[i-1]
             for (size_t i = path.size() - 1; i > 0; --i) {
                 path[i] = path[i-1];
             }
-            path[0] = led_number; // Add new LED to the start
+            path[0] = current_led_number; // Add new current LED to the start
         }
-        // Ensure path doesn't exceed max length (already handled by vector size)
-
-        // Reset age for the next hold period
-        age = 0;
     }
+    // --- End Target LED Handling ---
 
     // --- Pole Sticking Logic --- 
     float gravity_strength = scene.settings["gravity"];
-    const float GRAVITY_THRESHOLD = 0.01f; // Ignore very small gravity values
-    const float POLE_ZONE_THRESHOLD = 0.82f; // Relaxed threshold
-    const int POLE_STICK_LIMIT = 20; // Max ticks to stay at pole
+    const float GRAVITY_THRESHOLD = 0.01f; 
+    const float POLE_ZONE_THRESHOLD = 0.82f; 
+    const int POLE_STICK_LIMIT = 20; 
 
-    if (abs(gravity_strength) > GRAVITY_THRESHOLD && led_number >= 0) {
-        const auto& p = scene.model().point(led_number);
+    if (abs(gravity_strength) > GRAVITY_THRESHOLD && current_led_number >= 0) {
+        const auto& p = scene.model().point(current_led_number);
         float z_norm = 0.0f;
         float model_radius = scene.model().getSphereRadius();
         if (model_radius > 1e-6f) {
              z_norm = p.z() / model_radius;
         }
 
-        bool at_north_pole = (gravity_strength < 0 && z_norm > POLE_ZONE_THRESHOLD); // Negative gravity pulls up
-        bool at_south_pole = (gravity_strength > 0 && z_norm < -POLE_ZONE_THRESHOLD); // Positive gravity pulls down
+        bool at_north_pole = (gravity_strength < 0 && z_norm > POLE_ZONE_THRESHOLD);
+        bool at_south_pole = (gravity_strength > 0 && z_norm < -POLE_ZONE_THRESHOLD);
 
         if (at_north_pole || at_south_pole) {
             ticks_at_pole++;
             if (ticks_at_pole > POLE_STICK_LIMIT) {
-                 resetAtOppositePole(at_north_pole); // Pass which pole it was stuck at
-                 return; // Exit tick after reset
+                 resetAtOppositePole(at_north_pole); 
+                 return; 
             }
         } else {
-            ticks_at_pole = 0; // Reset counter if not at a pole
+            ticks_at_pole = 0; 
         }
     } else {
-        ticks_at_pole = 0; // Reset counter if gravity is off
+        ticks_at_pole = 0; 
     }
     // --- End Pole Sticking Logic --- 
 
     // Add periodic direction change
     if (scene.random(100) < 2) {
-        // Slightly perturb the angular velocities which influence direction choice
-        float max_rand_av = 0.005f; // Define small random change magnitude
+        float max_rand_av = 0.005f; 
         float max_rand_cv = 0.005f;
         av += scene.randomFloat(-max_rand_av, max_rand_av);
         cv += scene.randomFloat(-max_rand_cv, max_rand_cv);
-        // Consider clamping av/cv if they can grow too large
     }
 }
 
-// REWRITTEN findNextLed based on direction, now with randomization
+// MODIFIED findNextLed to set target_led_number instead of led_number
 void Particle::findNextLed(float gravity_strength) { 
-    // Safety check for current LED validity
-    if (led_number < 0 || led_number >= (int)scene.ledCount()) {
+    if (current_led_number < 0 || current_led_number >= (int)scene.ledCount()) {
          reset(); 
          return;
     }
 
-    const auto& current_point = scene.model().point(led_number);
+    const auto& current_point = scene.model().point(current_led_number);
     Vector3f p_current(current_point.x(), current_point.y(), current_point.z());
     Vector3f preferred_direction;
 
-    // Determine preferred direction (same as before)
+    // Determine preferred direction (based on path)
     int previous_led = (path.size() > 1 && path[1] != -1) ? path[1] : -1;
     if (previous_led >= 0 && previous_led < (int)scene.ledCount()) {
         const auto& prev_point = scene.model().point(previous_led);
@@ -217,7 +225,7 @@ void Particle::findNextLed(float gravity_strength) {
         preferred_direction = Vector3f::Random().normalized();
     }
 
-    // --- Gravity Influence Calculation (same as before) ---
+    // --- Gravity Influence Calculation --- (Unchanged)
     Vector3f gravity_vector(0.0f, 0.0f, -gravity_strength); 
     float z_norm = 0.0f;
     float model_radius = scene.model().getSphereRadius();
@@ -241,23 +249,18 @@ void Particle::findNextLed(float gravity_strength) {
     const auto& neighbors = current_point.getNeighbors(); 
     
     // --- Collect Candidate Neighbors --- 
-    std::vector<std::pair<float, int>> candidates; // Store <dot_product, led_index>
-    const float DIRECTION_ALIGNMENT_THRESHOLD = 0.3f; // Min dot product to consider (tune this) 
+    std::vector<std::pair<float, int>> candidates;
+    const float DIRECTION_ALIGNMENT_THRESHOLD = 0.3f; 
 
     for (const auto& neighbor : neighbors) {
-        if (neighbor.id == 0xFFFF || neighbor.distance <= 1e-6f) { 
-            continue;
-        }
+        if (neighbor.id == 0xFFFF || neighbor.distance <= 1e-6f) continue;
         int potential_next_led = neighbor.id;
         if (potential_next_led < 0 || potential_next_led >= (int)scene.ledCount()) continue;
 
-        // Path Avoidance (same as before)
+        // Path Avoidance (prevents going directly back)
         bool in_path = false;
-        for(size_t p_idx = 0; p_idx < std::min(size_t(4), path.size()); ++p_idx) { 
-            if (path[p_idx] != -1 && path[p_idx] == potential_next_led) {
-                in_path = true;
-                break;
-            }
+        if (!path.empty() && path[0] != -1 && path[0] == potential_next_led) { // Check only immediate previous step
+            in_path = true;
         }
         if (in_path) continue; 
 
@@ -270,37 +273,48 @@ void Particle::findNextLed(float gravity_strength) {
 
         float dot_product = target_direction.dot(neighbor_vector);
 
-        // Only consider neighbors reasonably aligned with the target direction
         if (dot_product > DIRECTION_ALIGNMENT_THRESHOLD) {
             candidates.push_back({dot_product, potential_next_led});
         }
     }
         
     // --- Choose Next LED --- 
+    int chosen_led = -1;
     if (!candidates.empty()) {
-        // Option A: Choose randomly from ALL valid candidates
-        // led_number = candidates[scene.random(candidates.size())].second;
-
-        // Option B: Choose randomly from the TOP N candidates (e.g., up to 3)
-        // Sort candidates by dot product (descending)
         std::sort(candidates.begin(), candidates.end(), std::greater<std::pair<float, int>>());
-        size_t num_choices = std::min(candidates.size(), (size_t)3); // Consider top 3
-        led_number = candidates[scene.random(num_choices)].second; // Pick one randomly
-        
+        size_t num_choices = std::min(candidates.size(), (size_t)3);
+        chosen_led = candidates[scene.random(num_choices)].second;
     } else {
         // Fallback: No suitable aligned neighbors found
         std::vector<int> valid_neighbors;
         for (const auto& neighbor : neighbors) {
              if (neighbor.id != 0xFFFF && neighbor.distance > 1e-6f && neighbor.id < (int)scene.ledCount()) {
-                 valid_neighbors.push_back(neighbor.id);
+                 // Avoid immediate previous LED in fallback too
+                 if (path.empty() || path[0] == -1 || path[0] != neighbor.id) {
+                    valid_neighbors.push_back(neighbor.id);
+                 }
              }
         }
         if (!valid_neighbors.empty()) {
-            led_number = valid_neighbors[scene.random(valid_neighbors.size())];
+            chosen_led = valid_neighbors[scene.random(valid_neighbors.size())];
         } else {
-            reset(); 
+             // Absolute fallback: if even neighbors are blocked, maybe pick *any* neighbor?
+             // Or reset? Resetting might be visually jarring.
+             // Let's try picking any valid neighbor that isn't the immediate previous one.
+             for (const auto& neighbor : neighbors) {
+                  if (neighbor.id != 0xFFFF && neighbor.id < (int)scene.ledCount()) {
+                       if (path.empty() || path[0] == -1 || path[0] != neighbor.id) {
+                          chosen_led = neighbor.id;
+                          break; // Take the first one found
+                       }
+                  }
+             }
+             // If still no target, we have to reset
+             if (chosen_led == -1) reset();
         }
     }
+    // Set the chosen LED as the new target
+    target_led_number = chosen_led;
 }
 
 

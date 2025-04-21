@@ -180,9 +180,9 @@ void setup() {
   
   // Add scenes 
   //theater.addScene<Scenes::TestScene>(); // Add Test Scene first
+  theater.addScene<Scenes::SparklesScene>(); // UPDATED
   theater.addScene<Scenes::WanderingParticlesScene>(); // Add Wandering Particles
   theater.addScene<Scenes::TextureMapScene>(); // TextureMapScene moved to Scenes namespace
-  theater.addScene<Scenes::SparklesScene>(); // UPDATED
   theater.addScene<Scenes::OrientationGridScene>(); // ADDED
   theater.addScene<Scenes::BlobScene>(); 
   theater.addScene<Scenes::XYZScannerScene>(); 
