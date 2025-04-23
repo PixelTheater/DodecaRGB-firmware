@@ -16,6 +16,7 @@
 
 // Include Scene implementations 
 // #include "scenes/blob_scene.h" // Temporarily disabled until refactored <-- REMOVE COMMENT
+#include "scenes/satellites/SatellitesScene.h" // <<< ADDED Satellites Scene
 #include "scenes/blobs/blob_scene.h" // Refactored
 #include "scenes/xyz_scanner/xyz_scanner_scene.h" // Refactored
 #include "scenes/wandering_particles/wandering_particles_scene.h" // Refactored
@@ -180,6 +181,7 @@ void setup() {
   
   // Add scenes 
   //theater.addScene<Scenes::TestScene>(); // Add Test Scene first
+  theater.addScene<Scenes::SatellitesScene>(); // <<< ADDED Satellites Scene
   theater.addScene<Scenes::SparklesScene>(); // UPDATED
   theater.addScene<Scenes::WanderingParticlesScene>(); // Add Wandering Particles
   theater.addScene<Scenes::TextureMapScene>(); // TextureMapScene moved to Scenes namespace
@@ -221,8 +223,9 @@ void updateOnboardLED() {
 void loop() {  
   updateOnboardLED();  
   
-  if (interval != last_interval){
-    timerStatusMessage();
+  // Check interval timer *before* update, but log *after*
+  bool log_status_this_frame = (interval != last_interval);
+  if (log_status_this_frame) {
     last_interval = interval;
   }
   
@@ -240,10 +243,18 @@ void loop() {
     Serial.printf("Button pressed, advancing scene...\n");
     BENCHMARK_RESET();
     theater.nextScene(); // Use Theater to switch scene
+    // Immediately log status after scene change
+    timerStatusMessage(); 
+    log_status_this_frame = false; // Don't log again immediately
   }
 
   // Update the Theater (calls current scene's tick() and platform->show())
-    BENCHMARK_START("frame_total");
+  BENCHMARK_START("frame_total");
   theater.update();
-    BENCHMARK_END();
+  BENCHMARK_END();
+
+  // Log status *after* the update, if the interval passed
+  if (log_status_this_frame) {
+    timerStatusMessage();
+  }
 }
