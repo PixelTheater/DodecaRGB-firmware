@@ -1,6 +1,8 @@
 # Texture Map Scene
 
-This scene demonstrates mapping 2D image textures onto the 3D LED model.
+This scene demonstrates mapping 2D image textures onto the 3D LED model. The default image is the earth.
+
+![digital globe](poster.png)
 
 ## Overview
 

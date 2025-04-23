@@ -6,6 +6,8 @@ This scene creates a shimmering, sparkling effect using two primary colors drawn
 
 ## Implementation Strategy
 
+![sparkles poster](poster.png)
+
 Parameters:
 
 -   **Speed**: (Ratio 0.0-1.0, Default: 0.5) Controls the base frequency of color transitions and the speed of the color mix oscillation. Higher speed means faster changes.

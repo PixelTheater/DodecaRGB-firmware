@@ -2,6 +2,8 @@
 
 The XYZ Scanner scene creates three scanning planes (red, green, and blue) that move through the model along the X, Y, and Z axes. The planes create interesting visual effects as they intersect and blend.
 
+![scanner poster](poster.png)
+
 ## Visual Effect
 
 This animation creates three colored scanning planes:

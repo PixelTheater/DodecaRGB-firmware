@@ -2,6 +2,8 @@
 
 This scene creates a collection of particles that wander around the model, creating matrix-like flowing trails of light.
 
+![particles poster](poster.png)
+
 ## Description
 
 Particles move from LED to LED across the model, following paths that approximate movement in 3D space. Each particle has its own velocity, color, and maintains a history of its recent positions. This creates flowing trails of light that fade over time, similar to the digital rain effect from The Matrix, but with colorful hues.

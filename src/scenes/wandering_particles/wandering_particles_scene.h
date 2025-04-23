@@ -18,7 +18,7 @@ public:
     WanderingParticlesScene() = default;
     
     // Static constants for default parameters
-    static constexpr int DEFAULT_NUM_PARTICLES = 80;
+    static constexpr int DEFAULT_NUM_PARTICLES = 60;
     static constexpr uint8_t DEFAULT_FADE = 30;
     static constexpr float DEFAULT_BLEND = 130.0f;
     static constexpr float DEFAULT_GRAVITY = 2.2f; // Default no gravity
