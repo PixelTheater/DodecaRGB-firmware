@@ -8,6 +8,13 @@
 namespace Scenes {
 
 class SparklesScene : public Scene {
+public:
+    // === Parameter Defaults ===
+    static constexpr float DEFAULT_SPEED = 0.4f;
+    static constexpr float DEFAULT_GLITTER = 0.5f;
+    static constexpr float DEFAULT_CHAOS = 0.4f;
+    static constexpr float DEFAULT_INTENSITY = 0.5f;
+
 private:
     // --- Parameters (handled by base class 'settings') ---
     // Settings like "Speed", "Glitter", "Chaos", "Intensity"
@@ -31,19 +38,30 @@ private:
     float colorATransitionDuration = 0.0f;// Duration (seconds) for A's current transition
     float colorBTransitionDuration = 0.0f;// Duration (seconds) for B's current transition
 
-    // --- Mix Ratio Oscillation ---
-    float mixOscillatorPhase = 0.0f;      // Phase (radians) for the mix calculation
+    // --- Mix Ratio State ---
+    float mixOscillatorPhase = 0.0f;      
+    float currentMixRatio_ = 0.5f;        // Current actual mix ratio (lerped)
+    float targetMixRatio_ = 0.5f;         // Target mix ratio (changes abruptly)
+    float mixOscillationFreq_ = 0.1f;     // Current actual frequency (lerped)
+    float targetMixOscillationFreq_ = 0.1f; // Target frequency (changes based on Speed/Chaos)
 
-    // --- Helper Methods --- 
-    void startNewColorTransition();
-    CRGB selectNewColorFromPalette(const CRGBPalette16& palette);
-    float calculateBaseTransitionDuration() const;
-    float randomizeDuration(float baseDuration);
+    // --- Evolving Chaos State ---
+    float currentChaosLevel_ = 0.0f;      // Current effective chaos (lerped)
+    float targetChaosLevel_ = 0.0f;       // Target chaos level (changes periodically)
+    // Timer for chaos target change can reuse colorChangeTimer
+
+    // --- Initial Transition Flag ---
+    bool is_initial_transition = true;    
+
+    // === Helper Method Declarations ===
+    void startNewColorTransition(float speed, float chaosParam);
+    CRGB selectNewColorFromPalette(const CRGBPalette16& pal);
+    float calculateBaseTransitionDuration(float speed) const;
+    float randomizeDuration(float baseDuration, float chaos);
     CRGB lerpColor(const CRGB& start, const CRGB& end, float factor) const;
-    uint8_t calculateFadeAmount() const;
-    uint8_t calculateSparkleStrength() const;
-    float calculateMixRatio();
-    uint8_t calculateSparkleBrightness();
+    uint8_t calculateFadeAmount(float intensity, float glitter) const;
+    uint8_t calculateSparkleStrength(float intensity) const;
+    uint8_t calculateSparkleBrightness(float glitter);
 
 public:
     // Constructor

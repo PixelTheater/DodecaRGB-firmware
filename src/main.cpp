@@ -181,8 +181,8 @@ void setup() {
   
   // Add scenes 
   //theater.addScene<Scenes::TestScene>(); // Add Test Scene first
-  theater.addScene<Scenes::SatellitesScene>(); // <<< ADDED Satellites Scene
   theater.addScene<Scenes::SparklesScene>(); // UPDATED
+  theater.addScene<Scenes::SatellitesScene>(); // <<< ADDED Satellites Scene
   theater.addScene<Scenes::WanderingParticlesScene>(); // Add Wandering Particles
   theater.addScene<Scenes::TextureMapScene>(); // TextureMapScene moved to Scenes namespace
   theater.addScene<Scenes::OrientationGridScene>(); // ADDED

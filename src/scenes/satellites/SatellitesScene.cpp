@@ -34,11 +34,11 @@ void SatellitesScene::setup() {
     set_description("Satellites orbiting on the surface, crashing on collision.");
 
     // Simplified Parameters
-    param("population", "count", 1, 200, 22);
+    param("population", "count", 1, 200, 30);
     param("speed", "range", 0.1f, 5.0f, 1.6f); // Scales base angular speed
     param("chaos", "ratio", 0.0f, 1.0f, 0.15f); // How much orbits are perturbed
-    param("trails", "ratio", 0.6f); // Fade amount (higher = less fade)
-    param("render_radius", "range", 0.01f, 0.3f, 0.083f); // Satellite head angular size
+    param("trails", "ratio", 0.5f); // Fade amount (higher = less fade)
+    param("render_radius", "range", 0.01f, 0.3f, 0.080f); // Satellite head angular size
     param("blur", "ratio", 0.0f, 1.0f, 0.0f); // Post-process spatial blur
 
     // Init satellites (Dead with random timers)
