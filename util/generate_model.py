@@ -305,7 +305,7 @@ class DodecaModel:
 
                 # Transform vertices using same pipeline as viewer
                 m = Matrix3D()
-                # No initial X rotation - keep model upright
+                m.rotate_x(math.pi)  # Initial transform
                 
                 # Side positioning from drawPentagon()
                 if face.id == 0:  # bottom
@@ -335,8 +335,8 @@ class DodecaModel:
                 # Transform all vertices
                 for vertex in base_vertices:
                     world_pos = m.apply(vertex)
-                    # Don't negate Y and Z - camera view matrix handles coordinate system
-                    vertices.append([world_pos[0], world_pos[1], world_pos[2]])
+                    # Negate Y and Z to match coordinate system
+                    vertices.append([world_pos[0], -world_pos[1], -world_pos[2]])
 
             # Check if we have position data
             if hasattr(face.position, 'x') and face.position.x != 0 and face.position.y != 0 and face.position.z != 0:

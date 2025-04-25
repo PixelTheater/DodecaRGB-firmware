@@ -90,9 +90,9 @@ def transform_led_point(x: float, y: float, num: int, sideNumber: int):
     # LED-specific transforms
     m.rotate_z(math.pi/10)
     
-    # Final transform - don't negate Y and Z, camera handles coordinate system
+    # Final transform - negate Y and Z to match Processing's coordinate system
     result = m.apply([x, y, 0])
-    return [result[0], result[1], result[2]]
+    return [result[0], -result[1], -result[2]]
 
 def strip_units(value_str):
     """Strip units (mm) from coordinate strings"""
