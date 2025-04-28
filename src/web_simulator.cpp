@@ -862,6 +862,36 @@ float get_mesh_opacity() {
     return g_simulator ? g_simulator->getMeshOpacity() : 0.3f;
 }
 
+// --- ADDED: Wireframe Control ---
+EMSCRIPTEN_KEEPALIVE
+void set_show_wireframe(bool show) {
+    if (g_simulator) {
+        if (auto* platform = g_simulator->theater->platform()) {
+            auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+            if (web_platform) {
+                web_platform->setShowWireframe(show);
+                PixelTheater::Log::info("Set wireframe visibility via C API: %s", (show ? "ON" : "OFF"));
+            }
+        }
+    } else {
+        PixelTheater::Log::error("set_show_wireframe called before simulator initialized.");
+    }
+}
+
+EMSCRIPTEN_KEEPALIVE
+bool get_show_wireframe() {
+    if (g_simulator) {
+        if (auto* platform = g_simulator->theater->platform()) {
+            auto* web_platform = dynamic_cast<PixelTheater::WebPlatform*>(platform);
+            if (web_platform) {
+                return web_platform->getShowWireframe();
+            }
+        }
+    }
+    return false; // Default off if simulator/platform not ready
+}
+// --- END ADDED ---
+
 EMSCRIPTEN_KEEPALIVE
 void log_message(const char* message) {
     PixelTheater::Log::info("[JS] %s", message);
@@ -957,7 +987,11 @@ const char* get_scene_parameters_json() {
 
             json_stream << "{";
             json_stream << "\"id\":\"" << escape_json_helper(param.name) << "\",";
-            json_stream << "\"label\":\"" << escape_json_helper(param.name) << "\","; // Using name as label for now
+            // Use description if available, otherwise name, for the label
+            std::string label = !param.description.empty() ? param.description : param.name;
+            json_stream << "\"label\":\"" << escape_json_helper(label) << "\",";
+            // Also include the actual description field
+            json_stream << "\"description\":\"" << escape_json_helper(param.description) << "\",";
             json_stream << "\"type\":\"" << escape_json_helper(param.type) << "\",";
 
             std::string controlType = "slider";

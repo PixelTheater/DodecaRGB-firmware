@@ -29,7 +29,7 @@
                     <!-- Visualizer canvas area -->
                     <div class="visualizer-container">
                         <canvas id="canvas"></canvas>
-                        <div id="fps-counter">58fps</div>
+                        <div id="fps-counter">--fps</div>
                         <div id="instructions">Drag to rotate | Double-click to reset view</div>
                     </div>
                     
@@ -187,11 +187,39 @@
     <script>
         var Module = {
             canvas: document.getElementById('canvas'),
+            
+            // Define JS implementations for C++ external functions BEFORE WASM loads
+            _update_ui_fps: function(fps) {
+                const fpsElement = document.getElementById('fps-counter');
+                if (fpsElement) {
+                    fpsElement.textContent = `${Math.round(fps)}fps`;
+                }
+            },
+            _get_canvas_width: function() {
+                const canvas = document.getElementById('canvas');
+                return canvas ? canvas.width : 800;
+            },
+            _get_canvas_height: function() {
+                const canvas = document.getElementById('canvas');
+                return canvas ? canvas.height : 600;
+            },
+            _get_current_time: function() {
+                return performance.now() / 1000.0;
+            },
+            _update_ui_brightness: function(brightness) {
+                if (window.simulator) {
+                    window.simulator.updateBrightnessUI(brightness);
+                }
+            },
+
+            // Existing print/printErr handlers (keep these)
             print: function(text) {
                 console.log(text);
+                if (window.consoleManager) window.consoleManager.log(text);
             },
             printErr: function(text) {
                 console.error(text);
+                if (window.consoleManager) window.consoleManager.error(text);
             }
         };
     </script>

@@ -2,10 +2,10 @@
 
 namespace PixelTheater {
 
-// Main vertex shader for rendering LEDs
+// Main vertex shader for rendering LEDs (Points)
 const char* vertex_shader_source = R"(#version 300 es
-layout(location = 0) in vec3 position;
-layout(location = 1) in vec3 color;
+layout(location = 0) in vec3 position; // Note: Back to 'position' at location 0
+layout(location = 1) in vec3 color;    // Note: Back to 'color' at location 1
 
 uniform mat4 projection;
 uniform mat4 view;
@@ -15,7 +15,7 @@ uniform float camera_distance;
 uniform float canvas_height;
 
 out vec3 fragColor;
-out float point_size;
+out float point_size; // Output point size for fragment shader
 out float viewDistance;
 out vec3 viewNormal;    // Normal vector in view space
 out float viewAngle;    // Angle between view direction and normal
@@ -40,29 +40,30 @@ void main() {
     fragColor = color;
     
     // Calculate point size based on distance and view angle
-    float size_factor = canvas_height / 800.0;
-    float base_size = 6.0 * led_size;
+    float size_factor = canvas_height / 800.0; // Normalize based on default height
+    float base_size = 6.0 * led_size; // Base size, adjust 6.0 as needed
     float distance_scale = sqrt(camera_distance / max(viewDistance, 0.1));
-    distance_scale = min(distance_scale, 2.0);
+    distance_scale = min(distance_scale, 2.0); // Clamp max scaling
     
     // Reduce size of LEDs facing away from camera
     float angle_scale = mix(0.6, 1.0, smoothstep(-0.2, 0.5, viewAngle));
     
     gl_PointSize = max(base_size * size_factor * distance_scale * angle_scale, 1.5);
-    point_size = gl_PointSize;
+    point_size = gl_PointSize; // Pass calculated size to fragment shader
 }
 )";
 
-// Main fragment shader for rendering LEDs
+// Main fragment shader for rendering LEDs (Points)
 const char* fragment_shader_source = R"(#version 300 es
 precision highp float;
 
 in vec3 fragColor;
-in float point_size;
+in float point_size; // Receive point size from vertex shader
 in float viewDistance;
 in vec3 viewNormal;
 in float viewAngle;
 uniform float atmosphere_intensity;
+// REMOVED: uniform float led_size;
 
 out vec4 outColor;
 
@@ -92,29 +93,23 @@ vec3 toneMap(vec3 color) {
 }
 
 void main() {
-    // Calculate distance from center of point with enhanced anti-aliasing
+    // Calculate distance from center of point using gl_PointCoord
     vec2 cxy = 2.0 * gl_PointCoord - 1.0;
     float r = dot(cxy, cxy);
     
-    // Improved soft circle with better anti-aliasing
-    float aa_width = 2.0 / point_size;
+    // Calculate alpha for soft circle based on distance and point size
+    float aa_width = 2.0 / point_size; // Anti-aliasing width based on point size
     float alpha = 1.0 - smoothstep(0.75 - aa_width, 0.75 + aa_width, r);
     
-    // Enhanced attenuation for large points
+    // Attenuation towards edge of point
     float attenuation = pow(1.0 - min(r, 1.0), 1.1);
     
-    // Size-based brightness with atmospheric influence
-    float size_ratio = point_size / 20.0; // Normalized size
-    
-    // Adjust size factor based on atmospheric intensity
+    // Size-based brightness calculations (restored)
+    float size_ratio = point_size / 20.0; // Normalized size (adjust 20.0 if needed)
     float atmos_factor = mix(1.0, 0.7, atmosphere_intensity / 3.0);
     float size_threshold = mix(1.5, 2.0, atmosphere_intensity / 3.0);
-    
-    // Less aggressive inverse size relationship
     float inverse_size_factor = 1.0 / max(size_ratio * atmos_factor, 0.3);
-    float size_factor = clamp(inverse_size_factor, 0.5, 2.2); // Increased minimum brightness
-    
-    // Smoother brightness transition for larger sizes
+    float size_factor = clamp(inverse_size_factor, 0.5, 2.2);
     float base_brightness = mix(1.6, 0.8, smoothstep(0.3, size_threshold, size_ratio));
     float brightness = base_brightness * attenuation * size_factor;
     
@@ -129,11 +124,9 @@ void main() {
     float depth_scatter = 1.0 - smoothstep(12.0, 25.0, viewDistance);
     float scatter_boost = mix(0.3, 1.2, depth_scatter);
     
-    // Final color with enhanced scaling and size-based intensity
+    // Final color calculation (restored size dependency)
     vec3 color = fragColor;
     color.g *= 0.92; // Pre-adjust green channel
-    
-    // Improved size-dependent intensity scaling with atmospheric influence
     float intensity_scale = mix(2.2, 1.4, smoothstep(0.3, size_threshold, size_ratio));
     intensity_scale = mix(intensity_scale, intensity_scale * 1.2, atmosphere_intensity / 3.0);
     
@@ -146,14 +139,14 @@ void main() {
     // Apply tone mapping before alpha
     color = toneMap(color);
     
-    // Enhanced alpha for atmospheric effect with size consideration
+    // Final alpha calculation (restored size dependency)
     alpha *= mix(0.4, 1.0, view_fade);
     alpha *= mix(0.8, 1.0, scatter_boost);
-    alpha *= mix(1.0, 0.85, smoothstep(0.3, size_threshold, size_ratio)); // Softer alpha reduction
+    alpha *= mix(1.0, 0.85, smoothstep(0.3, size_threshold, size_ratio));
     
     outColor = vec4(color, alpha);
     
-    // Discard back-facing pixels with smoother transition
+    // Discard fragments outside the circle and those facing away
     if (r > 1.1 + aa_width || viewAngle < -0.6) discard;
 }
 )";
@@ -211,46 +204,19 @@ vec3 toneMapGlow(vec3 color) {
     return color * (toneMapped / max(luma, 0.001)) * 1.3;
 }
 
-vec3 extractBrightAreas(vec3 color) {
-    float brightness = perceivedBrightness(color);
-    
-    // Dynamic thresholds with adjusted green sensitivity
-    float base_threshold = mix(0.25, 0.4, brightness);
-    float softness = mix(0.3, 0.6, brightness);
-    
-    vec3 colorThresholds = vec3(
-        base_threshold * 0.65,  // More sensitive to red
-        base_threshold * 0.85,  // Less sensitive to green
-        base_threshold * 0.6    // Most sensitive to blue
-    );
-    
-    vec3 contribution;
-    contribution.r = smoothstep(colorThresholds.r, colorThresholds.r + softness, color.r);
-    contribution.g = smoothstep(colorThresholds.g, colorThresholds.g + softness, color.g);
-    contribution.b = smoothstep(colorThresholds.b, colorThresholds.b + softness, color.b);
-    
-    // Enhanced dim boost with color preservation and green control
-    float dimBoost = (1.0 - brightness) * 0.35;
-    contribution = mix(contribution, vec3(1.0), dimBoost);
-    contribution.g *= 0.9; // Additional green control
-    
-    vec3 result = color * contribution * 1.4;
-    return toneMapGlow(result);
-}
-
 void main() {
     vec4 color = texture(scene_texture, TexCoords);
-    vec3 brightAreas = extractBrightAreas(color.rgb);
     
-    // Enhanced intensity scaling with better overflow handling
-    float intensity_scale = atmosphere_intensity * 1.8;
-    float boost = 1.0 + (1.0 - perceivedBrightness(color.rgb)) * 0.4;
+    // --- Simplified Glow Extraction (Ensure Active) ---
+    float brightness = perceivedBrightness(color.rgb);
+    float threshold = 0.1; // Keep low threshold for now
+    vec3 brightAreas = (brightness > threshold) ? color.rgb : vec3(0.0); // Pass raw color if bright
+    // --- End Simplified --- 
+
+    // Apply tone mapping *after* extraction to handle HDR input
+    vec3 final = toneMapGlow(brightAreas); // Use the existing toneMapGlow
     
-    // Apply tone mapping to handle high intensities
-    vec3 final = brightAreas * intensity_scale * boost;
-    final = final / (1.0 + length(final) * 0.3);
-    
-    FragColor = vec4(final, 1.0);
+    FragColor = vec4(final, 1.0); 
 }
 )";
 
@@ -282,49 +248,23 @@ void main() {
     vec2 texelSize = 1.0 / vec2(textureSize(source_texture, 0));
     vec3 result = vec3(0.0);
     float total_weight = 0.0;
-    
-    // Extended Gaussian weights for wider, softer blur
-    float weights[15] = float[](
-        0.0813, 0.0798, 0.0745, 0.0676, 0.0595,
-        0.0508, 0.0420, 0.0336, 0.0261, 0.0196,
-        0.0143, 0.0101, 0.0069, 0.0046, 0.0029
-    );
-    
-    // Enhanced adaptive radius for more spread
-    float radiusScale = 1.0 + length(blur_direction) * 0.6;
-    float effectiveRadius = blur_radius * radiusScale * 2.0; // Increased radius for more spread
-    
-    // Center sample with reduced weight for more spread
-    vec3 centerColor = texture(source_texture, TexCoords).rgb;
-    result += centerColor * weights[0] * 0.9; // Reduced center weight
-    total_weight += weights[0] * 0.9;
-    
-    // Enhanced sampling with better distribution and more spread
-    for(int i = 1; i < 15; ++i) {
-        float scale = float(i) / 14.0;
-        vec2 offset = blur_direction * texelSize * (float(i) * effectiveRadius);
-        
-        // Wider sampling range
-        vec2 samplePos1 = TexCoords + offset * scale * 1.2;
-        vec2 samplePos2 = TexCoords - offset * scale * 1.2;
-        
-        vec3 color1 = texture(source_texture, samplePos1).rgb;
-        vec3 color2 = texture(source_texture, samplePos2).rgb;
-        
-        // Enhanced weight calculation for softer falloff
-        float w = weights[i] * (1.0 - scale * 0.1);
-        result += (color1 + color2) * w;
-        total_weight += 2.0 * w;
+
+    // Simplified Gaussian weights (5 samples)
+    float weights[5] = float[](0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);
+
+    // Center sample
+    result += texture(source_texture, TexCoords).rgb * weights[0];
+    total_weight += weights[0];
+
+    // Samples in blur direction
+    for(int i = 1; i < 5; ++i) {
+        vec2 offset = blur_direction * texelSize * float(i) * blur_radius;
+        result += texture(source_texture, TexCoords + offset).rgb * weights[i];
+        result += texture(source_texture, TexCoords - offset).rgb * weights[i];
+        total_weight += 2.0 * weights[i];
     }
-    
-    // Softer color preservation
-    vec3 blurred = result / total_weight;
-    blurred = pow(blurred, vec3(0.98)); // Softer gamma
-    
-    // Extended range handling with softer falloff
-    blurred = blurred / (1.0 + 0.08 * length(blurred));
-    
-    FragColor = vec4(blurred, 1.0);
+
+    FragColor = vec4(result / total_weight, 1.0);
 }
 )";
 
@@ -411,24 +351,24 @@ uniform mat4 view;
 uniform mat4 model;
 uniform float mesh_opacity;
 
-out vec3 Normal;
-out vec3 FragPos;
+out vec3 Normal; // Output Normal in View Space
+out vec3 FragPos; // Output FragPos in View Space
 out float Opacity;
 
 void main() {
-    // Transform vertex position with model matrix first
-    vec4 worldPos = model * vec4(aPos, 1.0);
-    FragPos = worldPos.xyz;
+    // Calculate position and normal in view space
+    vec4 viewPos = view * model * vec4(aPos, 1.0);
+    FragPos = viewPos.xyz / viewPos.w; // Perspective divide for view space position
     
-    // Transform normal with model matrix (ignoring translation)
-    mat3 normalMatrix = mat3(transpose(inverse(model)));
+    // Normal needs to be transformed using the normal matrix derived from view*model
+    mat3 normalMatrix = mat3(transpose(inverse(view * model)));
     Normal = normalize(normalMatrix * aNormal);
     
     // Pass opacity to fragment shader
     Opacity = mesh_opacity;
     
-    // Final position in clip space
-    gl_Position = projection * view * worldPos;
+    // Final position in clip space (already calculated indirectly)
+    gl_Position = projection * viewPos;
 }
 )";
 
@@ -436,43 +376,47 @@ void main() {
 const char* mesh_fragment_shader_source = R"(#version 300 es
 precision highp float;
 
-in vec3 Normal;
-in vec3 FragPos;
+in vec3 Normal; // Now in View Space
+in vec3 FragPos; // Now in View Space
 in float Opacity;
 
 uniform vec3 mesh_color;
-uniform vec3 light_position;
+// REMOVED: uniform vec3 light_position; // Light is at camera (0,0,0) in view space
+uniform bool is_wireframe; 
 
 out vec4 FragColor;
 
 void main() {
-    // Base color for PCB-like matte surface
-    vec3 color = mesh_color * vec3(0.55, 0.95, 0.65); // Slightly lighter base
-    
-    // Stronger ambient for matte look
-    float ambient = 0.5;
-    
-    // Diffuse lighting with softer falloff
-    vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(light_position - FragPos);
-    float diff = pow(max(dot(norm, lightDir), 0.0), 1.2) * 0.7; // Softer diffuse with slight power curve
-    
-    // Minimal specular for matte appearance
-    vec3 viewDir = normalize(-FragPos);
-    vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0) * 0.1; // Much lower specular with wider spread
-    
-    // Fresnel-like edge darkening for depth
-    float fresnel = pow(1.0 - max(dot(norm, viewDir), 0.0), 2.0) * 0.3;
-    
-    // Combine lighting with PCB-like characteristics
-    vec3 result = (ambient + diff + spec - fresnel) * color;
-    
-    // Apply opacity with subtle edge enhancement
-    float edge_factor = 1.0 - pow(abs(dot(norm, viewDir)), 3.0);
-    float final_opacity = Opacity * (0.85 + 0.15 * edge_factor);
-    
-    FragColor = vec4(result, final_opacity);
+    if (is_wireframe) {
+        // Wireframe: Use color and opacity uniforms directly
+        FragColor = vec4(mesh_color, Opacity);
+    } else {
+        // Faces: Lighting in View Space
+        vec3 norm = normalize(Normal);
+        vec3 viewDir = normalize(-FragPos); // Vector from fragment to camera (origin in view space)
+        
+        // Light direction from fragment to light (camera at origin)
+        vec3 lightDir = normalize(-FragPos); // Same as viewDir when light is at camera origin
+        
+        // Ambient
+        float ambient = 0.3; 
+        
+        // Diffuse
+        float diff = max(dot(norm, lightDir), 0.0);
+        vec3 diffuseColor = diff * mesh_color;
+        
+        // Specular (Phong)
+        float specularStrength = 0.25; // Reduced brightness of specular highlights
+        vec3 reflectDir = reflect(-lightDir, norm);
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16.0); // Adjust shininess (16.0 is moderate)
+        vec3 specularColor = specularStrength * spec * vec3(1.0, 1.0, 1.0); // White highlights
+
+        // Combine lighting
+        vec3 litColor = (ambient * mesh_color) + diffuseColor + specularColor;
+        
+        // Apply opacity
+        FragColor = vec4(litColor, Opacity);
+    }
 }
 )";
 

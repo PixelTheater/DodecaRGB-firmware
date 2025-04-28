@@ -115,48 +115,56 @@ class DodecaSimulator {
      * Set up external C function implementations
      */
     setupExternalFunctions() {
-        // Define the functions
-        const getCanvasWidth = () => {
-            return this.canvas ? this.canvas.width : 800;
-        };
+        // Define only the functions that need access to 'this' or are complex UI updates
         
-        const getCanvasHeight = () => {
-            return this.canvas ? this.canvas.height : 800;
-        };
-        
-        const getCurrentTime = () => {
-            return performance.now() / 1000.0;
-        };
-        
-        const updateUIFps = (fps) => {
-            if (this.fpsCounter) {
-                this.fpsCounter.textContent = `${Math.round(fps)}fps`;
-            }
-        };
-        
-        const updateUIBrightness = (brightness) => {
-            if (this.brightnessSlider && this.brightnessValue) {
-                // Convert from 0-1 to 0-100 for the slider
+        // Example for brightness: Define a helper method on the class
+        this.updateBrightnessUI = (brightness) => { // Called by Module._update_ui_brightness
+             if (this.brightnessSlider && this.brightnessValue) {
                 const percentage = Math.round(brightness * 100);
                 this.brightnessSlider.value = percentage;
                 this.brightnessValue.textContent = percentage;
             }
         };
 
-        // Set up on window object
-        window._get_canvas_width = getCanvasWidth;
-        window._get_canvas_height = getCanvasHeight;
-        window._get_current_time = getCurrentTime;
-        window._update_ui_fps = updateUIFps;
-        window._update_ui_brightness = updateUIBrightness;
+        // --- ADDED: Restore FPS UI Update Function ---
+        const updateUIFps = (fps) => {
+            // console.log(`JS _update_ui_fps received: ${fps}`); // REMOVED JS LOG
+            // Use the correct element ID 'fps' (based on initial code)
+            const fpsElement = document.getElementById('fps'); 
+            if (fpsElement) {
+                fpsElement.textContent = Math.round(fps);
+            } else {
+                // Fallback if 'fps' id isn't found, maybe 'fps-counter' exists?
+                const fpsCounterElement = document.getElementById('fps-counter');
+                if (fpsCounterElement) {
+                    fpsCounterElement.textContent = Math.round(fps); 
+                } else {
+                     console.warn("Could not find FPS display element ('fps' or 'fps-counter').");
+                }
+            }
+        };
+        // Assign to the global scope for C++ interop
+        window._update_ui_fps = updateUIFps; 
+        // --- END ADDED ---
 
-        // Set up on Module object if it exists
+        // Set up on Module object if it exists (might be redundant now but safe)
+        // Only needed for functions NOT defined directly on the Module object in HTML
         if (typeof Module !== 'undefined') {
-            Module._get_canvas_width = getCanvasWidth;
-            Module._get_canvas_height = getCanvasHeight;
-            Module._get_current_time = getCurrentTime;
-            Module._update_ui_fps = updateUIFps;
-            Module._update_ui_brightness = updateUIBrightness;
+            // Ensure the functions defined in index.html are attached if needed later?
+            // This might be unnecessary if Module definition is correct in HTML
+            
+            // Keep this for brightness if using the helper method approach from HTML
+            if (!Module._update_ui_brightness) { 
+                 Module._update_ui_brightness = (b) => { if(window.simulator) window.simulator.updateBrightnessUI(b); };
+            }
+            
+            // --- MODIFIED: Mimic Brightness Setup Pattern ---
+            // Assign a new anonymous function that calls our constant
+            Module._update_ui_fps = (fpsValueFromCpp) => {
+                // console.log(`Module._update_ui_fps wrapper called with: ${fpsValueFromCpp}`); // Optional debug
+                updateUIFps(fpsValueFromCpp); // Call the actual logic
+            };
+            // --- END MODIFIED ---
         }
     }
     
@@ -252,10 +260,8 @@ class DodecaSimulator {
                 this.moduleReady = true;
                 console.log("Module runtime was initialized");
                 
-                // Wait a bit longer to ensure all module functions are available
-                setTimeout(() => {
-                    this.onModuleReady();
-                }, 1000);
+                // Call onModuleReady directly - NO TIMEOUT
+                this.onModuleReady();
             };
         } else {
             // Module not defined yet, check again later
@@ -655,20 +661,23 @@ class DodecaSimulator {
         
         // Show mesh checkbox - get the actual value
         try {
-            const showMesh = this.callModule('get_show_mesh');
-            if (showMesh !== null) {
-                this.showMeshCheckbox.checked = showMesh;
+            const showWireframe = this.callModule('get_show_wireframe'); 
+            if (showWireframe !== null) {
+                this.showMeshCheckbox.checked = showWireframe;
             } else {
-                throw new Error("Could not get show mesh state");
+                // Fallback if get_show_wireframe fails
+                this.showMeshCheckbox.checked = false; // Default off
+                this.callModule('set_show_wireframe', false); 
             }
         } catch (error) {
+             console.error("Error getting initial wireframe state:", error);
             // Fallback to checkbox default
-            const initialShowMesh = this.showMeshCheckbox.checked;
-            this.callModule('set_show_mesh', initialShowMesh);
+             const initialShowWireframe = this.showMeshCheckbox.checked;
+             this.callModule('set_show_wireframe', initialShowWireframe);
         }
         
         // Set initial zoom
-        this.callModule('set_zoom_level', 1); // Normal zoom
+        this.callModule('set_zoom_level', 1); // Normal zoom (index 1 is correct initially)
         this.setActiveZoomButton(this.zoomNormalBtn);
         
         // Start with rotation off
@@ -737,15 +746,15 @@ class DodecaSimulator {
         
         // Set up zoom buttons
         if (this.zoomCloseBtn) {
-            this.zoomCloseBtn.addEventListener('click', () => this.handleZoomChange(0, this.zoomCloseBtn));
+            this.zoomCloseBtn.addEventListener('click', () => this.handleZoomChange(2, this.zoomCloseBtn)); // Close = Level 2
         }
         
         if (this.zoomNormalBtn) {
-            this.zoomNormalBtn.addEventListener('click', () => this.handleZoomChange(1, this.zoomNormalBtn));
+            this.zoomNormalBtn.addEventListener('click', () => this.handleZoomChange(1, this.zoomNormalBtn)); // Normal = Level 1
         }
         
         if (this.zoomFarBtn) {
-            this.zoomFarBtn.addEventListener('click', () => this.handleZoomChange(2, this.zoomFarBtn));
+            this.zoomFarBtn.addEventListener('click', () => this.handleZoomChange(0, this.zoomFarBtn)); // Far = Level 0
         }
         
         // Set up rotation buttons
@@ -754,11 +763,11 @@ class DodecaSimulator {
         }
         
         if (this.rotationSlowBtn) {
-            this.rotationSlowBtn.addEventListener('click', () => this.handleRotationChange(true, 1.0, this.rotationSlowBtn));
+            this.rotationSlowBtn.addEventListener('click', () => this.handleRotationChange(true, 0.3, this.rotationSlowBtn));
         }
         
         if (this.rotationFastBtn) {
-            this.rotationFastBtn.addEventListener('click', () => this.handleRotationChange(true, 3.0, this.rotationFastBtn));
+            this.rotationFastBtn.addEventListener('click', () => this.handleRotationChange(true, 0.9, this.rotationFastBtn));
         }
         
         // Scene navigation
@@ -993,7 +1002,7 @@ class DodecaSimulator {
      */
     handleShowMeshChange(event) {
         const show = event.target.checked;
-        this.callModule('set_show_mesh', show ? 1 : 0);
+        this.callModule('set_show_wireframe', show);
     }
     
     /**
@@ -1193,8 +1202,8 @@ class DodecaSimulator {
         paramRow.className = 'param-row';
         
         const paramLabel = document.createElement('label');
-        // Use param.id as label for now, could be param.label if available
-        paramLabel.textContent = param.label || param.id;
+        // Use description if available, fall back to label, then id
+        paramLabel.textContent = param.description || param.label || param.id;
         paramRow.appendChild(paramLabel);
         
         let input;
@@ -1259,7 +1268,8 @@ class DodecaSimulator {
                 paramRow.innerHTML = ''; // Clear previous label
                 paramRow.appendChild(input);
                 paramRow.appendChild(paramLabel);
-                paramLabel.textContent = param.label || param.id; // Set text again
+                // Set text again after potential innerHTML clear for checkbox
+                paramLabel.textContent = param.description || param.label || param.id; 
 
                 // Add event listener
                 input.addEventListener('change', (e) => {

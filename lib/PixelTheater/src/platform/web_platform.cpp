@@ -33,11 +33,19 @@ extern "C" {
     }
     
     EMSCRIPTEN_KEEPALIVE double get_current_time() {
-        return emscripten_get_now() / 1000.0; // Convert to seconds
+        double now_ms = emscripten_get_now();
+        // Log periodically, not every single frame
+        // static double last_log_time = -1000.0;
+        // if (now_ms - last_log_time > 1000.0) { 
+        //      Log::info("C get_current_time() called, returning %.3f ms", now_ms);
+        //      last_log_time = now_ms;
+        // }
+        return now_ms / 1000.0; // Convert to seconds
     }
     
     EMSCRIPTEN_KEEPALIVE void update_ui_fps(int fps) {
         // Will be overridden by JavaScript
+        // Log::info("C++ update_ui_fps called with fps: %d", fps); // REMOVED Incorrect Log
     }
     
     EMSCRIPTEN_KEEPALIVE void update_ui_brightness(float brightness) {
@@ -120,8 +128,14 @@ uint16_t WebPlatform::getNumLEDs() const {
 
 // Hardware control operations
 void WebPlatform::show() {
+    // logInfo("WebPlatform::show() entered."); // Log entry - REMOVED (too noisy)
+
     // Initialize WebGL if not already done
-    if (!_renderer || !_mesh_generator) return;
+    if (!_renderer || !_mesh_generator) {
+        logWarning("WebPlatform::show() returning early: Renderer (%p) or MeshGenerator (%p) not initialized.", 
+                   _renderer.get(), _mesh_generator.get());
+        return; 
+    }
     
     // Update auto-rotation if enabled
     if (_auto_rotation) {
@@ -158,16 +172,23 @@ void WebPlatform::show() {
     
     // End render pass
     _renderer->applyPostProcessing(_glow_shader_program, _atmosphere_intensity);
-    
+
+    // logInfo("Checkpoint: Before FPS calculation block"); // REMOVED
+
     // Update FPS counter
-    double current_time = get_current_time();
+    double current_time = get_current_time(); // Restore original call
     _frame_count++;
     
+    // Log time values JUST BEFORE the if statement (using CORRECT log method)
+    // logInfo("Comparing time (sec): current=%.3f, last=%.3f", current_time, _last_frame_time); // REMOVED
+
+    // Compare using seconds
     if (current_time - _last_frame_time >= 1.0) {
         int fps = static_cast<int>(_frame_count / (current_time - _last_frame_time));
+        // logInfo("FPS calculated: %d. Calling update_ui_fps...", fps); // REMOVED Correct Log
         update_ui_fps(fps);
         _frame_count = 0;
-        _last_frame_time = current_time;
+        _last_frame_time = current_time; // Store seconds
     }
 }
 
@@ -209,6 +230,7 @@ float WebPlatform::getLEDSize() const {
 
 void WebPlatform::setAtmosphereIntensity(float intensity) {
     _atmosphere_intensity = std::clamp(intensity, MIN_ATMOSPHERE_INTENSITY, MAX_ATMOSPHERE_INTENSITY);
+    logInfo("Atmosphere Intensity set to: %.2f (Clamped value)", _atmosphere_intensity);
 }
 
 float WebPlatform::getAtmosphereIntensity() const {
@@ -328,26 +350,31 @@ void WebPlatform::onMouseWheel(float delta) {
 void WebPlatform::updateVertexBuffer() {
     if (!_leds || !_renderer) return;
     
-    // Define vertex structure for LED points
+    // Define vertex structure for LED points (Reverted)
     struct Vertex {
         float x, y, z;  // 3D coordinates
         float r, g, b;  // Color
     };
     
-    // Create vertex data
+    // Create vertex data (Reverted: 1 vertex per LED)
     std::vector<Vertex> vertices(_num_leds);
     
-    // Scale factor to fit LEDs in scene
+    // Scale factor to fit LEDs in scene (Reverted)
     constexpr float POSITION_SCALE = 0.03f;
-    
+    // Anti-clipping scale factor
+    constexpr float CLIP_SCALE = 1.025f; // Increased slightly
+
     // Use cached LED positions from WebModel
     for (uint16_t i = 0; i < _num_leds; i++) {
-        // Scale positions to fit in scene with equal scaling for all axes
-        vertices[i].x = _led_positions[i].x() * POSITION_SCALE;
-        vertices[i].y = _led_positions[i].y() * POSITION_SCALE;
-        vertices[i].z = _led_positions[i].z() * POSITION_SCALE;
+        // Original LED position from model
+        Point pos = _led_positions[i];
+
+        // Apply anti-clipping scale and main position scale during vertex creation
+        vertices[i].x = pos.x() * CLIP_SCALE * POSITION_SCALE;
+        vertices[i].y = pos.y() * CLIP_SCALE * POSITION_SCALE;
+        vertices[i].z = pos.z() * CLIP_SCALE * POSITION_SCALE;
         
-        // Convert LED color from 0-255 to 0-1 range and apply brightness
+        // Convert LED color from 0-255 to 0-1 range and apply brightness (Reverted)
         float brightness = static_cast<float>(_brightness) / 255.0f;
         vertices[i].r = static_cast<float>(_leds[i].r) / 255.0f * brightness;
         vertices[i].g = static_cast<float>(_leds[i].g) / 255.0f * brightness;
@@ -359,7 +386,7 @@ void WebPlatform::updateVertexBuffer() {
         _led_vbo = _renderer->createBuffer();
     }
     
-    // Update the vertex buffer
+    // Update the vertex buffer (Reverted: Use Vertex struct size)
     _renderer->bindArrayBuffer(_led_vbo, vertices.data(), vertices.size() * sizeof(Vertex), true);
 }
 
@@ -373,7 +400,7 @@ void WebPlatform::renderMesh(const float* view_matrix, const float* projection_m
     const std::vector<uint16_t>& edge_indices = _mesh_generator->getEdgeIndices();
     
     // Render mesh faces if enabled
-    if (_show_mesh && !vertices.empty() && !indices.empty()) {
+    if (!vertices.empty() && !indices.empty()) {
         // Enable depth testing and blending for mesh faces
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
@@ -389,13 +416,15 @@ void WebPlatform::renderMesh(const float* view_matrix, const float* projection_m
         GLint opacityLoc = glGetUniformLocation(_mesh_shader_program, "mesh_opacity");
         GLint colorLoc = glGetUniformLocation(_mesh_shader_program, "mesh_color");
         GLint lightPosLoc = glGetUniformLocation(_mesh_shader_program, "light_position");
+        GLint isWireframeLoc = glGetUniformLocation(_mesh_shader_program, "is_wireframe");
         
         if (projLoc >= 0) glUniformMatrix4fv(projLoc, 1, GL_FALSE, projection_matrix);
         if (viewLoc >= 0) glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view_matrix);
         if (modelLoc >= 0) glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model_matrix);
         if (opacityLoc >= 0) glUniform1f(opacityLoc, _mesh_opacity);
-        if (colorLoc >= 0) glUniform3f(colorLoc, 0.8f, 0.8f, 0.8f); // Light gray
-        if (lightPosLoc >= 0) glUniform3f(lightPosLoc, 0.0f, 2.0f, 2.0f);
+        if (colorLoc >= 0) glUniform3f(colorLoc, 0.0f, 0.2f, 0.15f); // Darker, less saturated green for faces
+        if (lightPosLoc >= 0) glUniform3f(lightPosLoc, 0.0f, 2.0f, 2.0f); // Set a default light position
+        if (isWireframeLoc >= 0) glUniform1i(isWireframeLoc, 0); // Set to false (0) for faces
         
         // Create and bind VAO and VBO for mesh faces
         GLuint vao, vbo, ebo;
@@ -438,18 +467,20 @@ void WebPlatform::renderMesh(const float* view_matrix, const float* projection_m
         // Use mesh shader program
         glUseProgram(_mesh_shader_program);
         
-        // Set uniforms
+        // Set uniforms for wireframe: Always white and opaque
         GLint projLoc = glGetUniformLocation(_mesh_shader_program, "projection");
         GLint viewLoc = glGetUniformLocation(_mesh_shader_program, "view");
         GLint modelLoc = glGetUniformLocation(_mesh_shader_program, "model");
-        GLint opacityLoc = glGetUniformLocation(_mesh_shader_program, "mesh_opacity");
+        GLint opacityLoc = glGetUniformLocation(_mesh_shader_program, "mesh_opacity"); // Still use this uniform name
         GLint colorLoc = glGetUniformLocation(_mesh_shader_program, "mesh_color");
+        GLint isWireframeLoc = glGetUniformLocation(_mesh_shader_program, "is_wireframe");
         
         if (projLoc >= 0) glUniformMatrix4fv(projLoc, 1, GL_FALSE, projection_matrix);
         if (viewLoc >= 0) glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view_matrix);
         if (modelLoc >= 0) glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model_matrix);
-        if (opacityLoc >= 0) glUniform1f(opacityLoc, 0.9f); // More opaque edges
-        if (colorLoc >= 0) glUniform3f(colorLoc, 0.95f, 0.95f, 0.95f); // Almost white
+        if (opacityLoc >= 0) glUniform1f(opacityLoc, 1.0f); // Always fully opaque
+        if (colorLoc >= 0) glUniform3f(colorLoc, 1.0f, 1.0f, 1.0f); // Always white
+        if (isWireframeLoc >= 0) glUniform1i(isWireframeLoc, 1); // Set to true (1) for wireframe
         
         // Create and bind VAO and VBO for edges
         GLuint edge_vao, edge_vbo, edge_ebo;
@@ -459,32 +490,48 @@ void WebPlatform::renderMesh(const float* view_matrix, const float* projection_m
         
         glBindVertexArray(edge_vao);
         
-        // Bind vertex buffer
-        glBindBuffer(GL_ARRAY_BUFFER, edge_vbo);
-        glBufferData(GL_ARRAY_BUFFER, edge_vertices.size() * sizeof(float), edge_vertices.data(), GL_STATIC_DRAW);
+        // Bind vertex buffer, apply nudge first
+        {
+            // Define the same scale factor used for LEDs
+            constexpr float CLIP_SCALE = 1.025f; 
+            std::vector<float> nudged_edge_vertices;
+            nudged_edge_vertices.reserve(edge_vertices.size());
+
+            for (size_t i = 0; i < edge_vertices.size(); i += 3) {
+                float x = edge_vertices[i];
+                float y = edge_vertices[i+1];
+                float z = edge_vertices[i+2];
+                // Normalize, scale, then multiply (Alternative: just scale)
+                // Scaling position vector directly might be simpler/sufficient
+                nudged_edge_vertices.push_back(x * CLIP_SCALE);
+                nudged_edge_vertices.push_back(y * CLIP_SCALE);
+                nudged_edge_vertices.push_back(z * CLIP_SCALE);
+            }
+
+            glBindBuffer(GL_ARRAY_BUFFER, edge_vbo);
+            // Upload the nudged vertices
+            glBufferData(GL_ARRAY_BUFFER, nudged_edge_vertices.size() * sizeof(float), nudged_edge_vertices.data(), GL_STATIC_DRAW);
+        }
         
         // Bind element buffer
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edge_ebo);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, edge_indices.size() * sizeof(uint16_t), edge_indices.data(), GL_STATIC_DRAW);
         
-        // Set vertex attributes for edges (position only)
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        // Set vertex attributes for edges (position only, attribute location 0)
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0); // Only position data (x, y, z)
         glEnableVertexAttribArray(0);
-        glDisableVertexAttribArray(1); // Disable normal attribute for edges
+        // Ensure normal attribute (location 1) is disabled for wireframe
+        glDisableVertexAttribArray(1); 
         
-        // Set line width
-        glLineWidth(2.0f);
-        
-        // Draw edges
+        // Draw wireframe lines (glLineWidth > 1.0 unreliable in WebGL)
+        // glLineWidth(5.0f); // Try increasing line width further
         glDrawElements(GL_LINES, edge_indices.size(), GL_UNSIGNED_SHORT, 0);
+        // glLineWidth(1.0f); // Reset line width
         
         // Clean up edge buffers
         glDeleteVertexArrays(1, &edge_vao);
         glDeleteBuffers(1, &edge_vbo);
         glDeleteBuffers(1, &edge_ebo);
-        
-        // Restore default line width
-        glLineWidth(1.0f);
     }
     
     // Restore default blend function
@@ -500,16 +547,15 @@ void WebPlatform::renderLEDs(const float* view_matrix, const float* projection_m
 
     glUseProgram(_led_shader_program);
     
-    // Set uniforms for LED rendering
+    // Set uniforms for LED rendering (Reverted: Removed aspectLoc)
     GLint projLoc = glGetUniformLocation(_led_shader_program, "projection");
     GLint viewLoc = glGetUniformLocation(_led_shader_program, "view");
     GLint modelLoc = glGetUniformLocation(_led_shader_program, "model");
     GLint sizeLoc = glGetUniformLocation(_led_shader_program, "led_size");
     GLint distanceLoc = glGetUniformLocation(_led_shader_program, "camera_distance");
     GLint heightLoc = glGetUniformLocation(_led_shader_program, "canvas_height");
-    
-    // Add brightness uniform
     GLint brightnessLoc = glGetUniformLocation(_led_shader_program, "brightness");
+    // REMOVED: GLint aspectLoc = glGetUniformLocation(_led_shader_program, "aspect_ratio");
     
     glUniformMatrix4fv(projLoc, 1, GL_FALSE, projection_matrix);
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view_matrix);
@@ -517,14 +563,14 @@ void WebPlatform::renderLEDs(const float* view_matrix, const float* projection_m
     glUniform1f(sizeLoc, _led_size * PHYSICAL_LED_DIAMETER);
     glUniform1f(distanceLoc, _camera->getDistance());
     glUniform1f(heightLoc, static_cast<float>(_canvas_height));
-    // Pass brightness to shader (ensure shader uses this)
     glUniform1f(brightnessLoc, static_cast<float>(_brightness) / 255.0f); 
+    // REMOVED: Aspect ratio uniform setting
 
-    // --- ADDED: Bind VAO/VBO and Set Attributes for LEDs ---
-    // Define vertex structure here or include header if defined elsewhere
+    // --- Bind VAO/VBO and Set Attributes for Points (Reverted) ---
+    // Define vertex structure to match updateVertexBuffer (Reverted)
     struct Vertex {
-        float x, y, z;
-        float r, g, b;
+        float x, y, z;  // Position
+        float r, g, b;  // Color
     };
 
     if (_led_vbo == 0 || _led_vao == 0) {
@@ -535,20 +581,25 @@ void WebPlatform::renderLEDs(const float* view_matrix, const float* projection_m
     glBindVertexArray(_led_vao);
     glBindBuffer(GL_ARRAY_BUFFER, _led_vbo);
     
-    // Assuming shader attribute locations are 0 for position, 1 for color
+    // Set attributes for Points: position (loc 0), color (loc 1)
+    GLsizei stride = sizeof(Vertex); // Stride is the size of the Vertex struct
+
     // Position attribute (location = 0)
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, x));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(Vertex, x));
     glEnableVertexAttribArray(0);
     
     // Color attribute (location = 1)
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, r));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(Vertex, r));
     glEnableVertexAttribArray(1);
-    // --- END ADDED --- 
+
+    // Disable attribute location 2 (was used for cornerOffset)
+    glDisableVertexAttribArray(2);
+    // --- END Reverted Attribute Setup --- 
     
-    // Draw points
+    // Draw Points (Reverted)
     glDrawArrays(GL_POINTS, 0, _num_leds);
 
-    // --- ADDED: Unbind VAO --- 
+    // --- Unbind VAO --- 
     glBindVertexArray(0);
     // --- END ADDED ---
 
@@ -584,6 +635,12 @@ void WebPlatform::initWebGL() {
     _blur_shader_program = _renderer->createShaderProgram(blur_vertex_shader_source, blur_fragment_shader_source);
     _composite_shader_program = _renderer->createShaderProgram(quad_vertex_shader_source, composite_fragment_shader_source);
     
+    // Log Shader Program IDs for Debugging
+    logInfo("Initialized Shader Programs: LED=%u, Mesh=%u, Glow=%u, Blur=%u, Composite=%u", 
+            _led_shader_program, _mesh_shader_program, _glow_shader_program, 
+            _blur_shader_program, _composite_shader_program);
+    if (_glow_shader_program == 0) logError("Glow Shader Program failed to compile/link!");
+
     _led_vbo = _renderer->createBuffer();
     
     // --- ADDED: Create VAO for LEDs --- 

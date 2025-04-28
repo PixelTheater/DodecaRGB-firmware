@@ -27,6 +27,8 @@ This architecture allows sharing code between the firmware and simulator, ensuri
   - Identical to the code used in the firmware
   - Scene definitions, animations, and parameter management
 
+Note: for logging to the web browser, use the built-in `logInfo()` method in web_platform.
+
 ### JavaScript Components
 
 - **[`web/js/simulator-ui.js`](../../web/js/simulator-ui.js)**: Main JavaScript UI controller

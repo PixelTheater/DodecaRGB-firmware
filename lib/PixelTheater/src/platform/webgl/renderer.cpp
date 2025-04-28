@@ -47,7 +47,7 @@ bool WebGLRenderer::initialize(int canvas_width, int canvas_height) {
     
     glViewport(0, 0, _canvas_width, _canvas_height);
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
+    glDepthFunc(GL_LESS);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
@@ -285,7 +285,7 @@ void WebGLRenderer::applyPostProcessing(uint32_t glow_shader, float atmosphere_i
     glBindTexture(GL_TEXTURE_2D, _glow_texture);
     if (sourceTexLoc >= 0) glUniform1i(sourceTexLoc, 0);
     if (directionLoc >= 0) glUniform2f(directionLoc, 1.0f, 0.0f);
-    if (radiusLoc >= 0) glUniform1f(radiusLoc, 4.0f);
+    if (radiusLoc >= 0) glUniform1f(radiusLoc, 2.0f);
     
     renderFullscreenQuad();
     
@@ -300,27 +300,28 @@ void WebGLRenderer::applyPostProcessing(uint32_t glow_shader, float atmosphere_i
     
     // 4. Final composition to screen
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    
-    glUseProgram(_composite_shader);  // Use dedicated composition shader
-    
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glDisable(GL_DEPTH_TEST);
+
+    // --- Use standard GL functions for composition shader --- 
+    glUseProgram(_composite_shader); 
+    // Declare uniform location variables (glowTexLoc was missing)
     GLint glowTexLoc = glGetUniformLocation(_composite_shader, "glow_texture");
+    // Reuse existing sceneTexLoc and intensityLoc declared earlier in the function
     sceneTexLoc = glGetUniformLocation(_composite_shader, "scene_texture");
     intensityLoc = glGetUniformLocation(_composite_shader, "atmosphere_intensity");
-    
-    // Bind scene texture
-    glActiveTexture(GL_TEXTURE0);
+
+    glActiveTexture(GL_TEXTURE0); // Bind scene texture to texture unit 0
     glBindTexture(GL_TEXTURE_2D, _scene_texture);
     if (sceneTexLoc >= 0) glUniform1i(sceneTexLoc, 0);
-    
-    // Bind glow texture
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, _glow_texture);
+
+    glActiveTexture(GL_TEXTURE1); // Bind glow texture to texture unit 1
+    glBindTexture(GL_TEXTURE_2D, _glow_texture); 
     if (glowTexLoc >= 0) glUniform1i(glowTexLoc, 1);
     
-    // Set final atmosphere intensity
-    if (intensityLoc >= 0) glUniform1f(intensityLoc, atmosphere_intensity);
-    
+    if (intensityLoc >= 0) glUniform1f(intensityLoc, atmosphere_intensity); 
+
     renderFullscreenQuad();
 }
 
