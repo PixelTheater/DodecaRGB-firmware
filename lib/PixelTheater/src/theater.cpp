@@ -3,15 +3,7 @@
 // Includes needed only for non-template method implementations
 #include "PixelTheater/scene.h" 
 #include "PixelTheater/core/log.h" // Needed for logging
-// #include "PixelTheater/platform/platform.h"
-// #include "PixelTheater/core/imodel.h"
-// #include "PixelTheater/core/iled_buffer.h"
-// #include "PixelTheater/platform/native_platform.h" 
-// #include "PixelTheater/model/model.h" 
-// #include "PixelTheater/model_def.h" 
-// #include "PixelTheater/core/model_wrapper.h" 
-// #include "PixelTheater/core/led_buffer_wrapper.h" 
-// #include <stdexcept> 
+
 
 namespace PixelTheater {
 

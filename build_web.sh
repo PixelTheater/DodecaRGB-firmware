@@ -55,7 +55,7 @@ emcc ${CPP_FILES} \
      -s FULL_ES3=1 \
      -s ALLOW_MEMORY_GROWTH=1 \
      -s EXPORTED_RUNTIME_METHODS='["UTF8ToString", "ccall", "cwrap", "getValue", "stackAlloc"]' \
-     -s EXPORTED_FUNCTIONS='["_main", "_init_simulator", "_change_scene", "_get_num_scenes", "_set_brightness", "_get_brightness", "_update_rotation", "_reset_rotation", "_set_auto_rotation", "_set_zoom_level", "_show_benchmark_report", "_toggle_debug_mode", "_get_led_count", "_get_fps", "_set_led_size", "_get_led_size", "_set_atmosphere_intensity", "_get_atmosphere_intensity", "_set_show_mesh", "_get_show_mesh", "_set_mesh_opacity", "_get_mesh_opacity", "_log_message", "_get_current_time", "_update_ui_fps", "_update_ui_brightness", "_get_canvas_width", "_get_canvas_height", "_resizeCanvas", "_get_scene_parameters_json", "_update_scene_parameter_string", "_get_current_scene_metadata_json", "_free_string_memory", "_free"]' \
+     -s EXPORTED_FUNCTIONS='["_main", "_init_simulator", "_change_scene", "_get_num_scenes", "_set_brightness", "_get_brightness", "_update_rotation", "_reset_rotation", "_set_auto_rotation", "_set_zoom_level", "_show_benchmark_report", "_toggle_debug_mode", "_get_led_count", "_get_fps", "_set_led_size", "_get_led_size", "_set_atmosphere_intensity", "_get_atmosphere_intensity", "_set_show_mesh", "_get_show_mesh", "_set_mesh_opacity", "_get_mesh_opacity", "_log_message", "_get_current_time", "_update_ui_brightness", "_get_canvas_width", "_get_canvas_height", "_resizeCanvas", "_get_scene_parameters_json", "_update_scene_parameter_string", "_get_current_scene_metadata_json", "_free_string_memory", "_free", "_do_simulation_step"]' \
      -s INITIAL_MEMORY=32MB \
      -s MAXIMUM_MEMORY=128MB \
      -s ASSERTIONS=2 \

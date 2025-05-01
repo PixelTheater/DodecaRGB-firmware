@@ -52,6 +52,7 @@ class DodecaSimulator {
         this.showMeshCheckbox = document.getElementById('show-mesh');
         this.ledCountElement = document.getElementById('led-count');
         this.fpsElement = document.getElementById('fps');
+        this.fpsCounterElement = document.getElementById('fps-counter');
         
         // Debug buttons
         this.benchmarkBtn = document.getElementById('benchmark-btn');
@@ -79,8 +80,15 @@ class DodecaSimulator {
         // Auto-updating info
         this.updateIntervalId = null;
 
+        // --- ADDED: FPS Tracking Members ---
+        this.lastTimestamp = 0;
+        this.frameCount = 0;
+        this.elapsedTime = 0;
+        this.fps = 0;
+        this.animationFrameId = null; // To potentially cancel the loop
+        // --- END ADDED ---
+
         // UI elements
-        this.fpsCounter = document.getElementById('fps-counter');
         this.sceneSelector = document.querySelector('.scene-selector');
         this.selectedSceneText = document.querySelector('.selected-scene');
         this.sceneIndicator = document.querySelector('.scene-indicator');
@@ -126,27 +134,6 @@ class DodecaSimulator {
             }
         };
 
-        // --- ADDED: Restore FPS UI Update Function ---
-        const updateUIFps = (fps) => {
-            // console.log(`JS _update_ui_fps received: ${fps}`); // REMOVED JS LOG
-            // Use the correct element ID 'fps' (based on initial code)
-            const fpsElement = document.getElementById('fps'); 
-            if (fpsElement) {
-                fpsElement.textContent = Math.round(fps);
-            } else {
-                // Fallback if 'fps' id isn't found, maybe 'fps-counter' exists?
-                const fpsCounterElement = document.getElementById('fps-counter');
-                if (fpsCounterElement) {
-                    fpsCounterElement.textContent = Math.round(fps); 
-                } else {
-                     console.warn("Could not find FPS display element ('fps' or 'fps-counter').");
-                }
-            }
-        };
-        // Assign to the global scope for C++ interop
-        window._update_ui_fps = updateUIFps; 
-        // --- END ADDED ---
-
         // Set up on Module object if it exists (might be redundant now but safe)
         // Only needed for functions NOT defined directly on the Module object in HTML
         if (typeof Module !== 'undefined') {
@@ -157,14 +144,6 @@ class DodecaSimulator {
             if (!Module._update_ui_brightness) { 
                  Module._update_ui_brightness = (b) => { if(window.simulator) window.simulator.updateBrightnessUI(b); };
             }
-            
-            // --- MODIFIED: Mimic Brightness Setup Pattern ---
-            // Assign a new anonymous function that calls our constant
-            Module._update_ui_fps = (fpsValueFromCpp) => {
-                // console.log(`Module._update_ui_fps wrapper called with: ${fpsValueFromCpp}`); // Optional debug
-                updateUIFps(fpsValueFromCpp); // Call the actual logic
-            };
-            // --- END MODIFIED ---
         }
     }
     
@@ -299,9 +278,15 @@ class DodecaSimulator {
         this.setupControlValues(); 
         this.setupEventHandlers();
         this.setupCanvasInteraction();
-        this.startModelInfoUpdates();
+        // REMOVED: this.startModelInfoUpdates(); // No longer needed, FPS handled by loop
         
-        console.log("Simulator initialization complete");
+        console.log("Simulator initialization complete, starting animation loop...");
+        // --- ADDED: Start the JS Animation Loop ---
+        this.lastTimestamp = performance.now(); // Initialize timestamp
+        // Bind the loop function to 'this' context before requesting frame
+        this.boundJsAnimationLoop = (timestamp) => this.jsAnimationLoop(timestamp);
+        this.animationFrameId = requestAnimationFrame(this.boundJsAnimationLoop);
+        // --- END ADDED ---
     }
     
     /**
@@ -905,34 +890,31 @@ class DodecaSimulator {
      * Start the model info update interval
      */
     startModelInfoUpdates() {
-        if (this.updateIntervalId) {
-            clearInterval(this.updateIntervalId);
-        }
-        
-        this.updateIntervalId = setInterval(() => this.updateModelInfo(), 1000);
+        // THIS FUNCTION IS NO LONGER NEEDED as FPS is updated in the main loop
+        // if (this.updateIntervalId) {
+        //     clearInterval(this.updateIntervalId);
+        // }
+        // 
+        // this.updateIntervalId = setInterval(() => this.updateModelInfo(), 1000);
     }
     
     /**
      * Update model information display
      */
     updateModelInfo() {
-        if (!this.moduleReady) return;
-        
-        // Update LED count if available
-        if (this.ledCountElement) {
-            const ledCount = this.callModule('get_led_count');
-            if (ledCount !== null) {
-                this.ledCountElement.textContent = ledCount;
-            }
-        }
-        
-        // Update FPS if available
-        if (this.fpsElement) {
-            const fps = this.callModule('get_fps');
-            if (fps !== null) {
-                this.fpsElement.textContent = Math.round(fps);
-            }
-        }
+        // THIS FUNCTION IS LIKELY NO LONGER NEEDED (unless displaying other info)
+        // if (!this.moduleReady) return;
+        // 
+        // // Update LED count if available
+        // if (this.ledCountElement) {
+        //     const ledCount = this.callModule('get_led_count');
+        //     if (ledCount !== null) {
+        //         this.ledCountElement.textContent = ledCount;
+        //     }
+        // }
+        // 
+        // // Update FPS if available - REMOVED (handled by loop)
+        // // if (this.fpsElement) { ... }
     }
     
     /**
@@ -1421,6 +1403,53 @@ class DodecaSimulator {
             this.updateIntervalId = null;
         }
     }
+
+    // --- ADDED: JavaScript Animation Loop ---
+    jsAnimationLoop(currentTimestamp) {
+        if (!this.moduleReady) return; // Don't run if module isn't ready
+
+        // Calculate delta time
+        const deltaTime = (currentTimestamp - this.lastTimestamp) / 1000.0; // in seconds
+        this.lastTimestamp = currentTimestamp;
+
+        // Calculate FPS (simple average over 1 second)
+        this.frameCount++;
+        this.elapsedTime += deltaTime;
+        if (this.elapsedTime >= 1.0) {
+            this.fps = Math.round(this.frameCount / this.elapsedTime);
+            // Update UI directly
+            if (this.fpsCounterElement) {
+                this.fpsCounterElement.textContent = this.fps;
+            } else {
+                // Attempt to find it again if it wasn't found initially
+                this.fpsCounterElement = document.getElementById('fps-counter');
+                if (this.fpsCounterElement) this.fpsCounterElement.textContent = this.fps;
+            }
+            // Reset counters
+            this.frameCount = 0;
+            this.elapsedTime = 0;
+        }
+
+        // Call C++ simulation step
+        try {
+            // Assuming the new C++ function is named do_simulation_step
+            if (Module._do_simulation_step) {
+                 Module._do_simulation_step();
+            } else {
+                 // console.warn("_do_simulation_step not found in Module yet...");
+            }
+           
+        } catch (e) {
+            console.error("Error during Module._do_simulation_step():", e);
+            // Optionally cancel loop on error?
+            // if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
+            // return;
+        }
+
+        // Schedule the next frame
+        this.animationFrameId = requestAnimationFrame(this.boundJsAnimationLoop);
+    }
+    // --- END ADDED ---
 }
 
 // Initialize the simulator when the document is ready

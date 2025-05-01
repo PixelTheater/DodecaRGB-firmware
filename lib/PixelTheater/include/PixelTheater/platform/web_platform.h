@@ -38,29 +38,29 @@ public:
     // ============================================
     
     // LED Appearance
-    static constexpr float DEFAULT_LED_SIZE = 0.6f;           // Default LED size ratio (1.0 = physically accurate)
-    static constexpr float MIN_LED_SIZE_RATIO = 0.2f;         // Minimum LED size ratio
-    static constexpr float MAX_LED_SIZE_RATIO = 2.0f;         // Maximum LED size ratio
+    static constexpr float DEFAULT_LED_SIZE = 0.7f;           // Default LED size ratio (1.0 = physically accurate)
+    static constexpr float MIN_LED_SIZE_RATIO = 0.3f;         // Minimum LED size ratio
+    static constexpr float MAX_LED_SIZE_RATIO = 1.5f;         // Maximum LED size ratio
     static constexpr float PHYSICAL_LED_DIAMETER = 3.8f;      // Physical diameter of each LED in mm
     static constexpr float PHYSICAL_FACE_EDGE = 107.3f;       // Physical edge length of each face in mm
-    static constexpr float DEFAULT_ATMOSPHERE_INTENSITY = 1.4f; // Default atmospheric glow intensity
+    static constexpr float DEFAULT_ATMOSPHERE_INTENSITY = 1.6f; // Default atmospheric glow intensity
     static constexpr float MIN_ATMOSPHERE_INTENSITY = 0.0f;    // Minimum atmospheric effect
-    static constexpr float MAX_ATMOSPHERE_INTENSITY = 3.0f;    // Maximum atmospheric effect
+    static constexpr float MAX_ATMOSPHERE_INTENSITY = 2.5f;    // Maximum atmospheric effect
     static constexpr float DEFAULT_LED_SPACING = 5.0f;        // Spacing between LEDs
-    static constexpr uint8_t DEFAULT_BRIGHTNESS = 150;        // Initial brightness (0-255)
+    static constexpr uint8_t DEFAULT_BRIGHTNESS = 240;        // Initial brightness (0-255)
     
     // Camera Settings
-    static constexpr float CAMERA_CLOSE_DISTANCE = 24.0f;      // Close zoom (increased from 12.0f)
-    static constexpr float CAMERA_NORMAL_DISTANCE = 32.0f;     // Medium distance (increased from 20.0f)
+    static constexpr float CAMERA_CLOSE_DISTANCE = 22.0f;      // Close zoom (increased from 12.0f)
+    static constexpr float CAMERA_NORMAL_DISTANCE = 28.0f;     // Medium distance (increased from 20.0f)
     static constexpr float CAMERA_FAR_DISTANCE = 55.0f;        // Far zoom (increased from 35.0f)
-    static constexpr float CAMERA_FOV_DEGREES = 45.0f;         // Field of view in degrees
+    static constexpr float CAMERA_FOV_DEGREES = 50.0f;         // Field of view in degrees
     static constexpr float CAMERA_NEAR_PLANE = 0.1f;           // Near clipping plane
     static constexpr float CAMERA_FAR_PLANE = 100.0f;          // Far clipping plane
     
     // Rotation Settings
-    static constexpr float ROTATION_SCALE = 0.005f;            // Rotation scale for mouse movement (reduced for smoother turntable)
+    static constexpr float ROTATION_SCALE = 0.004f;            // Rotation scale for mouse movement (reduced for smoother turntable)
     static constexpr float MAX_VERTICAL_ROTATION = 1.5f;       // Maximum vertical rotation (about 85 degrees)
-    static constexpr float DEFAULT_AUTO_ROTATION_SPEED = 0.5f;  // Default to slow speed
+    static constexpr float DEFAULT_AUTO_ROTATION_SPEED = 0.4f;  // Default to slow speed
     static constexpr float AUTO_ROTATION_TIME_SCALE = 1.0f;     // No additional scaling needed
     
     // Shader Effects

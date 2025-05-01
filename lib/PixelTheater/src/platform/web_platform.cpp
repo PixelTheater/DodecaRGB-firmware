@@ -34,18 +34,7 @@ extern "C" {
     
     EMSCRIPTEN_KEEPALIVE double get_current_time() {
         double now_ms = emscripten_get_now();
-        // Log periodically, not every single frame
-        // static double last_log_time = -1000.0;
-        // if (now_ms - last_log_time > 1000.0) { 
-        //      Log::info("C get_current_time() called, returning %.3f ms", now_ms);
-        //      last_log_time = now_ms;
-        // }
         return now_ms / 1000.0; // Convert to seconds
-    }
-    
-    EMSCRIPTEN_KEEPALIVE void update_ui_fps(int fps) {
-        // Will be overridden by JavaScript
-        // Log::info("C++ update_ui_fps called with fps: %d", fps); // REMOVED Incorrect Log
     }
     
     EMSCRIPTEN_KEEPALIVE void update_ui_brightness(float brightness) {
@@ -172,29 +161,14 @@ void WebPlatform::show() {
     
     // End render pass
     _renderer->applyPostProcessing(_glow_shader_program, _atmosphere_intensity);
-
-    // logInfo("Checkpoint: Before FPS calculation block"); // REMOVED
-
-    // Update FPS counter
-    double current_time = get_current_time(); // Restore original call
-    _frame_count++;
-    
-    // Log time values JUST BEFORE the if statement (using CORRECT log method)
-    // logInfo("Comparing time (sec): current=%.3f, last=%.3f", current_time, _last_frame_time); // REMOVED
-
-    // Compare using seconds
-    if (current_time - _last_frame_time >= 1.0) {
-        int fps = static_cast<int>(_frame_count / (current_time - _last_frame_time));
-        // logInfo("FPS calculated: %d. Calling update_ui_fps...", fps); // REMOVED Correct Log
-        update_ui_fps(fps);
-        _frame_count = 0;
-        _last_frame_time = current_time; // Store seconds
-    }
 }
 
 void WebPlatform::setBrightness(uint8_t brightness) {
     _brightness = brightness;
     update_ui_brightness(static_cast<float>(brightness) / 255.0f);
+
+    // Initialize timing variables - REMOVED FPS variables
+    _last_auto_rotation_time = WebGLUtil::getCurrentTime(); // Keep for rotation
 }
 
 uint8_t WebPlatform::getBrightness() const {
@@ -652,8 +626,7 @@ void WebPlatform::initWebGL() {
     }
     
     // Initialize timing variables
-    _last_frame_time = WebGLUtil::getCurrentTime();
-    _last_auto_rotation_time = _last_frame_time;
+    _last_auto_rotation_time = WebGLUtil::getCurrentTime();
 }
 
 void WebPlatform::cleanupWebGL() {

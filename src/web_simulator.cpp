@@ -610,9 +610,10 @@ static std::unique_ptr<WebSimulator> g_simulator;
 // Main function - sets up Emscripten main loop
 int main() {
     PixelTheater::Log::info("main() called. Waiting for init_simulator()...");
-    emscripten_set_main_loop([]() {
-        if (g_simulator) { g_simulator->update(); }
-    }, 0, 1); 
+    // emscripten_set_main_loop([]() {
+    //     if (g_simulator) { g_simulator->update(); }
+    // }, 0, 1); 
+    // ---> Loop is now driven by JavaScript's requestAnimationFrame <----
     return 0;
 }
 
@@ -1100,6 +1101,16 @@ void update_scene_parameter_string(const char* param_id_cstr, const char* value_
     std::string value(value_cstr);
     PixelTheater::Log::info("update_scene_parameter_string: Updating '%s' to '%s'", param_id.c_str(), value.c_str());
     g_simulator->updateSceneParameter(param_id, value); // Call the existing class method
+}
+
+// --- ADDED: Function called by JS animation loop ---
+EMSCRIPTEN_KEEPALIVE void do_simulation_step() {
+    if (g_simulator) {
+        g_simulator->update();
+    } else {
+        // Log error only if simulator is expected to be ready
+        // PixelTheater::Log::error("do_simulation_step called before simulator initialized?");
+    }
 }
 
 } // extern "C" <-- Ensure this closes the ENTIRE block
