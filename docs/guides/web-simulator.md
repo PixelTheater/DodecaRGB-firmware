@@ -20,8 +20,8 @@ This architecture allows sharing code between the firmware and simulator, ensuri
 
 - **[`src/web_simulator.cpp`](../src/web_simulator.cpp)**: Main C++ entry point for the simulator
   - Contains the `WebSimulator` class that manages scene execution and parameter handling
-  - Implements Emscripten bindings for JavaScript interoperability
-  - Defines the `SceneParameter` struct for passing parameter data to the UI
+  - Implements C functions exposed via `EMSCRIPTEN_KEEPALIVE` for JavaScript interoperability (e.g., `get_scene_parameters_json`, `update_scene_parameter_string`)
+  - Parameter data is primarily exchanged with JavaScript using JSON strings.
 
 - **`lib/PixelTheater/`**: Core animation framework
   - Identical to the code used in the firmware
@@ -53,20 +53,20 @@ The parameter system allows scenes to expose configurable values to the UI. For 
    - Stores and manipulates parameter values with appropriate type safety
    - Handles conversions between different value representations
 
-3. **Parameter Representation in WebAssembly Bridge (`SceneParameter` struct)**:
+3. **Parameter Representation via JSON**:
+   - C++ functions (`get_current_scene_metadata_json`, `get_scene_parameters_json`) generate JSON strings containing parameter definitions (ID, label, description, control type, current value, type, min/max/step, options).
+   - JavaScript fetches these JSON strings, parses them, and dynamically creates UI controls.
+   - When a UI control value changes, JavaScript calls a C++ function (`update_scene_parameter_string`) passing the parameter ID and the new value as strings. C++ then parses the string value based on the parameter's type.
+   - **Memory Management**: C++ functions returning JSON strings allocate memory using `malloc`. JavaScript is responsible for calling a corresponding C++ function (`free_string_memory`) to release this memory after parsing the string.
 
 ```cpp
-struct SceneParameter {
-      std::string id;           // Parameter identifier
-      std::string label;        // Display name
-      std::string controlType;  // UI control ("slider", "checkbox", "select")
-      std::string value;        // String representation of value
-      std::string type;         // Parameter type from C++ (ratio, count, etc.)
-      float min;                // Minimum value for numeric parameters
-      float max;                // Maximum value for numeric parameters
-      float step;               // Step increment for numeric parameters
-      std::vector<std::string> options;  // Options for select parameters
-};
+// Example C functions exposed to JavaScript:
+extern "C" {
+  EMSCRIPTEN_KEEPALIVE const char* get_scene_parameters_json();
+  EMSCRIPTEN_KEEPALIVE void update_scene_parameter_string(const char* param_id_cstr, const char* value_cstr);
+  EMSCRIPTEN_KEEPALIVE void free_string_memory(char* ptr);
+  // ... other control functions ...
+}
 ```
 
 ### Parameter Type Handling
@@ -93,56 +93,78 @@ Step sizes are dynamically calculated based on parameter type:
 
 ## Emscripten Bindings
 
-The simulator uses Emscripten to create JavaScript bindings for C++ functions:
+The simulator uses Emscripten to expose C++ functionality to JavaScript primarily through C functions marked with `EMSCRIPTEN_KEEPALIVE`. This avoids the overhead and complexity of Embind for this interface.
 
 ```cpp
-EMSCRIPTEN_BINDINGS(scene_parameters) {
-    emscripten::function("getSceneParameters", &get_scene_parameters_wrapper);
-    emscripten::function("updateSceneParameter", &update_scene_parameter_wrapper);
-    // Additional bindings for simulator control...
+// Example C functions exposed to JavaScript:
+extern "C" {
+  EMSCRIPTEN_KEEPALIVE bool init_simulator();
+  EMSCRIPTEN_KEEPALIVE void change_scene(int sceneIndex);
+  EMSCRIPTEN_KEEPALIVE const char* get_scene_parameters_json();
+  EMSCRIPTEN_KEEPALIVE void update_scene_parameter_string(const char* param_id_cstr, const char* value_cstr);
+  EMSCRIPTEN_KEEPALIVE void free_string_memory(char* ptr);
+  // ... other control functions like set_brightness, update_rotation etc. ...
 }
 ```
 
-These bindings enable JavaScript to:
-1. Get scene parameter definitions
-2. Update parameter values
-3. Control simulator behavior (change scenes, adjust camera, etc.)
+These functions become available on the global `Module` object in JavaScript, typically accessed via helper functions or directly using `Module._functionName` or `Module.ccall`.
 
-JavaScript accesses these functions through the global `Module` object:
+JavaScript accesses these functions like this:
 
 ```javascript
 // Example of calling a bound function from JavaScript
-const parameters = Module.getSceneParameters();
+let paramsPtr = 0;
+try {
+    paramsPtr = Module._get_scene_parameters_json(); // Call C function
+    if (paramsPtr) {
+        const paramsJsonString = Module.UTF8ToString(paramsPtr); // Read string from WASM memory
+        const parameters = JSON.parse(paramsJsonString);
+        // ... process parameters ...
+    }
+} finally {
+    if (paramsPtr) {
+        Module._free_string_memory(paramsPtr); // Free the memory allocated by C++
+    }
+}
+
+// Example using ccall for parameter updates
+Module.ccall(
+    'update_scene_parameter_string', // C function name
+    null,                           // Return type
+    ['string', 'string'],           // Argument types
+    [paramId, newValueString]       // Arguments
+);
 ```
 
 ## UI Control System
 
-The UI controls are dynamically generated based on parameter definitions:
+The UI controls are dynamically generated based on parameter definitions received as JSON:
 
-1. **Parameter Retrieval**: When a scene is selected, the UI calls `Module.getSceneParameters()` to get parameter definitions
-2. **Control Generation**: For each parameter, appropriate controls are created based on `controlType` and `type`
-3. **Value Storage**: Parameter values are stored in memory to persist across scene changes
-4. **Event Handling**: Input changes trigger `handleSceneParameterChange()` which calls `Module.updateSceneParameter()`
+1. **Parameter Retrieval**: When a scene is selected, the UI calls `Module._get_scene_parameters_json()` (wrapped in `callModule`) to get parameter definitions as a JSON string.
+2. **Control Generation**: For each parameter object in the parsed JSON, appropriate controls are created based on `controlType` and `type` (see `addSceneParameter` in JS).
+3. **Value Storage**: Parameter values are stored in JavaScript (`this.sceneParameters`) to persist across scene changes and potentially restore state.
+4. **Event Handling**: Input changes trigger `handleSceneParameterChange()`, which calls the C++ function `update_scene_parameter_string` via `Module.ccall`, passing the parameter ID and the new value as strings.
 
 ### Value Formatting
 
-The UI formats parameter values based on their type (in [`simulator-ui.js`](../../web/js/simulator-ui.js)):
+The UI formats parameter values for display based on their type (in [`simulator-ui.js`](../../web/js/simulator-ui.js)):
 
 ```javascript
-const formatValue = (val, paramType) => {
+// Helper function to format displayed values (from simulator-ui.js)
+const formatValue = (valStr, paramType) => {
+    const val = parseFloat(valStr); // Convert string value to number for formatting
     if (paramType === 'count') {
         return Math.round(val);
     }
-    if (paramType === 'ratio' || paramType === 'signed_ratio') {
-        return parseFloat(val).toFixed(3);  // 3 decimal places for ratios
+    // For float types, show appropriate precision
+    if (paramType === 'ratio' || paramType === 'signed_ratio' ||
+        paramType === 'angle' || paramType === 'signed_angle' ||
+        paramType === 'range') {
+        // Adjust precision based on step or range if needed
+        return val.toFixed(3);
     }
-    if (paramType === 'angle' || paramType === 'signed_angle') {
-        return parseFloat(val).toFixed(3);  // 3 decimal places for angles
-    }
-    if (paramType === 'range') {
-        return parseFloat(val).toFixed(3);  // 3 decimal places for ranges
-    }
-    return val;
+    // Fallback for unknown types or boolean strings
+    return valStr;
 };
 ```
 
@@ -217,11 +239,56 @@ For more information on scene implementation, see the [Scenes documentation](../
 
 ```bash
 # Build the simulator
-pio run -e web
+./build_web.sh
 
 # Start development server
-pio run -t serve
+python -m http.server -d web
 ```
+
+## Build Process & Troubleshooting
+
+The web simulator build relies on Emscripten to compile the C++ core (`PixelTheater`, scenes, `web_simulator.cpp`) into WebAssembly (`.wasm`) and JavaScript glue code (`.js`). The PlatformIO environment (`web`) orchestrates this by typically calling a `Makefile` located in the `web/` directory via the `scripts/web_build.py` script.
+
+### Key Build Flags and Concepts
+
+Understanding some `emcc` (Emscripten Compiler Frontend) flags used during the build is crucial:
+
+*   **`-I<path>`:** Specifies include directories for the C++ compiler (e.g., `-Ilib`, `-Isrc`).
+*   **`-DPLATFORM_WEB`, `-DEMSCRIPTEN`:** Defines preprocessor macros used for conditional compilation specific to the web build.
+*   **`-std=c++20`:** Specifies the C++ standard.
+*   **`-s WASM=1`:** Explicitly enables WebAssembly output.
+*   **`-s USE_WEBGL2=1`, `-s FULL_ES3=1`:** Enables WebGL2 support, which is required by the simulator's renderer.
+*   **`-s ALLOW_MEMORY_GROWTH=1`:** Allows the WebAssembly heap memory to grow dynamically if needed, preventing crashes if the initial allocation is insufficient. Paired with `-s INITIAL_MEMORY` and `-s MAXIMUM_MEMORY`.
+*   **`-s EXPORTED_FUNCTIONS=[...]`:** This is **critical**. It provides a list of C function symbols (prepended with `_`) that should be preserved and made callable from JavaScript. Even if a function is marked with `EMSCRIPTEN_KEEPALIVE` in C++, it often needs to be listed here as well to guarantee it's accessible via `Module._functionName` or `Module.ccall`. **If you add a new C function intended to be called from JavaScript, you MUST add its `_` prefixed name to this list in the build configuration (e.g., `web/Makefile`).**
+*   **`-s EXPORTED_RUNTIME_METHODS=[...]`:** Lists Emscripten runtime methods needed by the JS code (e.g., `UTF8ToString`, `ccall`).
+*   **`-g`, `-O0`, `-s ASSERTIONS=2`, `-s SAFE_HEAP=1`, `-s GL_DEBUG=1`, `-s STACK_OVERFLOW_CHECK=2`:** Debugging flags. These are useful during development but should typically be changed (`-O2` or `-O3`, assertions disabled) for release builds to improve performance and reduce code size.
+*   **`--source-map-base ./`:** Helps browsers map compiled code back to the original source for easier debugging.
+*   **`-o "$OUTPUT_DIR/simulator.js"`:** Specifies the output JavaScript file. Emscripten will also generate the corresponding `.wasm` file.
+
+### Development Cycle & Troubleshooting Steps
+
+1.  **Modify Code:** Make changes to C++ (`.cpp`, `.h`) or JavaScript (`.js`, `.css`, `.html`) files.
+2.  **Build:** Run `./build_web.sh` in your terminal. This invokes the build process using Emscripten directly.
+3.  **Run Server:** Run `python -m http.server -d web` (or your preferred method) from the project root directory. This usually starts a local web server (often on `http://localhost:8000`).
+4.  **Test:** Open the simulator URL in your web browser (e.g., `http://localhost:8000`).
+5.  **Debug:**
+    *   **Browser DevTools are Essential:** Open your browser's developer console (usually F12). Check for errors in the Console tab.
+    *   **JavaScript Logging:** In `simulator-ui.js`, use standard browser console methods like `console.log('UI State:', this.someVariable);`, `console.warn('Unexpected value.');`, or `console.error('Failed to process:', error);`. These messages appear directly in the browser console.
+    *   **C++ Logging:** Within C++ code (like `WebPlatform` or Scenes), use the platform's logging methods: `logInfo("Processing item %d", index);`, `logWarning("Value out of expected range: %f", val);`, `logError("Initialization failed with code %d", errCode);`. These methods are implemented in `WebPlatform` to call the corresponding JavaScript `console` methods, prefixing the output with `[INFO]`, `[WARN]`, or `[ERR ]`. Standard `printf()` calls from C++ also output to the browser console.
+    *   **Check Exported Functions:** If JS fails to call a C++ function, double-check that the function name (with `_` prefix) is listed in the `-s EXPORTED_FUNCTIONS` flag within the build configuration (e.g., `web/Makefile`).
+    *   **Hard Refresh:** Browsers cache aggressively. Use **Shift+Cmd+R** (Mac) or **Ctrl+Shift+R** (Windows/Linux) to perform a hard refresh, bypassing the cache.
+    *   **Memory Issues:** Look for errors related to memory allocation (`allocate`, `INITIAL_MEMORY`, `Maximum memory size`) in the console. You might need to adjust `-s INITIAL_MEMORY` or `-s MAXIMUM_MEMORY` in the build flags.
+    *   **WebGL Errors:** Check the console for WebGL-specific errors. Ensure `-s USE_WEBGL2=1` is set.
+    *   **Assertion Failures:** If assertions are enabled (`-s ASSERTIONS=2`), failed C++ `assert()` calls will print messages to the console.
+    *   **Build Errors:** Examine the output of `./build_web.sh` carefully for C++ compilation errors (missing includes, syntax errors) or linking errors (missing symbols, often related to exported functions).
+
+### Common Gotchas
+
+*   **Forgetting Exports:** Forgetting to add a new C function to `-s EXPORTED_FUNCTIONS` in the Makefile is a very common cause of "function not found" errors in JavaScript.
+*   **Browser Caching:** The browser cache can prevent you from seeing the latest changes. Always do a hard refresh.
+*   **Memory Management:** C++ code that returns strings (`const char*`) allocated with `malloc` (like `get_scene_parameters_json`) requires the JavaScript caller to explicitly free that memory using a corresponding C++ function (e.g., `Module._free_string_memory(ptr)`).
+*   **Build Configuration:** Ensure the correct include paths (`-I`) and source files are specified in the build configuration (Makefile).
+*   **Type Mismatches:** Ensure the types used in JS `ccall` calls match the C function signature exactly.
 
 ## Troubleshooting
 
