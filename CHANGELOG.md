@@ -1,6 +1,9 @@
 # Change Log
 
-0.3 - Apr 20
+0.2.2 - Jun 14
+- support for new PCBs
+
+0.2.1 - Apr 20
 - ported remaining scenes
 - introduced SceneKit, simplifying access to API and reducing namespace prefixes
 - added sphere radius calculation to model generation, available in scenes

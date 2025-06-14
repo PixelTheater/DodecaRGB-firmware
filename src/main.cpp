@@ -9,9 +9,9 @@
 #include "PixelTheater.h" // Use the consolidated header
 
 // Include the model definition (for use in useFastLEDPlatform template)
-#ifndef DODECARGBV2_MODEL_INCLUDED
-#define DODECARGBV2_MODEL_INCLUDED
-#include "models/DodecaRGBv2/model.h" 
+#ifndef DODECARGBV2_1_MODEL_INCLUDED
+#define DODECARGBV2_1_MODEL_INCLUDED
+#include "models/DodecaRGBv2_1/model.h" 
 #endif
 
 // Include Scene implementations 
@@ -29,7 +29,7 @@
 #include "benchmark.h" 
 
 #ifndef PROJECT_VERSION
-#define PROJECT_VERSION "0.2.1"
+#define PROJECT_VERSION "0.2.2"
 #endif
 
 // LED configs
@@ -37,9 +37,12 @@
 #define VERSION PROJECT_VERSION
 #define USER_BUTTON 2
 // https://github.com/FastLED/FastLED/wiki/Parallel-Output#parallel-output-on-the-teensy-4
-// pins 19+18 are used to control two strips of 624 LEDs, for a total of 1248 LEDs
-#define LED_CHANNEL_1_PIN 19  // Teensy 4.1/fastled pin order: .. ,19,18,14,15,17, ..
-#define LED_CHANNEL_2_PIN 18  // Teensy 4.1/fastled pin order: .. ,19,18,14,15,17, ..
+// 4 pins are used to control 4 strips of 312 LEDs, for a total of 1248 LEDs
+// Teensy 4.1/fastled pin order: .. ,19,18,14,15,17, ..
+#define LED_CHANNEL_1_PIN 19  
+#define LED_CHANNEL_2_PIN 18  
+#define LED_CHANNEL_3_PIN 14  
+#define LED_CHANNEL_4_PIN 15  
 #define ANALOG_PIN_A 24
 #define ANALOG_PIN_B 25
 #define ON_BOARD_LED 13
@@ -52,9 +55,9 @@
 #define USE_IMU true        // enable orientation sensor (currently: LSM6DSOX)
 
 // model settings (replace with generated model params)
-#define NUM_LEDS 1248
+#define NUM_LEDS 1620
 #define NUM_SIDES 12
-#define LEDS_PER_SIDE 104
+#define LEDS_PER_SIDE 135
 
 ::CRGB leds[NUM_LEDS];
 
@@ -155,8 +158,13 @@ void setup() {
 
   // set up fastled - two strips on two pins
   // see https://github.com/FastLED/FastLED/wiki/Parallel-Output#parallel-output-on-the-teensy-4
-  FastLED.addLeds<WS2812, LED_CHANNEL_1_PIN, GRB>(leds, NUM_LEDS/2);
-  FastLED.addLeds<WS2812, LED_CHANNEL_2_PIN, GRB>(leds, NUM_LEDS/2, NUM_LEDS/2);
+  // GPIO 19, 18, 14, 15 are used on the DodecaRGB Controller PCB
+  int leds_per_strip = NUM_LEDS/4;
+  FastLED.addLeds<WS2812, LED_CHANNEL_1_PIN, GRB>(leds, NUM_LEDS/4);
+  FastLED.addLeds<WS2812, LED_CHANNEL_2_PIN, GRB>(leds, NUM_LEDS/4, NUM_LEDS/4);
+  FastLED.addLeds<WS2812, LED_CHANNEL_3_PIN, GRB>(leds, NUM_LEDS/4*2, NUM_LEDS/4);
+  FastLED.addLeds<WS2812, LED_CHANNEL_4_PIN, GRB>(leds, NUM_LEDS/4*3, NUM_LEDS/4);
+
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.setDither(0);
   FastLED.setMaxRefreshRate(90);
@@ -174,7 +182,7 @@ void setup() {
   Benchmark::enabled = true;  
 
   // Initialize Theater with FastLED platform and specific model
-  theater.useFastLEDPlatform<PixelTheater::Models::DodecaRGBv2>(
+  theater.useFastLEDPlatform<PixelTheater::Models::DodecaRGBv2_1>(
     leds,
     NUM_LEDS
   );

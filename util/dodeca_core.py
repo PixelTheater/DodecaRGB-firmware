@@ -9,9 +9,6 @@ if __name__ == "__main__":
 from util.matrix3d import Matrix3D
 
 # Constants shared between Python and C++
-LEDS_PER_SIDE = 104
-NUM_SIDES = 12
-NUM_LEDS = NUM_SIDES * LEDS_PER_SIDE
 MAX_LED_NEIGHBORS = 7
 
 # Constants from Processing
@@ -95,8 +92,16 @@ def transform_led_point(x: float, y: float, num: int, sideNumber: int):
     return [result[0], -result[1], -result[2]]
 
 def strip_units(value_str):
-    """Strip units (mm) from coordinate strings"""
-    return float(value_str.replace('mm', ''))
+    """Strip units (mm or mil) from coordinate strings and convert to mm"""
+    value_str = value_str.strip()
+    if value_str.endswith('mil'):
+        # Convert mil to mm (1000 mil = 25.4 mm)
+        return float(value_str.replace('mil', '')) * 25.4 / 1000.0
+    elif value_str.endswith('mm'):
+        return float(value_str.replace('mm', ''))
+    else:
+        # Try to parse as number (assume mm if no units)
+        return float(value_str)
 
 def stripit(s):
     """Strip whitespace and quotes"""
@@ -109,10 +114,38 @@ def load_pcb_points(filename):
     print(f"Loading PCB points from: {filename}")
     if not os.path.exists(filename):
         raise FileNotFoundError(f"PCB file not found at: {filename}")
-        
-    with open(filename, 'r') as f:
+    
+    # Detect encoding by reading first few bytes
+    encoding = 'utf-8'
+    units_detected = 'mm'
+    
+    with open(filename, 'rb') as f:
+        first_bytes = f.read(4)
+        if first_bytes.startswith(b'\xff\xfe'):
+            encoding = 'utf-16-le'
+            print(f"  Detected UTF-16 Little Endian encoding")
+        elif first_bytes.startswith(b'\xfe\xff'):
+            encoding = 'utf-16-be'
+            print(f"  Detected UTF-16 Big Endian encoding")
+        else:
+            print(f"  Using UTF-8 encoding")
+    
+    # Read and detect units
+    with open(filename, 'r', encoding=encoding) as f:
+        content = f.read()
+        if 'mil' in content.lower():
+            units_detected = 'mil'
+            print(f"  Detected mil units - will convert to mm (1000mil = 25.4mm)")
+        else:
+            print(f"  Detected mm units")
+    
+    # Now parse the file properly
+    with open(filename, 'r', encoding=encoding) as f:
         # Parse header
         header = next(f).strip()
+        # Remove BOM character if present (common in UTF-16 files)
+        if header.startswith('\ufeff'):
+            header = header[1:]
         header_fields = [stripit(f) for f in header.split('\t')]
         
         # Find column indices
