@@ -19,12 +19,21 @@ struct ModelDefinition {
         float edge_length_mm;
     };
 
+    // LED Group data for accessing YAML-defined LED groups at runtime
+    struct LedGroupData {
+        uint8_t face_type_id;
+        uint8_t group_id;        // Index within face type
+        uint8_t led_count;
+        uint16_t led_indices[16]; // Maximum 16 LEDs per group (adjustable)
+    };
+
     // Face instance data
     struct FaceData {
         uint8_t id;
         uint8_t type_id;
         uint8_t rotation;
         float x, y, z;  // Position (normal calculated from this)
+        uint8_t geometric_id;  // Geometric position (for remapping support)
         // Array of x,y,z coordinates for each vertex
         struct Vertex {
             float x, y, z;

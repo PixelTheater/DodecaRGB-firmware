@@ -216,5 +216,188 @@ class TestDodecaModel(unittest.TestCase):
         import shutil
         shutil.rmtree(self.temp_dir)
 
+class TestFaceRemapping(unittest.TestCase):
+    
+    def create_test_yaml(self, faces_config):
+        """Helper to create a test YAML file with the given faces configuration"""
+        test_model = {
+            'model': {
+                'name': 'TestModel',
+                'version': '1.0.0',
+                'description': 'Test model for remapping',
+                'author': 'Test'
+            },
+            'geometry': {
+                'shape': 'Dodecahedron',
+                'num_faces': 12,
+                'edge_length_mm': 60.0,
+                'radius_mm': 130.0
+            },
+            'face_types': {
+                'pentagon': {
+                    'num_leds': 135,
+                    'num_sides': 5
+                }
+            },
+            'faces': faces_config,
+            'hardware': {
+                'pcb': {
+                    'pick_and_place_file': 'dummy.csv'
+                }
+            }
+        }
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+            yaml.dump(test_model, f)
+            return f.name
+
+    def test_face_without_remapping(self):
+        """Test that faces without remap_to use their own ID"""
+        faces_config = [
+            {'id': 0, 'type': 'pentagon', 'rotation': 1},
+            {'id': 1, 'type': 'pentagon', 'rotation': 2}
+        ]
+        
+        yaml_path = self.create_test_yaml(faces_config)
+        try:
+            model_def = ModelDefinition(yaml_path)
+            
+            # Face without remap_to should use its own ID
+            face_0 = model_def.faces[0]
+            self.assertEqual(face_0.id, 0)
+            self.assertIsNone(face_0.remap_to)
+            self.assertEqual(face_0.get_geometric_id(), 0)
+            
+        finally:
+            os.unlink(yaml_path)
+
+    def test_face_with_remapping(self):
+        """Test that faces with remap_to use the remapped ID for geometry"""
+        faces_config = [
+            {'id': 0, 'type': 'pentagon', 'remap_to': 2, 'rotation': 1},
+            {'id': 1, 'type': 'pentagon', 'rotation': 2},
+            {'id': 2, 'type': 'pentagon', 'remap_to': 0, 'rotation': 3}
+        ]
+        
+        yaml_path = self.create_test_yaml(faces_config)
+        try:
+            model_def = ModelDefinition(yaml_path)
+            
+            # Face 0 should remap to geometric position 2
+            face_0 = model_def.faces[0]
+            self.assertEqual(face_0.id, 0)  # Logical ID preserved
+            self.assertEqual(face_0.remap_to, 2)
+            self.assertEqual(face_0.get_geometric_id(), 2)  # Uses remapped geometry
+            
+            # Face 1 should use its own position
+            face_1 = model_def.faces[1]
+            self.assertEqual(face_1.id, 1)
+            self.assertIsNone(face_1.remap_to)
+            self.assertEqual(face_1.get_geometric_id(), 1)
+            
+            # Face 2 should remap to geometric position 0
+            face_2 = model_def.faces[2]
+            self.assertEqual(face_2.id, 2)  # Logical ID preserved
+            self.assertEqual(face_2.remap_to, 0)
+            self.assertEqual(face_2.get_geometric_id(), 0)  # Uses remapped geometry
+            
+        finally:
+            os.unlink(yaml_path)
+
+    def test_remapping_validation(self):
+        """Test that remapping values are reasonable"""
+        faces_config = [
+            {'id': 0, 'type': 'pentagon', 'remap_to': 11, 'rotation': 1}  # Valid - top face
+        ]
+        
+        yaml_path = self.create_test_yaml(faces_config)
+        try:
+            model_def = ModelDefinition(yaml_path)
+            face_0 = model_def.faces[0]
+            
+            # Should accept valid face IDs (0-11 for dodecahedron)
+            self.assertEqual(face_0.get_geometric_id(), 11)
+            
+        finally:
+            os.unlink(yaml_path)
+
+def test_face_remapping_in_generated_model():
+    """Test that face remapping works correctly in the generated model"""
+    # Create a test YAML with face remapping
+    test_yaml = """
+model:
+  name: TestModel
+  version: "1.0"
+  description: "Test model with face remapping"
+
+geometry:
+  shape: Test
+  num_faces: 4
+  edge_length_mm: 60.0
+
+face_types:
+  test:
+    num_leds: 10
+    num_sides: 3
+
+faces:
+  - id: 0
+    type: test
+    rotation: 0
+    remap_to: 2  # Face 0 should be at geometric position 2
+  - id: 1
+    type: test
+    rotation: 0
+    # No remap_to, should be at geometric position 1
+  - id: 2
+    type: test
+    rotation: 0
+    remap_to: 0  # Face 2 should be at geometric position 0
+  - id: 3
+    type: test
+    rotation: 0
+    # No remap_to, should be at geometric position 3
+
+hardware:
+  pcb:
+    pick_and_place_file: "test.csv"
+  led:
+    type: WS2812B
+  power:
+    max_current_per_led_ma: 20
+"""
+    
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+        f.write(test_yaml)
+        yaml_path = f.name
+    
+    try:
+        # Load the model definition
+        model_def = ModelDefinition(yaml_path)
+        
+        # Check that faces have correct geometric IDs
+        face_by_id = {face.id: face for face in model_def.faces}
+        
+        # Face 0 should have geometric_id = 2 (remap_to: 2)
+        assert face_by_id[0].get_geometric_id() == 2, f"Face 0 should have geometric_id 2, got {face_by_id[0].get_geometric_id()}"
+        
+        # Face 1 should have geometric_id = 1 (no remap_to)
+        assert face_by_id[1].get_geometric_id() == 1, f"Face 1 should have geometric_id 1, got {face_by_id[1].get_geometric_id()}"
+        
+        # Face 2 should have geometric_id = 0 (remap_to: 0)
+        assert face_by_id[2].get_geometric_id() == 0, f"Face 2 should have geometric_id 0, got {face_by_id[2].get_geometric_id()}"
+        
+        # Face 3 should have geometric_id = 3 (no remap_to)
+        assert face_by_id[3].get_geometric_id() == 3, f"Face 3 should have geometric_id 3, got {face_by_id[3].get_geometric_id()}"
+        
+        print("✓ Face remapping geometric IDs are correct")
+        
+    finally:
+        os.unlink(yaml_path)
+
 if __name__ == '__main__':
+    # Run the face remapping test
+    test_face_remapping_in_generated_model()
+    
+    # Run unittest tests
     unittest.main() 

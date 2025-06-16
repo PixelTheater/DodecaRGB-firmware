@@ -24,50 +24,71 @@ face_types:
       ring2: [16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
       ring3: [32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53]
       ring4: [54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79]
+      edge0: [130, 131, 133, 134, 80, 81, 82, 84, 86]
+      edge1: [86, 87, 89, 90, 91, 92, 93, 95, 97]
+      edge2: [97, 98, 100, 101, 102, 103, 104, 106, 108]
+      edge3: [108, 109, 111, 112, 113, 114, 115, 117, 119]
+      edge4: [119, 120, 122, 123, 124, 125, 126, 128, 130]
 
 # Assembly sequence - defines how PCBs connect in series
 # - face: PCB number (0-11) for assembly and wiring order
 # - type: PCB shape type
 # - rotation: clockwise steps, 360/num_sides (72 for pentagon, 60 for hexagon)
+# - remap_to: (optional) use geometric position of different face ID for LED positioning
+#
+# Example of face remapping:
+# If the physical wiring order doesn't match the geometric layout, use remap_to:
+#   - id: 0
+#     type: pentagon
+#     remap_to: 2    # Use geometric position where face 2 should be
+#     rotation: 1
 faces:
   - id: 0          # First PCB in series
     type: pentagon
-    rotation: 1      # 72° clockwise  
+    rotation: 0      # 72° clockwise  
+    remap_to: 2
   - id: 1          # Second PCB
     type: pentagon   
-    rotation: 2      # 144° clockwise  
+    rotation: 0      # 144° clockwise
   - id: 2          # Third PCB
     type: pentagon
-    rotation: 1      # 72° clockwise
+    rotation: 0      # 72° clockwise
+    remap_to: 0
   - id: 3          # Fourth PCB
     type: pentagon
-    rotation: 3      # 216° clockwise
+    rotation: 3        # 216° clockwise
+    remap_to: 11    # Swap with face 10
   # ... continues clockwise around upper hemisphere
   - id: 4
     type: pentagon
-    rotation: 2  
+    rotation: 3
+    remap_to: 10
   - id: 5
     type: pentagon
-    rotation: 1
+    rotation: 3
+    remap_to: 9
   # ... crosses to lower hemisphere
   - id: 6
     type: pentagon
-    rotation: 2  
+    rotation: 3  
   - id: 7
     type: pentagon
     rotation: 3
   - id: 8
     type: pentagon
-    rotation: 1
+    rotation: 3
   - id: 9
     type: pentagon
-    rotation: 2
+    rotation: 3
+    remap_to: 5
   - id: 10
     type: pentagon
-    rotation: 1
+    rotation: 3
+    remap_to: 4
   - id: 11         # Last PCB in series
     type: pentagon
     rotation: 3
+    remap_to: 3
 
 # Hardware configuration
 hardware:
