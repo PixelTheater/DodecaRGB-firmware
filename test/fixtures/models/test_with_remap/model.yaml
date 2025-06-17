@@ -1,0 +1,49 @@
+model:
+  name: PyramidWithRemap
+  version: "1.0"
+  description: "Simple pyramid model with face remapping for testing"
+  source: "Test fixture"
+  author: "Test"
+
+geometry:
+  shape: Pyramid
+  num_faces: 4
+  edge_length_mm: 50.0
+
+face_types:
+  triangle:
+    num_leds: 3
+    num_sides: 3
+    groups:
+      center: [0]
+      edge0: [1, 2]
+
+faces:
+  - id: 0
+    type: triangle
+    rotation: 0
+    remap_to: 2  # Face 0 positioned at geometric location 2
+  - id: 1
+    type: triangle
+    rotation: 0
+    remap_to: 3  # Face 1 positioned at geometric location 3
+  - id: 2
+    type: triangle
+    rotation: 0
+    remap_to: 0  # Face 2 positioned at geometric location 0
+  - id: 3
+    type: triangle
+    rotation: 0
+    remap_to: 1  # Face 3 positioned at geometric location 1
+
+hardware:
+  pcb:
+    pick_and_place_file: "test.csv"
+  led:
+    type: WS2812B
+    color_order: GRB
+    diameter_mm: 2.0
+    spacing_mm: 5.0
+  power:
+    max_current_per_led_ma: 20
+    avg_current_per_led_ma: 10 

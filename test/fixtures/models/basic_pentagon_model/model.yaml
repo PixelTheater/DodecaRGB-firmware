@@ -1,0 +1,49 @@
+# Test fixture: Basic Pentagon Model
+# Simple 3-face pentagon model for testing core functionality
+
+model:
+  name: "BasicPentagonModel"
+  description: "Simple 3-face pentagon model for testing core functionality"
+  version: "1.0"
+  author: "Test Suite"
+
+geometry:
+  shape: "Pentagon"
+  edge_length_mm: 50.0
+
+hardware:
+  led:
+    type: "WS2812B"
+    color_order: "GRB"
+    diameter_mm: 5.0
+    spacing_mm: 10.0
+  power:
+    max_current_per_led_ma: 50
+    avg_current_per_led_ma: 20
+  pcb:
+    pick_and_place_file: "basic_pentagon.csv"
+
+# Define face types with their LED layouts
+face_types:
+  pentagon:
+    num_leds: 5
+    num_sides: 5
+    groups:
+      center: [0]        # Center LED
+      ring1: [1, 2, 3, 4]  # Outer ring
+      edge0: [1, 2]      # First edge  
+      edge1: [2, 3]      # Second edge
+
+# Face instances (no remapping for basic test model)
+faces:
+  - id: 0
+    type: pentagon
+    rotation: 0
+    
+  - id: 1  
+    type: pentagon
+    rotation: 0
+    
+  - id: 2
+    type: pentagon
+    rotation: 0 

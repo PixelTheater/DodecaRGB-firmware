@@ -1,4 +1,5 @@
 #pragma once
+#include <array>
 #include "PixelTheater/model_def.h"
 #include "PixelTheater/model/face_type.h"
 
@@ -47,6 +48,12 @@ struct LedTestModel : public ModelDefinition<8, 1> {  // 8 LEDs, 1 face
         {0, {{1, 1.0f}, {2, 1.0f}, {3, 1.0f}, {4, 1.0f}, 
              {5, 1.0f}, {6, 1.0f}, {7, 1.0f}}}
     };
+
+    // Empty LED groups array (required for interface compatibility)
+    static constexpr std::array<LedGroupData, 0> LED_GROUPS{{}};
+
+    // Empty edges array (required for interface compatibility) 
+    static constexpr std::array<EdgeData, 0> EDGES{{}};
 };
 
 }} // namespace PixelTheater::Fixtures 

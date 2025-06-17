@@ -39,7 +39,7 @@ src/models/
 
 ## Core Components
 
-A Model consists of three main collections that work together to represent the physical LED arrangement:
+A Model consists of four main collections that work together to represent the physical LED arrangement:
 
 1. **LED Array** (`leds`): 
    - Direct access to LED color data
@@ -58,6 +58,18 @@ A Model consists of three main collections that work together to represent the p
    - LED groupings
    - Geometric transformations
    - Local coordinate systems
+
+4. **Edge Connectivity** (`edges`):
+   - Face adjacency information
+   - Edge-to-edge relationships
+   - Boundary definitions
+   - Topology validation
+
+5. **LED Groups** (`groups`):
+   - Named collections of LEDs within faces
+   - Logical groupings (e.g., "center", "ring0", "edge")
+   - Simplified access for common patterns
+   - Face-type specific organization
 
 ## Data Organization
 
@@ -146,6 +158,75 @@ size_t local_idx = f.local_index(42);  // LED index within face
 CRGB& led = model.leds[42];  // Color data for same LED
 ```
 
+## Edge Access
+
+Models provide face-centric access to edge connectivity for topology-aware animations:
+
+```cpp
+// Get a face proxy for face-centric operations
+auto face_proxy = model().face(face_id);
+
+// Get number of edges for this face
+uint8_t edges_per_face = face_proxy.edge_count();
+
+// Get connected face for a specific edge of this face
+int8_t adjacent_face = face_proxy.face_at_edge(edge_index);  // Returns -1 if no connection
+
+// Iterate through all edges of this face
+for (int edge_idx = 0; edge_idx < edges_per_face; edge_idx++) {
+    int8_t adjacent_face = face_proxy.face_at_edge(edge_idx);
+    if (adjacent_face >= 0) {
+        // Edge edge_idx of this face connects to adjacent_face
+        // Use this for adjacency-based effects like edge coloring
+    }
+}
+
+// Alternative: iterate using the edges() method
+auto face_edges = face_proxy.edges();
+for (const auto& edge : face_edges) {
+    if (edge.has_connection()) {
+        int8_t adjacent_face = edge.connected_face_id;
+        // Process edge connection...
+    }
+}
+```
+
+## LED Groups Access
+
+Models provide named access to logical groups of LEDs within faces:
+
+```cpp
+// Get a face proxy for face-centric operations  
+auto face_proxy = model().face(face_id);
+
+// Access a LED group by name for this face
+auto face_center = face_proxy.group("center");
+face_center[0] = CRGB::Red;  // Light first LED in the center group
+
+// Check if group exists and has LEDs
+if (face_center.size() > 0) {
+    face_center[0] = CRGB::Blue;  // Access specific LED in group
+}
+
+// Iterate through all LEDs in a group
+for (auto& led : face_center) {
+    led = CRGB::White;  // Light all center LEDs for this face
+}
+
+// Get all available group names for this face
+auto groups = face_proxy.groups();
+for (const char* group_name : groups) {
+    auto group = face_proxy.group(group_name);
+    // Process each group...
+}
+```
+
+Common LED group names (model-dependent):
+- `"center"`: Center LEDs of a face
+- `"ring0"`, `"ring1"`, etc.: Concentric rings of LEDs
+- `"edge0"`, `"edge1"`, etc.: LEDs along specific edges
+- `"corner"`: Corner/vertex LEDs
+
 ## Model Definition
 
 Models are defined in YAML with explicit geometric relationships:
@@ -166,13 +247,21 @@ face_types:
     num_leds: 104
     num_sides: 5
     groups:
-      edge: [0-19, 20-39, 40-59, 60-79, 80-99]
-      center: [100-103]
+      edge: [1,2,3,4,5,6,7,8]
+      center: [12]
+      smiley: [2,3,4,62,43,13,26,36,46,24,52,63]
 
 faces:
   - id: 0
-    type: pentagon
+    type: triangle
     rotation: 0
+  - id: 1
+    type: triangle
+    rotation: 1
+    remap_to: 3
+  - id: 2
+    type: triangle
+    rotation: 2
   # ... additional faces ...
 ```
 
@@ -265,3 +354,122 @@ To create a new model:
    - Assembly instructions
 
 See the DodecaRGBv2 model for a complete example.
+
+## Face Remapping
+
+Face remapping allows models to separate **logical face access** (used in scene code) from **physical wiring order** (determined by hardware assembly). This enables consistent scene behavior regardless of how the physical device was wired.
+
+### Concepts
+
+1. **Logical Face ID**: The face ID used in scene code (e.g., `model().face(0)`)
+2. **Geometric Position**: The physical 3D position/orientation where a face is located on the model  
+3. **Physical Wiring**: The order in which LEDs were connected during hardware assembly
+
+### How Remapping Works
+
+When `remap_to` is specified in the YAML configuration:
+
+```yaml
+faces:
+  - id: 0          # Logical face ID (used in scenes)
+    type: triangle
+    rotation: 0
+    remap_to: 2     # This face is positioned at geometric location 2
+  - id: 1
+    type: triangle  
+    rotation: 0
+    remap_to: 3     # This face is positioned at geometric location 3
+  - id: 2
+    type: triangle
+    rotation: 0  
+    remap_to: 0     # This face is positioned at geometric location 0
+  - id: 3
+    type: triangle
+    rotation: 0
+    remap_to: 1     # This face is positioned at geometric location 1
+```
+
+The system creates a mapping where:
+- Scene code: `model().face(0)` → accesses face at geometric position 0 → logical face 2 → LEDs 6-8
+- Scene code: `model().face(1)` → accesses face at geometric position 1 → logical face 3 → LEDs 9-11  
+- Scene code: `model().face(2)` → accesses face at geometric position 2 → logical face 0 → LEDs 0-2
+- Scene code: `model().face(3)` → accesses face at geometric position 3 → logical face 1 → LEDs 3-5
+
+### Key Principles
+
+1. **Wiring Stays Consistent**: LEDs are always wired in logical face order (face 0 → LEDs 0-2, face 1 → LEDs 3-5, etc.)
+2. **Scene Access is Geographic**: `model().face(X)` accesses the face at geometric position X
+3. **Remapping is Transparent**: Scene code doesn't know about remapping - it just works
+4. **3D Positioning Follows Geometry**: LED coordinates are positioned based on geometric location
+
+### Without Remapping
+
+```cpp
+// No remap_to specified - logical ID matches geometric position
+model().face(0)   // → logical face 0 → LEDs 0-2 → geometric position 0
+model().face(1)   // → logical face 1 → LEDs 3-5 → geometric position 1
+```
+
+Physical LED access and geometric position are identical.
+
+### With Remapping  
+
+```cpp
+// With remap_to specified - scene accesses by geometric position
+model().face(0)   // → geometric position 0 → logical face 2 → LEDs 6-8
+model().face(1)   // → geometric position 1 → logical face 3 → LEDs 9-11
+model().face(2)   // → geometric position 2 → logical face 0 → LEDs 0-2
+model().face(3)   // → geometric position 3 → logical face 1 → LEDs 3-5
+```
+
+Scene code accesses faces by their geometric position, but the LED wiring follows logical face order.
+
+### Use Cases
+
+**Problem**: Your dodecahedron was assembled with faces wired in a different order than the geometric layout.
+
+**Solution**: Use remapping to maintain consistent scene behavior:
+```yaml
+faces:
+  - id: 0           # First face wired (LEDs 0-103)
+    type: pentagon
+    remap_to: 7     # But this face is at geometric position 7
+  - id: 1           # Second face wired (LEDs 104-207)  
+    type: pentagon
+    remap_to: 2     # But this face is at geometric position 2
+  # ... etc
+```
+
+Now scene code works correctly:
+```cpp
+// Scene code accesses faces by geometric position
+model().face(0)  // Bottom face (geometric position 0)
+model().face(7)  // Top face (geometric position 7)
+
+// But LEDs are accessed in wiring order
+// face(0) → logical face 7 → LEDs 728-831
+// face(7) → logical face 0 → LEDs 0-103
+```
+
+### Implementation Details
+
+The model system handles remapping through:
+
+1. **Data Generation**: Positions LEDs in 3D space based on geometric location (`remap_to`)
+2. **Face Access**: `model().face(X)` maps X to the logical face positioned at geometric location X
+3. **LED Assignment**: LEDs remain assigned to logical faces for consistent wiring
+4. **Coordinate Systems**: 3D coordinates reflect geometric positioning
+
+### Testing Remapping
+
+To verify remapping works correctly:
+
+```cpp
+// Test: Setting color through geometric access should light correct physical LEDs
+model().face(0).leds()[0] = CRGB::Red;  // Geometric position 0
+
+// With remapping: face 0 → logical face 2 → LED 6
+// Without remapping: face 0 → logical face 0 → LED 0
+```
+
+The physical LED that lights up will change based on remapping configuration.

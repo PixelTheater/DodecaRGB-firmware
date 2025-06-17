@@ -72,4 +72,26 @@ TEST_SUITE("Model Faces") {
                   leds_ptr[next_face.led_offset()]);
         }
     }
+
+    TEST_CASE_FIXTURE(PixelTheater::Testing::ModelTestFixture<BasicPentagonModel>, "edge connectivity through interface") {
+        // Test edge connectivity methods through IModel interface
+        // These methods exist on the interface and can be tested
+        
+
+        
+        // Test edge count for face 0 (pentagon should have 5 edges)
+        uint8_t edge_count = model->face_edge_count(0);
+        CHECK(edge_count == 5);
+        
+        // Test edge connections (might return -1 for no connection or valid face ID)
+        int8_t connected_face = model->face_at_edge(0, 0);
+        CHECK(connected_face >= -1);  // Valid range: -1 for no connection, or valid face ID
+        
+        // Test invalid face ID (should handle gracefully)
+        uint8_t invalid_edge_count = model->face_edge_count(static_cast<uint8_t>(255));
+        CHECK(invalid_edge_count == 0);  // Should return 0 for invalid face
+        
+        int8_t invalid_connection = model->face_at_edge(static_cast<uint8_t>(255), 0);
+        CHECK(invalid_connection == -1);  // Should return -1 for invalid face
+    }
 } 

@@ -8,7 +8,7 @@
 // Author: Test Suite
 
 namespace PixelTheater {
-namespace Fixtures {
+namespace Models {
 
 // Simple 3-face pentagon model for testing core functionality
 struct BasicPentagonModel : public ModelDefinition<15, 3> {
@@ -281,4 +281,4 @@ struct BasicPentagonModel : public ModelDefinition<15, 3> {
     };
 };
 
-}} // namespace PixelTheater::Fixtures
+}} // namespace PixelTheater::Models

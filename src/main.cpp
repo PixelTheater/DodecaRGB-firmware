@@ -16,6 +16,7 @@
 
 // Include Scene implementations 
 // #include "scenes/blob_scene.h" // Temporarily disabled until refactored <-- REMOVE COMMENT
+#include "scenes/identify_sides/identify_sides_scene.h" // ADDED IdentifySidesScene
 #include "scenes/satellites/SatellitesScene.h" // <<< ADDED Satellites Scene
 #include "scenes/blobs/blob_scene.h" // Refactored
 #include "scenes/xyz_scanner/xyz_scanner_scene.h" // Refactored
@@ -189,6 +190,7 @@ void setup() {
   
   // Add scenes 
   //theater.addScene<Scenes::TestScene>(); // Add Test Scene first
+  theater.addScene<Scenes::IdentifySidesScene>(); // ADDED IdentifySidesScene
   theater.addScene<Scenes::SparklesScene>(); // UPDATED
   theater.addScene<Scenes::SatellitesScene>(); // <<< ADDED Satellites Scene
   theater.addScene<Scenes::WanderingParticlesScene>(); // Add Wandering Particles

@@ -1,0 +1,4 @@
+Designator	Footprint	Mid X	Mid Y	Ref X	Ref Y	Pad X	Pad Y	Layer	Rotation	Comment
+"LED1"	"footprint"	"0.0mm"	"10.0mm"	"0.0mm"	"10.0mm"	"0.0mm"	"10.0mm"	"T"	"0"	"WS2812B"
+"LED2"	"footprint"	"5.0mm"	"15.0mm"	"5.0mm"	"15.0mm"	"5.0mm"	"15.0mm"	"T"	"0"	"WS2812B"
+"LED3"	"footprint"	"10.0mm"	"20.0mm"	"10.0mm"	"20.0mm"	"10.0mm"	"20.0mm"	"T"	"0"	"WS2812B" 

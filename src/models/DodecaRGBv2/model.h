@@ -2,7 +2,7 @@
 #include "PixelTheater/model_def.h"
 #include "PixelTheater/model/face_type.h"
 
-// Generated on: 2025-04-25 03:21:38
+// Generated on: 2025-06-17 23:24:39
 // Generated using: generate_model.py -d src/models/DodecaRGBv2 -y
 // Model source: https://somebox.com/projects/
 // Author: Jeremy Seitz, https://github.com/somebox
@@ -18,11 +18,43 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
     static constexpr const char* VERSION = "2.0.0";
     static constexpr const char* DESCRIPTION = "Dodecahedron with 12 pentagon PCBs, 1248 LEDs";
     static constexpr const char* MODEL_TYPE = "Dodecahedron";
-    static constexpr const char* GENERATED_DATE = "2025-04-25 03:21:38";
+    static constexpr const char* GENERATED_DATE = "2025-06-17 23:24:39";
 
     static constexpr size_t LED_COUNT = 1248;
     static constexpr size_t FACE_COUNT = 12;
     static constexpr float SPHERE_RADIUS = 312.257f;
+
+    // Hardware metadata from YAML configuration
+    static constexpr HardwareData HARDWARE = {
+        .led_type = "WS2812B",
+        .color_order = "GRB",
+        .led_diameter_mm = 1.6f,
+        .led_spacing_mm = 5.0f,
+        .max_current_per_led_ma = 20,
+        .avg_current_per_led_ma = 10
+    };
+
+    // LED Groups defined in YAML
+    static constexpr std::array<LedGroupData, 3> LED_GROUPS{{
+        {
+            .name = "center",
+            .face_type_id = 0,
+            .led_count = 1,
+            .led_indices = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+        },
+        {
+            .name = "ring0",
+            .face_type_id = 0,
+            .led_count = 5,
+            .led_indices = {1, 2, 3, 4, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+        },
+        {
+            .name = "ring1",
+            .face_type_id = 0,
+            .led_count = 5,
+            .led_indices = {6, 7, 8, 9, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+        }
+    }};
 
     // Face type definitions with vertex geometry
     static constexpr std::array<FaceTypeData, 1> FACE_TYPES{{
@@ -36,7 +68,7 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
 
     // Face instances with transformed vertices
     static constexpr std::array<FaceData, FACE_COUNT> FACES{{
-        {.id = 0, .type_id = 0, .rotation = 1,
+        {.id = 0, .type_id = 0, .rotation = 1, .geometric_id = 0,
             .vertices = {
                 {.x = -200.000f, .y = 0.000f, .z = 262.000f},
                 {.x = -61.803f, .y = -190.211f, .z = 262.000f},
@@ -45,7 +77,7 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
                 {.x = -61.803f, .y = 190.211f, .z = 262.000f}
             }
         },
-        {.id = 1, .type_id = 0, .rotation = 2,
+        {.id = 1, .type_id = 0, .rotation = 2, .geometric_id = 1,
             .vertices = {
                 {.x = -99.947f, .y = -307.933f, .z = 61.904f},
                 {.x = 100.055f, .y = -307.938f, .z = -61.700f},
@@ -54,7 +86,7 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
                 {.x = -61.753f, .y = -190.366f, .z = 261.899f}
             }
         },
-        {.id = 2, .type_id = 0, .rotation = 1,
+        {.id = 2, .type_id = 0, .rotation = 1, .geometric_id = 2,
             .vertices = {
                 {.x = 323.786f, .y = -0.000f, .z = -61.700f},
                 {.x = 261.976f, .y = 190.211f, .z = 61.904f},
@@ -63,7 +95,7 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
                 {.x = 261.976f, .y = -190.211f, .z = 61.904f}
             }
         },
-        {.id = 3, .type_id = 0, .rotation = 3,
+        {.id = 3, .type_id = 0, .rotation = 3, .geometric_id = 3,
             .vertices = {
                 {.x = 100.055f, .y = 307.938f, .z = -61.700f},
                 {.x = -99.947f, .y = 307.933f, .z = 61.904f},
@@ -72,7 +104,7 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
                 {.x = 261.857f, .y = 190.376f, .z = 61.904f}
             }
         },
-        {.id = 4, .type_id = 0, .rotation = 2,
+        {.id = 4, .type_id = 0, .rotation = 2, .geometric_id = 4,
             .vertices = {
                 {.x = -261.948f, .y = 190.316f, .z = -61.700f},
                 {.x = -323.747f, .y = 0.102f, .z = 61.904f},
@@ -81,7 +113,7 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
                 {.x = -100.140f, .y = 307.870f, .z = 61.904f}
             }
         },
-        {.id = 5, .type_id = 0, .rotation = 1,
+        {.id = 5, .type_id = 0, .rotation = 1, .geometric_id = 5,
             .vertices = {
                 {.x = -261.948f, .y = -190.316f, .z = -61.700f},
                 {.x = -100.140f, .y = -307.870f, .z = 61.904f},
@@ -90,7 +122,7 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
                 {.x = -323.747f, .y = -0.102f, .z = 61.904f}
             }
         },
-        {.id = 6, .type_id = 0, .rotation = 2,
+        {.id = 6, .type_id = 0, .rotation = 2, .geometric_id = 6,
             .vertices = {
                 {.x = -261.976f, .y = 190.211f, .z = -61.904f},
                 {.x = -161.966f, .y = 117.557f, .z = -261.899f},
@@ -99,7 +131,7 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
                 {.x = -323.786f, .y = 0.000f, .z = 61.700f}
             }
         },
-        {.id = 7, .type_id = 0, .rotation = 3,
+        {.id = 7, .type_id = 0, .rotation = 3, .geometric_id = 7,
             .vertices = {
                 {.x = -261.857f, .y = -190.376f, .z = -61.904f},
                 {.x = -161.854f, .y = -117.712f, .z = -261.899f},
@@ -108,7 +140,7 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
                 {.x = -100.055f, .y = -307.938f, .z = 61.700f}
             }
         },
-        {.id = 8, .type_id = 0, .rotation = 1,
+        {.id = 8, .type_id = 0, .rotation = 1, .geometric_id = 8,
             .vertices = {
                 {.x = 100.140f, .y = -307.870f, .z = -61.904f},
                 {.x = 61.935f, .y = -190.307f, .z = -261.899f},
@@ -117,7 +149,7 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
                 {.x = 261.948f, .y = -190.316f, .z = 61.700f}
             }
         },
-        {.id = 9, .type_id = 0, .rotation = 2,
+        {.id = 9, .type_id = 0, .rotation = 2, .geometric_id = 9,
             .vertices = {
                 {.x = 323.747f, .y = 0.102f, .z = -61.904f},
                 {.x = 200.132f, .y = 0.096f, .z = -261.899f},
@@ -126,7 +158,7 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
                 {.x = 261.948f, .y = 190.316f, .z = 61.700f}
             }
         },
-        {.id = 10, .type_id = 0, .rotation = 1,
+        {.id = 10, .type_id = 0, .rotation = 1, .geometric_id = 10,
             .vertices = {
                 {.x = 99.947f, .y = 307.933f, .z = -61.904f},
                 {.x = 61.753f, .y = 190.366f, .z = -261.899f},
@@ -135,7 +167,7 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
                 {.x = -100.055f, .y = 307.938f, .z = 61.700f}
             }
         },
-        {.id = 11, .type_id = 0, .rotation = 3,
+        {.id = 11, .type_id = 0, .rotation = 3, .geometric_id = 11,
             .vertices = {
                 {.x = 200.000f, .y = -0.000f, .z = -262.000f},
                 {.x = 61.803f, .y = -190.211f, .z = -262.000f},
@@ -143,6 +175,430 @@ struct DodecaRGBv2 : public ModelDefinition<1248, 12> {
                 {.x = -161.803f, .y = 117.557f, .z = -262.000f},
                 {.x = 61.803f, .y = 190.211f, .z = -262.000f}
             }
+        }
+    }};
+
+    // Edge geometry and face relationships
+    static constexpr std::array<EdgeData, 60> EDGES{{
+        {
+            .face_id = 0,
+            .edge_index = 0,
+            .start_vertex = {.x = -200.000f, .y = 0.000f, .z = 262.000f},
+            .end_vertex = {.x = -61.803f, .y = -190.211f, .z = 262.000f},
+            .connected_face_id = 5
+        },
+        {
+            .face_id = 0,
+            .edge_index = 1,
+            .start_vertex = {.x = -61.803f, .y = -190.211f, .z = 262.000f},
+            .end_vertex = {.x = 161.803f, .y = -117.557f, .z = 262.000f},
+            .connected_face_id = 1
+        },
+        {
+            .face_id = 0,
+            .edge_index = 2,
+            .start_vertex = {.x = 161.803f, .y = -117.557f, .z = 262.000f},
+            .end_vertex = {.x = 161.803f, .y = 117.557f, .z = 262.000f},
+            .connected_face_id = 2
+        },
+        {
+            .face_id = 0,
+            .edge_index = 3,
+            .start_vertex = {.x = 161.803f, .y = 117.557f, .z = 262.000f},
+            .end_vertex = {.x = -61.803f, .y = 190.211f, .z = 262.000f},
+            .connected_face_id = 3
+        },
+        {
+            .face_id = 0,
+            .edge_index = 4,
+            .start_vertex = {.x = -61.803f, .y = 190.211f, .z = 262.000f},
+            .end_vertex = {.x = -200.000f, .y = 0.000f, .z = 262.000f},
+            .connected_face_id = 4
+        },
+        {
+            .face_id = 1,
+            .edge_index = 0,
+            .start_vertex = {.x = -99.947f, .y = -307.933f, .z = 61.904f},
+            .end_vertex = {.x = 100.055f, .y = -307.938f, .z = -61.700f},
+            .connected_face_id = 7
+        },
+        {
+            .face_id = 1,
+            .edge_index = 1,
+            .start_vertex = {.x = 100.055f, .y = -307.938f, .z = -61.700f},
+            .end_vertex = {.x = 261.857f, .y = -190.376f, .z = 61.904f},
+            .connected_face_id = 8
+        },
+        {
+            .face_id = 1,
+            .edge_index = 2,
+            .start_vertex = {.x = 261.857f, .y = -190.376f, .z = 61.904f},
+            .end_vertex = {.x = 161.854f, .y = -117.712f, .z = 261.899f},
+            .connected_face_id = 2
+        },
+        {
+            .face_id = 1,
+            .edge_index = 3,
+            .start_vertex = {.x = 161.854f, .y = -117.712f, .z = 261.899f},
+            .end_vertex = {.x = -61.753f, .y = -190.366f, .z = 261.899f},
+            .connected_face_id = 0
+        },
+        {
+            .face_id = 1,
+            .edge_index = 4,
+            .start_vertex = {.x = -61.753f, .y = -190.366f, .z = 261.899f},
+            .end_vertex = {.x = -99.947f, .y = -307.933f, .z = 61.904f},
+            .connected_face_id = 5
+        },
+        {
+            .face_id = 2,
+            .edge_index = 0,
+            .start_vertex = {.x = 323.786f, .y = -0.000f, .z = -61.700f},
+            .end_vertex = {.x = 261.976f, .y = 190.211f, .z = 61.904f},
+            .connected_face_id = 9
+        },
+        {
+            .face_id = 2,
+            .edge_index = 1,
+            .start_vertex = {.x = 261.976f, .y = 190.211f, .z = 61.904f},
+            .end_vertex = {.x = 161.966f, .y = 117.557f, .z = 261.899f},
+            .connected_face_id = 3
+        },
+        {
+            .face_id = 2,
+            .edge_index = 2,
+            .start_vertex = {.x = 161.966f, .y = 117.557f, .z = 261.899f},
+            .end_vertex = {.x = 161.966f, .y = -117.557f, .z = 261.899f},
+            .connected_face_id = 0
+        },
+        {
+            .face_id = 2,
+            .edge_index = 3,
+            .start_vertex = {.x = 161.966f, .y = -117.557f, .z = 261.899f},
+            .end_vertex = {.x = 261.976f, .y = -190.211f, .z = 61.904f},
+            .connected_face_id = 1
+        },
+        {
+            .face_id = 2,
+            .edge_index = 4,
+            .start_vertex = {.x = 261.976f, .y = -190.211f, .z = 61.904f},
+            .end_vertex = {.x = 323.786f, .y = -0.000f, .z = -61.700f},
+            .connected_face_id = 8
+        },
+        {
+            .face_id = 3,
+            .edge_index = 0,
+            .start_vertex = {.x = 100.055f, .y = 307.938f, .z = -61.700f},
+            .end_vertex = {.x = -99.947f, .y = 307.933f, .z = 61.904f},
+            .connected_face_id = 10
+        },
+        {
+            .face_id = 3,
+            .edge_index = 1,
+            .start_vertex = {.x = -99.947f, .y = 307.933f, .z = 61.904f},
+            .end_vertex = {.x = -61.753f, .y = 190.366f, .z = 261.899f},
+            .connected_face_id = 4
+        },
+        {
+            .face_id = 3,
+            .edge_index = 2,
+            .start_vertex = {.x = -61.753f, .y = 190.366f, .z = 261.899f},
+            .end_vertex = {.x = 161.854f, .y = 117.712f, .z = 261.899f},
+            .connected_face_id = 0
+        },
+        {
+            .face_id = 3,
+            .edge_index = 3,
+            .start_vertex = {.x = 161.854f, .y = 117.712f, .z = 261.899f},
+            .end_vertex = {.x = 261.857f, .y = 190.376f, .z = 61.904f},
+            .connected_face_id = 2
+        },
+        {
+            .face_id = 3,
+            .edge_index = 4,
+            .start_vertex = {.x = 261.857f, .y = 190.376f, .z = 61.904f},
+            .end_vertex = {.x = 100.055f, .y = 307.938f, .z = -61.700f},
+            .connected_face_id = 9
+        },
+        {
+            .face_id = 4,
+            .edge_index = 0,
+            .start_vertex = {.x = -261.948f, .y = 190.316f, .z = -61.700f},
+            .end_vertex = {.x = -323.747f, .y = 0.102f, .z = 61.904f},
+            .connected_face_id = 6
+        },
+        {
+            .face_id = 4,
+            .edge_index = 1,
+            .start_vertex = {.x = -323.747f, .y = 0.102f, .z = 61.904f},
+            .end_vertex = {.x = -200.132f, .y = 0.096f, .z = 261.899f},
+            .connected_face_id = 5
+        },
+        {
+            .face_id = 4,
+            .edge_index = 2,
+            .start_vertex = {.x = -200.132f, .y = 0.096f, .z = 261.899f},
+            .end_vertex = {.x = -61.935f, .y = 190.307f, .z = 261.899f},
+            .connected_face_id = 0
+        },
+        {
+            .face_id = 4,
+            .edge_index = 3,
+            .start_vertex = {.x = -61.935f, .y = 190.307f, .z = 261.899f},
+            .end_vertex = {.x = -100.140f, .y = 307.870f, .z = 61.904f},
+            .connected_face_id = 3
+        },
+        {
+            .face_id = 4,
+            .edge_index = 4,
+            .start_vertex = {.x = -100.140f, .y = 307.870f, .z = 61.904f},
+            .end_vertex = {.x = -261.948f, .y = 190.316f, .z = -61.700f},
+            .connected_face_id = 10
+        },
+        {
+            .face_id = 5,
+            .edge_index = 0,
+            .start_vertex = {.x = -261.948f, .y = -190.316f, .z = -61.700f},
+            .end_vertex = {.x = -100.140f, .y = -307.870f, .z = 61.904f},
+            .connected_face_id = 7
+        },
+        {
+            .face_id = 5,
+            .edge_index = 1,
+            .start_vertex = {.x = -100.140f, .y = -307.870f, .z = 61.904f},
+            .end_vertex = {.x = -61.935f, .y = -190.307f, .z = 261.899f},
+            .connected_face_id = 1
+        },
+        {
+            .face_id = 5,
+            .edge_index = 2,
+            .start_vertex = {.x = -61.935f, .y = -190.307f, .z = 261.899f},
+            .end_vertex = {.x = -200.132f, .y = -0.096f, .z = 261.899f},
+            .connected_face_id = 0
+        },
+        {
+            .face_id = 5,
+            .edge_index = 3,
+            .start_vertex = {.x = -200.132f, .y = -0.096f, .z = 261.899f},
+            .end_vertex = {.x = -323.747f, .y = -0.102f, .z = 61.904f},
+            .connected_face_id = 4
+        },
+        {
+            .face_id = 5,
+            .edge_index = 4,
+            .start_vertex = {.x = -323.747f, .y = -0.102f, .z = 61.904f},
+            .end_vertex = {.x = -261.948f, .y = -190.316f, .z = -61.700f},
+            .connected_face_id = 6
+        },
+        {
+            .face_id = 6,
+            .edge_index = 0,
+            .start_vertex = {.x = -261.976f, .y = 190.211f, .z = -61.904f},
+            .end_vertex = {.x = -161.966f, .y = 117.557f, .z = -261.899f},
+            .connected_face_id = 10
+        },
+        {
+            .face_id = 6,
+            .edge_index = 1,
+            .start_vertex = {.x = -161.966f, .y = 117.557f, .z = -261.899f},
+            .end_vertex = {.x = -161.966f, .y = -117.557f, .z = -261.899f},
+            .connected_face_id = 11
+        },
+        {
+            .face_id = 6,
+            .edge_index = 2,
+            .start_vertex = {.x = -161.966f, .y = -117.557f, .z = -261.899f},
+            .end_vertex = {.x = -261.976f, .y = -190.211f, .z = -61.904f},
+            .connected_face_id = 7
+        },
+        {
+            .face_id = 6,
+            .edge_index = 3,
+            .start_vertex = {.x = -261.976f, .y = -190.211f, .z = -61.904f},
+            .end_vertex = {.x = -323.786f, .y = 0.000f, .z = 61.700f},
+            .connected_face_id = 5
+        },
+        {
+            .face_id = 6,
+            .edge_index = 4,
+            .start_vertex = {.x = -323.786f, .y = 0.000f, .z = 61.700f},
+            .end_vertex = {.x = -261.976f, .y = 190.211f, .z = -61.904f},
+            .connected_face_id = 4
+        },
+        {
+            .face_id = 7,
+            .edge_index = 0,
+            .start_vertex = {.x = -261.857f, .y = -190.376f, .z = -61.904f},
+            .end_vertex = {.x = -161.854f, .y = -117.712f, .z = -261.899f},
+            .connected_face_id = 6
+        },
+        {
+            .face_id = 7,
+            .edge_index = 1,
+            .start_vertex = {.x = -161.854f, .y = -117.712f, .z = -261.899f},
+            .end_vertex = {.x = 61.753f, .y = -190.366f, .z = -261.899f},
+            .connected_face_id = 11
+        },
+        {
+            .face_id = 7,
+            .edge_index = 2,
+            .start_vertex = {.x = 61.753f, .y = -190.366f, .z = -261.899f},
+            .end_vertex = {.x = 99.947f, .y = -307.933f, .z = -61.904f},
+            .connected_face_id = 8
+        },
+        {
+            .face_id = 7,
+            .edge_index = 3,
+            .start_vertex = {.x = 99.947f, .y = -307.933f, .z = -61.904f},
+            .end_vertex = {.x = -100.055f, .y = -307.938f, .z = 61.700f},
+            .connected_face_id = 1
+        },
+        {
+            .face_id = 7,
+            .edge_index = 4,
+            .start_vertex = {.x = -100.055f, .y = -307.938f, .z = 61.700f},
+            .end_vertex = {.x = -261.857f, .y = -190.376f, .z = -61.904f},
+            .connected_face_id = 5
+        },
+        {
+            .face_id = 8,
+            .edge_index = 0,
+            .start_vertex = {.x = 100.140f, .y = -307.870f, .z = -61.904f},
+            .end_vertex = {.x = 61.935f, .y = -190.307f, .z = -261.899f},
+            .connected_face_id = 7
+        },
+        {
+            .face_id = 8,
+            .edge_index = 1,
+            .start_vertex = {.x = 61.935f, .y = -190.307f, .z = -261.899f},
+            .end_vertex = {.x = 200.132f, .y = -0.096f, .z = -261.899f},
+            .connected_face_id = 11
+        },
+        {
+            .face_id = 8,
+            .edge_index = 2,
+            .start_vertex = {.x = 200.132f, .y = -0.096f, .z = -261.899f},
+            .end_vertex = {.x = 323.747f, .y = -0.102f, .z = -61.904f},
+            .connected_face_id = 9
+        },
+        {
+            .face_id = 8,
+            .edge_index = 3,
+            .start_vertex = {.x = 323.747f, .y = -0.102f, .z = -61.904f},
+            .end_vertex = {.x = 261.948f, .y = -190.316f, .z = 61.700f},
+            .connected_face_id = 2
+        },
+        {
+            .face_id = 8,
+            .edge_index = 4,
+            .start_vertex = {.x = 261.948f, .y = -190.316f, .z = 61.700f},
+            .end_vertex = {.x = 100.140f, .y = -307.870f, .z = -61.904f},
+            .connected_face_id = 1
+        },
+        {
+            .face_id = 9,
+            .edge_index = 0,
+            .start_vertex = {.x = 323.747f, .y = 0.102f, .z = -61.904f},
+            .end_vertex = {.x = 200.132f, .y = 0.096f, .z = -261.899f},
+            .connected_face_id = 8
+        },
+        {
+            .face_id = 9,
+            .edge_index = 1,
+            .start_vertex = {.x = 200.132f, .y = 0.096f, .z = -261.899f},
+            .end_vertex = {.x = 61.935f, .y = 190.307f, .z = -261.899f},
+            .connected_face_id = 11
+        },
+        {
+            .face_id = 9,
+            .edge_index = 2,
+            .start_vertex = {.x = 61.935f, .y = 190.307f, .z = -261.899f},
+            .end_vertex = {.x = 100.140f, .y = 307.870f, .z = -61.904f},
+            .connected_face_id = 10
+        },
+        {
+            .face_id = 9,
+            .edge_index = 3,
+            .start_vertex = {.x = 100.140f, .y = 307.870f, .z = -61.904f},
+            .end_vertex = {.x = 261.948f, .y = 190.316f, .z = 61.700f},
+            .connected_face_id = 3
+        },
+        {
+            .face_id = 9,
+            .edge_index = 4,
+            .start_vertex = {.x = 261.948f, .y = 190.316f, .z = 61.700f},
+            .end_vertex = {.x = 323.747f, .y = 0.102f, .z = -61.904f},
+            .connected_face_id = 2
+        },
+        {
+            .face_id = 10,
+            .edge_index = 0,
+            .start_vertex = {.x = 99.947f, .y = 307.933f, .z = -61.904f},
+            .end_vertex = {.x = 61.753f, .y = 190.366f, .z = -261.899f},
+            .connected_face_id = 9
+        },
+        {
+            .face_id = 10,
+            .edge_index = 1,
+            .start_vertex = {.x = 61.753f, .y = 190.366f, .z = -261.899f},
+            .end_vertex = {.x = -161.854f, .y = 117.712f, .z = -261.899f},
+            .connected_face_id = 11
+        },
+        {
+            .face_id = 10,
+            .edge_index = 2,
+            .start_vertex = {.x = -161.854f, .y = 117.712f, .z = -261.899f},
+            .end_vertex = {.x = -261.857f, .y = 190.376f, .z = -61.904f},
+            .connected_face_id = 6
+        },
+        {
+            .face_id = 10,
+            .edge_index = 3,
+            .start_vertex = {.x = -261.857f, .y = 190.376f, .z = -61.904f},
+            .end_vertex = {.x = -100.055f, .y = 307.938f, .z = 61.700f},
+            .connected_face_id = 4
+        },
+        {
+            .face_id = 10,
+            .edge_index = 4,
+            .start_vertex = {.x = -100.055f, .y = 307.938f, .z = 61.700f},
+            .end_vertex = {.x = 99.947f, .y = 307.933f, .z = -61.904f},
+            .connected_face_id = 3
+        },
+        {
+            .face_id = 11,
+            .edge_index = 0,
+            .start_vertex = {.x = 200.000f, .y = -0.000f, .z = -262.000f},
+            .end_vertex = {.x = 61.803f, .y = -190.211f, .z = -262.000f},
+            .connected_face_id = 8
+        },
+        {
+            .face_id = 11,
+            .edge_index = 1,
+            .start_vertex = {.x = 61.803f, .y = -190.211f, .z = -262.000f},
+            .end_vertex = {.x = -161.803f, .y = -117.557f, .z = -262.000f},
+            .connected_face_id = 7
+        },
+        {
+            .face_id = 11,
+            .edge_index = 2,
+            .start_vertex = {.x = -161.803f, .y = -117.557f, .z = -262.000f},
+            .end_vertex = {.x = -161.803f, .y = 117.557f, .z = -262.000f},
+            .connected_face_id = 6
+        },
+        {
+            .face_id = 11,
+            .edge_index = 3,
+            .start_vertex = {.x = -161.803f, .y = 117.557f, .z = -262.000f},
+            .end_vertex = {.x = 61.803f, .y = 190.211f, .z = -262.000f},
+            .connected_face_id = 10
+        },
+        {
+            .face_id = 11,
+            .edge_index = 4,
+            .start_vertex = {.x = 61.803f, .y = 190.211f, .z = -262.000f},
+            .end_vertex = {.x = 200.000f, .y = -0.000f, .z = -262.000f},
+            .connected_face_id = 9
         }
     }};
 

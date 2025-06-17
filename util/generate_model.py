@@ -73,8 +73,60 @@ class Face:
     id: int
     type: str  # References face_type name
     rotation: int
+    remap_to: Optional[int] = None  # Optional geometric remapping
     position: Point3D = field(default_factory=lambda: Point3D(0, 0, 0))
     leds: List['LED'] = field(default_factory=list)
+
+    def get_geometric_id(self) -> int:
+        """Get the geometric ID for this face (uses remap_to if specified, otherwise face ID)"""
+        return self.remap_to if self.remap_to is not None else self.id
+    
+    def is_planar(self, tolerance: float = 5.0) -> bool:
+        """Check if all vertices and LEDs of this face are approximately coplanar"""
+        if len(self.leds) < 3:
+            return True  # Less than 3 points are always coplanar
+            
+        # Collect all points (vertices + LED positions)
+        all_points = []
+        
+        # We would need access to the face vertices here, but they're calculated
+        # during generation. For now, we'll check if LEDs are reasonably coplanar
+        led_positions = [(led.position.x, led.position.y, led.position.z) for led in self.leds]
+        
+        if len(led_positions) < 4:
+            return True  # Less than 4 points are always coplanar
+            
+        # Use first 3 points to define the plane
+        p1, p2, p3 = led_positions[0], led_positions[1], led_positions[2]
+        
+        # Calculate normal vector using cross product
+        v1 = (p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2])
+        v2 = (p3[0] - p1[0], p3[1] - p1[1], p3[2] - p1[2])
+        
+        # Cross product
+        normal = (
+            v1[1] * v2[2] - v1[2] * v2[1],
+            v1[2] * v2[0] - v1[0] * v2[2],
+            v1[0] * v2[1] - v1[1] * v2[0]
+        )
+        
+        # Normalize
+        length = (normal[0]**2 + normal[1]**2 + normal[2]**2)**0.5
+        if length < 1e-6:
+            return False  # Degenerate case
+        normal = (normal[0]/length, normal[1]/length, normal[2]/length)
+        
+        # Calculate plane equation: ax + by + cz + d = 0
+        a, b, c = normal
+        d = -(a * p1[0] + b * p1[1] + c * p1[2])
+        
+        # Check if all other points are within tolerance of this plane
+        for point in led_positions[3:]:
+            distance = abs(a * point[0] + b * point[1] + c * point[2] + d)
+            if distance > tolerance:
+                return False
+                
+        return True
 
 @dataclass
 class LED:
@@ -133,12 +185,49 @@ class ModelDefinition:
             face = Face(
                 id=face_data['id'],
                 type=face_data['type'],
-                rotation=face_data['rotation']
+                rotation=face_data['rotation'],
+                remap_to=face_data.get('remap_to')  # Load remap_to if present
             )
             if 'position' in face_data:
                 pos = face_data['position']
                 face.position = Point3D(pos['x'], pos['y'], pos['z'])
             self.faces.append(face)
+        
+        # Validate remapping configuration
+        self._validate_remapping()
+
+    def _validate_remapping(self):
+        """Validate face remapping configuration for errors"""
+        if not self.faces:
+            return
+            
+        # Get all face IDs and geometric IDs
+        all_face_ids = {face.id for face in self.faces}
+        geometric_positions = {}
+        
+        for face in self.faces:
+            geometric_id = face.get_geometric_id()
+            
+            # Check if geometric ID is a valid face ID
+            if geometric_id not in all_face_ids:
+                raise ValueError(f"Face {face.id} has remap_to={face.remap_to} which is not a valid face ID. "
+                               f"Valid face IDs are: {sorted(all_face_ids)}")
+            
+            # Check for duplicate geometric positions
+            if geometric_id in geometric_positions:
+                other_face = geometric_positions[geometric_id]
+                raise ValueError(f"Multiple faces mapped to same geometric position {geometric_id}: "
+                               f"Face {other_face.id} and Face {face.id}")
+            
+            geometric_positions[geometric_id] = face
+        
+        # Check that all geometric positions are covered
+        geometric_ids = set(geometric_positions.keys())
+        if geometric_ids != all_face_ids:
+            missing = all_face_ids - geometric_ids
+            if missing:
+                raise ValueError(f"Missing geometric positions: {sorted(missing)}. "
+                               f"All face positions must be covered by the remapping.")
 
 class DodecaModel:
     """Manages the full dodecahedron LED model"""
@@ -161,18 +250,173 @@ class DodecaModel:
         for face in self.model_def.faces:
             face_type = self.model_def.face_types[face.type]
             for led in self._pcb_points:
-                world_pos = transform_led_point(led['x'], led['y'], led['num'], face.id)
+                # Use geometric ID for positioning, logical ID for face assignment
+                world_pos = transform_led_point(led['x'], led['y'], led['num'], face.get_geometric_id())
                 new_led = LED(
                     index=len(self.model_def.leds),
                     position=Point3D(*world_pos),
                     label=led['num'] + 1,  # Convert to 1-based
-                    face_id=face.id
+                    face_id=face.id  # Keep logical ID for LED assignment/wiring
                 )
                 self.model_def.leds.append(new_led)
                 face.leds.append(new_led)
 
         # Calculate neighbor relationships
         self._calculate_neighbors()
+
+    def _calculate_edges_and_relationships(self) -> List[Dict]:
+        """Calculate edge geometry and face relationships"""
+        edges = []
+        edge_tolerance = 10.0  # mm tolerance for edge matching
+        
+        # For each face, generate its edges
+        for face in self.model_def.faces:
+            face_type = self.model_def.face_types[face.type]
+            geometric_id = face.get_geometric_id()
+            
+            # Get vertices for this face (already calculated with remapping)
+            vertices = []
+            if face_type:
+                # Generate base vertices in local space
+                base_vertices = []
+                num_sides = face_type.num_sides
+                for j in range(num_sides):
+                    angle = j * (2 * math.pi / num_sides)
+                    x = radius * math.cos(angle)
+                    y = radius * math.sin(angle)
+                    base_vertices.append([x, y, 0])
+
+                # Transform vertices using same pipeline as in export_cpp_header
+                m = Matrix3D()
+                m.rotate_x(math.pi)  # Initial transform
+                
+                # Side positioning (using geometric ID for remapping)
+                if geometric_id == 0:  # bottom
+                    m.rotate_z(-zv - ro*2)
+                elif geometric_id > 0 and geometric_id < 6:  # bottom half
+                    m.rotate_z(ro*geometric_id + zv - ro)
+                    m.rotate_x(xv)
+                elif geometric_id >= 6 and geometric_id < 11:  # top half
+                    m.rotate_z(ro*geometric_id - zv + ro*3)
+                    m.rotate_x(math.pi - xv)
+                else:  # geometric_id == 11, top
+                    m.rotate_x(math.pi)
+                    m.rotate_z(zv)
+                
+                # Move face out to radius
+                m.translate(0, 0, radius*1.31)
+                
+                # Additional hemisphere rotation
+                if geometric_id >= 6 and geometric_id < 11:
+                    m.rotate_z(zv)
+                else:
+                    m.rotate_z(-zv)
+                
+                # Side rotation
+                m.rotate_z(ro * side_rotation[geometric_id])
+                
+                # Transform all vertices
+                for vertex in base_vertices:
+                    world_pos = m.apply(vertex)
+                    # Negate Y and Z to match coordinate system
+                    vertices.append([world_pos[0], -world_pos[1], -world_pos[2]])
+
+            # Create edges from consecutive vertices
+            for i in range(len(vertices)):
+                start_vertex = vertices[i]
+                end_vertex = vertices[(i + 1) % len(vertices)]
+                
+                # Find connected face for this edge
+                connected_face_id = -1
+                
+                # Check all other faces for shared edges
+                for other_face in self.model_def.faces:
+                    if other_face.id == face.id:
+                        continue
+                        
+                    other_face_type = self.model_def.face_types[other_face.type]
+                    other_geometric_id = other_face.get_geometric_id()
+                    
+                    # Get vertices for other face
+                    other_vertices = []
+                    if other_face_type:
+                        # Generate base vertices in local space
+                        other_base_vertices = []
+                        other_num_sides = other_face_type.num_sides
+                        for j in range(other_num_sides):
+                            angle = j * (2 * math.pi / other_num_sides)
+                            x = radius * math.cos(angle)
+                            y = radius * math.sin(angle)
+                            other_base_vertices.append([x, y, 0])
+
+                        # Transform vertices using same pipeline
+                        other_m = Matrix3D()
+                        other_m.rotate_x(math.pi)  # Initial transform
+                        
+                        # Side positioning (using geometric ID for remapping)
+                        if other_geometric_id == 0:  # bottom
+                            other_m.rotate_z(-zv - ro*2)
+                        elif other_geometric_id > 0 and other_geometric_id < 6:  # bottom half
+                            other_m.rotate_z(ro*other_geometric_id + zv - ro)
+                            other_m.rotate_x(xv)
+                        elif other_geometric_id >= 6 and other_geometric_id < 11:  # top half
+                            other_m.rotate_z(ro*other_geometric_id - zv + ro*3)
+                            other_m.rotate_x(math.pi - xv)
+                        else:  # other_geometric_id == 11, top
+                            other_m.rotate_x(math.pi)
+                            other_m.rotate_z(zv)
+                        
+                        # Move face out to radius
+                        other_m.translate(0, 0, radius*1.31)
+                        
+                        # Additional hemisphere rotation
+                        if other_geometric_id >= 6 and other_geometric_id < 11:
+                            other_m.rotate_z(zv)
+                        else:
+                            other_m.rotate_z(-zv)
+                        
+                        # Side rotation
+                        other_m.rotate_z(ro * side_rotation[other_geometric_id])
+                        
+                        # Transform all vertices
+                        for vertex in other_base_vertices:
+                            world_pos = other_m.apply(vertex)
+                            # Negate Y and Z to match coordinate system
+                            other_vertices.append([world_pos[0], -world_pos[1], -world_pos[2]])
+
+                    # Check if any edge of other face matches this edge
+                    for j in range(len(other_vertices)):
+                        other_start = other_vertices[j]
+                        other_end = other_vertices[(j + 1) % len(other_vertices)]
+                        
+                        # Check if edges match (either direction)
+                        def distance_3d(p1, p2):
+                            return math.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2 + (p1[2]-p2[2])**2)
+                        
+                        # Forward match: start->end matches other_start->other_end
+                        if (distance_3d(start_vertex, other_start) < edge_tolerance and 
+                            distance_3d(end_vertex, other_end) < edge_tolerance):
+                            connected_face_id = other_face.id
+                            break
+                        
+                        # Reverse match: start->end matches other_end->other_start
+                        if (distance_3d(start_vertex, other_end) < edge_tolerance and 
+                            distance_3d(end_vertex, other_start) < edge_tolerance):
+                            connected_face_id = other_face.id
+                            break
+                    
+                    if connected_face_id != -1:
+                        break
+                
+                edges.append({
+                    'face_id': face.id,
+                    'edge_index': i,
+                    'start': start_vertex,
+                    'end': end_vertex,
+                    'connected_face_id': connected_face_id
+                })
+        
+        return edges
 
     def _calculate_neighbors(self, max_distance: float = 100) -> None:
         """Calculate nearest neighbors for all LEDs"""
@@ -241,6 +485,48 @@ class DodecaModel:
         print(f"    static constexpr size_t FACE_COUNT = {face_count};", file=file)
         print(f"    static constexpr float SPHERE_RADIUS = {sphere_radius:.3f}f;", file=file)
 
+        # Hardware metadata
+        print(f"\n    // Hardware metadata from YAML configuration", file=file)
+        print(f"    static constexpr HardwareData HARDWARE = {{", file=file)
+        hw = self.model_def.hardware
+        print(f'        .led_type = "{hw["led"]["type"]}",', file=file)
+        print(f'        .color_order = "{hw["led"].get("color_order", "RGB")}",', file=file)
+        print(f'        .led_diameter_mm = {hw["led"].get("diameter_mm", 2.0)}f,', file=file)
+        print(f'        .led_spacing_mm = {hw["led"].get("spacing_mm", 5.0)}f,', file=file)
+        print(f'        .max_current_per_led_ma = {hw["power"].get("max_current_per_led_ma", 20)},', file=file)
+        print(f'        .avg_current_per_led_ma = {hw["power"].get("avg_current_per_led_ma", 10)}', file=file)
+        print(f"    }};", file=file)
+
+        # LED Groups
+        print(f"\n    // LED Groups defined in YAML", file=file)
+        led_groups = []
+        for face_type_id, (name, ft) in enumerate(self.model_def.face_types.items()):
+            for group_name, group in ft.groups.items():
+                led_groups.append({
+                    'name': group_name,
+                    'face_type_id': face_type_id,
+                    'led_count': len(group.led_indices),
+                    'led_indices': group.led_indices
+                })
+        
+        if led_groups:
+            print(f"    static constexpr std::array<LedGroupData, {len(led_groups)}> LED_GROUPS{{{{", file=file)
+            for i, group in enumerate(led_groups):
+                print(f"        {{", file=file)
+                print(f'            .name = "{group["name"]}",', file=file)
+                print(f'            .face_type_id = {group["face_type_id"]},', file=file)
+                print(f'            .led_count = {group["led_count"]},', file=file)
+                indices_str = ', '.join([str(idx) for idx in group["led_indices"]])
+                # Pad with zeros up to 32 elements
+                remaining = 32 - len(group["led_indices"])
+                if remaining > 0:
+                    indices_str += ', ' + ', '.join(['0'] * remaining)
+                print(f'            .led_indices = {{{indices_str}}}', file=file)
+                print(f"        }}{'' if i == len(led_groups) - 1 else ','}", file=file)
+            print("    }};", file=file)
+        else:
+            print(f"    static constexpr std::array<LedGroupData, 0> LED_GROUPS{{}};", file=file)
+
         # Face types with vertices
         print(f"\n    // Face type definitions with vertex geometry", file=file)
         print(f"    static constexpr std::array<FaceTypeData, {len(self.model_def.face_types)}> FACE_TYPES{{{{", file=file)
@@ -307,16 +593,19 @@ class DodecaModel:
                 m = Matrix3D()
                 m.rotate_x(math.pi)  # Initial transform
                 
+                # Use geometric ID for positioning (remap-aware)
+                geometric_id = face.get_geometric_id()
+                
                 # Side positioning from drawPentagon()
-                if face.id == 0:  # bottom
+                if geometric_id == 0:  # bottom
                     m.rotate_z(-zv - ro*2)
-                elif face.id > 0 and face.id < 6:  # bottom half
-                    m.rotate_z(ro*face.id + zv - ro)
+                elif geometric_id > 0 and geometric_id < 6:  # bottom half
+                    m.rotate_z(ro*geometric_id + zv - ro)
                     m.rotate_x(xv)
-                elif face.id >= 6 and face.id < 11:  # top half
-                    m.rotate_z(ro*face.id - zv + ro*3)
+                elif geometric_id >= 6 and geometric_id < 11:  # top half
+                    m.rotate_z(ro*geometric_id - zv + ro*3)
                     m.rotate_x(math.pi - xv)
-                else:  # face.id == 11, top
+                else:  # geometric_id == 11, top
                     m.rotate_x(math.pi)
                     m.rotate_z(zv)
                 
@@ -324,13 +613,13 @@ class DodecaModel:
                 m.translate(0, 0, radius*1.31)
                 
                 # Additional hemisphere rotation
-                if face.id >= 6 and face.id < 11:
+                if geometric_id >= 6 and geometric_id < 11:
                     m.rotate_z(zv)
                 else:
                     m.rotate_z(-zv)
                 
                 # Side rotation
-                m.rotate_z(ro * side_rotation[face.id])
+                m.rotate_z(ro * side_rotation[geometric_id])
                 
                 # Transform all vertices
                 for vertex in base_vertices:
@@ -341,20 +630,46 @@ class DodecaModel:
             # Check if we have position data
             if hasattr(face.position, 'x') and face.position.x != 0 and face.position.y != 0 and face.position.z != 0:
                 print(f"        {{.id = {face.id}, .type_id = {type_id}, .rotation = {face.rotation}, "
-                      f".x = {face.position.x}f, .y = {face.position.y}f, .z = {face.position.z}f,", file=file)
+                      f".x = {face.position.x}f, .y = {face.position.y}f, .z = {face.position.z}f, "
+                      f".geometric_id = {face.get_geometric_id()},", file=file)
             else:
-                print(f"        {{.id = {face.id}, .type_id = {type_id}, .rotation = {face.rotation},", file=file)
+                print(f"        {{.id = {face.id}, .type_id = {type_id}, .rotation = {face.rotation}, "
+                      f".geometric_id = {face.get_geometric_id()},", file=file)
             
             # Output vertices as simple arrays of floats
             print(f"            .vertices = {{", file=file)
-            for j, vertex in enumerate(vertices):
-                print(f"                {{.x = {vertex[0]:.3f}f, .y = {vertex[1]:.3f}f, .z = {vertex[2]:.3f}f}}{'' if j == len(vertices) - 1 else ','}", file=file)
-            # Pad remaining vertices with zeros if needed
-            for j in range(len(vertices), PixelTheater.Limits.MAX_EDGES_PER_FACE):
-                print(f"                {{.x = 0.0f, .y = 0.0f, .z = 0.0f}}{'' if j == PixelTheater.Limits.MAX_EDGES_PER_FACE - 1 else ','}", file=file)
+            total_vertices = max(len(vertices), PixelTheater.Limits.MAX_EDGES_PER_FACE)
+            for j in range(total_vertices):
+                if j < len(vertices):
+                    vertex = vertices[j]
+                    print(f"                {{.x = {vertex[0]:.3f}f, .y = {vertex[1]:.3f}f, .z = {vertex[2]:.3f}f}}{'' if j == total_vertices - 1 else ','}", file=file)
+                else:
+                    # Pad with zeros
+                    print(f"                {{.x = 0.0f, .y = 0.0f, .z = 0.0f}}{'' if j == total_vertices - 1 else ','}", file=file)
             print(f"            }}", file=file)
             print(f"        }}{'' if i == len(self.model_def.faces) - 1 else ','}", file=file)
         print("    }};", file=file)
+
+        # Calculate edges and face relationships
+        edges = self._calculate_edges_and_relationships()
+        
+        # Edges
+        print(f"\n    // Edge geometry and face relationships", file=file)
+        if edges:
+            print(f"    static constexpr std::array<EdgeData, {len(edges)}> EDGES{{{{", file=file)
+            for i, edge in enumerate(edges):
+                print(f"        {{", file=file)
+                print(f"            .face_id = {edge['face_id']},", file=file)
+                print(f"            .edge_index = {edge['edge_index']},", file=file)
+                print(f"            .start_vertex = {{.x = {edge['start'][0]:.3f}f, .y = {edge['start'][1]:.3f}f, .z = {edge['start'][2]:.3f}f}},", file=file)
+                print(f"            .end_vertex = {{.x = {edge['end'][0]:.3f}f, .y = {edge['end'][1]:.3f}f, .z = {edge['end'][2]:.3f}f}},", file=file)
+                # Use 255 instead of -1 for no connection (max value for uint8_t)
+                connected_id = 255 if edge['connected_face_id'] == -1 else edge['connected_face_id']
+                print(f"            .connected_face_id = {connected_id}", file=file)
+                print(f"        }}{'' if i == len(edges) - 1 else ','}", file=file)
+            print("    }};", file=file)
+        else:
+            print(f"    static constexpr std::array<EdgeData, 0> EDGES{{}};", file=file)
 
         # Points
         print(f"\n    // Point geometry - define all points with correct face assignments", file=file)
@@ -399,6 +714,60 @@ class DodecaModel:
             }
         }
         json.dump(data, file, indent=2)
+
+    def print_face_summary(self) -> None:
+        """Print a summary of face configuration showing logical face IDs, rotations, and LED ranges"""
+        print(f"\n=== Face Configuration Summary ===", file=sys.stderr)
+        print(f"Total faces: {len(self.model_def.faces)}", file=sys.stderr)
+        print(f"Total LEDs: {len(self.model_def.leds)}", file=sys.stderr)
+        print(f"\nFace Details:", file=sys.stderr)
+        print(f"{'Face ID':<8} {'Type':<10} {'Rotation':<10} {'LED Range':<15} {'LED Count':<10} {'Geometric ID':<12}", file=sys.stderr)
+        print(f"{'='*8} {'='*10} {'='*10} {'='*15} {'='*10} {'='*12}", file=sys.stderr)
+        
+        # Sort faces by logical face ID for consistent output
+        sorted_faces = sorted(self.model_def.faces, key=lambda f: f.id)
+        
+        for face in sorted_faces:
+            if not face.leds:
+                led_range = "No LEDs"
+                led_count = 0
+            else:
+                led_indices = [led.index for led in face.leds]
+                led_indices.sort()
+                if len(led_indices) == 1:
+                    led_range = f"{led_indices[0]}"
+                else:
+                    led_range = f"{led_indices[0]}-{led_indices[-1]}"
+                led_count = len(led_indices)
+            
+            geometric_id = face.get_geometric_id()
+            remap_indicator = f"{geometric_id}" if face.remap_to is None else f"{geometric_id}*"
+            
+            print(f"{face.id:<8} {face.type:<10} {face.rotation:<10} {led_range:<15} {led_count:<10} {remap_indicator:<12}", file=sys.stderr)
+        
+        # Check for face remapping
+        has_remapping = any(face.remap_to is not None for face in self.model_def.faces)
+        if has_remapping:
+            print(f"\n* indicates faces with geometric remapping (remap_to defined)", file=sys.stderr)
+            print(f"Remapping details:", file=sys.stderr)
+            for face in sorted_faces:
+                if face.remap_to is not None:
+                    print(f"  Face {face.id} -> positioned at geometric location {face.remap_to}", file=sys.stderr)
+        
+        # Show LED groups if any
+        led_groups = []
+        for face_type_id, (name, ft) in enumerate(self.model_def.face_types.items()):
+            for group_name, group in ft.groups.items():
+                led_groups.append({
+                    'name': group_name,
+                    'face_type': name,
+                    'led_count': len(group.led_indices)
+                })
+        
+        if led_groups:
+            print(f"\nLED Groups per face type:", file=sys.stderr)
+            for group in led_groups:
+                print(f"  {group['face_type']}.{group['name']}: {group['led_count']} LEDs", file=sys.stderr)
 
 def find_model_files(model_dir: str) -> tuple[str, str]:
     """Find model.yaml and pick-and-place files in a model directory structure.
@@ -513,6 +882,9 @@ def main():
                 print(f"\nGenerated model with {len(model_def.leds)} points -> {output_path}", file=sys.stderr)
             else:
                 print(f"\nGenerated model with {len(model_def.leds)} points", file=sys.stderr)
+
+            # Print face summary
+            model.print_face_summary()
         finally:
             if output_path:
                 output_file.close()

@@ -1,0 +1,6 @@
+Designator	Footprint	Mid X	Mid Y	Ref X	Ref Y	Pad X	Pad Y	Layer	Rotation	Comment
+"LED1"	"LED-SMD_4P-L1.6-W1.5_XL-1615RGBC-WS2812B"	"0mil"	"0mil"	"0mil"	"0mil"	"0mil"	"0mil"	"T"	"0"	"WS2812B-1615"
+"LED2"	"LED-SMD_4P-L1.6-W1.5_XL-1615RGBC-WS2812B"	"100mil"	"0mil"	"100mil"	"0mil"	"100mil"	"0mil"	"T"	"0"	"WS2812B-1615"
+"LED3"	"LED-SMD_4P-L1.6-W1.5_XL-1615RGBC-WS2812B"	"30.9mil"	"95.1mil"	"30.9mil"	"95.1mil"	"30.9mil"	"95.1mil"	"T"	"0"	"WS2812B-1615"
+"LED4"	"LED-SMD_4P-L1.6-W1.5_XL-1615RGBC-WS2812B"	"-80.9mil"	"58.8mil"	"-80.9mil"	"58.8mil"	"-80.9mil"	"58.8mil"	"T"	"0"	"WS2812B-1615"
+"LED5"	"LED-SMD_4P-L1.6-W1.5_XL-1615RGBC-WS2812B"	"-80.9mil"	"-58.8mil"	"-80.9mil"	"-58.8mil"	"-80.9mil"	"-58.8mil"	"T"	"0"	"WS2812B-1615" 

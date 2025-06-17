@@ -1,0 +1,45 @@
+model:
+  name: PyramidNoRemap
+  version: "1.0"
+  description: "Simple pyramid model without face remapping for testing"
+  source: "Test fixture"
+  author: "Test"
+
+geometry:
+  shape: Pyramid
+  num_faces: 4
+  edge_length_mm: 50.0
+
+face_types:
+  triangle:
+    num_leds: 3
+    num_sides: 3
+    groups:
+      center: [0]
+      edge0: [1, 2]
+
+faces:
+  - id: 0
+    type: triangle
+    rotation: 0
+  - id: 1
+    type: triangle
+    rotation: 0
+  - id: 2
+    type: triangle
+    rotation: 0
+  - id: 3
+    type: triangle
+    rotation: 0
+
+hardware:
+  pcb:
+    pick_and_place_file: "test.csv"
+  led:
+    type: WS2812B
+    color_order: GRB
+    diameter_mm: 2.0
+    spacing_mm: 5.0
+  power:
+    max_current_per_led_ma: 20
+    avg_current_per_led_ma: 10 

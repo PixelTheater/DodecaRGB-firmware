@@ -64,15 +64,20 @@ public:
         return concrete_model_ ? concrete_model_->points.size() : 0;
     }
 
-    const Face& face(size_t index) const override {
+    const Face& face(size_t geometric_position) const override {
         // Use clamping for bounds checking
         size_t count = faceCount(); 
-        if (index >= count) { 
+        if (geometric_position >= count) { 
              if (count == 0) return dummyFaceRef();
-            index = count - 1; 
+            geometric_position = count - 1; 
         }
-        // Delegate to concrete model's proxy
-        return concrete_model_->faces[index];
+        // Use the model's remapping face() method, but we need the underlying Face
+        // since our Model::face() returns a FaceProxy, not a Face&
+        auto face_proxy = concrete_model_->face(static_cast<uint8_t>(geometric_position));
+        // Get the actual Face reference from the proxy by accessing the internal Face
+        // We need to find the logical face ID that the proxy represents
+        uint8_t logical_face_id = face_proxy.id();
+        return concrete_model_->faces[logical_face_id];
     }
 
     size_t faceCount() const noexcept override {
@@ -93,6 +98,60 @@ public:
         return TModelDef::SPHERE_RADIUS;
     }
 
+    /**
+     * @brief Get the face ID connected to a specific edge of a face.
+     * @param geometric_position The geometric position of the face.
+     * @param edge_index The edge index within the face (0-based).
+     * @return Connected geometric position, or -1 if no connection or invalid edge.
+     */
+    int8_t face_at_edge(uint8_t geometric_position, uint8_t edge_index) const override {
+        if (!concrete_model_ || geometric_position >= faceCount()) {
+            return -1;
+        }
+        
+        // Use the model's face_at_edge method which handles geometric position mapping
+        return concrete_model_->face_at_edge(geometric_position, edge_index);
+    }
+
+    /**
+     * @brief Get the number of edges for a specific face.
+     * @param geometric_position The geometric position of the face.
+     * @return Number of edges for the face.
+     */
+    uint8_t face_edge_count(uint8_t geometric_position) const override {
+        if (!concrete_model_ || geometric_position >= faceCount()) {
+            return 0;
+        }
+        
+        // Use the model's face_edge_count method which handles geometric position mapping
+        return concrete_model_->face_edge_count(geometric_position);
+    }
+
+    /**
+     * @brief Get LED group by name for a specific face
+     * @param face_id The face ID
+     * @param group_name The name of the group (e.g., "center", "edge0", "ring1")
+     * @return LED group interface for iteration and access
+     */
+    std::unique_ptr<ILedGroup> face_group(uint8_t face_id, const char* group_name) const override {
+        if (!concrete_model_) {
+            return std::make_unique<EmptyLedGroup>();
+        }
+        return concrete_model_->face_group(face_id, group_name);
+    }
+    
+    /**
+     * @brief Get all available group names for a specific face
+     * @param face_id The face ID
+     * @return Vector of group names available for this face
+     */
+    std::vector<const char*> face_group_names(uint8_t face_id) const override {
+        if (!concrete_model_) {
+            return std::vector<const char*>();
+        }
+        return concrete_model_->face_group_names(face_id);
+    }
+
     // Potential helper to access the underlying concrete model if needed 
     // elsewhere (e.g., during Theater setup), but maybe not ideal 
     // to expose publicly if strict interface separation is desired.
@@ -100,6 +159,19 @@ public:
     // const Model<TModelDef>* getConcreteModel() const { return concrete_model_.get(); }
 
 private:
+    // Empty LED group for error cases
+    class EmptyLedGroup : public ILedGroup {
+    public:
+        CRGB& operator[](size_t i) override {
+            static CRGB dummy = CRGB::Black;
+            return dummy;
+        }
+        
+        size_t size() const override {
+            return 0;
+        }
+    };
+
     // Static dummy instances for clamping/error returns
     static const Point& dummyPointRef() { 
         static const Point dummy; 
