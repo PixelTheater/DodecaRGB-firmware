@@ -32,14 +32,13 @@ python util/generate_model.py -d src/models/DodecaRGBv2
 python -m util.tests.run_tests
 ```
 
-### 3D Visualizer
+### 3D Model Viewer
 ```bash
-python visualizer.py
+# Interactive 3D model visualization
+python util/dodeca_viewer.py <model_directory>
 ```
 
-Controls:
-- Click + drag: rotate view
-- Click face: highlight LEDs
+See [Model Visualization](#model-visualization) section below for detailed usage.
 
 ## Implementation Notes
 
@@ -90,3 +89,32 @@ In this example:
 
 See [Model.md](../docs/PixelTheater/Model.md) for more details on the model system.
 
+
+## Model Visualization
+
+Interactive 3D visualization tool for verifying and configuring generated LED models.
+
+![screenshot of viewer](../images/model-viewer.png)
+
+### Usage
+
+```bash
+# View model (requires model.json - generate with -f json flag)
+python util/dodeca_viewer.py src/models/DodecaRGBv2_1
+
+# Show model info only
+python util/dodeca_viewer.py src/models/DodecaRGBv2_1 --info
+```
+
+Controls: Click faces to select, drag to rotate, press 'r' to reset view.
+
+### Requirements
+
+- `matplotlib` (3D plotting)
+- `numpy` (included in `requirements.txt`)
+
+### Use Cases
+
+- Verify LED positioning and face geometry
+- Debug face remapping and rotations
+- Understand 3D structure for scene development
