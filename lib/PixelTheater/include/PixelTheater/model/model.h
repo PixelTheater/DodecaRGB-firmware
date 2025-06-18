@@ -487,6 +487,180 @@ public:
         uint8_t edge_count() const {
             return _model->face_edge_count(_face_id);
         }
+        
+        /**
+         * @brief Calculate the center point of an edge
+         * @param edge_index Edge index (0 to edge_count()-1)
+         * @return Vertex representing the midpoint of the edge
+         */
+        Vertex edge_center(uint8_t edge_index) const {
+            if (edge_index >= vertices().size()) {
+                return Vertex{0.0f, 0.0f, 0.0f};
+            }
+            
+            // Get current and next vertex (wrapping around)
+            const auto& v0 = vertices()[edge_index];
+            const auto& v1 = vertices()[(edge_index + 1) % vertices().size()];
+            
+            // Return midpoint
+            return Vertex{
+                (v0.x + v1.x) / 2.0f,
+                (v0.y + v1.y) / 2.0f,
+                (v0.z + v1.z) / 2.0f
+            };
+        }
+        
+        /**
+         * @brief Find LEDs on this face that are near a specific 3D point
+         * @param point The 3D point to search around
+         * @param max_distance Maximum distance to consider "nearby"
+         * @return Vector of LED indices and their distances, sorted by distance
+         */
+        struct NearbyLed {
+            uint16_t led_index;  // Global LED index
+            float distance;      // Distance to the point
+        };
+        
+        std::vector<NearbyLed> nearby_leds(const Vertex& point, float max_distance = std::numeric_limits<float>::max()) const {
+            std::vector<NearbyLed> result;
+            
+            // Get face LED range
+            uint16_t face_led_offset = led_offset();
+            uint16_t face_led_count = led_count();
+            
+            // Check each LED on this face
+            for (uint16_t face_led_idx = 0; face_led_idx < face_led_count; face_led_idx++) {
+                uint16_t global_led_idx = face_led_offset + face_led_idx;
+                const auto& led_point = _model->point(global_led_idx);
+                
+                // Calculate distance from LED to target point
+                float distance = led_point.distanceTo(point);
+                
+                // Add to results if within max distance
+                if (distance <= max_distance) {
+                    result.push_back({global_led_idx, distance});
+                }
+            }
+            
+            // Sort by distance (closest first)
+            std::sort(result.begin(), result.end(),
+                     [](const NearbyLed& a, const NearbyLed& b) {
+                         return a.distance < b.distance;
+                     });
+            
+            return result;
+        }
+        
+        /**
+         * @brief Calculate midpoint between two specific vertices
+         * @param vertex_a_index Index of first vertex
+         * @param vertex_b_index Index of second vertex  
+         * @return Vertex representing the midpoint between the two vertices
+         */
+        Vertex vertex_midpoint(uint8_t vertex_a_index, uint8_t vertex_b_index) const {
+            if (vertex_a_index >= vertices().size() || vertex_b_index >= vertices().size()) {
+                return Vertex{0.0f, 0.0f, 0.0f};
+            }
+            
+            const auto& va = vertices()[vertex_a_index];
+            const auto& vb = vertices()[vertex_b_index];
+            
+            return Vertex{
+                (va.x + vb.x) / 2.0f,
+                (va.y + vb.y) / 2.0f,
+                (va.z + vb.z) / 2.0f
+            };
+        }
+        
+        /**
+         * @brief Basic geometry validation for this face
+         * @return Structure containing validation results
+         */
+        struct GeometryValidation {
+            bool has_vertices;          // Face has vertices defined
+            bool has_leds;             // Face has LEDs defined  
+            bool vertices_reasonable;   // Vertex coordinates are reasonable
+            bool leds_reasonable;      // LED coordinates are reasonable
+            float face_radius;         // Approximate radius of face
+            uint8_t vertex_count;      // Number of vertices
+            uint16_t led_count;        // Number of LEDs
+        };
+        
+        GeometryValidation validate_geometry() const {
+            GeometryValidation result = {};
+            
+            // Check vertices
+            result.vertex_count = static_cast<uint8_t>(vertices().size());
+            result.has_vertices = (result.vertex_count >= 3);
+            
+            // Check LEDs  
+            result.led_count = led_count();
+            result.has_leds = (result.led_count > 0);
+            
+            // Validate vertex coordinates are reasonable
+            result.vertices_reasonable = true;
+            float max_coord = 0.0f;
+            if (result.has_vertices) {
+                for (size_t i = 0; i < result.vertex_count; i++) {
+                    const auto& v = vertices()[i];
+                    float coord_magnitude = std::sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
+                    max_coord = std::max(max_coord, coord_magnitude);
+                    
+                    // Check for unreasonable coordinates (NaN, infinity, too large)
+                    if (!std::isfinite(v.x) || !std::isfinite(v.y) || !std::isfinite(v.z) || 
+                        coord_magnitude > 10000.0f) {
+                        result.vertices_reasonable = false;
+                        break;
+                    }
+                }
+            }
+            
+            // Validate LED coordinates are reasonable
+            result.leds_reasonable = true;
+            if (result.has_leds) {
+                uint16_t face_led_offset = led_offset();
+                for (uint16_t i = 0; i < result.led_count; i++) {
+                    const auto& led_point = _model->point(face_led_offset + i);
+                    float coord_magnitude = std::sqrt(led_point.x()*led_point.x() + 
+                                                     led_point.y()*led_point.y() + 
+                                                     led_point.z()*led_point.z());
+                    
+                    if (!std::isfinite(led_point.x()) || !std::isfinite(led_point.y()) || 
+                        !std::isfinite(led_point.z()) || coord_magnitude > 10000.0f) {
+                        result.leds_reasonable = false;
+                        break;
+                    }
+                }
+            }
+            
+            // Estimate face radius (distance from center to furthest vertex)
+            result.face_radius = 0.0f;
+            if (result.has_vertices && result.vertices_reasonable) {
+                // Calculate center of vertices
+                float center_x = 0.0f, center_y = 0.0f, center_z = 0.0f;
+                for (size_t i = 0; i < result.vertex_count; i++) {
+                    const auto& v = vertices()[i];
+                    center_x += v.x;
+                    center_y += v.y; 
+                    center_z += v.z;
+                }
+                center_x /= result.vertex_count;
+                center_y /= result.vertex_count;
+                center_z /= result.vertex_count;
+                
+                // Find max distance from center to vertex
+                for (size_t i = 0; i < result.vertex_count; i++) {
+                    const auto& v = vertices()[i];
+                    float dx = v.x - center_x;
+                    float dy = v.y - center_y;
+                    float dz = v.z - center_z;
+                    float distance = std::sqrt(dx*dx + dy*dy + dz*dz);
+                    result.face_radius = std::max(result.face_radius, distance);
+                }
+            }
+            
+            return result;
+        }
     };
     
     // === USER REQUESTED API: face-centric access ===
@@ -687,6 +861,336 @@ public:
         }
         return result;
     }
+
+    /**
+     * @brief Comprehensive model validation implementation
+     */
+    ModelValidation validate_model(bool check_geometric_validity = true, 
+                                 bool check_data_integrity = true) const override {
+        ModelValidation result;
+        
+        // Data integrity validation
+        if (check_data_integrity) {
+            validate_data_integrity(result);
+        }
+        
+        // Geometric validation (more expensive)
+        if (check_geometric_validity) {
+            validate_geometric_integrity(result);
+        }
+        
+        // Calculate overall validation status
+        result.is_valid = (result.failed_checks == 0);
+        
+        return result;
+    }
+
+private:
+    /**
+     * @brief Validate data integrity aspects of the model
+     */
+    void validate_data_integrity(ModelValidation& result) const {
+        auto& data = result.data_integrity;
+        
+        // Check face ID uniqueness
+        result.total_checks++;
+        bool face_ids_unique = true;
+        for (size_t i = 0; i < ModelDef::FACE_COUNT; i++) {
+            uint8_t face_id = _faces[i].id();
+            for (size_t j = i + 1; j < ModelDef::FACE_COUNT; j++) {
+                if (_faces[j].id() == face_id) {
+                    face_ids_unique = false;
+                    data.duplicate_face_ids++;
+                    result.errors.add_error("Duplicate face ID found");
+                }
+            }
+        }
+        data.face_ids_unique = face_ids_unique;
+        if (!face_ids_unique) result.failed_checks++;
+        
+        // Check LED indices are sequential and complete
+        result.total_checks++;
+        bool led_indices_sequential = true;
+        size_t expected_offset = 0;
+        for (size_t i = 0; i < ModelDef::FACE_COUNT; i++) {
+            const auto& face = _faces[i];
+            if (face.led_offset() != expected_offset) {
+                led_indices_sequential = false;
+                result.errors.add_error("LED indices not sequential");
+                break;
+            }
+            expected_offset += face.led_count();
+        }
+        data.led_indices_sequential = led_indices_sequential;
+        if (!led_indices_sequential) result.failed_checks++;
+        
+        // Check edge data completeness
+        result.total_checks++;
+        data.edge_data_complete = true;
+        data.missing_edge_data = 0;
+        for (size_t i = 0; i < ModelDef::FACE_COUNT; i++) {
+            uint8_t logical_face_id = _faces[i].id();
+            uint8_t expected_edges = static_cast<uint8_t>(_faces[i].type());
+            uint8_t found_edges = 0;
+            
+            for (const auto& edge : ModelDef::EDGES) {
+                if (edge.face_id == logical_face_id) {
+                    found_edges++;
+                }
+            }
+            
+            if (found_edges < expected_edges) {
+                data.edge_data_complete = false;
+                data.missing_edge_data += (expected_edges - found_edges);
+                result.errors.add_error("Missing edge data for face");
+            }
+        }
+        if (!data.edge_data_complete) result.failed_checks++;
+        
+        // Check vertex data completeness
+        result.total_checks++;
+        data.vertex_data_complete = true;
+        data.missing_vertex_data = 0;
+        for (size_t i = 0; i < ModelDef::FACE_COUNT; i++) {
+            const auto& face = _faces[i];
+            uint8_t expected_vertices = static_cast<uint8_t>(face.type());
+            
+            // Count non-zero vertices (assuming zero vertices indicate missing data)
+            uint8_t valid_vertices = 0;
+            for (size_t j = 0; j < expected_vertices; j++) {
+                const auto& vertex = face.vertices[j];
+                if (vertex.x != 0.0f || vertex.y != 0.0f || vertex.z != 0.0f) {
+                    valid_vertices++;
+                }
+            }
+            
+            if (valid_vertices < expected_vertices) {
+                data.vertex_data_complete = false;
+                data.missing_vertex_data += (expected_vertices - valid_vertices);
+                result.errors.add_error("Missing vertex data for face");
+            }
+        }
+        if (!data.vertex_data_complete) result.failed_checks++;
+        
+        // Check indices are within bounds
+        result.total_checks++;
+        data.indices_in_bounds = true;
+        data.out_of_bounds_indices = 0;
+        for (size_t i = 0; i < ModelDef::LED_COUNT; i++) {
+            const auto& point = _points[i];
+            if (point.face_id() >= ModelDef::FACE_COUNT) {
+                data.indices_in_bounds = false;
+                data.out_of_bounds_indices++;
+                result.errors.add_error("Point face_id out of bounds");
+            }
+        }
+        if (!data.indices_in_bounds) result.failed_checks++;
+    }
+    
+    /**
+     * @brief Validate geometric integrity aspects of the model
+     */
+    void validate_geometric_integrity(ModelValidation& result) const {
+        auto& geom = result.geometric;
+        
+        // Check face planarity (all vertices coplanar)
+        result.total_checks++;
+        geom.all_faces_planar = true;
+        geom.non_planar_faces = 0;
+        for (size_t i = 0; i < ModelDef::FACE_COUNT; i++) {
+            if (!is_face_planar(i)) {
+                geom.all_faces_planar = false;
+                geom.non_planar_faces++;
+                result.errors.add_error("Face vertices not coplanar");
+            }
+        }
+        if (!geom.all_faces_planar) result.failed_checks++;
+        
+        // Check vertex coordinate sanity
+        result.total_checks++;
+        geom.vertex_coordinates_sane = true;
+        geom.invalid_coordinates = 0;
+        for (size_t i = 0; i < ModelDef::FACE_COUNT; i++) {
+            const auto& face = _faces[i];
+            uint8_t vertex_count = static_cast<uint8_t>(face.type());
+            
+            for (size_t j = 0; j < vertex_count; j++) {
+                const auto& vertex = face.vertices[j];
+                if (!are_coordinates_sane(vertex.x, vertex.y, vertex.z)) {
+                    geom.vertex_coordinates_sane = false;
+                    geom.invalid_coordinates++;
+                    result.errors.add_error("Invalid vertex coordinates");
+                }
+            }
+        }
+        if (!geom.vertex_coordinates_sane) result.failed_checks++;
+        
+        // Check LED coordinate sanity
+        result.total_checks++;
+        geom.led_coordinates_sane = true;
+        for (size_t i = 0; i < ModelDef::LED_COUNT; i++) {
+            const auto& point = _points[i];
+            if (!are_coordinates_sane(point.x(), point.y(), point.z())) {
+                geom.led_coordinates_sane = false;
+                geom.invalid_coordinates++;
+                result.errors.add_error("Invalid LED coordinates");
+            }
+        }
+        if (!geom.led_coordinates_sane) result.failed_checks++;
+        
+        // Check LED placement within face boundaries (simplified check)
+        result.total_checks++;
+        geom.all_leds_within_faces = true;
+        geom.misplaced_leds = 0;
+        for (size_t i = 0; i < ModelDef::FACE_COUNT; i++) {
+            if (!are_face_leds_reasonable(i)) {
+                geom.all_leds_within_faces = false;
+                geom.misplaced_leds++;
+                result.errors.add_error("LEDs positioned unreasonably relative to face");
+            }
+        }
+        if (!geom.all_leds_within_faces) result.failed_checks++;
+        
+        // Check edge connectivity completeness
+        result.total_checks++;
+        geom.edge_connectivity_complete = true;
+        geom.orphaned_edges = 0;
+        for (const auto& edge : ModelDef::EDGES) {
+            // Check if connected face exists (when connection is claimed)
+            if (edge.connected_face_id != 255) { // 255 typically indicates no connection
+                bool connected_face_exists = false;
+                for (size_t i = 0; i < ModelDef::FACE_COUNT; i++) {
+                    if (_faces[i].id() == edge.connected_face_id) {
+                        connected_face_exists = true;
+                        break;
+                    }
+                }
+                if (!connected_face_exists) {
+                    geom.edge_connectivity_complete = false;
+                    geom.orphaned_edges++;
+                    result.errors.add_error("Edge references non-existent connected face");
+                }
+            }
+        }
+        if (!geom.edge_connectivity_complete) result.failed_checks++;
+    }
+    
+    /**
+     * @brief Helper: Check if face vertices are coplanar
+     */
+    bool is_face_planar(size_t face_index) const {
+        if (face_index >= ModelDef::FACE_COUNT) return false;
+        
+        const auto& face = _faces[face_index];
+        uint8_t vertex_count = static_cast<uint8_t>(face.type());
+        
+        if (vertex_count < 4) return true; // Triangles are always planar
+        
+        // Use first three vertices to define the plane
+        const auto& v0 = face.vertices[0];
+        const auto& v1 = face.vertices[1]; 
+        const auto& v2 = face.vertices[2];
+        
+        // Calculate plane normal vector (v1-v0) × (v2-v0)
+        float n_x = (v1.y - v0.y) * (v2.z - v0.z) - (v1.z - v0.z) * (v2.y - v0.y);
+        float n_y = (v1.z - v0.z) * (v2.x - v0.x) - (v1.x - v0.x) * (v2.z - v0.z);
+        float n_z = (v1.x - v0.x) * (v2.y - v0.y) - (v1.y - v0.y) * (v2.x - v0.x);
+        
+        // Normalize
+        float n_mag = std::sqrt(n_x*n_x + n_y*n_y + n_z*n_z);
+        if (n_mag < 1e-6f) return false; // Degenerate case
+        
+        n_x /= n_mag;
+        n_y /= n_mag; 
+        n_z /= n_mag;
+        
+        // Calculate plane distance: d = -n·v0
+        float d = -(n_x * v0.x + n_y * v0.y + n_z * v0.z);
+        
+        // Check if all other vertices lie on this plane
+        const float tolerance = 1.0f; // Allow 1 unit tolerance
+        for (size_t i = 3; i < vertex_count; i++) {
+            const auto& v = face.vertices[i];
+            float distance = std::abs(n_x * v.x + n_y * v.y + n_z * v.z + d);
+            if (distance > tolerance) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+     * @brief Helper: Check if coordinates are reasonable (not NaN, infinite, etc.)
+     */
+    bool are_coordinates_sane(float x, float y, float z) const {
+        const float max_reasonable = 10000.0f;
+        
+        return std::isfinite(x) && std::isfinite(y) && std::isfinite(z) &&
+               std::abs(x) <= max_reasonable && 
+               std::abs(y) <= max_reasonable && 
+               std::abs(z) <= max_reasonable;
+    }
+    
+    /**
+     * @brief Helper: Check if LEDs are positioned reasonably relative to face
+     */
+    bool are_face_leds_reasonable(size_t face_index) const {
+        if (face_index >= ModelDef::FACE_COUNT) return false;
+        
+        const auto& face = _faces[face_index];
+        
+        // For validation purposes, use the face's own vertices
+        // Face remapping is handled at the access level, not validation level
+        const auto* vertex_face = &face;
+        
+        // Calculate face center from the geometrically correct vertices
+        uint8_t vertex_count = static_cast<uint8_t>(vertex_face->type());
+        float center_x = 0.0f, center_y = 0.0f, center_z = 0.0f;
+        
+        for (size_t i = 0; i < vertex_count; i++) {
+            const auto& v = vertex_face->vertices[i];
+            center_x += v.x;
+            center_y += v.y;
+            center_z += v.z;
+        }
+        center_x /= vertex_count;
+        center_y /= vertex_count;
+        center_z /= vertex_count;
+        
+        // Calculate maximum distance from center to vertices (face "radius")
+        float max_vertex_distance = 0.0f;
+        for (size_t i = 0; i < vertex_count; i++) {
+            const auto& v = vertex_face->vertices[i];
+            float dx = v.x - center_x;
+            float dy = v.y - center_y;
+            float dz = v.z - center_z;
+            float distance = std::sqrt(dx*dx + dy*dy + dz*dz);
+            max_vertex_distance = std::max(max_vertex_distance, distance);
+        }
+        
+        // Check if all LEDs are within reasonable distance of face center
+        // Allow LEDs to be up to 2x the face radius from center (generous tolerance for validation)
+        float reasonable_distance = max_vertex_distance * 2.0f;
+        
+        for (uint16_t i = 0; i < face.led_count(); i++) {
+            uint16_t global_led_index = face.led_offset() + i;
+            const auto& led_point = _points[global_led_index];
+            
+            float dx = led_point.x() - center_x;
+            float dy = led_point.y() - center_y;
+            float dz = led_point.z() - center_z;
+            float distance = std::sqrt(dx*dx + dy*dy + dz*dz);
+            
+            if (distance > reasonable_distance) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+public:
 };
 
 } // namespace PixelTheater 

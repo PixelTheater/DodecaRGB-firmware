@@ -152,6 +152,25 @@ public:
         return concrete_model_->face_group_names(face_id);
     }
 
+    /**
+     * @brief Perform comprehensive model validation
+     * @param check_geometric_validity If true, perform expensive geometric checks
+     * @param check_data_integrity If true, perform data integrity checks
+     * @return Detailed validation results
+     */
+    ModelValidation validate_model(bool check_geometric_validity = true, 
+                                 bool check_data_integrity = true) const override {
+        if (!concrete_model_) {
+            ModelValidation result;
+            result.errors.add_error("ModelWrapper: No concrete model instance");
+            result.failed_checks = 1;
+            result.total_checks = 1;
+            result.is_valid = false;
+            return result;
+        }
+        return concrete_model_->validate_model(check_geometric_validity, check_data_integrity);
+    }
+
     // Potential helper to access the underlying concrete model if needed 
     // elsewhere (e.g., during Theater setup), but maybe not ideal 
     // to expose publicly if strict interface separation is desired.

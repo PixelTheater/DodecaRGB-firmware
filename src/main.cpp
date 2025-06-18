@@ -188,6 +188,115 @@ void setup() {
     NUM_LEDS
   );
   
+  // Validate model integrity after initialization
+  Serial.println("Validating model geometry and data integrity...");
+  if (auto* model = theater.model()) {
+    auto validation = model->validate_model(true, true);  // Both geometric and data validation
+    
+    if (validation.is_valid) {
+      Serial.printf("✓ Model validation passed: %d/%d checks successful\n", 
+        validation.total_checks - validation.failed_checks, validation.total_checks);
+    } else {
+      Serial.printf("✗ Model validation FAILED: %d/%d checks failed\n", 
+        validation.failed_checks, validation.total_checks);
+      
+      // Log specific validation errors
+      if (!validation.data_integrity.face_ids_unique) {
+        Serial.println("  ERROR: Face IDs are not unique");
+      }
+      if (!validation.data_integrity.led_indices_sequential) {
+        Serial.println("  ERROR: LED indices are not sequential");
+      }
+      if (!validation.data_integrity.edge_data_complete) {
+        Serial.println("  ERROR: Edge data is incomplete");
+      }
+      if (!validation.data_integrity.vertex_data_complete) {
+        Serial.println("  ERROR: Vertex data is incomplete");
+      }
+      if (!validation.data_integrity.indices_in_bounds) {
+        Serial.println("  ERROR: Indices are out of bounds");
+      }
+      if (!validation.geometric.all_faces_planar) {
+        Serial.println("  ERROR: Not all faces are planar");
+      }
+      if (!validation.geometric.all_leds_within_faces) {
+        Serial.println("  ERROR: Some LEDs are outside face boundaries");
+        
+        // Debug: Show face geometry vs LED positions for first face
+        Serial.println("  DEBUG: Face 0 geometry analysis:");
+        const auto& face0 = model->face(0);
+        const auto& vertices = face0.vertices;  // vertices is a member, not a method
+        
+        // Show face vertices
+        Serial.println("    Face vertices:");
+        for (size_t i = 0; i < vertices.size() && i < 5; i++) {
+          const auto& v = vertices[i];
+          Serial.printf("      V%d: (%.1f, %.1f, %.1f)\n", i, v.x, v.y, v.z);
+        }
+        
+        // Calculate and show face center
+        float center_x = 0, center_y = 0, center_z = 0;
+        for (size_t i = 0; i < vertices.size(); i++) {
+          center_x += vertices[i].x;
+          center_y += vertices[i].y; 
+          center_z += vertices[i].z;
+        }
+        center_x /= vertices.size();
+        center_y /= vertices.size();
+        center_z /= vertices.size();
+        Serial.printf("    Face center: (%.1f, %.1f, %.1f)\n", center_x, center_y, center_z);
+        
+        // Calculate face radius
+        float max_vertex_distance = 0;
+        for (size_t i = 0; i < vertices.size(); i++) {
+          const auto& v = vertices[i];
+          float dx = v.x - center_x;
+          float dy = v.y - center_y; 
+          float dz = v.z - center_z;
+          float distance = sqrt(dx*dx + dy*dy + dz*dz);
+          max_vertex_distance = max(max_vertex_distance, distance);
+        }
+        Serial.printf("    Face radius: %.1f, Tolerance: %.1f\n", max_vertex_distance, max_vertex_distance * 2.0f);
+        
+        // Show first few LED positions and distances
+        Serial.println("    LED positions (first 10):");
+        for (size_t i = 0; i < 10 && i < face0.led_count(); i++) {
+          // Access LED through point interface  
+          const auto& led_point = model->point(face0.led_offset() + i);
+          float led_dx = led_point.x() - center_x;
+          float led_dy = led_point.y() - center_y;
+          float led_dz = led_point.z() - center_z;
+          float distance = sqrt(led_dx*led_dx + led_dy*led_dy + led_dz*led_dz);
+          bool within_tolerance = distance <= (max_vertex_distance * 2.0f);
+          Serial.printf("      LED%d: (%.1f, %.1f, %.1f) dist=%.1f %s\n", 
+            i, led_point.x(), led_point.y(), led_point.z(), distance,
+            within_tolerance ? "✓" : "✗");
+        }
+      }
+      if (!validation.geometric.vertex_coordinates_sane) {
+        Serial.println("  ERROR: Vertex coordinates are not reasonable");
+      }
+      if (!validation.geometric.led_coordinates_sane) {
+        Serial.println("  ERROR: LED coordinates are not reasonable");
+      }
+      if (!validation.geometric.edge_connectivity_complete) {
+        Serial.println("  ERROR: Edge connectivity is broken");
+      }
+      
+      // Print detailed error messages
+      for (size_t i = 0; i < validation.errors.error_count && i < 10; i++) {  // Limit to first 10 errors
+        Serial.printf("  DETAIL: %s\n", validation.errors.error_messages[i]);
+      }
+      if (validation.errors.error_count > 10) {
+        Serial.printf("  ... and %d more errors\n", validation.errors.error_count - 10);
+      }
+      
+      Serial.println("WARNING: Proceeding with potentially invalid model data!");
+    }
+  } else {
+    Serial.println("ERROR: Cannot validate model - model pointer is null!");
+  }
+  
   // Add scenes 
   //theater.addScene<Scenes::TestScene>(); // Add Test Scene first
   theater.addScene<Scenes::IdentifySidesScene>(); // ADDED IdentifySidesScene

@@ -2,7 +2,7 @@
 
 ## Description
 
-This scene is designed to help with alignment and configuration of the DodecaRGB device by displaying all faces with their unique colors while cycling which color pulses. Each face lights the first N LEDs where N equals the face ID plus 1 (face 0 = 1 LED, face 1 = 2 LEDs, etc.). All faces and edges are always lit, but only one color pulses at a time, making it easy to identify specific faces and verify edge adjacency.
+This scene is designed to help with alignment and configuration of the DodecaRGB device by displaying all faces and connected edges with their unique colors while cycling which color pulses. This allows the user to visually verify the wiring and configuration of the model, by making appropriate changes to the YAML file and re-generating the model.h file and re-testing.
 
 ## Implementation Strategy
 
@@ -30,44 +30,47 @@ The scene creates a color-cycling animation that helps users:
    - Clear all LEDs to black
    - Calculate current pulsing color (3 seconds per color)
    - Calculate 60 BPM pulse factor based on time and speed parameter
-   - For all faces:
-     - Light first N LEDs with face color where N = face_id + 1 (pulse if matching current color)
-   - For all edges:
-     - Look up adjacent face using edge adjacency data
-     - Light edge LEDs with adjacent face color (pulse if matching current color)
-     - Apply brightness scaling to all colors
+   - **Center Face Identification**:
+     - For each face: Light first N LEDs with face color where N = geometric_position + 1
+     - This creates a unique LED count pattern for each face (pulse if matching current color)
+   - **Safe Edge Detection**:
+     - For each face and each of its edges:
+       - Find the adjacent face using edge adjacency data
+       - Calculate distances from current face LEDs to all adjacent face LEDs
+       - Find LEDs on the current face closest to the adjacent face
+       - Light the closest N LEDs where N = adjacent_face_id + 1 in the adjacent face's color
+       - This creates edge patterns that show both connectivity AND face identity through LED count
+     - Apply brightness scaling and pulsing to all colors
 
 ## Usage
 
-This scene is particularly useful for:
-- **Initial Setup**: Verifying that all faces are properly wired and numbered
-- **Debugging**: Identifying which physical face corresponds to which face ID in software
-- **Alignment**: Ensuring the device orientation matches the expected coordinate system
-- **Verification**: Confirming that LED mapping is correct across all faces
+This scene is particularly useful for visually verifying the wiring and configuration of a model. The faces are the same but the wiring and order may be different. This helps us ensure the model is configured correctly so the logical faces and pixels are arranged in a consistent way, regardless of how the model is wired.
 
 ## Visual Pattern
 
-The animation cycles through colors 0-11, spending 3 seconds on each:
-
-- **T=0-3s**: All red elements (face centers and edges) pulse, others steady
-- **T=3-6s**: All orange-red elements pulse, others steady  
-- **T=6-9s**: All orange elements pulse, others steady
-- **T=9-12s**: All yellow elements pulse, others steady
-- ...continues through all 12 colors, then repeats
+The animation cycles through faces 0-11, spending 3 seconds on each, slowly pulsing both the center cluster and all edge clusters that reference that face. This results in each of the 12 colors being animated, helping to identify problems with face remapping and rotations.
 
 **Key Features**:
-- Each face lights N LEDs where N = face_id + 1 (face 0: 1 LED, face 1: 2 LEDs, face 2: 3 LEDs, etc.)
-- All face LEDs show their unique colors (evenly distributed HSV hues)
-- All edges always show their adjacent face colors
+- Each face shows a unique color (evenly distributed HSV hues)
+- **Center clusters**: Each face shows N LEDs where N = geometric_position + 1 for easy identification
+- **Edge clusters**: Each edge shows N LEDs where N = connected_face_id + 1 in the connected face's color
 - Only the current color pulses at 60 BPM (adjustable with Speed parameter)
-- LED count pattern makes it easy to identify specific face numbers
-- Simultaneous view of all face and edge relationships
-- If edges light up with unexpected colors, it indicates wiring issues
+- **Dual identification**: Both center and edge patterns use LED count to identify face numbers
+- Simultaneous view of all face and edge relationships using pure geometry
+- **Stable and safe**: Uses only IModel interface methods to avoid crashes with different model types
+- If edge clusters show unexpected colors or counts, it indicates model configuration issues
+
+**Diagnostic Information**:
+- Center cluster count = geometric position + 1
+- Edge cluster count = connected face ID + 1  
+- Edge cluster color = connected face color
+- This allows verification of both geometric positioning and logical connectivity
 
 ## Notes
 
-- **Edge Adjacency**: The scene uses the model's EDGES array to determine which faces are actually adjacent, lighting edges with the correct neighboring face colors
-- **Color Cycling**: Each color pulses for exactly 3 seconds, making it easy to identify all instances of each color across faces and edges
-- **Complete Visibility**: All face and edge relationships are visible simultaneously, providing comprehensive validation
-- **Pulse Synchronization**: All instances of the current color (centers and edges) pulse in sync at the specified BPM for clear visual feedback
-- **Wiring Validation**: If edges show unexpected colors, it indicates faces are wired to wrong positions in the LED chain 
+- **Safe interface usage**: Uses only the stable IModel interface methods to avoid crashes
+- **Distance-based LED selection**: Finds LEDs closest to adjacent faces rather than using predefined LED groups
+- **Portable implementation**: Works with any model type without requiring specific model knowledge
+- **Geometric awareness**: Automatically handles face remapping through the model's geometric positioning system
+- Performance scales with LED count per face but should be acceptable for typical models
+- More reliable than LED group-based approaches for diagnostic purposes

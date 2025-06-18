@@ -6,6 +6,11 @@
 #include "PixelTheater/limits.h" // For MAX_NEIGHBORS
 #include "PixelTheater/model_def.h" // For Neighbor struct definition
 
+// Forward declare Vertex struct (to avoid circular includes)
+namespace PixelTheater {
+    struct Vertex;
+}
+
 namespace PixelTheater {
 
 // Core point data structures
@@ -68,6 +73,9 @@ public:
     // Geometric calculations
     float distanceTo(const Point& other) const;
     bool isNeighbor(const Point& other) const;
+    
+    // Distance calculation to Vertex (implemented in point.cpp)
+    float distanceTo(const Vertex& vertex) const;
 
     // Neighbor access
     const std::array<Neighbor, Limits::MAX_NEIGHBORS>& getNeighbors() const { return _neighbors; }

@@ -147,6 +147,15 @@ const Platform* Theater::platform() const {
     return platform_.get();
 }
 
+// --- ADDED: Model Accessor ---
+IModel* Theater::model() {
+    return model_.get();
+}
+
+const IModel* Theater::model() const {
+    return model_.get();
+}
+
 // --- ADDED: Scene Control ---
 bool Theater::setScene(size_t index) {
     if (!initialized_) {

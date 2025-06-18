@@ -265,8 +265,9 @@ TEST_CASE("Model runtime access methods") {
         CHECK(face1.face_at_edge(1) == -1); // Face 1, edge 1 has no connection
         
         // Test edge count for specific faces (NEW API)
-        CHECK(face0.edge_count() == 5);  // Pentagon has 5 edges
-        CHECK(face1.edge_count() == 5);  // Pentagon has 5 edges
+        // Note: TestModel only defines 2 edges per face in its EDGES array
+        CHECK(face0.edge_count() == 2);  // TestModel defines 2 edges for face 0
+        CHECK(face1.edge_count() == 2);  // TestModel defines 2 edges for face 1
         
         // Test invalid face (should clamp, not crash)
         auto invalid_face = model.face(99);

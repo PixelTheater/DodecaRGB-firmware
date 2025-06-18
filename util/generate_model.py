@@ -267,26 +267,26 @@ class DodecaModel:
     def _calculate_edges_and_relationships(self) -> List[Dict]:
         """Calculate edge geometry and face relationships"""
         edges = []
-        edge_tolerance = 10.0  # mm tolerance for edge matching
+        edge_tolerance = 10.0  # mm tolerance for edge matching (proper geometric tolerance)
         
         # For each face, generate its edges
         for face in self.model_def.faces:
             face_type = self.model_def.face_types[face.type]
             geometric_id = face.get_geometric_id()
             
-            # Get vertices for this face (already calculated with remapping)
+            # Get vertices for this face - use proper geometric calculation (no PCB offsets!)
             vertices = []
             if face_type:
-                # Generate base vertices in local space
+                # Generate base pentagon vertices in local space (geometric shape only!)
                 base_vertices = []
                 num_sides = face_type.num_sides
                 for j in range(num_sides):
-                    angle = j * (2 * math.pi / num_sides)
+                    angle = j * (2 * math.pi / num_sides)  # No base rotation - will be handled by LED-specific transform later
                     x = radius * math.cos(angle)
                     y = radius * math.sin(angle)
                     base_vertices.append([x, y, 0])
 
-                # Transform vertices using same pipeline as in export_cpp_header
+                # Transform vertices using proper geometric transformations (same as dodeca_core.py)
                 m = Matrix3D()
                 m.rotate_x(math.pi)  # Initial transform
                 
@@ -315,6 +315,9 @@ class DodecaModel:
                 # Side rotation
                 m.rotate_z(ro * side_rotation[geometric_id])
                 
+                # Add LED-specific rotation to match LED positioning
+            #    m.rotate_z(math.pi/10)
+                
                 # Transform all vertices
                 for vertex in base_vertices:
                     world_pos = m.apply(vertex)
@@ -337,19 +340,19 @@ class DodecaModel:
                     other_face_type = self.model_def.face_types[other_face.type]
                     other_geometric_id = other_face.get_geometric_id()
                     
-                    # Get vertices for other face
+                    # Get vertices for other face - geometric shape only!
                     other_vertices = []
                     if other_face_type:
-                        # Generate base vertices in local space
+                        # Generate base vertices for geometric face shape (no PCB offsets!)
                         other_base_vertices = []
                         other_num_sides = other_face_type.num_sides
                         for j in range(other_num_sides):
-                            angle = j * (2 * math.pi / other_num_sides)
+                            angle = j * (2 * math.pi / other_num_sides)  # No base rotation - will be handled by LED-specific transform later
                             x = radius * math.cos(angle)
                             y = radius * math.sin(angle)
                             other_base_vertices.append([x, y, 0])
 
-                        # Transform vertices using same pipeline
+                        # Transform vertices using proper geometric transformations (same as dodeca_core.py)
                         other_m = Matrix3D()
                         other_m.rotate_x(math.pi)  # Initial transform
                         
@@ -377,6 +380,9 @@ class DodecaModel:
                         
                         # Side rotation
                         other_m.rotate_z(ro * side_rotation[other_geometric_id])
+                        
+                        # Add LED-specific rotation to match LED positioning
+                        # other_m.rotate_z(math.pi/10)
                         
                         # Transform all vertices
                         for vertex in other_base_vertices:
@@ -537,7 +543,7 @@ class DodecaModel:
                 # Calculate pentagon vertices
                 vertices = []
                 for j in range(5):
-                    angle = 2.0 * math.pi * j / 5.0
+                    angle = 2.0 * math.pi * j / 5.0 + math.pi/10  # Add LED-specific rotation to match positioning
                     x = math.cos(angle) * ft.edge_length_mm
                     y = math.sin(angle) * ft.edge_length_mm
                     vertices.append((x, y, 0.0))
@@ -547,7 +553,7 @@ class DodecaModel:
                 # Calculate triangle vertices
                 vertices = []
                 for j in range(3):
-                    angle = 2.0 * math.pi * j / 3.0
+                    angle = 2.0 * math.pi * j / 3.0 + math.pi/10  # Add LED-specific rotation to match positioning
                     x = math.cos(angle) * ft.edge_length_mm
                     y = math.sin(angle) * ft.edge_length_mm
                     vertices.append((x, y, 0.0))
@@ -577,14 +583,14 @@ class DodecaModel:
                     face_type = ft
                     break
             
-            # Calculate vertices based on face type
+            # Calculate vertices based on face type - geometric shape only!
             vertices = []
             if face_type:
-                # Generate base vertices in local space for any regular polygon
+                # Generate base vertices for geometric face shape (no PCB offsets!)
                 base_vertices = []
                 num_sides = face_type.num_sides
                 for j in range(num_sides):
-                    angle = j * (2 * math.pi / num_sides)
+                    angle = j * (2 * math.pi / num_sides)  # No base rotation - will be handled by LED-specific transform later
                     x = radius * math.cos(angle)
                     y = radius * math.sin(angle)
                     base_vertices.append([x, y, 0])
@@ -620,6 +626,9 @@ class DodecaModel:
                 
                 # Side rotation
                 m.rotate_z(ro * side_rotation[geometric_id])
+                
+                # Add LED-specific rotation to match LED positioning  
+                m.rotate_z(math.pi/10)
                 
                 # Transform all vertices
                 for vertex in base_vertices:
@@ -702,6 +711,9 @@ class DodecaModel:
         # Get current date and time
         generation_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
+        # Calculate edges for JSON export
+        edges = self._calculate_edges_and_relationships()
+        
         data = {
             "model": self.model_def.model,
             "geometry": self.model_def.geometry,
@@ -709,6 +721,7 @@ class DodecaModel:
             "face_types": {name: asdict(ft) for name, ft in self.model_def.face_types.items()},
             "faces": [asdict(f) for f in self.model_def.faces],
             "points": [led.to_dict() for led in self.model_def.leds],
+            "edges": edges,
             "metadata": {
                 "generated_date": generation_date
             }

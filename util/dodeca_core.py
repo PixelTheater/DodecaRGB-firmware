@@ -23,16 +23,16 @@ scale = 5.15    # LED position scaling factor
 # is rotated relative to the starting position, in 72 degree increments.
 side_rotation = [
     0,  # side 0 (bottom)
-    3,  # side 1
-    4,  # side 2
-    4,  # side 3
-    4,  # side 4
-    4,  # side 5
-    2,  # side 6
-    2,  # side 7
-    2,  # side 8
-    2,  # side 9
-    2,  # side 10
+    0,  # side 1
+    0,  # side 2
+    0,  # side 3
+    0,  # side 4
+    0,  # side 5
+    0,  # side 6
+    0,  # side 7
+    0,  # side 8
+    0,  # side 9
+    0,  # side 10
     0   # side 11 (top)
 ]
 
@@ -85,7 +85,7 @@ def transform_led_point(x: float, y: float, num: int, sideNumber: int):
     m.rotate_z(ro * side_rotation[sideNumber])
     
     # LED-specific transforms
-    m.rotate_z(math.pi/10)
+    m.rotate_z(-math.pi/10)
     
     # Final transform - negate Y and Z to match Processing's coordinate system
     result = m.apply([x, y, 0])
@@ -165,8 +165,8 @@ def load_pcb_points(filename):
                     y = strip_units(fields[y_idx])
                     
                     # Apply offsets BEFORE scaling
-                    x += 0.2
-                    y -= 55.884
+                    x += 0
+                    y -= 0
                     
                     # Apply scaling AFTER offsets
                     x *= scale

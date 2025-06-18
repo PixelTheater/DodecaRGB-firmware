@@ -130,6 +130,10 @@ public:
     Platform* platform();
     const Platform* platform() const;
 
+    // --- ADDED: Model Access --- 
+    IModel* model();
+    const IModel* model() const;
+
     // --- ADDED: Scene Control --- 
     bool setScene(size_t index);
 

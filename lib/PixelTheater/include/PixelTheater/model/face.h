@@ -194,8 +194,11 @@ public:
         auto begin() const { return _data->begin(); }
         auto end() const { return _data->begin() + _count; }
 
-        // Size info - return array size for compatibility
-        size_t size() const { return Limits::MAX_EDGES_PER_FACE; }
+        // Size info - return actual vertex count, not array capacity
+        size_t size() const { return _count; }
+        
+        // Get actual vertex count
+        size_t count() const { return _count; }
     } vertices;  // Direct member access
 };
 

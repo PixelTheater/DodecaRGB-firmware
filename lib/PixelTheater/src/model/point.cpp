@@ -1,5 +1,6 @@
 #include "PixelTheater/limits.h"
 #include "PixelTheater/model/point.h"
+#include "PixelTheater/model/face.h"  // For Vertex struct
 #include <cmath>
 #include <algorithm> // For std::min
 #include <cstring>   // For std::memcpy
@@ -32,6 +33,13 @@ void Point::setNeighbors(const Point::Neighbor* neighbors_ptr, size_t count) {
         _neighbors[i].id = 0xFFFF; // Example sentinel ID
         _neighbors[i].distance = -1.0f;
     }
+}
+
+float Point::distanceTo(const Vertex& vertex) const {
+    float dx = _x - vertex.x;
+    float dy = _y - vertex.y;
+    float dz = _z - vertex.z;
+    return std::sqrt(dx*dx + dy*dy + dz*dz);
 }
 
 } // namespace PixelTheater 

@@ -45,14 +45,14 @@ face_types:
 faces:
   - id: 0          # First PCB in series
     type: pentagon
-    rotation: 1     # 72° clockwise  
+    rotation: 2     # 72° clockwise  
     remap_to: 2
   - id: 1          # Second PCB
     type: pentagon   
     rotation: 0    
   - id: 2          # Third PCB
     type: pentagon
-    rotation: 1
+    rotation: 2
     remap_to: 0
   - id: 3          # Fourth PCB
     type: pentagon
@@ -89,6 +89,7 @@ hardware:
   pcb:
     pick_and_place_file: "pcb/PickAndPlace_PCB_DodecaRGB_v2_1_2025-06-14.csv"
     led_designator_prefix: "LED"  # How LEDs are labeled in the PnP file
+    offset_mm: [0, 0]  # x,y offset correction of the PNP origin, needed to align the center of the face
   led:
     type: WS2812B
     color_order: GRB
