@@ -235,6 +235,13 @@ class DodecaModel:
         self.model_def = model_def
         self._pcb_points = None
 
+    def _get_rotation_for_geometric_id(self, geometric_id: int) -> int:
+        """Get the rotation value for a face at the given geometric position"""
+        for face in self.model_def.faces:
+            if face.get_geometric_id() == geometric_id:
+                return face.rotation
+        return 0  # Default rotation if not found
+
     def load_pcb_data(self, filename: str = None) -> None:
         """Load LED positions from PCB pick and place file"""
         if filename is None:
@@ -251,7 +258,8 @@ class DodecaModel:
             face_type = self.model_def.face_types[face.type]
             for led in self._pcb_points:
                 # Use geometric ID for positioning, logical ID for face assignment
-                world_pos = transform_led_point(led['x'], led['y'], led['num'], face.get_geometric_id())
+                # Pass rotation from YAML config instead of using hardcoded array
+                world_pos = transform_led_point(led['x'], led['y'], led['num'], face.get_geometric_id(), face.rotation)
                 new_led = LED(
                     index=len(self.model_def.leds),
                     position=Point3D(*world_pos),
@@ -312,8 +320,9 @@ class DodecaModel:
                 else:
                     m.rotate_z(-zv)
                 
-                # Side rotation
-                m.rotate_z(ro * side_rotation[geometric_id])
+                # Side rotation - use rotation from YAML config
+                rotation = self._get_rotation_for_geometric_id(geometric_id)
+                m.rotate_z(ro * rotation)
                 
                 # Add LED-specific rotation to match LED positioning
             #    m.rotate_z(math.pi/10)
@@ -378,8 +387,9 @@ class DodecaModel:
                         else:
                             other_m.rotate_z(-zv)
                         
-                        # Side rotation
-                        other_m.rotate_z(ro * side_rotation[other_geometric_id])
+                        # Side rotation - use rotation from YAML config
+                        other_rotation = self._get_rotation_for_geometric_id(other_geometric_id)
+                        other_m.rotate_z(ro * other_rotation)
                         
                         # Add LED-specific rotation to match LED positioning
                         # other_m.rotate_z(math.pi/10)
@@ -624,8 +634,9 @@ class DodecaModel:
                 else:
                     m.rotate_z(-zv)
                 
-                # Side rotation
-                m.rotate_z(ro * side_rotation[geometric_id])
+                # Side rotation - use rotation from YAML config
+                rotation = self._get_rotation_for_geometric_id(geometric_id)
+                m.rotate_z(ro * rotation)
                 
                 # Add LED-specific rotation to match LED positioning  
                 m.rotate_z(math.pi/10)

@@ -21,6 +21,7 @@ scale = 5.15    # LED position scaling factor
 
 # Side rotation configuration - each number represents the number of times the pentagon PCB
 # is rotated relative to the starting position, in 72 degree increments.
+# NOTE: This array is now deprecated - use the rotation parameter in transform functions instead
 side_rotation = [
     0,  # side 0 (bottom)
     0,  # side 1
@@ -52,8 +53,15 @@ FACE_COLORS = [
     (0.0, 0.5, 1.0),  # Sky Blue
 ]
 
-def transform_led_point(x: float, y: float, num: int, sideNumber: int):
-    """Transform LED point exactly like Processing's buildLedsFromComponentPlacementCSV()"""
+def transform_led_point(x: float, y: float, num: int, sideNumber: int, rotation: int = 0):
+    """Transform LED point exactly like Processing's buildLedsFromComponentPlacementCSV()
+    
+    Args:
+        x, y: LED coordinates from PCB file
+        num: LED number (0-based)
+        sideNumber: Face number (0-11) - should be geometric ID for proper positioning
+        rotation: Face rotation in 72-degree increments (0-4) from YAML config
+    """
     m = Matrix3D()
     
     # Initial transform
@@ -81,8 +89,8 @@ def transform_led_point(x: float, y: float, num: int, sideNumber: int):
     else:
         m.rotate_z(-zv)
     
-    # Side rotation
-    m.rotate_z(ro * side_rotation[sideNumber])
+    # Side rotation - now uses the rotation parameter from YAML config
+    m.rotate_z(ro * rotation)
     
     # LED-specific transforms
     m.rotate_z(-math.pi/10)

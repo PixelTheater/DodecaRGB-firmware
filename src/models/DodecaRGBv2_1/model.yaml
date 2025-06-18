@@ -45,7 +45,7 @@ face_types:
 faces:
   - id: 0          # First PCB in series
     type: pentagon
-    rotation: 2     # 72° clockwise  
+    rotation: 0     # 72° clockwise  
     remap_to: 2
   - id: 1          # Second PCB
     type: pentagon   
@@ -57,13 +57,16 @@ faces:
   - id: 3          # Fourth PCB
     type: pentagon
     rotation: 0        # 216° clockwise
+    remap_to: 11
   # ... continues clockwise around upper hemisphere
   - id: 4
     type: pentagon
     rotation: 0
+    remap_to: 8
   - id: 5
     type: pentagon
     rotation: 0
+    remap_to: 7
   # ... crosses to lower hemisphere
   - id: 6
     type: pentagon
@@ -71,18 +74,23 @@ faces:
   - id: 7
     type: pentagon
     rotation: 0
+    remap_to: 10
   - id: 8
     type: pentagon
     rotation: 0
+    remap_to: 9
   - id: 9
     type: pentagon
     rotation: 0
+    remap_to: 5
   - id: 10
     type: pentagon
     rotation: 0
+    remap_to: 4 
   - id: 11         # Last PCB in series
     type: pentagon
     rotation: 0
+    remap_to: 3    
 
 # Hardware configuration
 hardware:
