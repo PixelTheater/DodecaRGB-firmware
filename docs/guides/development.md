@@ -14,11 +14,63 @@ version: 2.8.2
 
 We're using PlatformIO to build the firmware and manage dependencies. Just clone the repo and open the project in VSCode/Cursor/whatever.
 
-### Configurating your dodecaRGB model
+### Configuring your dodecaRGB model
 
-If for some reason you need to change the orientation settings of the PCB, you will need to change the `side_rotation` array in `util/dodeca_core.py` and re-run the Python utilities to generate the new LED coordinates, and update the `points.h` file.
+If you need to change the orientation settings of the PCB faces, you should edit the `rotation` values in your model's YAML configuration file (e.g., `src/models/DodecaRGBv2_1/model.yaml`). Each face can have a `rotation` value from 0-4, representing 72-degree increments (0° = 0, 72° = 1, 144° = 2, 216° = 3, 288° = 4). After making changes, re-run the model generation utility:
+
+```bash
+python util/generate_model.py -d src/models/YourModel -y
+```
+
+This will regenerate the `model.h` file with the updated LED coordinates and geometric data.
 
 To configure the animation settings, look at the bottom of the `setup()` function in `src/main.cpp`, there you will find how to disable the slideshow mode, or change the order of animations. Currently, the pushbutton is configured to advance to the next animation in the list.
+
+## Testing and Debugging Animations
+
+### Using the Web Simulator
+
+The web simulator provides a browser-based environment for testing animations without hardware:
+
+1. Build for web: `pio run -e web_simulator`
+2. Open `web/index.html` in browser
+3. Adjust parameters in real-time
+4. Verify visual effects before hardware deployment
+
+### Debugging Techniques
+
+**Logging in Scenes:**
+```cpp
+void MyScene::tick() {
+    Scene::tick();
+    
+    // Log parameter changes
+    static float lastSpeed = -1.0f;
+    float speed = settings["speed"];
+    if (speed != lastSpeed) {
+        logInfo("Speed changed to: %.2f", speed);
+        lastSpeed = speed;
+    }
+}
+```
+
+**Visual Debugging:**
+```cpp
+// Highlight specific LEDs for debugging
+if (settings["debug_mode"]) {
+    // Show face boundaries
+    for (size_t face = 0; face < model().faceCount(); ++face) {
+        auto faceLeds = model().face(face).leds();
+        CRGB debugColor = CHSV(face * 30, 255, 100);
+        for (auto& led : faceLeds) {
+            led = debugColor;
+        }
+    }
+} else {
+    // Normal animation
+    // ...
+}
+```
 
 ## Python Environment
 

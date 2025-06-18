@@ -47,79 +47,23 @@ struct IFaceEdges {
 class IModel {
 public:
     virtual ~IModel() = default;
-
-    /**
-     * @brief Get a const reference to the Point at the specified index.
-     * Corresponds to the LED at the same index.
-     * @param index The index (typically 0 to pointCount()-1).
-     * @return Const reference to the Point. 
-     * Behavior for invalid index is implementation-defined (e.g., clamping).
-     */
     virtual const Point& point(size_t index) const = 0;
-
-    /**
-     * @brief Get the total number of points (should match ledCount from ILedBuffer).
-     */
     virtual size_t pointCount() const noexcept = 0;
-
-    /**
-     * @brief Get a const reference to the Face at the specified index.
-     * @param index The index (0 to faceCount()-1).
-     * @return Const reference to the Face.
-     * Behavior for invalid index is implementation-defined (e.g., clamping).
-     */
     virtual const Face& face(size_t index) const = 0;
-
-    /**
-     * @brief Get the total number of faces in the model.
-     */
     virtual size_t faceCount() const noexcept = 0;
-
-    /**
-     * @brief Get the calculated radius of the sphere encompassing the model.
-     * @return The sphere radius (typically in the same units as point coordinates).
-     */
     virtual float getSphereRadius() const = 0;
 
     // === Face-Centric Methods ===
     
-    /**
-     * @brief Get the number of edges for a specific face.
-     * @param face_id The face ID.
-     * @return Number of edges for the face.
-     */
     virtual uint8_t face_edge_count(uint8_t face_id) const = 0;
-
-    /**
-     * @brief Get the face ID connected to a specific edge of a face.
-     * @param face_id The face ID.
-     * @param edge_index The edge index within the face (0-based).
-     * @return Connected face ID, or -1 if no connection or invalid edge.
-     */
     virtual int8_t face_at_edge(uint8_t face_id, uint8_t edge_index) const = 0;
 
     // === LED Group Access ===
     
-    /**
-     * @brief Get LED group by name for a specific face
-     * @param face_id The face ID
-     * @param group_name The name of the group (e.g., "center", "edge0", "ring1")
-     * @return LED group interface for iteration and access
-     */
     virtual std::unique_ptr<ILedGroup> face_group(uint8_t face_id, const char* group_name) const = 0;
-    
-    /**
-     * @brief Get all available group names for a specific face
-     * @param face_id The face ID
-     * @return Vector of group names available for this face
-     */
     virtual std::vector<const char*> face_group_names(uint8_t face_id) const = 0;
 
     // === Model Validation ===
-    
-    /**
-     * @brief Comprehensive model validation results
-     */
     struct ModelValidation {
         // Overall validation status
         bool is_valid;                    // True if all validations pass
@@ -180,12 +124,6 @@ public:
         }
     };
     
-    /**
-     * @brief Perform comprehensive model validation
-     * @param check_geometric_validity If true, perform expensive geometric checks
-     * @param check_data_integrity If true, perform data integrity checks
-     * @return Detailed validation results
-     */
     virtual ModelValidation validate_model(bool check_geometric_validity = true, 
                                          bool check_data_integrity = true) const = 0;
 

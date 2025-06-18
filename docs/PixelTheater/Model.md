@@ -355,7 +355,35 @@ To create a new model:
 
 See the DodecaRGBv2 model for a complete example.
 
-## Face Remapping
+## Face Configuration
+
+### Face Rotation
+
+Each face in the model can be individually rotated to match its physical orientation during assembly. Face rotation is specified using the `rotation` field in the YAML configuration:
+
+```yaml
+faces:
+  - id: 0
+    type: pentagon
+    rotation: 2     # 144° clockwise rotation (2 × 72°)
+  - id: 1  
+    type: pentagon
+    rotation: 0     # No rotation (0°)
+  - id: 2
+    type: pentagon
+    rotation: 4     # 288° clockwise rotation (4 × 72°)
+```
+
+**Rotation Values:**
+- `0`: No rotation (0°)
+- `1`: 72° clockwise
+- `2`: 144° clockwise  
+- `3`: 216° clockwise
+- `4`: 288° clockwise
+
+The rotation affects both LED positioning and vertex geometry, ensuring that the generated 3D coordinates match the physical orientation of each PCB face.
+
+### Face Remapping
 
 Face remapping allows models to separate **logical face access** (used in scene code) from **physical wiring order** (determined by hardware assembly). This enables consistent scene behavior regardless of how the physical device was wired.
 
@@ -473,3 +501,26 @@ model().face(0).leds()[0] = CRGB::Red;  // Geometric position 0
 ```
 
 The physical LED that lights up will change based on remapping configuration.
+
+### Combining Rotation and Remapping
+
+Rotation and remapping can be used together for complete control over face positioning and orientation:
+
+```yaml
+faces:
+  - id: 0          # First PCB in wiring order
+    type: pentagon
+    rotation: 2     # Rotate 144° to match physical orientation
+    remap_to: 5     # Position at geometric location 5
+  - id: 1          # Second PCB in wiring order  
+    type: pentagon
+    rotation: 1     # Rotate 72° to match physical orientation
+    remap_to: 0     # Position at geometric location 0 (bottom)
+```
+
+**Processing Order:**
+1. **Rotation**: Applied first to orient the face correctly (affects LED positions and vertices)
+2. **Remapping**: Applied second to position the face in 3D space (geometric location)
+3. **Result**: Face appears at the correct 3D location with the correct orientation
+
+This allows complete flexibility in accommodating any physical assembly configuration while maintaining clean, predictable scene code behavior.

@@ -9,17 +9,15 @@ To create an awesome open-source animation and interaction platform for running 
 
 ## Sections
 
-### Pixeltheater
+### PixelTheater API Reference
 
-- [Build System](PixelTheater/build-system.html)
-- [Color System](PixelTheater/Color.html)
-- [Model System](PixelTheater/Model.html)
-- [Parameter System Refactoring](PixelTheater/param-refactoring.html)
-- [PixelTheater Animation System](PixelTheater/README.html)
-- [Scene System](PixelTheater/Scenes.html)
-- [Stage System](PixelTheater/Stage.html)
-- [Palette System](PixelTheater/Palettes.html)
-- [Parameters](PixelTheater/Parameters.html)
+- [Library Overview](PixelTheater/README.html) - Architecture and core concepts
+- [Scene System](PixelTheater/Scenes.html) - Scene API reference
+- [Model System](PixelTheater/Model.html) - 3D geometry and face access
+- [Parameters](PixelTheater/Parameters.html) - User parameter system
+- [Color System](PixelTheater/Color.html) - Color manipulation and utilities
+- [Palette System](PixelTheater/Palettes.html) - Color palette API
+- [Build System](PixelTheater/build-system.html) - Compilation and dependencies
 
 ### Main Documentation
 
@@ -27,12 +25,11 @@ To create an awesome open-source animation and interaction platform for running 
 
 ### Guides
 
-- [Creating Animations](guides/creating_animations.html)
-- [DodecaRGB V1 info](guides/Dodeca-V1-info.html)
-- [DodecaRGB v2 Development](guides/development.html)
-- [PixelTheater Development Plan](guides/dev-plan-scenes-and-stage.html)
-- [Project Guidelines](guides/coding_guidelines.html)
-- [Web Simulator Guide](guides/web_simulator.html)
+- [Creating Animations](guides/creating_animations.html) - Comprehensive tutorial from basics to advanced techniques
+- [Development Setup](guides/development.html) - Environment setup and tooling
+- [Project Guidelines](guides/coding_guidelines.html) - Code standards and best practices
+- [Web Simulator Guide](guides/web-simulator.html) - Browser-based testing environment
+- [DodecaRGB V1 info](guides/Dodeca-V1-info.html) - Legacy hardware documentation
 
 ## Web Simulator
 

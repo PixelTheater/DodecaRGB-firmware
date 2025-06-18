@@ -104,7 +104,7 @@ Follow the official ISO C++ standards and guidelines for best practices in moder
 
 The util/ directory contains python helper scripts for visualizing the physical model, generating the LED coordinates and other pre-calculation tasks, as well as importing and exporting different files used (such as CSV pick-and-place files, json, etc).
 
-As each face of the dodecahedron is a pentagon that could be rotated in 5 different positions. This configuration is defined in the side_rotation[] array, where each side has a number 1-5 indication on of 5 possible rotations in 72 degree increments.
+As each face of the dodecahedron is a pentagon that could be rotated in 5 different positions. This configuration is defined in the YAML model configuration using the `rotation` field for each face, where each face has a number 0-4 indicating one of 5 possible rotations in 72 degree increments (0° = 0, 72° = 1, 144° = 2, 216° = 3, 288° = 4).
 
 ## Documentation
 

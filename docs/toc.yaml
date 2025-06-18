@@ -19,14 +19,15 @@ sections:
     items:
       - file: README.md
   
-  - title: PixelTheater
+  - title: PixelTheater API Reference
     items:
       - file: PixelTheater/README.md
-      - file: PixelTheater/Parameters.md
-      - file: PixelTheater/Stage.md
       - file: PixelTheater/Scenes.md
       - file: PixelTheater/Model.md
+      - file: PixelTheater/Parameters.md
+      - file: PixelTheater/Color.md
       - file: PixelTheater/Palettes.md
+      - file: PixelTheater/Easing.md
       - file: PixelTheater/build-system.md
   
   - title: Guides

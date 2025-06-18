@@ -46,14 +46,7 @@ namespace PixelTheater {
     struct ModelDefinitionBase; // Base for ModelDef concept (if needed)
 } 
 
-// Forward declare testing namespace
-// namespace TheaterTesting {} // No longer needed
-
 namespace PixelTheater {
-
-// --- REMOVE Inline Wrapper Definitions --- 
-// class LedBufferWrapper : public ILedBuffer { ... };
-// template<typename TModelDef> class ModelWrapper : public IModel { ... };
 
 /**
  * @brief Main facade class for the PixelTheater library.
@@ -63,8 +56,6 @@ namespace PixelTheater {
  * add scenes, and control playback.
  */
 class Theater {
-    // friend namespace TheaterTesting; // Invalid syntax, removed
-
 public:
     Theater();
     ~Theater();
@@ -109,7 +100,23 @@ public:
     template<typename TModelDef>
     void useWebPlatform();
 
-    // --- Scene Management (Task 9) ---
+    // --- Scene Management ---
+    
+    /**
+     * @brief Add a new scene to the theater
+     * 
+     * Creates an instance of the specified scene type and adds it to the scene list.
+     * The scene will be automatically connected to the model, LED buffer, and platform.
+     * If this is the first scene added, it becomes the current scene.
+     * 
+     * @tparam SceneType The scene class to instantiate (must inherit from Scene)
+     * 
+     * Example:
+     * ```cpp
+     * theater.addScene<MyCustomScene>();
+     * theater.addScene<Scenes::SparklesScene>();
+     * ```
+     */
     template<typename SceneType>
     void addScene();
 
@@ -126,15 +133,15 @@ public:
     const Scene* currentScene() const;
     size_t sceneCount() const;
 
-    // --- ADDED: Platform Access --- 
+    // --- Platform Access --- 
     Platform* platform();
     const Platform* platform() const;
 
-    // --- ADDED: Model Access --- 
+    // --- Model Access --- 
     IModel* model();
     const IModel* model() const;
 
-    // --- ADDED: Scene Control --- 
+    // --- Scene Control --- 
     bool setScene(size_t index);
 
 protected:

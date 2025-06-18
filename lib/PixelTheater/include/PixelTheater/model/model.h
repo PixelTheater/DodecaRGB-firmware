@@ -151,9 +151,22 @@ public:
         initialize();
     }
 
-    // LED array access
+    /**
+     * @brief LED array accessor providing bounds-checked access to all LEDs
+     * 
+     * Provides array-like interface to the LED color data with automatic bounds checking.
+     * Supports iteration and random access to individual LEDs.
+     * 
+     * Example usage:
+     * ```cpp
+     * model.leds[0] = CRGB::Red;           // Set first LED
+     * for (auto& led : model.leds) {       // Iterate all LEDs  
+     *     led = CRGB::Black;               // Clear all LEDs
+     * }
+     * ```
+     */
     struct Leds {
-        CRGB* _data;  // Change to pointer
+        CRGB* _data;  // Pointer to LED array
         size_t _size;
         
         CRGB& operator[](size_t i) {
@@ -167,14 +180,27 @@ public:
 
         size_t size() const { return _size; }
         
-        // Just iteration support
+        // Iterator support for range-based loops
         auto begin() { return _data; }
         auto end() { return _data + _size; }
         auto begin() const { return _data; }
         auto end() const { return _data + _size; }
-    } leds{_leds, ModelDef::LED_COUNT};  // Pass size explicitly
+    } leds{_leds, ModelDef::LED_COUNT};
 
-    // Point array access
+    /**
+     * @brief Point array accessor providing access to 3D geometry data
+     * 
+     * Provides access to 3D coordinate data for each LED position. Each point
+     * corresponds to an LED at the same index and contains x,y,z coordinates,
+     * face assignment, and neighbor information.
+     * 
+     * Example usage:
+     * ```cpp
+     * const Point& p = model.points[42];   // Get point for LED 42
+     * float height = p.z();               // Get Z coordinate
+     * auto neighbors = p.getNeighbors();  // Get neighboring LEDs
+     * ```
+     */
     struct Points {
         std::array<Point, ModelDef::LED_COUNT>& _data;
         
@@ -190,7 +216,7 @@ public:
         // Add size() method
         size_t size() const { return ModelDef::LED_COUNT; }
 
-        // Allow iteration
+        // Iterator support for range-based loops
         auto begin() { return _data.begin(); }
         auto end() { return _data.end(); }
         auto begin() const { return _data.begin(); }
@@ -663,12 +689,26 @@ public:
         }
     };
     
-    // === USER REQUESTED API: face-centric access ===
+    // === Face-Centric Access API ===
     
     /**
-     * @brief Get face proxy with rich API (USER REQUESTED DESIGN) 
-     * @param geometric_position Geometric position (0-N) to access
-     * @return FaceProxy for the face positioned at that geometric location
+     * @brief Get face proxy with rich face-centric API
+     * 
+     * Returns a FaceProxy that provides convenient access to face-specific
+     * functionality including LEDs, groups, edges, and geometric operations.
+     * 
+     * @param geometric_position Geometric position (0 to faceCount()-1)
+     * @return FaceProxy for the face at that geometric position
+     * 
+     * Example usage:
+     * ```cpp
+     * auto face = model.face(0);              // Get bottom face
+     * face.leds()[0] = CRGB::Red;            // Light first LED
+     * auto center = face.group("center");    // Get center LEDs
+     * for (auto& led : center) {             // Light center group
+     *     led = CRGB::White;
+     * }
+     * ```
      */
     FaceProxy face(uint8_t geometric_position) {
         if (geometric_position >= ModelDef::FACE_COUNT) geometric_position = ModelDef::FACE_COUNT - 1;
@@ -684,6 +724,11 @@ public:
         return FaceProxy(this, &_faces[0], 0);
     }
     
+    /**
+     * @brief Get face proxy with rich face-centric API (const version)
+     * @param geometric_position Geometric position (0 to faceCount()-1)
+     * @return Const FaceProxy for the face at that geometric position
+     */
     const FaceProxy face(uint8_t geometric_position) const {
         if (geometric_position >= ModelDef::FACE_COUNT) geometric_position = ModelDef::FACE_COUNT - 1;
         
@@ -698,7 +743,12 @@ public:
         return FaceProxy(this, const_cast<Face*>(&_faces[0]), 0);
     }
     
-    // Hardware metadata access
+    /**
+     * @brief Hardware metadata accessor
+     * 
+     * Provides access to hardware specifications defined in the model configuration.
+     * All values are compile-time constants from the model definition.
+     */
     struct Hardware {
         static constexpr const char* led_type() { return ModelDef::HARDWARE.led_type; }
         static constexpr const char* color_order() { return ModelDef::HARDWARE.color_order; }

@@ -2,7 +2,7 @@
 #include "PixelTheater/model_def.h"
 #include "PixelTheater/model/face_type.h"
 
-// Generated on: 2025-06-18 21:04:47
+// Generated on: 2025-06-18 21:11:37
 // Generated using: generate_model.py -d src/models/DodecaRGBv2_1 -y
 // Model source: https://somebox.com/projects/
 // Author: Jeremy Seitz, https://github.com/somebox
@@ -18,7 +18,7 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
     static constexpr const char* VERSION = "2.1.0";
     static constexpr const char* DESCRIPTION = "Dodecahedron with 12 pentagon PCBs, 1620 LEDs";
     static constexpr const char* MODEL_TYPE = "Dodecahedron";
-    static constexpr const char* GENERATED_DATE = "2025-06-18 21:04:47";
+    static constexpr const char* GENERATED_DATE = "2025-06-18 21:11:37";
 
     static constexpr size_t LED_COUNT = 1620;
     static constexpr size_t FACE_COUNT = 12;
