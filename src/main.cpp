@@ -5,6 +5,9 @@
 #include <FastLED.h>
 #include <memory>
 
+// BNO085 IMU functionality
+#include <Adafruit_BNO08x.h>
+
 // PixelTheater includes
 #include "PixelTheater.h" // Use the consolidated header
 
@@ -48,12 +51,8 @@
 #define ANALOG_PIN_B 25
 #define ON_BOARD_LED 13
 
-// Teensy I2C on pins 17/16 (SDA,SCL) is mapped to Wire1 in Arduinio framework
-// https://www.pjrc.com/teensy/td_libs_Wire.html
-// ex: Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x29, &Wire1);
-
 #define BRIGHTNESS  15      // global brightness, should be used by all animations
-#define USE_IMU true        // enable orientation sensor (currently: LSM6DSOX)
+#define USE_IMU 1           // enable orientation sensor (currently: LSM9DS1TR)
 
 // model settings (replace with generated model params)
 #define NUM_LEDS 1620
@@ -67,6 +66,55 @@ PixelTheater::Theater theater; // Global Theater instance
 long random_seed = 0;
 int seed1,seed2 = 0;
 int mode = 0;
+
+#if USE_IMU
+// BNO085 IMU using SHTP over Wire1 with custom pins (Teensy 4.1 pins SDA=GPIO5, SCL=GPIO6)
+Adafruit_BNO08x bno08x;
+bool imu_available = false;
+
+// BNO085 interrupt pin (optional but recommended)
+#define BNO085_INT_PIN 2  // You can change this to any available interrupt pin
+volatile bool bno085_interrupt_fired = false;
+
+// Interrupt handler for BNO085 
+void bno085_interrupt_handler() {
+  bno085_interrupt_fired = true;
+}
+
+// IMU timing for periodic logging
+unsigned long last_imu_log = 0;
+const unsigned long IMU_LOG_INTERVAL = 1000; // 1 second for status updates
+
+// I2C scanning function
+void scanI2CDevices() {
+  Serial.println("Scanning I2C bus (Wire1)...");
+  byte error, address;
+  int nDevices = 0;
+
+  for(address = 1; address < 127; address++) {
+    Wire1.beginTransmission(address);
+    error = Wire1.endTransmission();
+
+    if (error == 0) {
+      Serial.print("I2C device found at address 0x");
+      if (address < 16) Serial.print("0");
+      Serial.print(address, HEX);
+      Serial.println(" !");
+      nDevices++;
+    }
+  }
+  
+  if (nDevices == 0) {
+    Serial.println("No I2C devices found");
+  } else {
+    Serial.print("Found ");
+    Serial.print(nDevices);
+    Serial.println(" device(s)");
+  }
+  Serial.println();
+}
+
+#endif // USE_IMU
 
 float calculate_power_usage() {
   // todo
@@ -126,6 +174,9 @@ void fadeInSide(int side, int start_led, int end_led, int duration_ms) {
 }
 
 void setup() {
+  Serial.begin(115200);
+  delay(2000); // Give time for serial monitor to connect
+  
   float temp = InternalTemperature.readTemperatureC();
   random_seed = (temp - int(temp)) * 100000; 
   random_seed += (analogRead(ANALOG_PIN_A) * analogRead(ANALOG_PIN_B));
@@ -136,9 +187,6 @@ void setup() {
   seed2 = random(random_seed) * 3 % 5000;
   random16_add_entropy(seed1);
   random16_add_entropy(seed2);
-
-  Serial.begin(115200);
-  delay(300);
   Serial.printf("Start: DodecaRGBv2 firmware v%s\n", VERSION);
   Serial.printf("Teensy version: %d\n", TEENSYDUINO);
   // Parse FastLED version
@@ -151,6 +199,49 @@ void setup() {
   Serial.printf("Num LEDs: %d\n", NUM_LEDS);
   Serial.printf("Random seed: %d\n", random_seed);
   Serial.println();
+
+  #if USE_IMU
+  // Initialize Wire1 with custom pins for I2C communication (SDA=GPIO5, SCL=GPIO6)  
+  // Wire1.setSDA(5);
+  // Wire1.setSCL(6);
+  Wire1.begin();
+  Wire1.setClock(100000);
+  
+  // Scan I2C bus to see what's connected
+  scanI2CDevices();
+  
+  // Set up interrupt pin for H_INTN signal (optional but recommended)
+  pinMode(BNO085_INT_PIN, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(BNO085_INT_PIN), bno085_interrupt_handler, FALLING);
+  Serial.printf("BNO085 interrupt on pin %d\n", BNO085_INT_PIN);
+  
+  // Initialize BNO085 IMU
+  Serial.println("Initializing BNO085 IMU...");
+  if (bno08x.begin_I2C(0x4B, &Wire1)) {
+    Serial.println("✅ BNO085 initialized successfully!");
+    
+    // Enable sensor reports
+    Serial.println("Enabling sensor reports...");
+    bno08x.enableReport(SH2_GAME_ROTATION_VECTOR, 50000);  // 20Hz quaternion
+    bno08x.enableReport(SH2_RAW_ACCELEROMETER, 50000);     // 20Hz accelerometer
+    
+    // Handle initial reset if needed
+    delay(1000);
+    if (bno08x.wasReset()) {
+      Serial.println("Sensor reset detected - re-enabling reports...");
+      bno08x.enableReport(SH2_GAME_ROTATION_VECTOR, 50000);
+      bno08x.enableReport(SH2_RAW_ACCELEROMETER, 50000);
+    }
+    
+    imu_available = true;
+    Serial.println("✅ BNO085 ready for orientation data");
+    
+  } else {
+    Serial.println("❌ Failed to initialize BNO085!");
+    Serial.println("Check wiring and I2C connection");
+    imu_available = false;
+  }
+  #endif
 
   pinMode(ON_BOARD_LED, OUTPUT);
   pinMode(ANALOG_PIN_A, INPUT);
@@ -299,13 +390,13 @@ void setup() {
   
   // Add scenes 
   //theater.addScene<Scenes::TestScene>(); // Add Test Scene first
-  theater.addScene<Scenes::IdentifySidesScene>(); // ADDED IdentifySidesScene
+  //theater.addScene<Scenes::IdentifySidesScene>(); // ADDED IdentifySidesScene
+  theater.addScene<Scenes::BlobScene>(); 
   theater.addScene<Scenes::SparklesScene>(); // UPDATED
-  theater.addScene<Scenes::SatellitesScene>(); // <<< ADDED Satellites Scene
+  //theater.addScene<Scenes::SatellitesScene>(); // <<< ADDED Satellites Scene
   theater.addScene<Scenes::WanderingParticlesScene>(); // Add Wandering Particles
   theater.addScene<Scenes::TextureMapScene>(); // TextureMapScene moved to Scenes namespace
   theater.addScene<Scenes::OrientationGridScene>(); // ADDED
-  theater.addScene<Scenes::BlobScene>(); 
   theater.addScene<Scenes::XYZScannerScene>(); 
   theater.addScene<Scenes::BoidsScene>(); // Add Boids Scene
   theater.addScene<Scenes::GeographyScene>(); // Add the new scene instance
@@ -327,12 +418,12 @@ const long max_interval = 3000;
 void updateOnboardLED() {
     static uint8_t led_brightness = 0;
     static uint32_t last_update = 0;
-    const uint32_t update_interval = 16;  // ~60Hz updates
+    const uint32_t update_interval = 100;  // ~60Hz updates
     
     interval = millis()/max_interval;
     if (millis() - last_update >= update_interval) {
         // Create smooth sine wave breathing (4 second cycle)
-        float breath = (sin(millis() * PI / 2000.0) + 1.0) / 2.0;
+        float breath = (sin(millis() / 2000.0) + 1.0) / 2.0;
         led_brightness = breath * 255;
         analogWrite(ON_BOARD_LED, led_brightness);
         last_update = millis();
@@ -371,6 +462,55 @@ void loop() {
   BENCHMARK_START("frame_total");
   theater.update();
   BENCHMARK_END();
+
+  #if USE_IMU
+  // Process BNO085 sensor data
+  if (imu_available) {
+    // Handle sensor reset
+    if (bno08x.wasReset()) {
+      Serial.println("BNO085 reset detected - re-enabling reports");
+      bno08x.enableReport(SH2_GAME_ROTATION_VECTOR, 50000);
+      bno08x.enableReport(SH2_RAW_ACCELEROMETER, 50000);
+    }
+    
+    // Process sensor events
+    sh2_SensorValue_t sensorValue;
+    static float last_quat_real = 0;
+    static int16_t last_accel_x = 0;
+    unsigned long current_time = millis();
+    
+    while (bno08x.getSensorEvent(&sensorValue)) {
+      if (sensorValue.sensorId == SH2_GAME_ROTATION_VECTOR) {
+        // Log quaternion data occasionally or when significantly changed
+        if (current_time - last_imu_log >= IMU_LOG_INTERVAL || 
+            abs(sensorValue.un.gameRotationVector.real - last_quat_real) > 0.1) {
+          Serial.printf("Orientation: i=%0.3f j=%0.3f k=%0.3f real=%0.3f\n",
+            sensorValue.un.gameRotationVector.i,
+            sensorValue.un.gameRotationVector.j,
+            sensorValue.un.gameRotationVector.k,
+            sensorValue.un.gameRotationVector.real);
+          last_quat_real = sensorValue.un.gameRotationVector.real;
+          last_imu_log = current_time;
+        }
+        
+        // TODO: Use quaternion data for orientation-based scenes/effects
+        
+      } else if (sensorValue.sensorId == SH2_RAW_ACCELEROMETER) {
+        // Log acceleration data occasionally or when significantly changed
+        if (current_time - last_imu_log >= IMU_LOG_INTERVAL || 
+            abs(sensorValue.un.rawAccelerometer.x - last_accel_x) > 500) {
+          Serial.printf("Accel: X=%d Y=%d Z=%d\n",
+            sensorValue.un.rawAccelerometer.x,
+            sensorValue.un.rawAccelerometer.y,
+            sensorValue.un.rawAccelerometer.z);
+          last_accel_x = sensorValue.un.rawAccelerometer.x;
+        }
+        
+        // TODO: Use acceleration data for motion-based effects
+      }
+    }
+  }
+  #endif
 
   // Log status *after* the update, if the interval passed
   if (log_status_this_frame) {
