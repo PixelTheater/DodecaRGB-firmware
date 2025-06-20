@@ -30,6 +30,7 @@
 #include "scenes/orientation_grid/orientation_grid_scene.h" // ADDED
 #include "scenes/sparkles/sparkles_scene.h" // UPDATED
 #include "scenes/texture_map/texture_map_scene.h" // ADDED NEW SCENE
+#include "scenes/gravity_marbles/gravity_marbles_scene.h" // ADDED
 #include "benchmark.h" 
 
 #ifndef PROJECT_VERSION
@@ -224,6 +225,8 @@ void setup() {
     Serial.println("Enabling sensor reports...");
     bno08x.enableReport(SH2_GAME_ROTATION_VECTOR, 50000);  // 20Hz quaternion
     bno08x.enableReport(SH2_RAW_ACCELEROMETER, 50000);     // 20Hz accelerometer
+    bno08x.enableReport(SH2_GRAVITY, 50000); // ADDED: Directly report gravity vector
+    bno08x.enableReport(SH2_LINEAR_ACCELERATION, 10000); // 100Hz for responsive movement
     
     // Handle initial reset if needed
     delay(1000);
@@ -231,6 +234,8 @@ void setup() {
       Serial.println("Sensor reset detected - re-enabling reports...");
       bno08x.enableReport(SH2_GAME_ROTATION_VECTOR, 50000);
       bno08x.enableReport(SH2_RAW_ACCELEROMETER, 50000);
+      bno08x.enableReport(SH2_GRAVITY, 50000); // ADDED: Also re-enable on reset
+      bno08x.enableReport(SH2_LINEAR_ACCELERATION, 10000);
     }
     
     imu_available = true;
@@ -391,6 +396,7 @@ void setup() {
   // Add scenes 
   //theater.addScene<Scenes::TestScene>(); // Add Test Scene first
   //theater.addScene<Scenes::IdentifySidesScene>(); // ADDED IdentifySidesScene
+  theater.addScene<Scenes::GravityMarblesScene>(); // Add the new scene instance
   theater.addScene<Scenes::BlobScene>(); 
   theater.addScene<Scenes::SparklesScene>(); // UPDATED
   //theater.addScene<Scenes::SatellitesScene>(); // <<< ADDED Satellites Scene
@@ -471,6 +477,8 @@ void loop() {
       Serial.println("BNO085 reset detected - re-enabling reports");
       bno08x.enableReport(SH2_GAME_ROTATION_VECTOR, 50000);
       bno08x.enableReport(SH2_RAW_ACCELEROMETER, 50000);
+      bno08x.enableReport(SH2_GRAVITY, 50000); // ADDED: Also re-enable on reset
+      bno08x.enableReport(SH2_LINEAR_ACCELERATION, 10000);
     }
     
     // Process sensor events
@@ -480,9 +488,45 @@ void loop() {
     unsigned long current_time = millis();
     
     while (bno08x.getSensorEvent(&sensorValue)) {
-      if (sensorValue.sensorId == SH2_GAME_ROTATION_VECTOR) {
+      if (sensorValue.sensorId == SH2_GRAVITY) {
+          if (auto* current_scene = theater.currentScene()) {
+              if (current_scene->name() == "Gravity Marbles") {
+                  // The gravity vector from the IMU is in m/s^2. We need to normalize it
+                  // to get a pure direction vector for the scene's parameters.
+                  float gx = sensorValue.un.gravity.x;
+                  float gy = sensorValue.un.gravity.y;
+                  float gz = sensorValue.un.gravity.z;
+
+                  float magnitude = sqrt(gx * gx + gy * gy + gz * gz);
+
+                  if (magnitude > 1e-6) { // Avoid division by zero
+                      gx /= magnitude;
+                      gy /= magnitude;
+                      gz /= magnitude;
+                  }
+
+                  // The gravity vector points towards the center of the Earth.
+                  // To make the marbles fall "down" in the scene, we apply axis corrections
+                  // based on observation and user feedback.
+                  current_scene->settings["gravity_x"] = -gx;
+                  current_scene->settings["gravity_y"] = gy;
+                  current_scene->settings["gravity_z"] = -gz;
+              }
+          }
+      } else if (sensorValue.sensorId == SH2_LINEAR_ACCELERATION) {
+          if (auto* current_scene = theater.currentScene()) {
+              if (current_scene->name() == "Gravity Marbles") {
+                  float ax = sensorValue.un.linearAcceleration.x;
+                  float ay = sensorValue.un.linearAcceleration.y;
+                  float az = sensorValue.un.linearAcceleration.z;
+                  current_scene->settings["lin_accel_x"] = ax;
+                  current_scene->settings["lin_accel_y"] = ay;
+                  current_scene->settings["lin_accel_z"] = az;
+              }
+          }
+      } else if (sensorValue.sensorId == SH2_GAME_ROTATION_VECTOR) {
         // Log quaternion data occasionally or when significantly changed
-        if (current_time - last_imu_log >= IMU_LOG_INTERVAL || 
+        /*if (current_time - last_imu_log >= IMU_LOG_INTERVAL || 
             abs(sensorValue.un.gameRotationVector.real - last_quat_real) > 0.1) {
           Serial.printf("Orientation: i=%0.3f j=%0.3f k=%0.3f real=%0.3f\n",
             sensorValue.un.gameRotationVector.i,
@@ -491,20 +535,18 @@ void loop() {
             sensorValue.un.gameRotationVector.real);
           last_quat_real = sensorValue.un.gameRotationVector.real;
           last_imu_log = current_time;
-        }
-        
-        // TODO: Use quaternion data for orientation-based scenes/effects
+        }*/
         
       } else if (sensorValue.sensorId == SH2_RAW_ACCELEROMETER) {
         // Log acceleration data occasionally or when significantly changed
-        if (current_time - last_imu_log >= IMU_LOG_INTERVAL || 
+        /*if (current_time - last_imu_log >= IMU_LOG_INTERVAL || 
             abs(sensorValue.un.rawAccelerometer.x - last_accel_x) > 500) {
           Serial.printf("Accel: X=%d Y=%d Z=%d\n",
             sensorValue.un.rawAccelerometer.x,
             sensorValue.un.rawAccelerometer.y,
             sensorValue.un.rawAccelerometer.z);
           last_accel_x = sensorValue.un.rawAccelerometer.x;
-        }
+        }*/
         
         // TODO: Use acceleration data for motion-based effects
       }
