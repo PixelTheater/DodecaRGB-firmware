@@ -2,8 +2,8 @@
 #include "PixelTheater/model_def.h"
 #include "PixelTheater/model/face_type.h"
 
-// Generated on: 2025-06-18 21:11:37
-// Generated using: generate_model.py -d src/models/DodecaRGBv2_1 -y
+// Generated on: 2025-08-09 17:04:14
+// Generated using: generate_model.py -y -d src/models/DodecaRGBv2_1/
 // Model source: https://somebox.com/projects/
 // Author: Jeremy Seitz, https://github.com/somebox
 
@@ -18,7 +18,7 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
     static constexpr const char* VERSION = "2.1.0";
     static constexpr const char* DESCRIPTION = "Dodecahedron with 12 pentagon PCBs, 1620 LEDs";
     static constexpr const char* MODEL_TYPE = "Dodecahedron";
-    static constexpr const char* GENERATED_DATE = "2025-06-18 21:11:37";
+    static constexpr const char* GENERATED_DATE = "2025-08-09 17:04:14";
 
     static constexpr size_t LED_COUNT = 1620;
     static constexpr size_t FACE_COUNT = 12;
@@ -116,58 +116,58 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
 
     // Face instances with transformed vertices
     static constexpr std::array<FaceData, FACE_COUNT> FACES{{
-        {.id = 0, .type_id = 0, .rotation = 0, .geometric_id = 2,
+        {.id = 0, .type_id = 0, .rotation = 3, .geometric_id = 5,
             .vertices = {
+                {.x = -327.223f, .y = -37.741f, .z = 12.038f},
+                {.x = -222.079f, .y = -237.743f, .z = -52.945f},
+                {.x = -72.023f, .y = -299.542f, .z = 117.181f},
+                {.x = -84.427f, .y = -137.733f, .z = 287.307f},
+                {.x = -242.149f, .y = 24.068f, .z = 222.325f}
+            }
+        },
+        {.id = 1, .type_id = 0, .rotation = 3, .geometric_id = 2,
+            .vertices = {
+                {.x = 286.912f, .y = -161.803f, .z = 12.038f},
+                {.x = 319.408f, .y = 61.803f, .z = -52.945f},
                 {.x = 234.334f, .y = 200.000f, .z = 117.181f},
                 {.x = 149.261f, .y = 61.803f, .z = 287.307f},
-                {.x = 181.756f, .y = -161.803f, .z = 222.325f},
-                {.x = 286.912f, .y = -161.803f, .z = 12.038f},
-                {.x = 319.408f, .y = 61.803f, .z = -52.945f}
+                {.x = 181.756f, .y = -161.803f, .z = 222.325f}
             }
         },
-        {.id = 1, .type_id = 0, .rotation = 0, .geometric_id = 1,
+        {.id = 2, .type_id = 0, .rotation = 3, .geometric_id = 1,
             .vertices = {
+                {.x = -65.223f, .y = -322.870f, .z = 12.038f},
+                {.x = 157.481f, .y = -284.676f, .z = -52.945f},
                 {.x = 262.625f, .y = -161.062f, .z = 117.181f},
                 {.x = 104.903f, .y = -122.857f, .z = 287.307f},
-                {.x = -97.718f, .y = -222.860f, .z = 222.325f},
-                {.x = -65.223f, .y = -322.870f, .z = 12.038f},
-                {.x = 157.481f, .y = -284.676f, .z = -52.945f}
+                {.x = -97.718f, .y = -222.860f, .z = 222.325f}
             }
         },
-        {.id = 2, .type_id = 0, .rotation = 2, .geometric_id = 0,
+        {.id = 3, .type_id = 0, .rotation = 3, .geometric_id = 3,
             .vertices = {
+                {.x = 242.545f, .y = 222.870f, .z = 12.038f},
+                {.x = 39.924f, .y = 322.873f, .z = -52.945f},
+                {.x = -117.798f, .y = 284.668f, .z = 117.181f},
+                {.x = -12.654f, .y = 161.054f, .z = 287.307f},
+                {.x = 210.050f, .y = 122.860f, .z = 222.325f}
+            }
+        },
+        {.id = 4, .type_id = 0, .rotation = 3, .geometric_id = 4,
+            .vertices = {
+                {.x = -137.011f, .y = 299.545f, .z = 12.038f},
+                {.x = -294.733f, .y = 137.743f, .z = -52.945f},
+                {.x = -307.137f, .y = -24.065f, .z = 117.181f},
+                {.x = -157.082f, .y = 37.733f, .z = 287.307f},
+                {.x = -51.938f, .y = 237.735f, .z = 222.325f}
+            }
+        },
+        {.id = 5, .type_id = 0, .rotation = 0, .geometric_id = 0,
+            .vertices = {
+                {.x = -190.211f, .y = -61.803f, .z = 262.000f},
+                {.x = 0.000f, .y = -200.000f, .z = 262.000f},
                 {.x = 190.211f, .y = -61.803f, .z = 262.000f},
                 {.x = 117.557f, .y = 161.803f, .z = 262.000f},
-                {.x = -117.557f, .y = 161.803f, .z = 262.000f},
-                {.x = -190.211f, .y = -61.803f, .z = 262.000f},
-                {.x = -0.000f, .y = -200.000f, .z = 262.000f}
-            }
-        },
-        {.id = 3, .type_id = 0, .rotation = 0, .geometric_id = 11,
-            .vertices = {
-                {.x = 190.211f, .y = -61.803f, .z = -262.000f},
-                {.x = 0.000f, .y = -200.000f, .z = -262.000f},
-                {.x = -190.211f, .y = -61.803f, .z = -262.000f},
-                {.x = -117.557f, .y = 161.803f, .z = -262.000f},
-                {.x = 117.557f, .y = 161.803f, .z = -262.000f}
-            }
-        },
-        {.id = 4, .type_id = 0, .rotation = 0, .geometric_id = 8,
-            .vertices = {
-                {.x = 327.223f, .y = -37.741f, .z = -12.038f},
-                {.x = 222.079f, .y = -237.743f, .z = 52.945f},
-                {.x = 72.023f, .y = -299.542f, .z = -117.181f},
-                {.x = 84.427f, .y = -137.733f, .z = -287.307f},
-                {.x = 242.149f, .y = 24.068f, .z = -222.325f}
-            }
-        },
-        {.id = 5, .type_id = 0, .rotation = 0, .geometric_id = 7,
-            .vertices = {
-                {.x = 65.223f, .y = -322.870f, .z = -12.038f},
-                {.x = -157.481f, .y = -284.676f, .z = 52.945f},
-                {.x = -262.625f, .y = -161.062f, .z = -117.181f},
-                {.x = -104.903f, .y = -122.857f, .z = -287.307f},
-                {.x = 97.718f, .y = -222.860f, .z = -222.325f}
+                {.x = -117.557f, .y = 161.803f, .z = 262.000f}
             }
         },
         {.id = 6, .type_id = 0, .rotation = 0, .geometric_id = 6,
@@ -179,16 +179,25 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
                 {.x = -181.756f, .y = -161.803f, .z = -222.325f}
             }
         },
-        {.id = 7, .type_id = 0, .rotation = 0, .geometric_id = 10,
+        {.id = 7, .type_id = 0, .rotation = 0, .geometric_id = 7,
             .vertices = {
-                {.x = -242.545f, .y = 222.870f, .z = -12.038f},
-                {.x = -39.924f, .y = 322.873f, .z = 52.945f},
-                {.x = 117.798f, .y = 284.668f, .z = -117.181f},
-                {.x = 12.654f, .y = 161.054f, .z = -287.307f},
-                {.x = -210.050f, .y = 122.860f, .z = -222.325f}
+                {.x = 65.223f, .y = -322.870f, .z = -12.038f},
+                {.x = -157.481f, .y = -284.676f, .z = 52.945f},
+                {.x = -262.625f, .y = -161.062f, .z = -117.181f},
+                {.x = -104.903f, .y = -122.857f, .z = -287.307f},
+                {.x = 97.718f, .y = -222.860f, .z = -222.325f}
             }
         },
-        {.id = 8, .type_id = 0, .rotation = 0, .geometric_id = 9,
+        {.id = 8, .type_id = 0, .rotation = 0, .geometric_id = 8,
+            .vertices = {
+                {.x = 327.223f, .y = -37.741f, .z = -12.038f},
+                {.x = 222.079f, .y = -237.743f, .z = 52.945f},
+                {.x = 72.023f, .y = -299.542f, .z = -117.181f},
+                {.x = 84.427f, .y = -137.733f, .z = -287.307f},
+                {.x = 242.149f, .y = 24.068f, .z = -222.325f}
+            }
+        },
+        {.id = 9, .type_id = 0, .rotation = 0, .geometric_id = 9,
             .vertices = {
                 {.x = 137.011f, .y = 299.545f, .z = -12.038f},
                 {.x = 294.733f, .y = 137.743f, .z = 52.945f},
@@ -197,31 +206,22 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
                 {.x = 51.938f, .y = 237.735f, .z = -222.325f}
             }
         },
-        {.id = 9, .type_id = 0, .rotation = 0, .geometric_id = 5,
+        {.id = 10, .type_id = 0, .rotation = 0, .geometric_id = 10,
             .vertices = {
-                {.x = -72.023f, .y = -299.542f, .z = 117.181f},
-                {.x = -84.427f, .y = -137.733f, .z = 287.307f},
-                {.x = -242.149f, .y = 24.068f, .z = 222.325f},
-                {.x = -327.223f, .y = -37.741f, .z = 12.038f},
-                {.x = -222.079f, .y = -237.743f, .z = -52.945f}
+                {.x = -242.545f, .y = 222.870f, .z = -12.038f},
+                {.x = -39.924f, .y = 322.873f, .z = 52.945f},
+                {.x = 117.798f, .y = 284.668f, .z = -117.181f},
+                {.x = 12.654f, .y = 161.054f, .z = -287.307f},
+                {.x = -210.050f, .y = 122.860f, .z = -222.325f}
             }
         },
-        {.id = 10, .type_id = 0, .rotation = 0, .geometric_id = 4,
+        {.id = 11, .type_id = 0, .rotation = 0, .geometric_id = 11,
             .vertices = {
-                {.x = -307.137f, .y = -24.065f, .z = 117.181f},
-                {.x = -157.082f, .y = 37.733f, .z = 287.307f},
-                {.x = -51.938f, .y = 237.735f, .z = 222.325f},
-                {.x = -137.011f, .y = 299.545f, .z = 12.038f},
-                {.x = -294.733f, .y = 137.743f, .z = -52.945f}
-            }
-        },
-        {.id = 11, .type_id = 0, .rotation = 0, .geometric_id = 3,
-            .vertices = {
-                {.x = -117.798f, .y = 284.668f, .z = 117.181f},
-                {.x = -12.654f, .y = 161.054f, .z = 287.307f},
-                {.x = 210.050f, .y = 122.860f, .z = 222.325f},
-                {.x = 242.545f, .y = 222.870f, .z = 12.038f},
-                {.x = 39.924f, .y = 322.873f, .z = -52.945f}
+                {.x = 190.211f, .y = -61.803f, .z = -262.000f},
+                {.x = 0.000f, .y = -200.000f, .z = -262.000f},
+                {.x = -190.211f, .y = -61.803f, .z = -262.000f},
+                {.x = -117.557f, .y = 161.803f, .z = -262.000f},
+                {.x = 117.557f, .y = 161.803f, .z = -262.000f}
             }
         }
     }};
@@ -231,211 +231,211 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
         {
             .face_id = 0,
             .edge_index = 0,
-            .start_vertex = {.x = 261.976f, .y = 190.211f, .z = 61.904f},
-            .end_vertex = {.x = 161.966f, .y = 117.557f, .z = 261.899f},
-            .connected_face_id = 11
-        },
-        {
-            .face_id = 0,
-            .edge_index = 1,
-            .start_vertex = {.x = 161.966f, .y = 117.557f, .z = 261.899f},
-            .end_vertex = {.x = 161.966f, .y = -117.557f, .z = 261.899f},
-            .connected_face_id = 2
-        },
-        {
-            .face_id = 0,
-            .edge_index = 2,
-            .start_vertex = {.x = 161.966f, .y = -117.557f, .z = 261.899f},
-            .end_vertex = {.x = 261.976f, .y = -190.211f, .z = 61.904f},
-            .connected_face_id = 1
-        },
-        {
-            .face_id = 0,
-            .edge_index = 3,
-            .start_vertex = {.x = 261.976f, .y = -190.211f, .z = 61.904f},
-            .end_vertex = {.x = 323.786f, .y = -0.000f, .z = -61.700f},
-            .connected_face_id = 4
-        },
-        {
-            .face_id = 0,
-            .edge_index = 4,
-            .start_vertex = {.x = 323.786f, .y = -0.000f, .z = -61.700f},
-            .end_vertex = {.x = 261.976f, .y = 190.211f, .z = 61.904f},
-            .connected_face_id = 8
-        },
-        {
-            .face_id = 1,
-            .edge_index = 0,
-            .start_vertex = {.x = 261.857f, .y = -190.376f, .z = 61.904f},
-            .end_vertex = {.x = 161.854f, .y = -117.712f, .z = 261.899f},
-            .connected_face_id = 0
-        },
-        {
-            .face_id = 1,
-            .edge_index = 1,
-            .start_vertex = {.x = 161.854f, .y = -117.712f, .z = 261.899f},
-            .end_vertex = {.x = -61.753f, .y = -190.366f, .z = 261.899f},
-            .connected_face_id = 2
-        },
-        {
-            .face_id = 1,
-            .edge_index = 2,
-            .start_vertex = {.x = -61.753f, .y = -190.366f, .z = 261.899f},
-            .end_vertex = {.x = -99.947f, .y = -307.933f, .z = 61.904f},
-            .connected_face_id = 9
-        },
-        {
-            .face_id = 1,
-            .edge_index = 3,
-            .start_vertex = {.x = -99.947f, .y = -307.933f, .z = 61.904f},
-            .end_vertex = {.x = 100.055f, .y = -307.938f, .z = -61.700f},
-            .connected_face_id = 5
-        },
-        {
-            .face_id = 1,
-            .edge_index = 4,
-            .start_vertex = {.x = 100.055f, .y = -307.938f, .z = -61.700f},
-            .end_vertex = {.x = 261.857f, .y = -190.376f, .z = 61.904f},
-            .connected_face_id = 4
-        },
-        {
-            .face_id = 2,
-            .edge_index = 0,
-            .start_vertex = {.x = 161.803f, .y = -117.557f, .z = 262.000f},
-            .end_vertex = {.x = 161.803f, .y = 117.557f, .z = 262.000f},
-            .connected_face_id = 0
-        },
-        {
-            .face_id = 2,
-            .edge_index = 1,
-            .start_vertex = {.x = 161.803f, .y = 117.557f, .z = 262.000f},
-            .end_vertex = {.x = -61.803f, .y = 190.211f, .z = 262.000f},
-            .connected_face_id = 11
-        },
-        {
-            .face_id = 2,
-            .edge_index = 2,
-            .start_vertex = {.x = -61.803f, .y = 190.211f, .z = 262.000f},
-            .end_vertex = {.x = -200.000f, .y = 0.000f, .z = 262.000f},
-            .connected_face_id = 10
-        },
-        {
-            .face_id = 2,
-            .edge_index = 3,
-            .start_vertex = {.x = -200.000f, .y = 0.000f, .z = 262.000f},
-            .end_vertex = {.x = -61.803f, .y = -190.211f, .z = 262.000f},
-            .connected_face_id = 9
-        },
-        {
-            .face_id = 2,
-            .edge_index = 4,
-            .start_vertex = {.x = -61.803f, .y = -190.211f, .z = 262.000f},
-            .end_vertex = {.x = 161.803f, .y = -117.557f, .z = 262.000f},
-            .connected_face_id = 1
-        },
-        {
-            .face_id = 3,
-            .edge_index = 0,
-            .start_vertex = {.x = 200.000f, .y = -0.000f, .z = -262.000f},
-            .end_vertex = {.x = 61.803f, .y = -190.211f, .z = -262.000f},
-            .connected_face_id = 4
-        },
-        {
-            .face_id = 3,
-            .edge_index = 1,
-            .start_vertex = {.x = 61.803f, .y = -190.211f, .z = -262.000f},
-            .end_vertex = {.x = -161.803f, .y = -117.557f, .z = -262.000f},
-            .connected_face_id = 5
-        },
-        {
-            .face_id = 3,
-            .edge_index = 2,
-            .start_vertex = {.x = -161.803f, .y = -117.557f, .z = -262.000f},
-            .end_vertex = {.x = -161.803f, .y = 117.557f, .z = -262.000f},
+            .start_vertex = {.x = -323.747f, .y = -0.102f, .z = 61.904f},
+            .end_vertex = {.x = -261.948f, .y = -190.316f, .z = -61.700f},
             .connected_face_id = 6
         },
         {
-            .face_id = 3,
-            .edge_index = 3,
-            .start_vertex = {.x = -161.803f, .y = 117.557f, .z = -262.000f},
-            .end_vertex = {.x = 61.803f, .y = 190.211f, .z = -262.000f},
+            .face_id = 0,
+            .edge_index = 1,
+            .start_vertex = {.x = -261.948f, .y = -190.316f, .z = -61.700f},
+            .end_vertex = {.x = -100.140f, .y = -307.870f, .z = 61.904f},
             .connected_face_id = 7
         },
         {
+            .face_id = 0,
+            .edge_index = 2,
+            .start_vertex = {.x = -100.140f, .y = -307.870f, .z = 61.904f},
+            .end_vertex = {.x = -61.935f, .y = -190.307f, .z = 261.899f},
+            .connected_face_id = 2
+        },
+        {
+            .face_id = 0,
+            .edge_index = 3,
+            .start_vertex = {.x = -61.935f, .y = -190.307f, .z = 261.899f},
+            .end_vertex = {.x = -200.132f, .y = -0.096f, .z = 261.899f},
+            .connected_face_id = 5
+        },
+        {
+            .face_id = 0,
+            .edge_index = 4,
+            .start_vertex = {.x = -200.132f, .y = -0.096f, .z = 261.899f},
+            .end_vertex = {.x = -323.747f, .y = -0.102f, .z = 61.904f},
+            .connected_face_id = 4
+        },
+        {
+            .face_id = 1,
+            .edge_index = 0,
+            .start_vertex = {.x = 261.976f, .y = -190.211f, .z = 61.904f},
+            .end_vertex = {.x = 323.786f, .y = -0.000f, .z = -61.700f},
+            .connected_face_id = 8
+        },
+        {
+            .face_id = 1,
+            .edge_index = 1,
+            .start_vertex = {.x = 323.786f, .y = -0.000f, .z = -61.700f},
+            .end_vertex = {.x = 261.976f, .y = 190.211f, .z = 61.904f},
+            .connected_face_id = 9
+        },
+        {
+            .face_id = 1,
+            .edge_index = 2,
+            .start_vertex = {.x = 261.976f, .y = 190.211f, .z = 61.904f},
+            .end_vertex = {.x = 161.966f, .y = 117.557f, .z = 261.899f},
+            .connected_face_id = 3
+        },
+        {
+            .face_id = 1,
+            .edge_index = 3,
+            .start_vertex = {.x = 161.966f, .y = 117.557f, .z = 261.899f},
+            .end_vertex = {.x = 161.966f, .y = -117.557f, .z = 261.899f},
+            .connected_face_id = 5
+        },
+        {
+            .face_id = 1,
+            .edge_index = 4,
+            .start_vertex = {.x = 161.966f, .y = -117.557f, .z = 261.899f},
+            .end_vertex = {.x = 261.976f, .y = -190.211f, .z = 61.904f},
+            .connected_face_id = 2
+        },
+        {
+            .face_id = 2,
+            .edge_index = 0,
+            .start_vertex = {.x = -99.947f, .y = -307.933f, .z = 61.904f},
+            .end_vertex = {.x = 100.055f, .y = -307.938f, .z = -61.700f},
+            .connected_face_id = 7
+        },
+        {
+            .face_id = 2,
+            .edge_index = 1,
+            .start_vertex = {.x = 100.055f, .y = -307.938f, .z = -61.700f},
+            .end_vertex = {.x = 261.857f, .y = -190.376f, .z = 61.904f},
+            .connected_face_id = 8
+        },
+        {
+            .face_id = 2,
+            .edge_index = 2,
+            .start_vertex = {.x = 261.857f, .y = -190.376f, .z = 61.904f},
+            .end_vertex = {.x = 161.854f, .y = -117.712f, .z = 261.899f},
+            .connected_face_id = 1
+        },
+        {
+            .face_id = 2,
+            .edge_index = 3,
+            .start_vertex = {.x = 161.854f, .y = -117.712f, .z = 261.899f},
+            .end_vertex = {.x = -61.753f, .y = -190.366f, .z = 261.899f},
+            .connected_face_id = 5
+        },
+        {
+            .face_id = 2,
+            .edge_index = 4,
+            .start_vertex = {.x = -61.753f, .y = -190.366f, .z = 261.899f},
+            .end_vertex = {.x = -99.947f, .y = -307.933f, .z = 61.904f},
+            .connected_face_id = 0
+        },
+        {
+            .face_id = 3,
+            .edge_index = 0,
+            .start_vertex = {.x = 261.857f, .y = 190.376f, .z = 61.904f},
+            .end_vertex = {.x = 100.055f, .y = 307.938f, .z = -61.700f},
+            .connected_face_id = 9
+        },
+        {
+            .face_id = 3,
+            .edge_index = 1,
+            .start_vertex = {.x = 100.055f, .y = 307.938f, .z = -61.700f},
+            .end_vertex = {.x = -99.947f, .y = 307.933f, .z = 61.904f},
+            .connected_face_id = 10
+        },
+        {
+            .face_id = 3,
+            .edge_index = 2,
+            .start_vertex = {.x = -99.947f, .y = 307.933f, .z = 61.904f},
+            .end_vertex = {.x = -61.753f, .y = 190.366f, .z = 261.899f},
+            .connected_face_id = 4
+        },
+        {
+            .face_id = 3,
+            .edge_index = 3,
+            .start_vertex = {.x = -61.753f, .y = 190.366f, .z = 261.899f},
+            .end_vertex = {.x = 161.854f, .y = 117.712f, .z = 261.899f},
+            .connected_face_id = 5
+        },
+        {
             .face_id = 3,
             .edge_index = 4,
-            .start_vertex = {.x = 61.803f, .y = 190.211f, .z = -262.000f},
-            .end_vertex = {.x = 200.000f, .y = -0.000f, .z = -262.000f},
-            .connected_face_id = 8
+            .start_vertex = {.x = 161.854f, .y = 117.712f, .z = 261.899f},
+            .end_vertex = {.x = 261.857f, .y = 190.376f, .z = 61.904f},
+            .connected_face_id = 1
         },
         {
             .face_id = 4,
             .edge_index = 0,
-            .start_vertex = {.x = 323.747f, .y = -0.102f, .z = -61.904f},
-            .end_vertex = {.x = 261.948f, .y = -190.316f, .z = 61.700f},
+            .start_vertex = {.x = -100.140f, .y = 307.870f, .z = 61.904f},
+            .end_vertex = {.x = -261.948f, .y = 190.316f, .z = -61.700f},
+            .connected_face_id = 10
+        },
+        {
+            .face_id = 4,
+            .edge_index = 1,
+            .start_vertex = {.x = -261.948f, .y = 190.316f, .z = -61.700f},
+            .end_vertex = {.x = -323.747f, .y = 0.102f, .z = 61.904f},
+            .connected_face_id = 6
+        },
+        {
+            .face_id = 4,
+            .edge_index = 2,
+            .start_vertex = {.x = -323.747f, .y = 0.102f, .z = 61.904f},
+            .end_vertex = {.x = -200.132f, .y = 0.096f, .z = 261.899f},
             .connected_face_id = 0
         },
         {
             .face_id = 4,
-            .edge_index = 1,
-            .start_vertex = {.x = 261.948f, .y = -190.316f, .z = 61.700f},
-            .end_vertex = {.x = 100.140f, .y = -307.870f, .z = -61.904f},
-            .connected_face_id = 1
-        },
-        {
-            .face_id = 4,
-            .edge_index = 2,
-            .start_vertex = {.x = 100.140f, .y = -307.870f, .z = -61.904f},
-            .end_vertex = {.x = 61.935f, .y = -190.307f, .z = -261.899f},
+            .edge_index = 3,
+            .start_vertex = {.x = -200.132f, .y = 0.096f, .z = 261.899f},
+            .end_vertex = {.x = -61.935f, .y = 190.307f, .z = 261.899f},
             .connected_face_id = 5
         },
         {
             .face_id = 4,
-            .edge_index = 3,
-            .start_vertex = {.x = 61.935f, .y = -190.307f, .z = -261.899f},
-            .end_vertex = {.x = 200.132f, .y = -0.096f, .z = -261.899f},
-            .connected_face_id = 3
-        },
-        {
-            .face_id = 4,
             .edge_index = 4,
-            .start_vertex = {.x = 200.132f, .y = -0.096f, .z = -261.899f},
-            .end_vertex = {.x = 323.747f, .y = -0.102f, .z = -61.904f},
-            .connected_face_id = 8
+            .start_vertex = {.x = -61.935f, .y = 190.307f, .z = 261.899f},
+            .end_vertex = {.x = -100.140f, .y = 307.870f, .z = 61.904f},
+            .connected_face_id = 3
         },
         {
             .face_id = 5,
             .edge_index = 0,
-            .start_vertex = {.x = 99.947f, .y = -307.933f, .z = -61.904f},
-            .end_vertex = {.x = -100.055f, .y = -307.938f, .z = 61.700f},
-            .connected_face_id = 1
+            .start_vertex = {.x = -200.000f, .y = 0.000f, .z = 262.000f},
+            .end_vertex = {.x = -61.803f, .y = -190.211f, .z = 262.000f},
+            .connected_face_id = 0
         },
         {
             .face_id = 5,
             .edge_index = 1,
-            .start_vertex = {.x = -100.055f, .y = -307.938f, .z = 61.700f},
-            .end_vertex = {.x = -261.857f, .y = -190.376f, .z = -61.904f},
-            .connected_face_id = 9
+            .start_vertex = {.x = -61.803f, .y = -190.211f, .z = 262.000f},
+            .end_vertex = {.x = 161.803f, .y = -117.557f, .z = 262.000f},
+            .connected_face_id = 2
         },
         {
             .face_id = 5,
             .edge_index = 2,
-            .start_vertex = {.x = -261.857f, .y = -190.376f, .z = -61.904f},
-            .end_vertex = {.x = -161.854f, .y = -117.712f, .z = -261.899f},
-            .connected_face_id = 6
+            .start_vertex = {.x = 161.803f, .y = -117.557f, .z = 262.000f},
+            .end_vertex = {.x = 161.803f, .y = 117.557f, .z = 262.000f},
+            .connected_face_id = 1
         },
         {
             .face_id = 5,
             .edge_index = 3,
-            .start_vertex = {.x = -161.854f, .y = -117.712f, .z = -261.899f},
-            .end_vertex = {.x = 61.753f, .y = -190.366f, .z = -261.899f},
+            .start_vertex = {.x = 161.803f, .y = 117.557f, .z = 262.000f},
+            .end_vertex = {.x = -61.803f, .y = 190.211f, .z = 262.000f},
             .connected_face_id = 3
         },
         {
             .face_id = 5,
             .edge_index = 4,
-            .start_vertex = {.x = 61.753f, .y = -190.366f, .z = -261.899f},
-            .end_vertex = {.x = 99.947f, .y = -307.933f, .z = -61.904f},
+            .start_vertex = {.x = -61.803f, .y = 190.211f, .z = 262.000f},
+            .end_vertex = {.x = -200.000f, .y = 0.000f, .z = 262.000f},
             .connected_face_id = 4
         },
         {
@@ -443,1025 +443,1025 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
             .edge_index = 0,
             .start_vertex = {.x = -261.976f, .y = -190.211f, .z = -61.904f},
             .end_vertex = {.x = -323.786f, .y = 0.000f, .z = 61.700f},
-            .connected_face_id = 9
+            .connected_face_id = 0
         },
         {
             .face_id = 6,
             .edge_index = 1,
             .start_vertex = {.x = -323.786f, .y = 0.000f, .z = 61.700f},
             .end_vertex = {.x = -261.976f, .y = 190.211f, .z = -61.904f},
-            .connected_face_id = 10
+            .connected_face_id = 4
         },
         {
             .face_id = 6,
             .edge_index = 2,
             .start_vertex = {.x = -261.976f, .y = 190.211f, .z = -61.904f},
             .end_vertex = {.x = -161.966f, .y = 117.557f, .z = -261.899f},
-            .connected_face_id = 7
+            .connected_face_id = 10
         },
         {
             .face_id = 6,
             .edge_index = 3,
             .start_vertex = {.x = -161.966f, .y = 117.557f, .z = -261.899f},
             .end_vertex = {.x = -161.966f, .y = -117.557f, .z = -261.899f},
-            .connected_face_id = 3
+            .connected_face_id = 11
         },
         {
             .face_id = 6,
             .edge_index = 4,
             .start_vertex = {.x = -161.966f, .y = -117.557f, .z = -261.899f},
             .end_vertex = {.x = -261.976f, .y = -190.211f, .z = -61.904f},
-            .connected_face_id = 5
+            .connected_face_id = 7
         },
         {
             .face_id = 7,
             .edge_index = 0,
-            .start_vertex = {.x = -261.857f, .y = 190.376f, .z = -61.904f},
-            .end_vertex = {.x = -100.055f, .y = 307.938f, .z = 61.700f},
-            .connected_face_id = 10
+            .start_vertex = {.x = 99.947f, .y = -307.933f, .z = -61.904f},
+            .end_vertex = {.x = -100.055f, .y = -307.938f, .z = 61.700f},
+            .connected_face_id = 2
         },
         {
             .face_id = 7,
             .edge_index = 1,
-            .start_vertex = {.x = -100.055f, .y = 307.938f, .z = 61.700f},
-            .end_vertex = {.x = 99.947f, .y = 307.933f, .z = -61.904f},
-            .connected_face_id = 11
+            .start_vertex = {.x = -100.055f, .y = -307.938f, .z = 61.700f},
+            .end_vertex = {.x = -261.857f, .y = -190.376f, .z = -61.904f},
+            .connected_face_id = 0
         },
         {
             .face_id = 7,
             .edge_index = 2,
-            .start_vertex = {.x = 99.947f, .y = 307.933f, .z = -61.904f},
-            .end_vertex = {.x = 61.753f, .y = 190.366f, .z = -261.899f},
-            .connected_face_id = 8
+            .start_vertex = {.x = -261.857f, .y = -190.376f, .z = -61.904f},
+            .end_vertex = {.x = -161.854f, .y = -117.712f, .z = -261.899f},
+            .connected_face_id = 6
         },
         {
             .face_id = 7,
             .edge_index = 3,
-            .start_vertex = {.x = 61.753f, .y = 190.366f, .z = -261.899f},
-            .end_vertex = {.x = -161.854f, .y = 117.712f, .z = -261.899f},
-            .connected_face_id = 3
+            .start_vertex = {.x = -161.854f, .y = -117.712f, .z = -261.899f},
+            .end_vertex = {.x = 61.753f, .y = -190.366f, .z = -261.899f},
+            .connected_face_id = 11
         },
         {
             .face_id = 7,
+            .edge_index = 4,
+            .start_vertex = {.x = 61.753f, .y = -190.366f, .z = -261.899f},
+            .end_vertex = {.x = 99.947f, .y = -307.933f, .z = -61.904f},
+            .connected_face_id = 8
+        },
+        {
+            .face_id = 8,
+            .edge_index = 0,
+            .start_vertex = {.x = 323.747f, .y = -0.102f, .z = -61.904f},
+            .end_vertex = {.x = 261.948f, .y = -190.316f, .z = 61.700f},
+            .connected_face_id = 1
+        },
+        {
+            .face_id = 8,
+            .edge_index = 1,
+            .start_vertex = {.x = 261.948f, .y = -190.316f, .z = 61.700f},
+            .end_vertex = {.x = 100.140f, .y = -307.870f, .z = -61.904f},
+            .connected_face_id = 2
+        },
+        {
+            .face_id = 8,
+            .edge_index = 2,
+            .start_vertex = {.x = 100.140f, .y = -307.870f, .z = -61.904f},
+            .end_vertex = {.x = 61.935f, .y = -190.307f, .z = -261.899f},
+            .connected_face_id = 7
+        },
+        {
+            .face_id = 8,
+            .edge_index = 3,
+            .start_vertex = {.x = 61.935f, .y = -190.307f, .z = -261.899f},
+            .end_vertex = {.x = 200.132f, .y = -0.096f, .z = -261.899f},
+            .connected_face_id = 11
+        },
+        {
+            .face_id = 8,
+            .edge_index = 4,
+            .start_vertex = {.x = 200.132f, .y = -0.096f, .z = -261.899f},
+            .end_vertex = {.x = 323.747f, .y = -0.102f, .z = -61.904f},
+            .connected_face_id = 9
+        },
+        {
+            .face_id = 9,
+            .edge_index = 0,
+            .start_vertex = {.x = 100.140f, .y = 307.870f, .z = -61.904f},
+            .end_vertex = {.x = 261.948f, .y = 190.316f, .z = 61.700f},
+            .connected_face_id = 3
+        },
+        {
+            .face_id = 9,
+            .edge_index = 1,
+            .start_vertex = {.x = 261.948f, .y = 190.316f, .z = 61.700f},
+            .end_vertex = {.x = 323.747f, .y = 0.102f, .z = -61.904f},
+            .connected_face_id = 1
+        },
+        {
+            .face_id = 9,
+            .edge_index = 2,
+            .start_vertex = {.x = 323.747f, .y = 0.102f, .z = -61.904f},
+            .end_vertex = {.x = 200.132f, .y = 0.096f, .z = -261.899f},
+            .connected_face_id = 8
+        },
+        {
+            .face_id = 9,
+            .edge_index = 3,
+            .start_vertex = {.x = 200.132f, .y = 0.096f, .z = -261.899f},
+            .end_vertex = {.x = 61.935f, .y = 190.307f, .z = -261.899f},
+            .connected_face_id = 11
+        },
+        {
+            .face_id = 9,
+            .edge_index = 4,
+            .start_vertex = {.x = 61.935f, .y = 190.307f, .z = -261.899f},
+            .end_vertex = {.x = 100.140f, .y = 307.870f, .z = -61.904f},
+            .connected_face_id = 10
+        },
+        {
+            .face_id = 10,
+            .edge_index = 0,
+            .start_vertex = {.x = -261.857f, .y = 190.376f, .z = -61.904f},
+            .end_vertex = {.x = -100.055f, .y = 307.938f, .z = 61.700f},
+            .connected_face_id = 4
+        },
+        {
+            .face_id = 10,
+            .edge_index = 1,
+            .start_vertex = {.x = -100.055f, .y = 307.938f, .z = 61.700f},
+            .end_vertex = {.x = 99.947f, .y = 307.933f, .z = -61.904f},
+            .connected_face_id = 3
+        },
+        {
+            .face_id = 10,
+            .edge_index = 2,
+            .start_vertex = {.x = 99.947f, .y = 307.933f, .z = -61.904f},
+            .end_vertex = {.x = 61.753f, .y = 190.366f, .z = -261.899f},
+            .connected_face_id = 9
+        },
+        {
+            .face_id = 10,
+            .edge_index = 3,
+            .start_vertex = {.x = 61.753f, .y = 190.366f, .z = -261.899f},
+            .end_vertex = {.x = -161.854f, .y = 117.712f, .z = -261.899f},
+            .connected_face_id = 11
+        },
+        {
+            .face_id = 10,
             .edge_index = 4,
             .start_vertex = {.x = -161.854f, .y = 117.712f, .z = -261.899f},
             .end_vertex = {.x = -261.857f, .y = 190.376f, .z = -61.904f},
             .connected_face_id = 6
         },
         {
-            .face_id = 8,
-            .edge_index = 0,
-            .start_vertex = {.x = 100.140f, .y = 307.870f, .z = -61.904f},
-            .end_vertex = {.x = 261.948f, .y = 190.316f, .z = 61.700f},
-            .connected_face_id = 11
-        },
-        {
-            .face_id = 8,
-            .edge_index = 1,
-            .start_vertex = {.x = 261.948f, .y = 190.316f, .z = 61.700f},
-            .end_vertex = {.x = 323.747f, .y = 0.102f, .z = -61.904f},
-            .connected_face_id = 0
-        },
-        {
-            .face_id = 8,
-            .edge_index = 2,
-            .start_vertex = {.x = 323.747f, .y = 0.102f, .z = -61.904f},
-            .end_vertex = {.x = 200.132f, .y = 0.096f, .z = -261.899f},
-            .connected_face_id = 4
-        },
-        {
-            .face_id = 8,
-            .edge_index = 3,
-            .start_vertex = {.x = 200.132f, .y = 0.096f, .z = -261.899f},
-            .end_vertex = {.x = 61.935f, .y = 190.307f, .z = -261.899f},
-            .connected_face_id = 3
-        },
-        {
-            .face_id = 8,
-            .edge_index = 4,
-            .start_vertex = {.x = 61.935f, .y = 190.307f, .z = -261.899f},
-            .end_vertex = {.x = 100.140f, .y = 307.870f, .z = -61.904f},
-            .connected_face_id = 7
-        },
-        {
-            .face_id = 9,
-            .edge_index = 0,
-            .start_vertex = {.x = -100.140f, .y = -307.870f, .z = 61.904f},
-            .end_vertex = {.x = -61.935f, .y = -190.307f, .z = 261.899f},
-            .connected_face_id = 1
-        },
-        {
-            .face_id = 9,
-            .edge_index = 1,
-            .start_vertex = {.x = -61.935f, .y = -190.307f, .z = 261.899f},
-            .end_vertex = {.x = -200.132f, .y = -0.096f, .z = 261.899f},
-            .connected_face_id = 2
-        },
-        {
-            .face_id = 9,
-            .edge_index = 2,
-            .start_vertex = {.x = -200.132f, .y = -0.096f, .z = 261.899f},
-            .end_vertex = {.x = -323.747f, .y = -0.102f, .z = 61.904f},
-            .connected_face_id = 10
-        },
-        {
-            .face_id = 9,
-            .edge_index = 3,
-            .start_vertex = {.x = -323.747f, .y = -0.102f, .z = 61.904f},
-            .end_vertex = {.x = -261.948f, .y = -190.316f, .z = -61.700f},
-            .connected_face_id = 6
-        },
-        {
-            .face_id = 9,
-            .edge_index = 4,
-            .start_vertex = {.x = -261.948f, .y = -190.316f, .z = -61.700f},
-            .end_vertex = {.x = -100.140f, .y = -307.870f, .z = 61.904f},
-            .connected_face_id = 5
-        },
-        {
-            .face_id = 10,
-            .edge_index = 0,
-            .start_vertex = {.x = -323.747f, .y = 0.102f, .z = 61.904f},
-            .end_vertex = {.x = -200.132f, .y = 0.096f, .z = 261.899f},
-            .connected_face_id = 9
-        },
-        {
-            .face_id = 10,
-            .edge_index = 1,
-            .start_vertex = {.x = -200.132f, .y = 0.096f, .z = 261.899f},
-            .end_vertex = {.x = -61.935f, .y = 190.307f, .z = 261.899f},
-            .connected_face_id = 2
-        },
-        {
-            .face_id = 10,
-            .edge_index = 2,
-            .start_vertex = {.x = -61.935f, .y = 190.307f, .z = 261.899f},
-            .end_vertex = {.x = -100.140f, .y = 307.870f, .z = 61.904f},
-            .connected_face_id = 11
-        },
-        {
-            .face_id = 10,
-            .edge_index = 3,
-            .start_vertex = {.x = -100.140f, .y = 307.870f, .z = 61.904f},
-            .end_vertex = {.x = -261.948f, .y = 190.316f, .z = -61.700f},
-            .connected_face_id = 7
-        },
-        {
-            .face_id = 10,
-            .edge_index = 4,
-            .start_vertex = {.x = -261.948f, .y = 190.316f, .z = -61.700f},
-            .end_vertex = {.x = -323.747f, .y = 0.102f, .z = 61.904f},
-            .connected_face_id = 6
-        },
-        {
             .face_id = 11,
             .edge_index = 0,
-            .start_vertex = {.x = -99.947f, .y = 307.933f, .z = 61.904f},
-            .end_vertex = {.x = -61.753f, .y = 190.366f, .z = 261.899f},
-            .connected_face_id = 10
-        },
-        {
-            .face_id = 11,
-            .edge_index = 1,
-            .start_vertex = {.x = -61.753f, .y = 190.366f, .z = 261.899f},
-            .end_vertex = {.x = 161.854f, .y = 117.712f, .z = 261.899f},
-            .connected_face_id = 2
-        },
-        {
-            .face_id = 11,
-            .edge_index = 2,
-            .start_vertex = {.x = 161.854f, .y = 117.712f, .z = 261.899f},
-            .end_vertex = {.x = 261.857f, .y = 190.376f, .z = 61.904f},
-            .connected_face_id = 0
-        },
-        {
-            .face_id = 11,
-            .edge_index = 3,
-            .start_vertex = {.x = 261.857f, .y = 190.376f, .z = 61.904f},
-            .end_vertex = {.x = 100.055f, .y = 307.938f, .z = -61.700f},
+            .start_vertex = {.x = 200.000f, .y = -0.000f, .z = -262.000f},
+            .end_vertex = {.x = 61.803f, .y = -190.211f, .z = -262.000f},
             .connected_face_id = 8
         },
         {
             .face_id = 11,
-            .edge_index = 4,
-            .start_vertex = {.x = 100.055f, .y = 307.938f, .z = -61.700f},
-            .end_vertex = {.x = -99.947f, .y = 307.933f, .z = 61.904f},
+            .edge_index = 1,
+            .start_vertex = {.x = 61.803f, .y = -190.211f, .z = -262.000f},
+            .end_vertex = {.x = -161.803f, .y = -117.557f, .z = -262.000f},
             .connected_face_id = 7
+        },
+        {
+            .face_id = 11,
+            .edge_index = 2,
+            .start_vertex = {.x = -161.803f, .y = -117.557f, .z = -262.000f},
+            .end_vertex = {.x = -161.803f, .y = 117.557f, .z = -262.000f},
+            .connected_face_id = 6
+        },
+        {
+            .face_id = 11,
+            .edge_index = 3,
+            .start_vertex = {.x = -161.803f, .y = 117.557f, .z = -262.000f},
+            .end_vertex = {.x = 61.803f, .y = 190.211f, .z = -262.000f},
+            .connected_face_id = 10
+        },
+        {
+            .face_id = 11,
+            .edge_index = 4,
+            .start_vertex = {.x = 61.803f, .y = 190.211f, .z = -262.000f},
+            .end_vertex = {.x = 200.000f, .y = -0.000f, .z = -262.000f},
+            .connected_face_id = 9
         }
     }};
 
     // Point geometry - define all points with correct face assignments
     static constexpr PointData POINTS[] = {
-        {0, 0, 234.334f, 0.000f, 117.181f},
-        {1, 0, 237.587f, -22.261f, 110.678f},
-        {2, 0, 226.122f, -14.146f, 133.605f},
-        {3, 0, 225.881f, 13.414f, 134.086f},
-        {4, 0, 237.267f, 22.608f, 111.316f},
-        {5, 0, 244.605f, 0.504f, 96.643f},
-        {6, 0, 251.427f, -27.130f, 82.999f},
-        {7, 0, 240.585f, -45.164f, 104.682f},
-        {8, 0, 227.519f, -44.629f, 130.809f},
-        {9, 0, 217.498f, -27.715f, 150.849f},
-        {10, 0, 213.318f, 1.039f, 159.209f},
-        {11, 0, 217.538f, 27.604f, 150.771f},
-        {12, 0, 227.881f, 44.540f, 130.086f},
-        {13, 0, 240.802f, 44.876f, 104.248f},
-        {14, 0, 251.221f, 26.995f, 83.412f},
-        {15, 0, 255.410f, 0.458f, 75.036f},
-        {16, 0, 260.236f, -42.076f, 65.384f},
-        {17, 0, 251.384f, -61.434f, 83.087f},
-        {18, 0, 238.871f, -71.027f, 108.109f},
-        {19, 0, 227.050f, -70.604f, 131.748f},
-        {20, 0, 214.871f, -58.141f, 156.102f},
-        {21, 0, 206.747f, -38.895f, 172.349f},
-        {22, 0, 202.186f, -11.753f, 181.470f},
-        {23, 0, 202.164f, 15.339f, 181.515f},
-        {24, 0, 208.356f, 43.156f, 169.132f},
-        {25, 0, 217.818f, 60.886f, 150.209f},
-        {26, 0, 228.968f, 71.102f, 127.913f},
-        {27, 0, 241.466f, 69.260f, 102.920f},
-        {28, 0, 253.314f, 57.970f, 79.226f},
-        {29, 0, 261.650f, 38.063f, 62.556f},
-        {30, 0, 265.813f, 11.885f, 54.231f},
-        {31, 0, 265.684f, -16.550f, 54.490f},
-        {32, 0, 269.460f, -57.060f, 46.938f},
-        {33, 0, 260.591f, -77.346f, 64.674f},
-        {34, 0, 250.289f, -90.211f, 85.275f},
-        {35, 0, 237.962f, -96.604f, 109.927f},
-        {36, 0, 225.650f, -95.065f, 134.548f},
-        {37, 0, 214.251f, -85.460f, 157.343f},
-        {38, 0, 204.256f, -68.905f, 177.330f},
-        {39, 0, 196.165f, -47.805f, 193.511f},
-        {40, 0, 192.189f, -21.930f, 201.462f},
-        {41, 0, 191.082f, 5.329f, 203.675f},
-        {42, 0, 193.684f, 32.614f, 198.472f},
-        {43, 0, 199.597f, 57.384f, 186.647f},
-        {44, 0, 207.942f, 76.930f, 169.960f},
-        {45, 0, 218.608f, 90.477f, 148.631f},
-        {46, 0, 230.452f, 96.699f, 124.944f},
-        {47, 0, 242.993f, 95.426f, 99.865f},
-        {48, 0, 254.485f, 85.669f, 76.885f},
-        {49, 0, 264.590f, 69.891f, 56.677f},
-        {50, 0, 272.088f, 47.843f, 41.683f},
-        {51, 0, 276.573f, 21.778f, 32.714f},
-        {52, 0, 277.747f, -5.273f, 30.366f},
-        {53, 0, 275.052f, -32.406f, 35.755f},
-        {54, 0, 279.379f, -72.536f, 27.102f},
-        {55, 0, 270.222f, -94.582f, 45.415f},
-        {56, 0, 258.608f, -111.046f, 68.639f},
-        {57, 0, 246.282f, -120.942f, 93.288f},
-        {58, 0, 233.031f, -123.607f, 119.787f},
-        {59, 0, 219.737f, -119.835f, 146.372f},
-        {60, 0, 207.541f, -108.299f, 170.761f},
-        {61, 0, 196.572f, -90.799f, 192.697f},
-        {62, 0, 187.981f, -67.295f, 209.876f},
-        {63, 0, 182.159f, -40.968f, 221.520f},
-        {64, 0, 179.130f, -12.175f, 227.577f},
-        {65, 0, 179.479f, 17.813f, 226.878f},
-        {66, 0, 183.012f, 47.085f, 219.814f},
-        {67, 0, 189.425f, 72.953f, 206.990f},
-        {68, 0, 198.556f, 95.360f, 188.729f},
-        {69, 0, 209.967f, 111.199f, 165.910f},
-        {70, 0, 222.225f, 120.885f, 141.396f},
-        {71, 0, 235.612f, 123.967f, 114.627f},
-        {72, 0, 248.813f, 120.345f, 88.227f},
-        {73, 0, 261.263f, 108.717f, 63.330f},
-        {74, 0, 272.071f, 91.159f, 41.717f},
-        {75, 0, 280.730f, 67.863f, 24.402f},
-        {76, 0, 286.739f, 41.233f, 12.385f},
-        {77, 0, 289.700f, 12.232f, 6.464f},
-        {78, 0, 289.351f, -17.755f, 7.162f},
-        {79, 0, 285.860f, -46.460f, 14.143f},
-        {80, 0, 288.146f, -88.051f, 9.571f},
-        {81, 0, 281.030f, -108.637f, 23.801f},
-        {82, 0, 274.404f, -130.340f, 37.051f},
-        {83, 0, 263.024f, -130.314f, 59.808f},
-        {84, 0, 267.135f, -152.270f, 51.587f},
-        {85, 0, 256.229f, -150.787f, 73.397f},
-        {86, 0, 260.095f, -173.936f, 65.666f},
-        {87, 0, 248.044f, -166.774f, 89.764f},
-        {88, 0, 245.601f, -142.752f, 94.651f},
-        {89, 0, 236.375f, -158.002f, 113.101f},
-        {90, 0, 225.146f, -149.627f, 135.556f},
-        {91, 0, 213.848f, -141.460f, 158.148f},
-        {92, 0, 202.297f, -133.199f, 181.248f},
-        {93, 0, 191.025f, -125.393f, 203.788f},
-        {94, 0, 187.887f, -100.880f, 210.065f},
-        {95, 0, 179.634f, -117.075f, 226.568f},
-        {96, 0, 176.937f, -92.959f, 231.962f},
-        {97, 0, 168.498f, -108.852f, 248.837f},
-        {98, 0, 167.612f, -80.039f, 250.610f},
-        {99, 0, 176.974f, -67.875f, 231.888f},
-        {100, 0, 167.640f, -53.666f, 250.553f},
-        {101, 0, 167.617f, -26.575f, 250.599f},
-        {102, 0, 167.552f, -0.051f, 250.729f},
-        {103, 0, 167.555f, 26.679f, 250.725f},
-        {104, 0, 167.558f, 53.411f, 250.718f},
-        {105, 0, 176.513f, 67.827f, 232.810f},
-        {106, 0, 167.561f, 80.143f, 250.712f},
-        {107, 0, 176.965f, 92.875f, 231.906f},
-        {108, 0, 167.589f, 106.514f, 250.656f},
-        {109, 0, 179.703f, 117.071f, 226.430f},
-        {110, 0, 187.598f, 101.064f, 210.642f},
-        {111, 0, 190.980f, 125.490f, 203.879f},
-        {112, 0, 202.282f, 133.549f, 181.278f},
-        {113, 0, 213.813f, 141.872f, 158.219f},
-        {114, 0, 225.115f, 149.930f, 135.617f},
-        {115, 0, 236.392f, 158.348f, 113.067f},
-        {116, 0, 245.480f, 142.947f, 94.892f},
-        {117, 0, 247.923f, 166.670f, 90.008f},
-        {118, 0, 256.233f, 150.627f, 73.390f},
-        {119, 0, 259.132f, 174.879f, 67.593f},
-        {120, 0, 267.256f, 152.133f, 51.345f},
-        {121, 0, 263.053f, 129.998f, 59.751f},
-        {122, 0, 274.222f, 130.634f, 37.416f},
-        {123, 0, 281.280f, 108.984f, 23.302f},
-        {124, 0, 287.939f, 88.299f, 9.984f},
-        {125, 0, 295.209f, 65.986f, -4.554f},
-        {126, 0, 302.266f, 44.335f, -18.667f},
-        {127, 0, 298.580f, 20.723f, -11.295f},
-        {128, 0, 309.325f, 22.685f, -32.782f},
-        {129, 0, 305.265f, -0.322f, -24.664f},
-        {130, 0, 316.289f, 1.185f, -46.709f},
-        {131, 0, 309.547f, -23.508f, -33.225f},
-        {132, 0, 298.538f, -20.586f, -11.210f},
-        {133, 0, 302.455f, -44.454f, -19.044f},
-        {134, 0, 295.067f, -65.875f, -4.270f},
-        {135, 1, 72.413f, -222.865f, 117.181f},
-        {136, 1, 52.247f, -232.837f, 110.678f},
-        {137, 1, 56.421f, -219.426f, 133.605f},
-        {138, 1, 82.558f, -210.680f, 134.086f},
-        {139, 1, 94.821f, -218.668f, 111.316f},
-        {140, 1, 76.066f, -232.477f, 96.643f},
-        {141, 1, 51.893f, -247.505f, 82.999f},
-        {142, 1, 31.391f, -242.766f, 104.682f},
-        {143, 1, 27.863f, -230.175f, 130.809f},
-        {144, 1, 40.852f, -215.418f, 150.849f},
-        {145, 1, 66.907f, -202.556f, 159.209f},
-        {146, 1, 93.476f, -198.360f, 150.771f},
-        {147, 1, 112.779f, -202.964f, 130.086f},
-        {148, 1, 117.091f, -215.149f, 104.248f},
-        {149, 1, 103.305f, -230.583f, 83.412f},
-        {150, 1, 79.362f, -242.767f, 75.036f},
-        {151, 1, 40.400f, -260.502f, 65.384f},
-        {152, 1, 19.255f, -258.064f, 83.087f},
-        {153, 1, 6.264f, -249.128f, 108.109f},
-        {154, 1, 3.014f, -237.755f, 131.748f},
-        {155, 1, 11.103f, -222.321f, 156.102f},
-        {156, 1, 26.897f, -208.648f, 172.349f},
-        {157, 1, 51.301f, -195.922f, 181.470f},
-        {158, 1, 77.060f, -187.529f, 181.515f},
-        {159, 1, 105.429f, -184.822f, 169.132f},
-        {160, 1, 125.216f, -188.343f, 150.209f},
-        {161, 1, 138.377f, -195.789f, 127.913f},
-        {162, 1, 140.487f, -208.245f, 102.920f},
-        {163, 1, 133.411f, -223.002f, 79.226f},
-        {164, 1, 117.054f, -237.082f, 62.556f},
-        {165, 1, 93.444f, -249.131f, 54.231f},
-        {166, 1, 66.361f, -257.795f, 54.490f},
-        {167, 1, 29.000f, -273.905f, 46.938f},
-        {168, 1, 6.966f, -271.738f, 64.674f},
-        {169, 1, -8.452f, -265.916f, 85.275f},
-        {170, 1, -18.342f, -256.168f, 109.927f},
-        {171, 1, -20.682f, -243.982f, 134.548f},
-        {172, 1, -15.070f, -230.174f, 157.343f},
-        {173, 1, -2.414f, -215.552f, 177.330f},
-        {174, 1, 15.153f, -201.336f, 193.511f},
-        {175, 1, 38.533f, -189.559f, 201.462f},
-        {176, 1, 64.116f, -180.083f, 203.675f},
-        {177, 1, 90.870f, -174.126f, 198.472f},
-        {178, 1, 116.254f, -172.096f, 186.647f},
-        {179, 1, 137.422f, -173.992f, 169.960f},
-        {180, 1, 153.602f, -179.949f, 148.631f},
-        {181, 1, 163.180f, -189.291f, 124.944f},
-        {182, 1, 165.844f, -201.612f, 99.865f},
-        {183, 1, 160.116f, -215.557f, 76.885f},
-        {184, 1, 148.233f, -230.043f, 56.677f},
-        {185, 1, 129.581f, -243.987f, 41.683f},
-        {186, 1, 106.178f, -256.307f, 32.714f},
-        {187, 1, 80.813f, -265.783f, 30.366f},
-        {188, 1, 54.176f, -271.604f, 35.755f},
-        {189, 1, 17.347f, -288.120f, 27.102f},
-        {190, 1, -6.450f, -286.224f, 45.415f},
-        {191, 1, -25.697f, -280.266f, 68.639f},
-        {192, 1, -38.917f, -271.601f, 93.288f},
-        {193, 1, -45.547f, -259.822f, 119.787f},
-        {194, 1, -46.067f, -246.013f, 146.372f},
-        {195, 1, -38.864f, -230.850f, 170.761f},
-        {196, 1, -25.611f, -215.009f, 192.697f},
-        {197, 1, -5.912f, -199.576f, 209.876f},
-        {198, 1, 17.328f, -185.903f, 221.520f},
-        {199, 1, 43.775f, -174.125f, 227.577f},
-        {200, 1, 72.404f, -165.190f, 226.878f},
-        {201, 1, 101.335f, -159.504f, 219.814f},
-        {202, 1, 127.918f, -157.610f, 206.990f},
-        {203, 1, 152.050f, -159.370f, 188.729f},
-        {204, 1, 170.640f, -165.328f, 165.910f},
-        {205, 1, 183.640f, -173.993f, 141.396f},
-        {206, 1, 190.708f, -185.772f, 114.627f},
-        {207, 1, 191.343f, -199.446f, 88.227f},
-        {208, 1, 184.130f, -214.881f, 63.330f},
-        {209, 1, 170.772f, -230.585f, 41.717f},
-        {210, 1, 151.292f, -246.019f, 24.402f},
-        {211, 1, 127.822f, -259.963f, 12.385f},
-        {212, 1, 101.156f, -271.741f, 6.464f},
-        {213, 1, 72.528f, -280.676f, 7.162f},
-        {214, 1, 44.150f, -286.226f, 14.143f},
-        {215, 1, 5.300f, -301.252f, 9.571f},
-        {216, 1, -16.477f, -300.846f, 23.801f},
-        {217, 1, -39.165f, -301.251f, 37.051f},
-        {218, 1, -42.657f, -290.420f, 59.808f},
-        {219, 1, -62.268f, -301.115f, 51.587f},
-        {220, 1, -64.228f, -290.284f, 73.397f},
-        {221, 1, -85.049f, -301.114f, 65.666f},
-        {222, 1, -81.961f, -287.440f, 89.764f},
-        {223, 1, -59.870f, -277.693f, 94.651f},
-        {224, 1, -77.225f, -273.631f, 113.101f},
-        {225, 1, -72.730f, -260.364f, 135.556f},
-        {226, 1, -68.454f, -247.095f, 158.148f},
-        {227, 1, -64.167f, -233.557f, 181.248f},
-        {228, 1, -60.225f, -220.425f, 203.788f},
-        {229, 1, -37.882f, -209.864f, 210.065f},
-        {230, 1, -55.835f, -207.021f, 226.568f},
-        {231, 1, -33.732f, -197.003f, 231.962f},
-        {232, 1, -51.455f, -193.889f, 248.837f},
-        {233, 1, -24.327f, -184.142f, 250.610f},
-        {234, 1, -9.865f, -189.287f, 231.888f},
-        {235, 1, 0.764f, -176.019f, 250.553f},
-        {236, 1, 26.522f, -167.626f, 250.599f},
-        {237, 1, 51.728f, -159.368f, 250.729f},
-        {238, 1, 77.150f, -151.110f, 250.725f},
-        {239, 1, 102.575f, -142.852f, 250.718f},
-        {240, 1, 119.053f, -146.914f, 232.810f},
-        {241, 1, 128.000f, -134.594f, 250.712f},
-        {242, 1, 143.014f, -139.604f, 231.906f},
-        {243, 1, 153.089f, -126.472f, 250.656f},
-        {244, 1, 166.873f, -134.731f, 226.430f},
-        {245, 1, 154.089f, -147.186f, 210.642f},
-        {246, 1, 178.364f, -142.854f, 203.879f},
-        {247, 1, 189.521f, -151.113f, 181.278f},
-        {248, 1, 201.000f, -159.507f, 158.219f},
-        {249, 1, 212.157f, -167.766f, 135.617f},
-        {250, 1, 223.647f, -175.890f, 113.067f},
-        {251, 1, 211.808f, -189.293f, 94.892f},
-        {252, 1, 235.125f, -184.284f, 90.008f},
-        {253, 1, 222.435f, -197.145f, 73.390f},
-        {254, 1, 246.396f, -192.408f, 67.593f},
-        {255, 1, 227.274f, -207.164f, 51.345f},
-        {256, 1, 204.923f, -210.007f, 59.751f},
-        {257, 1, 208.979f, -220.432f, 37.416f},
-        {258, 1, 190.570f, -233.835f, 23.302f},
-        {259, 1, 172.955f, -246.561f, 9.984f},
-        {260, 1, 153.981f, -260.370f, -4.554f},
-        {261, 1, 135.571f, -273.772f, -18.667f},
-        {262, 1, 111.975f, -277.563f, -11.295f},
-        {263, 1, 117.161f, -287.176f, -32.782f},
-        {264, 1, 94.026f, -290.424f, -24.664f},
-        {265, 1, 98.866f, -300.443f, -46.709f},
-        {266, 1, 73.297f, -301.661f, -33.225f},
-        {267, 1, 72.675f, -290.288f, -11.210f},
-        {268, 1, 51.185f, -301.389f, -19.044f},
-        {269, 1, 28.530f, -300.982f, -4.270f},
-        {270, 2, 0.000f, 0.000f, 262.000f},
-        {271, 2, -23.418f, -0.037f, 262.000f},
-        {272, 2, -7.780f, 21.835f, 262.000f},
-        {273, 2, 18.598f, 13.831f, 262.000f},
-        {274, 2, 19.475f, -13.223f, 262.000f},
-        {275, 2, -6.617f, -21.995f, 262.000f},
-        {276, 2, -37.612f, -27.964f, 262.000f},
-        {277, 2, -47.272f, 0.666f, 262.000f},
-        {278, 2, -37.736f, 28.282f, 262.000f},
-        {279, 2, -14.726f, 44.364f, 262.000f},
-        {280, 2, 15.508f, 44.369f, 262.000f},
-        {281, 2, 37.858f, 27.187f, 262.000f},
-        {282, 2, 46.818f, -0.041f, 262.000f},
-        {283, 2, 38.211f, -27.620f, 262.000f},
-        {284, 2, 14.006f, -44.250f, 262.000f},
-        {285, 2, -14.125f, -44.957f, 262.000f},
-        {286, 2, -57.913f, -42.076f, 262.000f},
-        {287, 2, -70.207f, -17.270f, 262.000f},
-        {288, 2, -70.685f, 12.301f, 262.000f},
-        {289, 2, -62.116f, 37.306f, 262.000f},
-        {290, 2, -41.848f, 59.353f, 262.000f},
-        {291, 2, -17.931f, 70.681f, 262.000f},
-        {292, 2, 11.033f, 71.992f, 262.000f},
-        {293, 2, 36.815f, 63.668f, 262.000f},
-        {294, 2, 58.993f, 41.905f, 262.000f},
-        {295, 2, 69.317f, 16.305f, 262.000f},
-        {296, 2, 71.330f, -10.561f, 262.000f},
-        {297, 2, 60.943f, -36.567f, 262.000f},
-        {298, 2, 42.019f, -58.273f, 262.000f},
-        {299, 2, 17.327f, -69.847f, 262.000f},
-        {300, 2, -10.447f, -70.610f, 262.000f},
-        {301, 2, -37.400f, -61.548f, 262.000f},
-        {302, 2, -78.537f, -57.060f, 262.000f},
-        {303, 2, -91.702f, -31.932f, 262.000f},
-        {304, 2, -96.819f, -6.050f, 262.000f},
-        {305, 2, -94.383f, 22.138f, 262.000f},
-        {306, 2, -84.412f, 47.843f, 262.000f},
-        {307, 2, -67.402f, 69.114f, 262.000f},
-        {308, 2, -44.751f, 85.252f, 262.000f},
-        {309, 2, -19.093f, 95.937f, 262.000f},
-        {310, 2, 8.263f, 96.396f, 262.000f},
-        {311, 2, 34.952f, 90.326f, 262.000f},
-        {312, 2, 59.104f, 76.361f, 262.000f},
-        {313, 2, 78.575f, 56.133f, 262.000f},
-        {314, 2, 91.399f, 32.349f, 262.000f},
-        {315, 2, 96.914f, 5.483f, 262.000f},
-        {316, 2, 94.648f, -21.627f, 262.000f},
-        {317, 2, 84.772f, -47.901f, 262.000f},
-        {318, 2, 67.553f, -69.322f, 262.000f},
-        {319, 2, 45.566f, -85.934f, 262.000f},
-        {320, 2, 19.417f, -95.065f, 262.000f},
-        {321, 2, -8.471f, -96.547f, 262.000f},
-        {322, 2, -35.010f, -90.685f, 262.000f},
-        {323, 2, -58.952f, -76.570f, 262.000f},
-        {324, 2, -100.108f, -73.370f, 262.000f},
-        {325, 2, -114.748f, -47.084f, 262.000f},
-        {326, 2, -122.382f, -17.302f, 262.000f},
-        {327, 2, -123.278f, 11.967f, 262.000f},
-        {328, 2, -116.657f, 40.968f, 262.000f},
-        {329, 2, -103.884f, 68.071f, 262.000f},
-        {330, 2, -84.487f, 90.439f, 262.000f},
-        {331, 2, -60.265f, 108.357f, 262.000f},
-        {332, 2, -31.976f, 119.361f, 262.000f},
-        {333, 2, -2.913f, 123.607f, 262.000f},
-        {334, 2, 26.562f, 121.150f, 262.000f},
-        {335, 2, 54.842f, 111.140f, 262.000f},
-        {336, 2, 80.240f, 94.583f, 262.000f},
-        {337, 2, 100.411f, 72.953f, 262.000f},
-        {338, 2, 115.412f, 46.611f, 262.000f},
-        {339, 2, 122.593f, 17.453f, 262.000f},
-        {340, 2, 123.335f, -11.607f, 262.000f},
-        {341, 2, 117.017f, -41.025f, 262.000f},
-        {342, 2, 104.452f, -67.977f, 262.000f},
-        {343, 2, 84.790f, -90.857f, 262.000f},
-        {344, 2, 60.625f, -108.415f, 262.000f},
-        {345, 2, 32.486f, -119.627f, 262.000f},
-        {346, 2, 3.008f, -124.175f, 262.000f},
-        {347, 2, -26.619f, -121.510f, 262.000f},
-        {348, 2, -54.898f, -111.501f, 262.000f},
-        {349, 2, -79.786f, -95.208f, 262.000f},
-        {350, 2, -120.921f, -87.217f, 262.000f},
-        {351, 2, -135.583f, -65.724f, 262.000f},
-        {352, 2, -151.645f, -44.928f, 262.000f},
-        {353, 2, -143.758f, -20.738f, 262.000f},
-        {354, 2, -167.480f, -22.695f, 262.000f},
-        {355, 2, -158.534f, 0.038f, 262.000f},
-        {356, 2, -183.222f, -1.029f, 262.000f},
-        {357, 2, -168.084f, 22.382f, 262.000f},
-        {358, 2, -143.549f, 20.155f, 262.000f},
-        {359, 2, -151.679f, 44.486f, 262.000f},
-        {360, 2, -135.956f, 65.776f, 262.000f},
-        {361, 2, -120.382f, 87.275f, 262.000f},
-        {362, 2, -104.545f, 109.285f, 262.000f},
-        {363, 2, -89.333f, 130.841f, 262.000f},
-        {364, 2, -63.851f, 129.941f, 262.000f},
-        {365, 2, -73.552f, 152.493f, 262.000f},
-        {366, 2, -48.752f, 150.777f, 262.000f},
-        {367, 2, -58.037f, 173.632f, 262.000f},
-        {368, 2, -30.022f, 166.613f, 262.000f},
-        {369, 2, -24.921f, 142.947f, 262.000f},
-        {370, 2, -4.960f, 158.403f, 262.000f},
-        {371, 2, 20.821f, 150.081f, 262.000f},
-        {372, 2, 46.092f, 142.022f, 262.000f},
-        {373, 2, 71.512f, 133.757f, 262.000f},
-        {374, 2, 96.933f, 125.490f, 262.000f},
-        {375, 2, 104.457f, 101.993f, 262.000f},
-        {376, 2, 122.355f, 117.223f, 262.000f},
-        {377, 2, 127.966f, 93.292f, 262.000f},
-        {378, 2, 147.417f, 109.014f, 262.000f},
-        {379, 2, 149.087f, 79.992f, 262.000f},
-        {380, 2, 128.408f, 68.150f, 262.000f},
-        {381, 2, 149.302f, 53.411f, 262.000f},
-        {382, 2, 149.158f, 26.887f, 262.000f},
-        {383, 2, 149.107f, -0.204f, 262.000f},
-        {384, 2, 148.962f, -26.728f, 262.000f},
-        {385, 2, 149.176f, -53.307f, 262.000f},
-        {386, 2, 128.249f, -67.875f, 262.000f},
-        {387, 2, 149.124f, -80.399f, 262.000f},
-        {388, 2, 128.125f, -93.111f, 262.000f},
-        {389, 2, 149.187f, -106.770f, 262.000f},
-        {390, 2, 121.941f, -117.018f, 262.000f},
-        {391, 2, 103.793f, -101.240f, 262.000f},
-        {392, 2, 96.681f, -125.185f, 262.000f},
-        {393, 2, 71.214f, -133.503f, 262.000f},
-        {394, 2, 46.940f, -141.273f, 262.000f},
-        {395, 2, 20.696f, -149.837f, 262.000f},
-        {396, 2, -4.770f, -158.153f, 262.000f},
-        {397, 2, -24.680f, -143.018f, 262.000f},
-        {398, 2, -30.238f, -166.472f, 262.000f},
-        {399, 2, -49.313f, -150.730f, 262.000f},
-        {400, 2, -55.497f, -174.637f, 262.000f},
-        {401, 2, -74.323f, -152.669f, 262.000f},
-        {402, 2, -63.938f, -130.162f, 262.000f},
-        {403, 2, -89.345f, -131.117f, 262.000f},
-        {404, 2, -104.612f, -108.788f, 262.000f},
-        {405, 3, 0.000f, -0.000f, -262.000f},
-        {406, 3, -18.924f, 13.795f, -262.000f},
-        {407, 3, -19.128f, -13.092f, -262.000f},
-        {408, 3, 6.917f, -22.121f, -262.000f},
-        {409, 3, 23.528f, -0.749f, -262.000f},
-        {410, 3, 7.575f, 21.684f, -262.000f},
-        {411, 3, -13.992f, 44.731f, -262.000f},
-        {412, 3, -38.635f, 27.247f, -262.000f},
-        {413, 3, -47.153f, -0.700f, -262.000f},
-        {414, 3, -37.990f, -27.236f, -262.000f},
-        {415, 3, -13.533f, -45.010f, -262.000f},
-        {416, 3, 14.648f, -44.247f, -262.000f},
-        {417, 3, 37.901f, -27.486f, -262.000f},
-        {418, 3, 47.148f, -0.114f, -262.000f},
-        {419, 3, 37.341f, 27.566f, -262.000f},
-        {420, 3, 14.997f, 44.673f, -262.000f},
-        {421, 3, -22.121f, 68.081f, -262.000f},
-        {422, 3, -46.648f, 55.239f, -262.000f},
-        {423, 3, -64.416f, 31.596f, -262.000f},
-        {424, 3, -72.181f, 6.329f, -262.000f},
-        {425, 3, -68.743f, -23.420f, -262.000f},
-        {426, 3, -56.052f, -46.642f, -262.000f},
-        {427, 3, -33.390f, -64.728f, -262.000f},
-        {428, 3, -7.639f, -73.148f, -262.000f},
-        {429, 3, 23.095f, -68.577f, -262.000f},
-        {430, 3, 46.495f, -53.935f, -262.000f},
-        {431, 3, 63.915f, -33.383f, -262.000f},
-        {432, 3, 70.798f, -6.238f, -262.000f},
-        {433, 3, 68.246f, 22.446f, -262.000f},
-        {434, 3, 55.073f, 46.323f, -262.000f},
-        {435, 3, 33.052f, 63.265f, -262.000f},
-        {436, 3, 5.920f, 71.777f, -262.000f},
-        {437, 3, -29.998f, 92.325f, -262.000f},
-        {438, 3, -55.420f, 79.734f, -262.000f},
-        {439, 3, -74.772f, 61.804f, -262.000f},
-        {440, 3, -89.370f, 37.567f, -262.000f},
-        {441, 3, -96.412f, 10.910f, -262.000f},
-        {442, 3, -95.153f, -16.296f, -262.000f},
-        {443, 3, -86.314f, -42.666f, -262.000f},
-        {444, 3, -71.837f, -66.392f, -262.000f},
-        {445, 3, -49.976f, -82.843f, -262.000f},
-        {446, 3, -24.815f, -93.619f, -262.000f},
-        {447, 3, 2.932f, -96.518f, -262.000f},
-        {448, 3, 30.575f, -91.598f, -262.000f},
-        {449, 3, 54.929f, -79.894f, -262.000f},
-        {450, 3, 75.183f, -61.400f, -262.000f},
-        {451, 3, 89.284f, -38.136f, -262.000f},
-        {452, 3, 96.738f, -11.075f, -262.000f},
-        {453, 3, 95.398f, 16.376f, -262.000f},
-        {454, 3, 87.374f, 42.739f, -262.000f},
-        {455, 3, 71.586f, 65.496f, -262.000f},
-        {456, 3, 49.896f, 83.088f, -262.000f},
-        {457, 3, 24.979f, 93.944f, -262.000f},
-        {458, 3, -2.687f, 96.597f, -262.000f},
-        {459, 3, -37.864f, 118.200f, -262.000f},
-        {460, 3, -65.158f, 105.539f, -262.000f},
-        {461, 3, -88.840f, 85.932f, -262.000f},
-        {462, 3, -106.768f, 62.779f, -262.000f},
-        {463, 3, -118.458f, 35.426f, -262.000f},
-        {464, 3, -124.055f, 5.991f, -262.000f},
-        {465, 3, -121.510f, -23.507f, -262.000f},
-        {466, 3, -112.446f, -52.240f, -262.000f},
-        {467, 3, -96.028f, -77.770f, -262.000f},
-        {468, 3, -75.011f, -98.288f, -262.000f},
-        {469, 3, -49.721f, -113.626f, -262.000f},
-        {470, 3, -20.959f, -122.150f, -262.000f},
-        {471, 3, 9.321f, -123.683f, -262.000f},
-        {472, 3, 38.354f, -118.041f, -262.000f},
-        {473, 3, 65.973f, -105.547f, -262.000f},
-        {474, 3, 88.921f, -86.178f, -262.000f},
-        {475, 3, 106.602f, -63.104f, -262.000f},
-        {476, 3, 118.782f, -35.591f, -262.000f},
-        {477, 3, 124.459f, -6.401f, -262.000f},
-        {478, 3, 122.001f, 23.666f, -262.000f},
-        {479, 3, 112.771f, 52.075f, -262.000f},
-        {480, 3, 96.597f, 77.686f, -262.000f},
-        {481, 3, 75.422f, 98.692f, -262.000f},
-        {482, 3, 49.887f, 113.950f, -262.000f},
-        {483, 3, 21.126f, 122.475f, -262.000f},
-        {484, 3, -8.586f, 123.922f, -262.000f},
-        {485, 3, -46.562f, 141.636f, -262.000f},
-        {486, 3, -71.057f, 132.865f, -262.000f},
-        {487, 3, -96.275f, 125.483f, -262.000f},
-        {488, 3, -104.113f, 101.276f, -262.000f},
-        {489, 3, -122.155f, 116.803f, -262.000f},
-        {490, 3, -128.280f, 93.153f, -262.000f},
-        {491, 3, -147.625f, 108.527f, -262.000f},
-        {492, 3, -149.139f, 80.690f, -262.000f},
-        {493, 3, -127.981f, 68.070f, -262.000f},
-        {494, 3, -148.859f, 53.165f, -262.000f},
-        {495, 3, -148.653f, 26.699f, -262.000f},
-        {496, 3, -148.691f, 0.152f, -262.000f},
-        {497, 3, -148.815f, -26.964f, -262.000f},
-        {498, 3, -149.178f, -53.344f, -262.000f},
-        {499, 3, -128.034f, -67.593f, -262.000f},
-        {500, 3, -149.138f, -80.137f, -262.000f},
-        {501, 3, -128.066f, -93.325f, -262.000f},
-        {502, 3, -149.011f, -106.357f, -262.000f},
-        {503, 3, -122.221f, -117.147f, -262.000f},
-        {504, 3, -104.184f, -100.998f, -262.000f},
-        {505, 3, -97.120f, -125.236f, -262.000f},
-        {506, 3, -71.370f, -133.656f, -262.000f},
-        {507, 3, -46.189f, -141.991f, -262.000f},
-        {508, 3, -20.766f, -150.246f, -262.000f},
-        {509, 3, 4.660f, -158.499f, -262.000f},
-        {510, 3, 24.558f, -143.912f, -262.000f},
-        {511, 3, 30.086f, -166.754f, -262.000f},
-        {512, 3, 48.692f, -150.691f, -262.000f},
-        {513, 3, 55.186f, -174.843f, -262.000f},
-        {514, 3, 73.596f, -152.346f, -262.000f},
-        {515, 3, 63.827f, -130.611f, -262.000f},
-        {516, 3, 89.394f, -130.968f, -262.000f},
-        {517, 3, 104.867f, -109.425f, -262.000f},
-        {518, 3, 120.750f, -87.478f, -262.000f},
-        {519, 3, 136.223f, -65.934f, -262.000f},
-        {520, 3, 152.019f, -44.557f, -262.000f},
-        {521, 3, 143.651f, -20.471f, -262.000f},
-        {522, 3, 167.901f, -22.609f, -262.000f},
-        {523, 3, 158.384f, 0.019f, -262.000f},
-        {524, 3, 183.453f, -1.311f, -262.000f},
-        {525, 3, 167.434f, 22.995f, -262.000f},
-        {526, 3, 143.477f, 20.897f, -262.000f},
-        {527, 3, 151.799f, 44.449f, -262.000f},
-        {528, 3, 136.085f, 66.148f, -262.000f},
-        {529, 3, 121.014f, 86.701f, -262.000f},
-        {530, 3, 104.816f, 109.055f, -262.000f},
-        {531, 3, 89.101f, 130.752f, -262.000f},
-        {532, 3, 64.097f, 130.211f, -262.000f},
-        {533, 3, 73.386f, 152.452f, -262.000f},
-        {534, 3, 48.702f, 150.929f, -262.000f},
-        {535, 3, 57.751f, 173.905f, -262.000f},
-        {536, 3, 29.608f, 167.198f, -262.000f},
-        {537, 3, 24.781f, 142.885f, -262.000f},
-        {538, 3, 4.787f, 158.591f, -262.000f},
-        {539, 3, -20.689f, 149.500f, -262.000f},
-        {540, 4, 189.580f, -137.738f, -117.181f},
-        {541, 4, 174.644f, -143.864f, -134.146f},
-        {542, 4, 178.876f, -157.448f, -111.332f},
-        {543, 4, 197.815f, -144.039f, -96.453f},
-        {544, 4, 205.485f, -121.921f, -110.041f},
-        {545, 4, 191.138f, -121.683f, -133.533f},
-        {546, 4, 172.926f, -125.001f, -159.098f},
-        {547, 4, 159.235f, -150.702f, -151.037f},
-        {548, 4, 158.063f, -170.538f, -129.618f},
-        {549, 4, 168.521f, -177.501f, -104.514f},
-        {550, 4, 187.816f, -169.558f, -82.634f},
-        {551, 4, 206.596f, -149.782f, -75.495f},
-        {552, 4, 219.472f, -125.399f, -83.326f},
-        {553, 4, 221.227f, -105.349f, -104.053f},
-        {554, 4, 210.151f, -98.257f, -130.310f},
-        {555, 4, 192.382f, -105.080f, -151.037f},
-        {556, 4, 163.678f, -118.919f, -181.207f},
-        {557, 4, 149.312f, -142.220f, -177.062f},
-        {558, 4, 141.234f, -166.270f, -161.861f},
-        {559, 4, 140.131f, -184.247f, -142.515f},
-        {560, 4, 147.271f, -196.756f, -116.259f},
-        {561, 4, 159.558f, -199.634f, -92.998f},
-        {562, 4, 177.699f, -193.082f, -71.350f},
-        {563, 4, 196.342f, -179.571f, -57.071f},
-        {564, 4, 216.217f, -156.135f, -52.464f},
-        {565, 4, 229.535f, -132.710f, -58.452f},
-        {566, 4, 237.881f, -110.446f, -71.120f},
-        {567, 4, 238.087f, -92.135f, -92.308f},
-        {568, 4, 231.715f, -79.549f, -117.412f},
-        {569, 4, 218.998f, -76.675f, -141.364f},
-        {570, 4, 201.473f, -83.358f, -161.861f},
-        {571, 4, 181.888f, -97.774f, -176.601f},
-        {572, 4, 154.454f, -112.218f, -204.007f},
-        {573, 4, 139.447f, -136.008f, -200.323f},
-        {574, 4, 129.378f, -158.292f, -190.419f},
-        {575, 4, 123.524f, -180.457f, -173.837f},
-        {576, 4, 123.131f, -198.632f, -153.109f},
-        {577, 4, 128.397f, -211.370f, -129.618f},
-        {578, 4, 138.611f, -218.472f, -104.745f},
-        {579, 4, 152.178f, -220.373f, -80.561f},
-        {580, 4, 169.517f, -213.554f, -60.525f},
-        {581, 4, 188.146f, -201.628f, -44.404f},
-        {582, 4, 207.231f, -183.982f, -34.270f},
-        {583, 4, 224.975f, -162.498f, -30.815f},
-        {584, 4, 239.411f, -139.885f, -34.040f},
-        {585, 4, 249.993f, -116.700f, -44.173f},
-        {586, 4, 255.672f, -95.364f, -60.065f},
-        {587, 4, 256.275f, -76.703f, -81.023f},
-        {588, 4, 250.915f, -63.898f, -104.745f},
-        {589, 4, 241.249f, -56.238f, -129.388f},
-        {590, 4, 226.960f, -55.724f, -153.109f},
-        {591, 4, 209.551f, -61.855f, -174.068f},
-        {592, 4, 191.072f, -73.574f, -190.189f},
-        {593, 4, 172.081f, -91.286f, -200.093f},
-        {594, 4, 144.974f, -104.692f, -228.191f},
-        {595, 4, 128.721f, -129.806f, -224.965f},
-        {596, 4, 116.021f, -155.908f, -214.832f},
-        {597, 4, 107.756f, -179.823f, -200.093f},
-        {598, 4, 104.359f, -201.545f, -180.056f},
-        {599, 4, 105.387f, -220.115f, -156.565f},
-        {600, 4, 111.888f, -233.113f, -130.769f},
-        {601, 4, 122.637f, -241.243f, -103.823f},
-        {602, 4, 137.799f, -242.710f, -77.568f},
-        {603, 4, 155.231f, -238.506f, -54.307f},
-        {604, 4, 174.689f, -228.771f, -34.270f},
-        {605, 4, 195.369f, -213.240f, -19.070f},
-        {606, 4, 215.931f, -193.168f, -9.397f},
-        {607, 4, 234.490f, -170.367f, -6.172f},
-        {608, 4, 250.988f, -145.113f, -9.166f},
-        {609, 4, 263.235f, -119.635f, -19.299f},
-        {610, 4, 271.346f, -95.930f, -34.040f},
-        {611, 4, 275.047f, -73.791f, -54.077f},
-        {612, 4, 274.111f, -55.288f, -77.338f},
-        {613, 4, 267.577f, -41.945f, -103.593f},
-        {614, 4, 256.769f, -34.093f, -130.310f},
-        {615, 4, 241.757f, -32.417f, -156.565f},
-        {616, 4, 224.139f, -36.486f, -180.286f},
-        {617, 4, 204.530f, -46.429f, -200.323f},
-        {618, 4, 183.851f, -61.960f, -215.523f},
-        {619, 4, 163.684f, -81.683f, -224.966f},
-        {620, 4, 135.330f, -98.960f, -250.530f},
-        {621, 4, 120.323f, -120.203f, -249.840f},
-        {622, 4, 104.606f, -141.249f, -250.530f},
-        {623, 4, 103.281f, -158.747f, -232.105f},
-        {624, 4, 88.655f, -163.399f, -250.300f},
-        {625, 4, 88.390f, -179.439f, -231.875f},
-        {626, 4, 72.914f, -185.065f, -250.300f},
-        {627, 4, 76.422f, -200.026f, -227.038f},
-        {628, 4, 92.666f, -191.775f, -210.456f},
-        {629, 4, 81.082f, -213.597f, -203.548f},
-        {630, 4, 85.521f, -226.688f, -180.978f},
-        {631, 4, 89.809f, -239.989f, -158.407f},
-        {632, 4, 94.132f, -253.633f, -135.376f},
-        {633, 4, 98.175f, -267.073f, -113.036f},
-        {634, 4, 114.675f, -259.647f, -95.071f},
-        {635, 4, 102.556f, -280.443f, -90.235f},
-        {636, 4, 118.835f, -272.536f, -73.192f},
-        {637, 4, 106.901f, -293.466f, -67.895f},
-        {638, 4, 126.626f, -280.425f, -51.313f},
-        {639, 4, 136.102f, -259.937f, -60.065f},
-        {640, 4, 144.779f, -267.195f, -37.495f},
-        {641, 4, 163.421f, -253.685f, -23.215f},
-        {642, 4, 181.668f, -240.524f, -9.166f},
-        {643, 4, 200.064f, -227.156f, 4.883f},
-        {644, 4, 218.461f, -213.785f, 18.931f},
-        {645, 4, 229.439f, -192.797f, 12.022f},
-        {646, 4, 236.859f, -200.415f, 32.980f},
-        {647, 4, 246.731f, -179.579f, 24.459f},
-        {648, 4, 255.012f, -187.186f, 46.798f},
-        {649, 4, 263.706f, -163.267f, 32.749f},
-        {650, 4, 253.621f, -159.122f, 11.561f},
-        {651, 4, 270.830f, -141.706f, 18.931f},
-        {652, 4, 277.709f, -120.286f, 4.883f},
-        {653, 4, 284.798f, -98.381f, -9.397f},
-        {654, 4, 291.677f, -76.961f, -23.446f},
-        {655, 4, 298.800f, -55.401f, -37.264f},
-        {656, 4, 289.273f, -49.116f, -60.065f},
-        {657, 4, 305.888f, -33.496f, -51.544f},
-        {658, 4, 295.826f, -28.731f, -73.422f},
-        {659, 4, 312.859f, -12.145f, -65.362f},
-        {660, 4, 298.164f, -11.015f, -90.465f},
-        {661, 4, 282.434f, -28.551f, -95.302f},
-        {662, 4, 284.189f, -11.047f, -113.036f},
-        {663, 4, 270.122f, -11.011f, -135.837f},
-        {664, 4, 256.672f, -11.106f, -157.486f},
-        {665, 4, 242.173f, -11.075f, -180.978f},
-        {666, 4, 228.106f, -11.041f, -203.777f},
-        {667, 4, 211.420f, -28.519f, -210.227f},
-        {668, 4, 214.038f, -11.005f, -226.578f},
-        {669, 4, 197.726f, -28.755f, -232.105f},
-        {670, 4, 200.063f, -11.038f, -249.148f},
-        {671, 4, 182.274f, -33.760f, -251.222f},
-        {672, 4, 182.986f, -49.239f, -231.875f},
-        {673, 4, 167.022f, -55.144f, -250.761f},
-        {674, 4, 151.409f, -77.222f, -250.069f},
-        {675, 5, -72.413f, -222.865f, -117.181f},
-        {676, 5, -82.855f, -210.553f, -134.146f},
-        {677, 5, -94.467f, -218.775f, -111.332f},
-        {678, 5, -75.861f, -232.644f, -96.453f},
-        {679, 5, -52.456f, -233.104f, -110.041f},
-        {680, 5, -56.662f, -219.385f, -133.533f},
-        {681, 5, -65.446f, -203.089f, -159.098f},
-        {682, 5, -94.120f, -198.011f, -151.037f},
-        {683, 5, -113.347f, -203.026f, -129.618f},
-        {684, 5, -116.738f, -215.124f, -104.514f},
-        {685, 5, -103.220f, -231.020f, -82.634f},
-        {686, 5, -78.610f, -242.770f, -75.495f},
-        {687, 5, -51.441f, -247.480f, -83.326f},
-        {688, 5, -31.830f, -242.954f, -104.053f},
-        {689, 5, -28.508f, -230.228f, -130.310f},
-        {690, 5, -40.487f, -215.437f, -151.037f},
-        {691, 5, -62.520f, -192.415f, -181.207f},
-        {692, 5, -89.119f, -185.952f, -177.062f},
-        {693, 5, -114.488f, -185.702f, -161.861f},
-        {694, 5, -131.927f, -190.208f, -142.515f},
-        {695, 5, -141.617f, -200.864f, -116.259f},
-        {696, 5, -140.557f, -213.439f, -92.998f},
-        {697, 5, -128.720f, -228.668f, -71.350f},
-        {698, 5, -110.109f, -242.223f, -57.071f},
-        {699, 5, -81.679f, -253.882f, -52.464f},
-        {700, 5, -55.285f, -259.310f, -58.452f},
-        {701, 5, -31.531f, -260.368f, -71.120f},
-        {702, 5, -14.053f, -254.906f, -92.308f},
-        {703, 5, -4.052f, -244.956f, -117.412f},
-        {704, 5, -5.248f, -231.973f, -141.364f},
-        {705, 5, -17.020f, -217.371f, -161.861f},
-        {706, 5, -36.782f, -203.200f, -176.601f},
-        {707, 5, -58.996f, -181.572f, -204.007f},
-        {708, 5, -86.260f, -174.651f, -200.323f},
-        {709, 5, -110.564f, -171.961f, -190.419f},
-        {710, 5, -133.454f, -173.242f, -173.837f},
-        {711, 5, -150.860f, -178.486f, -153.109f},
-        {712, 5, -161.348f, -187.429f, -129.618f},
-        {713, 5, -164.946f, -199.339f, -104.745f},
-        {714, 5, -162.561f, -212.829f, -80.561f},
-        {715, 5, -150.718f, -227.212f, -60.525f},
-        {716, 5, -133.619f, -241.244f, -44.404f},
-        {717, 5, -110.939f, -253.942f, -34.270f},
-        {718, 5, -85.024f, -264.179f, -30.815f},
-        {719, 5, -59.057f, -270.920f, -34.040f},
-        {720, 5, -33.737f, -273.819f, -44.173f},
-        {721, 5, -11.689f, -272.627f, -60.065f},
-        {722, 5, 6.245f, -267.434f, -81.023f},
-        {723, 5, 16.766f, -258.380f, -104.745f},
-        {724, 5, 21.064f, -246.820f, -129.388f},
-        {725, 5, 17.137f, -233.071f, -153.109f},
-        {726, 5, 5.927f, -218.409f, -174.068f},
-        {727, 5, -10.928f, -204.456f, -190.189f},
-        {728, 5, -33.642f, -191.868f, -200.093f},
-        {729, 5, -54.769f, -170.230f, -228.191f},
-        {730, 5, -83.676f, -162.533f, -224.965f},
-        {731, 5, -112.425f, -158.520f, -214.832f},
-        {732, 5, -137.723f, -158.050f, -200.093f},
-        {733, 5, -159.432f, -161.532f, -180.056f},
-        {734, 5, -176.775f, -168.248f, -156.565f},
-        {735, 5, -187.129f, -178.447f, -130.769f},
-        {736, 5, -191.539f, -191.183f, -103.823f},
-        {737, 5, -188.248f, -206.056f, -77.568f},
-        {738, 5, -178.864f, -221.336f, -54.307f},
-        {739, 5, -163.592f, -236.834f, -34.270f},
-        {740, 5, -142.430f, -251.702f, -19.070f},
-        {741, 5, -116.987f, -265.055f, -9.397f},
-        {742, 5, -89.567f, -275.660f, -6.172f},
-        {743, 5, -60.451f, -283.546f, -9.166f},
-        {744, 5, -32.436f, -287.320f, -19.299f},
-        {745, 5, -7.384f, -287.710f, -34.040f},
-        {746, 5, 14.815f, -284.387f, -54.077f},
-        {747, 5, 32.123f, -277.780f, -77.338f},
-        {748, 5, 42.794f, -267.443f, -103.593f},
-        {749, 5, 46.922f, -254.737f, -130.310f},
-        {750, 5, 43.877f, -239.942f, -156.565f},
-        {751, 5, 34.563f, -224.444f, -180.286f},
-        {752, 5, 19.046f, -208.867f, -200.323f},
-        {753, 5, -2.114f, -193.999f, -215.523f},
-        {754, 5, -27.104f, -180.914f, -224.966f},
-        {755, 5, -52.297f, -159.287f, -250.530f},
-        {756, 5, -77.138f, -151.579f, -249.840f},
-        {757, 5, -102.011f, -143.134f, -250.530f},
-        {758, 5, -119.061f, -147.282f, -232.105f},
-        {759, 5, -128.005f, -134.809f, -250.300f},
-        {760, 5, -143.343f, -139.513f, -231.875f},
-        {761, 5, -153.475f, -126.534f, -250.300f},
-        {762, 5, -166.621f, -134.493f, -227.038f},
-        {763, 5, -153.754f, -147.392f, -210.456f},
-        {764, 5, -178.087f, -143.119f, -203.548f},
-        {765, 5, -189.166f, -151.386f, -180.978f},
-        {766, 5, -200.490f, -159.574f, -158.407f},
-        {767, 5, -212.131f, -167.902f, -135.376f},
-        {768, 5, -223.664f, -175.900f, -113.036f},
-        {769, 5, -211.503f, -189.298f, -95.071f},
-        {770, 5, -235.025f, -184.198f, -90.235f},
-        {771, 5, -222.475f, -197.237f, -73.192f},
-        {772, 5, -246.069f, -192.355f, -67.895f},
-        {773, 5, -227.570f, -207.085f, -51.313f},
-        {774, 5, -205.157f, -209.766f, -60.065f},
-        {775, 5, -209.379f, -220.261f, -37.495f},
-        {776, 5, -190.769f, -233.816f, -23.215f},
-        {777, 5, -172.613f, -247.102f, -9.166f},
-        {778, 5, -154.215f, -260.467f, 4.883f},
-        {779, 5, -135.813f, -273.832f, 18.931f},
-        {780, 5, -112.461f, -277.787f, 12.022f},
-        {781, 5, -117.412f, -287.198f, 32.980f},
-        {782, 5, -94.546f, -290.148f, 24.459f},
-        {783, 5, -99.222f, -300.374f, 46.798f},
-        {784, 5, -73.787f, -301.252f, 32.749f},
-        {785, 5, -72.961f, -290.379f, 11.561f},
-        {786, 5, -51.079f, -301.364f, 18.931f},
-        {787, 5, -28.582f, -301.288f, 4.883f},
-        {788, 5, -5.559f, -301.260f, -9.397f},
-        {789, 5, 16.939f, -301.183f, -23.446f},
-        {790, 5, 39.645f, -301.295f, -37.264f},
-        {791, 5, 42.678f, -290.292f, -60.065f},
-        {792, 5, 62.668f, -301.267f, -51.544f},
-        {793, 5, 64.090f, -290.226f, -73.422f},
-        {794, 5, 85.129f, -301.300f, -65.362f},
-        {795, 5, 81.661f, -286.974f, -90.465f},
-        {796, 5, 60.124f, -277.433f, -95.302f},
-        {797, 5, 77.313f, -273.694f, -113.036f},
-        {798, 5, 73.000f, -260.304f, -135.837f},
-        {799, 5, 68.754f, -247.541f, -157.486f},
-        {800, 5, 64.302f, -233.743f, -180.978f},
-        {801, 5, 59.988f, -220.353f, -203.777f},
-        {802, 5, 38.209f, -209.886f, -210.227f},
-        {803, 5, 55.675f, -206.963f, -226.578f},
-        {804, 5, 33.753f, -196.934f, -232.105f},
-        {805, 5, 51.325f, -193.682f, -249.148f},
-        {806, 5, 24.218f, -183.785f, -251.222f},
-        {807, 5, 9.717f, -189.246f, -231.875f},
-        {808, 5, -0.833f, -175.888f, -250.761f},
-        {809, 5, -26.655f, -167.861f, -250.069f},
+        {0, 0, -189.580f, -137.738f, 117.181f},
+        {1, 0, -174.644f, -143.864f, 134.146f},
+        {2, 0, -178.876f, -157.448f, 111.332f},
+        {3, 0, -197.815f, -144.039f, 96.453f},
+        {4, 0, -205.485f, -121.921f, 110.041f},
+        {5, 0, -191.138f, -121.683f, 133.533f},
+        {6, 0, -172.926f, -125.001f, 159.098f},
+        {7, 0, -159.235f, -150.702f, 151.037f},
+        {8, 0, -158.063f, -170.538f, 129.618f},
+        {9, 0, -168.521f, -177.501f, 104.514f},
+        {10, 0, -187.816f, -169.558f, 82.634f},
+        {11, 0, -206.596f, -149.782f, 75.495f},
+        {12, 0, -219.472f, -125.399f, 83.326f},
+        {13, 0, -221.227f, -105.349f, 104.053f},
+        {14, 0, -210.151f, -98.257f, 130.310f},
+        {15, 0, -192.382f, -105.080f, 151.037f},
+        {16, 0, -163.678f, -118.919f, 181.207f},
+        {17, 0, -149.312f, -142.220f, 177.062f},
+        {18, 0, -141.234f, -166.270f, 161.861f},
+        {19, 0, -140.131f, -184.247f, 142.515f},
+        {20, 0, -147.271f, -196.756f, 116.259f},
+        {21, 0, -159.558f, -199.634f, 92.998f},
+        {22, 0, -177.699f, -193.082f, 71.350f},
+        {23, 0, -196.342f, -179.571f, 57.071f},
+        {24, 0, -216.217f, -156.135f, 52.464f},
+        {25, 0, -229.535f, -132.710f, 58.452f},
+        {26, 0, -237.881f, -110.446f, 71.120f},
+        {27, 0, -238.087f, -92.135f, 92.308f},
+        {28, 0, -231.715f, -79.549f, 117.412f},
+        {29, 0, -218.998f, -76.675f, 141.364f},
+        {30, 0, -201.473f, -83.358f, 161.861f},
+        {31, 0, -181.888f, -97.774f, 176.601f},
+        {32, 0, -154.454f, -112.218f, 204.007f},
+        {33, 0, -139.447f, -136.008f, 200.323f},
+        {34, 0, -129.378f, -158.292f, 190.419f},
+        {35, 0, -123.524f, -180.457f, 173.837f},
+        {36, 0, -123.131f, -198.632f, 153.109f},
+        {37, 0, -128.397f, -211.370f, 129.618f},
+        {38, 0, -138.611f, -218.472f, 104.745f},
+        {39, 0, -152.178f, -220.373f, 80.561f},
+        {40, 0, -169.517f, -213.554f, 60.525f},
+        {41, 0, -188.146f, -201.628f, 44.404f},
+        {42, 0, -207.231f, -183.982f, 34.270f},
+        {43, 0, -224.975f, -162.498f, 30.815f},
+        {44, 0, -239.411f, -139.885f, 34.040f},
+        {45, 0, -249.993f, -116.700f, 44.173f},
+        {46, 0, -255.672f, -95.364f, 60.065f},
+        {47, 0, -256.275f, -76.703f, 81.023f},
+        {48, 0, -250.915f, -63.898f, 104.745f},
+        {49, 0, -241.249f, -56.238f, 129.388f},
+        {50, 0, -226.960f, -55.724f, 153.109f},
+        {51, 0, -209.551f, -61.855f, 174.068f},
+        {52, 0, -191.072f, -73.574f, 190.189f},
+        {53, 0, -172.081f, -91.286f, 200.093f},
+        {54, 0, -144.974f, -104.692f, 228.191f},
+        {55, 0, -128.721f, -129.806f, 224.965f},
+        {56, 0, -116.021f, -155.908f, 214.832f},
+        {57, 0, -107.756f, -179.823f, 200.093f},
+        {58, 0, -104.359f, -201.545f, 180.056f},
+        {59, 0, -105.387f, -220.115f, 156.565f},
+        {60, 0, -111.888f, -233.113f, 130.769f},
+        {61, 0, -122.637f, -241.243f, 103.823f},
+        {62, 0, -137.799f, -242.710f, 77.568f},
+        {63, 0, -155.231f, -238.506f, 54.307f},
+        {64, 0, -174.689f, -228.771f, 34.270f},
+        {65, 0, -195.369f, -213.240f, 19.070f},
+        {66, 0, -215.931f, -193.168f, 9.397f},
+        {67, 0, -234.490f, -170.367f, 6.172f},
+        {68, 0, -250.988f, -145.113f, 9.166f},
+        {69, 0, -263.235f, -119.635f, 19.299f},
+        {70, 0, -271.346f, -95.930f, 34.040f},
+        {71, 0, -275.047f, -73.791f, 54.077f},
+        {72, 0, -274.111f, -55.288f, 77.338f},
+        {73, 0, -267.577f, -41.945f, 103.593f},
+        {74, 0, -256.769f, -34.093f, 130.310f},
+        {75, 0, -241.757f, -32.417f, 156.565f},
+        {76, 0, -224.139f, -36.486f, 180.286f},
+        {77, 0, -204.530f, -46.429f, 200.323f},
+        {78, 0, -183.851f, -61.960f, 215.523f},
+        {79, 0, -163.684f, -81.683f, 224.966f},
+        {80, 0, -135.330f, -98.960f, 250.530f},
+        {81, 0, -120.323f, -120.203f, 249.840f},
+        {82, 0, -104.606f, -141.249f, 250.530f},
+        {83, 0, -103.281f, -158.747f, 232.105f},
+        {84, 0, -88.655f, -163.399f, 250.300f},
+        {85, 0, -88.390f, -179.439f, 231.875f},
+        {86, 0, -72.914f, -185.065f, 250.300f},
+        {87, 0, -76.422f, -200.026f, 227.038f},
+        {88, 0, -92.666f, -191.775f, 210.456f},
+        {89, 0, -81.082f, -213.597f, 203.548f},
+        {90, 0, -85.521f, -226.688f, 180.978f},
+        {91, 0, -89.809f, -239.989f, 158.407f},
+        {92, 0, -94.132f, -253.633f, 135.376f},
+        {93, 0, -98.175f, -267.073f, 113.036f},
+        {94, 0, -114.675f, -259.647f, 95.071f},
+        {95, 0, -102.556f, -280.443f, 90.235f},
+        {96, 0, -118.835f, -272.536f, 73.192f},
+        {97, 0, -106.901f, -293.466f, 67.895f},
+        {98, 0, -126.626f, -280.425f, 51.313f},
+        {99, 0, -136.102f, -259.937f, 60.065f},
+        {100, 0, -144.779f, -267.195f, 37.495f},
+        {101, 0, -163.421f, -253.685f, 23.215f},
+        {102, 0, -181.668f, -240.524f, 9.166f},
+        {103, 0, -200.064f, -227.156f, -4.883f},
+        {104, 0, -218.461f, -213.785f, -18.931f},
+        {105, 0, -229.439f, -192.797f, -12.022f},
+        {106, 0, -236.859f, -200.415f, -32.980f},
+        {107, 0, -246.731f, -179.579f, -24.459f},
+        {108, 0, -255.012f, -187.186f, -46.798f},
+        {109, 0, -263.706f, -163.267f, -32.749f},
+        {110, 0, -253.621f, -159.122f, -11.561f},
+        {111, 0, -270.830f, -141.706f, -18.931f},
+        {112, 0, -277.709f, -120.286f, -4.883f},
+        {113, 0, -284.798f, -98.381f, 9.397f},
+        {114, 0, -291.677f, -76.961f, 23.446f},
+        {115, 0, -298.800f, -55.401f, 37.264f},
+        {116, 0, -289.273f, -49.116f, 60.065f},
+        {117, 0, -305.888f, -33.496f, 51.544f},
+        {118, 0, -295.826f, -28.731f, 73.422f},
+        {119, 0, -312.859f, -12.145f, 65.362f},
+        {120, 0, -298.164f, -11.015f, 90.465f},
+        {121, 0, -282.434f, -28.551f, 95.302f},
+        {122, 0, -284.189f, -11.047f, 113.036f},
+        {123, 0, -270.122f, -11.011f, 135.837f},
+        {124, 0, -256.672f, -11.106f, 157.486f},
+        {125, 0, -242.173f, -11.075f, 180.978f},
+        {126, 0, -228.106f, -11.041f, 203.777f},
+        {127, 0, -211.420f, -28.519f, 210.227f},
+        {128, 0, -214.038f, -11.005f, 226.578f},
+        {129, 0, -197.726f, -28.755f, 232.105f},
+        {130, 0, -200.063f, -11.038f, 249.148f},
+        {131, 0, -182.274f, -33.760f, 251.222f},
+        {132, 0, -182.986f, -49.239f, 231.875f},
+        {133, 0, -167.022f, -55.144f, 250.761f},
+        {134, 0, -151.409f, -77.222f, 250.069f},
+        {135, 1, 234.334f, 0.000f, 117.181f},
+        {136, 1, 225.851f, 13.735f, 134.146f},
+        {137, 1, 237.260f, 22.238f, 111.332f},
+        {138, 1, 244.700f, 0.258f, 96.453f},
+        {139, 1, 237.905f, -22.145f, 110.041f},
+        {140, 1, 226.157f, -13.905f, 133.533f},
+        {141, 1, 213.373f, -0.515f, 159.098f},
+        {142, 1, 217.404f, 28.324f, 151.037f},
+        {143, 1, 228.115f, 45.061f, 129.618f},
+        {144, 1, 240.669f, 44.547f, 104.514f},
+        {145, 1, 251.610f, 26.779f, 82.634f},
+        {146, 1, 255.180f, -0.258f, 75.495f},
+        {147, 1, 251.264f, -27.553f, 83.326f},
+        {148, 1, 240.899f, -44.805f, 104.053f},
+        {149, 1, 227.769f, -44.032f, 130.310f},
+        {150, 1, 217.404f, -28.068f, 151.037f},
+        {151, 1, 202.318f, 0.000f, 181.207f},
+        {152, 1, 204.390f, 27.295f, 177.062f},
+        {153, 1, 211.991f, 51.500f, 161.861f},
+        {154, 1, 221.666f, 66.692f, 142.515f},
+        {155, 1, 234.795f, 72.615f, 116.259f},
+        {156, 1, 246.427f, 67.722f, 92.998f},
+        {157, 1, 257.253f, 51.758f, 71.350f},
+        {158, 1, 264.393f, 29.869f, 57.071f},
+        {159, 1, 266.697f, -0.773f, 52.464f},
+        {160, 1, 263.702f, -27.553f, 58.452f},
+        {161, 1, 257.368f, -50.470f, 71.120f},
+        {162, 1, 246.773f, -65.405f, 92.308f},
+        {163, 1, 234.219f, -71.842f, 117.412f},
+        {164, 1, 222.242f, -66.692f, 141.364f},
+        {165, 1, 211.991f, -50.985f, 161.861f},
+        {166, 1, 204.621f, -27.810f, 176.601f},
+        {167, 1, 190.916f, 0.000f, 204.007f},
+        {168, 1, 192.758f, 28.068f, 200.323f},
+        {169, 1, 197.711f, 52.014f, 190.419f},
+        {170, 1, 206.003f, 73.387f, 173.837f},
+        {171, 1, 216.368f, 88.322f, 153.109f},
+        {172, 1, 228.115f, 95.532f, 129.618f},
+        {173, 1, 240.553f, 95.274f, 104.745f},
+        {174, 1, 252.647f, 88.837f, 80.561f},
+        {175, 1, 262.666f, 73.129f, 60.525f},
+        {176, 1, 270.727f, 52.531f, 44.404f},
+        {177, 1, 275.795f, 27.037f, 34.270f},
+        {178, 1, 277.523f, -0.773f, 30.815f},
+        {179, 1, 275.910f, -27.553f, 34.040f},
+        {180, 1, 270.843f, -52.529f, 44.173f},
+        {181, 1, 262.896f, -73.129f, 60.065f},
+        {182, 1, 252.415f, -88.581f, 81.023f},
+        {183, 1, 240.553f, -95.790f, 104.745f},
+        {184, 1, 228.230f, -96.305f, 129.388f},
+        {185, 1, 216.368f, -88.322f, 153.109f},
+        {186, 1, 205.888f, -73.129f, 174.068f},
+        {187, 1, 197.826f, -52.787f, 190.189f},
+        {188, 1, 192.874f, -27.295f, 200.093f},
+        {189, 1, 178.823f, -0.515f, 228.191f},
+        {190, 1, 180.436f, 29.355f, 224.965f},
+        {191, 1, 185.503f, 57.937f, 214.832f},
+        {192, 1, 192.874f, 82.142f, 200.093f},
+        {193, 1, 202.893f, 101.713f, 180.056f},
+        {194, 1, 214.640f, 116.132f, 156.565f},
+        {195, 1, 227.539f, 122.827f, 130.769f},
+        {196, 1, 241.014f, 123.086f, 103.823f},
+        {197, 1, 254.143f, 115.360f, 77.568f},
+        {198, 1, 265.775f, 101.713f, 54.307f},
+        {199, 1, 275.795f, 82.400f, 34.270f},
+        {200, 1, 283.396f, 57.679f, 19.070f},
+        {201, 1, 288.233f, 29.355f, 9.397f},
+        {202, 1, 289.846f, -0.000f, 6.172f},
+        {203, 1, 288.348f, -30.128f, 9.166f},
+        {204, 1, 283.281f, -57.938f, 19.299f},
+        {205, 1, 275.910f, -81.884f, 34.040f},
+        {206, 1, 265.890f, -101.970f, 54.077f},
+        {207, 1, 254.258f, -116.390f, 77.338f},
+        {208, 1, 241.129f, -123.343f, 103.593f},
+        {209, 1, 227.769f, -123.343f, 130.310f},
+        {210, 1, 214.640f, -115.875f, 156.565f},
+        {211, 1, 202.778f, -102.228f, 180.286f},
+        {212, 1, 192.758f, -82.658f, 200.323f},
+        {213, 1, 185.157f, -57.938f, 215.523f},
+        {214, 1, 180.435f, -30.128f, 224.966f},
+        {215, 1, 167.652f, 0.515f, 250.530f},
+        {216, 1, 167.997f, 26.522f, 249.840f},
+        {217, 1, 167.652f, 52.787f, 250.530f},
+        {218, 1, 176.865f, 67.722f, 232.105f},
+        {219, 1, 167.767f, 80.082f, 250.300f},
+        {220, 1, 176.980f, 93.215f, 231.875f},
+        {221, 1, 167.767f, 106.863f, 250.300f},
+        {222, 1, 179.399f, 116.905f, 227.038f},
+        {223, 1, 187.691f, 100.682f, 210.456f},
+        {224, 1, 191.146f, 125.145f, 203.548f},
+        {225, 1, 202.432f, 133.127f, 180.978f},
+        {226, 1, 213.719f, 141.366f, 158.407f},
+        {227, 1, 225.236f, 149.864f, 135.376f},
+        {228, 1, 236.407f, 158.361f, 113.036f},
+        {229, 1, 245.391f, 142.655f, 95.071f},
+        {230, 1, 247.809f, 166.602f, 90.235f},
+        {231, 1, 256.332f, 150.637f, 73.192f},
+        {232, 1, 258.980f, 174.584f, 67.895f},
+        {233, 1, 267.272f, 152.439f, 51.313f},
+        {234, 1, 262.896f, 130.295f, 60.065f},
+        {235, 1, 274.182f, 131.066f, 37.495f},
+        {236, 1, 281.323f, 109.179f, 23.215f},
+        {237, 1, 288.348f, 87.806f, 9.166f},
+        {238, 1, 295.374f, 66.178f, -4.883f},
+        {239, 1, 302.399f, 44.547f, -18.931f},
+        {240, 1, 298.944f, 21.115f, -12.022f},
+        {241, 1, 309.424f, 22.917f, -32.980f},
+        {242, 1, 305.163f, 0.258f, -24.459f},
+        {243, 1, 316.334f, 1.545f, -46.798f},
+        {244, 1, 309.309f, -22.917f, -32.749f},
+        {245, 1, 298.713f, -20.342f, -11.561f},
+        {246, 1, 302.399f, -44.547f, -18.931f},
+        {247, 1, 295.374f, -65.920f, -4.883f},
+        {248, 1, 288.233f, -87.808f, 9.397f},
+        {249, 1, 281.208f, -109.181f, 23.446f},
+        {250, 1, 274.298f, -130.810f, 37.264f},
+        {251, 1, 262.896f, -130.295f, 60.065f},
+        {252, 1, 267.157f, -152.697f, 51.544f},
+        {253, 1, 256.217f, -150.638f, 73.422f},
+        {254, 1, 260.247f, -174.069f, 65.362f},
+        {255, 1, 247.694f, -166.345f, 90.465f},
+        {256, 1, 245.275f, -142.913f, 95.302f},
+        {257, 1, 236.407f, -158.105f, 113.036f},
+        {258, 1, 225.005f, -149.865f, 135.837f},
+        {259, 1, 214.180f, -141.883f, 157.486f},
+        {260, 1, 202.432f, -133.386f, 180.978f},
+        {261, 1, 191.031f, -125.145f, 203.777f},
+        {262, 1, 187.806f, -101.197f, 210.227f},
+        {263, 1, 179.629f, -116.905f, 226.578f},
+        {264, 1, 176.865f, -92.958f, 232.105f},
+        {265, 1, 168.343f, -108.664f, 249.148f},
+        {266, 1, 167.306f, -79.825f, 251.222f},
+        {267, 1, 176.980f, -67.722f, 231.875f},
+        {268, 1, 167.536f, -53.560f, 250.761f},
+        {269, 1, 167.882f, -26.522f, 250.069f},
+        {270, 2, 72.413f, -222.865f, 117.181f},
+        {271, 2, 82.855f, -210.553f, 134.146f},
+        {272, 2, 94.467f, -218.775f, 111.332f},
+        {273, 2, 75.861f, -232.644f, 96.453f},
+        {274, 2, 52.456f, -233.104f, 110.041f},
+        {275, 2, 56.662f, -219.385f, 133.533f},
+        {276, 2, 65.446f, -203.089f, 159.098f},
+        {277, 2, 94.120f, -198.011f, 151.037f},
+        {278, 2, 113.347f, -203.026f, 129.618f},
+        {279, 2, 116.738f, -215.124f, 104.514f},
+        {280, 2, 103.220f, -231.020f, 82.634f},
+        {281, 2, 78.610f, -242.770f, 75.495f},
+        {282, 2, 51.441f, -247.480f, 83.326f},
+        {283, 2, 31.830f, -242.954f, 104.053f},
+        {284, 2, 28.508f, -230.228f, 130.310f},
+        {285, 2, 40.487f, -215.437f, 151.037f},
+        {286, 2, 62.520f, -192.415f, 181.207f},
+        {287, 2, 89.119f, -185.952f, 177.062f},
+        {288, 2, 114.488f, -185.702f, 161.861f},
+        {289, 2, 131.927f, -190.208f, 142.515f},
+        {290, 2, 141.617f, -200.864f, 116.259f},
+        {291, 2, 140.557f, -213.439f, 92.998f},
+        {292, 2, 128.720f, -228.668f, 71.350f},
+        {293, 2, 110.109f, -242.223f, 57.071f},
+        {294, 2, 81.679f, -253.882f, 52.464f},
+        {295, 2, 55.285f, -259.310f, 58.452f},
+        {296, 2, 31.531f, -260.368f, 71.120f},
+        {297, 2, 14.053f, -254.906f, 92.308f},
+        {298, 2, 4.052f, -244.956f, 117.412f},
+        {299, 2, 5.248f, -231.973f, 141.364f},
+        {300, 2, 17.020f, -217.371f, 161.861f},
+        {301, 2, 36.782f, -203.200f, 176.601f},
+        {302, 2, 58.996f, -181.572f, 204.007f},
+        {303, 2, 86.260f, -174.651f, 200.323f},
+        {304, 2, 110.564f, -171.961f, 190.419f},
+        {305, 2, 133.454f, -173.242f, 173.837f},
+        {306, 2, 150.860f, -178.486f, 153.109f},
+        {307, 2, 161.348f, -187.429f, 129.618f},
+        {308, 2, 164.946f, -199.339f, 104.745f},
+        {309, 2, 162.561f, -212.829f, 80.561f},
+        {310, 2, 150.718f, -227.212f, 60.525f},
+        {311, 2, 133.619f, -241.244f, 44.404f},
+        {312, 2, 110.939f, -253.942f, 34.270f},
+        {313, 2, 85.024f, -264.179f, 30.815f},
+        {314, 2, 59.057f, -270.920f, 34.040f},
+        {315, 2, 33.737f, -273.819f, 44.173f},
+        {316, 2, 11.689f, -272.627f, 60.065f},
+        {317, 2, -6.245f, -267.434f, 81.023f},
+        {318, 2, -16.766f, -258.380f, 104.745f},
+        {319, 2, -21.064f, -246.820f, 129.388f},
+        {320, 2, -17.137f, -233.071f, 153.109f},
+        {321, 2, -5.927f, -218.409f, 174.068f},
+        {322, 2, 10.928f, -204.456f, 190.189f},
+        {323, 2, 33.642f, -191.868f, 200.093f},
+        {324, 2, 54.769f, -170.230f, 228.191f},
+        {325, 2, 83.676f, -162.533f, 224.965f},
+        {326, 2, 112.425f, -158.520f, 214.832f},
+        {327, 2, 137.723f, -158.050f, 200.093f},
+        {328, 2, 159.432f, -161.532f, 180.056f},
+        {329, 2, 176.775f, -168.248f, 156.565f},
+        {330, 2, 187.129f, -178.447f, 130.769f},
+        {331, 2, 191.539f, -191.183f, 103.823f},
+        {332, 2, 188.248f, -206.056f, 77.568f},
+        {333, 2, 178.864f, -221.336f, 54.307f},
+        {334, 2, 163.592f, -236.834f, 34.270f},
+        {335, 2, 142.430f, -251.702f, 19.070f},
+        {336, 2, 116.987f, -265.055f, 9.397f},
+        {337, 2, 89.567f, -275.660f, 6.172f},
+        {338, 2, 60.451f, -283.546f, 9.166f},
+        {339, 2, 32.436f, -287.320f, 19.299f},
+        {340, 2, 7.384f, -287.710f, 34.040f},
+        {341, 2, -14.815f, -284.387f, 54.077f},
+        {342, 2, -32.123f, -277.780f, 77.338f},
+        {343, 2, -42.794f, -267.443f, 103.593f},
+        {344, 2, -46.922f, -254.737f, 130.310f},
+        {345, 2, -43.877f, -239.942f, 156.565f},
+        {346, 2, -34.563f, -224.444f, 180.286f},
+        {347, 2, -19.046f, -208.867f, 200.323f},
+        {348, 2, 2.114f, -193.999f, 215.523f},
+        {349, 2, 27.104f, -180.914f, 224.966f},
+        {350, 2, 52.297f, -159.287f, 250.530f},
+        {351, 2, 77.138f, -151.579f, 249.840f},
+        {352, 2, 102.011f, -143.134f, 250.530f},
+        {353, 2, 119.061f, -147.282f, 232.105f},
+        {354, 2, 128.005f, -134.809f, 250.300f},
+        {355, 2, 143.343f, -139.513f, 231.875f},
+        {356, 2, 153.475f, -126.534f, 250.300f},
+        {357, 2, 166.621f, -134.493f, 227.038f},
+        {358, 2, 153.754f, -147.392f, 210.456f},
+        {359, 2, 178.087f, -143.119f, 203.548f},
+        {360, 2, 189.166f, -151.386f, 180.978f},
+        {361, 2, 200.490f, -159.574f, 158.407f},
+        {362, 2, 212.131f, -167.902f, 135.376f},
+        {363, 2, 223.664f, -175.900f, 113.036f},
+        {364, 2, 211.503f, -189.298f, 95.071f},
+        {365, 2, 235.025f, -184.198f, 90.235f},
+        {366, 2, 222.475f, -197.237f, 73.192f},
+        {367, 2, 246.069f, -192.355f, 67.895f},
+        {368, 2, 227.570f, -207.085f, 51.313f},
+        {369, 2, 205.157f, -209.766f, 60.065f},
+        {370, 2, 209.379f, -220.261f, 37.495f},
+        {371, 2, 190.769f, -233.816f, 23.215f},
+        {372, 2, 172.613f, -247.102f, 9.166f},
+        {373, 2, 154.215f, -260.467f, -4.883f},
+        {374, 2, 135.813f, -273.832f, -18.931f},
+        {375, 2, 112.461f, -277.787f, -12.022f},
+        {376, 2, 117.412f, -287.198f, -32.980f},
+        {377, 2, 94.546f, -290.148f, -24.459f},
+        {378, 2, 99.222f, -300.374f, -46.798f},
+        {379, 2, 73.787f, -301.252f, -32.749f},
+        {380, 2, 72.961f, -290.379f, -11.561f},
+        {381, 2, 51.079f, -301.364f, -18.931f},
+        {382, 2, 28.582f, -301.288f, -4.883f},
+        {383, 2, 5.559f, -301.260f, 9.397f},
+        {384, 2, -16.939f, -301.183f, 23.446f},
+        {385, 2, -39.645f, -301.295f, 37.264f},
+        {386, 2, -42.678f, -290.292f, 60.065f},
+        {387, 2, -62.668f, -301.267f, 51.544f},
+        {388, 2, -64.090f, -290.226f, 73.422f},
+        {389, 2, -85.129f, -301.300f, 65.362f},
+        {390, 2, -81.661f, -286.974f, 90.465f},
+        {391, 2, -60.124f, -277.433f, 95.302f},
+        {392, 2, -77.313f, -273.694f, 113.036f},
+        {393, 2, -73.000f, -260.304f, 135.837f},
+        {394, 2, -68.754f, -247.541f, 157.486f},
+        {395, 2, -64.302f, -233.743f, 180.978f},
+        {396, 2, -59.988f, -220.353f, 203.777f},
+        {397, 2, -38.209f, -209.886f, 210.227f},
+        {398, 2, -55.675f, -206.963f, 226.578f},
+        {399, 2, -33.753f, -196.934f, 232.105f},
+        {400, 2, -51.325f, -193.682f, 249.148f},
+        {401, 2, -24.218f, -183.785f, 251.222f},
+        {402, 2, -9.717f, -189.246f, 231.875f},
+        {403, 2, 0.833f, -175.888f, 250.761f},
+        {404, 2, 26.655f, -167.861f, 250.069f},
+        {405, 3, 72.413f, 222.865f, 117.181f},
+        {406, 3, 56.729f, 219.041f, 134.146f},
+        {407, 3, 52.168f, 232.519f, 111.332f},
+        {408, 3, 75.371f, 232.803f, 96.453f},
+        {409, 3, 94.578f, 219.418f, 110.041f},
+        {410, 3, 83.111f, 210.792f, 133.533f},
+        {411, 3, 66.426f, 202.771f, 159.098f},
+        {412, 3, 40.244f, 215.517f, 151.037f},
+        {413, 3, 27.635f, 230.875f, 129.618f},
+        {414, 3, 32.004f, 242.655f, 104.514f},
+        {415, 3, 52.283f, 247.570f, 82.634f},
+        {416, 3, 79.100f, 242.611f, 75.495f},
+        {417, 3, 103.849f, 230.452f, 83.326f},
+        {418, 3, 117.054f, 215.263f, 104.053f},
+        {419, 3, 112.261f, 203.015f, 130.310f},
+        {420, 3, 93.876f, 198.090f, 151.037f},
+        {421, 3, 62.520f, 192.415f, 181.207f},
+        {422, 3, 37.201f, 202.821f, 177.062f},
+        {423, 3, 16.530f, 217.530f, 161.861f},
+        {424, 3, 5.071f, 231.426f, 142.515f},
+        {425, 3, 3.495f, 245.743f, 116.259f},
+        {426, 3, 11.743f, 255.293f, 92.998f},
+        {427, 3, 30.271f, 260.656f, 71.350f},
+        {428, 3, 53.295f, 260.683f, 57.071f},
+        {429, 3, 83.149f, 253.405f, 52.464f},
+        {430, 3, 107.692f, 242.282f, 58.452f},
+        {431, 3, 127.531f, 229.175f, 71.120f},
+        {432, 3, 138.461f, 214.483f, 92.308f},
+        {433, 3, 140.704f, 200.555f, 117.412f},
+        {434, 3, 132.104f, 190.755f, 141.364f},
+        {435, 3, 113.998f, 185.861f, 161.861f},
+        {436, 3, 89.680f, 186.012f, 176.601f},
+        {437, 3, 58.996f, 181.572f, 204.007f},
+        {438, 3, 32.871f, 191.997f, 200.323f},
+        {439, 3, 11.628f, 204.107f, 190.419f},
+        {440, 3, -6.137f, 218.598f, 173.837f},
+        {441, 3, -17.137f, 233.071f, 153.109f},
+        {442, 3, -20.365f, 246.471f, 129.618f},
+        {443, 3, -16.276f, 258.221f, 104.745f},
+        {444, 3, -6.417f, 267.733f, 80.561f},
+        {445, 3, 11.618f, 272.408f, 60.525f},
+        {446, 3, 33.700f, 273.710f, 44.404f},
+        {447, 3, 59.511f, 270.651f, 34.270f},
+        {448, 3, 86.494f, 263.701f, 30.815f},
+        {449, 3, 111.465f, 253.892f, 34.040f},
+        {450, 3, 133.653f, 241.354f, 44.173f},
+        {451, 3, 150.789f, 227.431f, 60.065f},
+        {452, 3, 162.246f, 212.688f, 81.023f},
+        {453, 3, 165.436f, 199.179f, 104.745f},
+        {454, 3, 162.118f, 187.300f, 129.388f},
+        {455, 3, 150.860f, 178.486f, 153.109f},
+        {456, 3, 133.173f, 173.213f, 174.068f},
+        {457, 3, 111.335f, 171.832f, 190.189f},
+        {458, 3, 85.560f, 174.999f, 200.093f},
+        {459, 3, 55.749f, 169.911f, 228.191f},
+        {460, 3, 27.839f, 180.676f, 224.965f},
+        {461, 3, 2.222f, 194.327f, 214.832f},
+        {462, 3, -18.521f, 208.817f, 200.093f},
+        {463, 3, -34.037f, 224.394f, 180.056f},
+        {464, 3, -44.120f, 240.021f, 156.565f},
+        {465, 3, -46.502f, 254.358f, 130.769f},
+        {466, 3, -42.584f, 267.254f, 103.823f},
+        {467, 3, -31.179f, 277.353f, 77.568f},
+        {468, 3, -14.605f, 284.198f, 54.307f},
+        {469, 3, 6.858f, 287.759f, 34.270f},
+        {470, 3, 32.718f, 287.349f, 19.070f},
+        {471, 3, 61.151f, 283.197f, 9.397f},
+        {472, 3, 89.567f, 275.660f, 6.172f},
+        {473, 3, 117.758f, 264.926f, 9.166f},
+        {474, 3, 142.641f, 251.513f, 19.299f},
+        {475, 3, 163.138f, 237.102f, 34.040f},
+        {476, 3, 179.144f, 221.366f, 54.077f},
+        {477, 3, 189.263f, 205.848f, 77.338f},
+        {478, 3, 191.819f, 191.212f, 103.593f},
+        {479, 3, 187.691f, 178.506f, 130.310f},
+        {480, 3, 176.531f, 168.327f, 156.565f},
+        {481, 3, 159.886f, 161.263f, 180.286f},
+        {482, 3, 138.178f, 157.781f, 200.323f},
+        {483, 3, 112.319f, 158.191f, 215.523f},
+        {484, 3, 84.411f, 162.294f, 224.966f},
+        {485, 3, 51.317f, 159.606f, 250.530f},
+        {486, 3, 26.690f, 167.970f, 249.840f},
+        {487, 3, 1.604f, 175.758f, 250.530f},
+        {488, 3, -9.753f, 189.136f, 232.105f},
+        {489, 3, -24.320f, 184.303f, 250.300f},
+        {490, 3, -33.963f, 197.124f, 231.875f},
+        {491, 3, -49.790f, 192.578f, 250.300f},
+        {492, 3, -55.746f, 206.744f, 227.038f},
+        {493, 3, -37.754f, 209.617f, 210.456f},
+        {494, 3, -59.952f, 220.462f, 203.548f},
+        {495, 3, -64.056f, 233.663f, 180.978f},
+        {496, 3, -68.405f, 246.944f, 158.407f},
+        {497, 3, -72.927f, 260.523f, 135.376f},
+        {498, 3, -77.557f, 273.773f, 113.036f},
+        {499, 3, -59.843f, 277.463f, 95.071f},
+        {500, 3, -81.871f, 287.164f, 90.235f},
+        {501, 3, -64.053f, 290.335f, 73.192f},
+        {502, 3, -86.010f, 300.254f, 67.895f},
+        {503, 3, -62.387f, 301.297f, 51.313f},
+        {504, 3, -42.678f, 290.292f, 60.065f},
+        {505, 3, -39.925f, 301.265f, 37.495f},
+        {506, 3, -16.902f, 301.292f, 23.215f},
+        {507, 3, 5.596f, 301.369f, 9.166f},
+        {508, 3, 28.336f, 301.367f, -4.883f},
+        {509, 3, 51.079f, 301.364f, -18.931f},
+        {510, 3, 72.297f, 290.837f, -12.022f},
+        {511, 3, 73.822f, 301.361f, -32.980f},
+        {512, 3, 94.055f, 290.307f, -24.459f},
+        {513, 3, 96.283f, 301.329f, -46.798f},
+        {514, 3, 117.377f, 287.088f, -32.749f},
+        {515, 3, 111.654f, 277.807f, -11.561f},
+        {516, 3, 135.813f, 273.832f, -18.931f},
+        {517, 3, 153.970f, 260.547f, -4.883f},
+        {518, 3, 172.579f, 246.992f, 9.397f},
+        {519, 3, 190.735f, 233.706f, 23.446f},
+        {520, 3, 209.170f, 220.450f, 37.264f},
+        {521, 3, 205.157f, 209.766f, 60.065f},
+        {522, 3, 227.780f, 206.895f, 51.544f},
+        {523, 3, 222.441f, 197.127f, 73.422f},
+        {524, 3, 245.970f, 193.719f, 65.362f},
+        {525, 3, 234.745f, 184.168f, 90.465f},
+        {526, 3, 211.712f, 189.108f, 95.302f},
+        {527, 3, 223.420f, 175.979f, 113.036f},
+        {528, 3, 212.061f, 167.682f, 135.837f},
+        {529, 3, 201.124f, 159.853f, 157.486f},
+        {530, 3, 189.412f, 151.306f, 180.978f},
+        {531, 3, 178.051f, 143.010f, 203.777f},
+        {532, 3, 154.279f, 147.342f, 210.227f},
+        {533, 3, 166.692f, 134.712f, 226.578f},
+        {534, 3, 143.062f, 139.483f, 232.105f},
+        {535, 3, 155.366f, 126.524f, 249.148f},
+        {536, 3, 127.619f, 134.450f, 251.222f},
+        {537, 3, 119.097f, 147.391f, 231.875f},
+        {538, 3, 102.710f, 142.786f, 250.761f},
+        {539, 3, 77.102f, 151.470f, 250.069f},
+        {540, 4, -189.580f, 137.738f, 117.181f},
+        {541, 4, -190.790f, 121.640f, 134.146f},
+        {542, 4, -205.018f, 121.467f, 111.332f},
+        {543, 4, -198.118f, 143.622f, 96.453f},
+        {544, 4, -179.453f, 157.752f, 110.041f},
+        {545, 4, -174.792f, 144.181f, 133.533f},
+        {546, 4, -172.320f, 125.835f, 159.098f},
+        {547, 4, -192.532f, 104.872f, 151.037f},
+        {548, 4, -211.035f, 97.627f, 129.618f},
+        {549, 4, -220.889f, 105.422f, 104.514f},
+        {550, 4, -219.297f, 126.228f, 82.634f},
+        {551, 4, -206.293f, 150.199f, 75.495f},
+        {552, 4, -187.082f, 169.980f, 83.326f},
+        {553, 4, -168.556f, 177.845f, 104.053f},
+        {554, 4, -158.388f, 169.502f, 130.310f},
+        {555, 4, -159.386f, 150.495f, 151.037f},
+        {556, 4, -163.678f, 118.919f, 181.207f},
+        {557, 4, -181.399f, 98.056f, 177.062f},
+        {558, 4, -201.776f, 82.941f, 161.861f},
+        {559, 4, -218.532f, 76.337f, 142.515f},
+        {560, 4, -232.636f, 79.262f, 116.259f},
+        {561, 4, -239.170f, 90.058f, 92.998f},
+        {562, 4, -238.544f, 109.337f, 71.350f},
+        {563, 4, -231.455f, 131.242f, 57.071f},
+        {564, 4, -215.308f, 157.386f, 52.464f},
+        {565, 4, -197.145f, 177.291f, 58.452f},
+        {566, 4, -178.549f, 192.108f, 71.120f},
+        {567, 4, -161.199f, 197.963f, 92.308f},
+        {568, 4, -147.259f, 195.792f, 117.412f},
+        {569, 4, -140.597f, 184.585f, 141.364f},
+        {570, 4, -141.537f, 165.853f, 161.861f},
+        {571, 4, -149.195f, 142.772f, 176.601f},
+        {572, 4, -154.454f, 112.218f, 204.007f},
+        {573, 4, -172.443f, 90.593f, 200.323f},
+        {574, 4, -190.524f, 74.131f, 190.419f},
+        {575, 4, -209.796f, 61.714f, 173.837f},
+        {576, 4, -226.960f, 55.724f, 153.109f},
+        {577, 4, -240.701f, 56.796f, 129.618f},
+        {578, 4, -250.613f, 64.315f, 104.745f},
+        {579, 4, -256.612f, 76.631f, 80.561f},
+        {580, 4, -255.485f, 95.228f, 60.525f},
+        {581, 4, -249.900f, 116.631f, 44.404f},
+        {582, 4, -239.015f, 140.235f, 34.270f},
+        {583, 4, -224.066f, 163.749f, 30.815f},
+        {584, 4, -207.021f, 184.466f, 34.040f},
+        {585, 4, -188.241f, 201.695f, 44.173f},
+        {586, 4, -169.703f, 213.689f, 60.065f},
+        {587, 4, -152.142f, 220.029f, 81.023f},
+        {588, 4, -138.308f, 218.889f, 104.745f},
+        {589, 4, -128.036f, 212.063f, 129.388f},
+        {590, 4, -123.131f, 198.632f, 153.109f},
+        {591, 4, -123.582f, 180.181f, 174.068f},
+        {592, 4, -129.017f, 158.985f, 190.189f},
+        {593, 4, -139.994f, 135.450f, 200.093f},
+        {594, 4, -144.368f, 105.526f, 228.191f},
+        {595, 4, -163.230f, 82.309f, 224.965f},
+        {596, 4, -184.130f, 62.164f, 214.832f},
+        {597, 4, -204.320f, 46.914f, 200.093f},
+        {598, 4, -223.929f, 36.970f, 180.056f},
+        {599, 4, -241.908f, 32.210f, 156.565f},
+        {600, 4, -256.279f, 34.375f, 130.769f},
+        {601, 4, -267.333f, 42.086f, 103.823f},
+        {602, 4, -273.413f, 56.053f, 77.568f},
+        {603, 4, -274.802f, 73.931f, 54.307f},
+        {604, 4, -271.556f, 95.445f, 34.270f},
+        {605, 4, -263.175f, 119.912f, 19.070f},
+        {606, 4, -250.440f, 145.670f, 9.397f},
+        {607, 4, -234.490f, 170.367f, 6.172f},
+        {608, 4, -215.570f, 193.861f, 9.166f},
+        {609, 4, -195.124f, 213.382f, 19.299f},
+        {610, 4, -175.086f, 228.422f, 34.040f},
+        {611, 4, -155.173f, 238.782f, 54.077f},
+        {612, 4, -137.287f, 243.610f, 77.338f},
+        {613, 4, -122.578f, 241.519f, 103.593f},
+        {614, 4, -111.770f, 233.666f, 130.310f},
+        {615, 4, -105.538f, 219.907f, 156.565f},
+        {616, 4, -103.963f, 201.894f, 180.286f},
+        {617, 4, -107.360f, 180.172f, 200.323f},
+        {618, 4, -115.740f, 155.706f, 215.523f},
+        {619, 4, -128.266f, 130.431f, 224.966f},
+        {620, 4, -135.936f, 98.126f, 250.530f},
+        {621, 4, -151.501f, 77.290f, 249.840f},
+        {622, 4, -166.661f, 55.838f, 250.530f},
+        {623, 4, -182.893f, 49.171f, 232.105f},
+        {624, 4, -182.797f, 33.823f, 250.300f},
+        {625, 4, -197.971f, 28.614f, 231.875f},
+        {626, 4, -198.539f, 12.157f, 250.300f},
+        {627, 4, -213.852f, 10.870f, 227.038f},
+        {628, 4, -211.025f, 28.869f, 210.456f},
+        {629, 4, -228.198f, 11.109f, 203.548f},
+        {630, 4, -242.021f, 11.285f, 180.978f},
+        {631, 4, -255.995f, 11.253f, 158.407f},
+        {632, 4, -270.307f, 11.148f, 135.376f},
+        {633, 4, -284.340f, 10.840f, 113.036f},
+        {634, 4, -282.376f, 28.827f, 95.071f},
+        {635, 4, -298.408f, 10.875f, 90.235f},
+        {636, 4, -295.919f, 28.800f, 73.192f},
+        {637, 4, -312.138f, 10.983f, 67.895f},
+        {638, 4, -305.830f, 33.773f, 51.313f},
+        {639, 4, -289.273f, 49.116f, 60.065f},
+        {640, 4, -298.857f, 55.125f, 37.495f},
+        {641, 4, -291.769f, 77.030f, 23.215f},
+        {642, 4, -284.890f, 98.450f, 9.166f},
+        {643, 4, -277.861f, 120.077f, -4.883f},
+        {644, 4, -270.830f, 141.706f, -18.931f},
+        {645, 4, -254.262f, 158.632f, -12.022f},
+        {646, 4, -263.799f, 163.335f, -32.980f},
+        {647, 4, -247.034f, 179.162f, -24.459f},
+        {648, 4, -256.828f, 184.687f, -46.798f},
+        {649, 4, -236.766f, 200.347f, -32.749f},
+        {650, 4, -229.707f, 192.037f, -11.561f},
+        {651, 4, -218.461f, 213.785f, -18.931f},
+        {652, 4, -200.215f, 226.947f, -4.883f},
+        {653, 4, -181.574f, 240.457f, 9.397f},
+        {654, 4, -163.327f, 253.619f, 23.446f},
+        {655, 4, -145.023f, 267.056f, 37.264f},
+        {656, 4, -136.102f, 259.937f, 60.065f},
+        {657, 4, -126.382f, 280.566f, 51.544f},
+        {658, 4, -118.741f, 272.469f, 73.422f},
+        {659, 4, -108.229f, 293.794f, 65.362f},
+        {660, 4, -102.614f, 280.166f, 90.465f},
+        {661, 4, -114.430f, 259.788f, 95.302f},
+        {662, 4, -98.326f, 266.866f, 113.036f},
+        {663, 4, -93.945f, 253.498f, 135.837f},
+        {664, 4, -89.878f, 240.677f, 157.486f},
+        {665, 4, -85.369f, 226.898f, 180.978f},
+        {666, 4, -80.989f, 213.529f, 203.777f},
+        {667, 4, -92.456f, 192.260f, 210.227f},
+        {668, 4, -76.608f, 200.161f, 226.578f},
+        {669, 4, -88.448f, 179.163f, 232.105f},
+        {670, 4, -72.321f, 186.860f, 249.148f},
+        {671, 4, -88.433f, 162.920f, 251.222f},
+        {672, 4, -103.374f, 158.814f, 231.875f},
+        {673, 4, -104.058f, 141.807f, 250.761f},
+        {674, 4, -120.231f, 120.135f, 250.069f},
+        {675, 5, 0.000f, 0.000f, 262.000f},
+        {676, 5, 18.924f, 13.795f, 262.000f},
+        {677, 5, 19.128f, -13.092f, 262.000f},
+        {678, 5, -6.917f, -22.121f, 262.000f},
+        {679, 5, -23.528f, -0.749f, 262.000f},
+        {680, 5, -7.575f, 21.684f, 262.000f},
+        {681, 5, 13.992f, 44.731f, 262.000f},
+        {682, 5, 38.635f, 27.247f, 262.000f},
+        {683, 5, 47.153f, -0.700f, 262.000f},
+        {684, 5, 37.990f, -27.236f, 262.000f},
+        {685, 5, 13.533f, -45.010f, 262.000f},
+        {686, 5, -14.648f, -44.247f, 262.000f},
+        {687, 5, -37.901f, -27.486f, 262.000f},
+        {688, 5, -47.148f, -0.114f, 262.000f},
+        {689, 5, -37.341f, 27.566f, 262.000f},
+        {690, 5, -14.997f, 44.673f, 262.000f},
+        {691, 5, 22.121f, 68.081f, 262.000f},
+        {692, 5, 46.648f, 55.239f, 262.000f},
+        {693, 5, 64.416f, 31.596f, 262.000f},
+        {694, 5, 72.181f, 6.329f, 262.000f},
+        {695, 5, 68.743f, -23.420f, 262.000f},
+        {696, 5, 56.052f, -46.642f, 262.000f},
+        {697, 5, 33.390f, -64.728f, 262.000f},
+        {698, 5, 7.639f, -73.148f, 262.000f},
+        {699, 5, -23.095f, -68.577f, 262.000f},
+        {700, 5, -46.495f, -53.935f, 262.000f},
+        {701, 5, -63.915f, -33.383f, 262.000f},
+        {702, 5, -70.798f, -6.238f, 262.000f},
+        {703, 5, -68.246f, 22.446f, 262.000f},
+        {704, 5, -55.073f, 46.323f, 262.000f},
+        {705, 5, -33.052f, 63.265f, 262.000f},
+        {706, 5, -5.920f, 71.777f, 262.000f},
+        {707, 5, 29.998f, 92.325f, 262.000f},
+        {708, 5, 55.420f, 79.734f, 262.000f},
+        {709, 5, 74.772f, 61.804f, 262.000f},
+        {710, 5, 89.370f, 37.567f, 262.000f},
+        {711, 5, 96.412f, 10.910f, 262.000f},
+        {712, 5, 95.153f, -16.296f, 262.000f},
+        {713, 5, 86.314f, -42.666f, 262.000f},
+        {714, 5, 71.837f, -66.392f, 262.000f},
+        {715, 5, 49.976f, -82.843f, 262.000f},
+        {716, 5, 24.815f, -93.619f, 262.000f},
+        {717, 5, -2.932f, -96.518f, 262.000f},
+        {718, 5, -30.575f, -91.598f, 262.000f},
+        {719, 5, -54.929f, -79.894f, 262.000f},
+        {720, 5, -75.183f, -61.400f, 262.000f},
+        {721, 5, -89.284f, -38.136f, 262.000f},
+        {722, 5, -96.738f, -11.075f, 262.000f},
+        {723, 5, -95.398f, 16.376f, 262.000f},
+        {724, 5, -87.374f, 42.739f, 262.000f},
+        {725, 5, -71.586f, 65.496f, 262.000f},
+        {726, 5, -49.896f, 83.088f, 262.000f},
+        {727, 5, -24.979f, 93.944f, 262.000f},
+        {728, 5, 2.687f, 96.597f, 262.000f},
+        {729, 5, 37.864f, 118.200f, 262.000f},
+        {730, 5, 65.158f, 105.539f, 262.000f},
+        {731, 5, 88.840f, 85.932f, 262.000f},
+        {732, 5, 106.768f, 62.779f, 262.000f},
+        {733, 5, 118.458f, 35.426f, 262.000f},
+        {734, 5, 124.055f, 5.991f, 262.000f},
+        {735, 5, 121.510f, -23.507f, 262.000f},
+        {736, 5, 112.446f, -52.240f, 262.000f},
+        {737, 5, 96.028f, -77.770f, 262.000f},
+        {738, 5, 75.011f, -98.288f, 262.000f},
+        {739, 5, 49.721f, -113.626f, 262.000f},
+        {740, 5, 20.959f, -122.150f, 262.000f},
+        {741, 5, -9.321f, -123.683f, 262.000f},
+        {742, 5, -38.354f, -118.041f, 262.000f},
+        {743, 5, -65.973f, -105.547f, 262.000f},
+        {744, 5, -88.921f, -86.178f, 262.000f},
+        {745, 5, -106.602f, -63.104f, 262.000f},
+        {746, 5, -118.782f, -35.591f, 262.000f},
+        {747, 5, -124.459f, -6.401f, 262.000f},
+        {748, 5, -122.001f, 23.666f, 262.000f},
+        {749, 5, -112.771f, 52.075f, 262.000f},
+        {750, 5, -96.597f, 77.686f, 262.000f},
+        {751, 5, -75.422f, 98.692f, 262.000f},
+        {752, 5, -49.887f, 113.950f, 262.000f},
+        {753, 5, -21.126f, 122.475f, 262.000f},
+        {754, 5, 8.586f, 123.922f, 262.000f},
+        {755, 5, 46.562f, 141.636f, 262.000f},
+        {756, 5, 71.057f, 132.865f, 262.000f},
+        {757, 5, 96.275f, 125.483f, 262.000f},
+        {758, 5, 104.113f, 101.276f, 262.000f},
+        {759, 5, 122.155f, 116.803f, 262.000f},
+        {760, 5, 128.280f, 93.153f, 262.000f},
+        {761, 5, 147.625f, 108.527f, 262.000f},
+        {762, 5, 149.139f, 80.690f, 262.000f},
+        {763, 5, 127.981f, 68.070f, 262.000f},
+        {764, 5, 148.859f, 53.165f, 262.000f},
+        {765, 5, 148.653f, 26.699f, 262.000f},
+        {766, 5, 148.691f, 0.152f, 262.000f},
+        {767, 5, 148.815f, -26.964f, 262.000f},
+        {768, 5, 149.178f, -53.344f, 262.000f},
+        {769, 5, 128.034f, -67.593f, 262.000f},
+        {770, 5, 149.138f, -80.137f, 262.000f},
+        {771, 5, 128.066f, -93.325f, 262.000f},
+        {772, 5, 149.011f, -106.357f, 262.000f},
+        {773, 5, 122.221f, -117.147f, 262.000f},
+        {774, 5, 104.184f, -100.998f, 262.000f},
+        {775, 5, 97.120f, -125.236f, 262.000f},
+        {776, 5, 71.370f, -133.656f, 262.000f},
+        {777, 5, 46.189f, -141.991f, 262.000f},
+        {778, 5, 20.766f, -150.246f, 262.000f},
+        {779, 5, -4.660f, -158.499f, 262.000f},
+        {780, 5, -24.558f, -143.912f, 262.000f},
+        {781, 5, -30.086f, -166.754f, 262.000f},
+        {782, 5, -48.692f, -150.691f, 262.000f},
+        {783, 5, -55.186f, -174.843f, 262.000f},
+        {784, 5, -73.596f, -152.346f, 262.000f},
+        {785, 5, -63.827f, -130.611f, 262.000f},
+        {786, 5, -89.394f, -130.968f, 262.000f},
+        {787, 5, -104.867f, -109.425f, 262.000f},
+        {788, 5, -120.750f, -87.478f, 262.000f},
+        {789, 5, -136.223f, -65.934f, 262.000f},
+        {790, 5, -152.019f, -44.557f, 262.000f},
+        {791, 5, -143.651f, -20.471f, 262.000f},
+        {792, 5, -167.901f, -22.609f, 262.000f},
+        {793, 5, -158.384f, 0.019f, 262.000f},
+        {794, 5, -183.453f, -1.311f, 262.000f},
+        {795, 5, -167.434f, 22.995f, 262.000f},
+        {796, 5, -143.477f, 20.897f, 262.000f},
+        {797, 5, -151.799f, 44.449f, 262.000f},
+        {798, 5, -136.085f, 66.148f, 262.000f},
+        {799, 5, -121.014f, 86.701f, 262.000f},
+        {800, 5, -104.816f, 109.055f, 262.000f},
+        {801, 5, -89.101f, 130.752f, 262.000f},
+        {802, 5, -64.097f, 130.211f, 262.000f},
+        {803, 5, -73.386f, 152.452f, 262.000f},
+        {804, 5, -48.702f, 150.929f, 262.000f},
+        {805, 5, -57.751f, 173.905f, 262.000f},
+        {806, 5, -29.608f, 167.198f, 262.000f},
+        {807, 5, -24.781f, 142.885f, 262.000f},
+        {808, 5, -4.787f, 158.591f, 262.000f},
+        {809, 5, 20.689f, 149.500f, 262.000f},
         {810, 6, -234.334f, 0.000f, -117.181f},
         {811, 6, -225.851f, 13.735f, -134.146f},
         {812, 6, -237.260f, 22.238f, -111.332f},
@@ -1597,681 +1597,681 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
         {942, 6, -176.980f, -67.722f, -231.875f},
         {943, 6, -167.536f, -53.560f, -250.761f},
         {944, 6, -167.882f, -26.522f, -250.069f},
-        {945, 7, -72.413f, 222.865f, -117.181f},
-        {946, 7, -56.729f, 219.041f, -134.146f},
-        {947, 7, -52.168f, 232.519f, -111.332f},
-        {948, 7, -75.371f, 232.803f, -96.453f},
-        {949, 7, -94.578f, 219.418f, -110.041f},
-        {950, 7, -83.111f, 210.792f, -133.533f},
-        {951, 7, -66.426f, 202.771f, -159.098f},
-        {952, 7, -40.244f, 215.517f, -151.037f},
-        {953, 7, -27.635f, 230.875f, -129.618f},
-        {954, 7, -32.004f, 242.655f, -104.514f},
-        {955, 7, -52.283f, 247.570f, -82.634f},
-        {956, 7, -79.100f, 242.611f, -75.495f},
-        {957, 7, -103.849f, 230.452f, -83.326f},
-        {958, 7, -117.054f, 215.263f, -104.053f},
-        {959, 7, -112.261f, 203.015f, -130.310f},
-        {960, 7, -93.876f, 198.090f, -151.037f},
-        {961, 7, -62.520f, 192.415f, -181.207f},
-        {962, 7, -37.201f, 202.821f, -177.062f},
-        {963, 7, -16.530f, 217.530f, -161.861f},
-        {964, 7, -5.071f, 231.426f, -142.515f},
-        {965, 7, -3.495f, 245.743f, -116.259f},
-        {966, 7, -11.743f, 255.293f, -92.998f},
-        {967, 7, -30.271f, 260.656f, -71.350f},
-        {968, 7, -53.295f, 260.683f, -57.071f},
-        {969, 7, -83.149f, 253.405f, -52.464f},
-        {970, 7, -107.692f, 242.282f, -58.452f},
-        {971, 7, -127.531f, 229.175f, -71.120f},
-        {972, 7, -138.461f, 214.483f, -92.308f},
-        {973, 7, -140.704f, 200.555f, -117.412f},
-        {974, 7, -132.104f, 190.755f, -141.364f},
-        {975, 7, -113.998f, 185.861f, -161.861f},
-        {976, 7, -89.680f, 186.012f, -176.601f},
-        {977, 7, -58.996f, 181.572f, -204.007f},
-        {978, 7, -32.871f, 191.997f, -200.323f},
-        {979, 7, -11.628f, 204.107f, -190.419f},
-        {980, 7, 6.137f, 218.598f, -173.837f},
-        {981, 7, 17.137f, 233.071f, -153.109f},
-        {982, 7, 20.365f, 246.471f, -129.618f},
-        {983, 7, 16.276f, 258.221f, -104.745f},
-        {984, 7, 6.417f, 267.733f, -80.561f},
-        {985, 7, -11.618f, 272.408f, -60.525f},
-        {986, 7, -33.700f, 273.710f, -44.404f},
-        {987, 7, -59.511f, 270.651f, -34.270f},
-        {988, 7, -86.494f, 263.701f, -30.815f},
-        {989, 7, -111.465f, 253.892f, -34.040f},
-        {990, 7, -133.653f, 241.354f, -44.173f},
-        {991, 7, -150.789f, 227.431f, -60.065f},
-        {992, 7, -162.246f, 212.688f, -81.023f},
-        {993, 7, -165.436f, 199.179f, -104.745f},
-        {994, 7, -162.118f, 187.300f, -129.388f},
-        {995, 7, -150.860f, 178.486f, -153.109f},
-        {996, 7, -133.173f, 173.213f, -174.068f},
-        {997, 7, -111.335f, 171.832f, -190.189f},
-        {998, 7, -85.560f, 174.999f, -200.093f},
-        {999, 7, -55.749f, 169.911f, -228.191f},
-        {1000, 7, -27.839f, 180.676f, -224.965f},
-        {1001, 7, -2.222f, 194.327f, -214.832f},
-        {1002, 7, 18.521f, 208.817f, -200.093f},
-        {1003, 7, 34.037f, 224.394f, -180.056f},
-        {1004, 7, 44.120f, 240.021f, -156.565f},
-        {1005, 7, 46.502f, 254.358f, -130.769f},
-        {1006, 7, 42.584f, 267.254f, -103.823f},
-        {1007, 7, 31.179f, 277.353f, -77.568f},
-        {1008, 7, 14.605f, 284.198f, -54.307f},
-        {1009, 7, -6.858f, 287.759f, -34.270f},
-        {1010, 7, -32.718f, 287.349f, -19.070f},
-        {1011, 7, -61.151f, 283.197f, -9.397f},
-        {1012, 7, -89.567f, 275.660f, -6.172f},
-        {1013, 7, -117.758f, 264.926f, -9.166f},
-        {1014, 7, -142.641f, 251.513f, -19.299f},
-        {1015, 7, -163.138f, 237.102f, -34.040f},
-        {1016, 7, -179.144f, 221.366f, -54.077f},
-        {1017, 7, -189.263f, 205.848f, -77.338f},
-        {1018, 7, -191.819f, 191.212f, -103.593f},
-        {1019, 7, -187.691f, 178.506f, -130.310f},
-        {1020, 7, -176.531f, 168.327f, -156.565f},
-        {1021, 7, -159.886f, 161.263f, -180.286f},
-        {1022, 7, -138.178f, 157.781f, -200.323f},
-        {1023, 7, -112.319f, 158.191f, -215.523f},
-        {1024, 7, -84.411f, 162.294f, -224.966f},
-        {1025, 7, -51.317f, 159.606f, -250.530f},
-        {1026, 7, -26.690f, 167.970f, -249.840f},
-        {1027, 7, -1.604f, 175.758f, -250.530f},
-        {1028, 7, 9.753f, 189.136f, -232.105f},
-        {1029, 7, 24.320f, 184.303f, -250.300f},
-        {1030, 7, 33.963f, 197.124f, -231.875f},
-        {1031, 7, 49.790f, 192.578f, -250.300f},
-        {1032, 7, 55.746f, 206.744f, -227.038f},
-        {1033, 7, 37.754f, 209.617f, -210.456f},
-        {1034, 7, 59.952f, 220.462f, -203.548f},
-        {1035, 7, 64.056f, 233.663f, -180.978f},
-        {1036, 7, 68.405f, 246.944f, -158.407f},
-        {1037, 7, 72.927f, 260.523f, -135.376f},
-        {1038, 7, 77.557f, 273.773f, -113.036f},
-        {1039, 7, 59.843f, 277.463f, -95.071f},
-        {1040, 7, 81.871f, 287.164f, -90.235f},
-        {1041, 7, 64.053f, 290.335f, -73.192f},
-        {1042, 7, 86.010f, 300.254f, -67.895f},
-        {1043, 7, 62.387f, 301.297f, -51.313f},
-        {1044, 7, 42.678f, 290.292f, -60.065f},
-        {1045, 7, 39.925f, 301.265f, -37.495f},
-        {1046, 7, 16.902f, 301.292f, -23.215f},
-        {1047, 7, -5.596f, 301.369f, -9.166f},
-        {1048, 7, -28.336f, 301.367f, 4.883f},
-        {1049, 7, -51.079f, 301.364f, 18.931f},
-        {1050, 7, -72.297f, 290.837f, 12.022f},
-        {1051, 7, -73.822f, 301.361f, 32.980f},
-        {1052, 7, -94.055f, 290.307f, 24.459f},
-        {1053, 7, -96.283f, 301.329f, 46.798f},
-        {1054, 7, -117.377f, 287.088f, 32.749f},
-        {1055, 7, -111.654f, 277.807f, 11.561f},
-        {1056, 7, -135.813f, 273.832f, 18.931f},
-        {1057, 7, -153.970f, 260.547f, 4.883f},
-        {1058, 7, -172.579f, 246.992f, -9.397f},
-        {1059, 7, -190.735f, 233.706f, -23.446f},
-        {1060, 7, -209.170f, 220.450f, -37.264f},
-        {1061, 7, -205.157f, 209.766f, -60.065f},
-        {1062, 7, -227.780f, 206.895f, -51.544f},
-        {1063, 7, -222.441f, 197.127f, -73.422f},
-        {1064, 7, -245.970f, 193.719f, -65.362f},
-        {1065, 7, -234.745f, 184.168f, -90.465f},
-        {1066, 7, -211.712f, 189.108f, -95.302f},
-        {1067, 7, -223.420f, 175.979f, -113.036f},
-        {1068, 7, -212.061f, 167.682f, -135.837f},
-        {1069, 7, -201.124f, 159.853f, -157.486f},
-        {1070, 7, -189.412f, 151.306f, -180.978f},
-        {1071, 7, -178.051f, 143.010f, -203.777f},
-        {1072, 7, -154.279f, 147.342f, -210.227f},
-        {1073, 7, -166.692f, 134.712f, -226.578f},
-        {1074, 7, -143.062f, 139.483f, -232.105f},
-        {1075, 7, -155.366f, 126.524f, -249.148f},
-        {1076, 7, -127.619f, 134.450f, -251.222f},
-        {1077, 7, -119.097f, 147.391f, -231.875f},
-        {1078, 7, -102.710f, 142.786f, -250.761f},
-        {1079, 7, -77.102f, 151.470f, -250.069f},
-        {1080, 8, 189.580f, 137.738f, -117.181f},
-        {1081, 8, 190.790f, 121.640f, -134.146f},
-        {1082, 8, 205.018f, 121.467f, -111.332f},
-        {1083, 8, 198.118f, 143.622f, -96.453f},
-        {1084, 8, 179.453f, 157.752f, -110.041f},
-        {1085, 8, 174.792f, 144.181f, -133.533f},
-        {1086, 8, 172.320f, 125.835f, -159.098f},
-        {1087, 8, 192.532f, 104.872f, -151.037f},
-        {1088, 8, 211.035f, 97.627f, -129.618f},
-        {1089, 8, 220.889f, 105.422f, -104.514f},
-        {1090, 8, 219.297f, 126.228f, -82.634f},
-        {1091, 8, 206.293f, 150.199f, -75.495f},
-        {1092, 8, 187.082f, 169.980f, -83.326f},
-        {1093, 8, 168.556f, 177.845f, -104.053f},
-        {1094, 8, 158.388f, 169.502f, -130.310f},
-        {1095, 8, 159.386f, 150.495f, -151.037f},
-        {1096, 8, 163.678f, 118.919f, -181.207f},
-        {1097, 8, 181.399f, 98.056f, -177.062f},
-        {1098, 8, 201.776f, 82.941f, -161.861f},
-        {1099, 8, 218.532f, 76.337f, -142.515f},
-        {1100, 8, 232.636f, 79.262f, -116.259f},
-        {1101, 8, 239.170f, 90.058f, -92.998f},
-        {1102, 8, 238.544f, 109.337f, -71.350f},
-        {1103, 8, 231.455f, 131.242f, -57.071f},
-        {1104, 8, 215.308f, 157.386f, -52.464f},
-        {1105, 8, 197.145f, 177.291f, -58.452f},
-        {1106, 8, 178.549f, 192.108f, -71.120f},
-        {1107, 8, 161.199f, 197.963f, -92.308f},
-        {1108, 8, 147.259f, 195.792f, -117.412f},
-        {1109, 8, 140.597f, 184.585f, -141.364f},
-        {1110, 8, 141.537f, 165.853f, -161.861f},
-        {1111, 8, 149.195f, 142.772f, -176.601f},
-        {1112, 8, 154.454f, 112.218f, -204.007f},
-        {1113, 8, 172.443f, 90.593f, -200.323f},
-        {1114, 8, 190.524f, 74.131f, -190.419f},
-        {1115, 8, 209.796f, 61.714f, -173.837f},
-        {1116, 8, 226.960f, 55.724f, -153.109f},
-        {1117, 8, 240.701f, 56.796f, -129.618f},
-        {1118, 8, 250.613f, 64.315f, -104.745f},
-        {1119, 8, 256.612f, 76.631f, -80.561f},
-        {1120, 8, 255.485f, 95.228f, -60.525f},
-        {1121, 8, 249.900f, 116.631f, -44.404f},
-        {1122, 8, 239.015f, 140.235f, -34.270f},
-        {1123, 8, 224.066f, 163.749f, -30.815f},
-        {1124, 8, 207.021f, 184.466f, -34.040f},
-        {1125, 8, 188.241f, 201.695f, -44.173f},
-        {1126, 8, 169.703f, 213.689f, -60.065f},
-        {1127, 8, 152.142f, 220.029f, -81.023f},
-        {1128, 8, 138.308f, 218.889f, -104.745f},
-        {1129, 8, 128.036f, 212.063f, -129.388f},
-        {1130, 8, 123.131f, 198.632f, -153.109f},
-        {1131, 8, 123.582f, 180.181f, -174.068f},
-        {1132, 8, 129.017f, 158.985f, -190.189f},
-        {1133, 8, 139.994f, 135.450f, -200.093f},
-        {1134, 8, 144.368f, 105.526f, -228.191f},
-        {1135, 8, 163.230f, 82.309f, -224.965f},
-        {1136, 8, 184.130f, 62.164f, -214.832f},
-        {1137, 8, 204.320f, 46.914f, -200.093f},
-        {1138, 8, 223.929f, 36.970f, -180.056f},
-        {1139, 8, 241.908f, 32.210f, -156.565f},
-        {1140, 8, 256.279f, 34.375f, -130.769f},
-        {1141, 8, 267.333f, 42.086f, -103.823f},
-        {1142, 8, 273.413f, 56.053f, -77.568f},
-        {1143, 8, 274.802f, 73.931f, -54.307f},
-        {1144, 8, 271.556f, 95.445f, -34.270f},
-        {1145, 8, 263.175f, 119.912f, -19.070f},
-        {1146, 8, 250.440f, 145.670f, -9.397f},
-        {1147, 8, 234.490f, 170.367f, -6.172f},
-        {1148, 8, 215.570f, 193.861f, -9.166f},
-        {1149, 8, 195.124f, 213.382f, -19.299f},
-        {1150, 8, 175.086f, 228.422f, -34.040f},
-        {1151, 8, 155.173f, 238.782f, -54.077f},
-        {1152, 8, 137.287f, 243.610f, -77.338f},
-        {1153, 8, 122.578f, 241.519f, -103.593f},
-        {1154, 8, 111.770f, 233.666f, -130.310f},
-        {1155, 8, 105.538f, 219.907f, -156.565f},
-        {1156, 8, 103.963f, 201.894f, -180.286f},
-        {1157, 8, 107.360f, 180.172f, -200.323f},
-        {1158, 8, 115.740f, 155.706f, -215.523f},
-        {1159, 8, 128.266f, 130.431f, -224.966f},
-        {1160, 8, 135.936f, 98.126f, -250.530f},
-        {1161, 8, 151.501f, 77.290f, -249.840f},
-        {1162, 8, 166.661f, 55.838f, -250.530f},
-        {1163, 8, 182.893f, 49.171f, -232.105f},
-        {1164, 8, 182.797f, 33.823f, -250.300f},
-        {1165, 8, 197.971f, 28.614f, -231.875f},
-        {1166, 8, 198.539f, 12.157f, -250.300f},
-        {1167, 8, 213.852f, 10.870f, -227.038f},
-        {1168, 8, 211.025f, 28.869f, -210.456f},
-        {1169, 8, 228.198f, 11.109f, -203.548f},
-        {1170, 8, 242.021f, 11.285f, -180.978f},
-        {1171, 8, 255.995f, 11.253f, -158.407f},
-        {1172, 8, 270.307f, 11.148f, -135.376f},
-        {1173, 8, 284.340f, 10.840f, -113.036f},
-        {1174, 8, 282.376f, 28.827f, -95.071f},
-        {1175, 8, 298.408f, 10.875f, -90.235f},
-        {1176, 8, 295.919f, 28.800f, -73.192f},
-        {1177, 8, 312.138f, 10.983f, -67.895f},
-        {1178, 8, 305.830f, 33.773f, -51.313f},
-        {1179, 8, 289.273f, 49.116f, -60.065f},
-        {1180, 8, 298.857f, 55.125f, -37.495f},
-        {1181, 8, 291.769f, 77.030f, -23.215f},
-        {1182, 8, 284.890f, 98.450f, -9.166f},
-        {1183, 8, 277.861f, 120.077f, 4.883f},
-        {1184, 8, 270.830f, 141.706f, 18.931f},
-        {1185, 8, 254.262f, 158.632f, 12.022f},
-        {1186, 8, 263.799f, 163.335f, 32.980f},
-        {1187, 8, 247.034f, 179.162f, 24.459f},
-        {1188, 8, 256.828f, 184.687f, 46.798f},
-        {1189, 8, 236.766f, 200.347f, 32.749f},
-        {1190, 8, 229.707f, 192.037f, 11.561f},
-        {1191, 8, 218.461f, 213.785f, 18.931f},
-        {1192, 8, 200.215f, 226.947f, 4.883f},
-        {1193, 8, 181.574f, 240.457f, -9.397f},
-        {1194, 8, 163.327f, 253.619f, -23.446f},
-        {1195, 8, 145.023f, 267.056f, -37.264f},
-        {1196, 8, 136.102f, 259.937f, -60.065f},
-        {1197, 8, 126.382f, 280.566f, -51.544f},
-        {1198, 8, 118.741f, 272.469f, -73.422f},
-        {1199, 8, 108.229f, 293.794f, -65.362f},
-        {1200, 8, 102.614f, 280.166f, -90.465f},
-        {1201, 8, 114.430f, 259.788f, -95.302f},
-        {1202, 8, 98.326f, 266.866f, -113.036f},
-        {1203, 8, 93.945f, 253.498f, -135.837f},
-        {1204, 8, 89.878f, 240.677f, -157.486f},
-        {1205, 8, 85.369f, 226.898f, -180.978f},
-        {1206, 8, 80.989f, 213.529f, -203.777f},
-        {1207, 8, 92.456f, 192.260f, -210.227f},
-        {1208, 8, 76.608f, 200.161f, -226.578f},
-        {1209, 8, 88.448f, 179.163f, -232.105f},
-        {1210, 8, 72.321f, 186.860f, -249.148f},
-        {1211, 8, 88.433f, 162.920f, -251.222f},
-        {1212, 8, 103.374f, 158.814f, -231.875f},
-        {1213, 8, 104.058f, 141.807f, -250.761f},
-        {1214, 8, 120.231f, 120.135f, -250.069f},
-        {1215, 9, -189.580f, -137.738f, 117.181f},
-        {1216, 9, -205.296f, -121.641f, 110.678f},
-        {1217, 9, -191.251f, -121.466f, 133.605f},
-        {1218, 9, -174.857f, -143.621f, 134.086f},
-        {1219, 9, -178.665f, -157.752f, 111.316f},
-        {1220, 9, -197.594f, -144.183f, 96.643f},
-        {1221, 9, -219.356f, -125.837f, 82.999f},
-        {1222, 9, -221.184f, -104.874f, 104.682f},
-        {1223, 9, -210.299f, -97.627f, 130.809f},
-        {1224, 9, -192.250f, -105.421f, 150.849f},
-        {1225, 9, -171.967f, -126.225f, 159.209f},
-        {1226, 9, -159.766f, -150.197f, 150.771f},
-        {1227, 9, -158.180f, -169.978f, 130.086f},
-        {1228, 9, -168.436f, -177.845f, 104.248f},
-        {1229, 9, -187.375f, -169.503f, 83.412f},
-        {1230, 9, -206.361f, -150.497f, 75.036f},
-        {1231, 9, -235.267f, -118.923f, 65.384f},
-        {1232, 9, -239.484f, -98.058f, 83.087f},
-        {1233, 9, -234.999f, -82.943f, 108.109f},
-        {1234, 9, -225.187f, -76.337f, 131.748f},
-        {1235, 9, -208.009f, -79.261f, 156.102f},
-        {1236, 9, -190.124f, -90.056f, 172.349f},
-        {1237, 9, -170.481f, -109.333f, 181.470f},
-        {1238, 9, -154.538f, -131.238f, 181.515f},
-        {1239, 9, -143.197f, -157.382f, 169.132f},
-        {1240, 9, -140.431f, -177.288f, 150.209f},
-        {1241, 9, -143.446f, -192.107f, 127.913f},
-        {1242, 9, -154.640f, -197.963f, 102.920f},
-        {1243, 9, -170.861f, -195.793f, 79.226f},
-        {1244, 9, -189.306f, -184.588f, 62.556f},
-        {1245, 9, -208.062f, -165.856f, 54.231f},
-        {1246, 9, -224.671f, -142.776f, 54.490f},
-        {1247, 9, -251.537f, -112.222f, 46.938f},
-        {1248, 9, -256.286f, -90.597f, 64.674f},
-        {1249, 9, -255.513f, -74.134f, 85.275f},
-        {1250, 9, -249.298f, -61.716f, 109.927f},
-        {1251, 9, -238.432f, -55.725f, 134.548f},
-        {1252, 9, -223.565f, -56.795f, 157.343f},
-        {1253, 9, -205.748f, -64.313f, 177.330f},
-        {1254, 9, -186.800f, -76.628f, 193.511f},
-        {1255, 9, -168.374f, -95.224f, 201.462f},
-        {1256, 9, -151.456f, -116.627f, 203.675f},
-        {1257, 9, -137.524f, -140.230f, 198.472f},
-        {1258, 9, -127.748f, -163.745f, 186.647f},
-        {1259, 9, -123.011f, -184.462f, 169.960f},
-        {1260, 9, -123.676f, -201.692f, 148.631f},
-        {1261, 9, -129.602f, -213.687f, 124.944f},
-        {1262, 9, -140.496f, -220.029f, 99.865f},
-        {1263, 9, -155.528f, -218.890f, 76.885f},
-        {1264, 9, -172.977f, -212.065f, 56.677f},
-        {1265, 9, -192.002f, -198.635f, 41.683f},
-        {1266, 9, -210.951f, -180.185f, 32.714f},
-        {1267, 9, -227.802f, -158.989f, 30.366f},
-        {1268, 9, -241.569f, -135.455f, 35.755f},
-        {1269, 9, -268.658f, -105.532f, 27.102f},
-        {1270, 9, -274.208f, -82.314f, 45.415f},
-        {1271, 9, -274.490f, -62.168f, 68.639f},
-        {1272, 9, -270.334f, -46.917f, 93.288f},
-        {1273, 9, -261.180f, -36.972f, 119.787f},
-        {1274, 9, -248.208f, -32.210f, 146.372f},
-        {1275, 9, -231.561f, -34.374f, 170.761f},
-        {1276, 9, -212.400f, -42.084f, 192.697f},
-        {1277, 9, -191.635f, -56.050f, 209.876f},
-        {1278, 9, -171.450f, -73.927f, 221.520f},
-        {1279, 9, -152.075f, -95.440f, 227.577f},
-        {1280, 9, -134.731f, -119.906f, 226.878f},
-        {1281, 9, -120.384f, -145.664f, 219.814f},
-        {1282, 9, -110.367f, -170.361f, 206.990f},
-        {1283, 9, -104.584f, -193.856f, 188.729f},
-        {1284, 9, -104.505f, -213.377f, 165.910f},
-        {1285, 9, -108.730f, -228.419f, 141.396f},
-        {1286, 9, -117.748f, -238.780f, 114.627f},
-        {1287, 9, -130.557f, -243.610f, 88.227f},
-        {1288, 9, -147.464f, -241.520f, 63.330f},
-        {1289, 9, -166.528f, -233.669f, 41.717f},
-        {1290, 9, -187.226f, -219.911f, 24.402f},
-        {1291, 9, -207.740f, -201.899f, 12.385f},
-        {1292, 9, -227.182f, -180.177f, 6.464f},
-        {1293, 9, -244.526f, -155.712f, 7.162f},
-        {1294, 9, -258.574f, -130.437f, 14.143f},
-        {1295, 9, -284.870f, -98.133f, 9.571f},
-        {1296, 9, -291.213f, -77.296f, 23.801f},
-        {1297, 9, -298.609f, -55.844f, 37.051f},
-        {1298, 9, -289.387f, -49.176f, 59.808f},
-        {1299, 9, -305.619f, -33.829f, 51.587f},
-        {1300, 9, -295.924f, -28.618f, 73.397f},
-        {1301, 9, -312.658f, -12.163f, 65.666f},
-        {1302, 9, -298.699f, -10.874f, 89.764f},
-        {1303, 9, -282.603f, -28.872f, 94.651f},
-        {1304, 9, -284.103f, -11.111f, 113.101f},
-        {1305, 9, -270.095f, -11.286f, 135.556f},
-        {1306, 9, -256.155f, -11.253f, 158.148f},
-        {1307, 9, -241.954f, -11.147f, 181.248f},
-        {1308, 9, -228.247f, -10.837f, 203.788f},
-        {1309, 9, -211.299f, -28.824f, 210.065f},
-        {1310, 9, -214.142f, -10.871f, 226.568f},
-        {1311, 9, -197.784f, -28.796f, 231.962f},
-        {1312, 9, -200.300f, -10.978f, 248.837f},
-        {1313, 9, -182.646f, -33.767f, 250.610f},
-        {1314, 9, -183.070f, -49.111f, 231.888f},
-        {1315, 9, -167.168f, -55.119f, 250.553f},
-        {1316, 9, -151.226f, -77.023f, 250.599f},
-        {1317, 9, -135.583f, -98.443f, 250.729f},
-        {1318, 9, -119.873f, -120.070f, 250.725f},
-        {1319, 9, -104.163f, -141.698f, 250.718f},
-        {1320, 9, -102.934f, -158.625f, 232.810f},
-        {1321, 9, -88.453f, -163.327f, 250.712f},
-        {1322, 9, -88.577f, -179.154f, 231.906f},
-        {1323, 9, -72.975f, -184.678f, 250.656f},
-        {1324, 9, -76.570f, -200.340f, 226.430f},
-        {1325, 9, -92.366f, -192.030f, 210.642f},
-        {1326, 9, -80.745f, -213.779f, 203.879f},
-        {1327, 9, -85.152f, -226.942f, 181.278f},
-        {1328, 9, -89.588f, -240.453f, 158.219f},
-        {1329, 9, -93.995f, -253.616f, 135.617f},
-        {1330, 9, -98.171f, -267.053f, 113.067f},
-        {1331, 9, -114.576f, -259.936f, 94.892f},
-        {1332, 9, -102.607f, -280.564f, 90.008f},
-        {1333, 9, -118.760f, -272.469f, 73.390f},
-        {1334, 9, -106.850f, -293.794f, 67.593f},
-        {1335, 9, -126.793f, -280.168f, 51.345f},
-        {1336, 9, -136.404f, -259.789f, 59.751f},
-        {1337, 9, -145.065f, -266.868f, 37.416f},
-        {1338, 9, -163.501f, -253.502f, 23.302f},
-        {1339, 9, -181.047f, -240.682f, 9.984f},
-        {1340, 9, -200.044f, -226.903f, -4.554f},
-        {1341, 9, -218.479f, -213.536f, -18.667f},
-        {1342, 9, -229.376f, -192.266f, -11.295f},
-        {1343, 9, -236.915f, -200.169f, -32.782f},
-        {1344, 9, -247.154f, -179.170f, -24.664f},
-        {1345, 9, -255.187f, -186.869f, -46.709f},
-        {1346, 9, -264.246f, -162.928f, -33.225f},
-        {1347, 9, -253.622f, -158.821f, -11.210f},
-        {1348, 9, -270.821f, -141.814f, -19.044f},
-        {1349, 9, -277.435f, -120.143f, -4.270f},
-        {1350, 10, -189.580f, 137.738f, 117.181f},
-        {1351, 10, -179.127f, 157.659f, 110.678f},
-        {1352, 10, -174.621f, 144.355f, 133.605f},
-        {1353, 10, -190.626f, 121.917f, 134.086f},
-        {1354, 10, -205.242f, 121.172f, 111.316f},
-        {1355, 10, -198.185f, 143.368f, 96.643f},
-        {1356, 10, -187.463f, 169.734f, 82.999f},
-        {1357, 10, -168.090f, 177.950f, 104.682f},
-        {1358, 10, -157.835f, 169.838f, 130.809f},
-        {1359, 10, -159.670f, 150.264f, 150.849f},
-        {1360, 10, -173.188f, 124.545f, 159.209f},
-        {1361, 10, -192.217f, 105.533f, 150.771f},
-        {1362, 10, -210.539f, 97.912f, 130.086f},
-        {1363, 10, -221.190f, 105.235f, 104.248f},
-        {1364, 10, -219.109f, 125.825f, 83.412f},
-        {1365, 10, -206.900f, 149.755f, 75.036f},
-        {1366, 10, -185.804f, 187.003f, 65.384f},
-        {1367, 10, -167.264f, 197.461f, 83.087f},
-        {1368, 10, -151.502f, 197.867f, 108.109f},
-        {1369, 10, -142.188f, 190.576f, 131.748f},
-        {1370, 10, -139.660f, 173.335f, 156.102f},
-        {1371, 10, -144.400f, 152.990f, 172.349f},
-        {1372, 10, -156.664f, 128.351f, 181.470f},
-        {1373, 10, -172.570f, 106.419f, 181.515f},
-        {1374, 10, -193.930f, 87.554f, 169.132f},
-        {1375, 10, -212.007f, 78.773f, 150.209f},
-        {1376, 10, -227.032f, 77.061f, 127.913f},
-        {1377, 10, -236.060f, 85.897f, 102.920f},
-        {1378, 10, -239.009f, 101.996f, 79.226f},
-        {1379, 10, -234.052f, 123.000f, 62.556f},
-        {1380, 10, -222.033f, 146.626f, 54.231f},
-        {1381, 10, -205.215f, 169.554f, 54.490f},
-        {1382, 10, -184.459f, 204.548f, 46.938f},
-        {1383, 10, -165.359f, 215.746f, 64.674f},
-        {1384, 10, -149.464f, 220.098f, 85.275f},
-        {1385, 10, -135.733f, 218.025f, 109.927f},
-        {1386, 10, -126.677f, 209.543f, 134.548f},
-        {1387, 10, -123.101f, 195.072f, 157.343f},
-        {1388, 10, -124.745f, 175.804f, 177.330f},
-        {1389, 10, -130.602f, 153.978f, 193.511f},
-        {1390, 10, -142.594f, 130.707f, 201.462f},
-        {1391, 10, -157.721f, 108.004f, 203.675f},
-        {1392, 10, -175.864f, 87.459f, 198.472f},
-        {1393, 10, -195.207f, 70.896f, 186.647f},
-        {1394, 10, -213.447f, 59.988f, 169.960f},
-        {1395, 10, -230.038f, 55.297f, 148.631f},
-        {1396, 10, -243.278f, 57.225f, 124.944f},
-        {1397, 10, -252.675f, 65.627f, 99.865f},
-        {1398, 10, -256.237f, 80.275f, 76.885f},
-        {1399, 10, -255.139f, 98.979f, 56.677f},
-        {1400, 10, -248.245f, 121.224f, 41.683f},
-        {1401, 10, -236.553f, 144.947f, 32.714f},
-        {1402, 10, -221.603f, 167.522f, 30.366f},
-        {1403, 10, -203.474f, 187.888f, 35.755f},
-        {1404, 10, -183.387f, 222.898f, 27.102f},
-        {1405, 10, -163.020f, 235.351f, 45.415f},
-        {1406, 10, -143.947f, 241.844f, 68.639f},
-        {1407, 10, -128.159f, 242.605f, 93.288f},
-        {1408, 10, -115.872f, 236.972f, 119.787f},
-        {1409, 10, -107.334f, 226.107f, 146.372f},
-        {1410, 10, -104.248f, 209.605f, 170.761f},
-        {1411, 10, -105.659f, 189.000f, 192.697f},
-        {1412, 10, -112.525f, 164.936f, 209.876f},
-        {1413, 10, -123.289f, 140.214f, 221.520f},
-        {1414, 10, -137.762f, 115.140f, 227.577f},
-        {1415, 10, -155.672f, 91.084f, 226.878f},
-        {1416, 10, -175.736f, 69.479f, 219.814f},
-        {1417, 10, -196.128f, 52.321f, 206.990f},
-        {1418, 10, -216.686f, 39.561f, 188.729f},
-        {1419, 10, -235.228f, 33.453f, 165.910f},
-        {1420, 10, -250.838f, 32.823f, 141.396f},
-        {1421, 10, -263.480f, 38.198f, 114.627f},
-        {1422, 10, -272.031f, 48.887f, 88.227f},
-        {1423, 10, -275.268f, 65.613f, 63.330f},
-        {1424, 10, -273.692f, 86.170f, 41.717f},
-        {1425, 10, -267.004f, 110.106f, 24.402f},
-        {1426, 10, -256.213f, 135.182f, 12.385f},
-        {1427, 10, -241.562f, 160.385f, 6.464f},
-        {1428, 10, -223.653f, 184.440f, 7.162f},
-        {1429, 10, -203.957f, 205.611f, 14.143f},
-        {1430, 10, -181.360f, 240.603f, 9.571f},
-        {1431, 10, -163.503f, 253.074f, 23.801f},
-        {1432, 10, -145.386f, 266.738f, 37.051f},
-        {1433, 10, -136.195f, 260.028f, 59.808f},
-        {1434, 10, -126.615f, 280.207f, 51.587f},
-        {1435, 10, -118.663f, 272.597f, 73.397f},
-        {1436, 10, -108.184f, 293.597f, 65.666f},
-        {1437, 10, -102.645f, 280.720f, 89.764f},
-        {1438, 10, -114.788f, 259.849f, 94.651f},
-        {1439, 10, -98.360f, 266.764f, 113.101f},
-        {1440, 10, -94.198f, 253.388f, 135.556f},
-        {1441, 10, -89.859f, 240.140f, 158.148f},
-        {1442, 10, -85.369f, 226.668f, 181.248f},
-        {1443, 10, -80.839f, 213.727f, 203.788f},
-        {1444, 10, -92.708f, 192.051f, 210.065f},
-        {1445, 10, -76.512f, 200.302f, 226.568f},
-        {1446, 10, -88.505f, 179.206f, 231.962f},
-        {1447, 10, -72.337f, 187.104f, 248.837f},
-        {1448, 10, -88.555f, 163.272f, 250.610f},
-        {1449, 10, -103.279f, 158.934f, 231.888f},
-        {1450, 10, -104.079f, 141.953f, 250.553f},
-        {1451, 10, -119.985f, 120.023f, 250.599f},
-        {1452, 10, -135.523f, 98.526f, 250.729f},
-        {1453, 10, -151.236f, 76.902f, 250.725f},
-        {1454, 10, -166.951f, 55.278f, 250.718f},
-        {1455, 10, -182.670f, 48.878f, 232.810f},
-        {1456, 10, -182.666f, 33.653f, 250.712f},
-        {1457, 10, -197.758f, 28.880f, 231.906f},
-        {1458, 10, -198.190f, 12.334f, 250.656f},
-        {1459, 10, -214.196f, 10.914f, 226.430f},
-        {1460, 10, -211.174f, 28.505f, 210.642f},
-        {1461, 10, -228.267f, 10.732f, 203.879f},
-        {1462, 10, -242.148f, 10.855f, 181.278f},
-        {1463, 10, -256.368f, 10.899f, 158.219f},
-        {1464, 10, -270.249f, 11.023f, 135.617f},
-        {1465, 10, -284.319f, 10.842f, 113.067f},
-        {1466, 10, -282.620f, 28.644f, 94.892f},
-        {1467, 10, -298.540f, 10.886f, 90.008f},
-        {1468, 10, -295.833f, 28.750f, 73.390f},
-        {1469, 10, -312.433f, 10.833f, 67.593f},
-        {1470, 10, -305.637f, 34.011f, 51.345f},
-        {1471, 10, -289.225f, 49.449f, 59.751f},
-        {1472, 10, -298.634f, 55.499f, 37.416f},
-        {1473, 10, -291.619f, 77.162f, 23.302f},
-        {1474, 10, -284.849f, 97.812f, 9.984f},
-        {1475, 10, -277.615f, 120.136f, -4.554f},
-        {1476, 10, -270.598f, 141.800f, -18.667f},
-        {1477, 10, -253.737f, 158.736f, -11.295f},
-        {1478, 10, -263.583f, 163.464f, -32.782f},
-        {1479, 10, -246.776f, 179.691f, -24.664f},
-        {1480, 10, -256.580f, 184.952f, -46.709f},
-        {1481, 10, -236.611f, 200.966f, -33.225f},
-        {1482, 10, -229.422f, 192.131f, -11.210f},
-        {1483, 10, -218.562f, 213.743f, -19.044f},
-        {1484, 10, -199.994f, 226.730f, -4.270f},
-        {1485, 11, 72.413f, 222.865f, 117.181f},
-        {1486, 11, 94.589f, 219.079f, 110.678f},
-        {1487, 11, 83.329f, 210.683f, 133.605f},
-        {1488, 11, 57.044f, 218.970f, 134.086f},
-        {1489, 11, 51.818f, 232.641f, 111.316f},
-        {1490, 11, 75.108f, 232.789f, 96.643f},
-        {1491, 11, 103.497f, 230.738f, 82.999f},
-        {1492, 11, 117.298f, 214.853f, 104.682f},
-        {1493, 11, 112.752f, 202.593f, 130.809f},
-        {1494, 11, 93.569f, 198.289f, 150.849f},
-        {1495, 11, 64.931f, 203.198f, 159.209f},
-        {1496, 11, 40.970f, 215.421f, 150.771f},
-        {1497, 11, 28.059f, 230.491f, 130.086f},
-        {1498, 11, 31.733f, 242.884f, 104.248f},
-        {1499, 11, 51.958f, 247.267f, 83.412f},
-        {1500, 11, 78.490f, 243.050f, 75.036f},
-        {1501, 11, 120.434f, 234.497f, 65.384f},
-        {1502, 11, 136.109f, 220.096f, 83.087f},
-        {1503, 11, 141.366f, 205.231f, 108.109f},
-        {1504, 11, 137.310f, 194.120f, 131.748f},
-        {1505, 11, 121.694f, 186.388f, 156.102f},
-        {1506, 11, 100.880f, 184.609f, 172.349f},
-        {1507, 11, 73.657f, 188.659f, 181.470f},
-        {1508, 11, 47.884f, 197.009f, 181.515f},
-        {1509, 11, 23.342f, 211.494f, 169.132f},
-        {1510, 11, 9.403f, 225.972f, 150.209f},
-        {1511, 11, 3.133f, 239.733f, 127.913f},
-        {1512, 11, 8.747f, 251.050f, 102.920f},
-        {1513, 11, 23.146f, 258.830f, 79.226f},
-        {1514, 11, 44.654f, 260.606f, 62.556f},
-        {1515, 11, 70.838f, 256.476f, 54.231f},
-        {1516, 11, 97.841f, 247.566f, 54.490f},
-        {1517, 11, 137.535f, 238.639f, 46.938f},
-        {1518, 11, 154.088f, 223.935f, 64.674f},
-        {1519, 11, 163.139f, 210.163f, 85.275f},
-        {1520, 11, 165.411f, 196.463f, 109.927f},
-        {1521, 11, 160.141f, 185.229f, 134.548f},
-        {1522, 11, 147.485f, 177.356f, 157.343f},
-        {1523, 11, 128.651f, 172.966f, 177.330f},
-        {1524, 11, 106.083f, 171.791f, 193.511f},
-        {1525, 11, 80.246f, 176.006f, 201.462f},
-        {1526, 11, 53.979f, 183.377f, 203.675f},
-        {1527, 11, 28.834f, 194.283f, 198.472f},
-        {1528, 11, 7.104f, 207.561f, 186.647f},
-        {1529, 11, -8.907f, 221.537f, 169.960f},
-        {1530, 11, -18.495f, 235.867f, 148.631f},
-        {1531, 11, -20.752f, 249.055f, 124.944f},
-        {1532, 11, -15.666f, 260.588f, 99.865f},
-        {1533, 11, -2.835f, 268.503f, 76.885f},
-        {1534, 11, 15.293f, 273.238f, 56.677f},
-        {1535, 11, 38.579f, 273.555f, 41.683f},
-        {1536, 11, 64.753f, 269.767f, 32.714f},
-        {1537, 11, 90.844f, 262.524f, 30.366f},
-        {1538, 11, 115.815f, 251.576f, 35.755f},
-        {1539, 11, 155.319f, 243.291f, 27.102f},
-        {1540, 11, 173.456f, 227.769f, 45.415f},
-        {1541, 11, 185.525f, 211.636f, 68.639f},
-        {1542, 11, 191.128f, 196.855f, 93.288f},
-        {1543, 11, 189.568f, 183.429f, 119.787f},
-        {1544, 11, 181.872f, 171.951f, 146.372f},
-        {1545, 11, 167.132f, 163.917f, 170.761f},
-        {1546, 11, 147.099f, 158.892f, 192.697f},
-        {1547, 11, 122.091f, 157.985f, 209.876f},
-        {1548, 11, 95.253f, 160.583f, 221.520f},
-        {1549, 11, 66.933f, 166.600f, 227.577f},
-        {1550, 11, 38.521f, 176.199f, 226.878f},
-        {1551, 11, 11.773f, 188.605f, 219.814f},
-        {1552, 11, -10.847f, 202.697f, 206.990f},
-        {1553, 11, -29.335f, 218.306f, 188.729f},
-        {1554, 11, -40.874f, 234.053f, 165.910f},
-        {1555, 11, -46.297f, 248.704f, 141.396f},
-        {1556, 11, -45.091f, 262.388f, 114.627f},
-        {1557, 11, -37.568f, 273.824f, 88.227f},
-        {1558, 11, -22.661f, 282.071f, 63.330f},
-        {1559, 11, -2.623f, 286.925f, 41.717f},
-        {1560, 11, 22.209f, 287.961f, 24.402f},
-        {1561, 11, 49.392f, 285.446f, 12.385f},
-        {1562, 11, 77.889f, 279.301f, 6.464f},
-        {1563, 11, 106.301f, 269.702f, 7.162f},
-        {1564, 11, 132.521f, 257.512f, 14.143f},
-        {1565, 11, 172.784f, 246.834f, 9.571f},
-        {1566, 11, 190.163f, 233.705f, 23.801f},
-        {1567, 11, 208.756f, 220.697f, 37.051f},
-        {1568, 11, 205.215f, 209.882f, 59.808f},
-        {1569, 11, 227.367f, 207.007f, 51.587f},
-        {1570, 11, 222.586f, 197.092f, 73.397f},
-        {1571, 11, 245.797f, 193.616f, 65.666f},
-        {1572, 11, 235.261f, 184.368f, 89.764f},
-        {1573, 11, 211.660f, 189.468f, 94.651f},
-        {1574, 11, 223.313f, 175.981f, 113.101f},
-        {1575, 11, 211.878f, 167.889f, 135.556f},
-        {1576, 11, 200.619f, 159.668f, 158.148f},
-        {1577, 11, 189.193f, 151.235f, 181.248f},
-        {1578, 11, 178.286f, 142.928f, 203.788f},
-        {1579, 11, 154.003f, 147.517f, 210.065f},
-        {1580, 11, 166.855f, 134.664f, 226.568f},
-        {1581, 11, 143.085f, 139.551f, 231.962f},
-        {1582, 11, 155.593f, 126.615f, 248.837f},
-        {1583, 11, 127.916f, 134.675f, 250.610f},
-        {1584, 11, 119.240f, 147.338f, 231.888f},
-        {1585, 11, 102.843f, 142.851f, 250.553f},
-        {1586, 11, 77.071f, 151.201f, 250.599f},
-        {1587, 11, 51.825f, 159.336f, 250.729f},
-        {1588, 11, 26.404f, 167.598f, 250.725f},
-        {1589, 11, 0.982f, 175.862f, 250.718f},
-        {1590, 11, -9.962f, 188.834f, 232.810f},
-        {1591, 11, -24.441f, 184.125f, 250.712f},
-        {1592, 11, -33.644f, 197.003f, 231.906f},
-        {1593, 11, -49.513f, 192.301f, 250.656f},
-        {1594, 11, -55.810f, 207.085f, 226.430f},
-        {1595, 11, -38.147f, 209.647f, 210.642f},
-        {1596, 11, -60.332f, 220.411f, 203.879f},
-        {1597, 11, -64.504f, 233.651f, 181.278f},
-        {1598, 11, -68.856f, 247.189f, 158.219f},
-        {1599, 11, -73.028f, 260.428f, 135.617f},
-        {1600, 11, -77.548f, 273.754f, 113.067f},
-        {1601, 11, -60.093f, 277.639f, 94.892f},
-        {1602, 11, -81.901f, 287.292f, 90.008f},
-        {1603, 11, -64.074f, 290.238f, 73.390f},
-        {1604, 11, -86.244f, 300.489f, 67.593f},
-        {1605, 11, -62.100f, 301.188f, 51.345f},
-        {1606, 11, -42.347f, 290.350f, 59.751f},
-        {1607, 11, -39.501f, 301.168f, 37.416f},
-        {1608, 11, -16.729f, 301.191f, 23.302f},
-        {1609, 11, 5.001f, 301.132f, 9.984f},
-        {1610, 11, 28.469f, 301.151f, -4.554f},
-        {1611, 11, 51.240f, 301.173f, -18.667f},
-        {1612, 11, 72.558f, 290.370f, -11.295f},
-        {1613, 11, 74.012f, 301.195f, -32.782f},
-        {1614, 11, 94.638f, 290.225f, -24.664f},
-        {1615, 11, 96.612f, 301.175f, -46.709f},
-        {1616, 11, 118.013f, 287.132f, -33.225f},
-        {1617, 11, 111.832f, 277.565f, -11.210f},
-        {1618, 11, 135.743f, 273.915f, -19.044f},
-        {1619, 11, 153.831f, 260.269f, -4.270f}
+        {945, 7, -72.413f, -222.865f, -117.181f},
+        {946, 7, -82.855f, -210.553f, -134.146f},
+        {947, 7, -94.467f, -218.775f, -111.332f},
+        {948, 7, -75.861f, -232.644f, -96.453f},
+        {949, 7, -52.456f, -233.104f, -110.041f},
+        {950, 7, -56.662f, -219.385f, -133.533f},
+        {951, 7, -65.446f, -203.089f, -159.098f},
+        {952, 7, -94.120f, -198.011f, -151.037f},
+        {953, 7, -113.347f, -203.026f, -129.618f},
+        {954, 7, -116.738f, -215.124f, -104.514f},
+        {955, 7, -103.220f, -231.020f, -82.634f},
+        {956, 7, -78.610f, -242.770f, -75.495f},
+        {957, 7, -51.441f, -247.480f, -83.326f},
+        {958, 7, -31.830f, -242.954f, -104.053f},
+        {959, 7, -28.508f, -230.228f, -130.310f},
+        {960, 7, -40.487f, -215.437f, -151.037f},
+        {961, 7, -62.520f, -192.415f, -181.207f},
+        {962, 7, -89.119f, -185.952f, -177.062f},
+        {963, 7, -114.488f, -185.702f, -161.861f},
+        {964, 7, -131.927f, -190.208f, -142.515f},
+        {965, 7, -141.617f, -200.864f, -116.259f},
+        {966, 7, -140.557f, -213.439f, -92.998f},
+        {967, 7, -128.720f, -228.668f, -71.350f},
+        {968, 7, -110.109f, -242.223f, -57.071f},
+        {969, 7, -81.679f, -253.882f, -52.464f},
+        {970, 7, -55.285f, -259.310f, -58.452f},
+        {971, 7, -31.531f, -260.368f, -71.120f},
+        {972, 7, -14.053f, -254.906f, -92.308f},
+        {973, 7, -4.052f, -244.956f, -117.412f},
+        {974, 7, -5.248f, -231.973f, -141.364f},
+        {975, 7, -17.020f, -217.371f, -161.861f},
+        {976, 7, -36.782f, -203.200f, -176.601f},
+        {977, 7, -58.996f, -181.572f, -204.007f},
+        {978, 7, -86.260f, -174.651f, -200.323f},
+        {979, 7, -110.564f, -171.961f, -190.419f},
+        {980, 7, -133.454f, -173.242f, -173.837f},
+        {981, 7, -150.860f, -178.486f, -153.109f},
+        {982, 7, -161.348f, -187.429f, -129.618f},
+        {983, 7, -164.946f, -199.339f, -104.745f},
+        {984, 7, -162.561f, -212.829f, -80.561f},
+        {985, 7, -150.718f, -227.212f, -60.525f},
+        {986, 7, -133.619f, -241.244f, -44.404f},
+        {987, 7, -110.939f, -253.942f, -34.270f},
+        {988, 7, -85.024f, -264.179f, -30.815f},
+        {989, 7, -59.057f, -270.920f, -34.040f},
+        {990, 7, -33.737f, -273.819f, -44.173f},
+        {991, 7, -11.689f, -272.627f, -60.065f},
+        {992, 7, 6.245f, -267.434f, -81.023f},
+        {993, 7, 16.766f, -258.380f, -104.745f},
+        {994, 7, 21.064f, -246.820f, -129.388f},
+        {995, 7, 17.137f, -233.071f, -153.109f},
+        {996, 7, 5.927f, -218.409f, -174.068f},
+        {997, 7, -10.928f, -204.456f, -190.189f},
+        {998, 7, -33.642f, -191.868f, -200.093f},
+        {999, 7, -54.769f, -170.230f, -228.191f},
+        {1000, 7, -83.676f, -162.533f, -224.965f},
+        {1001, 7, -112.425f, -158.520f, -214.832f},
+        {1002, 7, -137.723f, -158.050f, -200.093f},
+        {1003, 7, -159.432f, -161.532f, -180.056f},
+        {1004, 7, -176.775f, -168.248f, -156.565f},
+        {1005, 7, -187.129f, -178.447f, -130.769f},
+        {1006, 7, -191.539f, -191.183f, -103.823f},
+        {1007, 7, -188.248f, -206.056f, -77.568f},
+        {1008, 7, -178.864f, -221.336f, -54.307f},
+        {1009, 7, -163.592f, -236.834f, -34.270f},
+        {1010, 7, -142.430f, -251.702f, -19.070f},
+        {1011, 7, -116.987f, -265.055f, -9.397f},
+        {1012, 7, -89.567f, -275.660f, -6.172f},
+        {1013, 7, -60.451f, -283.546f, -9.166f},
+        {1014, 7, -32.436f, -287.320f, -19.299f},
+        {1015, 7, -7.384f, -287.710f, -34.040f},
+        {1016, 7, 14.815f, -284.387f, -54.077f},
+        {1017, 7, 32.123f, -277.780f, -77.338f},
+        {1018, 7, 42.794f, -267.443f, -103.593f},
+        {1019, 7, 46.922f, -254.737f, -130.310f},
+        {1020, 7, 43.877f, -239.942f, -156.565f},
+        {1021, 7, 34.563f, -224.444f, -180.286f},
+        {1022, 7, 19.046f, -208.867f, -200.323f},
+        {1023, 7, -2.114f, -193.999f, -215.523f},
+        {1024, 7, -27.104f, -180.914f, -224.966f},
+        {1025, 7, -52.297f, -159.287f, -250.530f},
+        {1026, 7, -77.138f, -151.579f, -249.840f},
+        {1027, 7, -102.011f, -143.134f, -250.530f},
+        {1028, 7, -119.061f, -147.282f, -232.105f},
+        {1029, 7, -128.005f, -134.809f, -250.300f},
+        {1030, 7, -143.343f, -139.513f, -231.875f},
+        {1031, 7, -153.475f, -126.534f, -250.300f},
+        {1032, 7, -166.621f, -134.493f, -227.038f},
+        {1033, 7, -153.754f, -147.392f, -210.456f},
+        {1034, 7, -178.087f, -143.119f, -203.548f},
+        {1035, 7, -189.166f, -151.386f, -180.978f},
+        {1036, 7, -200.490f, -159.574f, -158.407f},
+        {1037, 7, -212.131f, -167.902f, -135.376f},
+        {1038, 7, -223.664f, -175.900f, -113.036f},
+        {1039, 7, -211.503f, -189.298f, -95.071f},
+        {1040, 7, -235.025f, -184.198f, -90.235f},
+        {1041, 7, -222.475f, -197.237f, -73.192f},
+        {1042, 7, -246.069f, -192.355f, -67.895f},
+        {1043, 7, -227.570f, -207.085f, -51.313f},
+        {1044, 7, -205.157f, -209.766f, -60.065f},
+        {1045, 7, -209.379f, -220.261f, -37.495f},
+        {1046, 7, -190.769f, -233.816f, -23.215f},
+        {1047, 7, -172.613f, -247.102f, -9.166f},
+        {1048, 7, -154.215f, -260.467f, 4.883f},
+        {1049, 7, -135.813f, -273.832f, 18.931f},
+        {1050, 7, -112.461f, -277.787f, 12.022f},
+        {1051, 7, -117.412f, -287.198f, 32.980f},
+        {1052, 7, -94.546f, -290.148f, 24.459f},
+        {1053, 7, -99.222f, -300.374f, 46.798f},
+        {1054, 7, -73.787f, -301.252f, 32.749f},
+        {1055, 7, -72.961f, -290.379f, 11.561f},
+        {1056, 7, -51.079f, -301.364f, 18.931f},
+        {1057, 7, -28.582f, -301.288f, 4.883f},
+        {1058, 7, -5.559f, -301.260f, -9.397f},
+        {1059, 7, 16.939f, -301.183f, -23.446f},
+        {1060, 7, 39.645f, -301.295f, -37.264f},
+        {1061, 7, 42.678f, -290.292f, -60.065f},
+        {1062, 7, 62.668f, -301.267f, -51.544f},
+        {1063, 7, 64.090f, -290.226f, -73.422f},
+        {1064, 7, 85.129f, -301.300f, -65.362f},
+        {1065, 7, 81.661f, -286.974f, -90.465f},
+        {1066, 7, 60.124f, -277.433f, -95.302f},
+        {1067, 7, 77.313f, -273.694f, -113.036f},
+        {1068, 7, 73.000f, -260.304f, -135.837f},
+        {1069, 7, 68.754f, -247.541f, -157.486f},
+        {1070, 7, 64.302f, -233.743f, -180.978f},
+        {1071, 7, 59.988f, -220.353f, -203.777f},
+        {1072, 7, 38.209f, -209.886f, -210.227f},
+        {1073, 7, 55.675f, -206.963f, -226.578f},
+        {1074, 7, 33.753f, -196.934f, -232.105f},
+        {1075, 7, 51.325f, -193.682f, -249.148f},
+        {1076, 7, 24.218f, -183.785f, -251.222f},
+        {1077, 7, 9.717f, -189.246f, -231.875f},
+        {1078, 7, -0.833f, -175.888f, -250.761f},
+        {1079, 7, -26.655f, -167.861f, -250.069f},
+        {1080, 8, 189.580f, -137.738f, -117.181f},
+        {1081, 8, 174.644f, -143.864f, -134.146f},
+        {1082, 8, 178.876f, -157.448f, -111.332f},
+        {1083, 8, 197.815f, -144.039f, -96.453f},
+        {1084, 8, 205.485f, -121.921f, -110.041f},
+        {1085, 8, 191.138f, -121.683f, -133.533f},
+        {1086, 8, 172.926f, -125.001f, -159.098f},
+        {1087, 8, 159.235f, -150.702f, -151.037f},
+        {1088, 8, 158.063f, -170.538f, -129.618f},
+        {1089, 8, 168.521f, -177.501f, -104.514f},
+        {1090, 8, 187.816f, -169.558f, -82.634f},
+        {1091, 8, 206.596f, -149.782f, -75.495f},
+        {1092, 8, 219.472f, -125.399f, -83.326f},
+        {1093, 8, 221.227f, -105.349f, -104.053f},
+        {1094, 8, 210.151f, -98.257f, -130.310f},
+        {1095, 8, 192.382f, -105.080f, -151.037f},
+        {1096, 8, 163.678f, -118.919f, -181.207f},
+        {1097, 8, 149.312f, -142.220f, -177.062f},
+        {1098, 8, 141.234f, -166.270f, -161.861f},
+        {1099, 8, 140.131f, -184.247f, -142.515f},
+        {1100, 8, 147.271f, -196.756f, -116.259f},
+        {1101, 8, 159.558f, -199.634f, -92.998f},
+        {1102, 8, 177.699f, -193.082f, -71.350f},
+        {1103, 8, 196.342f, -179.571f, -57.071f},
+        {1104, 8, 216.217f, -156.135f, -52.464f},
+        {1105, 8, 229.535f, -132.710f, -58.452f},
+        {1106, 8, 237.881f, -110.446f, -71.120f},
+        {1107, 8, 238.087f, -92.135f, -92.308f},
+        {1108, 8, 231.715f, -79.549f, -117.412f},
+        {1109, 8, 218.998f, -76.675f, -141.364f},
+        {1110, 8, 201.473f, -83.358f, -161.861f},
+        {1111, 8, 181.888f, -97.774f, -176.601f},
+        {1112, 8, 154.454f, -112.218f, -204.007f},
+        {1113, 8, 139.447f, -136.008f, -200.323f},
+        {1114, 8, 129.378f, -158.292f, -190.419f},
+        {1115, 8, 123.524f, -180.457f, -173.837f},
+        {1116, 8, 123.131f, -198.632f, -153.109f},
+        {1117, 8, 128.397f, -211.370f, -129.618f},
+        {1118, 8, 138.611f, -218.472f, -104.745f},
+        {1119, 8, 152.178f, -220.373f, -80.561f},
+        {1120, 8, 169.517f, -213.554f, -60.525f},
+        {1121, 8, 188.146f, -201.628f, -44.404f},
+        {1122, 8, 207.231f, -183.982f, -34.270f},
+        {1123, 8, 224.975f, -162.498f, -30.815f},
+        {1124, 8, 239.411f, -139.885f, -34.040f},
+        {1125, 8, 249.993f, -116.700f, -44.173f},
+        {1126, 8, 255.672f, -95.364f, -60.065f},
+        {1127, 8, 256.275f, -76.703f, -81.023f},
+        {1128, 8, 250.915f, -63.898f, -104.745f},
+        {1129, 8, 241.249f, -56.238f, -129.388f},
+        {1130, 8, 226.960f, -55.724f, -153.109f},
+        {1131, 8, 209.551f, -61.855f, -174.068f},
+        {1132, 8, 191.072f, -73.574f, -190.189f},
+        {1133, 8, 172.081f, -91.286f, -200.093f},
+        {1134, 8, 144.974f, -104.692f, -228.191f},
+        {1135, 8, 128.721f, -129.806f, -224.965f},
+        {1136, 8, 116.021f, -155.908f, -214.832f},
+        {1137, 8, 107.756f, -179.823f, -200.093f},
+        {1138, 8, 104.359f, -201.545f, -180.056f},
+        {1139, 8, 105.387f, -220.115f, -156.565f},
+        {1140, 8, 111.888f, -233.113f, -130.769f},
+        {1141, 8, 122.637f, -241.243f, -103.823f},
+        {1142, 8, 137.799f, -242.710f, -77.568f},
+        {1143, 8, 155.231f, -238.506f, -54.307f},
+        {1144, 8, 174.689f, -228.771f, -34.270f},
+        {1145, 8, 195.369f, -213.240f, -19.070f},
+        {1146, 8, 215.931f, -193.168f, -9.397f},
+        {1147, 8, 234.490f, -170.367f, -6.172f},
+        {1148, 8, 250.988f, -145.113f, -9.166f},
+        {1149, 8, 263.235f, -119.635f, -19.299f},
+        {1150, 8, 271.346f, -95.930f, -34.040f},
+        {1151, 8, 275.047f, -73.791f, -54.077f},
+        {1152, 8, 274.111f, -55.288f, -77.338f},
+        {1153, 8, 267.577f, -41.945f, -103.593f},
+        {1154, 8, 256.769f, -34.093f, -130.310f},
+        {1155, 8, 241.757f, -32.417f, -156.565f},
+        {1156, 8, 224.139f, -36.486f, -180.286f},
+        {1157, 8, 204.530f, -46.429f, -200.323f},
+        {1158, 8, 183.851f, -61.960f, -215.523f},
+        {1159, 8, 163.684f, -81.683f, -224.966f},
+        {1160, 8, 135.330f, -98.960f, -250.530f},
+        {1161, 8, 120.323f, -120.203f, -249.840f},
+        {1162, 8, 104.606f, -141.249f, -250.530f},
+        {1163, 8, 103.281f, -158.747f, -232.105f},
+        {1164, 8, 88.655f, -163.399f, -250.300f},
+        {1165, 8, 88.390f, -179.439f, -231.875f},
+        {1166, 8, 72.914f, -185.065f, -250.300f},
+        {1167, 8, 76.422f, -200.026f, -227.038f},
+        {1168, 8, 92.666f, -191.775f, -210.456f},
+        {1169, 8, 81.082f, -213.597f, -203.548f},
+        {1170, 8, 85.521f, -226.688f, -180.978f},
+        {1171, 8, 89.809f, -239.989f, -158.407f},
+        {1172, 8, 94.132f, -253.633f, -135.376f},
+        {1173, 8, 98.175f, -267.073f, -113.036f},
+        {1174, 8, 114.675f, -259.647f, -95.071f},
+        {1175, 8, 102.556f, -280.443f, -90.235f},
+        {1176, 8, 118.835f, -272.536f, -73.192f},
+        {1177, 8, 106.901f, -293.466f, -67.895f},
+        {1178, 8, 126.626f, -280.425f, -51.313f},
+        {1179, 8, 136.102f, -259.937f, -60.065f},
+        {1180, 8, 144.779f, -267.195f, -37.495f},
+        {1181, 8, 163.421f, -253.685f, -23.215f},
+        {1182, 8, 181.668f, -240.524f, -9.166f},
+        {1183, 8, 200.064f, -227.156f, 4.883f},
+        {1184, 8, 218.461f, -213.785f, 18.931f},
+        {1185, 8, 229.439f, -192.797f, 12.022f},
+        {1186, 8, 236.859f, -200.415f, 32.980f},
+        {1187, 8, 246.731f, -179.579f, 24.459f},
+        {1188, 8, 255.012f, -187.186f, 46.798f},
+        {1189, 8, 263.706f, -163.267f, 32.749f},
+        {1190, 8, 253.621f, -159.122f, 11.561f},
+        {1191, 8, 270.830f, -141.706f, 18.931f},
+        {1192, 8, 277.709f, -120.286f, 4.883f},
+        {1193, 8, 284.798f, -98.381f, -9.397f},
+        {1194, 8, 291.677f, -76.961f, -23.446f},
+        {1195, 8, 298.800f, -55.401f, -37.264f},
+        {1196, 8, 289.273f, -49.116f, -60.065f},
+        {1197, 8, 305.888f, -33.496f, -51.544f},
+        {1198, 8, 295.826f, -28.731f, -73.422f},
+        {1199, 8, 312.859f, -12.145f, -65.362f},
+        {1200, 8, 298.164f, -11.015f, -90.465f},
+        {1201, 8, 282.434f, -28.551f, -95.302f},
+        {1202, 8, 284.189f, -11.047f, -113.036f},
+        {1203, 8, 270.122f, -11.011f, -135.837f},
+        {1204, 8, 256.672f, -11.106f, -157.486f},
+        {1205, 8, 242.173f, -11.075f, -180.978f},
+        {1206, 8, 228.106f, -11.041f, -203.777f},
+        {1207, 8, 211.420f, -28.519f, -210.227f},
+        {1208, 8, 214.038f, -11.005f, -226.578f},
+        {1209, 8, 197.726f, -28.755f, -232.105f},
+        {1210, 8, 200.063f, -11.038f, -249.148f},
+        {1211, 8, 182.274f, -33.760f, -251.222f},
+        {1212, 8, 182.986f, -49.239f, -231.875f},
+        {1213, 8, 167.022f, -55.144f, -250.761f},
+        {1214, 8, 151.409f, -77.222f, -250.069f},
+        {1215, 9, 189.580f, 137.738f, -117.181f},
+        {1216, 9, 190.790f, 121.640f, -134.146f},
+        {1217, 9, 205.018f, 121.467f, -111.332f},
+        {1218, 9, 198.118f, 143.622f, -96.453f},
+        {1219, 9, 179.453f, 157.752f, -110.041f},
+        {1220, 9, 174.792f, 144.181f, -133.533f},
+        {1221, 9, 172.320f, 125.835f, -159.098f},
+        {1222, 9, 192.532f, 104.872f, -151.037f},
+        {1223, 9, 211.035f, 97.627f, -129.618f},
+        {1224, 9, 220.889f, 105.422f, -104.514f},
+        {1225, 9, 219.297f, 126.228f, -82.634f},
+        {1226, 9, 206.293f, 150.199f, -75.495f},
+        {1227, 9, 187.082f, 169.980f, -83.326f},
+        {1228, 9, 168.556f, 177.845f, -104.053f},
+        {1229, 9, 158.388f, 169.502f, -130.310f},
+        {1230, 9, 159.386f, 150.495f, -151.037f},
+        {1231, 9, 163.678f, 118.919f, -181.207f},
+        {1232, 9, 181.399f, 98.056f, -177.062f},
+        {1233, 9, 201.776f, 82.941f, -161.861f},
+        {1234, 9, 218.532f, 76.337f, -142.515f},
+        {1235, 9, 232.636f, 79.262f, -116.259f},
+        {1236, 9, 239.170f, 90.058f, -92.998f},
+        {1237, 9, 238.544f, 109.337f, -71.350f},
+        {1238, 9, 231.455f, 131.242f, -57.071f},
+        {1239, 9, 215.308f, 157.386f, -52.464f},
+        {1240, 9, 197.145f, 177.291f, -58.452f},
+        {1241, 9, 178.549f, 192.108f, -71.120f},
+        {1242, 9, 161.199f, 197.963f, -92.308f},
+        {1243, 9, 147.259f, 195.792f, -117.412f},
+        {1244, 9, 140.597f, 184.585f, -141.364f},
+        {1245, 9, 141.537f, 165.853f, -161.861f},
+        {1246, 9, 149.195f, 142.772f, -176.601f},
+        {1247, 9, 154.454f, 112.218f, -204.007f},
+        {1248, 9, 172.443f, 90.593f, -200.323f},
+        {1249, 9, 190.524f, 74.131f, -190.419f},
+        {1250, 9, 209.796f, 61.714f, -173.837f},
+        {1251, 9, 226.960f, 55.724f, -153.109f},
+        {1252, 9, 240.701f, 56.796f, -129.618f},
+        {1253, 9, 250.613f, 64.315f, -104.745f},
+        {1254, 9, 256.612f, 76.631f, -80.561f},
+        {1255, 9, 255.485f, 95.228f, -60.525f},
+        {1256, 9, 249.900f, 116.631f, -44.404f},
+        {1257, 9, 239.015f, 140.235f, -34.270f},
+        {1258, 9, 224.066f, 163.749f, -30.815f},
+        {1259, 9, 207.021f, 184.466f, -34.040f},
+        {1260, 9, 188.241f, 201.695f, -44.173f},
+        {1261, 9, 169.703f, 213.689f, -60.065f},
+        {1262, 9, 152.142f, 220.029f, -81.023f},
+        {1263, 9, 138.308f, 218.889f, -104.745f},
+        {1264, 9, 128.036f, 212.063f, -129.388f},
+        {1265, 9, 123.131f, 198.632f, -153.109f},
+        {1266, 9, 123.582f, 180.181f, -174.068f},
+        {1267, 9, 129.017f, 158.985f, -190.189f},
+        {1268, 9, 139.994f, 135.450f, -200.093f},
+        {1269, 9, 144.368f, 105.526f, -228.191f},
+        {1270, 9, 163.230f, 82.309f, -224.965f},
+        {1271, 9, 184.130f, 62.164f, -214.832f},
+        {1272, 9, 204.320f, 46.914f, -200.093f},
+        {1273, 9, 223.929f, 36.970f, -180.056f},
+        {1274, 9, 241.908f, 32.210f, -156.565f},
+        {1275, 9, 256.279f, 34.375f, -130.769f},
+        {1276, 9, 267.333f, 42.086f, -103.823f},
+        {1277, 9, 273.413f, 56.053f, -77.568f},
+        {1278, 9, 274.802f, 73.931f, -54.307f},
+        {1279, 9, 271.556f, 95.445f, -34.270f},
+        {1280, 9, 263.175f, 119.912f, -19.070f},
+        {1281, 9, 250.440f, 145.670f, -9.397f},
+        {1282, 9, 234.490f, 170.367f, -6.172f},
+        {1283, 9, 215.570f, 193.861f, -9.166f},
+        {1284, 9, 195.124f, 213.382f, -19.299f},
+        {1285, 9, 175.086f, 228.422f, -34.040f},
+        {1286, 9, 155.173f, 238.782f, -54.077f},
+        {1287, 9, 137.287f, 243.610f, -77.338f},
+        {1288, 9, 122.578f, 241.519f, -103.593f},
+        {1289, 9, 111.770f, 233.666f, -130.310f},
+        {1290, 9, 105.538f, 219.907f, -156.565f},
+        {1291, 9, 103.963f, 201.894f, -180.286f},
+        {1292, 9, 107.360f, 180.172f, -200.323f},
+        {1293, 9, 115.740f, 155.706f, -215.523f},
+        {1294, 9, 128.266f, 130.431f, -224.966f},
+        {1295, 9, 135.936f, 98.126f, -250.530f},
+        {1296, 9, 151.501f, 77.290f, -249.840f},
+        {1297, 9, 166.661f, 55.838f, -250.530f},
+        {1298, 9, 182.893f, 49.171f, -232.105f},
+        {1299, 9, 182.797f, 33.823f, -250.300f},
+        {1300, 9, 197.971f, 28.614f, -231.875f},
+        {1301, 9, 198.539f, 12.157f, -250.300f},
+        {1302, 9, 213.852f, 10.870f, -227.038f},
+        {1303, 9, 211.025f, 28.869f, -210.456f},
+        {1304, 9, 228.198f, 11.109f, -203.548f},
+        {1305, 9, 242.021f, 11.285f, -180.978f},
+        {1306, 9, 255.995f, 11.253f, -158.407f},
+        {1307, 9, 270.307f, 11.148f, -135.376f},
+        {1308, 9, 284.340f, 10.840f, -113.036f},
+        {1309, 9, 282.376f, 28.827f, -95.071f},
+        {1310, 9, 298.408f, 10.875f, -90.235f},
+        {1311, 9, 295.919f, 28.800f, -73.192f},
+        {1312, 9, 312.138f, 10.983f, -67.895f},
+        {1313, 9, 305.830f, 33.773f, -51.313f},
+        {1314, 9, 289.273f, 49.116f, -60.065f},
+        {1315, 9, 298.857f, 55.125f, -37.495f},
+        {1316, 9, 291.769f, 77.030f, -23.215f},
+        {1317, 9, 284.890f, 98.450f, -9.166f},
+        {1318, 9, 277.861f, 120.077f, 4.883f},
+        {1319, 9, 270.830f, 141.706f, 18.931f},
+        {1320, 9, 254.262f, 158.632f, 12.022f},
+        {1321, 9, 263.799f, 163.335f, 32.980f},
+        {1322, 9, 247.034f, 179.162f, 24.459f},
+        {1323, 9, 256.828f, 184.687f, 46.798f},
+        {1324, 9, 236.766f, 200.347f, 32.749f},
+        {1325, 9, 229.707f, 192.037f, 11.561f},
+        {1326, 9, 218.461f, 213.785f, 18.931f},
+        {1327, 9, 200.215f, 226.947f, 4.883f},
+        {1328, 9, 181.574f, 240.457f, -9.397f},
+        {1329, 9, 163.327f, 253.619f, -23.446f},
+        {1330, 9, 145.023f, 267.056f, -37.264f},
+        {1331, 9, 136.102f, 259.937f, -60.065f},
+        {1332, 9, 126.382f, 280.566f, -51.544f},
+        {1333, 9, 118.741f, 272.469f, -73.422f},
+        {1334, 9, 108.229f, 293.794f, -65.362f},
+        {1335, 9, 102.614f, 280.166f, -90.465f},
+        {1336, 9, 114.430f, 259.788f, -95.302f},
+        {1337, 9, 98.326f, 266.866f, -113.036f},
+        {1338, 9, 93.945f, 253.498f, -135.837f},
+        {1339, 9, 89.878f, 240.677f, -157.486f},
+        {1340, 9, 85.369f, 226.898f, -180.978f},
+        {1341, 9, 80.989f, 213.529f, -203.777f},
+        {1342, 9, 92.456f, 192.260f, -210.227f},
+        {1343, 9, 76.608f, 200.161f, -226.578f},
+        {1344, 9, 88.448f, 179.163f, -232.105f},
+        {1345, 9, 72.321f, 186.860f, -249.148f},
+        {1346, 9, 88.433f, 162.920f, -251.222f},
+        {1347, 9, 103.374f, 158.814f, -231.875f},
+        {1348, 9, 104.058f, 141.807f, -250.761f},
+        {1349, 9, 120.231f, 120.135f, -250.069f},
+        {1350, 10, -72.413f, 222.865f, -117.181f},
+        {1351, 10, -56.729f, 219.041f, -134.146f},
+        {1352, 10, -52.168f, 232.519f, -111.332f},
+        {1353, 10, -75.371f, 232.803f, -96.453f},
+        {1354, 10, -94.578f, 219.418f, -110.041f},
+        {1355, 10, -83.111f, 210.792f, -133.533f},
+        {1356, 10, -66.426f, 202.771f, -159.098f},
+        {1357, 10, -40.244f, 215.517f, -151.037f},
+        {1358, 10, -27.635f, 230.875f, -129.618f},
+        {1359, 10, -32.004f, 242.655f, -104.514f},
+        {1360, 10, -52.283f, 247.570f, -82.634f},
+        {1361, 10, -79.100f, 242.611f, -75.495f},
+        {1362, 10, -103.849f, 230.452f, -83.326f},
+        {1363, 10, -117.054f, 215.263f, -104.053f},
+        {1364, 10, -112.261f, 203.015f, -130.310f},
+        {1365, 10, -93.876f, 198.090f, -151.037f},
+        {1366, 10, -62.520f, 192.415f, -181.207f},
+        {1367, 10, -37.201f, 202.821f, -177.062f},
+        {1368, 10, -16.530f, 217.530f, -161.861f},
+        {1369, 10, -5.071f, 231.426f, -142.515f},
+        {1370, 10, -3.495f, 245.743f, -116.259f},
+        {1371, 10, -11.743f, 255.293f, -92.998f},
+        {1372, 10, -30.271f, 260.656f, -71.350f},
+        {1373, 10, -53.295f, 260.683f, -57.071f},
+        {1374, 10, -83.149f, 253.405f, -52.464f},
+        {1375, 10, -107.692f, 242.282f, -58.452f},
+        {1376, 10, -127.531f, 229.175f, -71.120f},
+        {1377, 10, -138.461f, 214.483f, -92.308f},
+        {1378, 10, -140.704f, 200.555f, -117.412f},
+        {1379, 10, -132.104f, 190.755f, -141.364f},
+        {1380, 10, -113.998f, 185.861f, -161.861f},
+        {1381, 10, -89.680f, 186.012f, -176.601f},
+        {1382, 10, -58.996f, 181.572f, -204.007f},
+        {1383, 10, -32.871f, 191.997f, -200.323f},
+        {1384, 10, -11.628f, 204.107f, -190.419f},
+        {1385, 10, 6.137f, 218.598f, -173.837f},
+        {1386, 10, 17.137f, 233.071f, -153.109f},
+        {1387, 10, 20.365f, 246.471f, -129.618f},
+        {1388, 10, 16.276f, 258.221f, -104.745f},
+        {1389, 10, 6.417f, 267.733f, -80.561f},
+        {1390, 10, -11.618f, 272.408f, -60.525f},
+        {1391, 10, -33.700f, 273.710f, -44.404f},
+        {1392, 10, -59.511f, 270.651f, -34.270f},
+        {1393, 10, -86.494f, 263.701f, -30.815f},
+        {1394, 10, -111.465f, 253.892f, -34.040f},
+        {1395, 10, -133.653f, 241.354f, -44.173f},
+        {1396, 10, -150.789f, 227.431f, -60.065f},
+        {1397, 10, -162.246f, 212.688f, -81.023f},
+        {1398, 10, -165.436f, 199.179f, -104.745f},
+        {1399, 10, -162.118f, 187.300f, -129.388f},
+        {1400, 10, -150.860f, 178.486f, -153.109f},
+        {1401, 10, -133.173f, 173.213f, -174.068f},
+        {1402, 10, -111.335f, 171.832f, -190.189f},
+        {1403, 10, -85.560f, 174.999f, -200.093f},
+        {1404, 10, -55.749f, 169.911f, -228.191f},
+        {1405, 10, -27.839f, 180.676f, -224.965f},
+        {1406, 10, -2.222f, 194.327f, -214.832f},
+        {1407, 10, 18.521f, 208.817f, -200.093f},
+        {1408, 10, 34.037f, 224.394f, -180.056f},
+        {1409, 10, 44.120f, 240.021f, -156.565f},
+        {1410, 10, 46.502f, 254.358f, -130.769f},
+        {1411, 10, 42.584f, 267.254f, -103.823f},
+        {1412, 10, 31.179f, 277.353f, -77.568f},
+        {1413, 10, 14.605f, 284.198f, -54.307f},
+        {1414, 10, -6.858f, 287.759f, -34.270f},
+        {1415, 10, -32.718f, 287.349f, -19.070f},
+        {1416, 10, -61.151f, 283.197f, -9.397f},
+        {1417, 10, -89.567f, 275.660f, -6.172f},
+        {1418, 10, -117.758f, 264.926f, -9.166f},
+        {1419, 10, -142.641f, 251.513f, -19.299f},
+        {1420, 10, -163.138f, 237.102f, -34.040f},
+        {1421, 10, -179.144f, 221.366f, -54.077f},
+        {1422, 10, -189.263f, 205.848f, -77.338f},
+        {1423, 10, -191.819f, 191.212f, -103.593f},
+        {1424, 10, -187.691f, 178.506f, -130.310f},
+        {1425, 10, -176.531f, 168.327f, -156.565f},
+        {1426, 10, -159.886f, 161.263f, -180.286f},
+        {1427, 10, -138.178f, 157.781f, -200.323f},
+        {1428, 10, -112.319f, 158.191f, -215.523f},
+        {1429, 10, -84.411f, 162.294f, -224.966f},
+        {1430, 10, -51.317f, 159.606f, -250.530f},
+        {1431, 10, -26.690f, 167.970f, -249.840f},
+        {1432, 10, -1.604f, 175.758f, -250.530f},
+        {1433, 10, 9.753f, 189.136f, -232.105f},
+        {1434, 10, 24.320f, 184.303f, -250.300f},
+        {1435, 10, 33.963f, 197.124f, -231.875f},
+        {1436, 10, 49.790f, 192.578f, -250.300f},
+        {1437, 10, 55.746f, 206.744f, -227.038f},
+        {1438, 10, 37.754f, 209.617f, -210.456f},
+        {1439, 10, 59.952f, 220.462f, -203.548f},
+        {1440, 10, 64.056f, 233.663f, -180.978f},
+        {1441, 10, 68.405f, 246.944f, -158.407f},
+        {1442, 10, 72.927f, 260.523f, -135.376f},
+        {1443, 10, 77.557f, 273.773f, -113.036f},
+        {1444, 10, 59.843f, 277.463f, -95.071f},
+        {1445, 10, 81.871f, 287.164f, -90.235f},
+        {1446, 10, 64.053f, 290.335f, -73.192f},
+        {1447, 10, 86.010f, 300.254f, -67.895f},
+        {1448, 10, 62.387f, 301.297f, -51.313f},
+        {1449, 10, 42.678f, 290.292f, -60.065f},
+        {1450, 10, 39.925f, 301.265f, -37.495f},
+        {1451, 10, 16.902f, 301.292f, -23.215f},
+        {1452, 10, -5.596f, 301.369f, -9.166f},
+        {1453, 10, -28.336f, 301.367f, 4.883f},
+        {1454, 10, -51.079f, 301.364f, 18.931f},
+        {1455, 10, -72.297f, 290.837f, 12.022f},
+        {1456, 10, -73.822f, 301.361f, 32.980f},
+        {1457, 10, -94.055f, 290.307f, 24.459f},
+        {1458, 10, -96.283f, 301.329f, 46.798f},
+        {1459, 10, -117.377f, 287.088f, 32.749f},
+        {1460, 10, -111.654f, 277.807f, 11.561f},
+        {1461, 10, -135.813f, 273.832f, 18.931f},
+        {1462, 10, -153.970f, 260.547f, 4.883f},
+        {1463, 10, -172.579f, 246.992f, -9.397f},
+        {1464, 10, -190.735f, 233.706f, -23.446f},
+        {1465, 10, -209.170f, 220.450f, -37.264f},
+        {1466, 10, -205.157f, 209.766f, -60.065f},
+        {1467, 10, -227.780f, 206.895f, -51.544f},
+        {1468, 10, -222.441f, 197.127f, -73.422f},
+        {1469, 10, -245.970f, 193.719f, -65.362f},
+        {1470, 10, -234.745f, 184.168f, -90.465f},
+        {1471, 10, -211.712f, 189.108f, -95.302f},
+        {1472, 10, -223.420f, 175.979f, -113.036f},
+        {1473, 10, -212.061f, 167.682f, -135.837f},
+        {1474, 10, -201.124f, 159.853f, -157.486f},
+        {1475, 10, -189.412f, 151.306f, -180.978f},
+        {1476, 10, -178.051f, 143.010f, -203.777f},
+        {1477, 10, -154.279f, 147.342f, -210.227f},
+        {1478, 10, -166.692f, 134.712f, -226.578f},
+        {1479, 10, -143.062f, 139.483f, -232.105f},
+        {1480, 10, -155.366f, 126.524f, -249.148f},
+        {1481, 10, -127.619f, 134.450f, -251.222f},
+        {1482, 10, -119.097f, 147.391f, -231.875f},
+        {1483, 10, -102.710f, 142.786f, -250.761f},
+        {1484, 10, -77.102f, 151.470f, -250.069f},
+        {1485, 11, 0.000f, -0.000f, -262.000f},
+        {1486, 11, -18.924f, 13.795f, -262.000f},
+        {1487, 11, -19.128f, -13.092f, -262.000f},
+        {1488, 11, 6.917f, -22.121f, -262.000f},
+        {1489, 11, 23.528f, -0.749f, -262.000f},
+        {1490, 11, 7.575f, 21.684f, -262.000f},
+        {1491, 11, -13.992f, 44.731f, -262.000f},
+        {1492, 11, -38.635f, 27.247f, -262.000f},
+        {1493, 11, -47.153f, -0.700f, -262.000f},
+        {1494, 11, -37.990f, -27.236f, -262.000f},
+        {1495, 11, -13.533f, -45.010f, -262.000f},
+        {1496, 11, 14.648f, -44.247f, -262.000f},
+        {1497, 11, 37.901f, -27.486f, -262.000f},
+        {1498, 11, 47.148f, -0.114f, -262.000f},
+        {1499, 11, 37.341f, 27.566f, -262.000f},
+        {1500, 11, 14.997f, 44.673f, -262.000f},
+        {1501, 11, -22.121f, 68.081f, -262.000f},
+        {1502, 11, -46.648f, 55.239f, -262.000f},
+        {1503, 11, -64.416f, 31.596f, -262.000f},
+        {1504, 11, -72.181f, 6.329f, -262.000f},
+        {1505, 11, -68.743f, -23.420f, -262.000f},
+        {1506, 11, -56.052f, -46.642f, -262.000f},
+        {1507, 11, -33.390f, -64.728f, -262.000f},
+        {1508, 11, -7.639f, -73.148f, -262.000f},
+        {1509, 11, 23.095f, -68.577f, -262.000f},
+        {1510, 11, 46.495f, -53.935f, -262.000f},
+        {1511, 11, 63.915f, -33.383f, -262.000f},
+        {1512, 11, 70.798f, -6.238f, -262.000f},
+        {1513, 11, 68.246f, 22.446f, -262.000f},
+        {1514, 11, 55.073f, 46.323f, -262.000f},
+        {1515, 11, 33.052f, 63.265f, -262.000f},
+        {1516, 11, 5.920f, 71.777f, -262.000f},
+        {1517, 11, -29.998f, 92.325f, -262.000f},
+        {1518, 11, -55.420f, 79.734f, -262.000f},
+        {1519, 11, -74.772f, 61.804f, -262.000f},
+        {1520, 11, -89.370f, 37.567f, -262.000f},
+        {1521, 11, -96.412f, 10.910f, -262.000f},
+        {1522, 11, -95.153f, -16.296f, -262.000f},
+        {1523, 11, -86.314f, -42.666f, -262.000f},
+        {1524, 11, -71.837f, -66.392f, -262.000f},
+        {1525, 11, -49.976f, -82.843f, -262.000f},
+        {1526, 11, -24.815f, -93.619f, -262.000f},
+        {1527, 11, 2.932f, -96.518f, -262.000f},
+        {1528, 11, 30.575f, -91.598f, -262.000f},
+        {1529, 11, 54.929f, -79.894f, -262.000f},
+        {1530, 11, 75.183f, -61.400f, -262.000f},
+        {1531, 11, 89.284f, -38.136f, -262.000f},
+        {1532, 11, 96.738f, -11.075f, -262.000f},
+        {1533, 11, 95.398f, 16.376f, -262.000f},
+        {1534, 11, 87.374f, 42.739f, -262.000f},
+        {1535, 11, 71.586f, 65.496f, -262.000f},
+        {1536, 11, 49.896f, 83.088f, -262.000f},
+        {1537, 11, 24.979f, 93.944f, -262.000f},
+        {1538, 11, -2.687f, 96.597f, -262.000f},
+        {1539, 11, -37.864f, 118.200f, -262.000f},
+        {1540, 11, -65.158f, 105.539f, -262.000f},
+        {1541, 11, -88.840f, 85.932f, -262.000f},
+        {1542, 11, -106.768f, 62.779f, -262.000f},
+        {1543, 11, -118.458f, 35.426f, -262.000f},
+        {1544, 11, -124.055f, 5.991f, -262.000f},
+        {1545, 11, -121.510f, -23.507f, -262.000f},
+        {1546, 11, -112.446f, -52.240f, -262.000f},
+        {1547, 11, -96.028f, -77.770f, -262.000f},
+        {1548, 11, -75.011f, -98.288f, -262.000f},
+        {1549, 11, -49.721f, -113.626f, -262.000f},
+        {1550, 11, -20.959f, -122.150f, -262.000f},
+        {1551, 11, 9.321f, -123.683f, -262.000f},
+        {1552, 11, 38.354f, -118.041f, -262.000f},
+        {1553, 11, 65.973f, -105.547f, -262.000f},
+        {1554, 11, 88.921f, -86.178f, -262.000f},
+        {1555, 11, 106.602f, -63.104f, -262.000f},
+        {1556, 11, 118.782f, -35.591f, -262.000f},
+        {1557, 11, 124.459f, -6.401f, -262.000f},
+        {1558, 11, 122.001f, 23.666f, -262.000f},
+        {1559, 11, 112.771f, 52.075f, -262.000f},
+        {1560, 11, 96.597f, 77.686f, -262.000f},
+        {1561, 11, 75.422f, 98.692f, -262.000f},
+        {1562, 11, 49.887f, 113.950f, -262.000f},
+        {1563, 11, 21.126f, 122.475f, -262.000f},
+        {1564, 11, -8.586f, 123.922f, -262.000f},
+        {1565, 11, -46.562f, 141.636f, -262.000f},
+        {1566, 11, -71.057f, 132.865f, -262.000f},
+        {1567, 11, -96.275f, 125.483f, -262.000f},
+        {1568, 11, -104.113f, 101.276f, -262.000f},
+        {1569, 11, -122.155f, 116.803f, -262.000f},
+        {1570, 11, -128.280f, 93.153f, -262.000f},
+        {1571, 11, -147.625f, 108.527f, -262.000f},
+        {1572, 11, -149.139f, 80.690f, -262.000f},
+        {1573, 11, -127.981f, 68.070f, -262.000f},
+        {1574, 11, -148.859f, 53.165f, -262.000f},
+        {1575, 11, -148.653f, 26.699f, -262.000f},
+        {1576, 11, -148.691f, 0.152f, -262.000f},
+        {1577, 11, -148.815f, -26.964f, -262.000f},
+        {1578, 11, -149.178f, -53.344f, -262.000f},
+        {1579, 11, -128.034f, -67.593f, -262.000f},
+        {1580, 11, -149.138f, -80.137f, -262.000f},
+        {1581, 11, -128.066f, -93.325f, -262.000f},
+        {1582, 11, -149.011f, -106.357f, -262.000f},
+        {1583, 11, -122.221f, -117.147f, -262.000f},
+        {1584, 11, -104.184f, -100.998f, -262.000f},
+        {1585, 11, -97.120f, -125.236f, -262.000f},
+        {1586, 11, -71.370f, -133.656f, -262.000f},
+        {1587, 11, -46.189f, -141.991f, -262.000f},
+        {1588, 11, -20.766f, -150.246f, -262.000f},
+        {1589, 11, 4.660f, -158.499f, -262.000f},
+        {1590, 11, 24.558f, -143.912f, -262.000f},
+        {1591, 11, 30.086f, -166.754f, -262.000f},
+        {1592, 11, 48.692f, -150.691f, -262.000f},
+        {1593, 11, 55.186f, -174.843f, -262.000f},
+        {1594, 11, 73.596f, -152.346f, -262.000f},
+        {1595, 11, 63.827f, -130.611f, -262.000f},
+        {1596, 11, 89.394f, -130.968f, -262.000f},
+        {1597, 11, 104.867f, -109.425f, -262.000f},
+        {1598, 11, 120.750f, -87.478f, -262.000f},
+        {1599, 11, 136.223f, -65.934f, -262.000f},
+        {1600, 11, 152.019f, -44.557f, -262.000f},
+        {1601, 11, 143.651f, -20.471f, -262.000f},
+        {1602, 11, 167.901f, -22.609f, -262.000f},
+        {1603, 11, 158.384f, 0.019f, -262.000f},
+        {1604, 11, 183.453f, -1.311f, -262.000f},
+        {1605, 11, 167.434f, 22.995f, -262.000f},
+        {1606, 11, 143.477f, 20.897f, -262.000f},
+        {1607, 11, 151.799f, 44.449f, -262.000f},
+        {1608, 11, 136.085f, 66.148f, -262.000f},
+        {1609, 11, 121.014f, 86.701f, -262.000f},
+        {1610, 11, 104.816f, 109.055f, -262.000f},
+        {1611, 11, 89.101f, 130.752f, -262.000f},
+        {1612, 11, 64.097f, 130.211f, -262.000f},
+        {1613, 11, 73.386f, 152.452f, -262.000f},
+        {1614, 11, 48.702f, 150.929f, -262.000f},
+        {1615, 11, 57.751f, 173.905f, -262.000f},
+        {1616, 11, 29.608f, 167.198f, -262.000f},
+        {1617, 11, 24.781f, 142.885f, -262.000f},
+        {1618, 11, 4.787f, 158.591f, -262.000f},
+        {1619, 11, -20.689f, 149.500f, -262.000f}
     };
 
     // Define neighbor relationships
@@ -2517,169 +2517,169 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
             {.id = 53, .distance = 27.954f}, {.id = 134, .distance = 28.297f}, {.id = 78, .distance = 29.747f}, {.id = 54, .distance = 29.831f}, {.id = 133, .distance = 37.159f}, {.id = 32, .distance = 38.168f}, {.id = 132, .distance = 38.379f}
         }},
         {80, {
-            {.id = 653, .distance = 21.856f}, {.id = 54, .distance = 24.998f}, {.id = 81, .distance = 26.018f}, {.id = 134, .distance = 27.042f}, {.id = 652, .distance = 34.205f}, {.id = 654, .distance = 35.008f}, {.id = 55, .distance = 40.605f}
+            {.id = 788, .distance = 21.817f}, {.id = 54, .distance = 24.998f}, {.id = 81, .distance = 26.018f}, {.id = 134, .distance = 27.042f}, {.id = 787, .distance = 34.192f}, {.id = 789, .distance = 34.972f}, {.id = 55, .distance = 40.605f}
         }},
         {81, {
-            {.id = 652, .distance = 22.464f}, {.id = 80, .distance = 26.018f}, {.id = 82, .distance = 26.277f}, {.id = 55, .distance = 27.955f}, {.id = 651, .distance = 34.947f}, {.id = 653, .distance = 34.950f}, {.id = 54, .distance = 36.289f}
+            {.id = 787, .distance = 22.426f}, {.id = 80, .distance = 26.018f}, {.id = 82, .distance = 26.277f}, {.id = 55, .distance = 27.955f}, {.id = 788, .distance = 34.914f}, {.id = 786, .distance = 34.934f}, {.id = 54, .distance = 36.289f}
         }},
         {82, {
-            {.id = 651, .distance = 21.687f}, {.id = 83, .distance = 25.444f}, {.id = 81, .distance = 26.277f}, {.id = 84, .distance = 27.296f}, {.id = 652, .distance = 33.864f}, {.id = 649, .distance = 34.888f}, {.id = 55, .distance = 36.960f}
+            {.id = 786, .distance = 21.649f}, {.id = 83, .distance = 25.444f}, {.id = 81, .distance = 26.277f}, {.id = 84, .distance = 27.296f}, {.id = 787, .distance = 33.829f}, {.id = 784, .distance = 34.875f}, {.id = 55, .distance = 36.960f}
         }},
         {83, {
             {.id = 56, .distance = 21.650f}, {.id = 84, .distance = 23.803f}, {.id = 82, .distance = 25.444f}, {.id = 85, .distance = 25.495f}, {.id = 57, .distance = 38.588f}, {.id = 55, .distance = 39.188f}, {.id = 88, .distance = 40.893f}
         }},
         {84, {
-            {.id = 649, .distance = 22.081f}, {.id = 83, .distance = 23.803f}, {.id = 85, .distance = 24.430f}, {.id = 86, .distance = 26.781f}, {.id = 82, .distance = 27.296f}, {.id = 651, .distance = 34.521f}, {.id = 648, .distance = 37.270f}
+            {.id = 784, .distance = 22.042f}, {.id = 83, .distance = 23.803f}, {.id = 85, .distance = 24.430f}, {.id = 86, .distance = 26.781f}, {.id = 82, .distance = 27.296f}, {.id = 786, .distance = 34.485f}, {.id = 783, .distance = 37.257f}
         }},
         {85, {
             {.id = 87, .distance = 24.299f}, {.id = 84, .distance = 24.430f}, {.id = 86, .distance = 24.711f}, {.id = 88, .distance = 25.084f}, {.id = 83, .distance = 25.495f}, {.id = 57, .distance = 37.220f}, {.id = 56, .distance = 40.095f}
         }},
         {86, {
-            {.id = 254, .distance = 23.078f}, {.id = 648, .distance = 23.609f}, {.id = 85, .distance = 24.711f}, {.id = 84, .distance = 26.781f}, {.id = 87, .distance = 27.879f}, {.id = 649, .distance = 34.791f}, {.id = 252, .distance = 36.374f}
+            {.id = 400, .distance = 23.274f}, {.id = 783, .distance = 23.573f}, {.id = 85, .distance = 24.711f}, {.id = 84, .distance = 26.781f}, {.id = 87, .distance = 27.879f}, {.id = 784, .distance = 34.755f}, {.id = 398, .distance = 36.598f}
         }},
         {87, {
-            {.id = 252, .distance = 21.762f}, {.id = 85, .distance = 24.299f}, {.id = 88, .distance = 24.636f}, {.id = 89, .distance = 27.526f}, {.id = 86, .distance = 27.879f}, {.id = 254, .distance = 33.932f}, {.id = 250, .distance = 34.948f}
+            {.id = 398, .distance = 21.881f}, {.id = 85, .distance = 24.299f}, {.id = 88, .distance = 24.636f}, {.id = 89, .distance = 27.526f}, {.id = 86, .distance = 27.879f}, {.id = 400, .distance = 34.044f}, {.id = 396, .distance = 34.991f}
         }},
         {88, {
             {.id = 57, .distance = 21.863f}, {.id = 87, .distance = 24.636f}, {.id = 85, .distance = 25.084f}, {.id = 89, .distance = 25.653f}, {.id = 58, .distance = 34.005f}, {.id = 83, .distance = 40.893f}, {.id = 56, .distance = 43.024f}
         }},
         {89, {
-            {.id = 250, .distance = 21.954f}, {.id = 88, .distance = 25.653f}, {.id = 90, .distance = 26.467f}, {.id = 87, .distance = 27.526f}, {.id = 249, .distance = 34.480f}, {.id = 252, .distance = 35.009f}, {.id = 58, .distance = 35.198f}
+            {.id = 396, .distance = 22.151f}, {.id = 88, .distance = 25.653f}, {.id = 90, .distance = 26.467f}, {.id = 87, .distance = 27.526f}, {.id = 395, .distance = 34.595f}, {.id = 398, .distance = 34.928f}, {.id = 58, .distance = 35.198f}
         }},
         {90, {
-            {.id = 249, .distance = 22.310f}, {.id = 89, .distance = 26.467f}, {.id = 91, .distance = 26.547f}, {.id = 58, .distance = 31.431f}, {.id = 59, .distance = 32.153f}, {.id = 248, .distance = 34.558f}, {.id = 250, .distance = 34.609f}
+            {.id = 395, .distance = 22.361f}, {.id = 89, .distance = 26.467f}, {.id = 91, .distance = 26.547f}, {.id = 58, .distance = 31.431f}, {.id = 59, .distance = 32.153f}, {.id = 396, .distance = 34.812f}, {.id = 394, .distance = 35.607f}
         }},
         {91, {
-            {.id = 248, .distance = 22.154f}, {.id = 59, .distance = 25.318f}, {.id = 90, .distance = 26.547f}, {.id = 92, .distance = 27.116f}, {.id = 249, .distance = 34.678f}, {.id = 247, .distance = 34.928f}, {.id = 60, .distance = 36.035f}
+            {.id = 394, .distance = 22.388f}, {.id = 59, .distance = 25.318f}, {.id = 90, .distance = 26.547f}, {.id = 92, .distance = 27.116f}, {.id = 395, .distance = 34.628f}, {.id = 393, .distance = 34.708f}, {.id = 60, .distance = 36.035f}
         }},
         {92, {
-            {.id = 247, .distance = 22.003f}, {.id = 93, .distance = 26.383f}, {.id = 91, .distance = 27.116f}, {.id = 60, .distance = 27.523f}, {.id = 246, .distance = 34.325f}, {.id = 248, .distance = 34.988f}, {.id = 59, .distance = 41.220f}
+            {.id = 393, .distance = 22.165f}, {.id = 93, .distance = 26.383f}, {.id = 91, .distance = 27.116f}, {.id = 60, .distance = 27.523f}, {.id = 394, .distance = 34.206f}, {.id = 392, .distance = 34.415f}, {.id = 59, .distance = 41.220f}
         }},
         {93, {
-            {.id = 246, .distance = 21.569f}, {.id = 94, .distance = 25.498f}, {.id = 92, .distance = 26.383f}, {.id = 95, .distance = 26.792f}, {.id = 247, .distance = 34.213f}, {.id = 244, .distance = 34.398f}, {.id = 61, .distance = 36.749f}
+            {.id = 392, .distance = 21.887f}, {.id = 94, .distance = 25.498f}, {.id = 92, .distance = 26.383f}, {.id = 95, .distance = 26.792f}, {.id = 390, .distance = 34.325f}, {.id = 393, .distance = 34.634f}, {.id = 61, .distance = 36.749f}
         }},
         {94, {
-            {.id = 61, .distance = 21.879f}, {.id = 95, .distance = 24.550f}, {.id = 93, .distance = 25.498f}, {.id = 96, .distance = 25.732f}, {.id = 62, .distance = 33.585f}, {.id = 99, .distance = 41.045f}, {.id = 244, .distance = 43.073f}
+            {.id = 61, .distance = 21.879f}, {.id = 95, .distance = 24.550f}, {.id = 93, .distance = 25.498f}, {.id = 96, .distance = 25.732f}, {.id = 62, .distance = 33.585f}, {.id = 99, .distance = 41.045f}, {.id = 390, .distance = 43.103f}
         }},
         {95, {
-            {.id = 244, .distance = 21.785f}, {.id = 94, .distance = 24.550f}, {.id = 96, .distance = 24.859f}, {.id = 97, .distance = 26.221f}, {.id = 93, .distance = 26.792f}, {.id = 246, .distance = 34.365f}, {.id = 243, .distance = 37.057f}
+            {.id = 390, .distance = 21.892f}, {.id = 94, .distance = 24.550f}, {.id = 96, .distance = 24.859f}, {.id = 97, .distance = 26.221f}, {.id = 93, .distance = 26.792f}, {.id = 392, .distance = 34.679f}, {.id = 389, .distance = 36.842f}
         }},
         {96, {
-            {.id = 98, .distance = 24.528f}, {.id = 97, .distance = 24.669f}, {.id = 95, .distance = 24.859f}, {.id = 99, .distance = 25.084f}, {.id = 94, .distance = 25.732f}, {.id = 62, .distance = 35.615f}, {.id = 387, .distance = 42.820f}
+            {.id = 98, .distance = 24.528f}, {.id = 97, .distance = 24.669f}, {.id = 95, .distance = 24.859f}, {.id = 99, .distance = 25.084f}, {.id = 94, .distance = 25.732f}, {.id = 62, .distance = 35.615f}, {.id = 1051, .distance = 42.825f}
         }},
         {97, {
-            {.id = 389, .distance = 23.463f}, {.id = 243, .distance = 23.478f}, {.id = 96, .distance = 24.669f}, {.id = 95, .distance = 26.221f}, {.id = 98, .distance = 28.881f}, {.id = 244, .distance = 34.270f}, {.id = 387, .distance = 36.854f}
+            {.id = 389, .distance = 23.277f}, {.id = 1053, .distance = 23.490f}, {.id = 96, .distance = 24.669f}, {.id = 95, .distance = 26.221f}, {.id = 98, .distance = 28.881f}, {.id = 390, .distance = 34.476f}, {.id = 1051, .distance = 36.998f}
         }},
         {98, {
-            {.id = 387, .distance = 21.717f}, {.id = 99, .distance = 24.210f}, {.id = 96, .distance = 24.528f}, {.id = 100, .distance = 26.372f}, {.id = 97, .distance = 28.881f}, {.id = 389, .distance = 34.406f}, {.id = 385, .distance = 34.412f}
+            {.id = 1051, .distance = 21.608f}, {.id = 99, .distance = 24.210f}, {.id = 96, .distance = 24.528f}, {.id = 100, .distance = 26.372f}, {.id = 97, .distance = 28.881f}, {.id = 1053, .distance = 34.196f}, {.id = 1049, .distance = 34.300f}
         }},
         {99, {
-            {.id = 98, .distance = 24.210f}, {.id = 62, .distance = 24.618f}, {.id = 96, .distance = 25.084f}, {.id = 100, .distance = 25.246f}, {.id = 63, .distance = 29.298f}, {.id = 94, .distance = 41.045f}, {.id = 387, .distance = 42.886f}
+            {.id = 98, .distance = 24.210f}, {.id = 62, .distance = 24.618f}, {.id = 96, .distance = 25.084f}, {.id = 100, .distance = 25.246f}, {.id = 63, .distance = 29.298f}, {.id = 94, .distance = 41.045f}, {.id = 1051, .distance = 42.732f}
         }},
         {100, {
-            {.id = 385, .distance = 21.728f}, {.id = 99, .distance = 25.246f}, {.id = 98, .distance = 26.372f}, {.id = 101, .distance = 27.091f}, {.id = 387, .distance = 34.474f}, {.id = 384, .distance = 34.722f}, {.id = 63, .distance = 34.857f}
+            {.id = 1049, .distance = 21.658f}, {.id = 99, .distance = 25.246f}, {.id = 98, .distance = 26.372f}, {.id = 101, .distance = 27.091f}, {.id = 1051, .distance = 34.197f}, {.id = 1048, .distance = 34.609f}, {.id = 63, .distance = 34.857f}
         }},
         {101, {
-            {.id = 384, .distance = 21.864f}, {.id = 102, .distance = 26.524f}, {.id = 100, .distance = 27.091f}, {.id = 64, .distance = 29.494f}, {.id = 383, .distance = 34.177f}, {.id = 385, .distance = 34.419f}, {.id = 63, .distance = 35.556f}
+            {.id = 1048, .distance = 21.606f}, {.id = 102, .distance = 26.524f}, {.id = 100, .distance = 27.091f}, {.id = 64, .distance = 29.494f}, {.id = 1047, .distance = 34.298f}, {.id = 1049, .distance = 34.445f}, {.id = 63, .distance = 35.556f}
         }},
         {102, {
-            {.id = 383, .distance = 21.617f}, {.id = 101, .distance = 26.524f}, {.id = 103, .distance = 26.730f}, {.id = 64, .distance = 28.584f}, {.id = 65, .distance = 32.097f}, {.id = 384, .distance = 34.413f}, {.id = 382, .distance = 34.512f}
+            {.id = 1047, .distance = 21.478f}, {.id = 101, .distance = 26.524f}, {.id = 103, .distance = 26.730f}, {.id = 64, .distance = 28.584f}, {.id = 65, .distance = 32.097f}, {.id = 1048, .distance = 34.202f}, {.id = 1046, .distance = 34.298f}
         }},
         {103, {
-            {.id = 382, .distance = 21.578f}, {.id = 102, .distance = 26.730f}, {.id = 104, .distance = 26.732f}, {.id = 65, .distance = 28.097f}, {.id = 381, .distance = 34.276f}, {.id = 383, .distance = 34.498f}, {.id = 66, .distance = 40.135f}
+            {.id = 1046, .distance = 21.606f}, {.id = 102, .distance = 26.730f}, {.id = 104, .distance = 26.732f}, {.id = 65, .distance = 28.097f}, {.id = 1047, .distance = 34.202f}, {.id = 1045, .distance = 34.609f}, {.id = 66, .distance = 40.135f}
         }},
         {104, {
-            {.id = 381, .distance = 21.461f}, {.id = 105, .distance = 24.672f}, {.id = 103, .distance = 26.732f}, {.id = 106, .distance = 26.732f}, {.id = 382, .distance = 34.195f}, {.id = 379, .distance = 34.278f}, {.id = 66, .distance = 35.127f}
+            {.id = 1045, .distance = 21.658f}, {.id = 105, .distance = 24.672f}, {.id = 103, .distance = 26.732f}, {.id = 106, .distance = 26.732f}, {.id = 1043, .distance = 34.300f}, {.id = 1046, .distance = 34.445f}, {.id = 66, .distance = 35.127f}
         }},
         {105, {
-            {.id = 106, .distance = 23.501f}, {.id = 104, .distance = 24.672f}, {.id = 107, .distance = 25.068f}, {.id = 66, .distance = 25.325f}, {.id = 67, .distance = 29.320f}, {.id = 110, .distance = 41.461f}, {.id = 379, .distance = 41.859f}
+            {.id = 106, .distance = 23.501f}, {.id = 104, .distance = 24.672f}, {.id = 107, .distance = 25.068f}, {.id = 66, .distance = 25.325f}, {.id = 67, .distance = 29.320f}, {.id = 110, .distance = 41.461f}, {.id = 1043, .distance = 41.850f}
         }},
         {106, {
-            {.id = 379, .distance = 21.650f}, {.id = 105, .distance = 23.501f}, {.id = 107, .distance = 24.580f}, {.id = 108, .distance = 26.371f}, {.id = 104, .distance = 26.732f}, {.id = 381, .distance = 34.284f}, {.id = 378, .distance = 36.969f}
+            {.id = 1043, .distance = 21.608f}, {.id = 105, .distance = 23.501f}, {.id = 107, .distance = 24.580f}, {.id = 108, .distance = 26.371f}, {.id = 104, .distance = 26.732f}, {.id = 1045, .distance = 34.197f}, {.id = 1042, .distance = 36.998f}
         }},
         {107, {
-            {.id = 106, .distance = 24.580f}, {.id = 109, .distance = 24.959f}, {.id = 108, .distance = 25.010f}, {.id = 105, .distance = 25.068f}, {.id = 110, .distance = 25.146f}, {.id = 67, .distance = 34.248f}, {.id = 379, .distance = 42.997f}
+            {.id = 106, .distance = 24.580f}, {.id = 109, .distance = 24.959f}, {.id = 108, .distance = 25.010f}, {.id = 105, .distance = 25.068f}, {.id = 110, .distance = 25.146f}, {.id = 67, .distance = 34.248f}, {.id = 1043, .distance = 42.952f}
         }},
         {108, {
-            {.id = 378, .distance = 23.278f}, {.id = 1582, .distance = 23.478f}, {.id = 107, .distance = 25.010f}, {.id = 106, .distance = 26.371f}, {.id = 109, .distance = 29.071f}, {.id = 379, .distance = 34.271f}, {.id = 1580, .distance = 37.057f}
+            {.id = 929, .distance = 23.326f}, {.id = 1042, .distance = 23.490f}, {.id = 107, .distance = 25.010f}, {.id = 106, .distance = 26.371f}, {.id = 109, .distance = 29.071f}, {.id = 1043, .distance = 34.196f}, {.id = 927, .distance = 36.872f}
         }},
         {109, {
-            {.id = 1580, .distance = 21.785f}, {.id = 110, .distance = 23.829f}, {.id = 107, .distance = 24.959f}, {.id = 111, .distance = 26.582f}, {.id = 108, .distance = 29.071f}, {.id = 1582, .distance = 34.270f}, {.id = 1578, .distance = 34.398f}
+            {.id = 927, .distance = 21.837f}, {.id = 110, .distance = 23.829f}, {.id = 107, .distance = 24.959f}, {.id = 111, .distance = 26.582f}, {.id = 108, .distance = 29.071f}, {.id = 925, .distance = 34.439f}, {.id = 929, .distance = 34.529f}
         }},
         {110, {
-            {.id = 109, .distance = 23.829f}, {.id = 107, .distance = 25.146f}, {.id = 68, .distance = 25.156f}, {.id = 111, .distance = 25.569f}, {.id = 67, .distance = 28.406f}, {.id = 105, .distance = 41.461f}, {.id = 1580, .distance = 42.578f}
+            {.id = 109, .distance = 23.829f}, {.id = 107, .distance = 25.146f}, {.id = 68, .distance = 25.156f}, {.id = 111, .distance = 25.569f}, {.id = 67, .distance = 28.406f}, {.id = 105, .distance = 41.461f}, {.id = 927, .distance = 42.698f}
         }},
         {111, {
-            {.id = 1578, .distance = 21.569f}, {.id = 110, .distance = 25.569f}, {.id = 112, .distance = 26.524f}, {.id = 109, .distance = 26.582f}, {.id = 1577, .distance = 34.325f}, {.id = 1580, .distance = 34.365f}, {.id = 68, .distance = 34.565f}
+            {.id = 925, .distance = 21.607f}, {.id = 110, .distance = 25.569f}, {.id = 112, .distance = 26.524f}, {.id = 109, .distance = 26.582f}, {.id = 924, .distance = 34.438f}, {.id = 68, .distance = 34.565f}, {.id = 927, .distance = 34.611f}
         }},
         {112, {
-            {.id = 1577, .distance = 22.003f}, {.id = 111, .distance = 26.524f}, {.id = 113, .distance = 27.091f}, {.id = 69, .distance = 28.191f}, {.id = 1578, .distance = 34.213f}, {.id = 1576, .distance = 34.928f}, {.id = 68, .distance = 39.087f}
+            {.id = 924, .distance = 21.912f}, {.id = 111, .distance = 26.524f}, {.id = 113, .distance = 27.091f}, {.id = 69, .distance = 28.191f}, {.id = 925, .distance = 34.219f}, {.id = 923, .distance = 34.438f}, {.id = 68, .distance = 39.087f}
         }},
         {113, {
-            {.id = 1576, .distance = 22.154f}, {.id = 114, .distance = 26.524f}, {.id = 112, .distance = 27.091f}, {.id = 70, .distance = 28.182f}, {.id = 69, .distance = 31.855f}, {.id = 1575, .distance = 34.558f}, {.id = 1577, .distance = 34.988f}
+            {.id = 923, .distance = 21.836f}, {.id = 114, .distance = 26.524f}, {.id = 112, .distance = 27.091f}, {.id = 70, .distance = 28.182f}, {.id = 69, .distance = 31.855f}, {.id = 922, .distance = 34.438f}, {.id = 924, .distance = 34.758f}
         }},
         {114, {
-            {.id = 1575, .distance = 22.310f}, {.id = 113, .distance = 26.524f}, {.id = 115, .distance = 26.581f}, {.id = 70, .distance = 29.755f}, {.id = 1574, .distance = 34.480f}, {.id = 1576, .distance = 34.678f}, {.id = 71, .distance = 34.998f}
+            {.id = 922, .distance = 21.912f}, {.id = 113, .distance = 26.524f}, {.id = 115, .distance = 26.581f}, {.id = 70, .distance = 29.755f}, {.id = 921, .distance = 34.438f}, {.id = 923, .distance = 34.758f}, {.id = 71, .distance = 34.998f}
         }},
         {115, {
-            {.id = 1574, .distance = 21.954f}, {.id = 116, .distance = 25.497f}, {.id = 114, .distance = 26.581f}, {.id = 117, .distance = 27.091f}, {.id = 71, .distance = 34.425f}, {.id = 1575, .distance = 34.609f}, {.id = 1572, .distance = 34.948f}
+            {.id = 921, .distance = 21.607f}, {.id = 116, .distance = 25.497f}, {.id = 114, .distance = 26.581f}, {.id = 117, .distance = 27.091f}, {.id = 922, .distance = 34.219f}, {.id = 71, .distance = 34.425f}, {.id = 919, .distance = 34.439f}
         }},
         {116, {
-            {.id = 72, .distance = 23.798f}, {.id = 117, .distance = 24.344f}, {.id = 118, .distance = 25.237f}, {.id = 115, .distance = 25.497f}, {.id = 71, .distance = 29.105f}, {.id = 121, .distance = 41.369f}, {.id = 1572, .distance = 42.971f}
+            {.id = 72, .distance = 23.798f}, {.id = 117, .distance = 24.344f}, {.id = 118, .distance = 25.237f}, {.id = 115, .distance = 25.497f}, {.id = 71, .distance = 29.105f}, {.id = 121, .distance = 41.369f}, {.id = 919, .distance = 42.825f}
         }},
         {117, {
-            {.id = 1572, .distance = 21.762f}, {.id = 116, .distance = 24.344f}, {.id = 118, .distance = 24.548f}, {.id = 119, .distance = 26.371f}, {.id = 115, .distance = 27.091f}, {.id = 1574, .distance = 35.009f}, {.id = 1571, .distance = 36.374f}
+            {.id = 919, .distance = 21.837f}, {.id = 116, .distance = 24.344f}, {.id = 118, .distance = 24.548f}, {.id = 119, .distance = 26.371f}, {.id = 115, .distance = 27.091f}, {.id = 921, .distance = 34.611f}, {.id = 918, .distance = 36.872f}
         }},
         {118, {
-            {.id = 117, .distance = 24.548f}, {.id = 120, .distance = 24.694f}, {.id = 119, .distance = 25.104f}, {.id = 116, .distance = 25.237f}, {.id = 121, .distance = 25.654f}, {.id = 72, .distance = 34.527f}, {.id = 1572, .distance = 42.970f}
+            {.id = 117, .distance = 24.548f}, {.id = 120, .distance = 24.694f}, {.id = 119, .distance = 25.104f}, {.id = 116, .distance = 25.237f}, {.id = 121, .distance = 25.654f}, {.id = 72, .distance = 34.527f}, {.id = 635, .distance = 43.104f}
         }},
         {119, {
-            {.id = 1571, .distance = 23.078f}, {.id = 1188, .distance = 23.106f}, {.id = 118, .distance = 25.104f}, {.id = 117, .distance = 26.371f}, {.id = 120, .distance = 29.110f}, {.id = 1572, .distance = 33.932f}, {.id = 1186, .distance = 36.785f}
+            {.id = 637, .distance = 23.277f}, {.id = 918, .distance = 23.326f}, {.id = 118, .distance = 25.104f}, {.id = 117, .distance = 26.371f}, {.id = 120, .distance = 29.110f}, {.id = 919, .distance = 34.529f}, {.id = 635, .distance = 36.842f}
         }},
         {120, {
-            {.id = 1186, .distance = 21.788f}, {.id = 121, .distance = 24.048f}, {.id = 118, .distance = 24.694f}, {.id = 122, .distance = 26.547f}, {.id = 119, .distance = 29.110f}, {.id = 1184, .distance = 34.237f}, {.id = 1188, .distance = 34.484f}
+            {.id = 635, .distance = 21.892f}, {.id = 121, .distance = 24.048f}, {.id = 118, .distance = 24.694f}, {.id = 122, .distance = 26.547f}, {.id = 119, .distance = 29.110f}, {.id = 633, .distance = 34.325f}, {.id = 637, .distance = 34.476f}
         }},
         {121, {
-            {.id = 73, .distance = 21.654f}, {.id = 120, .distance = 24.048f}, {.id = 122, .distance = 24.979f}, {.id = 118, .distance = 25.654f}, {.id = 72, .distance = 33.270f}, {.id = 116, .distance = 41.369f}, {.id = 1186, .distance = 42.762f}
+            {.id = 73, .distance = 21.654f}, {.id = 120, .distance = 24.048f}, {.id = 122, .distance = 24.979f}, {.id = 118, .distance = 25.654f}, {.id = 72, .distance = 33.270f}, {.id = 116, .distance = 41.369f}, {.id = 635, .distance = 42.839f}
         }},
         {122, {
-            {.id = 1184, .distance = 21.813f}, {.id = 121, .distance = 24.979f}, {.id = 120, .distance = 26.547f}, {.id = 123, .distance = 26.791f}, {.id = 1183, .distance = 34.396f}, {.id = 1186, .distance = 34.608f}, {.id = 73, .distance = 36.329f}
+            {.id = 633, .distance = 21.887f}, {.id = 121, .distance = 24.979f}, {.id = 120, .distance = 26.547f}, {.id = 123, .distance = 26.791f}, {.id = 632, .distance = 34.415f}, {.id = 635, .distance = 34.679f}, {.id = 73, .distance = 36.329f}
         }},
         {123, {
-            {.id = 1183, .distance = 21.772f}, {.id = 124, .distance = 25.487f}, {.id = 122, .distance = 26.791f}, {.id = 74, .distance = 27.232f}, {.id = 1182, .distance = 34.325f}, {.id = 1184, .distance = 34.627f}, {.id = 75, .distance = 41.139f}
+            {.id = 632, .distance = 22.165f}, {.id = 124, .distance = 25.487f}, {.id = 122, .distance = 26.791f}, {.id = 74, .distance = 27.232f}, {.id = 633, .distance = 34.634f}, {.id = 631, .distance = 34.708f}, {.id = 75, .distance = 41.139f}
         }},
         {124, {
-            {.id = 1182, .distance = 21.888f}, {.id = 123, .distance = 25.487f}, {.id = 75, .distance = 26.028f}, {.id = 125, .distance = 27.606f}, {.id = 1183, .distance = 33.726f}, {.id = 1181, .distance = 35.268f}, {.id = 74, .distance = 35.594f}
+            {.id = 631, .distance = 22.388f}, {.id = 123, .distance = 25.487f}, {.id = 75, .distance = 26.028f}, {.id = 125, .distance = 27.606f}, {.id = 632, .distance = 34.206f}, {.id = 74, .distance = 35.594f}, {.id = 630, .distance = 35.607f}
         }},
         {125, {
-            {.id = 1181, .distance = 21.955f}, {.id = 126, .distance = 26.790f}, {.id = 124, .distance = 27.606f}, {.id = 76, .distance = 31.167f}, {.id = 75, .distance = 32.429f}, {.id = 1182, .distance = 34.376f}, {.id = 1180, .distance = 34.876f}
+            {.id = 630, .distance = 22.361f}, {.id = 126, .distance = 26.790f}, {.id = 124, .distance = 27.606f}, {.id = 76, .distance = 31.167f}, {.id = 75, .distance = 32.429f}, {.id = 629, .distance = 34.595f}, {.id = 631, .distance = 34.628f}
         }},
         {126, {
-            {.id = 1180, .distance = 21.967f}, {.id = 127, .distance = 25.010f}, {.id = 125, .distance = 26.790f}, {.id = 128, .distance = 26.792f}, {.id = 1178, .distance = 34.497f}, {.id = 1181, .distance = 34.638f}, {.id = 76, .distance = 34.856f}
+            {.id = 629, .distance = 22.151f}, {.id = 127, .distance = 25.010f}, {.id = 125, .distance = 26.790f}, {.id = 128, .distance = 26.792f}, {.id = 630, .distance = 34.812f}, {.id = 76, .distance = 34.856f}, {.id = 627, .distance = 34.991f}
         }},
         {127, {
-            {.id = 77, .distance = 21.595f}, {.id = 128, .distance = 24.103f}, {.id = 126, .distance = 25.010f}, {.id = 129, .distance = 25.812f}, {.id = 76, .distance = 33.491f}, {.id = 132, .distance = 41.309f}, {.id = 1178, .distance = 42.712f}
+            {.id = 77, .distance = 21.595f}, {.id = 128, .distance = 24.103f}, {.id = 126, .distance = 25.010f}, {.id = 129, .distance = 25.812f}, {.id = 76, .distance = 33.491f}, {.id = 132, .distance = 41.309f}, {.id = 627, .distance = 42.896f}
         }},
         {128, {
-            {.id = 1178, .distance = 21.876f}, {.id = 127, .distance = 24.103f}, {.id = 129, .distance = 24.732f}, {.id = 130, .distance = 26.546f}, {.id = 126, .distance = 26.792f}, {.id = 1180, .distance = 34.412f}, {.id = 1177, .distance = 37.119f}
+            {.id = 627, .distance = 21.881f}, {.id = 127, .distance = 24.103f}, {.id = 129, .distance = 24.732f}, {.id = 130, .distance = 26.546f}, {.id = 126, .distance = 26.792f}, {.id = 629, .distance = 34.928f}, {.id = 626, .distance = 36.598f}
         }},
         {129, {
             {.id = 130, .distance = 24.694f}, {.id = 128, .distance = 24.732f}, {.id = 131, .distance = 25.085f}, {.id = 132, .distance = 25.237f}, {.id = 127, .distance = 25.812f}, {.id = 77, .distance = 36.997f}, {.id = 78, .distance = 39.624f}
         }},
         {130, {
-            {.id = 659, .distance = 23.182f}, {.id = 1177, .distance = 23.709f}, {.id = 129, .distance = 24.694f}, {.id = 128, .distance = 26.546f}, {.id = 131, .distance = 28.931f}, {.id = 1178, .distance = 34.534f}, {.id = 657, .distance = 36.529f}
+            {.id = 794, .distance = 23.145f}, {.id = 626, .distance = 23.274f}, {.id = 129, .distance = 24.694f}, {.id = 128, .distance = 26.546f}, {.id = 131, .distance = 28.931f}, {.id = 627, .distance = 34.044f}, {.id = 792, .distance = 36.516f}
         }},
         {131, {
-            {.id = 657, .distance = 21.183f}, {.id = 132, .distance = 24.787f}, {.id = 129, .distance = 25.085f}, {.id = 133, .distance = 26.270f}, {.id = 130, .distance = 28.931f}, {.id = 655, .distance = 33.896f}, {.id = 659, .distance = 34.248f}
+            {.id = 792, .distance = 21.144f}, {.id = 132, .distance = 24.787f}, {.id = 129, .distance = 25.085f}, {.id = 133, .distance = 26.270f}, {.id = 130, .distance = 28.931f}, {.id = 790, .distance = 33.883f}, {.id = 794, .distance = 34.212f}
         }},
         {132, {
             {.id = 78, .distance = 20.735f}, {.id = 131, .distance = 24.787f}, {.id = 129, .distance = 25.237f}, {.id = 133, .distance = 25.425f}, {.id = 77, .distance = 38.308f}, {.id = 79, .distance = 38.379f}, {.id = 127, .distance = 41.309f}
         }},
         {133, {
-            {.id = 655, .distance = 21.567f}, {.id = 132, .distance = 25.425f}, {.id = 131, .distance = 26.270f}, {.id = 134, .distance = 27.049f}, {.id = 657, .distance = 34.469f}, {.id = 654, .distance = 34.529f}, {.id = 79, .distance = 37.159f}
+            {.id = 790, .distance = 21.529f}, {.id = 132, .distance = 25.425f}, {.id = 131, .distance = 26.270f}, {.id = 134, .distance = 27.049f}, {.id = 792, .distance = 34.433f}, {.id = 789, .distance = 34.516f}, {.id = 79, .distance = 37.159f}
         }},
         {134, {
-            {.id = 654, .distance = 22.408f}, {.id = 80, .distance = 27.042f}, {.id = 133, .distance = 27.049f}, {.id = 79, .distance = 28.297f}, {.id = 653, .distance = 34.474f}, {.id = 655, .distance = 34.817f}, {.id = 54, .distance = 35.703f}
+            {.id = 789, .distance = 22.369f}, {.id = 80, .distance = 27.042f}, {.id = 133, .distance = 27.049f}, {.id = 79, .distance = 28.297f}, {.id = 788, .distance = 34.460f}, {.id = 790, .distance = 34.782f}, {.id = 54, .distance = 35.703f}
         }},
         {135, {
             {.id = 140, .distance = 22.969f}, {.id = 138, .distance = 23.177f}, {.id = 137, .distance = 23.180f}, {.id = 136, .distance = 23.418f}, {.id = 139, .distance = 23.540f}, {.id = 149, .distance = 46.414f}, {.id = 146, .distance = 46.608f}
@@ -2922,169 +2922,169 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
             {.id = 188, .distance = 27.954f}, {.id = 269, .distance = 28.297f}, {.id = 213, .distance = 29.747f}, {.id = 189, .distance = 29.831f}, {.id = 268, .distance = 37.159f}, {.id = 167, .distance = 38.168f}, {.id = 267, .distance = 38.379f}
         }},
         {215, {
-            {.id = 788, .distance = 21.856f}, {.id = 189, .distance = 24.998f}, {.id = 216, .distance = 26.018f}, {.id = 269, .distance = 27.042f}, {.id = 787, .distance = 34.205f}, {.id = 789, .distance = 35.008f}, {.id = 190, .distance = 40.605f}
+            {.id = 766, .distance = 22.163f}, {.id = 189, .distance = 24.998f}, {.id = 216, .distance = 26.018f}, {.id = 269, .distance = 27.042f}, {.id = 765, .distance = 34.323f}, {.id = 767, .distance = 35.235f}, {.id = 190, .distance = 40.605f}
         }},
         {216, {
-            {.id = 787, .distance = 22.464f}, {.id = 215, .distance = 26.018f}, {.id = 217, .distance = 26.277f}, {.id = 190, .distance = 27.955f}, {.id = 786, .distance = 34.947f}, {.id = 788, .distance = 34.950f}, {.id = 189, .distance = 36.289f}
+            {.id = 765, .distance = 22.850f}, {.id = 215, .distance = 26.018f}, {.id = 217, .distance = 26.277f}, {.id = 190, .distance = 27.955f}, {.id = 766, .distance = 34.871f}, {.id = 764, .distance = 34.985f}, {.id = 189, .distance = 36.289f}
         }},
         {217, {
-            {.id = 786, .distance = 21.687f}, {.id = 218, .distance = 25.444f}, {.id = 216, .distance = 26.277f}, {.id = 219, .distance = 27.296f}, {.id = 787, .distance = 33.864f}, {.id = 784, .distance = 34.888f}, {.id = 190, .distance = 36.960f}
+            {.id = 764, .distance = 22.020f}, {.id = 218, .distance = 25.444f}, {.id = 216, .distance = 26.277f}, {.id = 219, .distance = 27.296f}, {.id = 765, .distance = 34.251f}, {.id = 762, .distance = 35.395f}, {.id = 190, .distance = 36.960f}
         }},
         {218, {
             {.id = 191, .distance = 21.650f}, {.id = 219, .distance = 23.803f}, {.id = 217, .distance = 25.444f}, {.id = 220, .distance = 25.495f}, {.id = 192, .distance = 38.588f}, {.id = 190, .distance = 39.188f}, {.id = 223, .distance = 40.893f}
         }},
         {219, {
-            {.id = 784, .distance = 22.081f}, {.id = 218, .distance = 23.803f}, {.id = 220, .distance = 24.430f}, {.id = 221, .distance = 26.781f}, {.id = 217, .distance = 27.296f}, {.id = 786, .distance = 34.521f}, {.id = 783, .distance = 37.270f}
+            {.id = 762, .distance = 22.006f}, {.id = 218, .distance = 23.803f}, {.id = 220, .distance = 24.430f}, {.id = 221, .distance = 26.781f}, {.id = 217, .distance = 27.296f}, {.id = 764, .distance = 34.913f}, {.id = 761, .distance = 36.766f}
         }},
         {220, {
             {.id = 222, .distance = 24.299f}, {.id = 219, .distance = 24.430f}, {.id = 221, .distance = 24.711f}, {.id = 223, .distance = 25.084f}, {.id = 218, .distance = 25.495f}, {.id = 192, .distance = 37.220f}, {.id = 191, .distance = 40.095f}
         }},
         {221, {
-            {.id = 1334, .distance = 23.078f}, {.id = 783, .distance = 23.609f}, {.id = 220, .distance = 24.711f}, {.id = 219, .distance = 26.781f}, {.id = 222, .distance = 27.879f}, {.id = 784, .distance = 34.791f}, {.id = 1332, .distance = 36.374f}
+            {.id = 535, .distance = 23.274f}, {.id = 761, .distance = 23.353f}, {.id = 220, .distance = 24.711f}, {.id = 219, .distance = 26.781f}, {.id = 222, .distance = 27.879f}, {.id = 762, .distance = 34.190f}, {.id = 533, .distance = 36.598f}
         }},
         {222, {
-            {.id = 1332, .distance = 21.762f}, {.id = 220, .distance = 24.299f}, {.id = 223, .distance = 24.636f}, {.id = 224, .distance = 27.526f}, {.id = 221, .distance = 27.879f}, {.id = 1334, .distance = 33.932f}, {.id = 1330, .distance = 34.948f}
+            {.id = 533, .distance = 21.881f}, {.id = 220, .distance = 24.299f}, {.id = 223, .distance = 24.636f}, {.id = 224, .distance = 27.526f}, {.id = 221, .distance = 27.879f}, {.id = 535, .distance = 34.044f}, {.id = 531, .distance = 34.991f}
         }},
         {223, {
             {.id = 192, .distance = 21.863f}, {.id = 222, .distance = 24.636f}, {.id = 220, .distance = 25.084f}, {.id = 224, .distance = 25.653f}, {.id = 193, .distance = 34.005f}, {.id = 218, .distance = 40.893f}, {.id = 191, .distance = 43.024f}
         }},
         {224, {
-            {.id = 1330, .distance = 21.954f}, {.id = 223, .distance = 25.653f}, {.id = 225, .distance = 26.467f}, {.id = 222, .distance = 27.526f}, {.id = 1329, .distance = 34.480f}, {.id = 1332, .distance = 35.009f}, {.id = 193, .distance = 35.198f}
+            {.id = 531, .distance = 22.151f}, {.id = 223, .distance = 25.653f}, {.id = 225, .distance = 26.467f}, {.id = 222, .distance = 27.526f}, {.id = 530, .distance = 34.595f}, {.id = 533, .distance = 34.928f}, {.id = 193, .distance = 35.198f}
         }},
         {225, {
-            {.id = 1329, .distance = 22.310f}, {.id = 224, .distance = 26.467f}, {.id = 226, .distance = 26.547f}, {.id = 193, .distance = 31.431f}, {.id = 194, .distance = 32.153f}, {.id = 1328, .distance = 34.558f}, {.id = 1330, .distance = 34.609f}
+            {.id = 530, .distance = 22.361f}, {.id = 224, .distance = 26.467f}, {.id = 226, .distance = 26.547f}, {.id = 193, .distance = 31.431f}, {.id = 194, .distance = 32.153f}, {.id = 531, .distance = 34.812f}, {.id = 529, .distance = 35.607f}
         }},
         {226, {
-            {.id = 1328, .distance = 22.154f}, {.id = 194, .distance = 25.318f}, {.id = 225, .distance = 26.547f}, {.id = 227, .distance = 27.116f}, {.id = 1329, .distance = 34.678f}, {.id = 1327, .distance = 34.928f}, {.id = 195, .distance = 36.035f}
+            {.id = 529, .distance = 22.388f}, {.id = 194, .distance = 25.318f}, {.id = 225, .distance = 26.547f}, {.id = 227, .distance = 27.116f}, {.id = 530, .distance = 34.628f}, {.id = 528, .distance = 34.708f}, {.id = 195, .distance = 36.035f}
         }},
         {227, {
-            {.id = 1327, .distance = 22.003f}, {.id = 228, .distance = 26.383f}, {.id = 226, .distance = 27.116f}, {.id = 195, .distance = 27.523f}, {.id = 1326, .distance = 34.325f}, {.id = 1328, .distance = 34.988f}, {.id = 194, .distance = 41.220f}
+            {.id = 528, .distance = 22.165f}, {.id = 228, .distance = 26.383f}, {.id = 226, .distance = 27.116f}, {.id = 195, .distance = 27.523f}, {.id = 529, .distance = 34.206f}, {.id = 527, .distance = 34.415f}, {.id = 194, .distance = 41.220f}
         }},
         {228, {
-            {.id = 1326, .distance = 21.569f}, {.id = 229, .distance = 25.498f}, {.id = 227, .distance = 26.383f}, {.id = 230, .distance = 26.792f}, {.id = 1327, .distance = 34.213f}, {.id = 1324, .distance = 34.398f}, {.id = 196, .distance = 36.749f}
+            {.id = 527, .distance = 21.887f}, {.id = 229, .distance = 25.498f}, {.id = 227, .distance = 26.383f}, {.id = 230, .distance = 26.792f}, {.id = 525, .distance = 34.325f}, {.id = 528, .distance = 34.634f}, {.id = 196, .distance = 36.749f}
         }},
         {229, {
-            {.id = 196, .distance = 21.879f}, {.id = 230, .distance = 24.550f}, {.id = 228, .distance = 25.498f}, {.id = 231, .distance = 25.732f}, {.id = 197, .distance = 33.585f}, {.id = 234, .distance = 41.045f}, {.id = 1324, .distance = 43.073f}
+            {.id = 196, .distance = 21.879f}, {.id = 230, .distance = 24.550f}, {.id = 228, .distance = 25.498f}, {.id = 231, .distance = 25.732f}, {.id = 197, .distance = 33.585f}, {.id = 234, .distance = 41.045f}, {.id = 525, .distance = 43.103f}
         }},
         {230, {
-            {.id = 1324, .distance = 21.785f}, {.id = 229, .distance = 24.550f}, {.id = 231, .distance = 24.859f}, {.id = 232, .distance = 26.221f}, {.id = 228, .distance = 26.792f}, {.id = 1326, .distance = 34.365f}, {.id = 1323, .distance = 37.057f}
+            {.id = 525, .distance = 21.892f}, {.id = 229, .distance = 24.550f}, {.id = 231, .distance = 24.859f}, {.id = 232, .distance = 26.221f}, {.id = 228, .distance = 26.792f}, {.id = 527, .distance = 34.679f}, {.id = 524, .distance = 36.842f}
         }},
         {231, {
-            {.id = 233, .distance = 24.528f}, {.id = 232, .distance = 24.669f}, {.id = 230, .distance = 24.859f}, {.id = 234, .distance = 25.084f}, {.id = 229, .distance = 25.732f}, {.id = 197, .distance = 35.615f}, {.id = 398, .distance = 42.972f}
+            {.id = 233, .distance = 24.528f}, {.id = 232, .distance = 24.669f}, {.id = 230, .distance = 24.859f}, {.id = 234, .distance = 25.084f}, {.id = 229, .distance = 25.732f}, {.id = 197, .distance = 35.615f}, {.id = 1321, .distance = 42.825f}
         }},
         {232, {
-            {.id = 1323, .distance = 23.478f}, {.id = 400, .distance = 23.669f}, {.id = 231, .distance = 24.669f}, {.id = 230, .distance = 26.221f}, {.id = 233, .distance = 28.881f}, {.id = 1324, .distance = 34.270f}, {.id = 398, .distance = 37.083f}
+            {.id = 524, .distance = 23.277f}, {.id = 1323, .distance = 23.490f}, {.id = 231, .distance = 24.669f}, {.id = 230, .distance = 26.221f}, {.id = 233, .distance = 28.881f}, {.id = 525, .distance = 34.476f}, {.id = 1321, .distance = 36.998f}
         }},
         {233, {
-            {.id = 398, .distance = 21.838f}, {.id = 234, .distance = 24.210f}, {.id = 231, .distance = 24.528f}, {.id = 235, .distance = 26.372f}, {.id = 232, .distance = 28.881f}, {.id = 396, .distance = 34.462f}, {.id = 400, .distance = 34.521f}
+            {.id = 1321, .distance = 21.608f}, {.id = 234, .distance = 24.210f}, {.id = 231, .distance = 24.528f}, {.id = 235, .distance = 26.372f}, {.id = 232, .distance = 28.881f}, {.id = 1323, .distance = 34.196f}, {.id = 1319, .distance = 34.300f}
         }},
         {234, {
-            {.id = 233, .distance = 24.210f}, {.id = 197, .distance = 24.618f}, {.id = 231, .distance = 25.084f}, {.id = 235, .distance = 25.246f}, {.id = 198, .distance = 29.298f}, {.id = 229, .distance = 41.045f}, {.id = 398, .distance = 42.922f}
+            {.id = 233, .distance = 24.210f}, {.id = 197, .distance = 24.618f}, {.id = 231, .distance = 25.084f}, {.id = 235, .distance = 25.246f}, {.id = 198, .distance = 29.298f}, {.id = 229, .distance = 41.045f}, {.id = 1321, .distance = 42.732f}
         }},
         {235, {
-            {.id = 396, .distance = 21.928f}, {.id = 234, .distance = 25.246f}, {.id = 233, .distance = 26.372f}, {.id = 236, .distance = 27.091f}, {.id = 398, .distance = 34.399f}, {.id = 395, .distance = 34.840f}, {.id = 198, .distance = 34.857f}
+            {.id = 1319, .distance = 21.658f}, {.id = 234, .distance = 25.246f}, {.id = 233, .distance = 26.372f}, {.id = 236, .distance = 27.091f}, {.id = 1321, .distance = 34.197f}, {.id = 1318, .distance = 34.609f}, {.id = 198, .distance = 34.857f}
         }},
         {236, {
-            {.id = 395, .distance = 21.917f}, {.id = 237, .distance = 26.524f}, {.id = 235, .distance = 27.091f}, {.id = 199, .distance = 29.494f}, {.id = 396, .distance = 34.625f}, {.id = 394, .distance = 35.233f}, {.id = 198, .distance = 35.556f}
+            {.id = 1318, .distance = 21.606f}, {.id = 237, .distance = 26.524f}, {.id = 235, .distance = 27.091f}, {.id = 199, .distance = 29.494f}, {.id = 1317, .distance = 34.298f}, {.id = 1319, .distance = 34.445f}, {.id = 198, .distance = 35.556f}
         }},
         {237, {
-            {.id = 394, .distance = 21.849f}, {.id = 236, .distance = 26.524f}, {.id = 238, .distance = 26.730f}, {.id = 199, .distance = 28.584f}, {.id = 200, .distance = 32.097f}, {.id = 393, .distance = 34.289f}, {.id = 395, .distance = 34.363f}
+            {.id = 1317, .distance = 21.478f}, {.id = 236, .distance = 26.524f}, {.id = 238, .distance = 26.730f}, {.id = 199, .distance = 28.584f}, {.id = 200, .distance = 32.097f}, {.id = 1318, .distance = 34.202f}, {.id = 1316, .distance = 34.298f}
         }},
         {238, {
-            {.id = 393, .distance = 21.734f}, {.id = 237, .distance = 26.730f}, {.id = 239, .distance = 26.732f}, {.id = 200, .distance = 28.097f}, {.id = 394, .distance = 33.713f}, {.id = 392, .distance = 34.361f}, {.id = 201, .distance = 40.135f}
+            {.id = 1316, .distance = 21.606f}, {.id = 237, .distance = 26.730f}, {.id = 239, .distance = 26.732f}, {.id = 200, .distance = 28.097f}, {.id = 1317, .distance = 34.202f}, {.id = 1315, .distance = 34.609f}, {.id = 201, .distance = 40.135f}
         }},
         {239, {
-            {.id = 392, .distance = 21.775f}, {.id = 240, .distance = 24.672f}, {.id = 238, .distance = 26.732f}, {.id = 241, .distance = 26.732f}, {.id = 390, .distance = 34.201f}, {.id = 393, .distance = 34.615f}, {.id = 201, .distance = 35.127f}
+            {.id = 1315, .distance = 21.658f}, {.id = 240, .distance = 24.672f}, {.id = 238, .distance = 26.732f}, {.id = 241, .distance = 26.732f}, {.id = 1313, .distance = 34.300f}, {.id = 1316, .distance = 34.445f}, {.id = 201, .distance = 35.127f}
         }},
         {240, {
-            {.id = 241, .distance = 23.501f}, {.id = 239, .distance = 24.672f}, {.id = 242, .distance = 25.068f}, {.id = 201, .distance = 25.325f}, {.id = 202, .distance = 29.320f}, {.id = 245, .distance = 41.461f}, {.id = 390, .distance = 41.883f}
+            {.id = 241, .distance = 23.501f}, {.id = 239, .distance = 24.672f}, {.id = 242, .distance = 25.068f}, {.id = 201, .distance = 25.325f}, {.id = 202, .distance = 29.320f}, {.id = 245, .distance = 41.461f}, {.id = 1313, .distance = 41.850f}
         }},
         {241, {
-            {.id = 390, .distance = 21.750f}, {.id = 240, .distance = 23.501f}, {.id = 242, .distance = 24.580f}, {.id = 243, .distance = 26.371f}, {.id = 239, .distance = 26.732f}, {.id = 392, .distance = 34.595f}, {.id = 389, .distance = 36.749f}
+            {.id = 1313, .distance = 21.608f}, {.id = 240, .distance = 23.501f}, {.id = 242, .distance = 24.580f}, {.id = 243, .distance = 26.371f}, {.id = 239, .distance = 26.732f}, {.id = 1315, .distance = 34.197f}, {.id = 1312, .distance = 36.998f}
         }},
         {242, {
-            {.id = 241, .distance = 24.580f}, {.id = 244, .distance = 24.959f}, {.id = 243, .distance = 25.010f}, {.id = 240, .distance = 25.068f}, {.id = 245, .distance = 25.146f}, {.id = 202, .distance = 34.248f}, {.id = 390, .distance = 43.126f}
+            {.id = 241, .distance = 24.580f}, {.id = 244, .distance = 24.959f}, {.id = 243, .distance = 25.010f}, {.id = 240, .distance = 25.068f}, {.id = 245, .distance = 25.146f}, {.id = 202, .distance = 34.248f}, {.id = 1313, .distance = 42.952f}
         }},
         {243, {
-            {.id = 389, .distance = 23.067f}, {.id = 97, .distance = 23.478f}, {.id = 242, .distance = 25.010f}, {.id = 241, .distance = 26.371f}, {.id = 244, .distance = 29.071f}, {.id = 390, .distance = 34.471f}, {.id = 95, .distance = 37.057f}
+            {.id = 1199, .distance = 23.326f}, {.id = 1312, .distance = 23.490f}, {.id = 242, .distance = 25.010f}, {.id = 241, .distance = 26.371f}, {.id = 244, .distance = 29.071f}, {.id = 1313, .distance = 34.196f}, {.id = 1197, .distance = 36.872f}
         }},
         {244, {
-            {.id = 95, .distance = 21.785f}, {.id = 245, .distance = 23.829f}, {.id = 242, .distance = 24.959f}, {.id = 246, .distance = 26.582f}, {.id = 243, .distance = 29.071f}, {.id = 97, .distance = 34.270f}, {.id = 93, .distance = 34.398f}
+            {.id = 1197, .distance = 21.837f}, {.id = 245, .distance = 23.829f}, {.id = 242, .distance = 24.959f}, {.id = 246, .distance = 26.582f}, {.id = 243, .distance = 29.071f}, {.id = 1195, .distance = 34.439f}, {.id = 1199, .distance = 34.529f}
         }},
         {245, {
-            {.id = 244, .distance = 23.829f}, {.id = 242, .distance = 25.146f}, {.id = 203, .distance = 25.156f}, {.id = 246, .distance = 25.569f}, {.id = 202, .distance = 28.406f}, {.id = 240, .distance = 41.461f}, {.id = 95, .distance = 42.578f}
+            {.id = 244, .distance = 23.829f}, {.id = 242, .distance = 25.146f}, {.id = 203, .distance = 25.156f}, {.id = 246, .distance = 25.569f}, {.id = 202, .distance = 28.406f}, {.id = 240, .distance = 41.461f}, {.id = 1197, .distance = 42.698f}
         }},
         {246, {
-            {.id = 93, .distance = 21.569f}, {.id = 245, .distance = 25.569f}, {.id = 247, .distance = 26.524f}, {.id = 244, .distance = 26.582f}, {.id = 92, .distance = 34.325f}, {.id = 95, .distance = 34.365f}, {.id = 203, .distance = 34.565f}
+            {.id = 1195, .distance = 21.607f}, {.id = 245, .distance = 25.569f}, {.id = 247, .distance = 26.524f}, {.id = 244, .distance = 26.582f}, {.id = 1194, .distance = 34.438f}, {.id = 203, .distance = 34.565f}, {.id = 1197, .distance = 34.611f}
         }},
         {247, {
-            {.id = 92, .distance = 22.003f}, {.id = 246, .distance = 26.524f}, {.id = 248, .distance = 27.091f}, {.id = 204, .distance = 28.191f}, {.id = 93, .distance = 34.213f}, {.id = 91, .distance = 34.928f}, {.id = 203, .distance = 39.087f}
+            {.id = 1194, .distance = 21.912f}, {.id = 246, .distance = 26.524f}, {.id = 248, .distance = 27.091f}, {.id = 204, .distance = 28.191f}, {.id = 1195, .distance = 34.219f}, {.id = 1193, .distance = 34.438f}, {.id = 203, .distance = 39.087f}
         }},
         {248, {
-            {.id = 91, .distance = 22.154f}, {.id = 249, .distance = 26.524f}, {.id = 247, .distance = 27.091f}, {.id = 205, .distance = 28.182f}, {.id = 204, .distance = 31.855f}, {.id = 90, .distance = 34.558f}, {.id = 92, .distance = 34.988f}
+            {.id = 1193, .distance = 21.836f}, {.id = 249, .distance = 26.524f}, {.id = 247, .distance = 27.091f}, {.id = 205, .distance = 28.182f}, {.id = 204, .distance = 31.855f}, {.id = 1192, .distance = 34.438f}, {.id = 1194, .distance = 34.758f}
         }},
         {249, {
-            {.id = 90, .distance = 22.310f}, {.id = 248, .distance = 26.524f}, {.id = 250, .distance = 26.581f}, {.id = 205, .distance = 29.755f}, {.id = 89, .distance = 34.480f}, {.id = 91, .distance = 34.678f}, {.id = 206, .distance = 34.998f}
+            {.id = 1192, .distance = 21.912f}, {.id = 248, .distance = 26.524f}, {.id = 250, .distance = 26.581f}, {.id = 205, .distance = 29.755f}, {.id = 1191, .distance = 34.438f}, {.id = 1193, .distance = 34.758f}, {.id = 206, .distance = 34.998f}
         }},
         {250, {
-            {.id = 89, .distance = 21.954f}, {.id = 251, .distance = 25.497f}, {.id = 249, .distance = 26.581f}, {.id = 252, .distance = 27.091f}, {.id = 206, .distance = 34.425f}, {.id = 90, .distance = 34.609f}, {.id = 87, .distance = 34.948f}
+            {.id = 1191, .distance = 21.607f}, {.id = 251, .distance = 25.497f}, {.id = 249, .distance = 26.581f}, {.id = 252, .distance = 27.091f}, {.id = 1192, .distance = 34.219f}, {.id = 206, .distance = 34.425f}, {.id = 1189, .distance = 34.439f}
         }},
         {251, {
-            {.id = 207, .distance = 23.798f}, {.id = 252, .distance = 24.344f}, {.id = 253, .distance = 25.237f}, {.id = 250, .distance = 25.497f}, {.id = 206, .distance = 29.105f}, {.id = 256, .distance = 41.369f}, {.id = 87, .distance = 42.971f}
+            {.id = 207, .distance = 23.798f}, {.id = 252, .distance = 24.344f}, {.id = 253, .distance = 25.237f}, {.id = 250, .distance = 25.497f}, {.id = 206, .distance = 29.105f}, {.id = 256, .distance = 41.369f}, {.id = 1189, .distance = 42.825f}
         }},
         {252, {
-            {.id = 87, .distance = 21.762f}, {.id = 251, .distance = 24.344f}, {.id = 253, .distance = 24.548f}, {.id = 254, .distance = 26.371f}, {.id = 250, .distance = 27.091f}, {.id = 89, .distance = 35.009f}, {.id = 86, .distance = 36.374f}
+            {.id = 1189, .distance = 21.837f}, {.id = 251, .distance = 24.344f}, {.id = 253, .distance = 24.548f}, {.id = 254, .distance = 26.371f}, {.id = 250, .distance = 27.091f}, {.id = 1191, .distance = 34.611f}, {.id = 1188, .distance = 36.872f}
         }},
         {253, {
-            {.id = 252, .distance = 24.548f}, {.id = 255, .distance = 24.694f}, {.id = 254, .distance = 25.104f}, {.id = 251, .distance = 25.237f}, {.id = 256, .distance = 25.654f}, {.id = 207, .distance = 34.527f}, {.id = 87, .distance = 42.970f}
+            {.id = 252, .distance = 24.548f}, {.id = 255, .distance = 24.694f}, {.id = 254, .distance = 25.104f}, {.id = 251, .distance = 25.237f}, {.id = 256, .distance = 25.654f}, {.id = 207, .distance = 34.527f}, {.id = 365, .distance = 43.104f}
         }},
         {254, {
-            {.id = 86, .distance = 23.078f}, {.id = 648, .distance = 23.106f}, {.id = 253, .distance = 25.104f}, {.id = 252, .distance = 26.371f}, {.id = 255, .distance = 29.110f}, {.id = 87, .distance = 33.932f}, {.id = 646, .distance = 36.785f}
+            {.id = 367, .distance = 23.277f}, {.id = 1188, .distance = 23.326f}, {.id = 253, .distance = 25.104f}, {.id = 252, .distance = 26.371f}, {.id = 255, .distance = 29.110f}, {.id = 1189, .distance = 34.529f}, {.id = 365, .distance = 36.842f}
         }},
         {255, {
-            {.id = 646, .distance = 21.788f}, {.id = 256, .distance = 24.048f}, {.id = 253, .distance = 24.694f}, {.id = 257, .distance = 26.547f}, {.id = 254, .distance = 29.110f}, {.id = 644, .distance = 34.237f}, {.id = 648, .distance = 34.484f}
+            {.id = 365, .distance = 21.892f}, {.id = 256, .distance = 24.048f}, {.id = 253, .distance = 24.694f}, {.id = 257, .distance = 26.547f}, {.id = 254, .distance = 29.110f}, {.id = 363, .distance = 34.325f}, {.id = 367, .distance = 34.476f}
         }},
         {256, {
-            {.id = 208, .distance = 21.654f}, {.id = 255, .distance = 24.048f}, {.id = 257, .distance = 24.979f}, {.id = 253, .distance = 25.654f}, {.id = 207, .distance = 33.270f}, {.id = 251, .distance = 41.369f}, {.id = 646, .distance = 42.762f}
+            {.id = 208, .distance = 21.654f}, {.id = 255, .distance = 24.048f}, {.id = 257, .distance = 24.979f}, {.id = 253, .distance = 25.654f}, {.id = 207, .distance = 33.270f}, {.id = 251, .distance = 41.369f}, {.id = 365, .distance = 42.839f}
         }},
         {257, {
-            {.id = 644, .distance = 21.813f}, {.id = 256, .distance = 24.979f}, {.id = 255, .distance = 26.547f}, {.id = 258, .distance = 26.791f}, {.id = 643, .distance = 34.396f}, {.id = 646, .distance = 34.608f}, {.id = 208, .distance = 36.329f}
+            {.id = 363, .distance = 21.887f}, {.id = 256, .distance = 24.979f}, {.id = 255, .distance = 26.547f}, {.id = 258, .distance = 26.791f}, {.id = 362, .distance = 34.415f}, {.id = 365, .distance = 34.679f}, {.id = 208, .distance = 36.329f}
         }},
         {258, {
-            {.id = 643, .distance = 21.772f}, {.id = 259, .distance = 25.487f}, {.id = 257, .distance = 26.791f}, {.id = 209, .distance = 27.232f}, {.id = 642, .distance = 34.325f}, {.id = 644, .distance = 34.627f}, {.id = 210, .distance = 41.139f}
+            {.id = 362, .distance = 22.165f}, {.id = 259, .distance = 25.487f}, {.id = 257, .distance = 26.791f}, {.id = 209, .distance = 27.232f}, {.id = 363, .distance = 34.634f}, {.id = 361, .distance = 34.708f}, {.id = 210, .distance = 41.139f}
         }},
         {259, {
-            {.id = 642, .distance = 21.888f}, {.id = 258, .distance = 25.487f}, {.id = 210, .distance = 26.028f}, {.id = 260, .distance = 27.606f}, {.id = 643, .distance = 33.726f}, {.id = 641, .distance = 35.268f}, {.id = 209, .distance = 35.594f}
+            {.id = 361, .distance = 22.388f}, {.id = 258, .distance = 25.487f}, {.id = 210, .distance = 26.028f}, {.id = 260, .distance = 27.606f}, {.id = 362, .distance = 34.206f}, {.id = 209, .distance = 35.594f}, {.id = 360, .distance = 35.607f}
         }},
         {260, {
-            {.id = 641, .distance = 21.955f}, {.id = 261, .distance = 26.790f}, {.id = 259, .distance = 27.606f}, {.id = 211, .distance = 31.167f}, {.id = 210, .distance = 32.429f}, {.id = 642, .distance = 34.376f}, {.id = 640, .distance = 34.876f}
+            {.id = 360, .distance = 22.361f}, {.id = 261, .distance = 26.790f}, {.id = 259, .distance = 27.606f}, {.id = 211, .distance = 31.167f}, {.id = 210, .distance = 32.429f}, {.id = 359, .distance = 34.595f}, {.id = 361, .distance = 34.628f}
         }},
         {261, {
-            {.id = 640, .distance = 21.967f}, {.id = 262, .distance = 25.010f}, {.id = 260, .distance = 26.790f}, {.id = 263, .distance = 26.792f}, {.id = 638, .distance = 34.497f}, {.id = 641, .distance = 34.638f}, {.id = 211, .distance = 34.856f}
+            {.id = 359, .distance = 22.151f}, {.id = 262, .distance = 25.010f}, {.id = 260, .distance = 26.790f}, {.id = 263, .distance = 26.792f}, {.id = 360, .distance = 34.812f}, {.id = 211, .distance = 34.856f}, {.id = 357, .distance = 34.991f}
         }},
         {262, {
-            {.id = 212, .distance = 21.595f}, {.id = 263, .distance = 24.103f}, {.id = 261, .distance = 25.010f}, {.id = 264, .distance = 25.812f}, {.id = 211, .distance = 33.491f}, {.id = 267, .distance = 41.309f}, {.id = 638, .distance = 42.712f}
+            {.id = 212, .distance = 21.595f}, {.id = 263, .distance = 24.103f}, {.id = 261, .distance = 25.010f}, {.id = 264, .distance = 25.812f}, {.id = 211, .distance = 33.491f}, {.id = 267, .distance = 41.309f}, {.id = 357, .distance = 42.896f}
         }},
         {263, {
-            {.id = 638, .distance = 21.876f}, {.id = 262, .distance = 24.103f}, {.id = 264, .distance = 24.732f}, {.id = 265, .distance = 26.546f}, {.id = 261, .distance = 26.792f}, {.id = 640, .distance = 34.412f}, {.id = 637, .distance = 37.119f}
+            {.id = 357, .distance = 21.881f}, {.id = 262, .distance = 24.103f}, {.id = 264, .distance = 24.732f}, {.id = 265, .distance = 26.546f}, {.id = 261, .distance = 26.792f}, {.id = 359, .distance = 34.928f}, {.id = 356, .distance = 36.598f}
         }},
         {264, {
             {.id = 265, .distance = 24.694f}, {.id = 263, .distance = 24.732f}, {.id = 266, .distance = 25.085f}, {.id = 267, .distance = 25.237f}, {.id = 262, .distance = 25.812f}, {.id = 212, .distance = 36.997f}, {.id = 213, .distance = 39.624f}
         }},
         {265, {
-            {.id = 794, .distance = 23.182f}, {.id = 637, .distance = 23.709f}, {.id = 264, .distance = 24.694f}, {.id = 263, .distance = 26.546f}, {.id = 266, .distance = 28.931f}, {.id = 638, .distance = 34.534f}, {.id = 792, .distance = 36.529f}
+            {.id = 356, .distance = 23.274f}, {.id = 772, .distance = 23.328f}, {.id = 264, .distance = 24.694f}, {.id = 263, .distance = 26.546f}, {.id = 266, .distance = 28.931f}, {.id = 357, .distance = 34.044f}, {.id = 770, .distance = 36.712f}
         }},
         {266, {
-            {.id = 792, .distance = 21.183f}, {.id = 267, .distance = 24.787f}, {.id = 264, .distance = 25.085f}, {.id = 268, .distance = 26.270f}, {.id = 265, .distance = 28.931f}, {.id = 790, .distance = 33.896f}, {.id = 794, .distance = 34.248f}
+            {.id = 770, .distance = 21.127f}, {.id = 267, .distance = 24.787f}, {.id = 264, .distance = 25.085f}, {.id = 268, .distance = 26.270f}, {.id = 265, .distance = 28.931f}, {.id = 768, .distance = 33.853f}, {.id = 772, .distance = 33.983f}
         }},
         {267, {
             {.id = 213, .distance = 20.735f}, {.id = 266, .distance = 24.787f}, {.id = 264, .distance = 25.237f}, {.id = 268, .distance = 25.425f}, {.id = 212, .distance = 38.308f}, {.id = 214, .distance = 38.379f}, {.id = 262, .distance = 41.309f}
         }},
         {268, {
-            {.id = 790, .distance = 21.567f}, {.id = 267, .distance = 25.425f}, {.id = 266, .distance = 26.270f}, {.id = 269, .distance = 27.049f}, {.id = 792, .distance = 34.469f}, {.id = 789, .distance = 34.529f}, {.id = 214, .distance = 37.159f}
+            {.id = 768, .distance = 21.527f}, {.id = 267, .distance = 25.425f}, {.id = 266, .distance = 26.270f}, {.id = 269, .distance = 27.049f}, {.id = 770, .distance = 34.222f}, {.id = 767, .distance = 34.412f}, {.id = 214, .distance = 37.159f}
         }},
         {269, {
-            {.id = 789, .distance = 22.408f}, {.id = 215, .distance = 27.042f}, {.id = 268, .distance = 27.049f}, {.id = 214, .distance = 28.297f}, {.id = 788, .distance = 34.474f}, {.id = 790, .distance = 34.817f}, {.id = 189, .distance = 35.703f}
+            {.id = 767, .distance = 22.497f}, {.id = 215, .distance = 27.042f}, {.id = 268, .distance = 27.049f}, {.id = 214, .distance = 28.297f}, {.id = 768, .distance = 34.808f}, {.id = 766, .distance = 34.959f}, {.id = 189, .distance = 35.703f}
         }},
         {270, {
             {.id = 275, .distance = 22.969f}, {.id = 273, .distance = 23.177f}, {.id = 272, .distance = 23.180f}, {.id = 271, .distance = 23.418f}, {.id = 274, .distance = 23.540f}, {.id = 284, .distance = 46.414f}, {.id = 281, .distance = 46.608f}
@@ -3327,169 +3327,169 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
             {.id = 323, .distance = 27.954f}, {.id = 404, .distance = 28.297f}, {.id = 348, .distance = 29.747f}, {.id = 324, .distance = 29.831f}, {.id = 403, .distance = 37.159f}, {.id = 302, .distance = 38.168f}, {.id = 402, .distance = 38.379f}
         }},
         {350, {
-            {.id = 1317, .distance = 21.634f}, {.id = 324, .distance = 24.998f}, {.id = 351, .distance = 26.018f}, {.id = 404, .distance = 27.042f}, {.id = 1316, .distance = 33.945f}, {.id = 1318, .distance = 34.750f}, {.id = 325, .distance = 40.605f}
+            {.id = 777, .distance = 21.634f}, {.id = 324, .distance = 24.998f}, {.id = 351, .distance = 26.018f}, {.id = 404, .distance = 27.042f}, {.id = 776, .distance = 33.945f}, {.id = 778, .distance = 34.750f}, {.id = 325, .distance = 40.605f}
         }},
         {351, {
-            {.id = 1316, .distance = 22.413f}, {.id = 350, .distance = 26.018f}, {.id = 352, .distance = 26.277f}, {.id = 325, .distance = 27.955f}, {.id = 1317, .distance = 34.606f}, {.id = 1315, .distance = 35.229f}, {.id = 324, .distance = 36.289f}
+            {.id = 776, .distance = 22.413f}, {.id = 350, .distance = 26.018f}, {.id = 352, .distance = 26.277f}, {.id = 325, .distance = 27.955f}, {.id = 777, .distance = 34.606f}, {.id = 775, .distance = 35.229f}, {.id = 324, .distance = 36.289f}
         }},
         {352, {
-            {.id = 1315, .distance = 21.814f}, {.id = 353, .distance = 25.444f}, {.id = 351, .distance = 26.277f}, {.id = 354, .distance = 27.296f}, {.id = 1316, .distance = 34.062f}, {.id = 1313, .distance = 34.862f}, {.id = 325, .distance = 36.960f}
+            {.id = 775, .distance = 21.814f}, {.id = 353, .distance = 25.444f}, {.id = 351, .distance = 26.277f}, {.id = 354, .distance = 27.296f}, {.id = 776, .distance = 34.062f}, {.id = 773, .distance = 34.862f}, {.id = 325, .distance = 36.960f}
         }},
         {353, {
             {.id = 326, .distance = 21.650f}, {.id = 354, .distance = 23.803f}, {.id = 352, .distance = 25.444f}, {.id = 355, .distance = 25.495f}, {.id = 327, .distance = 38.588f}, {.id = 325, .distance = 39.188f}, {.id = 358, .distance = 40.893f}
         }},
         {354, {
-            {.id = 1313, .distance = 21.962f}, {.id = 353, .distance = 23.803f}, {.id = 355, .distance = 24.430f}, {.id = 356, .distance = 26.781f}, {.id = 352, .distance = 27.296f}, {.id = 1315, .distance = 34.387f}, {.id = 1312, .distance = 37.251f}
+            {.id = 773, .distance = 21.962f}, {.id = 353, .distance = 23.803f}, {.id = 355, .distance = 24.430f}, {.id = 356, .distance = 26.781f}, {.id = 352, .distance = 27.296f}, {.id = 775, .distance = 34.387f}, {.id = 772, .distance = 37.251f}
         }},
         {355, {
             {.id = 357, .distance = 24.299f}, {.id = 354, .distance = 24.430f}, {.id = 356, .distance = 24.711f}, {.id = 358, .distance = 25.084f}, {.id = 353, .distance = 25.495f}, {.id = 327, .distance = 37.220f}, {.id = 326, .distance = 40.095f}
         }},
         {356, {
-            {.id = 1458, .distance = 23.050f}, {.id = 1312, .distance = 23.747f}, {.id = 355, .distance = 24.711f}, {.id = 354, .distance = 26.781f}, {.id = 357, .distance = 27.879f}, {.id = 1313, .distance = 34.668f}, {.id = 1456, .distance = 36.477f}
+            {.id = 265, .distance = 23.274f}, {.id = 772, .distance = 23.747f}, {.id = 355, .distance = 24.711f}, {.id = 354, .distance = 26.781f}, {.id = 357, .distance = 27.879f}, {.id = 773, .distance = 34.668f}, {.id = 263, .distance = 36.598f}
         }},
         {357, {
-            {.id = 1456, .distance = 21.612f}, {.id = 355, .distance = 24.299f}, {.id = 358, .distance = 24.636f}, {.id = 359, .distance = 27.526f}, {.id = 356, .distance = 27.879f}, {.id = 1458, .distance = 33.705f}, {.id = 1454, .distance = 34.795f}
+            {.id = 263, .distance = 21.881f}, {.id = 355, .distance = 24.299f}, {.id = 358, .distance = 24.636f}, {.id = 359, .distance = 27.526f}, {.id = 356, .distance = 27.879f}, {.id = 265, .distance = 34.044f}, {.id = 261, .distance = 34.991f}
         }},
         {358, {
-            {.id = 327, .distance = 21.863f}, {.id = 357, .distance = 24.636f}, {.id = 355, .distance = 25.084f}, {.id = 359, .distance = 25.653f}, {.id = 328, .distance = 34.005f}, {.id = 353, .distance = 40.893f}, {.id = 1456, .distance = 42.892f}
+            {.id = 327, .distance = 21.863f}, {.id = 357, .distance = 24.636f}, {.id = 355, .distance = 25.084f}, {.id = 359, .distance = 25.653f}, {.id = 328, .distance = 34.005f}, {.id = 353, .distance = 40.893f}, {.id = 326, .distance = 43.024f}
         }},
         {359, {
-            {.id = 1454, .distance = 21.840f}, {.id = 358, .distance = 25.653f}, {.id = 360, .distance = 26.467f}, {.id = 357, .distance = 27.526f}, {.id = 1453, .distance = 34.324f}, {.id = 1456, .distance = 34.713f}, {.id = 328, .distance = 35.198f}
+            {.id = 261, .distance = 22.151f}, {.id = 358, .distance = 25.653f}, {.id = 360, .distance = 26.467f}, {.id = 357, .distance = 27.526f}, {.id = 260, .distance = 34.595f}, {.id = 263, .distance = 34.928f}, {.id = 328, .distance = 35.198f}
         }},
         {360, {
-            {.id = 1453, .distance = 22.010f}, {.id = 359, .distance = 26.467f}, {.id = 361, .distance = 26.547f}, {.id = 328, .distance = 31.431f}, {.id = 329, .distance = 32.153f}, {.id = 1454, .distance = 34.615f}, {.id = 1452, .distance = 34.638f}
+            {.id = 260, .distance = 22.361f}, {.id = 359, .distance = 26.467f}, {.id = 361, .distance = 26.547f}, {.id = 328, .distance = 31.431f}, {.id = 329, .distance = 32.153f}, {.id = 261, .distance = 34.812f}, {.id = 259, .distance = 35.607f}
         }},
         {361, {
-            {.id = 1452, .distance = 21.974f}, {.id = 329, .distance = 25.318f}, {.id = 360, .distance = 26.547f}, {.id = 362, .distance = 27.116f}, {.id = 1453, .distance = 34.448f}, {.id = 1451, .distance = 34.677f}, {.id = 330, .distance = 36.035f}
+            {.id = 259, .distance = 22.388f}, {.id = 329, .distance = 25.318f}, {.id = 360, .distance = 26.547f}, {.id = 362, .distance = 27.116f}, {.id = 260, .distance = 34.628f}, {.id = 258, .distance = 34.708f}, {.id = 330, .distance = 36.035f}
         }},
         {362, {
-            {.id = 1451, .distance = 21.992f}, {.id = 363, .distance = 26.383f}, {.id = 361, .distance = 27.116f}, {.id = 330, .distance = 27.523f}, {.id = 1450, .distance = 34.618f}, {.id = 1452, .distance = 34.676f}, {.id = 329, .distance = 41.220f}
+            {.id = 258, .distance = 22.165f}, {.id = 363, .distance = 26.383f}, {.id = 361, .distance = 27.116f}, {.id = 330, .distance = 27.523f}, {.id = 259, .distance = 34.206f}, {.id = 257, .distance = 34.415f}, {.id = 329, .distance = 41.220f}
         }},
         {363, {
-            {.id = 1450, .distance = 21.725f}, {.id = 364, .distance = 25.498f}, {.id = 362, .distance = 26.383f}, {.id = 365, .distance = 26.792f}, {.id = 1448, .distance = 34.382f}, {.id = 1451, .distance = 34.446f}, {.id = 331, .distance = 36.749f}
+            {.id = 257, .distance = 21.887f}, {.id = 364, .distance = 25.498f}, {.id = 362, .distance = 26.383f}, {.id = 365, .distance = 26.792f}, {.id = 255, .distance = 34.325f}, {.id = 258, .distance = 34.634f}, {.id = 331, .distance = 36.749f}
         }},
         {364, {
-            {.id = 331, .distance = 21.879f}, {.id = 365, .distance = 24.550f}, {.id = 363, .distance = 25.498f}, {.id = 366, .distance = 25.732f}, {.id = 332, .distance = 33.585f}, {.id = 369, .distance = 41.045f}, {.id = 1448, .distance = 43.024f}
+            {.id = 331, .distance = 21.879f}, {.id = 365, .distance = 24.550f}, {.id = 363, .distance = 25.498f}, {.id = 366, .distance = 25.732f}, {.id = 332, .distance = 33.585f}, {.id = 369, .distance = 41.045f}, {.id = 255, .distance = 43.103f}
         }},
         {365, {
-            {.id = 1448, .distance = 21.703f}, {.id = 364, .distance = 24.550f}, {.id = 366, .distance = 24.859f}, {.id = 367, .distance = 26.221f}, {.id = 363, .distance = 26.792f}, {.id = 1450, .distance = 34.264f}, {.id = 1447, .distance = 37.049f}
+            {.id = 255, .distance = 21.892f}, {.id = 364, .distance = 24.550f}, {.id = 366, .distance = 24.859f}, {.id = 367, .distance = 26.221f}, {.id = 363, .distance = 26.792f}, {.id = 257, .distance = 34.679f}, {.id = 254, .distance = 36.842f}
         }},
         {366, {
-            {.id = 368, .distance = 24.528f}, {.id = 367, .distance = 24.669f}, {.id = 365, .distance = 24.859f}, {.id = 369, .distance = 25.084f}, {.id = 364, .distance = 25.732f}, {.id = 332, .distance = 35.615f}, {.id = 1591, .distance = 42.785f}
+            {.id = 368, .distance = 24.528f}, {.id = 367, .distance = 24.669f}, {.id = 365, .distance = 24.859f}, {.id = 369, .distance = 25.084f}, {.id = 364, .distance = 25.732f}, {.id = 332, .distance = 35.615f}, {.id = 1186, .distance = 42.825f}
         }},
         {367, {
-            {.id = 1593, .distance = 23.450f}, {.id = 1447, .distance = 23.648f}, {.id = 366, .distance = 24.669f}, {.id = 365, .distance = 26.221f}, {.id = 368, .distance = 28.881f}, {.id = 1448, .distance = 34.182f}, {.id = 1591, .distance = 36.962f}
+            {.id = 254, .distance = 23.277f}, {.id = 1188, .distance = 23.490f}, {.id = 366, .distance = 24.669f}, {.id = 365, .distance = 26.221f}, {.id = 368, .distance = 28.881f}, {.id = 255, .distance = 34.476f}, {.id = 1186, .distance = 36.998f}
         }},
         {368, {
-            {.id = 1591, .distance = 21.569f}, {.id = 369, .distance = 24.210f}, {.id = 366, .distance = 24.528f}, {.id = 370, .distance = 26.372f}, {.id = 367, .distance = 28.881f}, {.id = 1593, .distance = 34.183f}, {.id = 1589, .distance = 34.264f}
+            {.id = 1186, .distance = 21.608f}, {.id = 369, .distance = 24.210f}, {.id = 366, .distance = 24.528f}, {.id = 370, .distance = 26.372f}, {.id = 367, .distance = 28.881f}, {.id = 1188, .distance = 34.196f}, {.id = 1184, .distance = 34.300f}
         }},
         {369, {
-            {.id = 368, .distance = 24.210f}, {.id = 332, .distance = 24.618f}, {.id = 366, .distance = 25.084f}, {.id = 370, .distance = 25.246f}, {.id = 333, .distance = 29.298f}, {.id = 364, .distance = 41.045f}, {.id = 1591, .distance = 42.701f}
+            {.id = 368, .distance = 24.210f}, {.id = 332, .distance = 24.618f}, {.id = 366, .distance = 25.084f}, {.id = 370, .distance = 25.246f}, {.id = 333, .distance = 29.298f}, {.id = 364, .distance = 41.045f}, {.id = 1186, .distance = 42.732f}
         }},
         {370, {
-            {.id = 1589, .distance = 21.619f}, {.id = 369, .distance = 25.246f}, {.id = 368, .distance = 26.372f}, {.id = 371, .distance = 27.091f}, {.id = 1591, .distance = 34.184f}, {.id = 1588, .distance = 34.574f}, {.id = 333, .distance = 34.857f}
+            {.id = 1184, .distance = 21.658f}, {.id = 369, .distance = 25.246f}, {.id = 368, .distance = 26.372f}, {.id = 371, .distance = 27.091f}, {.id = 1186, .distance = 34.197f}, {.id = 1183, .distance = 34.609f}, {.id = 333, .distance = 34.857f}
         }},
         {371, {
-            {.id = 1588, .distance = 21.568f}, {.id = 372, .distance = 26.524f}, {.id = 370, .distance = 27.091f}, {.id = 334, .distance = 29.494f}, {.id = 1587, .distance = 34.263f}, {.id = 1589, .distance = 34.432f}, {.id = 333, .distance = 35.556f}
+            {.id = 1183, .distance = 21.606f}, {.id = 372, .distance = 26.524f}, {.id = 370, .distance = 27.091f}, {.id = 334, .distance = 29.494f}, {.id = 1182, .distance = 34.298f}, {.id = 1184, .distance = 34.445f}, {.id = 333, .distance = 35.556f}
         }},
         {372, {
-            {.id = 1587, .distance = 21.440f}, {.id = 371, .distance = 26.524f}, {.id = 373, .distance = 26.730f}, {.id = 334, .distance = 28.584f}, {.id = 335, .distance = 32.097f}, {.id = 1588, .distance = 34.189f}, {.id = 1586, .distance = 34.263f}
+            {.id = 1182, .distance = 21.478f}, {.id = 371, .distance = 26.524f}, {.id = 373, .distance = 26.730f}, {.id = 334, .distance = 28.584f}, {.id = 335, .distance = 32.097f}, {.id = 1183, .distance = 34.202f}, {.id = 1181, .distance = 34.298f}
         }},
         {373, {
-            {.id = 1586, .distance = 21.568f}, {.id = 372, .distance = 26.730f}, {.id = 374, .distance = 26.732f}, {.id = 335, .distance = 28.097f}, {.id = 1587, .distance = 34.189f}, {.id = 1585, .distance = 34.574f}, {.id = 336, .distance = 40.135f}
+            {.id = 1181, .distance = 21.606f}, {.id = 372, .distance = 26.730f}, {.id = 374, .distance = 26.732f}, {.id = 335, .distance = 28.097f}, {.id = 1182, .distance = 34.202f}, {.id = 1180, .distance = 34.609f}, {.id = 336, .distance = 40.135f}
         }},
         {374, {
-            {.id = 1585, .distance = 21.619f}, {.id = 375, .distance = 24.672f}, {.id = 373, .distance = 26.732f}, {.id = 376, .distance = 26.732f}, {.id = 1583, .distance = 34.264f}, {.id = 1586, .distance = 34.432f}, {.id = 336, .distance = 35.127f}
+            {.id = 1180, .distance = 21.658f}, {.id = 375, .distance = 24.672f}, {.id = 373, .distance = 26.732f}, {.id = 376, .distance = 26.732f}, {.id = 1178, .distance = 34.300f}, {.id = 1181, .distance = 34.445f}, {.id = 336, .distance = 35.127f}
         }},
         {375, {
-            {.id = 376, .distance = 23.501f}, {.id = 374, .distance = 24.672f}, {.id = 377, .distance = 25.068f}, {.id = 336, .distance = 25.325f}, {.id = 337, .distance = 29.320f}, {.id = 380, .distance = 41.461f}, {.id = 1583, .distance = 41.811f}
+            {.id = 376, .distance = 23.501f}, {.id = 374, .distance = 24.672f}, {.id = 377, .distance = 25.068f}, {.id = 336, .distance = 25.325f}, {.id = 337, .distance = 29.320f}, {.id = 380, .distance = 41.461f}, {.id = 1178, .distance = 41.850f}
         }},
         {376, {
-            {.id = 1583, .distance = 21.569f}, {.id = 375, .distance = 23.501f}, {.id = 377, .distance = 24.580f}, {.id = 378, .distance = 26.371f}, {.id = 374, .distance = 26.732f}, {.id = 1585, .distance = 34.184f}, {.id = 1582, .distance = 36.962f}
+            {.id = 1178, .distance = 21.608f}, {.id = 375, .distance = 23.501f}, {.id = 377, .distance = 24.580f}, {.id = 378, .distance = 26.371f}, {.id = 374, .distance = 26.732f}, {.id = 1180, .distance = 34.197f}, {.id = 1177, .distance = 36.998f}
         }},
         {377, {
-            {.id = 376, .distance = 24.580f}, {.id = 379, .distance = 24.959f}, {.id = 378, .distance = 25.010f}, {.id = 375, .distance = 25.068f}, {.id = 380, .distance = 25.146f}, {.id = 337, .distance = 34.248f}, {.id = 1583, .distance = 42.922f}
+            {.id = 376, .distance = 24.580f}, {.id = 379, .distance = 24.959f}, {.id = 378, .distance = 25.010f}, {.id = 375, .distance = 25.068f}, {.id = 380, .distance = 25.146f}, {.id = 337, .distance = 34.248f}, {.id = 1178, .distance = 42.952f}
         }},
         {378, {
-            {.id = 108, .distance = 23.278f}, {.id = 1582, .distance = 23.450f}, {.id = 377, .distance = 25.010f}, {.id = 376, .distance = 26.371f}, {.id = 379, .distance = 29.071f}, {.id = 1583, .distance = 34.183f}, {.id = 106, .distance = 36.969f}
+            {.id = 1064, .distance = 23.326f}, {.id = 1177, .distance = 23.490f}, {.id = 377, .distance = 25.010f}, {.id = 376, .distance = 26.371f}, {.id = 379, .distance = 29.071f}, {.id = 1178, .distance = 34.196f}, {.id = 1062, .distance = 36.872f}
         }},
         {379, {
-            {.id = 106, .distance = 21.650f}, {.id = 380, .distance = 23.829f}, {.id = 377, .distance = 24.959f}, {.id = 381, .distance = 26.582f}, {.id = 378, .distance = 29.071f}, {.id = 108, .distance = 34.271f}, {.id = 104, .distance = 34.278f}
+            {.id = 1062, .distance = 21.837f}, {.id = 380, .distance = 23.829f}, {.id = 377, .distance = 24.959f}, {.id = 381, .distance = 26.582f}, {.id = 378, .distance = 29.071f}, {.id = 1060, .distance = 34.439f}, {.id = 1064, .distance = 34.529f}
         }},
         {380, {
-            {.id = 379, .distance = 23.829f}, {.id = 377, .distance = 25.146f}, {.id = 338, .distance = 25.156f}, {.id = 381, .distance = 25.569f}, {.id = 337, .distance = 28.406f}, {.id = 375, .distance = 41.461f}, {.id = 106, .distance = 42.475f}
+            {.id = 379, .distance = 23.829f}, {.id = 377, .distance = 25.146f}, {.id = 338, .distance = 25.156f}, {.id = 381, .distance = 25.569f}, {.id = 337, .distance = 28.406f}, {.id = 375, .distance = 41.461f}, {.id = 1062, .distance = 42.698f}
         }},
         {381, {
-            {.id = 104, .distance = 21.461f}, {.id = 380, .distance = 25.569f}, {.id = 382, .distance = 26.524f}, {.id = 379, .distance = 26.582f}, {.id = 103, .distance = 34.276f}, {.id = 106, .distance = 34.284f}, {.id = 338, .distance = 34.565f}
+            {.id = 1060, .distance = 21.607f}, {.id = 380, .distance = 25.569f}, {.id = 382, .distance = 26.524f}, {.id = 379, .distance = 26.582f}, {.id = 1059, .distance = 34.438f}, {.id = 338, .distance = 34.565f}, {.id = 1062, .distance = 34.611f}
         }},
         {382, {
-            {.id = 103, .distance = 21.578f}, {.id = 381, .distance = 26.524f}, {.id = 383, .distance = 27.091f}, {.id = 339, .distance = 28.191f}, {.id = 104, .distance = 34.195f}, {.id = 102, .distance = 34.512f}, {.id = 338, .distance = 39.087f}
+            {.id = 1059, .distance = 21.912f}, {.id = 381, .distance = 26.524f}, {.id = 383, .distance = 27.091f}, {.id = 339, .distance = 28.191f}, {.id = 1060, .distance = 34.219f}, {.id = 1058, .distance = 34.438f}, {.id = 338, .distance = 39.087f}
         }},
         {383, {
-            {.id = 102, .distance = 21.617f}, {.id = 384, .distance = 26.524f}, {.id = 382, .distance = 27.091f}, {.id = 340, .distance = 28.182f}, {.id = 339, .distance = 31.855f}, {.id = 101, .distance = 34.177f}, {.id = 103, .distance = 34.498f}
+            {.id = 1058, .distance = 21.836f}, {.id = 384, .distance = 26.524f}, {.id = 382, .distance = 27.091f}, {.id = 340, .distance = 28.182f}, {.id = 339, .distance = 31.855f}, {.id = 1057, .distance = 34.438f}, {.id = 1059, .distance = 34.758f}
         }},
         {384, {
-            {.id = 101, .distance = 21.864f}, {.id = 383, .distance = 26.524f}, {.id = 385, .distance = 26.581f}, {.id = 340, .distance = 29.755f}, {.id = 102, .distance = 34.413f}, {.id = 100, .distance = 34.722f}, {.id = 341, .distance = 34.998f}
+            {.id = 1057, .distance = 21.912f}, {.id = 383, .distance = 26.524f}, {.id = 385, .distance = 26.581f}, {.id = 340, .distance = 29.755f}, {.id = 1056, .distance = 34.438f}, {.id = 1058, .distance = 34.758f}, {.id = 341, .distance = 34.998f}
         }},
         {385, {
-            {.id = 100, .distance = 21.728f}, {.id = 386, .distance = 25.497f}, {.id = 384, .distance = 26.581f}, {.id = 387, .distance = 27.091f}, {.id = 98, .distance = 34.412f}, {.id = 101, .distance = 34.419f}, {.id = 341, .distance = 34.425f}
+            {.id = 1056, .distance = 21.607f}, {.id = 386, .distance = 25.497f}, {.id = 384, .distance = 26.581f}, {.id = 387, .distance = 27.091f}, {.id = 1057, .distance = 34.219f}, {.id = 341, .distance = 34.425f}, {.id = 1054, .distance = 34.439f}
         }},
         {386, {
-            {.id = 342, .distance = 23.798f}, {.id = 387, .distance = 24.344f}, {.id = 388, .distance = 25.237f}, {.id = 385, .distance = 25.497f}, {.id = 341, .distance = 29.105f}, {.id = 391, .distance = 41.369f}, {.id = 98, .distance = 42.745f}
+            {.id = 342, .distance = 23.798f}, {.id = 387, .distance = 24.344f}, {.id = 388, .distance = 25.237f}, {.id = 385, .distance = 25.497f}, {.id = 341, .distance = 29.105f}, {.id = 391, .distance = 41.369f}, {.id = 1054, .distance = 42.825f}
         }},
         {387, {
-            {.id = 98, .distance = 21.717f}, {.id = 386, .distance = 24.344f}, {.id = 388, .distance = 24.548f}, {.id = 389, .distance = 26.371f}, {.id = 385, .distance = 27.091f}, {.id = 100, .distance = 34.474f}, {.id = 97, .distance = 36.854f}
+            {.id = 1054, .distance = 21.837f}, {.id = 386, .distance = 24.344f}, {.id = 388, .distance = 24.548f}, {.id = 389, .distance = 26.371f}, {.id = 385, .distance = 27.091f}, {.id = 1056, .distance = 34.611f}, {.id = 1053, .distance = 36.872f}
         }},
         {388, {
-            {.id = 387, .distance = 24.548f}, {.id = 390, .distance = 24.694f}, {.id = 389, .distance = 25.104f}, {.id = 386, .distance = 25.237f}, {.id = 391, .distance = 25.654f}, {.id = 342, .distance = 34.527f}, {.id = 241, .distance = 42.992f}
+            {.id = 387, .distance = 24.548f}, {.id = 390, .distance = 24.694f}, {.id = 389, .distance = 25.104f}, {.id = 386, .distance = 25.237f}, {.id = 391, .distance = 25.654f}, {.id = 342, .distance = 34.527f}, {.id = 95, .distance = 43.104f}
         }},
         {389, {
-            {.id = 243, .distance = 23.067f}, {.id = 97, .distance = 23.463f}, {.id = 388, .distance = 25.104f}, {.id = 387, .distance = 26.371f}, {.id = 390, .distance = 29.110f}, {.id = 98, .distance = 34.406f}, {.id = 241, .distance = 36.749f}
+            {.id = 97, .distance = 23.277f}, {.id = 1053, .distance = 23.326f}, {.id = 388, .distance = 25.104f}, {.id = 387, .distance = 26.371f}, {.id = 390, .distance = 29.110f}, {.id = 1054, .distance = 34.529f}, {.id = 95, .distance = 36.842f}
         }},
         {390, {
-            {.id = 241, .distance = 21.750f}, {.id = 391, .distance = 24.048f}, {.id = 388, .distance = 24.694f}, {.id = 392, .distance = 26.547f}, {.id = 389, .distance = 29.110f}, {.id = 239, .distance = 34.201f}, {.id = 243, .distance = 34.471f}
+            {.id = 95, .distance = 21.892f}, {.id = 391, .distance = 24.048f}, {.id = 388, .distance = 24.694f}, {.id = 392, .distance = 26.547f}, {.id = 389, .distance = 29.110f}, {.id = 93, .distance = 34.325f}, {.id = 97, .distance = 34.476f}
         }},
         {391, {
-            {.id = 343, .distance = 21.654f}, {.id = 390, .distance = 24.048f}, {.id = 392, .distance = 24.979f}, {.id = 388, .distance = 25.654f}, {.id = 342, .distance = 33.270f}, {.id = 386, .distance = 41.369f}, {.id = 241, .distance = 42.731f}
+            {.id = 343, .distance = 21.654f}, {.id = 390, .distance = 24.048f}, {.id = 392, .distance = 24.979f}, {.id = 388, .distance = 25.654f}, {.id = 342, .distance = 33.270f}, {.id = 386, .distance = 41.369f}, {.id = 95, .distance = 42.839f}
         }},
         {392, {
-            {.id = 239, .distance = 21.775f}, {.id = 391, .distance = 24.979f}, {.id = 390, .distance = 26.547f}, {.id = 393, .distance = 26.791f}, {.id = 238, .distance = 34.361f}, {.id = 241, .distance = 34.595f}, {.id = 343, .distance = 36.329f}
+            {.id = 93, .distance = 21.887f}, {.id = 391, .distance = 24.979f}, {.id = 390, .distance = 26.547f}, {.id = 393, .distance = 26.791f}, {.id = 92, .distance = 34.415f}, {.id = 95, .distance = 34.679f}, {.id = 343, .distance = 36.329f}
         }},
         {393, {
-            {.id = 238, .distance = 21.734f}, {.id = 394, .distance = 25.487f}, {.id = 392, .distance = 26.791f}, {.id = 344, .distance = 27.232f}, {.id = 237, .distance = 34.289f}, {.id = 239, .distance = 34.615f}, {.id = 345, .distance = 41.139f}
+            {.id = 92, .distance = 22.165f}, {.id = 394, .distance = 25.487f}, {.id = 392, .distance = 26.791f}, {.id = 344, .distance = 27.232f}, {.id = 93, .distance = 34.634f}, {.id = 91, .distance = 34.708f}, {.id = 345, .distance = 41.139f}
         }},
         {394, {
-            {.id = 237, .distance = 21.849f}, {.id = 393, .distance = 25.487f}, {.id = 345, .distance = 26.028f}, {.id = 395, .distance = 27.606f}, {.id = 238, .distance = 33.713f}, {.id = 236, .distance = 35.233f}, {.id = 344, .distance = 35.594f}
+            {.id = 91, .distance = 22.388f}, {.id = 393, .distance = 25.487f}, {.id = 345, .distance = 26.028f}, {.id = 395, .distance = 27.606f}, {.id = 92, .distance = 34.206f}, {.id = 344, .distance = 35.594f}, {.id = 90, .distance = 35.607f}
         }},
         {395, {
-            {.id = 236, .distance = 21.917f}, {.id = 396, .distance = 26.790f}, {.id = 394, .distance = 27.606f}, {.id = 346, .distance = 31.167f}, {.id = 345, .distance = 32.429f}, {.id = 237, .distance = 34.363f}, {.id = 235, .distance = 34.840f}
+            {.id = 90, .distance = 22.361f}, {.id = 396, .distance = 26.790f}, {.id = 394, .distance = 27.606f}, {.id = 346, .distance = 31.167f}, {.id = 345, .distance = 32.429f}, {.id = 89, .distance = 34.595f}, {.id = 91, .distance = 34.628f}
         }},
         {396, {
-            {.id = 235, .distance = 21.928f}, {.id = 397, .distance = 25.010f}, {.id = 395, .distance = 26.790f}, {.id = 398, .distance = 26.792f}, {.id = 233, .distance = 34.462f}, {.id = 236, .distance = 34.625f}, {.id = 346, .distance = 34.856f}
+            {.id = 89, .distance = 22.151f}, {.id = 397, .distance = 25.010f}, {.id = 395, .distance = 26.790f}, {.id = 398, .distance = 26.792f}, {.id = 90, .distance = 34.812f}, {.id = 346, .distance = 34.856f}, {.id = 87, .distance = 34.991f}
         }},
         {397, {
-            {.id = 347, .distance = 21.595f}, {.id = 398, .distance = 24.103f}, {.id = 396, .distance = 25.010f}, {.id = 399, .distance = 25.812f}, {.id = 346, .distance = 33.491f}, {.id = 402, .distance = 41.309f}, {.id = 233, .distance = 42.673f}
+            {.id = 347, .distance = 21.595f}, {.id = 398, .distance = 24.103f}, {.id = 396, .distance = 25.010f}, {.id = 399, .distance = 25.812f}, {.id = 346, .distance = 33.491f}, {.id = 402, .distance = 41.309f}, {.id = 87, .distance = 42.896f}
         }},
         {398, {
-            {.id = 233, .distance = 21.838f}, {.id = 397, .distance = 24.103f}, {.id = 399, .distance = 24.732f}, {.id = 400, .distance = 26.546f}, {.id = 396, .distance = 26.792f}, {.id = 235, .distance = 34.399f}, {.id = 232, .distance = 37.083f}
+            {.id = 87, .distance = 21.881f}, {.id = 397, .distance = 24.103f}, {.id = 399, .distance = 24.732f}, {.id = 400, .distance = 26.546f}, {.id = 396, .distance = 26.792f}, {.id = 89, .distance = 34.928f}, {.id = 86, .distance = 36.598f}
         }},
         {399, {
             {.id = 400, .distance = 24.694f}, {.id = 398, .distance = 24.732f}, {.id = 401, .distance = 25.085f}, {.id = 402, .distance = 25.237f}, {.id = 397, .distance = 25.812f}, {.id = 347, .distance = 36.997f}, {.id = 348, .distance = 39.624f}
         }},
         {400, {
-            {.id = 1323, .distance = 23.130f}, {.id = 232, .distance = 23.669f}, {.id = 399, .distance = 24.694f}, {.id = 398, .distance = 26.546f}, {.id = 401, .distance = 28.931f}, {.id = 233, .distance = 34.521f}, {.id = 1321, .distance = 36.625f}
+            {.id = 783, .distance = 23.130f}, {.id = 86, .distance = 23.274f}, {.id = 399, .distance = 24.694f}, {.id = 398, .distance = 26.546f}, {.id = 401, .distance = 28.931f}, {.id = 87, .distance = 34.044f}, {.id = 781, .distance = 36.625f}
         }},
         {401, {
-            {.id = 1321, .distance = 20.992f}, {.id = 402, .distance = 24.787f}, {.id = 399, .distance = 25.085f}, {.id = 403, .distance = 26.270f}, {.id = 400, .distance = 28.931f}, {.id = 1319, .distance = 33.735f}, {.id = 1323, .distance = 33.987f}
+            {.id = 781, .distance = 20.992f}, {.id = 402, .distance = 24.787f}, {.id = 399, .distance = 25.085f}, {.id = 403, .distance = 26.270f}, {.id = 400, .distance = 28.931f}, {.id = 779, .distance = 33.735f}, {.id = 783, .distance = 33.987f}
         }},
         {402, {
             {.id = 348, .distance = 20.735f}, {.id = 401, .distance = 24.787f}, {.id = 399, .distance = 25.237f}, {.id = 403, .distance = 25.425f}, {.id = 347, .distance = 38.308f}, {.id = 349, .distance = 38.379f}, {.id = 397, .distance = 41.309f}
         }},
         {403, {
-            {.id = 1319, .distance = 21.421f}, {.id = 402, .distance = 25.425f}, {.id = 401, .distance = 26.270f}, {.id = 404, .distance = 27.049f}, {.id = 1321, .distance = 34.142f}, {.id = 1318, .distance = 34.368f}, {.id = 349, .distance = 37.159f}
+            {.id = 779, .distance = 21.421f}, {.id = 402, .distance = 25.425f}, {.id = 401, .distance = 26.270f}, {.id = 404, .distance = 27.049f}, {.id = 781, .distance = 34.142f}, {.id = 778, .distance = 34.368f}, {.id = 349, .distance = 37.159f}
         }},
         {404, {
-            {.id = 1318, .distance = 22.075f}, {.id = 350, .distance = 27.042f}, {.id = 403, .distance = 27.049f}, {.id = 349, .distance = 28.297f}, {.id = 1317, .distance = 34.543f}, {.id = 1319, .distance = 34.794f}, {.id = 324, .distance = 35.703f}
+            {.id = 778, .distance = 22.075f}, {.id = 350, .distance = 27.042f}, {.id = 403, .distance = 27.049f}, {.id = 349, .distance = 28.297f}, {.id = 777, .distance = 34.543f}, {.id = 779, .distance = 34.794f}, {.id = 324, .distance = 35.703f}
         }},
         {405, {
             {.id = 410, .distance = 22.969f}, {.id = 408, .distance = 23.177f}, {.id = 407, .distance = 23.180f}, {.id = 406, .distance = 23.418f}, {.id = 409, .distance = 23.540f}, {.id = 419, .distance = 46.414f}, {.id = 416, .distance = 46.608f}
@@ -3732,169 +3732,169 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
             {.id = 458, .distance = 27.954f}, {.id = 539, .distance = 28.297f}, {.id = 483, .distance = 29.747f}, {.id = 459, .distance = 29.831f}, {.id = 538, .distance = 37.159f}, {.id = 437, .distance = 38.168f}, {.id = 537, .distance = 38.379f}
         }},
         {485, {
-            {.id = 1025, .distance = 21.842f}, {.id = 459, .distance = 24.998f}, {.id = 486, .distance = 26.018f}, {.id = 539, .distance = 27.042f}, {.id = 1079, .distance = 34.231f}, {.id = 1026, .distance = 35.161f}, {.id = 460, .distance = 40.605f}
+            {.id = 755, .distance = 21.842f}, {.id = 459, .distance = 24.998f}, {.id = 486, .distance = 26.018f}, {.id = 539, .distance = 27.042f}, {.id = 809, .distance = 34.231f}, {.id = 756, .distance = 35.161f}, {.id = 460, .distance = 40.605f}
         }},
         {486, {
-            {.id = 1079, .distance = 22.913f}, {.id = 485, .distance = 26.018f}, {.id = 487, .distance = 26.277f}, {.id = 460, .distance = 27.955f}, {.id = 1078, .distance = 35.024f}, {.id = 1025, .distance = 35.161f}, {.id = 459, .distance = 36.289f}
+            {.id = 809, .distance = 22.913f}, {.id = 485, .distance = 26.018f}, {.id = 487, .distance = 26.277f}, {.id = 460, .distance = 27.955f}, {.id = 808, .distance = 35.024f}, {.id = 755, .distance = 35.161f}, {.id = 459, .distance = 36.289f}
         }},
         {487, {
-            {.id = 1078, .distance = 21.613f}, {.id = 488, .distance = 25.444f}, {.id = 486, .distance = 26.277f}, {.id = 489, .distance = 27.296f}, {.id = 1076, .distance = 34.337f}, {.id = 1079, .distance = 34.428f}, {.id = 460, .distance = 36.960f}
+            {.id = 808, .distance = 21.613f}, {.id = 488, .distance = 25.444f}, {.id = 486, .distance = 26.277f}, {.id = 489, .distance = 27.296f}, {.id = 806, .distance = 34.337f}, {.id = 809, .distance = 34.428f}, {.id = 460, .distance = 36.960f}
         }},
         {488, {
             {.id = 461, .distance = 21.650f}, {.id = 489, .distance = 23.803f}, {.id = 487, .distance = 25.444f}, {.id = 490, .distance = 25.495f}, {.id = 462, .distance = 38.588f}, {.id = 460, .distance = 39.188f}, {.id = 493, .distance = 40.893f}
         }},
         {489, {
-            {.id = 1076, .distance = 21.388f}, {.id = 488, .distance = 23.803f}, {.id = 490, .distance = 24.430f}, {.id = 491, .distance = 26.781f}, {.id = 487, .distance = 27.296f}, {.id = 1078, .distance = 34.344f}, {.id = 1075, .distance = 36.914f}
+            {.id = 806, .distance = 21.388f}, {.id = 488, .distance = 23.803f}, {.id = 490, .distance = 24.430f}, {.id = 491, .distance = 26.781f}, {.id = 487, .distance = 27.296f}, {.id = 808, .distance = 34.344f}, {.id = 805, .distance = 36.914f}
         }},
         {490, {
             {.id = 492, .distance = 24.299f}, {.id = 489, .distance = 24.430f}, {.id = 491, .distance = 24.711f}, {.id = 493, .distance = 25.084f}, {.id = 488, .distance = 25.495f}, {.id = 462, .distance = 37.220f}, {.id = 461, .distance = 40.095f}
         }},
         {491, {
-            {.id = 896, .distance = 23.353f}, {.id = 1075, .distance = 23.430f}, {.id = 490, .distance = 24.711f}, {.id = 489, .distance = 26.781f}, {.id = 492, .distance = 27.879f}, {.id = 1076, .distance = 34.473f}, {.id = 894, .distance = 36.766f}
+            {.id = 670, .distance = 23.274f}, {.id = 805, .distance = 23.430f}, {.id = 490, .distance = 24.711f}, {.id = 489, .distance = 26.781f}, {.id = 492, .distance = 27.879f}, {.id = 806, .distance = 34.473f}, {.id = 668, .distance = 36.598f}
         }},
         {492, {
-            {.id = 894, .distance = 22.006f}, {.id = 490, .distance = 24.299f}, {.id = 493, .distance = 24.636f}, {.id = 494, .distance = 27.526f}, {.id = 491, .distance = 27.879f}, {.id = 896, .distance = 34.190f}, {.id = 892, .distance = 35.395f}
+            {.id = 668, .distance = 21.881f}, {.id = 490, .distance = 24.299f}, {.id = 493, .distance = 24.636f}, {.id = 494, .distance = 27.526f}, {.id = 491, .distance = 27.879f}, {.id = 670, .distance = 34.044f}, {.id = 666, .distance = 34.991f}
         }},
         {493, {
             {.id = 462, .distance = 21.863f}, {.id = 492, .distance = 24.636f}, {.id = 490, .distance = 25.084f}, {.id = 494, .distance = 25.653f}, {.id = 463, .distance = 34.005f}, {.id = 488, .distance = 40.893f}, {.id = 461, .distance = 43.024f}
         }},
         {494, {
-            {.id = 892, .distance = 22.020f}, {.id = 493, .distance = 25.653f}, {.id = 495, .distance = 26.467f}, {.id = 492, .distance = 27.526f}, {.id = 894, .distance = 34.913f}, {.id = 891, .distance = 34.985f}, {.id = 463, .distance = 35.198f}
+            {.id = 666, .distance = 22.151f}, {.id = 493, .distance = 25.653f}, {.id = 495, .distance = 26.467f}, {.id = 492, .distance = 27.526f}, {.id = 665, .distance = 34.595f}, {.id = 668, .distance = 34.928f}, {.id = 463, .distance = 35.198f}
         }},
         {495, {
-            {.id = 891, .distance = 22.850f}, {.id = 494, .distance = 26.467f}, {.id = 496, .distance = 26.547f}, {.id = 463, .distance = 31.431f}, {.id = 464, .distance = 32.153f}, {.id = 892, .distance = 34.251f}, {.id = 890, .distance = 34.323f}
+            {.id = 665, .distance = 22.361f}, {.id = 494, .distance = 26.467f}, {.id = 496, .distance = 26.547f}, {.id = 463, .distance = 31.431f}, {.id = 464, .distance = 32.153f}, {.id = 666, .distance = 34.812f}, {.id = 664, .distance = 35.607f}
         }},
         {496, {
-            {.id = 890, .distance = 22.163f}, {.id = 464, .distance = 25.318f}, {.id = 495, .distance = 26.547f}, {.id = 497, .distance = 27.116f}, {.id = 891, .distance = 34.871f}, {.id = 944, .distance = 34.959f}, {.id = 465, .distance = 36.035f}
+            {.id = 664, .distance = 22.388f}, {.id = 464, .distance = 25.318f}, {.id = 495, .distance = 26.547f}, {.id = 497, .distance = 27.116f}, {.id = 665, .distance = 34.628f}, {.id = 663, .distance = 34.708f}, {.id = 465, .distance = 36.035f}
         }},
         {497, {
-            {.id = 944, .distance = 22.497f}, {.id = 498, .distance = 26.383f}, {.id = 496, .distance = 27.116f}, {.id = 465, .distance = 27.523f}, {.id = 943, .distance = 34.412f}, {.id = 890, .distance = 35.235f}, {.id = 464, .distance = 41.220f}
+            {.id = 663, .distance = 22.165f}, {.id = 498, .distance = 26.383f}, {.id = 496, .distance = 27.116f}, {.id = 465, .distance = 27.523f}, {.id = 664, .distance = 34.206f}, {.id = 662, .distance = 34.415f}, {.id = 464, .distance = 41.220f}
         }},
         {498, {
-            {.id = 943, .distance = 21.527f}, {.id = 499, .distance = 25.498f}, {.id = 497, .distance = 26.383f}, {.id = 500, .distance = 26.792f}, {.id = 941, .distance = 33.853f}, {.id = 944, .distance = 34.808f}, {.id = 466, .distance = 36.749f}
+            {.id = 662, .distance = 21.887f}, {.id = 499, .distance = 25.498f}, {.id = 497, .distance = 26.383f}, {.id = 500, .distance = 26.792f}, {.id = 660, .distance = 34.325f}, {.id = 663, .distance = 34.634f}, {.id = 466, .distance = 36.749f}
         }},
         {499, {
-            {.id = 466, .distance = 21.879f}, {.id = 500, .distance = 24.550f}, {.id = 498, .distance = 25.498f}, {.id = 501, .distance = 25.732f}, {.id = 467, .distance = 33.585f}, {.id = 504, .distance = 41.045f}, {.id = 941, .distance = 42.522f}
+            {.id = 466, .distance = 21.879f}, {.id = 500, .distance = 24.550f}, {.id = 498, .distance = 25.498f}, {.id = 501, .distance = 25.732f}, {.id = 467, .distance = 33.585f}, {.id = 504, .distance = 41.045f}, {.id = 660, .distance = 43.103f}
         }},
         {500, {
-            {.id = 941, .distance = 21.127f}, {.id = 499, .distance = 24.550f}, {.id = 501, .distance = 24.859f}, {.id = 502, .distance = 26.221f}, {.id = 498, .distance = 26.792f}, {.id = 943, .distance = 34.222f}, {.id = 940, .distance = 36.712f}
+            {.id = 660, .distance = 21.892f}, {.id = 499, .distance = 24.550f}, {.id = 501, .distance = 24.859f}, {.id = 502, .distance = 26.221f}, {.id = 498, .distance = 26.792f}, {.id = 662, .distance = 34.679f}, {.id = 659, .distance = 36.842f}
         }},
         {501, {
-            {.id = 503, .distance = 24.528f}, {.id = 502, .distance = 24.669f}, {.id = 500, .distance = 24.859f}, {.id = 504, .distance = 25.084f}, {.id = 499, .distance = 25.732f}, {.id = 467, .distance = 35.615f}, {.id = 941, .distance = 42.874f}
+            {.id = 503, .distance = 24.528f}, {.id = 502, .distance = 24.669f}, {.id = 500, .distance = 24.859f}, {.id = 504, .distance = 25.084f}, {.id = 499, .distance = 25.732f}, {.id = 467, .distance = 35.615f}, {.id = 1456, .distance = 42.825f}
         }},
         {502, {
-            {.id = 940, .distance = 23.328f}, {.id = 761, .distance = 23.747f}, {.id = 501, .distance = 24.669f}, {.id = 500, .distance = 26.221f}, {.id = 503, .distance = 28.881f}, {.id = 941, .distance = 33.983f}, {.id = 759, .distance = 37.251f}
+            {.id = 659, .distance = 23.277f}, {.id = 1458, .distance = 23.490f}, {.id = 501, .distance = 24.669f}, {.id = 500, .distance = 26.221f}, {.id = 503, .distance = 28.881f}, {.id = 660, .distance = 34.476f}, {.id = 1456, .distance = 36.998f}
         }},
         {503, {
-            {.id = 759, .distance = 21.962f}, {.id = 504, .distance = 24.210f}, {.id = 501, .distance = 24.528f}, {.id = 505, .distance = 26.372f}, {.id = 502, .distance = 28.881f}, {.id = 761, .distance = 34.668f}, {.id = 757, .distance = 34.862f}
+            {.id = 1456, .distance = 21.608f}, {.id = 504, .distance = 24.210f}, {.id = 501, .distance = 24.528f}, {.id = 505, .distance = 26.372f}, {.id = 502, .distance = 28.881f}, {.id = 1458, .distance = 34.196f}, {.id = 1454, .distance = 34.300f}
         }},
         {504, {
-            {.id = 503, .distance = 24.210f}, {.id = 467, .distance = 24.618f}, {.id = 501, .distance = 25.084f}, {.id = 505, .distance = 25.246f}, {.id = 468, .distance = 29.298f}, {.id = 499, .distance = 41.045f}, {.id = 759, .distance = 42.983f}
+            {.id = 503, .distance = 24.210f}, {.id = 467, .distance = 24.618f}, {.id = 501, .distance = 25.084f}, {.id = 505, .distance = 25.246f}, {.id = 468, .distance = 29.298f}, {.id = 499, .distance = 41.045f}, {.id = 1456, .distance = 42.732f}
         }},
         {505, {
-            {.id = 757, .distance = 21.814f}, {.id = 504, .distance = 25.246f}, {.id = 503, .distance = 26.372f}, {.id = 506, .distance = 27.091f}, {.id = 759, .distance = 34.387f}, {.id = 468, .distance = 34.857f}, {.id = 756, .distance = 35.229f}
+            {.id = 1454, .distance = 21.658f}, {.id = 504, .distance = 25.246f}, {.id = 503, .distance = 26.372f}, {.id = 506, .distance = 27.091f}, {.id = 1456, .distance = 34.197f}, {.id = 1453, .distance = 34.609f}, {.id = 468, .distance = 34.857f}
         }},
         {506, {
-            {.id = 756, .distance = 22.413f}, {.id = 507, .distance = 26.524f}, {.id = 505, .distance = 27.091f}, {.id = 469, .distance = 29.494f}, {.id = 755, .distance = 33.945f}, {.id = 757, .distance = 34.062f}, {.id = 468, .distance = 35.556f}
+            {.id = 1453, .distance = 21.606f}, {.id = 507, .distance = 26.524f}, {.id = 505, .distance = 27.091f}, {.id = 469, .distance = 29.494f}, {.id = 1452, .distance = 34.298f}, {.id = 1454, .distance = 34.445f}, {.id = 468, .distance = 35.556f}
         }},
         {507, {
-            {.id = 755, .distance = 21.634f}, {.id = 506, .distance = 26.524f}, {.id = 508, .distance = 26.730f}, {.id = 469, .distance = 28.584f}, {.id = 470, .distance = 32.097f}, {.id = 809, .distance = 34.543f}, {.id = 756, .distance = 34.606f}
+            {.id = 1452, .distance = 21.478f}, {.id = 506, .distance = 26.524f}, {.id = 508, .distance = 26.730f}, {.id = 469, .distance = 28.584f}, {.id = 470, .distance = 32.097f}, {.id = 1453, .distance = 34.202f}, {.id = 1451, .distance = 34.298f}
         }},
         {508, {
-            {.id = 809, .distance = 22.075f}, {.id = 507, .distance = 26.730f}, {.id = 509, .distance = 26.732f}, {.id = 470, .distance = 28.097f}, {.id = 808, .distance = 34.368f}, {.id = 755, .distance = 34.750f}, {.id = 471, .distance = 40.135f}
+            {.id = 1451, .distance = 21.606f}, {.id = 507, .distance = 26.730f}, {.id = 509, .distance = 26.732f}, {.id = 470, .distance = 28.097f}, {.id = 1452, .distance = 34.202f}, {.id = 1450, .distance = 34.609f}, {.id = 471, .distance = 40.135f}
         }},
         {509, {
-            {.id = 808, .distance = 21.421f}, {.id = 510, .distance = 24.672f}, {.id = 508, .distance = 26.732f}, {.id = 511, .distance = 26.732f}, {.id = 806, .distance = 33.735f}, {.id = 809, .distance = 34.794f}, {.id = 471, .distance = 35.127f}
+            {.id = 1450, .distance = 21.658f}, {.id = 510, .distance = 24.672f}, {.id = 508, .distance = 26.732f}, {.id = 511, .distance = 26.732f}, {.id = 1448, .distance = 34.300f}, {.id = 1451, .distance = 34.445f}, {.id = 471, .distance = 35.127f}
         }},
         {510, {
-            {.id = 511, .distance = 23.501f}, {.id = 509, .distance = 24.672f}, {.id = 512, .distance = 25.068f}, {.id = 471, .distance = 25.325f}, {.id = 472, .distance = 29.320f}, {.id = 806, .distance = 41.305f}, {.id = 515, .distance = 41.461f}
+            {.id = 511, .distance = 23.501f}, {.id = 509, .distance = 24.672f}, {.id = 512, .distance = 25.068f}, {.id = 471, .distance = 25.325f}, {.id = 472, .distance = 29.320f}, {.id = 515, .distance = 41.461f}, {.id = 1448, .distance = 41.850f}
         }},
         {511, {
-            {.id = 806, .distance = 20.992f}, {.id = 510, .distance = 23.501f}, {.id = 512, .distance = 24.580f}, {.id = 513, .distance = 26.371f}, {.id = 509, .distance = 26.732f}, {.id = 808, .distance = 34.142f}, {.id = 805, .distance = 36.625f}
+            {.id = 1448, .distance = 21.608f}, {.id = 510, .distance = 23.501f}, {.id = 512, .distance = 24.580f}, {.id = 513, .distance = 26.371f}, {.id = 509, .distance = 26.732f}, {.id = 1450, .distance = 34.197f}, {.id = 1447, .distance = 36.998f}
         }},
         {512, {
-            {.id = 511, .distance = 24.580f}, {.id = 514, .distance = 24.959f}, {.id = 513, .distance = 25.010f}, {.id = 510, .distance = 25.068f}, {.id = 515, .distance = 25.146f}, {.id = 472, .distance = 34.248f}, {.id = 806, .distance = 42.548f}
+            {.id = 511, .distance = 24.580f}, {.id = 514, .distance = 24.959f}, {.id = 513, .distance = 25.010f}, {.id = 510, .distance = 25.068f}, {.id = 515, .distance = 25.146f}, {.id = 472, .distance = 34.248f}, {.id = 1448, .distance = 42.952f}
         }},
         {513, {
-            {.id = 805, .distance = 23.130f}, {.id = 626, .distance = 23.573f}, {.id = 512, .distance = 25.010f}, {.id = 511, .distance = 26.371f}, {.id = 514, .distance = 29.071f}, {.id = 806, .distance = 33.987f}, {.id = 624, .distance = 37.257f}
+            {.id = 1334, .distance = 23.326f}, {.id = 1447, .distance = 23.490f}, {.id = 512, .distance = 25.010f}, {.id = 511, .distance = 26.371f}, {.id = 514, .distance = 29.071f}, {.id = 1448, .distance = 34.196f}, {.id = 1332, .distance = 36.872f}
         }},
         {514, {
-            {.id = 624, .distance = 22.042f}, {.id = 515, .distance = 23.829f}, {.id = 512, .distance = 24.959f}, {.id = 516, .distance = 26.582f}, {.id = 513, .distance = 29.071f}, {.id = 626, .distance = 34.755f}, {.id = 622, .distance = 34.875f}
+            {.id = 1332, .distance = 21.837f}, {.id = 515, .distance = 23.829f}, {.id = 512, .distance = 24.959f}, {.id = 516, .distance = 26.582f}, {.id = 513, .distance = 29.071f}, {.id = 1330, .distance = 34.439f}, {.id = 1334, .distance = 34.529f}
         }},
         {515, {
-            {.id = 514, .distance = 23.829f}, {.id = 512, .distance = 25.146f}, {.id = 473, .distance = 25.156f}, {.id = 516, .distance = 25.569f}, {.id = 472, .distance = 28.406f}, {.id = 510, .distance = 41.461f}, {.id = 624, .distance = 42.759f}
+            {.id = 514, .distance = 23.829f}, {.id = 512, .distance = 25.146f}, {.id = 473, .distance = 25.156f}, {.id = 516, .distance = 25.569f}, {.id = 472, .distance = 28.406f}, {.id = 510, .distance = 41.461f}, {.id = 1332, .distance = 42.698f}
         }},
         {516, {
-            {.id = 622, .distance = 21.649f}, {.id = 515, .distance = 25.569f}, {.id = 517, .distance = 26.524f}, {.id = 514, .distance = 26.582f}, {.id = 624, .distance = 34.485f}, {.id = 473, .distance = 34.565f}, {.id = 621, .distance = 34.934f}
+            {.id = 1330, .distance = 21.607f}, {.id = 515, .distance = 25.569f}, {.id = 517, .distance = 26.524f}, {.id = 514, .distance = 26.582f}, {.id = 1329, .distance = 34.438f}, {.id = 473, .distance = 34.565f}, {.id = 1332, .distance = 34.611f}
         }},
         {517, {
-            {.id = 621, .distance = 22.426f}, {.id = 516, .distance = 26.524f}, {.id = 518, .distance = 27.091f}, {.id = 474, .distance = 28.191f}, {.id = 622, .distance = 33.829f}, {.id = 620, .distance = 34.192f}, {.id = 473, .distance = 39.087f}
+            {.id = 1329, .distance = 21.912f}, {.id = 516, .distance = 26.524f}, {.id = 518, .distance = 27.091f}, {.id = 474, .distance = 28.191f}, {.id = 1330, .distance = 34.219f}, {.id = 1328, .distance = 34.438f}, {.id = 473, .distance = 39.087f}
         }},
         {518, {
-            {.id = 620, .distance = 21.817f}, {.id = 519, .distance = 26.524f}, {.id = 517, .distance = 27.091f}, {.id = 475, .distance = 28.182f}, {.id = 474, .distance = 31.855f}, {.id = 674, .distance = 34.460f}, {.id = 621, .distance = 34.914f}
+            {.id = 1328, .distance = 21.836f}, {.id = 519, .distance = 26.524f}, {.id = 517, .distance = 27.091f}, {.id = 475, .distance = 28.182f}, {.id = 474, .distance = 31.855f}, {.id = 1327, .distance = 34.438f}, {.id = 1329, .distance = 34.758f}
         }},
         {519, {
-            {.id = 674, .distance = 22.369f}, {.id = 518, .distance = 26.524f}, {.id = 520, .distance = 26.581f}, {.id = 475, .distance = 29.755f}, {.id = 673, .distance = 34.516f}, {.id = 620, .distance = 34.972f}, {.id = 476, .distance = 34.998f}
+            {.id = 1327, .distance = 21.912f}, {.id = 518, .distance = 26.524f}, {.id = 520, .distance = 26.581f}, {.id = 475, .distance = 29.755f}, {.id = 1326, .distance = 34.438f}, {.id = 1328, .distance = 34.758f}, {.id = 476, .distance = 34.998f}
         }},
         {520, {
-            {.id = 673, .distance = 21.529f}, {.id = 521, .distance = 25.497f}, {.id = 519, .distance = 26.581f}, {.id = 522, .distance = 27.091f}, {.id = 671, .distance = 33.883f}, {.id = 476, .distance = 34.425f}, {.id = 674, .distance = 34.782f}
+            {.id = 1326, .distance = 21.607f}, {.id = 521, .distance = 25.497f}, {.id = 519, .distance = 26.581f}, {.id = 522, .distance = 27.091f}, {.id = 1327, .distance = 34.219f}, {.id = 476, .distance = 34.425f}, {.id = 1324, .distance = 34.439f}
         }},
         {521, {
-            {.id = 477, .distance = 23.798f}, {.id = 522, .distance = 24.344f}, {.id = 523, .distance = 25.237f}, {.id = 520, .distance = 25.497f}, {.id = 476, .distance = 29.105f}, {.id = 526, .distance = 41.369f}, {.id = 671, .distance = 42.243f}
+            {.id = 477, .distance = 23.798f}, {.id = 522, .distance = 24.344f}, {.id = 523, .distance = 25.237f}, {.id = 520, .distance = 25.497f}, {.id = 476, .distance = 29.105f}, {.id = 526, .distance = 41.369f}, {.id = 1324, .distance = 42.825f}
         }},
         {522, {
-            {.id = 671, .distance = 21.144f}, {.id = 521, .distance = 24.344f}, {.id = 523, .distance = 24.548f}, {.id = 524, .distance = 26.371f}, {.id = 520, .distance = 27.091f}, {.id = 673, .distance = 34.433f}, {.id = 670, .distance = 36.516f}
+            {.id = 1324, .distance = 21.837f}, {.id = 521, .distance = 24.344f}, {.id = 523, .distance = 24.548f}, {.id = 524, .distance = 26.371f}, {.id = 520, .distance = 27.091f}, {.id = 1326, .distance = 34.611f}, {.id = 1323, .distance = 36.872f}
         }},
         {523, {
-            {.id = 522, .distance = 24.548f}, {.id = 525, .distance = 24.694f}, {.id = 524, .distance = 25.104f}, {.id = 521, .distance = 25.237f}, {.id = 526, .distance = 25.654f}, {.id = 477, .distance = 34.527f}, {.id = 671, .distance = 42.754f}
+            {.id = 522, .distance = 24.548f}, {.id = 525, .distance = 24.694f}, {.id = 524, .distance = 25.104f}, {.id = 521, .distance = 25.237f}, {.id = 526, .distance = 25.654f}, {.id = 477, .distance = 34.527f}, {.id = 230, .distance = 43.104f}
         }},
         {524, {
-            {.id = 670, .distance = 23.145f}, {.id = 1166, .distance = 23.364f}, {.id = 523, .distance = 25.104f}, {.id = 522, .distance = 26.371f}, {.id = 525, .distance = 29.110f}, {.id = 671, .distance = 34.212f}, {.id = 1164, .distance = 37.037f}
+            {.id = 232, .distance = 23.277f}, {.id = 1323, .distance = 23.326f}, {.id = 523, .distance = 25.104f}, {.id = 522, .distance = 26.371f}, {.id = 525, .distance = 29.110f}, {.id = 1324, .distance = 34.529f}, {.id = 230, .distance = 36.842f}
         }},
         {525, {
-            {.id = 1164, .distance = 22.141f}, {.id = 526, .distance = 24.048f}, {.id = 523, .distance = 24.694f}, {.id = 527, .distance = 26.547f}, {.id = 524, .distance = 29.110f}, {.id = 1162, .distance = 34.797f}, {.id = 1166, .distance = 34.955f}
+            {.id = 230, .distance = 21.892f}, {.id = 526, .distance = 24.048f}, {.id = 523, .distance = 24.694f}, {.id = 527, .distance = 26.547f}, {.id = 524, .distance = 29.110f}, {.id = 228, .distance = 34.325f}, {.id = 232, .distance = 34.476f}
         }},
         {526, {
-            {.id = 478, .distance = 21.654f}, {.id = 525, .distance = 24.048f}, {.id = 527, .distance = 24.979f}, {.id = 523, .distance = 25.654f}, {.id = 477, .distance = 33.270f}, {.id = 521, .distance = 41.369f}, {.id = 1164, .distance = 43.012f}
+            {.id = 478, .distance = 21.654f}, {.id = 525, .distance = 24.048f}, {.id = 527, .distance = 24.979f}, {.id = 523, .distance = 25.654f}, {.id = 477, .distance = 33.270f}, {.id = 521, .distance = 41.369f}, {.id = 230, .distance = 42.839f}
         }},
         {527, {
-            {.id = 1162, .distance = 21.957f}, {.id = 526, .distance = 24.979f}, {.id = 525, .distance = 26.547f}, {.id = 528, .distance = 26.791f}, {.id = 1164, .distance = 34.795f}, {.id = 1161, .distance = 35.021f}, {.id = 478, .distance = 36.329f}
+            {.id = 228, .distance = 21.887f}, {.id = 526, .distance = 24.979f}, {.id = 525, .distance = 26.547f}, {.id = 528, .distance = 26.791f}, {.id = 227, .distance = 34.415f}, {.id = 230, .distance = 34.679f}, {.id = 478, .distance = 36.329f}
         }},
         {528, {
-            {.id = 1161, .distance = 22.576f}, {.id = 529, .distance = 25.487f}, {.id = 527, .distance = 26.791f}, {.id = 479, .distance = 27.232f}, {.id = 1160, .distance = 33.974f}, {.id = 1162, .distance = 34.245f}, {.id = 480, .distance = 41.139f}
+            {.id = 227, .distance = 22.165f}, {.id = 529, .distance = 25.487f}, {.id = 527, .distance = 26.791f}, {.id = 479, .distance = 27.232f}, {.id = 228, .distance = 34.634f}, {.id = 226, .distance = 34.708f}, {.id = 480, .distance = 41.139f}
         }},
         {529, {
-            {.id = 1160, .distance = 22.017f}, {.id = 528, .distance = 25.487f}, {.id = 480, .distance = 26.028f}, {.id = 530, .distance = 27.606f}, {.id = 1161, .distance = 34.146f}, {.id = 1214, .distance = 35.507f}, {.id = 479, .distance = 35.594f}
+            {.id = 226, .distance = 22.388f}, {.id = 528, .distance = 25.487f}, {.id = 480, .distance = 26.028f}, {.id = 530, .distance = 27.606f}, {.id = 227, .distance = 34.206f}, {.id = 479, .distance = 35.594f}, {.id = 225, .distance = 35.607f}
         }},
         {530, {
-            {.id = 1214, .distance = 22.422f}, {.id = 531, .distance = 26.790f}, {.id = 529, .distance = 27.606f}, {.id = 481, .distance = 31.167f}, {.id = 480, .distance = 32.429f}, {.id = 1213, .distance = 34.634f}, {.id = 1160, .distance = 34.921f}
+            {.id = 225, .distance = 22.361f}, {.id = 531, .distance = 26.790f}, {.id = 529, .distance = 27.606f}, {.id = 481, .distance = 31.167f}, {.id = 480, .distance = 32.429f}, {.id = 224, .distance = 34.595f}, {.id = 226, .distance = 34.628f}
         }},
         {531, {
-            {.id = 1213, .distance = 21.731f}, {.id = 532, .distance = 25.010f}, {.id = 530, .distance = 26.790f}, {.id = 533, .distance = 26.792f}, {.id = 1211, .distance = 33.932f}, {.id = 481, .distance = 34.856f}, {.id = 1214, .distance = 34.987f}
+            {.id = 224, .distance = 22.151f}, {.id = 532, .distance = 25.010f}, {.id = 530, .distance = 26.790f}, {.id = 533, .distance = 26.792f}, {.id = 225, .distance = 34.812f}, {.id = 481, .distance = 34.856f}, {.id = 222, .distance = 34.991f}
         }},
         {532, {
-            {.id = 482, .distance = 21.595f}, {.id = 533, .distance = 24.103f}, {.id = 531, .distance = 25.010f}, {.id = 534, .distance = 25.812f}, {.id = 481, .distance = 33.491f}, {.id = 537, .distance = 41.309f}, {.id = 1211, .distance = 42.170f}
+            {.id = 482, .distance = 21.595f}, {.id = 533, .distance = 24.103f}, {.id = 531, .distance = 25.010f}, {.id = 534, .distance = 25.812f}, {.id = 481, .distance = 33.491f}, {.id = 537, .distance = 41.309f}, {.id = 222, .distance = 42.896f}
         }},
         {533, {
-            {.id = 1211, .distance = 21.264f}, {.id = 532, .distance = 24.103f}, {.id = 534, .distance = 24.732f}, {.id = 535, .distance = 26.546f}, {.id = 531, .distance = 26.792f}, {.id = 1213, .distance = 34.357f}, {.id = 1210, .distance = 36.746f}
+            {.id = 222, .distance = 21.881f}, {.id = 532, .distance = 24.103f}, {.id = 534, .distance = 24.732f}, {.id = 535, .distance = 26.546f}, {.id = 531, .distance = 26.792f}, {.id = 224, .distance = 34.928f}, {.id = 221, .distance = 36.598f}
         }},
         {534, {
             {.id = 535, .distance = 24.694f}, {.id = 533, .distance = 24.732f}, {.id = 536, .distance = 25.085f}, {.id = 537, .distance = 25.237f}, {.id = 532, .distance = 25.812f}, {.id = 482, .distance = 36.997f}, {.id = 483, .distance = 39.624f}
         }},
         {535, {
-            {.id = 1210, .distance = 23.352f}, {.id = 1031, .distance = 23.430f}, {.id = 534, .distance = 24.694f}, {.id = 533, .distance = 26.546f}, {.id = 536, .distance = 28.931f}, {.id = 1211, .distance = 34.325f}, {.id = 1029, .distance = 36.914f}
+            {.id = 221, .distance = 23.274f}, {.id = 761, .distance = 23.430f}, {.id = 534, .distance = 24.694f}, {.id = 533, .distance = 26.546f}, {.id = 536, .distance = 28.931f}, {.id = 222, .distance = 34.044f}, {.id = 759, .distance = 36.914f}
         }},
         {536, {
-            {.id = 1029, .distance = 21.388f}, {.id = 537, .distance = 24.787f}, {.id = 534, .distance = 25.085f}, {.id = 538, .distance = 26.270f}, {.id = 535, .distance = 28.931f}, {.id = 1027, .distance = 34.337f}, {.id = 1031, .distance = 34.473f}
+            {.id = 759, .distance = 21.388f}, {.id = 537, .distance = 24.787f}, {.id = 534, .distance = 25.085f}, {.id = 538, .distance = 26.270f}, {.id = 535, .distance = 28.931f}, {.id = 757, .distance = 34.337f}, {.id = 761, .distance = 34.473f}
         }},
         {537, {
             {.id = 483, .distance = 20.735f}, {.id = 536, .distance = 24.787f}, {.id = 534, .distance = 25.237f}, {.id = 538, .distance = 25.425f}, {.id = 482, .distance = 38.308f}, {.id = 484, .distance = 38.379f}, {.id = 532, .distance = 41.309f}
         }},
         {538, {
-            {.id = 1027, .distance = 21.613f}, {.id = 537, .distance = 25.425f}, {.id = 536, .distance = 26.270f}, {.id = 539, .distance = 27.049f}, {.id = 1029, .distance = 34.344f}, {.id = 1026, .distance = 35.024f}, {.id = 484, .distance = 37.159f}
+            {.id = 757, .distance = 21.613f}, {.id = 537, .distance = 25.425f}, {.id = 536, .distance = 26.270f}, {.id = 539, .distance = 27.049f}, {.id = 759, .distance = 34.344f}, {.id = 756, .distance = 35.024f}, {.id = 484, .distance = 37.159f}
         }},
         {539, {
-            {.id = 1026, .distance = 22.913f}, {.id = 485, .distance = 27.042f}, {.id = 538, .distance = 27.049f}, {.id = 484, .distance = 28.297f}, {.id = 1025, .distance = 34.231f}, {.id = 1027, .distance = 34.428f}, {.id = 459, .distance = 35.703f}
+            {.id = 756, .distance = 22.913f}, {.id = 485, .distance = 27.042f}, {.id = 538, .distance = 27.049f}, {.id = 484, .distance = 28.297f}, {.id = 755, .distance = 34.231f}, {.id = 757, .distance = 34.428f}, {.id = 459, .distance = 35.703f}
         }},
         {540, {
             {.id = 545, .distance = 22.969f}, {.id = 543, .distance = 23.177f}, {.id = 542, .distance = 23.180f}, {.id = 541, .distance = 23.418f}, {.id = 544, .distance = 23.540f}, {.id = 554, .distance = 46.414f}, {.id = 551, .distance = 46.608f}
@@ -4137,169 +4137,169 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
             {.id = 593, .distance = 27.954f}, {.id = 674, .distance = 28.297f}, {.id = 618, .distance = 29.747f}, {.id = 594, .distance = 29.831f}, {.id = 673, .distance = 37.159f}, {.id = 572, .distance = 38.168f}, {.id = 672, .distance = 38.379f}
         }},
         {620, {
-            {.id = 518, .distance = 21.817f}, {.id = 594, .distance = 24.998f}, {.id = 621, .distance = 26.018f}, {.id = 674, .distance = 27.042f}, {.id = 517, .distance = 34.192f}, {.id = 519, .distance = 34.972f}, {.id = 595, .distance = 40.605f}
+            {.id = 799, .distance = 22.017f}, {.id = 594, .distance = 24.998f}, {.id = 621, .distance = 26.018f}, {.id = 674, .distance = 27.042f}, {.id = 798, .distance = 33.974f}, {.id = 800, .distance = 34.921f}, {.id = 595, .distance = 40.605f}
         }},
         {621, {
-            {.id = 517, .distance = 22.426f}, {.id = 620, .distance = 26.018f}, {.id = 622, .distance = 26.277f}, {.id = 595, .distance = 27.955f}, {.id = 518, .distance = 34.914f}, {.id = 516, .distance = 34.934f}, {.id = 594, .distance = 36.289f}
+            {.id = 798, .distance = 22.576f}, {.id = 620, .distance = 26.018f}, {.id = 622, .distance = 26.277f}, {.id = 595, .distance = 27.955f}, {.id = 799, .distance = 34.146f}, {.id = 797, .distance = 35.021f}, {.id = 594, .distance = 36.289f}
         }},
         {622, {
-            {.id = 516, .distance = 21.649f}, {.id = 623, .distance = 25.444f}, {.id = 621, .distance = 26.277f}, {.id = 624, .distance = 27.296f}, {.id = 517, .distance = 33.829f}, {.id = 514, .distance = 34.875f}, {.id = 595, .distance = 36.960f}
+            {.id = 797, .distance = 21.957f}, {.id = 623, .distance = 25.444f}, {.id = 621, .distance = 26.277f}, {.id = 624, .distance = 27.296f}, {.id = 798, .distance = 34.245f}, {.id = 795, .distance = 34.797f}, {.id = 595, .distance = 36.960f}
         }},
         {623, {
             {.id = 596, .distance = 21.650f}, {.id = 624, .distance = 23.803f}, {.id = 622, .distance = 25.444f}, {.id = 625, .distance = 25.495f}, {.id = 597, .distance = 38.588f}, {.id = 595, .distance = 39.188f}, {.id = 628, .distance = 40.893f}
         }},
         {624, {
-            {.id = 514, .distance = 22.042f}, {.id = 623, .distance = 23.803f}, {.id = 625, .distance = 24.430f}, {.id = 626, .distance = 26.781f}, {.id = 622, .distance = 27.296f}, {.id = 516, .distance = 34.485f}, {.id = 513, .distance = 37.257f}
+            {.id = 795, .distance = 22.141f}, {.id = 623, .distance = 23.803f}, {.id = 625, .distance = 24.430f}, {.id = 626, .distance = 26.781f}, {.id = 622, .distance = 27.296f}, {.id = 797, .distance = 34.795f}, {.id = 794, .distance = 37.037f}
         }},
         {625, {
             {.id = 627, .distance = 24.299f}, {.id = 624, .distance = 24.430f}, {.id = 626, .distance = 24.711f}, {.id = 628, .distance = 25.084f}, {.id = 623, .distance = 25.495f}, {.id = 597, .distance = 37.220f}, {.id = 596, .distance = 40.095f}
         }},
         {626, {
-            {.id = 805, .distance = 23.274f}, {.id = 513, .distance = 23.573f}, {.id = 625, .distance = 24.711f}, {.id = 624, .distance = 26.781f}, {.id = 627, .distance = 27.879f}, {.id = 514, .distance = 34.755f}, {.id = 803, .distance = 36.598f}
+            {.id = 130, .distance = 23.274f}, {.id = 794, .distance = 23.364f}, {.id = 625, .distance = 24.711f}, {.id = 624, .distance = 26.781f}, {.id = 627, .distance = 27.879f}, {.id = 795, .distance = 34.955f}, {.id = 128, .distance = 36.598f}
         }},
         {627, {
-            {.id = 803, .distance = 21.881f}, {.id = 625, .distance = 24.299f}, {.id = 628, .distance = 24.636f}, {.id = 629, .distance = 27.526f}, {.id = 626, .distance = 27.879f}, {.id = 805, .distance = 34.044f}, {.id = 801, .distance = 34.991f}
+            {.id = 128, .distance = 21.881f}, {.id = 625, .distance = 24.299f}, {.id = 628, .distance = 24.636f}, {.id = 629, .distance = 27.526f}, {.id = 626, .distance = 27.879f}, {.id = 130, .distance = 34.044f}, {.id = 126, .distance = 34.991f}
         }},
         {628, {
             {.id = 597, .distance = 21.863f}, {.id = 627, .distance = 24.636f}, {.id = 625, .distance = 25.084f}, {.id = 629, .distance = 25.653f}, {.id = 598, .distance = 34.005f}, {.id = 623, .distance = 40.893f}, {.id = 596, .distance = 43.024f}
         }},
         {629, {
-            {.id = 801, .distance = 22.151f}, {.id = 628, .distance = 25.653f}, {.id = 630, .distance = 26.467f}, {.id = 627, .distance = 27.526f}, {.id = 800, .distance = 34.595f}, {.id = 803, .distance = 34.928f}, {.id = 598, .distance = 35.198f}
+            {.id = 126, .distance = 22.151f}, {.id = 628, .distance = 25.653f}, {.id = 630, .distance = 26.467f}, {.id = 627, .distance = 27.526f}, {.id = 125, .distance = 34.595f}, {.id = 128, .distance = 34.928f}, {.id = 598, .distance = 35.198f}
         }},
         {630, {
-            {.id = 800, .distance = 22.361f}, {.id = 629, .distance = 26.467f}, {.id = 631, .distance = 26.547f}, {.id = 598, .distance = 31.431f}, {.id = 599, .distance = 32.153f}, {.id = 801, .distance = 34.812f}, {.id = 799, .distance = 35.607f}
+            {.id = 125, .distance = 22.361f}, {.id = 629, .distance = 26.467f}, {.id = 631, .distance = 26.547f}, {.id = 598, .distance = 31.431f}, {.id = 599, .distance = 32.153f}, {.id = 126, .distance = 34.812f}, {.id = 124, .distance = 35.607f}
         }},
         {631, {
-            {.id = 799, .distance = 22.388f}, {.id = 599, .distance = 25.318f}, {.id = 630, .distance = 26.547f}, {.id = 632, .distance = 27.116f}, {.id = 800, .distance = 34.628f}, {.id = 798, .distance = 34.708f}, {.id = 600, .distance = 36.035f}
+            {.id = 124, .distance = 22.388f}, {.id = 599, .distance = 25.318f}, {.id = 630, .distance = 26.547f}, {.id = 632, .distance = 27.116f}, {.id = 125, .distance = 34.628f}, {.id = 123, .distance = 34.708f}, {.id = 600, .distance = 36.035f}
         }},
         {632, {
-            {.id = 798, .distance = 22.165f}, {.id = 633, .distance = 26.383f}, {.id = 631, .distance = 27.116f}, {.id = 600, .distance = 27.523f}, {.id = 799, .distance = 34.206f}, {.id = 797, .distance = 34.415f}, {.id = 599, .distance = 41.220f}
+            {.id = 123, .distance = 22.165f}, {.id = 633, .distance = 26.383f}, {.id = 631, .distance = 27.116f}, {.id = 600, .distance = 27.523f}, {.id = 124, .distance = 34.206f}, {.id = 122, .distance = 34.415f}, {.id = 599, .distance = 41.220f}
         }},
         {633, {
-            {.id = 797, .distance = 21.887f}, {.id = 634, .distance = 25.498f}, {.id = 632, .distance = 26.383f}, {.id = 635, .distance = 26.792f}, {.id = 795, .distance = 34.325f}, {.id = 798, .distance = 34.634f}, {.id = 601, .distance = 36.749f}
+            {.id = 122, .distance = 21.887f}, {.id = 634, .distance = 25.498f}, {.id = 632, .distance = 26.383f}, {.id = 635, .distance = 26.792f}, {.id = 120, .distance = 34.325f}, {.id = 123, .distance = 34.634f}, {.id = 601, .distance = 36.749f}
         }},
         {634, {
-            {.id = 601, .distance = 21.879f}, {.id = 635, .distance = 24.550f}, {.id = 633, .distance = 25.498f}, {.id = 636, .distance = 25.732f}, {.id = 602, .distance = 33.585f}, {.id = 639, .distance = 41.045f}, {.id = 795, .distance = 43.103f}
+            {.id = 601, .distance = 21.879f}, {.id = 635, .distance = 24.550f}, {.id = 633, .distance = 25.498f}, {.id = 636, .distance = 25.732f}, {.id = 602, .distance = 33.585f}, {.id = 639, .distance = 41.045f}, {.id = 120, .distance = 43.103f}
         }},
         {635, {
-            {.id = 795, .distance = 21.892f}, {.id = 634, .distance = 24.550f}, {.id = 636, .distance = 24.859f}, {.id = 637, .distance = 26.221f}, {.id = 633, .distance = 26.792f}, {.id = 797, .distance = 34.679f}, {.id = 794, .distance = 36.842f}
+            {.id = 120, .distance = 21.892f}, {.id = 634, .distance = 24.550f}, {.id = 636, .distance = 24.859f}, {.id = 637, .distance = 26.221f}, {.id = 633, .distance = 26.792f}, {.id = 122, .distance = 34.679f}, {.id = 119, .distance = 36.842f}
         }},
         {636, {
-            {.id = 638, .distance = 24.528f}, {.id = 637, .distance = 24.669f}, {.id = 635, .distance = 24.859f}, {.id = 639, .distance = 25.084f}, {.id = 634, .distance = 25.732f}, {.id = 602, .distance = 35.615f}, {.id = 263, .distance = 43.013f}
+            {.id = 638, .distance = 24.528f}, {.id = 637, .distance = 24.669f}, {.id = 635, .distance = 24.859f}, {.id = 639, .distance = 25.084f}, {.id = 634, .distance = 25.732f}, {.id = 602, .distance = 35.615f}, {.id = 916, .distance = 42.825f}
         }},
         {637, {
-            {.id = 794, .distance = 23.277f}, {.id = 265, .distance = 23.709f}, {.id = 636, .distance = 24.669f}, {.id = 635, .distance = 26.221f}, {.id = 638, .distance = 28.881f}, {.id = 795, .distance = 34.476f}, {.id = 263, .distance = 37.119f}
+            {.id = 119, .distance = 23.277f}, {.id = 918, .distance = 23.490f}, {.id = 636, .distance = 24.669f}, {.id = 635, .distance = 26.221f}, {.id = 638, .distance = 28.881f}, {.id = 120, .distance = 34.476f}, {.id = 916, .distance = 36.998f}
         }},
         {638, {
-            {.id = 263, .distance = 21.876f}, {.id = 639, .distance = 24.210f}, {.id = 636, .distance = 24.528f}, {.id = 640, .distance = 26.372f}, {.id = 637, .distance = 28.881f}, {.id = 261, .distance = 34.497f}, {.id = 265, .distance = 34.534f}
+            {.id = 916, .distance = 21.608f}, {.id = 639, .distance = 24.210f}, {.id = 636, .distance = 24.528f}, {.id = 640, .distance = 26.372f}, {.id = 637, .distance = 28.881f}, {.id = 918, .distance = 34.196f}, {.id = 914, .distance = 34.300f}
         }},
         {639, {
-            {.id = 638, .distance = 24.210f}, {.id = 602, .distance = 24.618f}, {.id = 636, .distance = 25.084f}, {.id = 640, .distance = 25.246f}, {.id = 603, .distance = 29.298f}, {.id = 634, .distance = 41.045f}, {.id = 263, .distance = 42.954f}
+            {.id = 638, .distance = 24.210f}, {.id = 602, .distance = 24.618f}, {.id = 636, .distance = 25.084f}, {.id = 640, .distance = 25.246f}, {.id = 603, .distance = 29.298f}, {.id = 634, .distance = 41.045f}, {.id = 916, .distance = 42.732f}
         }},
         {640, {
-            {.id = 261, .distance = 21.967f}, {.id = 639, .distance = 25.246f}, {.id = 638, .distance = 26.372f}, {.id = 641, .distance = 27.091f}, {.id = 263, .distance = 34.412f}, {.id = 603, .distance = 34.857f}, {.id = 260, .distance = 34.876f}
+            {.id = 914, .distance = 21.658f}, {.id = 639, .distance = 25.246f}, {.id = 638, .distance = 26.372f}, {.id = 641, .distance = 27.091f}, {.id = 916, .distance = 34.197f}, {.id = 913, .distance = 34.609f}, {.id = 603, .distance = 34.857f}
         }},
         {641, {
-            {.id = 260, .distance = 21.955f}, {.id = 642, .distance = 26.524f}, {.id = 640, .distance = 27.091f}, {.id = 604, .distance = 29.494f}, {.id = 261, .distance = 34.638f}, {.id = 259, .distance = 35.268f}, {.id = 603, .distance = 35.556f}
+            {.id = 913, .distance = 21.606f}, {.id = 642, .distance = 26.524f}, {.id = 640, .distance = 27.091f}, {.id = 604, .distance = 29.494f}, {.id = 912, .distance = 34.298f}, {.id = 914, .distance = 34.445f}, {.id = 603, .distance = 35.556f}
         }},
         {642, {
-            {.id = 259, .distance = 21.888f}, {.id = 641, .distance = 26.524f}, {.id = 643, .distance = 26.730f}, {.id = 604, .distance = 28.584f}, {.id = 605, .distance = 32.097f}, {.id = 258, .distance = 34.325f}, {.id = 260, .distance = 34.376f}
+            {.id = 912, .distance = 21.478f}, {.id = 641, .distance = 26.524f}, {.id = 643, .distance = 26.730f}, {.id = 604, .distance = 28.584f}, {.id = 605, .distance = 32.097f}, {.id = 913, .distance = 34.202f}, {.id = 911, .distance = 34.298f}
         }},
         {643, {
-            {.id = 258, .distance = 21.772f}, {.id = 642, .distance = 26.730f}, {.id = 644, .distance = 26.732f}, {.id = 605, .distance = 28.097f}, {.id = 259, .distance = 33.726f}, {.id = 257, .distance = 34.396f}, {.id = 606, .distance = 40.135f}
+            {.id = 911, .distance = 21.606f}, {.id = 642, .distance = 26.730f}, {.id = 644, .distance = 26.732f}, {.id = 605, .distance = 28.097f}, {.id = 912, .distance = 34.202f}, {.id = 910, .distance = 34.609f}, {.id = 606, .distance = 40.135f}
         }},
         {644, {
-            {.id = 257, .distance = 21.813f}, {.id = 645, .distance = 24.672f}, {.id = 643, .distance = 26.732f}, {.id = 646, .distance = 26.732f}, {.id = 255, .distance = 34.237f}, {.id = 258, .distance = 34.627f}, {.id = 606, .distance = 35.127f}
+            {.id = 910, .distance = 21.658f}, {.id = 645, .distance = 24.672f}, {.id = 643, .distance = 26.732f}, {.id = 646, .distance = 26.732f}, {.id = 908, .distance = 34.300f}, {.id = 911, .distance = 34.445f}, {.id = 606, .distance = 35.127f}
         }},
         {645, {
-            {.id = 646, .distance = 23.501f}, {.id = 644, .distance = 24.672f}, {.id = 647, .distance = 25.068f}, {.id = 606, .distance = 25.325f}, {.id = 607, .distance = 29.320f}, {.id = 650, .distance = 41.461f}, {.id = 255, .distance = 41.921f}
+            {.id = 646, .distance = 23.501f}, {.id = 644, .distance = 24.672f}, {.id = 647, .distance = 25.068f}, {.id = 606, .distance = 25.325f}, {.id = 607, .distance = 29.320f}, {.id = 650, .distance = 41.461f}, {.id = 908, .distance = 41.850f}
         }},
         {646, {
-            {.id = 255, .distance = 21.788f}, {.id = 645, .distance = 23.501f}, {.id = 647, .distance = 24.580f}, {.id = 648, .distance = 26.371f}, {.id = 644, .distance = 26.732f}, {.id = 257, .distance = 34.608f}, {.id = 254, .distance = 36.785f}
+            {.id = 908, .distance = 21.608f}, {.id = 645, .distance = 23.501f}, {.id = 647, .distance = 24.580f}, {.id = 648, .distance = 26.371f}, {.id = 644, .distance = 26.732f}, {.id = 910, .distance = 34.197f}, {.id = 907, .distance = 36.998f}
         }},
         {647, {
-            {.id = 646, .distance = 24.580f}, {.id = 649, .distance = 24.959f}, {.id = 648, .distance = 25.010f}, {.id = 645, .distance = 25.068f}, {.id = 650, .distance = 25.146f}, {.id = 607, .distance = 34.248f}, {.id = 255, .distance = 43.155f}
+            {.id = 646, .distance = 24.580f}, {.id = 649, .distance = 24.959f}, {.id = 648, .distance = 25.010f}, {.id = 645, .distance = 25.068f}, {.id = 650, .distance = 25.146f}, {.id = 607, .distance = 34.248f}, {.id = 908, .distance = 42.952f}
         }},
         {648, {
-            {.id = 254, .distance = 23.106f}, {.id = 86, .distance = 23.609f}, {.id = 647, .distance = 25.010f}, {.id = 646, .distance = 26.371f}, {.id = 649, .distance = 29.071f}, {.id = 255, .distance = 34.484f}, {.id = 84, .distance = 37.270f}
+            {.id = 1469, .distance = 23.326f}, {.id = 907, .distance = 23.490f}, {.id = 647, .distance = 25.010f}, {.id = 646, .distance = 26.371f}, {.id = 649, .distance = 29.071f}, {.id = 908, .distance = 34.196f}, {.id = 1467, .distance = 36.872f}
         }},
         {649, {
-            {.id = 84, .distance = 22.081f}, {.id = 650, .distance = 23.829f}, {.id = 647, .distance = 24.959f}, {.id = 651, .distance = 26.582f}, {.id = 648, .distance = 29.071f}, {.id = 86, .distance = 34.791f}, {.id = 82, .distance = 34.888f}
+            {.id = 1467, .distance = 21.837f}, {.id = 650, .distance = 23.829f}, {.id = 647, .distance = 24.959f}, {.id = 651, .distance = 26.582f}, {.id = 648, .distance = 29.071f}, {.id = 1465, .distance = 34.439f}, {.id = 1469, .distance = 34.529f}
         }},
         {650, {
-            {.id = 649, .distance = 23.829f}, {.id = 647, .distance = 25.146f}, {.id = 608, .distance = 25.156f}, {.id = 651, .distance = 25.569f}, {.id = 607, .distance = 28.406f}, {.id = 645, .distance = 41.461f}, {.id = 84, .distance = 42.798f}
+            {.id = 649, .distance = 23.829f}, {.id = 647, .distance = 25.146f}, {.id = 608, .distance = 25.156f}, {.id = 651, .distance = 25.569f}, {.id = 607, .distance = 28.406f}, {.id = 645, .distance = 41.461f}, {.id = 1467, .distance = 42.698f}
         }},
         {651, {
-            {.id = 82, .distance = 21.687f}, {.id = 650, .distance = 25.569f}, {.id = 652, .distance = 26.524f}, {.id = 649, .distance = 26.582f}, {.id = 84, .distance = 34.521f}, {.id = 608, .distance = 34.565f}, {.id = 81, .distance = 34.947f}
+            {.id = 1465, .distance = 21.607f}, {.id = 650, .distance = 25.569f}, {.id = 652, .distance = 26.524f}, {.id = 649, .distance = 26.582f}, {.id = 1464, .distance = 34.438f}, {.id = 608, .distance = 34.565f}, {.id = 1467, .distance = 34.611f}
         }},
         {652, {
-            {.id = 81, .distance = 22.464f}, {.id = 651, .distance = 26.524f}, {.id = 653, .distance = 27.091f}, {.id = 609, .distance = 28.191f}, {.id = 82, .distance = 33.864f}, {.id = 80, .distance = 34.205f}, {.id = 608, .distance = 39.087f}
+            {.id = 1464, .distance = 21.912f}, {.id = 651, .distance = 26.524f}, {.id = 653, .distance = 27.091f}, {.id = 609, .distance = 28.191f}, {.id = 1465, .distance = 34.219f}, {.id = 1463, .distance = 34.438f}, {.id = 608, .distance = 39.087f}
         }},
         {653, {
-            {.id = 80, .distance = 21.856f}, {.id = 654, .distance = 26.524f}, {.id = 652, .distance = 27.091f}, {.id = 610, .distance = 28.182f}, {.id = 609, .distance = 31.855f}, {.id = 134, .distance = 34.474f}, {.id = 81, .distance = 34.950f}
+            {.id = 1463, .distance = 21.836f}, {.id = 654, .distance = 26.524f}, {.id = 652, .distance = 27.091f}, {.id = 610, .distance = 28.182f}, {.id = 609, .distance = 31.855f}, {.id = 1462, .distance = 34.438f}, {.id = 1464, .distance = 34.758f}
         }},
         {654, {
-            {.id = 134, .distance = 22.408f}, {.id = 653, .distance = 26.524f}, {.id = 655, .distance = 26.581f}, {.id = 610, .distance = 29.755f}, {.id = 133, .distance = 34.529f}, {.id = 611, .distance = 34.998f}, {.id = 80, .distance = 35.008f}
+            {.id = 1462, .distance = 21.912f}, {.id = 653, .distance = 26.524f}, {.id = 655, .distance = 26.581f}, {.id = 610, .distance = 29.755f}, {.id = 1461, .distance = 34.438f}, {.id = 1463, .distance = 34.758f}, {.id = 611, .distance = 34.998f}
         }},
         {655, {
-            {.id = 133, .distance = 21.567f}, {.id = 656, .distance = 25.497f}, {.id = 654, .distance = 26.581f}, {.id = 657, .distance = 27.091f}, {.id = 131, .distance = 33.896f}, {.id = 611, .distance = 34.425f}, {.id = 134, .distance = 34.817f}
+            {.id = 1461, .distance = 21.607f}, {.id = 656, .distance = 25.497f}, {.id = 654, .distance = 26.581f}, {.id = 657, .distance = 27.091f}, {.id = 1462, .distance = 34.219f}, {.id = 611, .distance = 34.425f}, {.id = 1459, .distance = 34.439f}
         }},
         {656, {
-            {.id = 612, .distance = 23.798f}, {.id = 657, .distance = 24.344f}, {.id = 658, .distance = 25.237f}, {.id = 655, .distance = 25.497f}, {.id = 611, .distance = 29.105f}, {.id = 661, .distance = 41.369f}, {.id = 131, .distance = 42.275f}
+            {.id = 612, .distance = 23.798f}, {.id = 657, .distance = 24.344f}, {.id = 658, .distance = 25.237f}, {.id = 655, .distance = 25.497f}, {.id = 611, .distance = 29.105f}, {.id = 661, .distance = 41.369f}, {.id = 1459, .distance = 42.825f}
         }},
         {657, {
-            {.id = 131, .distance = 21.183f}, {.id = 656, .distance = 24.344f}, {.id = 658, .distance = 24.548f}, {.id = 659, .distance = 26.371f}, {.id = 655, .distance = 27.091f}, {.id = 133, .distance = 34.469f}, {.id = 130, .distance = 36.529f}
+            {.id = 1459, .distance = 21.837f}, {.id = 656, .distance = 24.344f}, {.id = 658, .distance = 24.548f}, {.id = 659, .distance = 26.371f}, {.id = 655, .distance = 27.091f}, {.id = 1461, .distance = 34.611f}, {.id = 1458, .distance = 36.872f}
         }},
         {658, {
-            {.id = 657, .distance = 24.548f}, {.id = 660, .distance = 24.694f}, {.id = 659, .distance = 25.104f}, {.id = 656, .distance = 25.237f}, {.id = 661, .distance = 25.654f}, {.id = 612, .distance = 34.527f}, {.id = 131, .distance = 42.794f}
+            {.id = 657, .distance = 24.548f}, {.id = 660, .distance = 24.694f}, {.id = 659, .distance = 25.104f}, {.id = 656, .distance = 25.237f}, {.id = 661, .distance = 25.654f}, {.id = 612, .distance = 34.527f}, {.id = 500, .distance = 43.104f}
         }},
         {659, {
-            {.id = 130, .distance = 23.182f}, {.id = 1177, .distance = 23.277f}, {.id = 658, .distance = 25.104f}, {.id = 657, .distance = 26.371f}, {.id = 660, .distance = 29.110f}, {.id = 131, .distance = 34.248f}, {.id = 1175, .distance = 36.842f}
+            {.id = 502, .distance = 23.277f}, {.id = 1458, .distance = 23.326f}, {.id = 658, .distance = 25.104f}, {.id = 657, .distance = 26.371f}, {.id = 660, .distance = 29.110f}, {.id = 1459, .distance = 34.529f}, {.id = 500, .distance = 36.842f}
         }},
         {660, {
-            {.id = 1175, .distance = 21.892f}, {.id = 661, .distance = 24.048f}, {.id = 658, .distance = 24.694f}, {.id = 662, .distance = 26.547f}, {.id = 659, .distance = 29.110f}, {.id = 1173, .distance = 34.325f}, {.id = 1177, .distance = 34.476f}
+            {.id = 500, .distance = 21.892f}, {.id = 661, .distance = 24.048f}, {.id = 658, .distance = 24.694f}, {.id = 662, .distance = 26.547f}, {.id = 659, .distance = 29.110f}, {.id = 498, .distance = 34.325f}, {.id = 502, .distance = 34.476f}
         }},
         {661, {
-            {.id = 613, .distance = 21.654f}, {.id = 660, .distance = 24.048f}, {.id = 662, .distance = 24.979f}, {.id = 658, .distance = 25.654f}, {.id = 612, .distance = 33.270f}, {.id = 656, .distance = 41.369f}, {.id = 1175, .distance = 42.839f}
+            {.id = 613, .distance = 21.654f}, {.id = 660, .distance = 24.048f}, {.id = 662, .distance = 24.979f}, {.id = 658, .distance = 25.654f}, {.id = 612, .distance = 33.270f}, {.id = 656, .distance = 41.369f}, {.id = 500, .distance = 42.839f}
         }},
         {662, {
-            {.id = 1173, .distance = 21.887f}, {.id = 661, .distance = 24.979f}, {.id = 660, .distance = 26.547f}, {.id = 663, .distance = 26.791f}, {.id = 1172, .distance = 34.415f}, {.id = 1175, .distance = 34.679f}, {.id = 613, .distance = 36.329f}
+            {.id = 498, .distance = 21.887f}, {.id = 661, .distance = 24.979f}, {.id = 660, .distance = 26.547f}, {.id = 663, .distance = 26.791f}, {.id = 497, .distance = 34.415f}, {.id = 500, .distance = 34.679f}, {.id = 613, .distance = 36.329f}
         }},
         {663, {
-            {.id = 1172, .distance = 22.165f}, {.id = 664, .distance = 25.487f}, {.id = 662, .distance = 26.791f}, {.id = 614, .distance = 27.232f}, {.id = 1173, .distance = 34.634f}, {.id = 1171, .distance = 34.708f}, {.id = 615, .distance = 41.139f}
+            {.id = 497, .distance = 22.165f}, {.id = 664, .distance = 25.487f}, {.id = 662, .distance = 26.791f}, {.id = 614, .distance = 27.232f}, {.id = 498, .distance = 34.634f}, {.id = 496, .distance = 34.708f}, {.id = 615, .distance = 41.139f}
         }},
         {664, {
-            {.id = 1171, .distance = 22.388f}, {.id = 663, .distance = 25.487f}, {.id = 615, .distance = 26.028f}, {.id = 665, .distance = 27.606f}, {.id = 1172, .distance = 34.206f}, {.id = 614, .distance = 35.594f}, {.id = 1170, .distance = 35.607f}
+            {.id = 496, .distance = 22.388f}, {.id = 663, .distance = 25.487f}, {.id = 615, .distance = 26.028f}, {.id = 665, .distance = 27.606f}, {.id = 497, .distance = 34.206f}, {.id = 614, .distance = 35.594f}, {.id = 495, .distance = 35.607f}
         }},
         {665, {
-            {.id = 1170, .distance = 22.361f}, {.id = 666, .distance = 26.790f}, {.id = 664, .distance = 27.606f}, {.id = 616, .distance = 31.167f}, {.id = 615, .distance = 32.429f}, {.id = 1169, .distance = 34.595f}, {.id = 1171, .distance = 34.628f}
+            {.id = 495, .distance = 22.361f}, {.id = 666, .distance = 26.790f}, {.id = 664, .distance = 27.606f}, {.id = 616, .distance = 31.167f}, {.id = 615, .distance = 32.429f}, {.id = 494, .distance = 34.595f}, {.id = 496, .distance = 34.628f}
         }},
         {666, {
-            {.id = 1169, .distance = 22.151f}, {.id = 667, .distance = 25.010f}, {.id = 665, .distance = 26.790f}, {.id = 668, .distance = 26.792f}, {.id = 1170, .distance = 34.812f}, {.id = 616, .distance = 34.856f}, {.id = 1167, .distance = 34.991f}
+            {.id = 494, .distance = 22.151f}, {.id = 667, .distance = 25.010f}, {.id = 665, .distance = 26.790f}, {.id = 668, .distance = 26.792f}, {.id = 495, .distance = 34.812f}, {.id = 616, .distance = 34.856f}, {.id = 492, .distance = 34.991f}
         }},
         {667, {
-            {.id = 617, .distance = 21.595f}, {.id = 668, .distance = 24.103f}, {.id = 666, .distance = 25.010f}, {.id = 669, .distance = 25.812f}, {.id = 616, .distance = 33.491f}, {.id = 672, .distance = 41.309f}, {.id = 1167, .distance = 42.896f}
+            {.id = 617, .distance = 21.595f}, {.id = 668, .distance = 24.103f}, {.id = 666, .distance = 25.010f}, {.id = 669, .distance = 25.812f}, {.id = 616, .distance = 33.491f}, {.id = 672, .distance = 41.309f}, {.id = 492, .distance = 42.896f}
         }},
         {668, {
-            {.id = 1167, .distance = 21.881f}, {.id = 667, .distance = 24.103f}, {.id = 669, .distance = 24.732f}, {.id = 670, .distance = 26.546f}, {.id = 666, .distance = 26.792f}, {.id = 1169, .distance = 34.928f}, {.id = 1166, .distance = 36.598f}
+            {.id = 492, .distance = 21.881f}, {.id = 667, .distance = 24.103f}, {.id = 669, .distance = 24.732f}, {.id = 670, .distance = 26.546f}, {.id = 666, .distance = 26.792f}, {.id = 494, .distance = 34.928f}, {.id = 491, .distance = 36.598f}
         }},
         {669, {
             {.id = 670, .distance = 24.694f}, {.id = 668, .distance = 24.732f}, {.id = 671, .distance = 25.085f}, {.id = 672, .distance = 25.237f}, {.id = 667, .distance = 25.812f}, {.id = 617, .distance = 36.997f}, {.id = 618, .distance = 39.624f}
         }},
         {670, {
-            {.id = 524, .distance = 23.145f}, {.id = 1166, .distance = 23.274f}, {.id = 669, .distance = 24.694f}, {.id = 668, .distance = 26.546f}, {.id = 671, .distance = 28.931f}, {.id = 1167, .distance = 34.044f}, {.id = 522, .distance = 36.516f}
+            {.id = 491, .distance = 23.274f}, {.id = 805, .distance = 23.352f}, {.id = 669, .distance = 24.694f}, {.id = 668, .distance = 26.546f}, {.id = 671, .distance = 28.931f}, {.id = 492, .distance = 34.044f}, {.id = 803, .distance = 36.746f}
         }},
         {671, {
-            {.id = 522, .distance = 21.144f}, {.id = 672, .distance = 24.787f}, {.id = 669, .distance = 25.085f}, {.id = 673, .distance = 26.270f}, {.id = 670, .distance = 28.931f}, {.id = 520, .distance = 33.883f}, {.id = 524, .distance = 34.212f}
+            {.id = 803, .distance = 21.264f}, {.id = 672, .distance = 24.787f}, {.id = 669, .distance = 25.085f}, {.id = 673, .distance = 26.270f}, {.id = 670, .distance = 28.931f}, {.id = 801, .distance = 33.932f}, {.id = 805, .distance = 34.325f}
         }},
         {672, {
             {.id = 618, .distance = 20.735f}, {.id = 671, .distance = 24.787f}, {.id = 669, .distance = 25.237f}, {.id = 673, .distance = 25.425f}, {.id = 617, .distance = 38.308f}, {.id = 619, .distance = 38.379f}, {.id = 667, .distance = 41.309f}
         }},
         {673, {
-            {.id = 520, .distance = 21.529f}, {.id = 672, .distance = 25.425f}, {.id = 671, .distance = 26.270f}, {.id = 674, .distance = 27.049f}, {.id = 522, .distance = 34.433f}, {.id = 519, .distance = 34.516f}, {.id = 619, .distance = 37.159f}
+            {.id = 801, .distance = 21.731f}, {.id = 672, .distance = 25.425f}, {.id = 671, .distance = 26.270f}, {.id = 674, .distance = 27.049f}, {.id = 803, .distance = 34.357f}, {.id = 800, .distance = 34.634f}, {.id = 619, .distance = 37.159f}
         }},
         {674, {
-            {.id = 519, .distance = 22.369f}, {.id = 620, .distance = 27.042f}, {.id = 673, .distance = 27.049f}, {.id = 619, .distance = 28.297f}, {.id = 518, .distance = 34.460f}, {.id = 520, .distance = 34.782f}, {.id = 594, .distance = 35.703f}
+            {.id = 800, .distance = 22.422f}, {.id = 620, .distance = 27.042f}, {.id = 673, .distance = 27.049f}, {.id = 619, .distance = 28.297f}, {.id = 801, .distance = 34.987f}, {.id = 799, .distance = 35.507f}, {.id = 594, .distance = 35.703f}
         }},
         {675, {
             {.id = 680, .distance = 22.969f}, {.id = 678, .distance = 23.177f}, {.id = 677, .distance = 23.180f}, {.id = 676, .distance = 23.418f}, {.id = 679, .distance = 23.540f}, {.id = 689, .distance = 46.414f}, {.id = 686, .distance = 46.608f}
@@ -4542,169 +4542,169 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
             {.id = 728, .distance = 27.954f}, {.id = 809, .distance = 28.297f}, {.id = 753, .distance = 29.747f}, {.id = 729, .distance = 29.831f}, {.id = 808, .distance = 37.159f}, {.id = 707, .distance = 38.168f}, {.id = 807, .distance = 38.379f}
         }},
         {755, {
-            {.id = 507, .distance = 21.634f}, {.id = 729, .distance = 24.998f}, {.id = 756, .distance = 26.018f}, {.id = 809, .distance = 27.042f}, {.id = 506, .distance = 33.945f}, {.id = 508, .distance = 34.750f}, {.id = 730, .distance = 40.605f}
+            {.id = 485, .distance = 21.842f}, {.id = 729, .distance = 24.998f}, {.id = 756, .distance = 26.018f}, {.id = 809, .distance = 27.042f}, {.id = 539, .distance = 34.231f}, {.id = 486, .distance = 35.161f}, {.id = 730, .distance = 40.605f}
         }},
         {756, {
-            {.id = 506, .distance = 22.413f}, {.id = 755, .distance = 26.018f}, {.id = 757, .distance = 26.277f}, {.id = 730, .distance = 27.955f}, {.id = 507, .distance = 34.606f}, {.id = 505, .distance = 35.229f}, {.id = 729, .distance = 36.289f}
+            {.id = 539, .distance = 22.913f}, {.id = 755, .distance = 26.018f}, {.id = 757, .distance = 26.277f}, {.id = 730, .distance = 27.955f}, {.id = 538, .distance = 35.024f}, {.id = 485, .distance = 35.161f}, {.id = 729, .distance = 36.289f}
         }},
         {757, {
-            {.id = 505, .distance = 21.814f}, {.id = 758, .distance = 25.444f}, {.id = 756, .distance = 26.277f}, {.id = 759, .distance = 27.296f}, {.id = 506, .distance = 34.062f}, {.id = 503, .distance = 34.862f}, {.id = 730, .distance = 36.960f}
+            {.id = 538, .distance = 21.613f}, {.id = 758, .distance = 25.444f}, {.id = 756, .distance = 26.277f}, {.id = 759, .distance = 27.296f}, {.id = 536, .distance = 34.337f}, {.id = 539, .distance = 34.428f}, {.id = 730, .distance = 36.960f}
         }},
         {758, {
             {.id = 731, .distance = 21.650f}, {.id = 759, .distance = 23.803f}, {.id = 757, .distance = 25.444f}, {.id = 760, .distance = 25.495f}, {.id = 732, .distance = 38.588f}, {.id = 730, .distance = 39.188f}, {.id = 763, .distance = 40.893f}
         }},
         {759, {
-            {.id = 503, .distance = 21.962f}, {.id = 758, .distance = 23.803f}, {.id = 760, .distance = 24.430f}, {.id = 761, .distance = 26.781f}, {.id = 757, .distance = 27.296f}, {.id = 505, .distance = 34.387f}, {.id = 502, .distance = 37.251f}
+            {.id = 536, .distance = 21.388f}, {.id = 758, .distance = 23.803f}, {.id = 760, .distance = 24.430f}, {.id = 761, .distance = 26.781f}, {.id = 757, .distance = 27.296f}, {.id = 538, .distance = 34.344f}, {.id = 535, .distance = 36.914f}
         }},
         {760, {
             {.id = 762, .distance = 24.299f}, {.id = 759, .distance = 24.430f}, {.id = 761, .distance = 24.711f}, {.id = 763, .distance = 25.084f}, {.id = 758, .distance = 25.495f}, {.id = 732, .distance = 37.220f}, {.id = 731, .distance = 40.095f}
         }},
         {761, {
-            {.id = 940, .distance = 23.274f}, {.id = 502, .distance = 23.747f}, {.id = 760, .distance = 24.711f}, {.id = 759, .distance = 26.781f}, {.id = 762, .distance = 27.879f}, {.id = 503, .distance = 34.668f}, {.id = 938, .distance = 36.598f}
+            {.id = 221, .distance = 23.353f}, {.id = 535, .distance = 23.430f}, {.id = 760, .distance = 24.711f}, {.id = 759, .distance = 26.781f}, {.id = 762, .distance = 27.879f}, {.id = 536, .distance = 34.473f}, {.id = 219, .distance = 36.766f}
         }},
         {762, {
-            {.id = 938, .distance = 21.881f}, {.id = 760, .distance = 24.299f}, {.id = 763, .distance = 24.636f}, {.id = 764, .distance = 27.526f}, {.id = 761, .distance = 27.879f}, {.id = 940, .distance = 34.044f}, {.id = 936, .distance = 34.991f}
+            {.id = 219, .distance = 22.006f}, {.id = 760, .distance = 24.299f}, {.id = 763, .distance = 24.636f}, {.id = 764, .distance = 27.526f}, {.id = 761, .distance = 27.879f}, {.id = 221, .distance = 34.190f}, {.id = 217, .distance = 35.395f}
         }},
         {763, {
             {.id = 732, .distance = 21.863f}, {.id = 762, .distance = 24.636f}, {.id = 760, .distance = 25.084f}, {.id = 764, .distance = 25.653f}, {.id = 733, .distance = 34.005f}, {.id = 758, .distance = 40.893f}, {.id = 731, .distance = 43.024f}
         }},
         {764, {
-            {.id = 936, .distance = 22.151f}, {.id = 763, .distance = 25.653f}, {.id = 765, .distance = 26.467f}, {.id = 762, .distance = 27.526f}, {.id = 935, .distance = 34.595f}, {.id = 938, .distance = 34.928f}, {.id = 733, .distance = 35.198f}
+            {.id = 217, .distance = 22.020f}, {.id = 763, .distance = 25.653f}, {.id = 765, .distance = 26.467f}, {.id = 762, .distance = 27.526f}, {.id = 219, .distance = 34.913f}, {.id = 216, .distance = 34.985f}, {.id = 733, .distance = 35.198f}
         }},
         {765, {
-            {.id = 935, .distance = 22.361f}, {.id = 764, .distance = 26.467f}, {.id = 766, .distance = 26.547f}, {.id = 733, .distance = 31.431f}, {.id = 734, .distance = 32.153f}, {.id = 936, .distance = 34.812f}, {.id = 934, .distance = 35.607f}
+            {.id = 216, .distance = 22.850f}, {.id = 764, .distance = 26.467f}, {.id = 766, .distance = 26.547f}, {.id = 733, .distance = 31.431f}, {.id = 734, .distance = 32.153f}, {.id = 217, .distance = 34.251f}, {.id = 215, .distance = 34.323f}
         }},
         {766, {
-            {.id = 934, .distance = 22.388f}, {.id = 734, .distance = 25.318f}, {.id = 765, .distance = 26.547f}, {.id = 767, .distance = 27.116f}, {.id = 935, .distance = 34.628f}, {.id = 933, .distance = 34.708f}, {.id = 735, .distance = 36.035f}
+            {.id = 215, .distance = 22.163f}, {.id = 734, .distance = 25.318f}, {.id = 765, .distance = 26.547f}, {.id = 767, .distance = 27.116f}, {.id = 216, .distance = 34.871f}, {.id = 269, .distance = 34.959f}, {.id = 735, .distance = 36.035f}
         }},
         {767, {
-            {.id = 933, .distance = 22.165f}, {.id = 768, .distance = 26.383f}, {.id = 766, .distance = 27.116f}, {.id = 735, .distance = 27.523f}, {.id = 934, .distance = 34.206f}, {.id = 932, .distance = 34.415f}, {.id = 734, .distance = 41.220f}
+            {.id = 269, .distance = 22.497f}, {.id = 768, .distance = 26.383f}, {.id = 766, .distance = 27.116f}, {.id = 735, .distance = 27.523f}, {.id = 268, .distance = 34.412f}, {.id = 215, .distance = 35.235f}, {.id = 734, .distance = 41.220f}
         }},
         {768, {
-            {.id = 932, .distance = 21.887f}, {.id = 769, .distance = 25.498f}, {.id = 767, .distance = 26.383f}, {.id = 770, .distance = 26.792f}, {.id = 930, .distance = 34.325f}, {.id = 933, .distance = 34.634f}, {.id = 736, .distance = 36.749f}
+            {.id = 268, .distance = 21.527f}, {.id = 769, .distance = 25.498f}, {.id = 767, .distance = 26.383f}, {.id = 770, .distance = 26.792f}, {.id = 266, .distance = 33.853f}, {.id = 269, .distance = 34.808f}, {.id = 736, .distance = 36.749f}
         }},
         {769, {
-            {.id = 736, .distance = 21.879f}, {.id = 770, .distance = 24.550f}, {.id = 768, .distance = 25.498f}, {.id = 771, .distance = 25.732f}, {.id = 737, .distance = 33.585f}, {.id = 774, .distance = 41.045f}, {.id = 930, .distance = 43.103f}
+            {.id = 736, .distance = 21.879f}, {.id = 770, .distance = 24.550f}, {.id = 768, .distance = 25.498f}, {.id = 771, .distance = 25.732f}, {.id = 737, .distance = 33.585f}, {.id = 774, .distance = 41.045f}, {.id = 266, .distance = 42.522f}
         }},
         {770, {
-            {.id = 930, .distance = 21.892f}, {.id = 769, .distance = 24.550f}, {.id = 771, .distance = 24.859f}, {.id = 772, .distance = 26.221f}, {.id = 768, .distance = 26.792f}, {.id = 932, .distance = 34.679f}, {.id = 929, .distance = 36.842f}
+            {.id = 266, .distance = 21.127f}, {.id = 769, .distance = 24.550f}, {.id = 771, .distance = 24.859f}, {.id = 772, .distance = 26.221f}, {.id = 768, .distance = 26.792f}, {.id = 268, .distance = 34.222f}, {.id = 265, .distance = 36.712f}
         }},
         {771, {
-            {.id = 773, .distance = 24.528f}, {.id = 772, .distance = 24.669f}, {.id = 770, .distance = 24.859f}, {.id = 774, .distance = 25.084f}, {.id = 769, .distance = 25.732f}, {.id = 737, .distance = 35.615f}, {.id = 1343, .distance = 43.013f}
+            {.id = 773, .distance = 24.528f}, {.id = 772, .distance = 24.669f}, {.id = 770, .distance = 24.859f}, {.id = 774, .distance = 25.084f}, {.id = 769, .distance = 25.732f}, {.id = 737, .distance = 35.615f}, {.id = 266, .distance = 42.874f}
         }},
         {772, {
-            {.id = 929, .distance = 23.277f}, {.id = 1345, .distance = 23.709f}, {.id = 771, .distance = 24.669f}, {.id = 770, .distance = 26.221f}, {.id = 773, .distance = 28.881f}, {.id = 930, .distance = 34.476f}, {.id = 1343, .distance = 37.119f}
+            {.id = 265, .distance = 23.328f}, {.id = 356, .distance = 23.747f}, {.id = 771, .distance = 24.669f}, {.id = 770, .distance = 26.221f}, {.id = 773, .distance = 28.881f}, {.id = 266, .distance = 33.983f}, {.id = 354, .distance = 37.251f}
         }},
         {773, {
-            {.id = 1343, .distance = 21.876f}, {.id = 774, .distance = 24.210f}, {.id = 771, .distance = 24.528f}, {.id = 775, .distance = 26.372f}, {.id = 772, .distance = 28.881f}, {.id = 1341, .distance = 34.497f}, {.id = 1345, .distance = 34.534f}
+            {.id = 354, .distance = 21.962f}, {.id = 774, .distance = 24.210f}, {.id = 771, .distance = 24.528f}, {.id = 775, .distance = 26.372f}, {.id = 772, .distance = 28.881f}, {.id = 356, .distance = 34.668f}, {.id = 352, .distance = 34.862f}
         }},
         {774, {
-            {.id = 773, .distance = 24.210f}, {.id = 737, .distance = 24.618f}, {.id = 771, .distance = 25.084f}, {.id = 775, .distance = 25.246f}, {.id = 738, .distance = 29.298f}, {.id = 769, .distance = 41.045f}, {.id = 1343, .distance = 42.954f}
+            {.id = 773, .distance = 24.210f}, {.id = 737, .distance = 24.618f}, {.id = 771, .distance = 25.084f}, {.id = 775, .distance = 25.246f}, {.id = 738, .distance = 29.298f}, {.id = 769, .distance = 41.045f}, {.id = 354, .distance = 42.983f}
         }},
         {775, {
-            {.id = 1341, .distance = 21.967f}, {.id = 774, .distance = 25.246f}, {.id = 773, .distance = 26.372f}, {.id = 776, .distance = 27.091f}, {.id = 1343, .distance = 34.412f}, {.id = 738, .distance = 34.857f}, {.id = 1340, .distance = 34.876f}
+            {.id = 352, .distance = 21.814f}, {.id = 774, .distance = 25.246f}, {.id = 773, .distance = 26.372f}, {.id = 776, .distance = 27.091f}, {.id = 354, .distance = 34.387f}, {.id = 738, .distance = 34.857f}, {.id = 351, .distance = 35.229f}
         }},
         {776, {
-            {.id = 1340, .distance = 21.955f}, {.id = 777, .distance = 26.524f}, {.id = 775, .distance = 27.091f}, {.id = 739, .distance = 29.494f}, {.id = 1341, .distance = 34.638f}, {.id = 1339, .distance = 35.268f}, {.id = 738, .distance = 35.556f}
+            {.id = 351, .distance = 22.413f}, {.id = 777, .distance = 26.524f}, {.id = 775, .distance = 27.091f}, {.id = 739, .distance = 29.494f}, {.id = 350, .distance = 33.945f}, {.id = 352, .distance = 34.062f}, {.id = 738, .distance = 35.556f}
         }},
         {777, {
-            {.id = 1339, .distance = 21.888f}, {.id = 776, .distance = 26.524f}, {.id = 778, .distance = 26.730f}, {.id = 739, .distance = 28.584f}, {.id = 740, .distance = 32.097f}, {.id = 1338, .distance = 34.325f}, {.id = 1340, .distance = 34.376f}
+            {.id = 350, .distance = 21.634f}, {.id = 776, .distance = 26.524f}, {.id = 778, .distance = 26.730f}, {.id = 739, .distance = 28.584f}, {.id = 740, .distance = 32.097f}, {.id = 404, .distance = 34.543f}, {.id = 351, .distance = 34.606f}
         }},
         {778, {
-            {.id = 1338, .distance = 21.772f}, {.id = 777, .distance = 26.730f}, {.id = 779, .distance = 26.732f}, {.id = 740, .distance = 28.097f}, {.id = 1339, .distance = 33.726f}, {.id = 1337, .distance = 34.396f}, {.id = 741, .distance = 40.135f}
+            {.id = 404, .distance = 22.075f}, {.id = 777, .distance = 26.730f}, {.id = 779, .distance = 26.732f}, {.id = 740, .distance = 28.097f}, {.id = 403, .distance = 34.368f}, {.id = 350, .distance = 34.750f}, {.id = 741, .distance = 40.135f}
         }},
         {779, {
-            {.id = 1337, .distance = 21.813f}, {.id = 780, .distance = 24.672f}, {.id = 778, .distance = 26.732f}, {.id = 781, .distance = 26.732f}, {.id = 1335, .distance = 34.237f}, {.id = 1338, .distance = 34.627f}, {.id = 741, .distance = 35.127f}
+            {.id = 403, .distance = 21.421f}, {.id = 780, .distance = 24.672f}, {.id = 778, .distance = 26.732f}, {.id = 781, .distance = 26.732f}, {.id = 401, .distance = 33.735f}, {.id = 404, .distance = 34.794f}, {.id = 741, .distance = 35.127f}
         }},
         {780, {
-            {.id = 781, .distance = 23.501f}, {.id = 779, .distance = 24.672f}, {.id = 782, .distance = 25.068f}, {.id = 741, .distance = 25.325f}, {.id = 742, .distance = 29.320f}, {.id = 785, .distance = 41.461f}, {.id = 1335, .distance = 41.921f}
+            {.id = 781, .distance = 23.501f}, {.id = 779, .distance = 24.672f}, {.id = 782, .distance = 25.068f}, {.id = 741, .distance = 25.325f}, {.id = 742, .distance = 29.320f}, {.id = 401, .distance = 41.305f}, {.id = 785, .distance = 41.461f}
         }},
         {781, {
-            {.id = 1335, .distance = 21.788f}, {.id = 780, .distance = 23.501f}, {.id = 782, .distance = 24.580f}, {.id = 783, .distance = 26.371f}, {.id = 779, .distance = 26.732f}, {.id = 1337, .distance = 34.608f}, {.id = 1334, .distance = 36.785f}
+            {.id = 401, .distance = 20.992f}, {.id = 780, .distance = 23.501f}, {.id = 782, .distance = 24.580f}, {.id = 783, .distance = 26.371f}, {.id = 779, .distance = 26.732f}, {.id = 403, .distance = 34.142f}, {.id = 400, .distance = 36.625f}
         }},
         {782, {
-            {.id = 781, .distance = 24.580f}, {.id = 784, .distance = 24.959f}, {.id = 783, .distance = 25.010f}, {.id = 780, .distance = 25.068f}, {.id = 785, .distance = 25.146f}, {.id = 742, .distance = 34.248f}, {.id = 1335, .distance = 43.155f}
+            {.id = 781, .distance = 24.580f}, {.id = 784, .distance = 24.959f}, {.id = 783, .distance = 25.010f}, {.id = 780, .distance = 25.068f}, {.id = 785, .distance = 25.146f}, {.id = 742, .distance = 34.248f}, {.id = 401, .distance = 42.548f}
         }},
         {783, {
-            {.id = 1334, .distance = 23.106f}, {.id = 221, .distance = 23.609f}, {.id = 782, .distance = 25.010f}, {.id = 781, .distance = 26.371f}, {.id = 784, .distance = 29.071f}, {.id = 1335, .distance = 34.484f}, {.id = 219, .distance = 37.270f}
+            {.id = 400, .distance = 23.130f}, {.id = 86, .distance = 23.573f}, {.id = 782, .distance = 25.010f}, {.id = 781, .distance = 26.371f}, {.id = 784, .distance = 29.071f}, {.id = 401, .distance = 33.987f}, {.id = 84, .distance = 37.257f}
         }},
         {784, {
-            {.id = 219, .distance = 22.081f}, {.id = 785, .distance = 23.829f}, {.id = 782, .distance = 24.959f}, {.id = 786, .distance = 26.582f}, {.id = 783, .distance = 29.071f}, {.id = 221, .distance = 34.791f}, {.id = 217, .distance = 34.888f}
+            {.id = 84, .distance = 22.042f}, {.id = 785, .distance = 23.829f}, {.id = 782, .distance = 24.959f}, {.id = 786, .distance = 26.582f}, {.id = 783, .distance = 29.071f}, {.id = 86, .distance = 34.755f}, {.id = 82, .distance = 34.875f}
         }},
         {785, {
-            {.id = 784, .distance = 23.829f}, {.id = 782, .distance = 25.146f}, {.id = 743, .distance = 25.156f}, {.id = 786, .distance = 25.569f}, {.id = 742, .distance = 28.406f}, {.id = 780, .distance = 41.461f}, {.id = 219, .distance = 42.798f}
+            {.id = 784, .distance = 23.829f}, {.id = 782, .distance = 25.146f}, {.id = 743, .distance = 25.156f}, {.id = 786, .distance = 25.569f}, {.id = 742, .distance = 28.406f}, {.id = 780, .distance = 41.461f}, {.id = 84, .distance = 42.759f}
         }},
         {786, {
-            {.id = 217, .distance = 21.687f}, {.id = 785, .distance = 25.569f}, {.id = 787, .distance = 26.524f}, {.id = 784, .distance = 26.582f}, {.id = 219, .distance = 34.521f}, {.id = 743, .distance = 34.565f}, {.id = 216, .distance = 34.947f}
+            {.id = 82, .distance = 21.649f}, {.id = 785, .distance = 25.569f}, {.id = 787, .distance = 26.524f}, {.id = 784, .distance = 26.582f}, {.id = 84, .distance = 34.485f}, {.id = 743, .distance = 34.565f}, {.id = 81, .distance = 34.934f}
         }},
         {787, {
-            {.id = 216, .distance = 22.464f}, {.id = 786, .distance = 26.524f}, {.id = 788, .distance = 27.091f}, {.id = 744, .distance = 28.191f}, {.id = 217, .distance = 33.864f}, {.id = 215, .distance = 34.205f}, {.id = 743, .distance = 39.087f}
+            {.id = 81, .distance = 22.426f}, {.id = 786, .distance = 26.524f}, {.id = 788, .distance = 27.091f}, {.id = 744, .distance = 28.191f}, {.id = 82, .distance = 33.829f}, {.id = 80, .distance = 34.192f}, {.id = 743, .distance = 39.087f}
         }},
         {788, {
-            {.id = 215, .distance = 21.856f}, {.id = 789, .distance = 26.524f}, {.id = 787, .distance = 27.091f}, {.id = 745, .distance = 28.182f}, {.id = 744, .distance = 31.855f}, {.id = 269, .distance = 34.474f}, {.id = 216, .distance = 34.950f}
+            {.id = 80, .distance = 21.817f}, {.id = 789, .distance = 26.524f}, {.id = 787, .distance = 27.091f}, {.id = 745, .distance = 28.182f}, {.id = 744, .distance = 31.855f}, {.id = 134, .distance = 34.460f}, {.id = 81, .distance = 34.914f}
         }},
         {789, {
-            {.id = 269, .distance = 22.408f}, {.id = 788, .distance = 26.524f}, {.id = 790, .distance = 26.581f}, {.id = 745, .distance = 29.755f}, {.id = 268, .distance = 34.529f}, {.id = 746, .distance = 34.998f}, {.id = 215, .distance = 35.008f}
+            {.id = 134, .distance = 22.369f}, {.id = 788, .distance = 26.524f}, {.id = 790, .distance = 26.581f}, {.id = 745, .distance = 29.755f}, {.id = 133, .distance = 34.516f}, {.id = 80, .distance = 34.972f}, {.id = 746, .distance = 34.998f}
         }},
         {790, {
-            {.id = 268, .distance = 21.567f}, {.id = 791, .distance = 25.497f}, {.id = 789, .distance = 26.581f}, {.id = 792, .distance = 27.091f}, {.id = 266, .distance = 33.896f}, {.id = 746, .distance = 34.425f}, {.id = 269, .distance = 34.817f}
+            {.id = 133, .distance = 21.529f}, {.id = 791, .distance = 25.497f}, {.id = 789, .distance = 26.581f}, {.id = 792, .distance = 27.091f}, {.id = 131, .distance = 33.883f}, {.id = 746, .distance = 34.425f}, {.id = 134, .distance = 34.782f}
         }},
         {791, {
-            {.id = 747, .distance = 23.798f}, {.id = 792, .distance = 24.344f}, {.id = 793, .distance = 25.237f}, {.id = 790, .distance = 25.497f}, {.id = 746, .distance = 29.105f}, {.id = 796, .distance = 41.369f}, {.id = 266, .distance = 42.275f}
+            {.id = 747, .distance = 23.798f}, {.id = 792, .distance = 24.344f}, {.id = 793, .distance = 25.237f}, {.id = 790, .distance = 25.497f}, {.id = 746, .distance = 29.105f}, {.id = 796, .distance = 41.369f}, {.id = 131, .distance = 42.243f}
         }},
         {792, {
-            {.id = 266, .distance = 21.183f}, {.id = 791, .distance = 24.344f}, {.id = 793, .distance = 24.548f}, {.id = 794, .distance = 26.371f}, {.id = 790, .distance = 27.091f}, {.id = 268, .distance = 34.469f}, {.id = 265, .distance = 36.529f}
+            {.id = 131, .distance = 21.144f}, {.id = 791, .distance = 24.344f}, {.id = 793, .distance = 24.548f}, {.id = 794, .distance = 26.371f}, {.id = 790, .distance = 27.091f}, {.id = 133, .distance = 34.433f}, {.id = 130, .distance = 36.516f}
         }},
         {793, {
-            {.id = 792, .distance = 24.548f}, {.id = 795, .distance = 24.694f}, {.id = 794, .distance = 25.104f}, {.id = 791, .distance = 25.237f}, {.id = 796, .distance = 25.654f}, {.id = 747, .distance = 34.527f}, {.id = 266, .distance = 42.794f}
+            {.id = 792, .distance = 24.548f}, {.id = 795, .distance = 24.694f}, {.id = 794, .distance = 25.104f}, {.id = 791, .distance = 25.237f}, {.id = 796, .distance = 25.654f}, {.id = 747, .distance = 34.527f}, {.id = 131, .distance = 42.754f}
         }},
         {794, {
-            {.id = 265, .distance = 23.182f}, {.id = 637, .distance = 23.277f}, {.id = 793, .distance = 25.104f}, {.id = 792, .distance = 26.371f}, {.id = 795, .distance = 29.110f}, {.id = 266, .distance = 34.248f}, {.id = 635, .distance = 36.842f}
+            {.id = 130, .distance = 23.145f}, {.id = 626, .distance = 23.364f}, {.id = 793, .distance = 25.104f}, {.id = 792, .distance = 26.371f}, {.id = 795, .distance = 29.110f}, {.id = 131, .distance = 34.212f}, {.id = 624, .distance = 37.037f}
         }},
         {795, {
-            {.id = 635, .distance = 21.892f}, {.id = 796, .distance = 24.048f}, {.id = 793, .distance = 24.694f}, {.id = 797, .distance = 26.547f}, {.id = 794, .distance = 29.110f}, {.id = 633, .distance = 34.325f}, {.id = 637, .distance = 34.476f}
+            {.id = 624, .distance = 22.141f}, {.id = 796, .distance = 24.048f}, {.id = 793, .distance = 24.694f}, {.id = 797, .distance = 26.547f}, {.id = 794, .distance = 29.110f}, {.id = 622, .distance = 34.797f}, {.id = 626, .distance = 34.955f}
         }},
         {796, {
-            {.id = 748, .distance = 21.654f}, {.id = 795, .distance = 24.048f}, {.id = 797, .distance = 24.979f}, {.id = 793, .distance = 25.654f}, {.id = 747, .distance = 33.270f}, {.id = 791, .distance = 41.369f}, {.id = 635, .distance = 42.839f}
+            {.id = 748, .distance = 21.654f}, {.id = 795, .distance = 24.048f}, {.id = 797, .distance = 24.979f}, {.id = 793, .distance = 25.654f}, {.id = 747, .distance = 33.270f}, {.id = 791, .distance = 41.369f}, {.id = 624, .distance = 43.012f}
         }},
         {797, {
-            {.id = 633, .distance = 21.887f}, {.id = 796, .distance = 24.979f}, {.id = 795, .distance = 26.547f}, {.id = 798, .distance = 26.791f}, {.id = 632, .distance = 34.415f}, {.id = 635, .distance = 34.679f}, {.id = 748, .distance = 36.329f}
+            {.id = 622, .distance = 21.957f}, {.id = 796, .distance = 24.979f}, {.id = 795, .distance = 26.547f}, {.id = 798, .distance = 26.791f}, {.id = 624, .distance = 34.795f}, {.id = 621, .distance = 35.021f}, {.id = 748, .distance = 36.329f}
         }},
         {798, {
-            {.id = 632, .distance = 22.165f}, {.id = 799, .distance = 25.487f}, {.id = 797, .distance = 26.791f}, {.id = 749, .distance = 27.232f}, {.id = 633, .distance = 34.634f}, {.id = 631, .distance = 34.708f}, {.id = 750, .distance = 41.139f}
+            {.id = 621, .distance = 22.576f}, {.id = 799, .distance = 25.487f}, {.id = 797, .distance = 26.791f}, {.id = 749, .distance = 27.232f}, {.id = 620, .distance = 33.974f}, {.id = 622, .distance = 34.245f}, {.id = 750, .distance = 41.139f}
         }},
         {799, {
-            {.id = 631, .distance = 22.388f}, {.id = 798, .distance = 25.487f}, {.id = 750, .distance = 26.028f}, {.id = 800, .distance = 27.606f}, {.id = 632, .distance = 34.206f}, {.id = 749, .distance = 35.594f}, {.id = 630, .distance = 35.607f}
+            {.id = 620, .distance = 22.017f}, {.id = 798, .distance = 25.487f}, {.id = 750, .distance = 26.028f}, {.id = 800, .distance = 27.606f}, {.id = 621, .distance = 34.146f}, {.id = 674, .distance = 35.507f}, {.id = 749, .distance = 35.594f}
         }},
         {800, {
-            {.id = 630, .distance = 22.361f}, {.id = 801, .distance = 26.790f}, {.id = 799, .distance = 27.606f}, {.id = 751, .distance = 31.167f}, {.id = 750, .distance = 32.429f}, {.id = 629, .distance = 34.595f}, {.id = 631, .distance = 34.628f}
+            {.id = 674, .distance = 22.422f}, {.id = 801, .distance = 26.790f}, {.id = 799, .distance = 27.606f}, {.id = 751, .distance = 31.167f}, {.id = 750, .distance = 32.429f}, {.id = 673, .distance = 34.634f}, {.id = 620, .distance = 34.921f}
         }},
         {801, {
-            {.id = 629, .distance = 22.151f}, {.id = 802, .distance = 25.010f}, {.id = 800, .distance = 26.790f}, {.id = 803, .distance = 26.792f}, {.id = 630, .distance = 34.812f}, {.id = 751, .distance = 34.856f}, {.id = 627, .distance = 34.991f}
+            {.id = 673, .distance = 21.731f}, {.id = 802, .distance = 25.010f}, {.id = 800, .distance = 26.790f}, {.id = 803, .distance = 26.792f}, {.id = 671, .distance = 33.932f}, {.id = 751, .distance = 34.856f}, {.id = 674, .distance = 34.987f}
         }},
         {802, {
-            {.id = 752, .distance = 21.595f}, {.id = 803, .distance = 24.103f}, {.id = 801, .distance = 25.010f}, {.id = 804, .distance = 25.812f}, {.id = 751, .distance = 33.491f}, {.id = 807, .distance = 41.309f}, {.id = 627, .distance = 42.896f}
+            {.id = 752, .distance = 21.595f}, {.id = 803, .distance = 24.103f}, {.id = 801, .distance = 25.010f}, {.id = 804, .distance = 25.812f}, {.id = 751, .distance = 33.491f}, {.id = 807, .distance = 41.309f}, {.id = 671, .distance = 42.170f}
         }},
         {803, {
-            {.id = 627, .distance = 21.881f}, {.id = 802, .distance = 24.103f}, {.id = 804, .distance = 24.732f}, {.id = 805, .distance = 26.546f}, {.id = 801, .distance = 26.792f}, {.id = 629, .distance = 34.928f}, {.id = 626, .distance = 36.598f}
+            {.id = 671, .distance = 21.264f}, {.id = 802, .distance = 24.103f}, {.id = 804, .distance = 24.732f}, {.id = 805, .distance = 26.546f}, {.id = 801, .distance = 26.792f}, {.id = 673, .distance = 34.357f}, {.id = 670, .distance = 36.746f}
         }},
         {804, {
             {.id = 805, .distance = 24.694f}, {.id = 803, .distance = 24.732f}, {.id = 806, .distance = 25.085f}, {.id = 807, .distance = 25.237f}, {.id = 802, .distance = 25.812f}, {.id = 752, .distance = 36.997f}, {.id = 753, .distance = 39.624f}
         }},
         {805, {
-            {.id = 513, .distance = 23.130f}, {.id = 626, .distance = 23.274f}, {.id = 804, .distance = 24.694f}, {.id = 803, .distance = 26.546f}, {.id = 806, .distance = 28.931f}, {.id = 627, .distance = 34.044f}, {.id = 511, .distance = 36.625f}
+            {.id = 670, .distance = 23.352f}, {.id = 491, .distance = 23.430f}, {.id = 804, .distance = 24.694f}, {.id = 803, .distance = 26.546f}, {.id = 806, .distance = 28.931f}, {.id = 671, .distance = 34.325f}, {.id = 489, .distance = 36.914f}
         }},
         {806, {
-            {.id = 511, .distance = 20.992f}, {.id = 807, .distance = 24.787f}, {.id = 804, .distance = 25.085f}, {.id = 808, .distance = 26.270f}, {.id = 805, .distance = 28.931f}, {.id = 509, .distance = 33.735f}, {.id = 513, .distance = 33.987f}
+            {.id = 489, .distance = 21.388f}, {.id = 807, .distance = 24.787f}, {.id = 804, .distance = 25.085f}, {.id = 808, .distance = 26.270f}, {.id = 805, .distance = 28.931f}, {.id = 487, .distance = 34.337f}, {.id = 491, .distance = 34.473f}
         }},
         {807, {
             {.id = 753, .distance = 20.735f}, {.id = 806, .distance = 24.787f}, {.id = 804, .distance = 25.237f}, {.id = 808, .distance = 25.425f}, {.id = 752, .distance = 38.308f}, {.id = 754, .distance = 38.379f}, {.id = 802, .distance = 41.309f}
         }},
         {808, {
-            {.id = 509, .distance = 21.421f}, {.id = 807, .distance = 25.425f}, {.id = 806, .distance = 26.270f}, {.id = 809, .distance = 27.049f}, {.id = 511, .distance = 34.142f}, {.id = 508, .distance = 34.368f}, {.id = 754, .distance = 37.159f}
+            {.id = 487, .distance = 21.613f}, {.id = 807, .distance = 25.425f}, {.id = 806, .distance = 26.270f}, {.id = 809, .distance = 27.049f}, {.id = 489, .distance = 34.344f}, {.id = 486, .distance = 35.024f}, {.id = 754, .distance = 37.159f}
         }},
         {809, {
-            {.id = 508, .distance = 22.075f}, {.id = 755, .distance = 27.042f}, {.id = 808, .distance = 27.049f}, {.id = 754, .distance = 28.297f}, {.id = 507, .distance = 34.543f}, {.id = 509, .distance = 34.794f}, {.id = 729, .distance = 35.703f}
+            {.id = 486, .distance = 22.913f}, {.id = 755, .distance = 27.042f}, {.id = 808, .distance = 27.049f}, {.id = 754, .distance = 28.297f}, {.id = 485, .distance = 34.231f}, {.id = 487, .distance = 34.428f}, {.id = 729, .distance = 35.703f}
         }},
         {810, {
             {.id = 815, .distance = 22.969f}, {.id = 813, .distance = 23.177f}, {.id = 812, .distance = 23.180f}, {.id = 811, .distance = 23.418f}, {.id = 814, .distance = 23.540f}, {.id = 824, .distance = 46.414f}, {.id = 821, .distance = 46.608f}
@@ -4947,169 +4947,169 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
             {.id = 863, .distance = 27.954f}, {.id = 944, .distance = 28.297f}, {.id = 888, .distance = 29.747f}, {.id = 864, .distance = 29.831f}, {.id = 943, .distance = 37.159f}, {.id = 842, .distance = 38.168f}, {.id = 942, .distance = 38.379f}
         }},
         {890, {
-            {.id = 496, .distance = 22.163f}, {.id = 864, .distance = 24.998f}, {.id = 891, .distance = 26.018f}, {.id = 944, .distance = 27.042f}, {.id = 495, .distance = 34.323f}, {.id = 497, .distance = 35.235f}, {.id = 865, .distance = 40.605f}
+            {.id = 1576, .distance = 22.163f}, {.id = 864, .distance = 24.998f}, {.id = 891, .distance = 26.018f}, {.id = 944, .distance = 27.042f}, {.id = 1575, .distance = 34.323f}, {.id = 1577, .distance = 35.235f}, {.id = 865, .distance = 40.605f}
         }},
         {891, {
-            {.id = 495, .distance = 22.850f}, {.id = 890, .distance = 26.018f}, {.id = 892, .distance = 26.277f}, {.id = 865, .distance = 27.955f}, {.id = 496, .distance = 34.871f}, {.id = 494, .distance = 34.985f}, {.id = 864, .distance = 36.289f}
+            {.id = 1575, .distance = 22.850f}, {.id = 890, .distance = 26.018f}, {.id = 892, .distance = 26.277f}, {.id = 865, .distance = 27.955f}, {.id = 1576, .distance = 34.871f}, {.id = 1574, .distance = 34.985f}, {.id = 864, .distance = 36.289f}
         }},
         {892, {
-            {.id = 494, .distance = 22.020f}, {.id = 893, .distance = 25.444f}, {.id = 891, .distance = 26.277f}, {.id = 894, .distance = 27.296f}, {.id = 495, .distance = 34.251f}, {.id = 492, .distance = 35.395f}, {.id = 865, .distance = 36.960f}
+            {.id = 1574, .distance = 22.020f}, {.id = 893, .distance = 25.444f}, {.id = 891, .distance = 26.277f}, {.id = 894, .distance = 27.296f}, {.id = 1575, .distance = 34.251f}, {.id = 1572, .distance = 35.395f}, {.id = 865, .distance = 36.960f}
         }},
         {893, {
             {.id = 866, .distance = 21.650f}, {.id = 894, .distance = 23.803f}, {.id = 892, .distance = 25.444f}, {.id = 895, .distance = 25.495f}, {.id = 867, .distance = 38.588f}, {.id = 865, .distance = 39.188f}, {.id = 898, .distance = 40.893f}
         }},
         {894, {
-            {.id = 492, .distance = 22.006f}, {.id = 893, .distance = 23.803f}, {.id = 895, .distance = 24.430f}, {.id = 896, .distance = 26.781f}, {.id = 892, .distance = 27.296f}, {.id = 494, .distance = 34.913f}, {.id = 491, .distance = 36.766f}
+            {.id = 1572, .distance = 22.006f}, {.id = 893, .distance = 23.803f}, {.id = 895, .distance = 24.430f}, {.id = 896, .distance = 26.781f}, {.id = 892, .distance = 27.296f}, {.id = 1574, .distance = 34.913f}, {.id = 1571, .distance = 36.766f}
         }},
         {895, {
             {.id = 897, .distance = 24.299f}, {.id = 894, .distance = 24.430f}, {.id = 896, .distance = 24.711f}, {.id = 898, .distance = 25.084f}, {.id = 893, .distance = 25.495f}, {.id = 867, .distance = 37.220f}, {.id = 866, .distance = 40.095f}
         }},
         {896, {
-            {.id = 1075, .distance = 23.274f}, {.id = 491, .distance = 23.353f}, {.id = 895, .distance = 24.711f}, {.id = 894, .distance = 26.781f}, {.id = 897, .distance = 27.879f}, {.id = 492, .distance = 34.190f}, {.id = 1073, .distance = 36.598f}
+            {.id = 1480, .distance = 23.274f}, {.id = 1571, .distance = 23.353f}, {.id = 895, .distance = 24.711f}, {.id = 894, .distance = 26.781f}, {.id = 897, .distance = 27.879f}, {.id = 1572, .distance = 34.190f}, {.id = 1478, .distance = 36.598f}
         }},
         {897, {
-            {.id = 1073, .distance = 21.881f}, {.id = 895, .distance = 24.299f}, {.id = 898, .distance = 24.636f}, {.id = 899, .distance = 27.526f}, {.id = 896, .distance = 27.879f}, {.id = 1075, .distance = 34.044f}, {.id = 1071, .distance = 34.991f}
+            {.id = 1478, .distance = 21.881f}, {.id = 895, .distance = 24.299f}, {.id = 898, .distance = 24.636f}, {.id = 899, .distance = 27.526f}, {.id = 896, .distance = 27.879f}, {.id = 1480, .distance = 34.044f}, {.id = 1476, .distance = 34.991f}
         }},
         {898, {
             {.id = 867, .distance = 21.863f}, {.id = 897, .distance = 24.636f}, {.id = 895, .distance = 25.084f}, {.id = 899, .distance = 25.653f}, {.id = 868, .distance = 34.005f}, {.id = 893, .distance = 40.893f}, {.id = 866, .distance = 43.024f}
         }},
         {899, {
-            {.id = 1071, .distance = 22.151f}, {.id = 898, .distance = 25.653f}, {.id = 900, .distance = 26.467f}, {.id = 897, .distance = 27.526f}, {.id = 1070, .distance = 34.595f}, {.id = 1073, .distance = 34.928f}, {.id = 868, .distance = 35.198f}
+            {.id = 1476, .distance = 22.151f}, {.id = 898, .distance = 25.653f}, {.id = 900, .distance = 26.467f}, {.id = 897, .distance = 27.526f}, {.id = 1475, .distance = 34.595f}, {.id = 1478, .distance = 34.928f}, {.id = 868, .distance = 35.198f}
         }},
         {900, {
-            {.id = 1070, .distance = 22.361f}, {.id = 899, .distance = 26.467f}, {.id = 901, .distance = 26.547f}, {.id = 868, .distance = 31.431f}, {.id = 869, .distance = 32.153f}, {.id = 1071, .distance = 34.812f}, {.id = 1069, .distance = 35.607f}
+            {.id = 1475, .distance = 22.361f}, {.id = 899, .distance = 26.467f}, {.id = 901, .distance = 26.547f}, {.id = 868, .distance = 31.431f}, {.id = 869, .distance = 32.153f}, {.id = 1476, .distance = 34.812f}, {.id = 1474, .distance = 35.607f}
         }},
         {901, {
-            {.id = 1069, .distance = 22.388f}, {.id = 869, .distance = 25.318f}, {.id = 900, .distance = 26.547f}, {.id = 902, .distance = 27.116f}, {.id = 1070, .distance = 34.628f}, {.id = 1068, .distance = 34.708f}, {.id = 870, .distance = 36.035f}
+            {.id = 1474, .distance = 22.388f}, {.id = 869, .distance = 25.318f}, {.id = 900, .distance = 26.547f}, {.id = 902, .distance = 27.116f}, {.id = 1475, .distance = 34.628f}, {.id = 1473, .distance = 34.708f}, {.id = 870, .distance = 36.035f}
         }},
         {902, {
-            {.id = 1068, .distance = 22.165f}, {.id = 903, .distance = 26.383f}, {.id = 901, .distance = 27.116f}, {.id = 870, .distance = 27.523f}, {.id = 1069, .distance = 34.206f}, {.id = 1067, .distance = 34.415f}, {.id = 869, .distance = 41.220f}
+            {.id = 1473, .distance = 22.165f}, {.id = 903, .distance = 26.383f}, {.id = 901, .distance = 27.116f}, {.id = 870, .distance = 27.523f}, {.id = 1474, .distance = 34.206f}, {.id = 1472, .distance = 34.415f}, {.id = 869, .distance = 41.220f}
         }},
         {903, {
-            {.id = 1067, .distance = 21.887f}, {.id = 904, .distance = 25.498f}, {.id = 902, .distance = 26.383f}, {.id = 905, .distance = 26.792f}, {.id = 1065, .distance = 34.325f}, {.id = 1068, .distance = 34.634f}, {.id = 871, .distance = 36.749f}
+            {.id = 1472, .distance = 21.887f}, {.id = 904, .distance = 25.498f}, {.id = 902, .distance = 26.383f}, {.id = 905, .distance = 26.792f}, {.id = 1470, .distance = 34.325f}, {.id = 1473, .distance = 34.634f}, {.id = 871, .distance = 36.749f}
         }},
         {904, {
-            {.id = 871, .distance = 21.879f}, {.id = 905, .distance = 24.550f}, {.id = 903, .distance = 25.498f}, {.id = 906, .distance = 25.732f}, {.id = 872, .distance = 33.585f}, {.id = 909, .distance = 41.045f}, {.id = 1065, .distance = 43.103f}
+            {.id = 871, .distance = 21.879f}, {.id = 905, .distance = 24.550f}, {.id = 903, .distance = 25.498f}, {.id = 906, .distance = 25.732f}, {.id = 872, .distance = 33.585f}, {.id = 909, .distance = 41.045f}, {.id = 1470, .distance = 43.103f}
         }},
         {905, {
-            {.id = 1065, .distance = 21.892f}, {.id = 904, .distance = 24.550f}, {.id = 906, .distance = 24.859f}, {.id = 907, .distance = 26.221f}, {.id = 903, .distance = 26.792f}, {.id = 1067, .distance = 34.679f}, {.id = 1064, .distance = 36.842f}
+            {.id = 1470, .distance = 21.892f}, {.id = 904, .distance = 24.550f}, {.id = 906, .distance = 24.859f}, {.id = 907, .distance = 26.221f}, {.id = 903, .distance = 26.792f}, {.id = 1472, .distance = 34.679f}, {.id = 1469, .distance = 36.842f}
         }},
         {906, {
-            {.id = 908, .distance = 24.528f}, {.id = 907, .distance = 24.669f}, {.id = 905, .distance = 24.859f}, {.id = 909, .distance = 25.084f}, {.id = 904, .distance = 25.732f}, {.id = 872, .distance = 35.615f}, {.id = 1478, .distance = 43.013f}
+            {.id = 908, .distance = 24.528f}, {.id = 907, .distance = 24.669f}, {.id = 905, .distance = 24.859f}, {.id = 909, .distance = 25.084f}, {.id = 904, .distance = 25.732f}, {.id = 872, .distance = 35.615f}, {.id = 646, .distance = 42.825f}
         }},
         {907, {
-            {.id = 1064, .distance = 23.277f}, {.id = 1480, .distance = 23.709f}, {.id = 906, .distance = 24.669f}, {.id = 905, .distance = 26.221f}, {.id = 908, .distance = 28.881f}, {.id = 1065, .distance = 34.476f}, {.id = 1478, .distance = 37.119f}
+            {.id = 1469, .distance = 23.277f}, {.id = 648, .distance = 23.490f}, {.id = 906, .distance = 24.669f}, {.id = 905, .distance = 26.221f}, {.id = 908, .distance = 28.881f}, {.id = 1470, .distance = 34.476f}, {.id = 646, .distance = 36.998f}
         }},
         {908, {
-            {.id = 1478, .distance = 21.876f}, {.id = 909, .distance = 24.210f}, {.id = 906, .distance = 24.528f}, {.id = 910, .distance = 26.372f}, {.id = 907, .distance = 28.881f}, {.id = 1476, .distance = 34.497f}, {.id = 1480, .distance = 34.534f}
+            {.id = 646, .distance = 21.608f}, {.id = 909, .distance = 24.210f}, {.id = 906, .distance = 24.528f}, {.id = 910, .distance = 26.372f}, {.id = 907, .distance = 28.881f}, {.id = 648, .distance = 34.196f}, {.id = 644, .distance = 34.300f}
         }},
         {909, {
-            {.id = 908, .distance = 24.210f}, {.id = 872, .distance = 24.618f}, {.id = 906, .distance = 25.084f}, {.id = 910, .distance = 25.246f}, {.id = 873, .distance = 29.298f}, {.id = 904, .distance = 41.045f}, {.id = 1478, .distance = 42.954f}
+            {.id = 908, .distance = 24.210f}, {.id = 872, .distance = 24.618f}, {.id = 906, .distance = 25.084f}, {.id = 910, .distance = 25.246f}, {.id = 873, .distance = 29.298f}, {.id = 904, .distance = 41.045f}, {.id = 646, .distance = 42.732f}
         }},
         {910, {
-            {.id = 1476, .distance = 21.967f}, {.id = 909, .distance = 25.246f}, {.id = 908, .distance = 26.372f}, {.id = 911, .distance = 27.091f}, {.id = 1478, .distance = 34.412f}, {.id = 873, .distance = 34.857f}, {.id = 1475, .distance = 34.876f}
+            {.id = 644, .distance = 21.658f}, {.id = 909, .distance = 25.246f}, {.id = 908, .distance = 26.372f}, {.id = 911, .distance = 27.091f}, {.id = 646, .distance = 34.197f}, {.id = 643, .distance = 34.609f}, {.id = 873, .distance = 34.857f}
         }},
         {911, {
-            {.id = 1475, .distance = 21.955f}, {.id = 912, .distance = 26.524f}, {.id = 910, .distance = 27.091f}, {.id = 874, .distance = 29.494f}, {.id = 1476, .distance = 34.638f}, {.id = 1474, .distance = 35.268f}, {.id = 873, .distance = 35.556f}
+            {.id = 643, .distance = 21.606f}, {.id = 912, .distance = 26.524f}, {.id = 910, .distance = 27.091f}, {.id = 874, .distance = 29.494f}, {.id = 642, .distance = 34.298f}, {.id = 644, .distance = 34.445f}, {.id = 873, .distance = 35.556f}
         }},
         {912, {
-            {.id = 1474, .distance = 21.888f}, {.id = 911, .distance = 26.524f}, {.id = 913, .distance = 26.730f}, {.id = 874, .distance = 28.584f}, {.id = 875, .distance = 32.097f}, {.id = 1473, .distance = 34.325f}, {.id = 1475, .distance = 34.376f}
+            {.id = 642, .distance = 21.478f}, {.id = 911, .distance = 26.524f}, {.id = 913, .distance = 26.730f}, {.id = 874, .distance = 28.584f}, {.id = 875, .distance = 32.097f}, {.id = 643, .distance = 34.202f}, {.id = 641, .distance = 34.298f}
         }},
         {913, {
-            {.id = 1473, .distance = 21.772f}, {.id = 912, .distance = 26.730f}, {.id = 914, .distance = 26.732f}, {.id = 875, .distance = 28.097f}, {.id = 1474, .distance = 33.726f}, {.id = 1472, .distance = 34.396f}, {.id = 876, .distance = 40.135f}
+            {.id = 641, .distance = 21.606f}, {.id = 912, .distance = 26.730f}, {.id = 914, .distance = 26.732f}, {.id = 875, .distance = 28.097f}, {.id = 642, .distance = 34.202f}, {.id = 640, .distance = 34.609f}, {.id = 876, .distance = 40.135f}
         }},
         {914, {
-            {.id = 1472, .distance = 21.813f}, {.id = 915, .distance = 24.672f}, {.id = 913, .distance = 26.732f}, {.id = 916, .distance = 26.732f}, {.id = 1470, .distance = 34.237f}, {.id = 1473, .distance = 34.627f}, {.id = 876, .distance = 35.127f}
+            {.id = 640, .distance = 21.658f}, {.id = 915, .distance = 24.672f}, {.id = 913, .distance = 26.732f}, {.id = 916, .distance = 26.732f}, {.id = 638, .distance = 34.300f}, {.id = 641, .distance = 34.445f}, {.id = 876, .distance = 35.127f}
         }},
         {915, {
-            {.id = 916, .distance = 23.501f}, {.id = 914, .distance = 24.672f}, {.id = 917, .distance = 25.068f}, {.id = 876, .distance = 25.325f}, {.id = 877, .distance = 29.320f}, {.id = 920, .distance = 41.461f}, {.id = 1470, .distance = 41.921f}
+            {.id = 916, .distance = 23.501f}, {.id = 914, .distance = 24.672f}, {.id = 917, .distance = 25.068f}, {.id = 876, .distance = 25.325f}, {.id = 877, .distance = 29.320f}, {.id = 920, .distance = 41.461f}, {.id = 638, .distance = 41.850f}
         }},
         {916, {
-            {.id = 1470, .distance = 21.788f}, {.id = 915, .distance = 23.501f}, {.id = 917, .distance = 24.580f}, {.id = 918, .distance = 26.371f}, {.id = 914, .distance = 26.732f}, {.id = 1472, .distance = 34.608f}, {.id = 1469, .distance = 36.785f}
+            {.id = 638, .distance = 21.608f}, {.id = 915, .distance = 23.501f}, {.id = 917, .distance = 24.580f}, {.id = 918, .distance = 26.371f}, {.id = 914, .distance = 26.732f}, {.id = 640, .distance = 34.197f}, {.id = 637, .distance = 36.998f}
         }},
         {917, {
-            {.id = 916, .distance = 24.580f}, {.id = 919, .distance = 24.959f}, {.id = 918, .distance = 25.010f}, {.id = 915, .distance = 25.068f}, {.id = 920, .distance = 25.146f}, {.id = 877, .distance = 34.248f}, {.id = 1470, .distance = 43.155f}
+            {.id = 916, .distance = 24.580f}, {.id = 919, .distance = 24.959f}, {.id = 918, .distance = 25.010f}, {.id = 915, .distance = 25.068f}, {.id = 920, .distance = 25.146f}, {.id = 877, .distance = 34.248f}, {.id = 638, .distance = 42.952f}
         }},
         {918, {
-            {.id = 1469, .distance = 23.106f}, {.id = 1301, .distance = 23.609f}, {.id = 917, .distance = 25.010f}, {.id = 916, .distance = 26.371f}, {.id = 919, .distance = 29.071f}, {.id = 1470, .distance = 34.484f}, {.id = 1299, .distance = 37.270f}
+            {.id = 119, .distance = 23.326f}, {.id = 637, .distance = 23.490f}, {.id = 917, .distance = 25.010f}, {.id = 916, .distance = 26.371f}, {.id = 919, .distance = 29.071f}, {.id = 638, .distance = 34.196f}, {.id = 117, .distance = 36.872f}
         }},
         {919, {
-            {.id = 1299, .distance = 22.081f}, {.id = 920, .distance = 23.829f}, {.id = 917, .distance = 24.959f}, {.id = 921, .distance = 26.582f}, {.id = 918, .distance = 29.071f}, {.id = 1301, .distance = 34.791f}, {.id = 1297, .distance = 34.888f}
+            {.id = 117, .distance = 21.837f}, {.id = 920, .distance = 23.829f}, {.id = 917, .distance = 24.959f}, {.id = 921, .distance = 26.582f}, {.id = 918, .distance = 29.071f}, {.id = 115, .distance = 34.439f}, {.id = 119, .distance = 34.529f}
         }},
         {920, {
-            {.id = 919, .distance = 23.829f}, {.id = 917, .distance = 25.146f}, {.id = 878, .distance = 25.156f}, {.id = 921, .distance = 25.569f}, {.id = 877, .distance = 28.406f}, {.id = 915, .distance = 41.461f}, {.id = 1299, .distance = 42.798f}
+            {.id = 919, .distance = 23.829f}, {.id = 917, .distance = 25.146f}, {.id = 878, .distance = 25.156f}, {.id = 921, .distance = 25.569f}, {.id = 877, .distance = 28.406f}, {.id = 915, .distance = 41.461f}, {.id = 117, .distance = 42.698f}
         }},
         {921, {
-            {.id = 1297, .distance = 21.687f}, {.id = 920, .distance = 25.569f}, {.id = 922, .distance = 26.524f}, {.id = 919, .distance = 26.582f}, {.id = 1299, .distance = 34.521f}, {.id = 878, .distance = 34.565f}, {.id = 1296, .distance = 34.947f}
+            {.id = 115, .distance = 21.607f}, {.id = 920, .distance = 25.569f}, {.id = 922, .distance = 26.524f}, {.id = 919, .distance = 26.582f}, {.id = 114, .distance = 34.438f}, {.id = 878, .distance = 34.565f}, {.id = 117, .distance = 34.611f}
         }},
         {922, {
-            {.id = 1296, .distance = 22.464f}, {.id = 921, .distance = 26.524f}, {.id = 923, .distance = 27.091f}, {.id = 879, .distance = 28.191f}, {.id = 1297, .distance = 33.864f}, {.id = 1295, .distance = 34.205f}, {.id = 878, .distance = 39.087f}
+            {.id = 114, .distance = 21.912f}, {.id = 921, .distance = 26.524f}, {.id = 923, .distance = 27.091f}, {.id = 879, .distance = 28.191f}, {.id = 115, .distance = 34.219f}, {.id = 113, .distance = 34.438f}, {.id = 878, .distance = 39.087f}
         }},
         {923, {
-            {.id = 1295, .distance = 21.856f}, {.id = 924, .distance = 26.524f}, {.id = 922, .distance = 27.091f}, {.id = 880, .distance = 28.182f}, {.id = 879, .distance = 31.855f}, {.id = 1349, .distance = 34.474f}, {.id = 1296, .distance = 34.950f}
+            {.id = 113, .distance = 21.836f}, {.id = 924, .distance = 26.524f}, {.id = 922, .distance = 27.091f}, {.id = 880, .distance = 28.182f}, {.id = 879, .distance = 31.855f}, {.id = 112, .distance = 34.438f}, {.id = 114, .distance = 34.758f}
         }},
         {924, {
-            {.id = 1349, .distance = 22.408f}, {.id = 923, .distance = 26.524f}, {.id = 925, .distance = 26.581f}, {.id = 880, .distance = 29.755f}, {.id = 1348, .distance = 34.529f}, {.id = 881, .distance = 34.998f}, {.id = 1295, .distance = 35.008f}
+            {.id = 112, .distance = 21.912f}, {.id = 923, .distance = 26.524f}, {.id = 925, .distance = 26.581f}, {.id = 880, .distance = 29.755f}, {.id = 111, .distance = 34.438f}, {.id = 113, .distance = 34.758f}, {.id = 881, .distance = 34.998f}
         }},
         {925, {
-            {.id = 1348, .distance = 21.567f}, {.id = 926, .distance = 25.497f}, {.id = 924, .distance = 26.581f}, {.id = 927, .distance = 27.091f}, {.id = 1346, .distance = 33.896f}, {.id = 881, .distance = 34.425f}, {.id = 1349, .distance = 34.817f}
+            {.id = 111, .distance = 21.607f}, {.id = 926, .distance = 25.497f}, {.id = 924, .distance = 26.581f}, {.id = 927, .distance = 27.091f}, {.id = 112, .distance = 34.219f}, {.id = 881, .distance = 34.425f}, {.id = 109, .distance = 34.439f}
         }},
         {926, {
-            {.id = 882, .distance = 23.798f}, {.id = 927, .distance = 24.344f}, {.id = 928, .distance = 25.237f}, {.id = 925, .distance = 25.497f}, {.id = 881, .distance = 29.105f}, {.id = 931, .distance = 41.369f}, {.id = 1346, .distance = 42.275f}
+            {.id = 882, .distance = 23.798f}, {.id = 927, .distance = 24.344f}, {.id = 928, .distance = 25.237f}, {.id = 925, .distance = 25.497f}, {.id = 881, .distance = 29.105f}, {.id = 931, .distance = 41.369f}, {.id = 109, .distance = 42.825f}
         }},
         {927, {
-            {.id = 1346, .distance = 21.183f}, {.id = 926, .distance = 24.344f}, {.id = 928, .distance = 24.548f}, {.id = 929, .distance = 26.371f}, {.id = 925, .distance = 27.091f}, {.id = 1348, .distance = 34.469f}, {.id = 1345, .distance = 36.529f}
+            {.id = 109, .distance = 21.837f}, {.id = 926, .distance = 24.344f}, {.id = 928, .distance = 24.548f}, {.id = 929, .distance = 26.371f}, {.id = 925, .distance = 27.091f}, {.id = 111, .distance = 34.611f}, {.id = 108, .distance = 36.872f}
         }},
         {928, {
-            {.id = 927, .distance = 24.548f}, {.id = 930, .distance = 24.694f}, {.id = 929, .distance = 25.104f}, {.id = 926, .distance = 25.237f}, {.id = 931, .distance = 25.654f}, {.id = 882, .distance = 34.527f}, {.id = 1346, .distance = 42.794f}
+            {.id = 927, .distance = 24.548f}, {.id = 930, .distance = 24.694f}, {.id = 929, .distance = 25.104f}, {.id = 926, .distance = 25.237f}, {.id = 931, .distance = 25.654f}, {.id = 882, .distance = 34.527f}, {.id = 1040, .distance = 43.104f}
         }},
         {929, {
-            {.id = 1345, .distance = 23.182f}, {.id = 772, .distance = 23.277f}, {.id = 928, .distance = 25.104f}, {.id = 927, .distance = 26.371f}, {.id = 930, .distance = 29.110f}, {.id = 1346, .distance = 34.248f}, {.id = 770, .distance = 36.842f}
+            {.id = 1042, .distance = 23.277f}, {.id = 108, .distance = 23.326f}, {.id = 928, .distance = 25.104f}, {.id = 927, .distance = 26.371f}, {.id = 930, .distance = 29.110f}, {.id = 109, .distance = 34.529f}, {.id = 1040, .distance = 36.842f}
         }},
         {930, {
-            {.id = 770, .distance = 21.892f}, {.id = 931, .distance = 24.048f}, {.id = 928, .distance = 24.694f}, {.id = 932, .distance = 26.547f}, {.id = 929, .distance = 29.110f}, {.id = 768, .distance = 34.325f}, {.id = 772, .distance = 34.476f}
+            {.id = 1040, .distance = 21.892f}, {.id = 931, .distance = 24.048f}, {.id = 928, .distance = 24.694f}, {.id = 932, .distance = 26.547f}, {.id = 929, .distance = 29.110f}, {.id = 1038, .distance = 34.325f}, {.id = 1042, .distance = 34.476f}
         }},
         {931, {
-            {.id = 883, .distance = 21.654f}, {.id = 930, .distance = 24.048f}, {.id = 932, .distance = 24.979f}, {.id = 928, .distance = 25.654f}, {.id = 882, .distance = 33.270f}, {.id = 926, .distance = 41.369f}, {.id = 770, .distance = 42.839f}
+            {.id = 883, .distance = 21.654f}, {.id = 930, .distance = 24.048f}, {.id = 932, .distance = 24.979f}, {.id = 928, .distance = 25.654f}, {.id = 882, .distance = 33.270f}, {.id = 926, .distance = 41.369f}, {.id = 1040, .distance = 42.839f}
         }},
         {932, {
-            {.id = 768, .distance = 21.887f}, {.id = 931, .distance = 24.979f}, {.id = 930, .distance = 26.547f}, {.id = 933, .distance = 26.791f}, {.id = 767, .distance = 34.415f}, {.id = 770, .distance = 34.679f}, {.id = 883, .distance = 36.329f}
+            {.id = 1038, .distance = 21.887f}, {.id = 931, .distance = 24.979f}, {.id = 930, .distance = 26.547f}, {.id = 933, .distance = 26.791f}, {.id = 1037, .distance = 34.415f}, {.id = 1040, .distance = 34.679f}, {.id = 883, .distance = 36.329f}
         }},
         {933, {
-            {.id = 767, .distance = 22.165f}, {.id = 934, .distance = 25.487f}, {.id = 932, .distance = 26.791f}, {.id = 884, .distance = 27.232f}, {.id = 768, .distance = 34.634f}, {.id = 766, .distance = 34.708f}, {.id = 885, .distance = 41.139f}
+            {.id = 1037, .distance = 22.165f}, {.id = 934, .distance = 25.487f}, {.id = 932, .distance = 26.791f}, {.id = 884, .distance = 27.232f}, {.id = 1038, .distance = 34.634f}, {.id = 1036, .distance = 34.708f}, {.id = 885, .distance = 41.139f}
         }},
         {934, {
-            {.id = 766, .distance = 22.388f}, {.id = 933, .distance = 25.487f}, {.id = 885, .distance = 26.028f}, {.id = 935, .distance = 27.606f}, {.id = 767, .distance = 34.206f}, {.id = 884, .distance = 35.594f}, {.id = 765, .distance = 35.607f}
+            {.id = 1036, .distance = 22.388f}, {.id = 933, .distance = 25.487f}, {.id = 885, .distance = 26.028f}, {.id = 935, .distance = 27.606f}, {.id = 1037, .distance = 34.206f}, {.id = 884, .distance = 35.594f}, {.id = 1035, .distance = 35.607f}
         }},
         {935, {
-            {.id = 765, .distance = 22.361f}, {.id = 936, .distance = 26.790f}, {.id = 934, .distance = 27.606f}, {.id = 886, .distance = 31.167f}, {.id = 885, .distance = 32.429f}, {.id = 764, .distance = 34.595f}, {.id = 766, .distance = 34.628f}
+            {.id = 1035, .distance = 22.361f}, {.id = 936, .distance = 26.790f}, {.id = 934, .distance = 27.606f}, {.id = 886, .distance = 31.167f}, {.id = 885, .distance = 32.429f}, {.id = 1034, .distance = 34.595f}, {.id = 1036, .distance = 34.628f}
         }},
         {936, {
-            {.id = 764, .distance = 22.151f}, {.id = 937, .distance = 25.010f}, {.id = 935, .distance = 26.790f}, {.id = 938, .distance = 26.792f}, {.id = 765, .distance = 34.812f}, {.id = 886, .distance = 34.856f}, {.id = 762, .distance = 34.991f}
+            {.id = 1034, .distance = 22.151f}, {.id = 937, .distance = 25.010f}, {.id = 935, .distance = 26.790f}, {.id = 938, .distance = 26.792f}, {.id = 1035, .distance = 34.812f}, {.id = 886, .distance = 34.856f}, {.id = 1032, .distance = 34.991f}
         }},
         {937, {
-            {.id = 887, .distance = 21.595f}, {.id = 938, .distance = 24.103f}, {.id = 936, .distance = 25.010f}, {.id = 939, .distance = 25.812f}, {.id = 886, .distance = 33.491f}, {.id = 942, .distance = 41.309f}, {.id = 762, .distance = 42.896f}
+            {.id = 887, .distance = 21.595f}, {.id = 938, .distance = 24.103f}, {.id = 936, .distance = 25.010f}, {.id = 939, .distance = 25.812f}, {.id = 886, .distance = 33.491f}, {.id = 942, .distance = 41.309f}, {.id = 1032, .distance = 42.896f}
         }},
         {938, {
-            {.id = 762, .distance = 21.881f}, {.id = 937, .distance = 24.103f}, {.id = 939, .distance = 24.732f}, {.id = 940, .distance = 26.546f}, {.id = 936, .distance = 26.792f}, {.id = 764, .distance = 34.928f}, {.id = 761, .distance = 36.598f}
+            {.id = 1032, .distance = 21.881f}, {.id = 937, .distance = 24.103f}, {.id = 939, .distance = 24.732f}, {.id = 940, .distance = 26.546f}, {.id = 936, .distance = 26.792f}, {.id = 1034, .distance = 34.928f}, {.id = 1031, .distance = 36.598f}
         }},
         {939, {
             {.id = 940, .distance = 24.694f}, {.id = 938, .distance = 24.732f}, {.id = 941, .distance = 25.085f}, {.id = 942, .distance = 25.237f}, {.id = 937, .distance = 25.812f}, {.id = 887, .distance = 36.997f}, {.id = 888, .distance = 39.624f}
         }},
         {940, {
-            {.id = 761, .distance = 23.274f}, {.id = 502, .distance = 23.328f}, {.id = 939, .distance = 24.694f}, {.id = 938, .distance = 26.546f}, {.id = 941, .distance = 28.931f}, {.id = 762, .distance = 34.044f}, {.id = 500, .distance = 36.712f}
+            {.id = 1031, .distance = 23.274f}, {.id = 1582, .distance = 23.328f}, {.id = 939, .distance = 24.694f}, {.id = 938, .distance = 26.546f}, {.id = 941, .distance = 28.931f}, {.id = 1032, .distance = 34.044f}, {.id = 1580, .distance = 36.712f}
         }},
         {941, {
-            {.id = 500, .distance = 21.127f}, {.id = 942, .distance = 24.787f}, {.id = 939, .distance = 25.085f}, {.id = 943, .distance = 26.270f}, {.id = 940, .distance = 28.931f}, {.id = 498, .distance = 33.853f}, {.id = 502, .distance = 33.983f}
+            {.id = 1580, .distance = 21.127f}, {.id = 942, .distance = 24.787f}, {.id = 939, .distance = 25.085f}, {.id = 943, .distance = 26.270f}, {.id = 940, .distance = 28.931f}, {.id = 1578, .distance = 33.853f}, {.id = 1582, .distance = 33.983f}
         }},
         {942, {
             {.id = 888, .distance = 20.735f}, {.id = 941, .distance = 24.787f}, {.id = 939, .distance = 25.237f}, {.id = 943, .distance = 25.425f}, {.id = 887, .distance = 38.308f}, {.id = 889, .distance = 38.379f}, {.id = 937, .distance = 41.309f}
         }},
         {943, {
-            {.id = 498, .distance = 21.527f}, {.id = 942, .distance = 25.425f}, {.id = 941, .distance = 26.270f}, {.id = 944, .distance = 27.049f}, {.id = 500, .distance = 34.222f}, {.id = 497, .distance = 34.412f}, {.id = 889, .distance = 37.159f}
+            {.id = 1578, .distance = 21.527f}, {.id = 942, .distance = 25.425f}, {.id = 941, .distance = 26.270f}, {.id = 944, .distance = 27.049f}, {.id = 1580, .distance = 34.222f}, {.id = 1577, .distance = 34.412f}, {.id = 889, .distance = 37.159f}
         }},
         {944, {
-            {.id = 497, .distance = 22.497f}, {.id = 890, .distance = 27.042f}, {.id = 943, .distance = 27.049f}, {.id = 889, .distance = 28.297f}, {.id = 498, .distance = 34.808f}, {.id = 496, .distance = 34.959f}, {.id = 864, .distance = 35.703f}
+            {.id = 1577, .distance = 22.497f}, {.id = 890, .distance = 27.042f}, {.id = 943, .distance = 27.049f}, {.id = 889, .distance = 28.297f}, {.id = 1578, .distance = 34.808f}, {.id = 1576, .distance = 34.959f}, {.id = 864, .distance = 35.703f}
         }},
         {945, {
             {.id = 950, .distance = 22.969f}, {.id = 948, .distance = 23.177f}, {.id = 947, .distance = 23.180f}, {.id = 946, .distance = 23.418f}, {.id = 949, .distance = 23.540f}, {.id = 959, .distance = 46.414f}, {.id = 956, .distance = 46.608f}
@@ -5352,169 +5352,169 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
             {.id = 998, .distance = 27.954f}, {.id = 1079, .distance = 28.297f}, {.id = 1023, .distance = 29.747f}, {.id = 999, .distance = 29.831f}, {.id = 1078, .distance = 37.159f}, {.id = 977, .distance = 38.168f}, {.id = 1077, .distance = 38.379f}
         }},
         {1025, {
-            {.id = 485, .distance = 21.842f}, {.id = 999, .distance = 24.998f}, {.id = 1026, .distance = 26.018f}, {.id = 1079, .distance = 27.042f}, {.id = 539, .distance = 34.231f}, {.id = 486, .distance = 35.161f}, {.id = 1000, .distance = 40.605f}
+            {.id = 1587, .distance = 21.634f}, {.id = 999, .distance = 24.998f}, {.id = 1026, .distance = 26.018f}, {.id = 1079, .distance = 27.042f}, {.id = 1586, .distance = 33.945f}, {.id = 1588, .distance = 34.750f}, {.id = 1000, .distance = 40.605f}
         }},
         {1026, {
-            {.id = 539, .distance = 22.913f}, {.id = 1025, .distance = 26.018f}, {.id = 1027, .distance = 26.277f}, {.id = 1000, .distance = 27.955f}, {.id = 538, .distance = 35.024f}, {.id = 485, .distance = 35.161f}, {.id = 999, .distance = 36.289f}
+            {.id = 1586, .distance = 22.413f}, {.id = 1025, .distance = 26.018f}, {.id = 1027, .distance = 26.277f}, {.id = 1000, .distance = 27.955f}, {.id = 1587, .distance = 34.606f}, {.id = 1585, .distance = 35.229f}, {.id = 999, .distance = 36.289f}
         }},
         {1027, {
-            {.id = 538, .distance = 21.613f}, {.id = 1028, .distance = 25.444f}, {.id = 1026, .distance = 26.277f}, {.id = 1029, .distance = 27.296f}, {.id = 536, .distance = 34.337f}, {.id = 539, .distance = 34.428f}, {.id = 1000, .distance = 36.960f}
+            {.id = 1585, .distance = 21.814f}, {.id = 1028, .distance = 25.444f}, {.id = 1026, .distance = 26.277f}, {.id = 1029, .distance = 27.296f}, {.id = 1586, .distance = 34.062f}, {.id = 1583, .distance = 34.862f}, {.id = 1000, .distance = 36.960f}
         }},
         {1028, {
             {.id = 1001, .distance = 21.650f}, {.id = 1029, .distance = 23.803f}, {.id = 1027, .distance = 25.444f}, {.id = 1030, .distance = 25.495f}, {.id = 1002, .distance = 38.588f}, {.id = 1000, .distance = 39.188f}, {.id = 1033, .distance = 40.893f}
         }},
         {1029, {
-            {.id = 536, .distance = 21.388f}, {.id = 1028, .distance = 23.803f}, {.id = 1030, .distance = 24.430f}, {.id = 1031, .distance = 26.781f}, {.id = 1027, .distance = 27.296f}, {.id = 538, .distance = 34.344f}, {.id = 535, .distance = 36.914f}
+            {.id = 1583, .distance = 21.962f}, {.id = 1028, .distance = 23.803f}, {.id = 1030, .distance = 24.430f}, {.id = 1031, .distance = 26.781f}, {.id = 1027, .distance = 27.296f}, {.id = 1585, .distance = 34.387f}, {.id = 1582, .distance = 37.251f}
         }},
         {1030, {
             {.id = 1032, .distance = 24.299f}, {.id = 1029, .distance = 24.430f}, {.id = 1031, .distance = 24.711f}, {.id = 1033, .distance = 25.084f}, {.id = 1028, .distance = 25.495f}, {.id = 1002, .distance = 37.220f}, {.id = 1001, .distance = 40.095f}
         }},
         {1031, {
-            {.id = 1210, .distance = 23.274f}, {.id = 535, .distance = 23.430f}, {.id = 1030, .distance = 24.711f}, {.id = 1029, .distance = 26.781f}, {.id = 1032, .distance = 27.879f}, {.id = 536, .distance = 34.473f}, {.id = 1208, .distance = 36.598f}
+            {.id = 940, .distance = 23.274f}, {.id = 1582, .distance = 23.747f}, {.id = 1030, .distance = 24.711f}, {.id = 1029, .distance = 26.781f}, {.id = 1032, .distance = 27.879f}, {.id = 1583, .distance = 34.668f}, {.id = 938, .distance = 36.598f}
         }},
         {1032, {
-            {.id = 1208, .distance = 21.881f}, {.id = 1030, .distance = 24.299f}, {.id = 1033, .distance = 24.636f}, {.id = 1034, .distance = 27.526f}, {.id = 1031, .distance = 27.879f}, {.id = 1210, .distance = 34.044f}, {.id = 1206, .distance = 34.991f}
+            {.id = 938, .distance = 21.881f}, {.id = 1030, .distance = 24.299f}, {.id = 1033, .distance = 24.636f}, {.id = 1034, .distance = 27.526f}, {.id = 1031, .distance = 27.879f}, {.id = 940, .distance = 34.044f}, {.id = 936, .distance = 34.991f}
         }},
         {1033, {
             {.id = 1002, .distance = 21.863f}, {.id = 1032, .distance = 24.636f}, {.id = 1030, .distance = 25.084f}, {.id = 1034, .distance = 25.653f}, {.id = 1003, .distance = 34.005f}, {.id = 1028, .distance = 40.893f}, {.id = 1001, .distance = 43.024f}
         }},
         {1034, {
-            {.id = 1206, .distance = 22.151f}, {.id = 1033, .distance = 25.653f}, {.id = 1035, .distance = 26.467f}, {.id = 1032, .distance = 27.526f}, {.id = 1205, .distance = 34.595f}, {.id = 1208, .distance = 34.928f}, {.id = 1003, .distance = 35.198f}
+            {.id = 936, .distance = 22.151f}, {.id = 1033, .distance = 25.653f}, {.id = 1035, .distance = 26.467f}, {.id = 1032, .distance = 27.526f}, {.id = 935, .distance = 34.595f}, {.id = 938, .distance = 34.928f}, {.id = 1003, .distance = 35.198f}
         }},
         {1035, {
-            {.id = 1205, .distance = 22.361f}, {.id = 1034, .distance = 26.467f}, {.id = 1036, .distance = 26.547f}, {.id = 1003, .distance = 31.431f}, {.id = 1004, .distance = 32.153f}, {.id = 1206, .distance = 34.812f}, {.id = 1204, .distance = 35.607f}
+            {.id = 935, .distance = 22.361f}, {.id = 1034, .distance = 26.467f}, {.id = 1036, .distance = 26.547f}, {.id = 1003, .distance = 31.431f}, {.id = 1004, .distance = 32.153f}, {.id = 936, .distance = 34.812f}, {.id = 934, .distance = 35.607f}
         }},
         {1036, {
-            {.id = 1204, .distance = 22.388f}, {.id = 1004, .distance = 25.318f}, {.id = 1035, .distance = 26.547f}, {.id = 1037, .distance = 27.116f}, {.id = 1205, .distance = 34.628f}, {.id = 1203, .distance = 34.708f}, {.id = 1005, .distance = 36.035f}
+            {.id = 934, .distance = 22.388f}, {.id = 1004, .distance = 25.318f}, {.id = 1035, .distance = 26.547f}, {.id = 1037, .distance = 27.116f}, {.id = 935, .distance = 34.628f}, {.id = 933, .distance = 34.708f}, {.id = 1005, .distance = 36.035f}
         }},
         {1037, {
-            {.id = 1203, .distance = 22.165f}, {.id = 1038, .distance = 26.383f}, {.id = 1036, .distance = 27.116f}, {.id = 1005, .distance = 27.523f}, {.id = 1204, .distance = 34.206f}, {.id = 1202, .distance = 34.415f}, {.id = 1004, .distance = 41.220f}
+            {.id = 933, .distance = 22.165f}, {.id = 1038, .distance = 26.383f}, {.id = 1036, .distance = 27.116f}, {.id = 1005, .distance = 27.523f}, {.id = 934, .distance = 34.206f}, {.id = 932, .distance = 34.415f}, {.id = 1004, .distance = 41.220f}
         }},
         {1038, {
-            {.id = 1202, .distance = 21.887f}, {.id = 1039, .distance = 25.498f}, {.id = 1037, .distance = 26.383f}, {.id = 1040, .distance = 26.792f}, {.id = 1200, .distance = 34.325f}, {.id = 1203, .distance = 34.634f}, {.id = 1006, .distance = 36.749f}
+            {.id = 932, .distance = 21.887f}, {.id = 1039, .distance = 25.498f}, {.id = 1037, .distance = 26.383f}, {.id = 1040, .distance = 26.792f}, {.id = 930, .distance = 34.325f}, {.id = 933, .distance = 34.634f}, {.id = 1006, .distance = 36.749f}
         }},
         {1039, {
-            {.id = 1006, .distance = 21.879f}, {.id = 1040, .distance = 24.550f}, {.id = 1038, .distance = 25.498f}, {.id = 1041, .distance = 25.732f}, {.id = 1007, .distance = 33.585f}, {.id = 1044, .distance = 41.045f}, {.id = 1200, .distance = 43.103f}
+            {.id = 1006, .distance = 21.879f}, {.id = 1040, .distance = 24.550f}, {.id = 1038, .distance = 25.498f}, {.id = 1041, .distance = 25.732f}, {.id = 1007, .distance = 33.585f}, {.id = 1044, .distance = 41.045f}, {.id = 930, .distance = 43.103f}
         }},
         {1040, {
-            {.id = 1200, .distance = 21.892f}, {.id = 1039, .distance = 24.550f}, {.id = 1041, .distance = 24.859f}, {.id = 1042, .distance = 26.221f}, {.id = 1038, .distance = 26.792f}, {.id = 1202, .distance = 34.679f}, {.id = 1199, .distance = 36.842f}
+            {.id = 930, .distance = 21.892f}, {.id = 1039, .distance = 24.550f}, {.id = 1041, .distance = 24.859f}, {.id = 1042, .distance = 26.221f}, {.id = 1038, .distance = 26.792f}, {.id = 932, .distance = 34.679f}, {.id = 929, .distance = 36.842f}
         }},
         {1041, {
-            {.id = 1043, .distance = 24.528f}, {.id = 1042, .distance = 24.669f}, {.id = 1040, .distance = 24.859f}, {.id = 1044, .distance = 25.084f}, {.id = 1039, .distance = 25.732f}, {.id = 1007, .distance = 35.615f}, {.id = 1613, .distance = 43.013f}
+            {.id = 1043, .distance = 24.528f}, {.id = 1042, .distance = 24.669f}, {.id = 1040, .distance = 24.859f}, {.id = 1044, .distance = 25.084f}, {.id = 1039, .distance = 25.732f}, {.id = 1007, .distance = 35.615f}, {.id = 106, .distance = 42.825f}
         }},
         {1042, {
-            {.id = 1199, .distance = 23.277f}, {.id = 1615, .distance = 23.709f}, {.id = 1041, .distance = 24.669f}, {.id = 1040, .distance = 26.221f}, {.id = 1043, .distance = 28.881f}, {.id = 1200, .distance = 34.476f}, {.id = 1613, .distance = 37.119f}
+            {.id = 929, .distance = 23.277f}, {.id = 108, .distance = 23.490f}, {.id = 1041, .distance = 24.669f}, {.id = 1040, .distance = 26.221f}, {.id = 1043, .distance = 28.881f}, {.id = 930, .distance = 34.476f}, {.id = 106, .distance = 36.998f}
         }},
         {1043, {
-            {.id = 1613, .distance = 21.876f}, {.id = 1044, .distance = 24.210f}, {.id = 1041, .distance = 24.528f}, {.id = 1045, .distance = 26.372f}, {.id = 1042, .distance = 28.881f}, {.id = 1611, .distance = 34.497f}, {.id = 1615, .distance = 34.534f}
+            {.id = 106, .distance = 21.608f}, {.id = 1044, .distance = 24.210f}, {.id = 1041, .distance = 24.528f}, {.id = 1045, .distance = 26.372f}, {.id = 1042, .distance = 28.881f}, {.id = 108, .distance = 34.196f}, {.id = 104, .distance = 34.300f}
         }},
         {1044, {
-            {.id = 1043, .distance = 24.210f}, {.id = 1007, .distance = 24.618f}, {.id = 1041, .distance = 25.084f}, {.id = 1045, .distance = 25.246f}, {.id = 1008, .distance = 29.298f}, {.id = 1039, .distance = 41.045f}, {.id = 1613, .distance = 42.954f}
+            {.id = 1043, .distance = 24.210f}, {.id = 1007, .distance = 24.618f}, {.id = 1041, .distance = 25.084f}, {.id = 1045, .distance = 25.246f}, {.id = 1008, .distance = 29.298f}, {.id = 1039, .distance = 41.045f}, {.id = 106, .distance = 42.732f}
         }},
         {1045, {
-            {.id = 1611, .distance = 21.967f}, {.id = 1044, .distance = 25.246f}, {.id = 1043, .distance = 26.372f}, {.id = 1046, .distance = 27.091f}, {.id = 1613, .distance = 34.412f}, {.id = 1008, .distance = 34.857f}, {.id = 1610, .distance = 34.876f}
+            {.id = 104, .distance = 21.658f}, {.id = 1044, .distance = 25.246f}, {.id = 1043, .distance = 26.372f}, {.id = 1046, .distance = 27.091f}, {.id = 106, .distance = 34.197f}, {.id = 103, .distance = 34.609f}, {.id = 1008, .distance = 34.857f}
         }},
         {1046, {
-            {.id = 1610, .distance = 21.955f}, {.id = 1047, .distance = 26.524f}, {.id = 1045, .distance = 27.091f}, {.id = 1009, .distance = 29.494f}, {.id = 1611, .distance = 34.638f}, {.id = 1609, .distance = 35.268f}, {.id = 1008, .distance = 35.556f}
+            {.id = 103, .distance = 21.606f}, {.id = 1047, .distance = 26.524f}, {.id = 1045, .distance = 27.091f}, {.id = 1009, .distance = 29.494f}, {.id = 102, .distance = 34.298f}, {.id = 104, .distance = 34.445f}, {.id = 1008, .distance = 35.556f}
         }},
         {1047, {
-            {.id = 1609, .distance = 21.888f}, {.id = 1046, .distance = 26.524f}, {.id = 1048, .distance = 26.730f}, {.id = 1009, .distance = 28.584f}, {.id = 1010, .distance = 32.097f}, {.id = 1608, .distance = 34.325f}, {.id = 1610, .distance = 34.376f}
+            {.id = 102, .distance = 21.478f}, {.id = 1046, .distance = 26.524f}, {.id = 1048, .distance = 26.730f}, {.id = 1009, .distance = 28.584f}, {.id = 1010, .distance = 32.097f}, {.id = 103, .distance = 34.202f}, {.id = 101, .distance = 34.298f}
         }},
         {1048, {
-            {.id = 1608, .distance = 21.772f}, {.id = 1047, .distance = 26.730f}, {.id = 1049, .distance = 26.732f}, {.id = 1010, .distance = 28.097f}, {.id = 1609, .distance = 33.726f}, {.id = 1607, .distance = 34.396f}, {.id = 1011, .distance = 40.135f}
+            {.id = 101, .distance = 21.606f}, {.id = 1047, .distance = 26.730f}, {.id = 1049, .distance = 26.732f}, {.id = 1010, .distance = 28.097f}, {.id = 102, .distance = 34.202f}, {.id = 100, .distance = 34.609f}, {.id = 1011, .distance = 40.135f}
         }},
         {1049, {
-            {.id = 1607, .distance = 21.813f}, {.id = 1050, .distance = 24.672f}, {.id = 1048, .distance = 26.732f}, {.id = 1051, .distance = 26.732f}, {.id = 1605, .distance = 34.237f}, {.id = 1608, .distance = 34.627f}, {.id = 1011, .distance = 35.127f}
+            {.id = 100, .distance = 21.658f}, {.id = 1050, .distance = 24.672f}, {.id = 1048, .distance = 26.732f}, {.id = 1051, .distance = 26.732f}, {.id = 98, .distance = 34.300f}, {.id = 101, .distance = 34.445f}, {.id = 1011, .distance = 35.127f}
         }},
         {1050, {
-            {.id = 1051, .distance = 23.501f}, {.id = 1049, .distance = 24.672f}, {.id = 1052, .distance = 25.068f}, {.id = 1011, .distance = 25.325f}, {.id = 1012, .distance = 29.320f}, {.id = 1055, .distance = 41.461f}, {.id = 1605, .distance = 41.921f}
+            {.id = 1051, .distance = 23.501f}, {.id = 1049, .distance = 24.672f}, {.id = 1052, .distance = 25.068f}, {.id = 1011, .distance = 25.325f}, {.id = 1012, .distance = 29.320f}, {.id = 1055, .distance = 41.461f}, {.id = 98, .distance = 41.850f}
         }},
         {1051, {
-            {.id = 1605, .distance = 21.788f}, {.id = 1050, .distance = 23.501f}, {.id = 1052, .distance = 24.580f}, {.id = 1053, .distance = 26.371f}, {.id = 1049, .distance = 26.732f}, {.id = 1607, .distance = 34.608f}, {.id = 1604, .distance = 36.785f}
+            {.id = 98, .distance = 21.608f}, {.id = 1050, .distance = 23.501f}, {.id = 1052, .distance = 24.580f}, {.id = 1053, .distance = 26.371f}, {.id = 1049, .distance = 26.732f}, {.id = 100, .distance = 34.197f}, {.id = 97, .distance = 36.998f}
         }},
         {1052, {
-            {.id = 1051, .distance = 24.580f}, {.id = 1054, .distance = 24.959f}, {.id = 1053, .distance = 25.010f}, {.id = 1050, .distance = 25.068f}, {.id = 1055, .distance = 25.146f}, {.id = 1012, .distance = 34.248f}, {.id = 1605, .distance = 43.155f}
+            {.id = 1051, .distance = 24.580f}, {.id = 1054, .distance = 24.959f}, {.id = 1053, .distance = 25.010f}, {.id = 1050, .distance = 25.068f}, {.id = 1055, .distance = 25.146f}, {.id = 1012, .distance = 34.248f}, {.id = 98, .distance = 42.952f}
         }},
         {1053, {
-            {.id = 1604, .distance = 23.106f}, {.id = 1436, .distance = 23.609f}, {.id = 1052, .distance = 25.010f}, {.id = 1051, .distance = 26.371f}, {.id = 1054, .distance = 29.071f}, {.id = 1605, .distance = 34.484f}, {.id = 1434, .distance = 37.270f}
+            {.id = 389, .distance = 23.326f}, {.id = 97, .distance = 23.490f}, {.id = 1052, .distance = 25.010f}, {.id = 1051, .distance = 26.371f}, {.id = 1054, .distance = 29.071f}, {.id = 98, .distance = 34.196f}, {.id = 387, .distance = 36.872f}
         }},
         {1054, {
-            {.id = 1434, .distance = 22.081f}, {.id = 1055, .distance = 23.829f}, {.id = 1052, .distance = 24.959f}, {.id = 1056, .distance = 26.582f}, {.id = 1053, .distance = 29.071f}, {.id = 1436, .distance = 34.791f}, {.id = 1432, .distance = 34.888f}
+            {.id = 387, .distance = 21.837f}, {.id = 1055, .distance = 23.829f}, {.id = 1052, .distance = 24.959f}, {.id = 1056, .distance = 26.582f}, {.id = 1053, .distance = 29.071f}, {.id = 385, .distance = 34.439f}, {.id = 389, .distance = 34.529f}
         }},
         {1055, {
-            {.id = 1054, .distance = 23.829f}, {.id = 1052, .distance = 25.146f}, {.id = 1013, .distance = 25.156f}, {.id = 1056, .distance = 25.569f}, {.id = 1012, .distance = 28.406f}, {.id = 1050, .distance = 41.461f}, {.id = 1434, .distance = 42.798f}
+            {.id = 1054, .distance = 23.829f}, {.id = 1052, .distance = 25.146f}, {.id = 1013, .distance = 25.156f}, {.id = 1056, .distance = 25.569f}, {.id = 1012, .distance = 28.406f}, {.id = 1050, .distance = 41.461f}, {.id = 387, .distance = 42.698f}
         }},
         {1056, {
-            {.id = 1432, .distance = 21.687f}, {.id = 1055, .distance = 25.569f}, {.id = 1057, .distance = 26.524f}, {.id = 1054, .distance = 26.582f}, {.id = 1434, .distance = 34.521f}, {.id = 1013, .distance = 34.565f}, {.id = 1431, .distance = 34.947f}
+            {.id = 385, .distance = 21.607f}, {.id = 1055, .distance = 25.569f}, {.id = 1057, .distance = 26.524f}, {.id = 1054, .distance = 26.582f}, {.id = 384, .distance = 34.438f}, {.id = 1013, .distance = 34.565f}, {.id = 387, .distance = 34.611f}
         }},
         {1057, {
-            {.id = 1431, .distance = 22.464f}, {.id = 1056, .distance = 26.524f}, {.id = 1058, .distance = 27.091f}, {.id = 1014, .distance = 28.191f}, {.id = 1432, .distance = 33.864f}, {.id = 1430, .distance = 34.205f}, {.id = 1013, .distance = 39.087f}
+            {.id = 384, .distance = 21.912f}, {.id = 1056, .distance = 26.524f}, {.id = 1058, .distance = 27.091f}, {.id = 1014, .distance = 28.191f}, {.id = 385, .distance = 34.219f}, {.id = 383, .distance = 34.438f}, {.id = 1013, .distance = 39.087f}
         }},
         {1058, {
-            {.id = 1430, .distance = 21.856f}, {.id = 1059, .distance = 26.524f}, {.id = 1057, .distance = 27.091f}, {.id = 1015, .distance = 28.182f}, {.id = 1014, .distance = 31.855f}, {.id = 1484, .distance = 34.474f}, {.id = 1431, .distance = 34.950f}
+            {.id = 383, .distance = 21.836f}, {.id = 1059, .distance = 26.524f}, {.id = 1057, .distance = 27.091f}, {.id = 1015, .distance = 28.182f}, {.id = 1014, .distance = 31.855f}, {.id = 382, .distance = 34.438f}, {.id = 384, .distance = 34.758f}
         }},
         {1059, {
-            {.id = 1484, .distance = 22.408f}, {.id = 1058, .distance = 26.524f}, {.id = 1060, .distance = 26.581f}, {.id = 1015, .distance = 29.755f}, {.id = 1483, .distance = 34.529f}, {.id = 1016, .distance = 34.998f}, {.id = 1430, .distance = 35.008f}
+            {.id = 382, .distance = 21.912f}, {.id = 1058, .distance = 26.524f}, {.id = 1060, .distance = 26.581f}, {.id = 1015, .distance = 29.755f}, {.id = 381, .distance = 34.438f}, {.id = 383, .distance = 34.758f}, {.id = 1016, .distance = 34.998f}
         }},
         {1060, {
-            {.id = 1483, .distance = 21.567f}, {.id = 1061, .distance = 25.497f}, {.id = 1059, .distance = 26.581f}, {.id = 1062, .distance = 27.091f}, {.id = 1481, .distance = 33.896f}, {.id = 1016, .distance = 34.425f}, {.id = 1484, .distance = 34.817f}
+            {.id = 381, .distance = 21.607f}, {.id = 1061, .distance = 25.497f}, {.id = 1059, .distance = 26.581f}, {.id = 1062, .distance = 27.091f}, {.id = 382, .distance = 34.219f}, {.id = 1016, .distance = 34.425f}, {.id = 379, .distance = 34.439f}
         }},
         {1061, {
-            {.id = 1017, .distance = 23.798f}, {.id = 1062, .distance = 24.344f}, {.id = 1063, .distance = 25.237f}, {.id = 1060, .distance = 25.497f}, {.id = 1016, .distance = 29.105f}, {.id = 1066, .distance = 41.369f}, {.id = 1481, .distance = 42.275f}
+            {.id = 1017, .distance = 23.798f}, {.id = 1062, .distance = 24.344f}, {.id = 1063, .distance = 25.237f}, {.id = 1060, .distance = 25.497f}, {.id = 1016, .distance = 29.105f}, {.id = 1066, .distance = 41.369f}, {.id = 379, .distance = 42.825f}
         }},
         {1062, {
-            {.id = 1481, .distance = 21.183f}, {.id = 1061, .distance = 24.344f}, {.id = 1063, .distance = 24.548f}, {.id = 1064, .distance = 26.371f}, {.id = 1060, .distance = 27.091f}, {.id = 1483, .distance = 34.469f}, {.id = 1480, .distance = 36.529f}
+            {.id = 379, .distance = 21.837f}, {.id = 1061, .distance = 24.344f}, {.id = 1063, .distance = 24.548f}, {.id = 1064, .distance = 26.371f}, {.id = 1060, .distance = 27.091f}, {.id = 381, .distance = 34.611f}, {.id = 378, .distance = 36.872f}
         }},
         {1063, {
-            {.id = 1062, .distance = 24.548f}, {.id = 1065, .distance = 24.694f}, {.id = 1064, .distance = 25.104f}, {.id = 1061, .distance = 25.237f}, {.id = 1066, .distance = 25.654f}, {.id = 1017, .distance = 34.527f}, {.id = 1481, .distance = 42.794f}
+            {.id = 1062, .distance = 24.548f}, {.id = 1065, .distance = 24.694f}, {.id = 1064, .distance = 25.104f}, {.id = 1061, .distance = 25.237f}, {.id = 1066, .distance = 25.654f}, {.id = 1017, .distance = 34.527f}, {.id = 1175, .distance = 43.104f}
         }},
         {1064, {
-            {.id = 1480, .distance = 23.182f}, {.id = 907, .distance = 23.277f}, {.id = 1063, .distance = 25.104f}, {.id = 1062, .distance = 26.371f}, {.id = 1065, .distance = 29.110f}, {.id = 1481, .distance = 34.248f}, {.id = 905, .distance = 36.842f}
+            {.id = 1177, .distance = 23.277f}, {.id = 378, .distance = 23.326f}, {.id = 1063, .distance = 25.104f}, {.id = 1062, .distance = 26.371f}, {.id = 1065, .distance = 29.110f}, {.id = 379, .distance = 34.529f}, {.id = 1175, .distance = 36.842f}
         }},
         {1065, {
-            {.id = 905, .distance = 21.892f}, {.id = 1066, .distance = 24.048f}, {.id = 1063, .distance = 24.694f}, {.id = 1067, .distance = 26.547f}, {.id = 1064, .distance = 29.110f}, {.id = 903, .distance = 34.325f}, {.id = 907, .distance = 34.476f}
+            {.id = 1175, .distance = 21.892f}, {.id = 1066, .distance = 24.048f}, {.id = 1063, .distance = 24.694f}, {.id = 1067, .distance = 26.547f}, {.id = 1064, .distance = 29.110f}, {.id = 1173, .distance = 34.325f}, {.id = 1177, .distance = 34.476f}
         }},
         {1066, {
-            {.id = 1018, .distance = 21.654f}, {.id = 1065, .distance = 24.048f}, {.id = 1067, .distance = 24.979f}, {.id = 1063, .distance = 25.654f}, {.id = 1017, .distance = 33.270f}, {.id = 1061, .distance = 41.369f}, {.id = 905, .distance = 42.839f}
+            {.id = 1018, .distance = 21.654f}, {.id = 1065, .distance = 24.048f}, {.id = 1067, .distance = 24.979f}, {.id = 1063, .distance = 25.654f}, {.id = 1017, .distance = 33.270f}, {.id = 1061, .distance = 41.369f}, {.id = 1175, .distance = 42.839f}
         }},
         {1067, {
-            {.id = 903, .distance = 21.887f}, {.id = 1066, .distance = 24.979f}, {.id = 1065, .distance = 26.547f}, {.id = 1068, .distance = 26.791f}, {.id = 902, .distance = 34.415f}, {.id = 905, .distance = 34.679f}, {.id = 1018, .distance = 36.329f}
+            {.id = 1173, .distance = 21.887f}, {.id = 1066, .distance = 24.979f}, {.id = 1065, .distance = 26.547f}, {.id = 1068, .distance = 26.791f}, {.id = 1172, .distance = 34.415f}, {.id = 1175, .distance = 34.679f}, {.id = 1018, .distance = 36.329f}
         }},
         {1068, {
-            {.id = 902, .distance = 22.165f}, {.id = 1069, .distance = 25.487f}, {.id = 1067, .distance = 26.791f}, {.id = 1019, .distance = 27.232f}, {.id = 903, .distance = 34.634f}, {.id = 901, .distance = 34.708f}, {.id = 1020, .distance = 41.139f}
+            {.id = 1172, .distance = 22.165f}, {.id = 1069, .distance = 25.487f}, {.id = 1067, .distance = 26.791f}, {.id = 1019, .distance = 27.232f}, {.id = 1173, .distance = 34.634f}, {.id = 1171, .distance = 34.708f}, {.id = 1020, .distance = 41.139f}
         }},
         {1069, {
-            {.id = 901, .distance = 22.388f}, {.id = 1068, .distance = 25.487f}, {.id = 1020, .distance = 26.028f}, {.id = 1070, .distance = 27.606f}, {.id = 902, .distance = 34.206f}, {.id = 1019, .distance = 35.594f}, {.id = 900, .distance = 35.607f}
+            {.id = 1171, .distance = 22.388f}, {.id = 1068, .distance = 25.487f}, {.id = 1020, .distance = 26.028f}, {.id = 1070, .distance = 27.606f}, {.id = 1172, .distance = 34.206f}, {.id = 1019, .distance = 35.594f}, {.id = 1170, .distance = 35.607f}
         }},
         {1070, {
-            {.id = 900, .distance = 22.361f}, {.id = 1071, .distance = 26.790f}, {.id = 1069, .distance = 27.606f}, {.id = 1021, .distance = 31.167f}, {.id = 1020, .distance = 32.429f}, {.id = 899, .distance = 34.595f}, {.id = 901, .distance = 34.628f}
+            {.id = 1170, .distance = 22.361f}, {.id = 1071, .distance = 26.790f}, {.id = 1069, .distance = 27.606f}, {.id = 1021, .distance = 31.167f}, {.id = 1020, .distance = 32.429f}, {.id = 1169, .distance = 34.595f}, {.id = 1171, .distance = 34.628f}
         }},
         {1071, {
-            {.id = 899, .distance = 22.151f}, {.id = 1072, .distance = 25.010f}, {.id = 1070, .distance = 26.790f}, {.id = 1073, .distance = 26.792f}, {.id = 900, .distance = 34.812f}, {.id = 1021, .distance = 34.856f}, {.id = 897, .distance = 34.991f}
+            {.id = 1169, .distance = 22.151f}, {.id = 1072, .distance = 25.010f}, {.id = 1070, .distance = 26.790f}, {.id = 1073, .distance = 26.792f}, {.id = 1170, .distance = 34.812f}, {.id = 1021, .distance = 34.856f}, {.id = 1167, .distance = 34.991f}
         }},
         {1072, {
-            {.id = 1022, .distance = 21.595f}, {.id = 1073, .distance = 24.103f}, {.id = 1071, .distance = 25.010f}, {.id = 1074, .distance = 25.812f}, {.id = 1021, .distance = 33.491f}, {.id = 1077, .distance = 41.309f}, {.id = 897, .distance = 42.896f}
+            {.id = 1022, .distance = 21.595f}, {.id = 1073, .distance = 24.103f}, {.id = 1071, .distance = 25.010f}, {.id = 1074, .distance = 25.812f}, {.id = 1021, .distance = 33.491f}, {.id = 1077, .distance = 41.309f}, {.id = 1167, .distance = 42.896f}
         }},
         {1073, {
-            {.id = 897, .distance = 21.881f}, {.id = 1072, .distance = 24.103f}, {.id = 1074, .distance = 24.732f}, {.id = 1075, .distance = 26.546f}, {.id = 1071, .distance = 26.792f}, {.id = 899, .distance = 34.928f}, {.id = 896, .distance = 36.598f}
+            {.id = 1167, .distance = 21.881f}, {.id = 1072, .distance = 24.103f}, {.id = 1074, .distance = 24.732f}, {.id = 1075, .distance = 26.546f}, {.id = 1071, .distance = 26.792f}, {.id = 1169, .distance = 34.928f}, {.id = 1166, .distance = 36.598f}
         }},
         {1074, {
             {.id = 1075, .distance = 24.694f}, {.id = 1073, .distance = 24.732f}, {.id = 1076, .distance = 25.085f}, {.id = 1077, .distance = 25.237f}, {.id = 1072, .distance = 25.812f}, {.id = 1022, .distance = 36.997f}, {.id = 1023, .distance = 39.624f}
         }},
         {1075, {
-            {.id = 896, .distance = 23.274f}, {.id = 491, .distance = 23.430f}, {.id = 1074, .distance = 24.694f}, {.id = 1073, .distance = 26.546f}, {.id = 1076, .distance = 28.931f}, {.id = 897, .distance = 34.044f}, {.id = 489, .distance = 36.914f}
+            {.id = 1593, .distance = 23.130f}, {.id = 1166, .distance = 23.274f}, {.id = 1074, .distance = 24.694f}, {.id = 1073, .distance = 26.546f}, {.id = 1076, .distance = 28.931f}, {.id = 1167, .distance = 34.044f}, {.id = 1591, .distance = 36.625f}
         }},
         {1076, {
-            {.id = 489, .distance = 21.388f}, {.id = 1077, .distance = 24.787f}, {.id = 1074, .distance = 25.085f}, {.id = 1078, .distance = 26.270f}, {.id = 1075, .distance = 28.931f}, {.id = 487, .distance = 34.337f}, {.id = 491, .distance = 34.473f}
+            {.id = 1591, .distance = 20.992f}, {.id = 1077, .distance = 24.787f}, {.id = 1074, .distance = 25.085f}, {.id = 1078, .distance = 26.270f}, {.id = 1075, .distance = 28.931f}, {.id = 1589, .distance = 33.735f}, {.id = 1593, .distance = 33.987f}
         }},
         {1077, {
             {.id = 1023, .distance = 20.735f}, {.id = 1076, .distance = 24.787f}, {.id = 1074, .distance = 25.237f}, {.id = 1078, .distance = 25.425f}, {.id = 1022, .distance = 38.308f}, {.id = 1024, .distance = 38.379f}, {.id = 1072, .distance = 41.309f}
         }},
         {1078, {
-            {.id = 487, .distance = 21.613f}, {.id = 1077, .distance = 25.425f}, {.id = 1076, .distance = 26.270f}, {.id = 1079, .distance = 27.049f}, {.id = 489, .distance = 34.344f}, {.id = 486, .distance = 35.024f}, {.id = 1024, .distance = 37.159f}
+            {.id = 1589, .distance = 21.421f}, {.id = 1077, .distance = 25.425f}, {.id = 1076, .distance = 26.270f}, {.id = 1079, .distance = 27.049f}, {.id = 1591, .distance = 34.142f}, {.id = 1588, .distance = 34.368f}, {.id = 1024, .distance = 37.159f}
         }},
         {1079, {
-            {.id = 486, .distance = 22.913f}, {.id = 1025, .distance = 27.042f}, {.id = 1078, .distance = 27.049f}, {.id = 1024, .distance = 28.297f}, {.id = 485, .distance = 34.231f}, {.id = 487, .distance = 34.428f}, {.id = 999, .distance = 35.703f}
+            {.id = 1588, .distance = 22.075f}, {.id = 1025, .distance = 27.042f}, {.id = 1078, .distance = 27.049f}, {.id = 1024, .distance = 28.297f}, {.id = 1587, .distance = 34.543f}, {.id = 1589, .distance = 34.794f}, {.id = 999, .distance = 35.703f}
         }},
         {1080, {
             {.id = 1085, .distance = 22.969f}, {.id = 1083, .distance = 23.177f}, {.id = 1082, .distance = 23.180f}, {.id = 1081, .distance = 23.418f}, {.id = 1084, .distance = 23.540f}, {.id = 1094, .distance = 46.414f}, {.id = 1091, .distance = 46.608f}
@@ -5757,169 +5757,169 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
             {.id = 1133, .distance = 27.954f}, {.id = 1214, .distance = 28.297f}, {.id = 1158, .distance = 29.747f}, {.id = 1134, .distance = 29.831f}, {.id = 1213, .distance = 37.159f}, {.id = 1112, .distance = 38.168f}, {.id = 1212, .distance = 38.379f}
         }},
         {1160, {
-            {.id = 529, .distance = 22.017f}, {.id = 1134, .distance = 24.998f}, {.id = 1161, .distance = 26.018f}, {.id = 1214, .distance = 27.042f}, {.id = 528, .distance = 33.974f}, {.id = 530, .distance = 34.921f}, {.id = 1135, .distance = 40.605f}
+            {.id = 1598, .distance = 21.817f}, {.id = 1134, .distance = 24.998f}, {.id = 1161, .distance = 26.018f}, {.id = 1214, .distance = 27.042f}, {.id = 1597, .distance = 34.192f}, {.id = 1599, .distance = 34.972f}, {.id = 1135, .distance = 40.605f}
         }},
         {1161, {
-            {.id = 528, .distance = 22.576f}, {.id = 1160, .distance = 26.018f}, {.id = 1162, .distance = 26.277f}, {.id = 1135, .distance = 27.955f}, {.id = 529, .distance = 34.146f}, {.id = 527, .distance = 35.021f}, {.id = 1134, .distance = 36.289f}
+            {.id = 1597, .distance = 22.426f}, {.id = 1160, .distance = 26.018f}, {.id = 1162, .distance = 26.277f}, {.id = 1135, .distance = 27.955f}, {.id = 1598, .distance = 34.914f}, {.id = 1596, .distance = 34.934f}, {.id = 1134, .distance = 36.289f}
         }},
         {1162, {
-            {.id = 527, .distance = 21.957f}, {.id = 1163, .distance = 25.444f}, {.id = 1161, .distance = 26.277f}, {.id = 1164, .distance = 27.296f}, {.id = 528, .distance = 34.245f}, {.id = 525, .distance = 34.797f}, {.id = 1135, .distance = 36.960f}
+            {.id = 1596, .distance = 21.649f}, {.id = 1163, .distance = 25.444f}, {.id = 1161, .distance = 26.277f}, {.id = 1164, .distance = 27.296f}, {.id = 1597, .distance = 33.829f}, {.id = 1594, .distance = 34.875f}, {.id = 1135, .distance = 36.960f}
         }},
         {1163, {
             {.id = 1136, .distance = 21.650f}, {.id = 1164, .distance = 23.803f}, {.id = 1162, .distance = 25.444f}, {.id = 1165, .distance = 25.495f}, {.id = 1137, .distance = 38.588f}, {.id = 1135, .distance = 39.188f}, {.id = 1168, .distance = 40.893f}
         }},
         {1164, {
-            {.id = 525, .distance = 22.141f}, {.id = 1163, .distance = 23.803f}, {.id = 1165, .distance = 24.430f}, {.id = 1166, .distance = 26.781f}, {.id = 1162, .distance = 27.296f}, {.id = 527, .distance = 34.795f}, {.id = 524, .distance = 37.037f}
+            {.id = 1594, .distance = 22.042f}, {.id = 1163, .distance = 23.803f}, {.id = 1165, .distance = 24.430f}, {.id = 1166, .distance = 26.781f}, {.id = 1162, .distance = 27.296f}, {.id = 1596, .distance = 34.485f}, {.id = 1593, .distance = 37.257f}
         }},
         {1165, {
             {.id = 1167, .distance = 24.299f}, {.id = 1164, .distance = 24.430f}, {.id = 1166, .distance = 24.711f}, {.id = 1168, .distance = 25.084f}, {.id = 1163, .distance = 25.495f}, {.id = 1137, .distance = 37.220f}, {.id = 1136, .distance = 40.095f}
         }},
         {1166, {
-            {.id = 670, .distance = 23.274f}, {.id = 524, .distance = 23.364f}, {.id = 1165, .distance = 24.711f}, {.id = 1164, .distance = 26.781f}, {.id = 1167, .distance = 27.879f}, {.id = 525, .distance = 34.955f}, {.id = 668, .distance = 36.598f}
+            {.id = 1075, .distance = 23.274f}, {.id = 1593, .distance = 23.573f}, {.id = 1165, .distance = 24.711f}, {.id = 1164, .distance = 26.781f}, {.id = 1167, .distance = 27.879f}, {.id = 1594, .distance = 34.755f}, {.id = 1073, .distance = 36.598f}
         }},
         {1167, {
-            {.id = 668, .distance = 21.881f}, {.id = 1165, .distance = 24.299f}, {.id = 1168, .distance = 24.636f}, {.id = 1169, .distance = 27.526f}, {.id = 1166, .distance = 27.879f}, {.id = 670, .distance = 34.044f}, {.id = 666, .distance = 34.991f}
+            {.id = 1073, .distance = 21.881f}, {.id = 1165, .distance = 24.299f}, {.id = 1168, .distance = 24.636f}, {.id = 1169, .distance = 27.526f}, {.id = 1166, .distance = 27.879f}, {.id = 1075, .distance = 34.044f}, {.id = 1071, .distance = 34.991f}
         }},
         {1168, {
             {.id = 1137, .distance = 21.863f}, {.id = 1167, .distance = 24.636f}, {.id = 1165, .distance = 25.084f}, {.id = 1169, .distance = 25.653f}, {.id = 1138, .distance = 34.005f}, {.id = 1163, .distance = 40.893f}, {.id = 1136, .distance = 43.024f}
         }},
         {1169, {
-            {.id = 666, .distance = 22.151f}, {.id = 1168, .distance = 25.653f}, {.id = 1170, .distance = 26.467f}, {.id = 1167, .distance = 27.526f}, {.id = 665, .distance = 34.595f}, {.id = 668, .distance = 34.928f}, {.id = 1138, .distance = 35.198f}
+            {.id = 1071, .distance = 22.151f}, {.id = 1168, .distance = 25.653f}, {.id = 1170, .distance = 26.467f}, {.id = 1167, .distance = 27.526f}, {.id = 1070, .distance = 34.595f}, {.id = 1073, .distance = 34.928f}, {.id = 1138, .distance = 35.198f}
         }},
         {1170, {
-            {.id = 665, .distance = 22.361f}, {.id = 1169, .distance = 26.467f}, {.id = 1171, .distance = 26.547f}, {.id = 1138, .distance = 31.431f}, {.id = 1139, .distance = 32.153f}, {.id = 666, .distance = 34.812f}, {.id = 664, .distance = 35.607f}
+            {.id = 1070, .distance = 22.361f}, {.id = 1169, .distance = 26.467f}, {.id = 1171, .distance = 26.547f}, {.id = 1138, .distance = 31.431f}, {.id = 1139, .distance = 32.153f}, {.id = 1071, .distance = 34.812f}, {.id = 1069, .distance = 35.607f}
         }},
         {1171, {
-            {.id = 664, .distance = 22.388f}, {.id = 1139, .distance = 25.318f}, {.id = 1170, .distance = 26.547f}, {.id = 1172, .distance = 27.116f}, {.id = 665, .distance = 34.628f}, {.id = 663, .distance = 34.708f}, {.id = 1140, .distance = 36.035f}
+            {.id = 1069, .distance = 22.388f}, {.id = 1139, .distance = 25.318f}, {.id = 1170, .distance = 26.547f}, {.id = 1172, .distance = 27.116f}, {.id = 1070, .distance = 34.628f}, {.id = 1068, .distance = 34.708f}, {.id = 1140, .distance = 36.035f}
         }},
         {1172, {
-            {.id = 663, .distance = 22.165f}, {.id = 1173, .distance = 26.383f}, {.id = 1171, .distance = 27.116f}, {.id = 1140, .distance = 27.523f}, {.id = 664, .distance = 34.206f}, {.id = 662, .distance = 34.415f}, {.id = 1139, .distance = 41.220f}
+            {.id = 1068, .distance = 22.165f}, {.id = 1173, .distance = 26.383f}, {.id = 1171, .distance = 27.116f}, {.id = 1140, .distance = 27.523f}, {.id = 1069, .distance = 34.206f}, {.id = 1067, .distance = 34.415f}, {.id = 1139, .distance = 41.220f}
         }},
         {1173, {
-            {.id = 662, .distance = 21.887f}, {.id = 1174, .distance = 25.498f}, {.id = 1172, .distance = 26.383f}, {.id = 1175, .distance = 26.792f}, {.id = 660, .distance = 34.325f}, {.id = 663, .distance = 34.634f}, {.id = 1141, .distance = 36.749f}
+            {.id = 1067, .distance = 21.887f}, {.id = 1174, .distance = 25.498f}, {.id = 1172, .distance = 26.383f}, {.id = 1175, .distance = 26.792f}, {.id = 1065, .distance = 34.325f}, {.id = 1068, .distance = 34.634f}, {.id = 1141, .distance = 36.749f}
         }},
         {1174, {
-            {.id = 1141, .distance = 21.879f}, {.id = 1175, .distance = 24.550f}, {.id = 1173, .distance = 25.498f}, {.id = 1176, .distance = 25.732f}, {.id = 1142, .distance = 33.585f}, {.id = 1179, .distance = 41.045f}, {.id = 660, .distance = 43.103f}
+            {.id = 1141, .distance = 21.879f}, {.id = 1175, .distance = 24.550f}, {.id = 1173, .distance = 25.498f}, {.id = 1176, .distance = 25.732f}, {.id = 1142, .distance = 33.585f}, {.id = 1179, .distance = 41.045f}, {.id = 1065, .distance = 43.103f}
         }},
         {1175, {
-            {.id = 660, .distance = 21.892f}, {.id = 1174, .distance = 24.550f}, {.id = 1176, .distance = 24.859f}, {.id = 1177, .distance = 26.221f}, {.id = 1173, .distance = 26.792f}, {.id = 662, .distance = 34.679f}, {.id = 659, .distance = 36.842f}
+            {.id = 1065, .distance = 21.892f}, {.id = 1174, .distance = 24.550f}, {.id = 1176, .distance = 24.859f}, {.id = 1177, .distance = 26.221f}, {.id = 1173, .distance = 26.792f}, {.id = 1067, .distance = 34.679f}, {.id = 1064, .distance = 36.842f}
         }},
         {1176, {
-            {.id = 1178, .distance = 24.528f}, {.id = 1177, .distance = 24.669f}, {.id = 1175, .distance = 24.859f}, {.id = 1179, .distance = 25.084f}, {.id = 1174, .distance = 25.732f}, {.id = 1142, .distance = 35.615f}, {.id = 128, .distance = 43.013f}
+            {.id = 1178, .distance = 24.528f}, {.id = 1177, .distance = 24.669f}, {.id = 1175, .distance = 24.859f}, {.id = 1179, .distance = 25.084f}, {.id = 1174, .distance = 25.732f}, {.id = 1142, .distance = 35.615f}, {.id = 376, .distance = 42.825f}
         }},
         {1177, {
-            {.id = 659, .distance = 23.277f}, {.id = 130, .distance = 23.709f}, {.id = 1176, .distance = 24.669f}, {.id = 1175, .distance = 26.221f}, {.id = 1178, .distance = 28.881f}, {.id = 660, .distance = 34.476f}, {.id = 128, .distance = 37.119f}
+            {.id = 1064, .distance = 23.277f}, {.id = 378, .distance = 23.490f}, {.id = 1176, .distance = 24.669f}, {.id = 1175, .distance = 26.221f}, {.id = 1178, .distance = 28.881f}, {.id = 1065, .distance = 34.476f}, {.id = 376, .distance = 36.998f}
         }},
         {1178, {
-            {.id = 128, .distance = 21.876f}, {.id = 1179, .distance = 24.210f}, {.id = 1176, .distance = 24.528f}, {.id = 1180, .distance = 26.372f}, {.id = 1177, .distance = 28.881f}, {.id = 126, .distance = 34.497f}, {.id = 130, .distance = 34.534f}
+            {.id = 376, .distance = 21.608f}, {.id = 1179, .distance = 24.210f}, {.id = 1176, .distance = 24.528f}, {.id = 1180, .distance = 26.372f}, {.id = 1177, .distance = 28.881f}, {.id = 378, .distance = 34.196f}, {.id = 374, .distance = 34.300f}
         }},
         {1179, {
-            {.id = 1178, .distance = 24.210f}, {.id = 1142, .distance = 24.618f}, {.id = 1176, .distance = 25.084f}, {.id = 1180, .distance = 25.246f}, {.id = 1143, .distance = 29.298f}, {.id = 1174, .distance = 41.045f}, {.id = 128, .distance = 42.954f}
+            {.id = 1178, .distance = 24.210f}, {.id = 1142, .distance = 24.618f}, {.id = 1176, .distance = 25.084f}, {.id = 1180, .distance = 25.246f}, {.id = 1143, .distance = 29.298f}, {.id = 1174, .distance = 41.045f}, {.id = 376, .distance = 42.732f}
         }},
         {1180, {
-            {.id = 126, .distance = 21.967f}, {.id = 1179, .distance = 25.246f}, {.id = 1178, .distance = 26.372f}, {.id = 1181, .distance = 27.091f}, {.id = 128, .distance = 34.412f}, {.id = 1143, .distance = 34.857f}, {.id = 125, .distance = 34.876f}
+            {.id = 374, .distance = 21.658f}, {.id = 1179, .distance = 25.246f}, {.id = 1178, .distance = 26.372f}, {.id = 1181, .distance = 27.091f}, {.id = 376, .distance = 34.197f}, {.id = 373, .distance = 34.609f}, {.id = 1143, .distance = 34.857f}
         }},
         {1181, {
-            {.id = 125, .distance = 21.955f}, {.id = 1182, .distance = 26.524f}, {.id = 1180, .distance = 27.091f}, {.id = 1144, .distance = 29.494f}, {.id = 126, .distance = 34.638f}, {.id = 124, .distance = 35.268f}, {.id = 1143, .distance = 35.556f}
+            {.id = 373, .distance = 21.606f}, {.id = 1182, .distance = 26.524f}, {.id = 1180, .distance = 27.091f}, {.id = 1144, .distance = 29.494f}, {.id = 372, .distance = 34.298f}, {.id = 374, .distance = 34.445f}, {.id = 1143, .distance = 35.556f}
         }},
         {1182, {
-            {.id = 124, .distance = 21.888f}, {.id = 1181, .distance = 26.524f}, {.id = 1183, .distance = 26.730f}, {.id = 1144, .distance = 28.584f}, {.id = 1145, .distance = 32.097f}, {.id = 123, .distance = 34.325f}, {.id = 125, .distance = 34.376f}
+            {.id = 372, .distance = 21.478f}, {.id = 1181, .distance = 26.524f}, {.id = 1183, .distance = 26.730f}, {.id = 1144, .distance = 28.584f}, {.id = 1145, .distance = 32.097f}, {.id = 373, .distance = 34.202f}, {.id = 371, .distance = 34.298f}
         }},
         {1183, {
-            {.id = 123, .distance = 21.772f}, {.id = 1182, .distance = 26.730f}, {.id = 1184, .distance = 26.732f}, {.id = 1145, .distance = 28.097f}, {.id = 124, .distance = 33.726f}, {.id = 122, .distance = 34.396f}, {.id = 1146, .distance = 40.135f}
+            {.id = 371, .distance = 21.606f}, {.id = 1182, .distance = 26.730f}, {.id = 1184, .distance = 26.732f}, {.id = 1145, .distance = 28.097f}, {.id = 372, .distance = 34.202f}, {.id = 370, .distance = 34.609f}, {.id = 1146, .distance = 40.135f}
         }},
         {1184, {
-            {.id = 122, .distance = 21.813f}, {.id = 1185, .distance = 24.672f}, {.id = 1183, .distance = 26.732f}, {.id = 1186, .distance = 26.732f}, {.id = 120, .distance = 34.237f}, {.id = 123, .distance = 34.627f}, {.id = 1146, .distance = 35.127f}
+            {.id = 370, .distance = 21.658f}, {.id = 1185, .distance = 24.672f}, {.id = 1183, .distance = 26.732f}, {.id = 1186, .distance = 26.732f}, {.id = 368, .distance = 34.300f}, {.id = 371, .distance = 34.445f}, {.id = 1146, .distance = 35.127f}
         }},
         {1185, {
-            {.id = 1186, .distance = 23.501f}, {.id = 1184, .distance = 24.672f}, {.id = 1187, .distance = 25.068f}, {.id = 1146, .distance = 25.325f}, {.id = 1147, .distance = 29.320f}, {.id = 1190, .distance = 41.461f}, {.id = 120, .distance = 41.921f}
+            {.id = 1186, .distance = 23.501f}, {.id = 1184, .distance = 24.672f}, {.id = 1187, .distance = 25.068f}, {.id = 1146, .distance = 25.325f}, {.id = 1147, .distance = 29.320f}, {.id = 1190, .distance = 41.461f}, {.id = 368, .distance = 41.850f}
         }},
         {1186, {
-            {.id = 120, .distance = 21.788f}, {.id = 1185, .distance = 23.501f}, {.id = 1187, .distance = 24.580f}, {.id = 1188, .distance = 26.371f}, {.id = 1184, .distance = 26.732f}, {.id = 122, .distance = 34.608f}, {.id = 119, .distance = 36.785f}
+            {.id = 368, .distance = 21.608f}, {.id = 1185, .distance = 23.501f}, {.id = 1187, .distance = 24.580f}, {.id = 1188, .distance = 26.371f}, {.id = 1184, .distance = 26.732f}, {.id = 370, .distance = 34.197f}, {.id = 367, .distance = 36.998f}
         }},
         {1187, {
-            {.id = 1186, .distance = 24.580f}, {.id = 1189, .distance = 24.959f}, {.id = 1188, .distance = 25.010f}, {.id = 1185, .distance = 25.068f}, {.id = 1190, .distance = 25.146f}, {.id = 1147, .distance = 34.248f}, {.id = 120, .distance = 43.155f}
+            {.id = 1186, .distance = 24.580f}, {.id = 1189, .distance = 24.959f}, {.id = 1188, .distance = 25.010f}, {.id = 1185, .distance = 25.068f}, {.id = 1190, .distance = 25.146f}, {.id = 1147, .distance = 34.248f}, {.id = 368, .distance = 42.952f}
         }},
         {1188, {
-            {.id = 119, .distance = 23.106f}, {.id = 1571, .distance = 23.609f}, {.id = 1187, .distance = 25.010f}, {.id = 1186, .distance = 26.371f}, {.id = 1189, .distance = 29.071f}, {.id = 120, .distance = 34.484f}, {.id = 1569, .distance = 37.270f}
+            {.id = 254, .distance = 23.326f}, {.id = 367, .distance = 23.490f}, {.id = 1187, .distance = 25.010f}, {.id = 1186, .distance = 26.371f}, {.id = 1189, .distance = 29.071f}, {.id = 368, .distance = 34.196f}, {.id = 252, .distance = 36.872f}
         }},
         {1189, {
-            {.id = 1569, .distance = 22.081f}, {.id = 1190, .distance = 23.829f}, {.id = 1187, .distance = 24.959f}, {.id = 1191, .distance = 26.582f}, {.id = 1188, .distance = 29.071f}, {.id = 1571, .distance = 34.791f}, {.id = 1567, .distance = 34.888f}
+            {.id = 252, .distance = 21.837f}, {.id = 1190, .distance = 23.829f}, {.id = 1187, .distance = 24.959f}, {.id = 1191, .distance = 26.582f}, {.id = 1188, .distance = 29.071f}, {.id = 250, .distance = 34.439f}, {.id = 254, .distance = 34.529f}
         }},
         {1190, {
-            {.id = 1189, .distance = 23.829f}, {.id = 1187, .distance = 25.146f}, {.id = 1148, .distance = 25.156f}, {.id = 1191, .distance = 25.569f}, {.id = 1147, .distance = 28.406f}, {.id = 1185, .distance = 41.461f}, {.id = 1569, .distance = 42.798f}
+            {.id = 1189, .distance = 23.829f}, {.id = 1187, .distance = 25.146f}, {.id = 1148, .distance = 25.156f}, {.id = 1191, .distance = 25.569f}, {.id = 1147, .distance = 28.406f}, {.id = 1185, .distance = 41.461f}, {.id = 252, .distance = 42.698f}
         }},
         {1191, {
-            {.id = 1567, .distance = 21.687f}, {.id = 1190, .distance = 25.569f}, {.id = 1192, .distance = 26.524f}, {.id = 1189, .distance = 26.582f}, {.id = 1569, .distance = 34.521f}, {.id = 1148, .distance = 34.565f}, {.id = 1566, .distance = 34.947f}
+            {.id = 250, .distance = 21.607f}, {.id = 1190, .distance = 25.569f}, {.id = 1192, .distance = 26.524f}, {.id = 1189, .distance = 26.582f}, {.id = 249, .distance = 34.438f}, {.id = 1148, .distance = 34.565f}, {.id = 252, .distance = 34.611f}
         }},
         {1192, {
-            {.id = 1566, .distance = 22.464f}, {.id = 1191, .distance = 26.524f}, {.id = 1193, .distance = 27.091f}, {.id = 1149, .distance = 28.191f}, {.id = 1567, .distance = 33.864f}, {.id = 1565, .distance = 34.205f}, {.id = 1148, .distance = 39.087f}
+            {.id = 249, .distance = 21.912f}, {.id = 1191, .distance = 26.524f}, {.id = 1193, .distance = 27.091f}, {.id = 1149, .distance = 28.191f}, {.id = 250, .distance = 34.219f}, {.id = 248, .distance = 34.438f}, {.id = 1148, .distance = 39.087f}
         }},
         {1193, {
-            {.id = 1565, .distance = 21.856f}, {.id = 1194, .distance = 26.524f}, {.id = 1192, .distance = 27.091f}, {.id = 1150, .distance = 28.182f}, {.id = 1149, .distance = 31.855f}, {.id = 1619, .distance = 34.474f}, {.id = 1566, .distance = 34.950f}
+            {.id = 248, .distance = 21.836f}, {.id = 1194, .distance = 26.524f}, {.id = 1192, .distance = 27.091f}, {.id = 1150, .distance = 28.182f}, {.id = 1149, .distance = 31.855f}, {.id = 247, .distance = 34.438f}, {.id = 249, .distance = 34.758f}
         }},
         {1194, {
-            {.id = 1619, .distance = 22.408f}, {.id = 1193, .distance = 26.524f}, {.id = 1195, .distance = 26.581f}, {.id = 1150, .distance = 29.755f}, {.id = 1618, .distance = 34.529f}, {.id = 1151, .distance = 34.998f}, {.id = 1565, .distance = 35.008f}
+            {.id = 247, .distance = 21.912f}, {.id = 1193, .distance = 26.524f}, {.id = 1195, .distance = 26.581f}, {.id = 1150, .distance = 29.755f}, {.id = 246, .distance = 34.438f}, {.id = 248, .distance = 34.758f}, {.id = 1151, .distance = 34.998f}
         }},
         {1195, {
-            {.id = 1618, .distance = 21.567f}, {.id = 1196, .distance = 25.497f}, {.id = 1194, .distance = 26.581f}, {.id = 1197, .distance = 27.091f}, {.id = 1616, .distance = 33.896f}, {.id = 1151, .distance = 34.425f}, {.id = 1619, .distance = 34.817f}
+            {.id = 246, .distance = 21.607f}, {.id = 1196, .distance = 25.497f}, {.id = 1194, .distance = 26.581f}, {.id = 1197, .distance = 27.091f}, {.id = 247, .distance = 34.219f}, {.id = 1151, .distance = 34.425f}, {.id = 244, .distance = 34.439f}
         }},
         {1196, {
-            {.id = 1152, .distance = 23.798f}, {.id = 1197, .distance = 24.344f}, {.id = 1198, .distance = 25.237f}, {.id = 1195, .distance = 25.497f}, {.id = 1151, .distance = 29.105f}, {.id = 1201, .distance = 41.369f}, {.id = 1616, .distance = 42.275f}
+            {.id = 1152, .distance = 23.798f}, {.id = 1197, .distance = 24.344f}, {.id = 1198, .distance = 25.237f}, {.id = 1195, .distance = 25.497f}, {.id = 1151, .distance = 29.105f}, {.id = 1201, .distance = 41.369f}, {.id = 244, .distance = 42.825f}
         }},
         {1197, {
-            {.id = 1616, .distance = 21.183f}, {.id = 1196, .distance = 24.344f}, {.id = 1198, .distance = 24.548f}, {.id = 1199, .distance = 26.371f}, {.id = 1195, .distance = 27.091f}, {.id = 1618, .distance = 34.469f}, {.id = 1615, .distance = 36.529f}
+            {.id = 244, .distance = 21.837f}, {.id = 1196, .distance = 24.344f}, {.id = 1198, .distance = 24.548f}, {.id = 1199, .distance = 26.371f}, {.id = 1195, .distance = 27.091f}, {.id = 246, .distance = 34.611f}, {.id = 243, .distance = 36.872f}
         }},
         {1198, {
-            {.id = 1197, .distance = 24.548f}, {.id = 1200, .distance = 24.694f}, {.id = 1199, .distance = 25.104f}, {.id = 1196, .distance = 25.237f}, {.id = 1201, .distance = 25.654f}, {.id = 1152, .distance = 34.527f}, {.id = 1616, .distance = 42.794f}
+            {.id = 1197, .distance = 24.548f}, {.id = 1200, .distance = 24.694f}, {.id = 1199, .distance = 25.104f}, {.id = 1196, .distance = 25.237f}, {.id = 1201, .distance = 25.654f}, {.id = 1152, .distance = 34.527f}, {.id = 1310, .distance = 43.104f}
         }},
         {1199, {
-            {.id = 1615, .distance = 23.182f}, {.id = 1042, .distance = 23.277f}, {.id = 1198, .distance = 25.104f}, {.id = 1197, .distance = 26.371f}, {.id = 1200, .distance = 29.110f}, {.id = 1616, .distance = 34.248f}, {.id = 1040, .distance = 36.842f}
+            {.id = 1312, .distance = 23.277f}, {.id = 243, .distance = 23.326f}, {.id = 1198, .distance = 25.104f}, {.id = 1197, .distance = 26.371f}, {.id = 1200, .distance = 29.110f}, {.id = 244, .distance = 34.529f}, {.id = 1310, .distance = 36.842f}
         }},
         {1200, {
-            {.id = 1040, .distance = 21.892f}, {.id = 1201, .distance = 24.048f}, {.id = 1198, .distance = 24.694f}, {.id = 1202, .distance = 26.547f}, {.id = 1199, .distance = 29.110f}, {.id = 1038, .distance = 34.325f}, {.id = 1042, .distance = 34.476f}
+            {.id = 1310, .distance = 21.892f}, {.id = 1201, .distance = 24.048f}, {.id = 1198, .distance = 24.694f}, {.id = 1202, .distance = 26.547f}, {.id = 1199, .distance = 29.110f}, {.id = 1308, .distance = 34.325f}, {.id = 1312, .distance = 34.476f}
         }},
         {1201, {
-            {.id = 1153, .distance = 21.654f}, {.id = 1200, .distance = 24.048f}, {.id = 1202, .distance = 24.979f}, {.id = 1198, .distance = 25.654f}, {.id = 1152, .distance = 33.270f}, {.id = 1196, .distance = 41.369f}, {.id = 1040, .distance = 42.839f}
+            {.id = 1153, .distance = 21.654f}, {.id = 1200, .distance = 24.048f}, {.id = 1202, .distance = 24.979f}, {.id = 1198, .distance = 25.654f}, {.id = 1152, .distance = 33.270f}, {.id = 1196, .distance = 41.369f}, {.id = 1310, .distance = 42.839f}
         }},
         {1202, {
-            {.id = 1038, .distance = 21.887f}, {.id = 1201, .distance = 24.979f}, {.id = 1200, .distance = 26.547f}, {.id = 1203, .distance = 26.791f}, {.id = 1037, .distance = 34.415f}, {.id = 1040, .distance = 34.679f}, {.id = 1153, .distance = 36.329f}
+            {.id = 1308, .distance = 21.887f}, {.id = 1201, .distance = 24.979f}, {.id = 1200, .distance = 26.547f}, {.id = 1203, .distance = 26.791f}, {.id = 1307, .distance = 34.415f}, {.id = 1310, .distance = 34.679f}, {.id = 1153, .distance = 36.329f}
         }},
         {1203, {
-            {.id = 1037, .distance = 22.165f}, {.id = 1204, .distance = 25.487f}, {.id = 1202, .distance = 26.791f}, {.id = 1154, .distance = 27.232f}, {.id = 1038, .distance = 34.634f}, {.id = 1036, .distance = 34.708f}, {.id = 1155, .distance = 41.139f}
+            {.id = 1307, .distance = 22.165f}, {.id = 1204, .distance = 25.487f}, {.id = 1202, .distance = 26.791f}, {.id = 1154, .distance = 27.232f}, {.id = 1308, .distance = 34.634f}, {.id = 1306, .distance = 34.708f}, {.id = 1155, .distance = 41.139f}
         }},
         {1204, {
-            {.id = 1036, .distance = 22.388f}, {.id = 1203, .distance = 25.487f}, {.id = 1155, .distance = 26.028f}, {.id = 1205, .distance = 27.606f}, {.id = 1037, .distance = 34.206f}, {.id = 1154, .distance = 35.594f}, {.id = 1035, .distance = 35.607f}
+            {.id = 1306, .distance = 22.388f}, {.id = 1203, .distance = 25.487f}, {.id = 1155, .distance = 26.028f}, {.id = 1205, .distance = 27.606f}, {.id = 1307, .distance = 34.206f}, {.id = 1154, .distance = 35.594f}, {.id = 1305, .distance = 35.607f}
         }},
         {1205, {
-            {.id = 1035, .distance = 22.361f}, {.id = 1206, .distance = 26.790f}, {.id = 1204, .distance = 27.606f}, {.id = 1156, .distance = 31.167f}, {.id = 1155, .distance = 32.429f}, {.id = 1034, .distance = 34.595f}, {.id = 1036, .distance = 34.628f}
+            {.id = 1305, .distance = 22.361f}, {.id = 1206, .distance = 26.790f}, {.id = 1204, .distance = 27.606f}, {.id = 1156, .distance = 31.167f}, {.id = 1155, .distance = 32.429f}, {.id = 1304, .distance = 34.595f}, {.id = 1306, .distance = 34.628f}
         }},
         {1206, {
-            {.id = 1034, .distance = 22.151f}, {.id = 1207, .distance = 25.010f}, {.id = 1205, .distance = 26.790f}, {.id = 1208, .distance = 26.792f}, {.id = 1035, .distance = 34.812f}, {.id = 1156, .distance = 34.856f}, {.id = 1032, .distance = 34.991f}
+            {.id = 1304, .distance = 22.151f}, {.id = 1207, .distance = 25.010f}, {.id = 1205, .distance = 26.790f}, {.id = 1208, .distance = 26.792f}, {.id = 1305, .distance = 34.812f}, {.id = 1156, .distance = 34.856f}, {.id = 1302, .distance = 34.991f}
         }},
         {1207, {
-            {.id = 1157, .distance = 21.595f}, {.id = 1208, .distance = 24.103f}, {.id = 1206, .distance = 25.010f}, {.id = 1209, .distance = 25.812f}, {.id = 1156, .distance = 33.491f}, {.id = 1212, .distance = 41.309f}, {.id = 1032, .distance = 42.896f}
+            {.id = 1157, .distance = 21.595f}, {.id = 1208, .distance = 24.103f}, {.id = 1206, .distance = 25.010f}, {.id = 1209, .distance = 25.812f}, {.id = 1156, .distance = 33.491f}, {.id = 1212, .distance = 41.309f}, {.id = 1302, .distance = 42.896f}
         }},
         {1208, {
-            {.id = 1032, .distance = 21.881f}, {.id = 1207, .distance = 24.103f}, {.id = 1209, .distance = 24.732f}, {.id = 1210, .distance = 26.546f}, {.id = 1206, .distance = 26.792f}, {.id = 1034, .distance = 34.928f}, {.id = 1031, .distance = 36.598f}
+            {.id = 1302, .distance = 21.881f}, {.id = 1207, .distance = 24.103f}, {.id = 1209, .distance = 24.732f}, {.id = 1210, .distance = 26.546f}, {.id = 1206, .distance = 26.792f}, {.id = 1304, .distance = 34.928f}, {.id = 1301, .distance = 36.598f}
         }},
         {1209, {
             {.id = 1210, .distance = 24.694f}, {.id = 1208, .distance = 24.732f}, {.id = 1211, .distance = 25.085f}, {.id = 1212, .distance = 25.237f}, {.id = 1207, .distance = 25.812f}, {.id = 1157, .distance = 36.997f}, {.id = 1158, .distance = 39.624f}
         }},
         {1210, {
-            {.id = 1031, .distance = 23.274f}, {.id = 535, .distance = 23.352f}, {.id = 1209, .distance = 24.694f}, {.id = 1208, .distance = 26.546f}, {.id = 1211, .distance = 28.931f}, {.id = 1032, .distance = 34.044f}, {.id = 533, .distance = 36.746f}
+            {.id = 1604, .distance = 23.145f}, {.id = 1301, .distance = 23.274f}, {.id = 1209, .distance = 24.694f}, {.id = 1208, .distance = 26.546f}, {.id = 1211, .distance = 28.931f}, {.id = 1302, .distance = 34.044f}, {.id = 1602, .distance = 36.516f}
         }},
         {1211, {
-            {.id = 533, .distance = 21.264f}, {.id = 1212, .distance = 24.787f}, {.id = 1209, .distance = 25.085f}, {.id = 1213, .distance = 26.270f}, {.id = 1210, .distance = 28.931f}, {.id = 531, .distance = 33.932f}, {.id = 535, .distance = 34.325f}
+            {.id = 1602, .distance = 21.144f}, {.id = 1212, .distance = 24.787f}, {.id = 1209, .distance = 25.085f}, {.id = 1213, .distance = 26.270f}, {.id = 1210, .distance = 28.931f}, {.id = 1600, .distance = 33.883f}, {.id = 1604, .distance = 34.212f}
         }},
         {1212, {
             {.id = 1158, .distance = 20.735f}, {.id = 1211, .distance = 24.787f}, {.id = 1209, .distance = 25.237f}, {.id = 1213, .distance = 25.425f}, {.id = 1157, .distance = 38.308f}, {.id = 1159, .distance = 38.379f}, {.id = 1207, .distance = 41.309f}
         }},
         {1213, {
-            {.id = 531, .distance = 21.731f}, {.id = 1212, .distance = 25.425f}, {.id = 1211, .distance = 26.270f}, {.id = 1214, .distance = 27.049f}, {.id = 533, .distance = 34.357f}, {.id = 530, .distance = 34.634f}, {.id = 1159, .distance = 37.159f}
+            {.id = 1600, .distance = 21.529f}, {.id = 1212, .distance = 25.425f}, {.id = 1211, .distance = 26.270f}, {.id = 1214, .distance = 27.049f}, {.id = 1602, .distance = 34.433f}, {.id = 1599, .distance = 34.516f}, {.id = 1159, .distance = 37.159f}
         }},
         {1214, {
-            {.id = 530, .distance = 22.422f}, {.id = 1160, .distance = 27.042f}, {.id = 1213, .distance = 27.049f}, {.id = 1159, .distance = 28.297f}, {.id = 531, .distance = 34.987f}, {.id = 529, .distance = 35.507f}, {.id = 1134, .distance = 35.703f}
+            {.id = 1599, .distance = 22.369f}, {.id = 1160, .distance = 27.042f}, {.id = 1213, .distance = 27.049f}, {.id = 1159, .distance = 28.297f}, {.id = 1598, .distance = 34.460f}, {.id = 1600, .distance = 34.782f}, {.id = 1134, .distance = 35.703f}
         }},
         {1215, {
             {.id = 1220, .distance = 22.969f}, {.id = 1218, .distance = 23.177f}, {.id = 1217, .distance = 23.180f}, {.id = 1216, .distance = 23.418f}, {.id = 1219, .distance = 23.540f}, {.id = 1229, .distance = 46.414f}, {.id = 1226, .distance = 46.608f}
@@ -6162,169 +6162,169 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
             {.id = 1268, .distance = 27.954f}, {.id = 1349, .distance = 28.297f}, {.id = 1293, .distance = 29.747f}, {.id = 1269, .distance = 29.831f}, {.id = 1348, .distance = 37.159f}, {.id = 1247, .distance = 38.168f}, {.id = 1347, .distance = 38.379f}
         }},
         {1295, {
-            {.id = 923, .distance = 21.856f}, {.id = 1269, .distance = 24.998f}, {.id = 1296, .distance = 26.018f}, {.id = 1349, .distance = 27.042f}, {.id = 922, .distance = 34.205f}, {.id = 924, .distance = 35.008f}, {.id = 1270, .distance = 40.605f}
+            {.id = 1609, .distance = 22.017f}, {.id = 1269, .distance = 24.998f}, {.id = 1296, .distance = 26.018f}, {.id = 1349, .distance = 27.042f}, {.id = 1608, .distance = 33.974f}, {.id = 1610, .distance = 34.921f}, {.id = 1270, .distance = 40.605f}
         }},
         {1296, {
-            {.id = 922, .distance = 22.464f}, {.id = 1295, .distance = 26.018f}, {.id = 1297, .distance = 26.277f}, {.id = 1270, .distance = 27.955f}, {.id = 921, .distance = 34.947f}, {.id = 923, .distance = 34.950f}, {.id = 1269, .distance = 36.289f}
+            {.id = 1608, .distance = 22.576f}, {.id = 1295, .distance = 26.018f}, {.id = 1297, .distance = 26.277f}, {.id = 1270, .distance = 27.955f}, {.id = 1609, .distance = 34.146f}, {.id = 1607, .distance = 35.021f}, {.id = 1269, .distance = 36.289f}
         }},
         {1297, {
-            {.id = 921, .distance = 21.687f}, {.id = 1298, .distance = 25.444f}, {.id = 1296, .distance = 26.277f}, {.id = 1299, .distance = 27.296f}, {.id = 922, .distance = 33.864f}, {.id = 919, .distance = 34.888f}, {.id = 1270, .distance = 36.960f}
+            {.id = 1607, .distance = 21.957f}, {.id = 1298, .distance = 25.444f}, {.id = 1296, .distance = 26.277f}, {.id = 1299, .distance = 27.296f}, {.id = 1608, .distance = 34.245f}, {.id = 1605, .distance = 34.797f}, {.id = 1270, .distance = 36.960f}
         }},
         {1298, {
             {.id = 1271, .distance = 21.650f}, {.id = 1299, .distance = 23.803f}, {.id = 1297, .distance = 25.444f}, {.id = 1300, .distance = 25.495f}, {.id = 1272, .distance = 38.588f}, {.id = 1270, .distance = 39.188f}, {.id = 1303, .distance = 40.893f}
         }},
         {1299, {
-            {.id = 919, .distance = 22.081f}, {.id = 1298, .distance = 23.803f}, {.id = 1300, .distance = 24.430f}, {.id = 1301, .distance = 26.781f}, {.id = 1297, .distance = 27.296f}, {.id = 921, .distance = 34.521f}, {.id = 918, .distance = 37.270f}
+            {.id = 1605, .distance = 22.141f}, {.id = 1298, .distance = 23.803f}, {.id = 1300, .distance = 24.430f}, {.id = 1301, .distance = 26.781f}, {.id = 1297, .distance = 27.296f}, {.id = 1607, .distance = 34.795f}, {.id = 1604, .distance = 37.037f}
         }},
         {1300, {
             {.id = 1302, .distance = 24.299f}, {.id = 1299, .distance = 24.430f}, {.id = 1301, .distance = 24.711f}, {.id = 1303, .distance = 25.084f}, {.id = 1298, .distance = 25.495f}, {.id = 1272, .distance = 37.220f}, {.id = 1271, .distance = 40.095f}
         }},
         {1301, {
-            {.id = 1469, .distance = 23.078f}, {.id = 918, .distance = 23.609f}, {.id = 1300, .distance = 24.711f}, {.id = 1299, .distance = 26.781f}, {.id = 1302, .distance = 27.879f}, {.id = 919, .distance = 34.791f}, {.id = 1467, .distance = 36.374f}
+            {.id = 1210, .distance = 23.274f}, {.id = 1604, .distance = 23.364f}, {.id = 1300, .distance = 24.711f}, {.id = 1299, .distance = 26.781f}, {.id = 1302, .distance = 27.879f}, {.id = 1605, .distance = 34.955f}, {.id = 1208, .distance = 36.598f}
         }},
         {1302, {
-            {.id = 1467, .distance = 21.762f}, {.id = 1300, .distance = 24.299f}, {.id = 1303, .distance = 24.636f}, {.id = 1304, .distance = 27.526f}, {.id = 1301, .distance = 27.879f}, {.id = 1469, .distance = 33.932f}, {.id = 1465, .distance = 34.948f}
+            {.id = 1208, .distance = 21.881f}, {.id = 1300, .distance = 24.299f}, {.id = 1303, .distance = 24.636f}, {.id = 1304, .distance = 27.526f}, {.id = 1301, .distance = 27.879f}, {.id = 1210, .distance = 34.044f}, {.id = 1206, .distance = 34.991f}
         }},
         {1303, {
             {.id = 1272, .distance = 21.863f}, {.id = 1302, .distance = 24.636f}, {.id = 1300, .distance = 25.084f}, {.id = 1304, .distance = 25.653f}, {.id = 1273, .distance = 34.005f}, {.id = 1298, .distance = 40.893f}, {.id = 1271, .distance = 43.024f}
         }},
         {1304, {
-            {.id = 1465, .distance = 21.954f}, {.id = 1303, .distance = 25.653f}, {.id = 1305, .distance = 26.467f}, {.id = 1302, .distance = 27.526f}, {.id = 1464, .distance = 34.480f}, {.id = 1467, .distance = 35.009f}, {.id = 1273, .distance = 35.198f}
+            {.id = 1206, .distance = 22.151f}, {.id = 1303, .distance = 25.653f}, {.id = 1305, .distance = 26.467f}, {.id = 1302, .distance = 27.526f}, {.id = 1205, .distance = 34.595f}, {.id = 1208, .distance = 34.928f}, {.id = 1273, .distance = 35.198f}
         }},
         {1305, {
-            {.id = 1464, .distance = 22.310f}, {.id = 1304, .distance = 26.467f}, {.id = 1306, .distance = 26.547f}, {.id = 1273, .distance = 31.431f}, {.id = 1274, .distance = 32.153f}, {.id = 1463, .distance = 34.558f}, {.id = 1465, .distance = 34.609f}
+            {.id = 1205, .distance = 22.361f}, {.id = 1304, .distance = 26.467f}, {.id = 1306, .distance = 26.547f}, {.id = 1273, .distance = 31.431f}, {.id = 1274, .distance = 32.153f}, {.id = 1206, .distance = 34.812f}, {.id = 1204, .distance = 35.607f}
         }},
         {1306, {
-            {.id = 1463, .distance = 22.154f}, {.id = 1274, .distance = 25.318f}, {.id = 1305, .distance = 26.547f}, {.id = 1307, .distance = 27.116f}, {.id = 1464, .distance = 34.678f}, {.id = 1462, .distance = 34.928f}, {.id = 1275, .distance = 36.035f}
+            {.id = 1204, .distance = 22.388f}, {.id = 1274, .distance = 25.318f}, {.id = 1305, .distance = 26.547f}, {.id = 1307, .distance = 27.116f}, {.id = 1205, .distance = 34.628f}, {.id = 1203, .distance = 34.708f}, {.id = 1275, .distance = 36.035f}
         }},
         {1307, {
-            {.id = 1462, .distance = 22.003f}, {.id = 1308, .distance = 26.383f}, {.id = 1306, .distance = 27.116f}, {.id = 1275, .distance = 27.523f}, {.id = 1461, .distance = 34.325f}, {.id = 1463, .distance = 34.988f}, {.id = 1274, .distance = 41.220f}
+            {.id = 1203, .distance = 22.165f}, {.id = 1308, .distance = 26.383f}, {.id = 1306, .distance = 27.116f}, {.id = 1275, .distance = 27.523f}, {.id = 1204, .distance = 34.206f}, {.id = 1202, .distance = 34.415f}, {.id = 1274, .distance = 41.220f}
         }},
         {1308, {
-            {.id = 1461, .distance = 21.569f}, {.id = 1309, .distance = 25.498f}, {.id = 1307, .distance = 26.383f}, {.id = 1310, .distance = 26.792f}, {.id = 1462, .distance = 34.213f}, {.id = 1459, .distance = 34.398f}, {.id = 1276, .distance = 36.749f}
+            {.id = 1202, .distance = 21.887f}, {.id = 1309, .distance = 25.498f}, {.id = 1307, .distance = 26.383f}, {.id = 1310, .distance = 26.792f}, {.id = 1200, .distance = 34.325f}, {.id = 1203, .distance = 34.634f}, {.id = 1276, .distance = 36.749f}
         }},
         {1309, {
-            {.id = 1276, .distance = 21.879f}, {.id = 1310, .distance = 24.550f}, {.id = 1308, .distance = 25.498f}, {.id = 1311, .distance = 25.732f}, {.id = 1277, .distance = 33.585f}, {.id = 1314, .distance = 41.045f}, {.id = 1459, .distance = 43.073f}
+            {.id = 1276, .distance = 21.879f}, {.id = 1310, .distance = 24.550f}, {.id = 1308, .distance = 25.498f}, {.id = 1311, .distance = 25.732f}, {.id = 1277, .distance = 33.585f}, {.id = 1314, .distance = 41.045f}, {.id = 1200, .distance = 43.103f}
         }},
         {1310, {
-            {.id = 1459, .distance = 21.785f}, {.id = 1309, .distance = 24.550f}, {.id = 1311, .distance = 24.859f}, {.id = 1312, .distance = 26.221f}, {.id = 1308, .distance = 26.792f}, {.id = 1461, .distance = 34.365f}, {.id = 1458, .distance = 37.057f}
+            {.id = 1200, .distance = 21.892f}, {.id = 1309, .distance = 24.550f}, {.id = 1311, .distance = 24.859f}, {.id = 1312, .distance = 26.221f}, {.id = 1308, .distance = 26.792f}, {.id = 1202, .distance = 34.679f}, {.id = 1199, .distance = 36.842f}
         }},
         {1311, {
-            {.id = 1313, .distance = 24.528f}, {.id = 1312, .distance = 24.669f}, {.id = 1310, .distance = 24.859f}, {.id = 1314, .distance = 25.084f}, {.id = 1309, .distance = 25.732f}, {.id = 1277, .distance = 35.615f}, {.id = 354, .distance = 43.102f}
+            {.id = 1313, .distance = 24.528f}, {.id = 1312, .distance = 24.669f}, {.id = 1310, .distance = 24.859f}, {.id = 1314, .distance = 25.084f}, {.id = 1309, .distance = 25.732f}, {.id = 1277, .distance = 35.615f}, {.id = 241, .distance = 42.825f}
         }},
         {1312, {
-            {.id = 1458, .distance = 23.478f}, {.id = 356, .distance = 23.747f}, {.id = 1311, .distance = 24.669f}, {.id = 1310, .distance = 26.221f}, {.id = 1313, .distance = 28.881f}, {.id = 1459, .distance = 34.270f}, {.id = 354, .distance = 37.251f}
+            {.id = 1199, .distance = 23.277f}, {.id = 243, .distance = 23.490f}, {.id = 1311, .distance = 24.669f}, {.id = 1310, .distance = 26.221f}, {.id = 1313, .distance = 28.881f}, {.id = 1200, .distance = 34.476f}, {.id = 241, .distance = 36.998f}
         }},
         {1313, {
-            {.id = 354, .distance = 21.962f}, {.id = 1314, .distance = 24.210f}, {.id = 1311, .distance = 24.528f}, {.id = 1315, .distance = 26.372f}, {.id = 1312, .distance = 28.881f}, {.id = 356, .distance = 34.668f}, {.id = 352, .distance = 34.862f}
+            {.id = 241, .distance = 21.608f}, {.id = 1314, .distance = 24.210f}, {.id = 1311, .distance = 24.528f}, {.id = 1315, .distance = 26.372f}, {.id = 1312, .distance = 28.881f}, {.id = 243, .distance = 34.196f}, {.id = 239, .distance = 34.300f}
         }},
         {1314, {
-            {.id = 1313, .distance = 24.210f}, {.id = 1277, .distance = 24.618f}, {.id = 1311, .distance = 25.084f}, {.id = 1315, .distance = 25.246f}, {.id = 1278, .distance = 29.298f}, {.id = 1309, .distance = 41.045f}, {.id = 354, .distance = 42.983f}
+            {.id = 1313, .distance = 24.210f}, {.id = 1277, .distance = 24.618f}, {.id = 1311, .distance = 25.084f}, {.id = 1315, .distance = 25.246f}, {.id = 1278, .distance = 29.298f}, {.id = 1309, .distance = 41.045f}, {.id = 241, .distance = 42.732f}
         }},
         {1315, {
-            {.id = 352, .distance = 21.814f}, {.id = 1314, .distance = 25.246f}, {.id = 1313, .distance = 26.372f}, {.id = 1316, .distance = 27.091f}, {.id = 354, .distance = 34.387f}, {.id = 1278, .distance = 34.857f}, {.id = 351, .distance = 35.229f}
+            {.id = 239, .distance = 21.658f}, {.id = 1314, .distance = 25.246f}, {.id = 1313, .distance = 26.372f}, {.id = 1316, .distance = 27.091f}, {.id = 241, .distance = 34.197f}, {.id = 238, .distance = 34.609f}, {.id = 1278, .distance = 34.857f}
         }},
         {1316, {
-            {.id = 351, .distance = 22.413f}, {.id = 1317, .distance = 26.524f}, {.id = 1315, .distance = 27.091f}, {.id = 1279, .distance = 29.494f}, {.id = 350, .distance = 33.945f}, {.id = 352, .distance = 34.062f}, {.id = 1278, .distance = 35.556f}
+            {.id = 238, .distance = 21.606f}, {.id = 1317, .distance = 26.524f}, {.id = 1315, .distance = 27.091f}, {.id = 1279, .distance = 29.494f}, {.id = 237, .distance = 34.298f}, {.id = 239, .distance = 34.445f}, {.id = 1278, .distance = 35.556f}
         }},
         {1317, {
-            {.id = 350, .distance = 21.634f}, {.id = 1316, .distance = 26.524f}, {.id = 1318, .distance = 26.730f}, {.id = 1279, .distance = 28.584f}, {.id = 1280, .distance = 32.097f}, {.id = 404, .distance = 34.543f}, {.id = 351, .distance = 34.606f}
+            {.id = 237, .distance = 21.478f}, {.id = 1316, .distance = 26.524f}, {.id = 1318, .distance = 26.730f}, {.id = 1279, .distance = 28.584f}, {.id = 1280, .distance = 32.097f}, {.id = 238, .distance = 34.202f}, {.id = 236, .distance = 34.298f}
         }},
         {1318, {
-            {.id = 404, .distance = 22.075f}, {.id = 1317, .distance = 26.730f}, {.id = 1319, .distance = 26.732f}, {.id = 1280, .distance = 28.097f}, {.id = 403, .distance = 34.368f}, {.id = 350, .distance = 34.750f}, {.id = 1281, .distance = 40.135f}
+            {.id = 236, .distance = 21.606f}, {.id = 1317, .distance = 26.730f}, {.id = 1319, .distance = 26.732f}, {.id = 1280, .distance = 28.097f}, {.id = 237, .distance = 34.202f}, {.id = 235, .distance = 34.609f}, {.id = 1281, .distance = 40.135f}
         }},
         {1319, {
-            {.id = 403, .distance = 21.421f}, {.id = 1320, .distance = 24.672f}, {.id = 1318, .distance = 26.732f}, {.id = 1321, .distance = 26.732f}, {.id = 401, .distance = 33.735f}, {.id = 404, .distance = 34.794f}, {.id = 1281, .distance = 35.127f}
+            {.id = 235, .distance = 21.658f}, {.id = 1320, .distance = 24.672f}, {.id = 1318, .distance = 26.732f}, {.id = 1321, .distance = 26.732f}, {.id = 233, .distance = 34.300f}, {.id = 236, .distance = 34.445f}, {.id = 1281, .distance = 35.127f}
         }},
         {1320, {
-            {.id = 1321, .distance = 23.501f}, {.id = 1319, .distance = 24.672f}, {.id = 1322, .distance = 25.068f}, {.id = 1281, .distance = 25.325f}, {.id = 1282, .distance = 29.320f}, {.id = 401, .distance = 41.305f}, {.id = 1325, .distance = 41.461f}
+            {.id = 1321, .distance = 23.501f}, {.id = 1319, .distance = 24.672f}, {.id = 1322, .distance = 25.068f}, {.id = 1281, .distance = 25.325f}, {.id = 1282, .distance = 29.320f}, {.id = 1325, .distance = 41.461f}, {.id = 233, .distance = 41.850f}
         }},
         {1321, {
-            {.id = 401, .distance = 20.992f}, {.id = 1320, .distance = 23.501f}, {.id = 1322, .distance = 24.580f}, {.id = 1323, .distance = 26.371f}, {.id = 1319, .distance = 26.732f}, {.id = 403, .distance = 34.142f}, {.id = 400, .distance = 36.625f}
+            {.id = 233, .distance = 21.608f}, {.id = 1320, .distance = 23.501f}, {.id = 1322, .distance = 24.580f}, {.id = 1323, .distance = 26.371f}, {.id = 1319, .distance = 26.732f}, {.id = 235, .distance = 34.197f}, {.id = 232, .distance = 36.998f}
         }},
         {1322, {
-            {.id = 1321, .distance = 24.580f}, {.id = 1324, .distance = 24.959f}, {.id = 1323, .distance = 25.010f}, {.id = 1320, .distance = 25.068f}, {.id = 1325, .distance = 25.146f}, {.id = 1282, .distance = 34.248f}, {.id = 401, .distance = 42.548f}
+            {.id = 1321, .distance = 24.580f}, {.id = 1324, .distance = 24.959f}, {.id = 1323, .distance = 25.010f}, {.id = 1320, .distance = 25.068f}, {.id = 1325, .distance = 25.146f}, {.id = 1282, .distance = 34.248f}, {.id = 233, .distance = 42.952f}
         }},
         {1323, {
-            {.id = 400, .distance = 23.130f}, {.id = 232, .distance = 23.478f}, {.id = 1322, .distance = 25.010f}, {.id = 1321, .distance = 26.371f}, {.id = 1324, .distance = 29.071f}, {.id = 401, .distance = 33.987f}, {.id = 230, .distance = 37.057f}
+            {.id = 524, .distance = 23.326f}, {.id = 232, .distance = 23.490f}, {.id = 1322, .distance = 25.010f}, {.id = 1321, .distance = 26.371f}, {.id = 1324, .distance = 29.071f}, {.id = 233, .distance = 34.196f}, {.id = 522, .distance = 36.872f}
         }},
         {1324, {
-            {.id = 230, .distance = 21.785f}, {.id = 1325, .distance = 23.829f}, {.id = 1322, .distance = 24.959f}, {.id = 1326, .distance = 26.582f}, {.id = 1323, .distance = 29.071f}, {.id = 232, .distance = 34.270f}, {.id = 228, .distance = 34.398f}
+            {.id = 522, .distance = 21.837f}, {.id = 1325, .distance = 23.829f}, {.id = 1322, .distance = 24.959f}, {.id = 1326, .distance = 26.582f}, {.id = 1323, .distance = 29.071f}, {.id = 520, .distance = 34.439f}, {.id = 524, .distance = 34.529f}
         }},
         {1325, {
-            {.id = 1324, .distance = 23.829f}, {.id = 1322, .distance = 25.146f}, {.id = 1283, .distance = 25.156f}, {.id = 1326, .distance = 25.569f}, {.id = 1282, .distance = 28.406f}, {.id = 1320, .distance = 41.461f}, {.id = 230, .distance = 42.578f}
+            {.id = 1324, .distance = 23.829f}, {.id = 1322, .distance = 25.146f}, {.id = 1283, .distance = 25.156f}, {.id = 1326, .distance = 25.569f}, {.id = 1282, .distance = 28.406f}, {.id = 1320, .distance = 41.461f}, {.id = 522, .distance = 42.698f}
         }},
         {1326, {
-            {.id = 228, .distance = 21.569f}, {.id = 1325, .distance = 25.569f}, {.id = 1327, .distance = 26.524f}, {.id = 1324, .distance = 26.582f}, {.id = 227, .distance = 34.325f}, {.id = 230, .distance = 34.365f}, {.id = 1283, .distance = 34.565f}
+            {.id = 520, .distance = 21.607f}, {.id = 1325, .distance = 25.569f}, {.id = 1327, .distance = 26.524f}, {.id = 1324, .distance = 26.582f}, {.id = 519, .distance = 34.438f}, {.id = 1283, .distance = 34.565f}, {.id = 522, .distance = 34.611f}
         }},
         {1327, {
-            {.id = 227, .distance = 22.003f}, {.id = 1326, .distance = 26.524f}, {.id = 1328, .distance = 27.091f}, {.id = 1284, .distance = 28.191f}, {.id = 228, .distance = 34.213f}, {.id = 226, .distance = 34.928f}, {.id = 1283, .distance = 39.087f}
+            {.id = 519, .distance = 21.912f}, {.id = 1326, .distance = 26.524f}, {.id = 1328, .distance = 27.091f}, {.id = 1284, .distance = 28.191f}, {.id = 520, .distance = 34.219f}, {.id = 518, .distance = 34.438f}, {.id = 1283, .distance = 39.087f}
         }},
         {1328, {
-            {.id = 226, .distance = 22.154f}, {.id = 1329, .distance = 26.524f}, {.id = 1327, .distance = 27.091f}, {.id = 1285, .distance = 28.182f}, {.id = 1284, .distance = 31.855f}, {.id = 225, .distance = 34.558f}, {.id = 227, .distance = 34.988f}
+            {.id = 518, .distance = 21.836f}, {.id = 1329, .distance = 26.524f}, {.id = 1327, .distance = 27.091f}, {.id = 1285, .distance = 28.182f}, {.id = 1284, .distance = 31.855f}, {.id = 517, .distance = 34.438f}, {.id = 519, .distance = 34.758f}
         }},
         {1329, {
-            {.id = 225, .distance = 22.310f}, {.id = 1328, .distance = 26.524f}, {.id = 1330, .distance = 26.581f}, {.id = 1285, .distance = 29.755f}, {.id = 224, .distance = 34.480f}, {.id = 226, .distance = 34.678f}, {.id = 1286, .distance = 34.998f}
+            {.id = 517, .distance = 21.912f}, {.id = 1328, .distance = 26.524f}, {.id = 1330, .distance = 26.581f}, {.id = 1285, .distance = 29.755f}, {.id = 516, .distance = 34.438f}, {.id = 518, .distance = 34.758f}, {.id = 1286, .distance = 34.998f}
         }},
         {1330, {
-            {.id = 224, .distance = 21.954f}, {.id = 1331, .distance = 25.497f}, {.id = 1329, .distance = 26.581f}, {.id = 1332, .distance = 27.091f}, {.id = 1286, .distance = 34.425f}, {.id = 225, .distance = 34.609f}, {.id = 222, .distance = 34.948f}
+            {.id = 516, .distance = 21.607f}, {.id = 1331, .distance = 25.497f}, {.id = 1329, .distance = 26.581f}, {.id = 1332, .distance = 27.091f}, {.id = 517, .distance = 34.219f}, {.id = 1286, .distance = 34.425f}, {.id = 514, .distance = 34.439f}
         }},
         {1331, {
-            {.id = 1287, .distance = 23.798f}, {.id = 1332, .distance = 24.344f}, {.id = 1333, .distance = 25.237f}, {.id = 1330, .distance = 25.497f}, {.id = 1286, .distance = 29.105f}, {.id = 1336, .distance = 41.369f}, {.id = 222, .distance = 42.971f}
+            {.id = 1287, .distance = 23.798f}, {.id = 1332, .distance = 24.344f}, {.id = 1333, .distance = 25.237f}, {.id = 1330, .distance = 25.497f}, {.id = 1286, .distance = 29.105f}, {.id = 1336, .distance = 41.369f}, {.id = 514, .distance = 42.825f}
         }},
         {1332, {
-            {.id = 222, .distance = 21.762f}, {.id = 1331, .distance = 24.344f}, {.id = 1333, .distance = 24.548f}, {.id = 1334, .distance = 26.371f}, {.id = 1330, .distance = 27.091f}, {.id = 224, .distance = 35.009f}, {.id = 221, .distance = 36.374f}
+            {.id = 514, .distance = 21.837f}, {.id = 1331, .distance = 24.344f}, {.id = 1333, .distance = 24.548f}, {.id = 1334, .distance = 26.371f}, {.id = 1330, .distance = 27.091f}, {.id = 516, .distance = 34.611f}, {.id = 513, .distance = 36.872f}
         }},
         {1333, {
-            {.id = 1332, .distance = 24.548f}, {.id = 1335, .distance = 24.694f}, {.id = 1334, .distance = 25.104f}, {.id = 1331, .distance = 25.237f}, {.id = 1336, .distance = 25.654f}, {.id = 1287, .distance = 34.527f}, {.id = 222, .distance = 42.970f}
+            {.id = 1332, .distance = 24.548f}, {.id = 1335, .distance = 24.694f}, {.id = 1334, .distance = 25.104f}, {.id = 1331, .distance = 25.237f}, {.id = 1336, .distance = 25.654f}, {.id = 1287, .distance = 34.527f}, {.id = 1445, .distance = 43.104f}
         }},
         {1334, {
-            {.id = 221, .distance = 23.078f}, {.id = 783, .distance = 23.106f}, {.id = 1333, .distance = 25.104f}, {.id = 1332, .distance = 26.371f}, {.id = 1335, .distance = 29.110f}, {.id = 222, .distance = 33.932f}, {.id = 781, .distance = 36.785f}
+            {.id = 1447, .distance = 23.277f}, {.id = 513, .distance = 23.326f}, {.id = 1333, .distance = 25.104f}, {.id = 1332, .distance = 26.371f}, {.id = 1335, .distance = 29.110f}, {.id = 514, .distance = 34.529f}, {.id = 1445, .distance = 36.842f}
         }},
         {1335, {
-            {.id = 781, .distance = 21.788f}, {.id = 1336, .distance = 24.048f}, {.id = 1333, .distance = 24.694f}, {.id = 1337, .distance = 26.547f}, {.id = 1334, .distance = 29.110f}, {.id = 779, .distance = 34.237f}, {.id = 783, .distance = 34.484f}
+            {.id = 1445, .distance = 21.892f}, {.id = 1336, .distance = 24.048f}, {.id = 1333, .distance = 24.694f}, {.id = 1337, .distance = 26.547f}, {.id = 1334, .distance = 29.110f}, {.id = 1443, .distance = 34.325f}, {.id = 1447, .distance = 34.476f}
         }},
         {1336, {
-            {.id = 1288, .distance = 21.654f}, {.id = 1335, .distance = 24.048f}, {.id = 1337, .distance = 24.979f}, {.id = 1333, .distance = 25.654f}, {.id = 1287, .distance = 33.270f}, {.id = 1331, .distance = 41.369f}, {.id = 781, .distance = 42.762f}
+            {.id = 1288, .distance = 21.654f}, {.id = 1335, .distance = 24.048f}, {.id = 1337, .distance = 24.979f}, {.id = 1333, .distance = 25.654f}, {.id = 1287, .distance = 33.270f}, {.id = 1331, .distance = 41.369f}, {.id = 1445, .distance = 42.839f}
         }},
         {1337, {
-            {.id = 779, .distance = 21.813f}, {.id = 1336, .distance = 24.979f}, {.id = 1335, .distance = 26.547f}, {.id = 1338, .distance = 26.791f}, {.id = 778, .distance = 34.396f}, {.id = 781, .distance = 34.608f}, {.id = 1288, .distance = 36.329f}
+            {.id = 1443, .distance = 21.887f}, {.id = 1336, .distance = 24.979f}, {.id = 1335, .distance = 26.547f}, {.id = 1338, .distance = 26.791f}, {.id = 1442, .distance = 34.415f}, {.id = 1445, .distance = 34.679f}, {.id = 1288, .distance = 36.329f}
         }},
         {1338, {
-            {.id = 778, .distance = 21.772f}, {.id = 1339, .distance = 25.487f}, {.id = 1337, .distance = 26.791f}, {.id = 1289, .distance = 27.232f}, {.id = 777, .distance = 34.325f}, {.id = 779, .distance = 34.627f}, {.id = 1290, .distance = 41.139f}
+            {.id = 1442, .distance = 22.165f}, {.id = 1339, .distance = 25.487f}, {.id = 1337, .distance = 26.791f}, {.id = 1289, .distance = 27.232f}, {.id = 1443, .distance = 34.634f}, {.id = 1441, .distance = 34.708f}, {.id = 1290, .distance = 41.139f}
         }},
         {1339, {
-            {.id = 777, .distance = 21.888f}, {.id = 1338, .distance = 25.487f}, {.id = 1290, .distance = 26.028f}, {.id = 1340, .distance = 27.606f}, {.id = 778, .distance = 33.726f}, {.id = 776, .distance = 35.268f}, {.id = 1289, .distance = 35.594f}
+            {.id = 1441, .distance = 22.388f}, {.id = 1338, .distance = 25.487f}, {.id = 1290, .distance = 26.028f}, {.id = 1340, .distance = 27.606f}, {.id = 1442, .distance = 34.206f}, {.id = 1289, .distance = 35.594f}, {.id = 1440, .distance = 35.607f}
         }},
         {1340, {
-            {.id = 776, .distance = 21.955f}, {.id = 1341, .distance = 26.790f}, {.id = 1339, .distance = 27.606f}, {.id = 1291, .distance = 31.167f}, {.id = 1290, .distance = 32.429f}, {.id = 777, .distance = 34.376f}, {.id = 775, .distance = 34.876f}
+            {.id = 1440, .distance = 22.361f}, {.id = 1341, .distance = 26.790f}, {.id = 1339, .distance = 27.606f}, {.id = 1291, .distance = 31.167f}, {.id = 1290, .distance = 32.429f}, {.id = 1439, .distance = 34.595f}, {.id = 1441, .distance = 34.628f}
         }},
         {1341, {
-            {.id = 775, .distance = 21.967f}, {.id = 1342, .distance = 25.010f}, {.id = 1340, .distance = 26.790f}, {.id = 1343, .distance = 26.792f}, {.id = 773, .distance = 34.497f}, {.id = 776, .distance = 34.638f}, {.id = 1291, .distance = 34.856f}
+            {.id = 1439, .distance = 22.151f}, {.id = 1342, .distance = 25.010f}, {.id = 1340, .distance = 26.790f}, {.id = 1343, .distance = 26.792f}, {.id = 1440, .distance = 34.812f}, {.id = 1291, .distance = 34.856f}, {.id = 1437, .distance = 34.991f}
         }},
         {1342, {
-            {.id = 1292, .distance = 21.595f}, {.id = 1343, .distance = 24.103f}, {.id = 1341, .distance = 25.010f}, {.id = 1344, .distance = 25.812f}, {.id = 1291, .distance = 33.491f}, {.id = 1347, .distance = 41.309f}, {.id = 773, .distance = 42.712f}
+            {.id = 1292, .distance = 21.595f}, {.id = 1343, .distance = 24.103f}, {.id = 1341, .distance = 25.010f}, {.id = 1344, .distance = 25.812f}, {.id = 1291, .distance = 33.491f}, {.id = 1347, .distance = 41.309f}, {.id = 1437, .distance = 42.896f}
         }},
         {1343, {
-            {.id = 773, .distance = 21.876f}, {.id = 1342, .distance = 24.103f}, {.id = 1344, .distance = 24.732f}, {.id = 1345, .distance = 26.546f}, {.id = 1341, .distance = 26.792f}, {.id = 775, .distance = 34.412f}, {.id = 772, .distance = 37.119f}
+            {.id = 1437, .distance = 21.881f}, {.id = 1342, .distance = 24.103f}, {.id = 1344, .distance = 24.732f}, {.id = 1345, .distance = 26.546f}, {.id = 1341, .distance = 26.792f}, {.id = 1439, .distance = 34.928f}, {.id = 1436, .distance = 36.598f}
         }},
         {1344, {
             {.id = 1345, .distance = 24.694f}, {.id = 1343, .distance = 24.732f}, {.id = 1346, .distance = 25.085f}, {.id = 1347, .distance = 25.237f}, {.id = 1342, .distance = 25.812f}, {.id = 1292, .distance = 36.997f}, {.id = 1293, .distance = 39.624f}
         }},
         {1345, {
-            {.id = 929, .distance = 23.182f}, {.id = 772, .distance = 23.709f}, {.id = 1344, .distance = 24.694f}, {.id = 1343, .distance = 26.546f}, {.id = 1346, .distance = 28.931f}, {.id = 773, .distance = 34.534f}, {.id = 927, .distance = 36.529f}
+            {.id = 1436, .distance = 23.274f}, {.id = 1615, .distance = 23.352f}, {.id = 1344, .distance = 24.694f}, {.id = 1343, .distance = 26.546f}, {.id = 1346, .distance = 28.931f}, {.id = 1437, .distance = 34.044f}, {.id = 1613, .distance = 36.746f}
         }},
         {1346, {
-            {.id = 927, .distance = 21.183f}, {.id = 1347, .distance = 24.787f}, {.id = 1344, .distance = 25.085f}, {.id = 1348, .distance = 26.270f}, {.id = 1345, .distance = 28.931f}, {.id = 925, .distance = 33.896f}, {.id = 929, .distance = 34.248f}
+            {.id = 1613, .distance = 21.264f}, {.id = 1347, .distance = 24.787f}, {.id = 1344, .distance = 25.085f}, {.id = 1348, .distance = 26.270f}, {.id = 1345, .distance = 28.931f}, {.id = 1611, .distance = 33.932f}, {.id = 1615, .distance = 34.325f}
         }},
         {1347, {
             {.id = 1293, .distance = 20.735f}, {.id = 1346, .distance = 24.787f}, {.id = 1344, .distance = 25.237f}, {.id = 1348, .distance = 25.425f}, {.id = 1292, .distance = 38.308f}, {.id = 1294, .distance = 38.379f}, {.id = 1342, .distance = 41.309f}
         }},
         {1348, {
-            {.id = 925, .distance = 21.567f}, {.id = 1347, .distance = 25.425f}, {.id = 1346, .distance = 26.270f}, {.id = 1349, .distance = 27.049f}, {.id = 927, .distance = 34.469f}, {.id = 924, .distance = 34.529f}, {.id = 1294, .distance = 37.159f}
+            {.id = 1611, .distance = 21.731f}, {.id = 1347, .distance = 25.425f}, {.id = 1346, .distance = 26.270f}, {.id = 1349, .distance = 27.049f}, {.id = 1613, .distance = 34.357f}, {.id = 1610, .distance = 34.634f}, {.id = 1294, .distance = 37.159f}
         }},
         {1349, {
-            {.id = 924, .distance = 22.408f}, {.id = 1295, .distance = 27.042f}, {.id = 1348, .distance = 27.049f}, {.id = 1294, .distance = 28.297f}, {.id = 923, .distance = 34.474f}, {.id = 925, .distance = 34.817f}, {.id = 1269, .distance = 35.703f}
+            {.id = 1610, .distance = 22.422f}, {.id = 1295, .distance = 27.042f}, {.id = 1348, .distance = 27.049f}, {.id = 1294, .distance = 28.297f}, {.id = 1611, .distance = 34.987f}, {.id = 1609, .distance = 35.507f}, {.id = 1269, .distance = 35.703f}
         }},
         {1350, {
             {.id = 1355, .distance = 22.969f}, {.id = 1353, .distance = 23.177f}, {.id = 1352, .distance = 23.180f}, {.id = 1351, .distance = 23.418f}, {.id = 1354, .distance = 23.540f}, {.id = 1364, .distance = 46.414f}, {.id = 1361, .distance = 46.608f}
@@ -6567,169 +6567,169 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
             {.id = 1403, .distance = 27.954f}, {.id = 1484, .distance = 28.297f}, {.id = 1428, .distance = 29.747f}, {.id = 1404, .distance = 29.831f}, {.id = 1483, .distance = 37.159f}, {.id = 1382, .distance = 38.168f}, {.id = 1482, .distance = 38.379f}
         }},
         {1430, {
-            {.id = 1058, .distance = 21.856f}, {.id = 1404, .distance = 24.998f}, {.id = 1431, .distance = 26.018f}, {.id = 1484, .distance = 27.042f}, {.id = 1057, .distance = 34.205f}, {.id = 1059, .distance = 35.008f}, {.id = 1405, .distance = 40.605f}
+            {.id = 1565, .distance = 21.842f}, {.id = 1404, .distance = 24.998f}, {.id = 1431, .distance = 26.018f}, {.id = 1484, .distance = 27.042f}, {.id = 1619, .distance = 34.231f}, {.id = 1566, .distance = 35.161f}, {.id = 1405, .distance = 40.605f}
         }},
         {1431, {
-            {.id = 1057, .distance = 22.464f}, {.id = 1430, .distance = 26.018f}, {.id = 1432, .distance = 26.277f}, {.id = 1405, .distance = 27.955f}, {.id = 1056, .distance = 34.947f}, {.id = 1058, .distance = 34.950f}, {.id = 1404, .distance = 36.289f}
+            {.id = 1619, .distance = 22.913f}, {.id = 1430, .distance = 26.018f}, {.id = 1432, .distance = 26.277f}, {.id = 1405, .distance = 27.955f}, {.id = 1618, .distance = 35.024f}, {.id = 1565, .distance = 35.161f}, {.id = 1404, .distance = 36.289f}
         }},
         {1432, {
-            {.id = 1056, .distance = 21.687f}, {.id = 1433, .distance = 25.444f}, {.id = 1431, .distance = 26.277f}, {.id = 1434, .distance = 27.296f}, {.id = 1057, .distance = 33.864f}, {.id = 1054, .distance = 34.888f}, {.id = 1405, .distance = 36.960f}
+            {.id = 1618, .distance = 21.613f}, {.id = 1433, .distance = 25.444f}, {.id = 1431, .distance = 26.277f}, {.id = 1434, .distance = 27.296f}, {.id = 1616, .distance = 34.337f}, {.id = 1619, .distance = 34.428f}, {.id = 1405, .distance = 36.960f}
         }},
         {1433, {
             {.id = 1406, .distance = 21.650f}, {.id = 1434, .distance = 23.803f}, {.id = 1432, .distance = 25.444f}, {.id = 1435, .distance = 25.495f}, {.id = 1407, .distance = 38.588f}, {.id = 1405, .distance = 39.188f}, {.id = 1438, .distance = 40.893f}
         }},
         {1434, {
-            {.id = 1054, .distance = 22.081f}, {.id = 1433, .distance = 23.803f}, {.id = 1435, .distance = 24.430f}, {.id = 1436, .distance = 26.781f}, {.id = 1432, .distance = 27.296f}, {.id = 1056, .distance = 34.521f}, {.id = 1053, .distance = 37.270f}
+            {.id = 1616, .distance = 21.388f}, {.id = 1433, .distance = 23.803f}, {.id = 1435, .distance = 24.430f}, {.id = 1436, .distance = 26.781f}, {.id = 1432, .distance = 27.296f}, {.id = 1618, .distance = 34.344f}, {.id = 1615, .distance = 36.914f}
         }},
         {1435, {
             {.id = 1437, .distance = 24.299f}, {.id = 1434, .distance = 24.430f}, {.id = 1436, .distance = 24.711f}, {.id = 1438, .distance = 25.084f}, {.id = 1433, .distance = 25.495f}, {.id = 1407, .distance = 37.220f}, {.id = 1406, .distance = 40.095f}
         }},
         {1436, {
-            {.id = 1604, .distance = 23.078f}, {.id = 1053, .distance = 23.609f}, {.id = 1435, .distance = 24.711f}, {.id = 1434, .distance = 26.781f}, {.id = 1437, .distance = 27.879f}, {.id = 1054, .distance = 34.791f}, {.id = 1602, .distance = 36.374f}
+            {.id = 1345, .distance = 23.274f}, {.id = 1615, .distance = 23.430f}, {.id = 1435, .distance = 24.711f}, {.id = 1434, .distance = 26.781f}, {.id = 1437, .distance = 27.879f}, {.id = 1616, .distance = 34.473f}, {.id = 1343, .distance = 36.598f}
         }},
         {1437, {
-            {.id = 1602, .distance = 21.762f}, {.id = 1435, .distance = 24.299f}, {.id = 1438, .distance = 24.636f}, {.id = 1439, .distance = 27.526f}, {.id = 1436, .distance = 27.879f}, {.id = 1604, .distance = 33.932f}, {.id = 1600, .distance = 34.948f}
+            {.id = 1343, .distance = 21.881f}, {.id = 1435, .distance = 24.299f}, {.id = 1438, .distance = 24.636f}, {.id = 1439, .distance = 27.526f}, {.id = 1436, .distance = 27.879f}, {.id = 1345, .distance = 34.044f}, {.id = 1341, .distance = 34.991f}
         }},
         {1438, {
             {.id = 1407, .distance = 21.863f}, {.id = 1437, .distance = 24.636f}, {.id = 1435, .distance = 25.084f}, {.id = 1439, .distance = 25.653f}, {.id = 1408, .distance = 34.005f}, {.id = 1433, .distance = 40.893f}, {.id = 1406, .distance = 43.024f}
         }},
         {1439, {
-            {.id = 1600, .distance = 21.954f}, {.id = 1438, .distance = 25.653f}, {.id = 1440, .distance = 26.467f}, {.id = 1437, .distance = 27.526f}, {.id = 1599, .distance = 34.480f}, {.id = 1602, .distance = 35.009f}, {.id = 1408, .distance = 35.198f}
+            {.id = 1341, .distance = 22.151f}, {.id = 1438, .distance = 25.653f}, {.id = 1440, .distance = 26.467f}, {.id = 1437, .distance = 27.526f}, {.id = 1340, .distance = 34.595f}, {.id = 1343, .distance = 34.928f}, {.id = 1408, .distance = 35.198f}
         }},
         {1440, {
-            {.id = 1599, .distance = 22.310f}, {.id = 1439, .distance = 26.467f}, {.id = 1441, .distance = 26.547f}, {.id = 1408, .distance = 31.431f}, {.id = 1409, .distance = 32.153f}, {.id = 1598, .distance = 34.558f}, {.id = 1600, .distance = 34.609f}
+            {.id = 1340, .distance = 22.361f}, {.id = 1439, .distance = 26.467f}, {.id = 1441, .distance = 26.547f}, {.id = 1408, .distance = 31.431f}, {.id = 1409, .distance = 32.153f}, {.id = 1341, .distance = 34.812f}, {.id = 1339, .distance = 35.607f}
         }},
         {1441, {
-            {.id = 1598, .distance = 22.154f}, {.id = 1409, .distance = 25.318f}, {.id = 1440, .distance = 26.547f}, {.id = 1442, .distance = 27.116f}, {.id = 1599, .distance = 34.678f}, {.id = 1597, .distance = 34.928f}, {.id = 1410, .distance = 36.035f}
+            {.id = 1339, .distance = 22.388f}, {.id = 1409, .distance = 25.318f}, {.id = 1440, .distance = 26.547f}, {.id = 1442, .distance = 27.116f}, {.id = 1340, .distance = 34.628f}, {.id = 1338, .distance = 34.708f}, {.id = 1410, .distance = 36.035f}
         }},
         {1442, {
-            {.id = 1597, .distance = 22.003f}, {.id = 1443, .distance = 26.383f}, {.id = 1441, .distance = 27.116f}, {.id = 1410, .distance = 27.523f}, {.id = 1596, .distance = 34.325f}, {.id = 1598, .distance = 34.988f}, {.id = 1409, .distance = 41.220f}
+            {.id = 1338, .distance = 22.165f}, {.id = 1443, .distance = 26.383f}, {.id = 1441, .distance = 27.116f}, {.id = 1410, .distance = 27.523f}, {.id = 1339, .distance = 34.206f}, {.id = 1337, .distance = 34.415f}, {.id = 1409, .distance = 41.220f}
         }},
         {1443, {
-            {.id = 1596, .distance = 21.569f}, {.id = 1444, .distance = 25.498f}, {.id = 1442, .distance = 26.383f}, {.id = 1445, .distance = 26.792f}, {.id = 1597, .distance = 34.213f}, {.id = 1594, .distance = 34.398f}, {.id = 1411, .distance = 36.749f}
+            {.id = 1337, .distance = 21.887f}, {.id = 1444, .distance = 25.498f}, {.id = 1442, .distance = 26.383f}, {.id = 1445, .distance = 26.792f}, {.id = 1335, .distance = 34.325f}, {.id = 1338, .distance = 34.634f}, {.id = 1411, .distance = 36.749f}
         }},
         {1444, {
-            {.id = 1411, .distance = 21.879f}, {.id = 1445, .distance = 24.550f}, {.id = 1443, .distance = 25.498f}, {.id = 1446, .distance = 25.732f}, {.id = 1412, .distance = 33.585f}, {.id = 1449, .distance = 41.045f}, {.id = 1594, .distance = 43.073f}
+            {.id = 1411, .distance = 21.879f}, {.id = 1445, .distance = 24.550f}, {.id = 1443, .distance = 25.498f}, {.id = 1446, .distance = 25.732f}, {.id = 1412, .distance = 33.585f}, {.id = 1449, .distance = 41.045f}, {.id = 1335, .distance = 43.103f}
         }},
         {1445, {
-            {.id = 1594, .distance = 21.785f}, {.id = 1444, .distance = 24.550f}, {.id = 1446, .distance = 24.859f}, {.id = 1447, .distance = 26.221f}, {.id = 1443, .distance = 26.792f}, {.id = 1596, .distance = 34.365f}, {.id = 1593, .distance = 37.057f}
+            {.id = 1335, .distance = 21.892f}, {.id = 1444, .distance = 24.550f}, {.id = 1446, .distance = 24.859f}, {.id = 1447, .distance = 26.221f}, {.id = 1443, .distance = 26.792f}, {.id = 1337, .distance = 34.679f}, {.id = 1334, .distance = 36.842f}
         }},
         {1446, {
-            {.id = 1448, .distance = 24.528f}, {.id = 1447, .distance = 24.669f}, {.id = 1445, .distance = 24.859f}, {.id = 1449, .distance = 25.084f}, {.id = 1444, .distance = 25.732f}, {.id = 1412, .distance = 35.615f}, {.id = 365, .distance = 42.889f}
+            {.id = 1448, .distance = 24.528f}, {.id = 1447, .distance = 24.669f}, {.id = 1445, .distance = 24.859f}, {.id = 1449, .distance = 25.084f}, {.id = 1444, .distance = 25.732f}, {.id = 1412, .distance = 35.615f}, {.id = 511, .distance = 42.825f}
         }},
         {1447, {
-            {.id = 1593, .distance = 23.478f}, {.id = 367, .distance = 23.648f}, {.id = 1446, .distance = 24.669f}, {.id = 1445, .distance = 26.221f}, {.id = 1448, .distance = 28.881f}, {.id = 1594, .distance = 34.270f}, {.id = 365, .distance = 37.049f}
+            {.id = 1334, .distance = 23.277f}, {.id = 513, .distance = 23.490f}, {.id = 1446, .distance = 24.669f}, {.id = 1445, .distance = 26.221f}, {.id = 1448, .distance = 28.881f}, {.id = 1335, .distance = 34.476f}, {.id = 511, .distance = 36.998f}
         }},
         {1448, {
-            {.id = 365, .distance = 21.703f}, {.id = 1449, .distance = 24.210f}, {.id = 1446, .distance = 24.528f}, {.id = 1450, .distance = 26.372f}, {.id = 1447, .distance = 28.881f}, {.id = 367, .distance = 34.182f}, {.id = 363, .distance = 34.382f}
+            {.id = 511, .distance = 21.608f}, {.id = 1449, .distance = 24.210f}, {.id = 1446, .distance = 24.528f}, {.id = 1450, .distance = 26.372f}, {.id = 1447, .distance = 28.881f}, {.id = 513, .distance = 34.196f}, {.id = 509, .distance = 34.300f}
         }},
         {1449, {
-            {.id = 1448, .distance = 24.210f}, {.id = 1412, .distance = 24.618f}, {.id = 1446, .distance = 25.084f}, {.id = 1450, .distance = 25.246f}, {.id = 1413, .distance = 29.298f}, {.id = 1444, .distance = 41.045f}, {.id = 365, .distance = 42.801f}
+            {.id = 1448, .distance = 24.210f}, {.id = 1412, .distance = 24.618f}, {.id = 1446, .distance = 25.084f}, {.id = 1450, .distance = 25.246f}, {.id = 1413, .distance = 29.298f}, {.id = 1444, .distance = 41.045f}, {.id = 511, .distance = 42.732f}
         }},
         {1450, {
-            {.id = 363, .distance = 21.725f}, {.id = 1449, .distance = 25.246f}, {.id = 1448, .distance = 26.372f}, {.id = 1451, .distance = 27.091f}, {.id = 365, .distance = 34.264f}, {.id = 362, .distance = 34.618f}, {.id = 1413, .distance = 34.857f}
+            {.id = 509, .distance = 21.658f}, {.id = 1449, .distance = 25.246f}, {.id = 1448, .distance = 26.372f}, {.id = 1451, .distance = 27.091f}, {.id = 511, .distance = 34.197f}, {.id = 508, .distance = 34.609f}, {.id = 1413, .distance = 34.857f}
         }},
         {1451, {
-            {.id = 362, .distance = 21.992f}, {.id = 1452, .distance = 26.524f}, {.id = 1450, .distance = 27.091f}, {.id = 1414, .distance = 29.494f}, {.id = 363, .distance = 34.446f}, {.id = 361, .distance = 34.677f}, {.id = 1413, .distance = 35.556f}
+            {.id = 508, .distance = 21.606f}, {.id = 1452, .distance = 26.524f}, {.id = 1450, .distance = 27.091f}, {.id = 1414, .distance = 29.494f}, {.id = 507, .distance = 34.298f}, {.id = 509, .distance = 34.445f}, {.id = 1413, .distance = 35.556f}
         }},
         {1452, {
-            {.id = 361, .distance = 21.974f}, {.id = 1451, .distance = 26.524f}, {.id = 1453, .distance = 26.730f}, {.id = 1414, .distance = 28.584f}, {.id = 1415, .distance = 32.097f}, {.id = 360, .distance = 34.638f}, {.id = 362, .distance = 34.676f}
+            {.id = 507, .distance = 21.478f}, {.id = 1451, .distance = 26.524f}, {.id = 1453, .distance = 26.730f}, {.id = 1414, .distance = 28.584f}, {.id = 1415, .distance = 32.097f}, {.id = 508, .distance = 34.202f}, {.id = 506, .distance = 34.298f}
         }},
         {1453, {
-            {.id = 360, .distance = 22.010f}, {.id = 1452, .distance = 26.730f}, {.id = 1454, .distance = 26.732f}, {.id = 1415, .distance = 28.097f}, {.id = 359, .distance = 34.324f}, {.id = 361, .distance = 34.448f}, {.id = 1416, .distance = 40.135f}
+            {.id = 506, .distance = 21.606f}, {.id = 1452, .distance = 26.730f}, {.id = 1454, .distance = 26.732f}, {.id = 1415, .distance = 28.097f}, {.id = 507, .distance = 34.202f}, {.id = 505, .distance = 34.609f}, {.id = 1416, .distance = 40.135f}
         }},
         {1454, {
-            {.id = 359, .distance = 21.840f}, {.id = 1455, .distance = 24.672f}, {.id = 1453, .distance = 26.732f}, {.id = 1456, .distance = 26.732f}, {.id = 360, .distance = 34.615f}, {.id = 357, .distance = 34.795f}, {.id = 1416, .distance = 35.127f}
+            {.id = 505, .distance = 21.658f}, {.id = 1455, .distance = 24.672f}, {.id = 1453, .distance = 26.732f}, {.id = 1456, .distance = 26.732f}, {.id = 503, .distance = 34.300f}, {.id = 506, .distance = 34.445f}, {.id = 1416, .distance = 35.127f}
         }},
         {1455, {
-            {.id = 1456, .distance = 23.501f}, {.id = 1454, .distance = 24.672f}, {.id = 1457, .distance = 25.068f}, {.id = 1416, .distance = 25.325f}, {.id = 1417, .distance = 29.320f}, {.id = 1460, .distance = 41.461f}, {.id = 357, .distance = 42.034f}
+            {.id = 1456, .distance = 23.501f}, {.id = 1454, .distance = 24.672f}, {.id = 1457, .distance = 25.068f}, {.id = 1416, .distance = 25.325f}, {.id = 1417, .distance = 29.320f}, {.id = 1460, .distance = 41.461f}, {.id = 503, .distance = 41.850f}
         }},
         {1456, {
-            {.id = 357, .distance = 21.612f}, {.id = 1455, .distance = 23.501f}, {.id = 1457, .distance = 24.580f}, {.id = 1458, .distance = 26.371f}, {.id = 1454, .distance = 26.732f}, {.id = 359, .distance = 34.713f}, {.id = 356, .distance = 36.477f}
+            {.id = 503, .distance = 21.608f}, {.id = 1455, .distance = 23.501f}, {.id = 1457, .distance = 24.580f}, {.id = 1458, .distance = 26.371f}, {.id = 1454, .distance = 26.732f}, {.id = 505, .distance = 34.197f}, {.id = 502, .distance = 36.998f}
         }},
         {1457, {
-            {.id = 1456, .distance = 24.580f}, {.id = 1459, .distance = 24.959f}, {.id = 1458, .distance = 25.010f}, {.id = 1455, .distance = 25.068f}, {.id = 1460, .distance = 25.146f}, {.id = 1417, .distance = 34.248f}, {.id = 357, .distance = 42.760f}
+            {.id = 1456, .distance = 24.580f}, {.id = 1459, .distance = 24.959f}, {.id = 1458, .distance = 25.010f}, {.id = 1455, .distance = 25.068f}, {.id = 1460, .distance = 25.146f}, {.id = 1417, .distance = 34.248f}, {.id = 503, .distance = 42.952f}
         }},
         {1458, {
-            {.id = 356, .distance = 23.050f}, {.id = 1312, .distance = 23.478f}, {.id = 1457, .distance = 25.010f}, {.id = 1456, .distance = 26.371f}, {.id = 1459, .distance = 29.071f}, {.id = 357, .distance = 33.705f}, {.id = 1310, .distance = 37.057f}
+            {.id = 659, .distance = 23.326f}, {.id = 502, .distance = 23.490f}, {.id = 1457, .distance = 25.010f}, {.id = 1456, .distance = 26.371f}, {.id = 1459, .distance = 29.071f}, {.id = 503, .distance = 34.196f}, {.id = 657, .distance = 36.872f}
         }},
         {1459, {
-            {.id = 1310, .distance = 21.785f}, {.id = 1460, .distance = 23.829f}, {.id = 1457, .distance = 24.959f}, {.id = 1461, .distance = 26.582f}, {.id = 1458, .distance = 29.071f}, {.id = 1312, .distance = 34.270f}, {.id = 1308, .distance = 34.398f}
+            {.id = 657, .distance = 21.837f}, {.id = 1460, .distance = 23.829f}, {.id = 1457, .distance = 24.959f}, {.id = 1461, .distance = 26.582f}, {.id = 1458, .distance = 29.071f}, {.id = 655, .distance = 34.439f}, {.id = 659, .distance = 34.529f}
         }},
         {1460, {
-            {.id = 1459, .distance = 23.829f}, {.id = 1457, .distance = 25.146f}, {.id = 1418, .distance = 25.156f}, {.id = 1461, .distance = 25.569f}, {.id = 1417, .distance = 28.406f}, {.id = 1455, .distance = 41.461f}, {.id = 1310, .distance = 42.578f}
+            {.id = 1459, .distance = 23.829f}, {.id = 1457, .distance = 25.146f}, {.id = 1418, .distance = 25.156f}, {.id = 1461, .distance = 25.569f}, {.id = 1417, .distance = 28.406f}, {.id = 1455, .distance = 41.461f}, {.id = 657, .distance = 42.698f}
         }},
         {1461, {
-            {.id = 1308, .distance = 21.569f}, {.id = 1460, .distance = 25.569f}, {.id = 1462, .distance = 26.524f}, {.id = 1459, .distance = 26.582f}, {.id = 1307, .distance = 34.325f}, {.id = 1310, .distance = 34.365f}, {.id = 1418, .distance = 34.565f}
+            {.id = 655, .distance = 21.607f}, {.id = 1460, .distance = 25.569f}, {.id = 1462, .distance = 26.524f}, {.id = 1459, .distance = 26.582f}, {.id = 654, .distance = 34.438f}, {.id = 1418, .distance = 34.565f}, {.id = 657, .distance = 34.611f}
         }},
         {1462, {
-            {.id = 1307, .distance = 22.003f}, {.id = 1461, .distance = 26.524f}, {.id = 1463, .distance = 27.091f}, {.id = 1419, .distance = 28.191f}, {.id = 1308, .distance = 34.213f}, {.id = 1306, .distance = 34.928f}, {.id = 1418, .distance = 39.087f}
+            {.id = 654, .distance = 21.912f}, {.id = 1461, .distance = 26.524f}, {.id = 1463, .distance = 27.091f}, {.id = 1419, .distance = 28.191f}, {.id = 655, .distance = 34.219f}, {.id = 653, .distance = 34.438f}, {.id = 1418, .distance = 39.087f}
         }},
         {1463, {
-            {.id = 1306, .distance = 22.154f}, {.id = 1464, .distance = 26.524f}, {.id = 1462, .distance = 27.091f}, {.id = 1420, .distance = 28.182f}, {.id = 1419, .distance = 31.855f}, {.id = 1305, .distance = 34.558f}, {.id = 1307, .distance = 34.988f}
+            {.id = 653, .distance = 21.836f}, {.id = 1464, .distance = 26.524f}, {.id = 1462, .distance = 27.091f}, {.id = 1420, .distance = 28.182f}, {.id = 1419, .distance = 31.855f}, {.id = 652, .distance = 34.438f}, {.id = 654, .distance = 34.758f}
         }},
         {1464, {
-            {.id = 1305, .distance = 22.310f}, {.id = 1463, .distance = 26.524f}, {.id = 1465, .distance = 26.581f}, {.id = 1420, .distance = 29.755f}, {.id = 1304, .distance = 34.480f}, {.id = 1306, .distance = 34.678f}, {.id = 1421, .distance = 34.998f}
+            {.id = 652, .distance = 21.912f}, {.id = 1463, .distance = 26.524f}, {.id = 1465, .distance = 26.581f}, {.id = 1420, .distance = 29.755f}, {.id = 651, .distance = 34.438f}, {.id = 653, .distance = 34.758f}, {.id = 1421, .distance = 34.998f}
         }},
         {1465, {
-            {.id = 1304, .distance = 21.954f}, {.id = 1466, .distance = 25.497f}, {.id = 1464, .distance = 26.581f}, {.id = 1467, .distance = 27.091f}, {.id = 1421, .distance = 34.425f}, {.id = 1305, .distance = 34.609f}, {.id = 1302, .distance = 34.948f}
+            {.id = 651, .distance = 21.607f}, {.id = 1466, .distance = 25.497f}, {.id = 1464, .distance = 26.581f}, {.id = 1467, .distance = 27.091f}, {.id = 652, .distance = 34.219f}, {.id = 1421, .distance = 34.425f}, {.id = 649, .distance = 34.439f}
         }},
         {1466, {
-            {.id = 1422, .distance = 23.798f}, {.id = 1467, .distance = 24.344f}, {.id = 1468, .distance = 25.237f}, {.id = 1465, .distance = 25.497f}, {.id = 1421, .distance = 29.105f}, {.id = 1471, .distance = 41.369f}, {.id = 1302, .distance = 42.971f}
+            {.id = 1422, .distance = 23.798f}, {.id = 1467, .distance = 24.344f}, {.id = 1468, .distance = 25.237f}, {.id = 1465, .distance = 25.497f}, {.id = 1421, .distance = 29.105f}, {.id = 1471, .distance = 41.369f}, {.id = 649, .distance = 42.825f}
         }},
         {1467, {
-            {.id = 1302, .distance = 21.762f}, {.id = 1466, .distance = 24.344f}, {.id = 1468, .distance = 24.548f}, {.id = 1469, .distance = 26.371f}, {.id = 1465, .distance = 27.091f}, {.id = 1304, .distance = 35.009f}, {.id = 1301, .distance = 36.374f}
+            {.id = 649, .distance = 21.837f}, {.id = 1466, .distance = 24.344f}, {.id = 1468, .distance = 24.548f}, {.id = 1469, .distance = 26.371f}, {.id = 1465, .distance = 27.091f}, {.id = 651, .distance = 34.611f}, {.id = 648, .distance = 36.872f}
         }},
         {1468, {
-            {.id = 1467, .distance = 24.548f}, {.id = 1470, .distance = 24.694f}, {.id = 1469, .distance = 25.104f}, {.id = 1466, .distance = 25.237f}, {.id = 1471, .distance = 25.654f}, {.id = 1422, .distance = 34.527f}, {.id = 1302, .distance = 42.970f}
+            {.id = 1467, .distance = 24.548f}, {.id = 1470, .distance = 24.694f}, {.id = 1469, .distance = 25.104f}, {.id = 1466, .distance = 25.237f}, {.id = 1471, .distance = 25.654f}, {.id = 1422, .distance = 34.527f}, {.id = 905, .distance = 43.104f}
         }},
         {1469, {
-            {.id = 1301, .distance = 23.078f}, {.id = 918, .distance = 23.106f}, {.id = 1468, .distance = 25.104f}, {.id = 1467, .distance = 26.371f}, {.id = 1470, .distance = 29.110f}, {.id = 1302, .distance = 33.932f}, {.id = 916, .distance = 36.785f}
+            {.id = 907, .distance = 23.277f}, {.id = 648, .distance = 23.326f}, {.id = 1468, .distance = 25.104f}, {.id = 1467, .distance = 26.371f}, {.id = 1470, .distance = 29.110f}, {.id = 649, .distance = 34.529f}, {.id = 905, .distance = 36.842f}
         }},
         {1470, {
-            {.id = 916, .distance = 21.788f}, {.id = 1471, .distance = 24.048f}, {.id = 1468, .distance = 24.694f}, {.id = 1472, .distance = 26.547f}, {.id = 1469, .distance = 29.110f}, {.id = 914, .distance = 34.237f}, {.id = 918, .distance = 34.484f}
+            {.id = 905, .distance = 21.892f}, {.id = 1471, .distance = 24.048f}, {.id = 1468, .distance = 24.694f}, {.id = 1472, .distance = 26.547f}, {.id = 1469, .distance = 29.110f}, {.id = 903, .distance = 34.325f}, {.id = 907, .distance = 34.476f}
         }},
         {1471, {
-            {.id = 1423, .distance = 21.654f}, {.id = 1470, .distance = 24.048f}, {.id = 1472, .distance = 24.979f}, {.id = 1468, .distance = 25.654f}, {.id = 1422, .distance = 33.270f}, {.id = 1466, .distance = 41.369f}, {.id = 916, .distance = 42.762f}
+            {.id = 1423, .distance = 21.654f}, {.id = 1470, .distance = 24.048f}, {.id = 1472, .distance = 24.979f}, {.id = 1468, .distance = 25.654f}, {.id = 1422, .distance = 33.270f}, {.id = 1466, .distance = 41.369f}, {.id = 905, .distance = 42.839f}
         }},
         {1472, {
-            {.id = 914, .distance = 21.813f}, {.id = 1471, .distance = 24.979f}, {.id = 1470, .distance = 26.547f}, {.id = 1473, .distance = 26.791f}, {.id = 913, .distance = 34.396f}, {.id = 916, .distance = 34.608f}, {.id = 1423, .distance = 36.329f}
+            {.id = 903, .distance = 21.887f}, {.id = 1471, .distance = 24.979f}, {.id = 1470, .distance = 26.547f}, {.id = 1473, .distance = 26.791f}, {.id = 902, .distance = 34.415f}, {.id = 905, .distance = 34.679f}, {.id = 1423, .distance = 36.329f}
         }},
         {1473, {
-            {.id = 913, .distance = 21.772f}, {.id = 1474, .distance = 25.487f}, {.id = 1472, .distance = 26.791f}, {.id = 1424, .distance = 27.232f}, {.id = 912, .distance = 34.325f}, {.id = 914, .distance = 34.627f}, {.id = 1425, .distance = 41.139f}
+            {.id = 902, .distance = 22.165f}, {.id = 1474, .distance = 25.487f}, {.id = 1472, .distance = 26.791f}, {.id = 1424, .distance = 27.232f}, {.id = 903, .distance = 34.634f}, {.id = 901, .distance = 34.708f}, {.id = 1425, .distance = 41.139f}
         }},
         {1474, {
-            {.id = 912, .distance = 21.888f}, {.id = 1473, .distance = 25.487f}, {.id = 1425, .distance = 26.028f}, {.id = 1475, .distance = 27.606f}, {.id = 913, .distance = 33.726f}, {.id = 911, .distance = 35.268f}, {.id = 1424, .distance = 35.594f}
+            {.id = 901, .distance = 22.388f}, {.id = 1473, .distance = 25.487f}, {.id = 1425, .distance = 26.028f}, {.id = 1475, .distance = 27.606f}, {.id = 902, .distance = 34.206f}, {.id = 1424, .distance = 35.594f}, {.id = 900, .distance = 35.607f}
         }},
         {1475, {
-            {.id = 911, .distance = 21.955f}, {.id = 1476, .distance = 26.790f}, {.id = 1474, .distance = 27.606f}, {.id = 1426, .distance = 31.167f}, {.id = 1425, .distance = 32.429f}, {.id = 912, .distance = 34.376f}, {.id = 910, .distance = 34.876f}
+            {.id = 900, .distance = 22.361f}, {.id = 1476, .distance = 26.790f}, {.id = 1474, .distance = 27.606f}, {.id = 1426, .distance = 31.167f}, {.id = 1425, .distance = 32.429f}, {.id = 899, .distance = 34.595f}, {.id = 901, .distance = 34.628f}
         }},
         {1476, {
-            {.id = 910, .distance = 21.967f}, {.id = 1477, .distance = 25.010f}, {.id = 1475, .distance = 26.790f}, {.id = 1478, .distance = 26.792f}, {.id = 908, .distance = 34.497f}, {.id = 911, .distance = 34.638f}, {.id = 1426, .distance = 34.856f}
+            {.id = 899, .distance = 22.151f}, {.id = 1477, .distance = 25.010f}, {.id = 1475, .distance = 26.790f}, {.id = 1478, .distance = 26.792f}, {.id = 900, .distance = 34.812f}, {.id = 1426, .distance = 34.856f}, {.id = 897, .distance = 34.991f}
         }},
         {1477, {
-            {.id = 1427, .distance = 21.595f}, {.id = 1478, .distance = 24.103f}, {.id = 1476, .distance = 25.010f}, {.id = 1479, .distance = 25.812f}, {.id = 1426, .distance = 33.491f}, {.id = 1482, .distance = 41.309f}, {.id = 908, .distance = 42.712f}
+            {.id = 1427, .distance = 21.595f}, {.id = 1478, .distance = 24.103f}, {.id = 1476, .distance = 25.010f}, {.id = 1479, .distance = 25.812f}, {.id = 1426, .distance = 33.491f}, {.id = 1482, .distance = 41.309f}, {.id = 897, .distance = 42.896f}
         }},
         {1478, {
-            {.id = 908, .distance = 21.876f}, {.id = 1477, .distance = 24.103f}, {.id = 1479, .distance = 24.732f}, {.id = 1480, .distance = 26.546f}, {.id = 1476, .distance = 26.792f}, {.id = 910, .distance = 34.412f}, {.id = 907, .distance = 37.119f}
+            {.id = 897, .distance = 21.881f}, {.id = 1477, .distance = 24.103f}, {.id = 1479, .distance = 24.732f}, {.id = 1480, .distance = 26.546f}, {.id = 1476, .distance = 26.792f}, {.id = 899, .distance = 34.928f}, {.id = 896, .distance = 36.598f}
         }},
         {1479, {
             {.id = 1480, .distance = 24.694f}, {.id = 1478, .distance = 24.732f}, {.id = 1481, .distance = 25.085f}, {.id = 1482, .distance = 25.237f}, {.id = 1477, .distance = 25.812f}, {.id = 1427, .distance = 36.997f}, {.id = 1428, .distance = 39.624f}
         }},
         {1480, {
-            {.id = 1064, .distance = 23.182f}, {.id = 907, .distance = 23.709f}, {.id = 1479, .distance = 24.694f}, {.id = 1478, .distance = 26.546f}, {.id = 1481, .distance = 28.931f}, {.id = 908, .distance = 34.534f}, {.id = 1062, .distance = 36.529f}
+            {.id = 896, .distance = 23.274f}, {.id = 1571, .distance = 23.430f}, {.id = 1479, .distance = 24.694f}, {.id = 1478, .distance = 26.546f}, {.id = 1481, .distance = 28.931f}, {.id = 897, .distance = 34.044f}, {.id = 1569, .distance = 36.914f}
         }},
         {1481, {
-            {.id = 1062, .distance = 21.183f}, {.id = 1482, .distance = 24.787f}, {.id = 1479, .distance = 25.085f}, {.id = 1483, .distance = 26.270f}, {.id = 1480, .distance = 28.931f}, {.id = 1060, .distance = 33.896f}, {.id = 1064, .distance = 34.248f}
+            {.id = 1569, .distance = 21.388f}, {.id = 1482, .distance = 24.787f}, {.id = 1479, .distance = 25.085f}, {.id = 1483, .distance = 26.270f}, {.id = 1480, .distance = 28.931f}, {.id = 1567, .distance = 34.337f}, {.id = 1571, .distance = 34.473f}
         }},
         {1482, {
             {.id = 1428, .distance = 20.735f}, {.id = 1481, .distance = 24.787f}, {.id = 1479, .distance = 25.237f}, {.id = 1483, .distance = 25.425f}, {.id = 1427, .distance = 38.308f}, {.id = 1429, .distance = 38.379f}, {.id = 1477, .distance = 41.309f}
         }},
         {1483, {
-            {.id = 1060, .distance = 21.567f}, {.id = 1482, .distance = 25.425f}, {.id = 1481, .distance = 26.270f}, {.id = 1484, .distance = 27.049f}, {.id = 1062, .distance = 34.469f}, {.id = 1059, .distance = 34.529f}, {.id = 1429, .distance = 37.159f}
+            {.id = 1567, .distance = 21.613f}, {.id = 1482, .distance = 25.425f}, {.id = 1481, .distance = 26.270f}, {.id = 1484, .distance = 27.049f}, {.id = 1569, .distance = 34.344f}, {.id = 1566, .distance = 35.024f}, {.id = 1429, .distance = 37.159f}
         }},
         {1484, {
-            {.id = 1059, .distance = 22.408f}, {.id = 1430, .distance = 27.042f}, {.id = 1483, .distance = 27.049f}, {.id = 1429, .distance = 28.297f}, {.id = 1058, .distance = 34.474f}, {.id = 1060, .distance = 34.817f}, {.id = 1404, .distance = 35.703f}
+            {.id = 1566, .distance = 22.913f}, {.id = 1430, .distance = 27.042f}, {.id = 1483, .distance = 27.049f}, {.id = 1429, .distance = 28.297f}, {.id = 1565, .distance = 34.231f}, {.id = 1567, .distance = 34.428f}, {.id = 1404, .distance = 35.703f}
         }},
         {1485, {
             {.id = 1490, .distance = 22.969f}, {.id = 1488, .distance = 23.177f}, {.id = 1487, .distance = 23.180f}, {.id = 1486, .distance = 23.418f}, {.id = 1489, .distance = 23.540f}, {.id = 1499, .distance = 46.414f}, {.id = 1496, .distance = 46.608f}
@@ -6972,169 +6972,169 @@ struct DodecaRGBv2_1 : public ModelDefinition<1620, 12> {
             {.id = 1538, .distance = 27.954f}, {.id = 1619, .distance = 28.297f}, {.id = 1563, .distance = 29.747f}, {.id = 1539, .distance = 29.831f}, {.id = 1618, .distance = 37.159f}, {.id = 1517, .distance = 38.168f}, {.id = 1617, .distance = 38.379f}
         }},
         {1565, {
-            {.id = 1193, .distance = 21.856f}, {.id = 1539, .distance = 24.998f}, {.id = 1566, .distance = 26.018f}, {.id = 1619, .distance = 27.042f}, {.id = 1192, .distance = 34.205f}, {.id = 1194, .distance = 35.008f}, {.id = 1540, .distance = 40.605f}
+            {.id = 1430, .distance = 21.842f}, {.id = 1539, .distance = 24.998f}, {.id = 1566, .distance = 26.018f}, {.id = 1619, .distance = 27.042f}, {.id = 1484, .distance = 34.231f}, {.id = 1431, .distance = 35.161f}, {.id = 1540, .distance = 40.605f}
         }},
         {1566, {
-            {.id = 1192, .distance = 22.464f}, {.id = 1565, .distance = 26.018f}, {.id = 1567, .distance = 26.277f}, {.id = 1540, .distance = 27.955f}, {.id = 1191, .distance = 34.947f}, {.id = 1193, .distance = 34.950f}, {.id = 1539, .distance = 36.289f}
+            {.id = 1484, .distance = 22.913f}, {.id = 1565, .distance = 26.018f}, {.id = 1567, .distance = 26.277f}, {.id = 1540, .distance = 27.955f}, {.id = 1483, .distance = 35.024f}, {.id = 1430, .distance = 35.161f}, {.id = 1539, .distance = 36.289f}
         }},
         {1567, {
-            {.id = 1191, .distance = 21.687f}, {.id = 1568, .distance = 25.444f}, {.id = 1566, .distance = 26.277f}, {.id = 1569, .distance = 27.296f}, {.id = 1192, .distance = 33.864f}, {.id = 1189, .distance = 34.888f}, {.id = 1540, .distance = 36.960f}
+            {.id = 1483, .distance = 21.613f}, {.id = 1568, .distance = 25.444f}, {.id = 1566, .distance = 26.277f}, {.id = 1569, .distance = 27.296f}, {.id = 1481, .distance = 34.337f}, {.id = 1484, .distance = 34.428f}, {.id = 1540, .distance = 36.960f}
         }},
         {1568, {
             {.id = 1541, .distance = 21.650f}, {.id = 1569, .distance = 23.803f}, {.id = 1567, .distance = 25.444f}, {.id = 1570, .distance = 25.495f}, {.id = 1542, .distance = 38.588f}, {.id = 1540, .distance = 39.188f}, {.id = 1573, .distance = 40.893f}
         }},
         {1569, {
-            {.id = 1189, .distance = 22.081f}, {.id = 1568, .distance = 23.803f}, {.id = 1570, .distance = 24.430f}, {.id = 1571, .distance = 26.781f}, {.id = 1567, .distance = 27.296f}, {.id = 1191, .distance = 34.521f}, {.id = 1188, .distance = 37.270f}
+            {.id = 1481, .distance = 21.388f}, {.id = 1568, .distance = 23.803f}, {.id = 1570, .distance = 24.430f}, {.id = 1571, .distance = 26.781f}, {.id = 1567, .distance = 27.296f}, {.id = 1483, .distance = 34.344f}, {.id = 1480, .distance = 36.914f}
         }},
         {1570, {
             {.id = 1572, .distance = 24.299f}, {.id = 1569, .distance = 24.430f}, {.id = 1571, .distance = 24.711f}, {.id = 1573, .distance = 25.084f}, {.id = 1568, .distance = 25.495f}, {.id = 1542, .distance = 37.220f}, {.id = 1541, .distance = 40.095f}
         }},
         {1571, {
-            {.id = 119, .distance = 23.078f}, {.id = 1188, .distance = 23.609f}, {.id = 1570, .distance = 24.711f}, {.id = 1569, .distance = 26.781f}, {.id = 1572, .distance = 27.879f}, {.id = 1189, .distance = 34.791f}, {.id = 117, .distance = 36.374f}
+            {.id = 896, .distance = 23.353f}, {.id = 1480, .distance = 23.430f}, {.id = 1570, .distance = 24.711f}, {.id = 1569, .distance = 26.781f}, {.id = 1572, .distance = 27.879f}, {.id = 1481, .distance = 34.473f}, {.id = 894, .distance = 36.766f}
         }},
         {1572, {
-            {.id = 117, .distance = 21.762f}, {.id = 1570, .distance = 24.299f}, {.id = 1573, .distance = 24.636f}, {.id = 1574, .distance = 27.526f}, {.id = 1571, .distance = 27.879f}, {.id = 119, .distance = 33.932f}, {.id = 115, .distance = 34.948f}
+            {.id = 894, .distance = 22.006f}, {.id = 1570, .distance = 24.299f}, {.id = 1573, .distance = 24.636f}, {.id = 1574, .distance = 27.526f}, {.id = 1571, .distance = 27.879f}, {.id = 896, .distance = 34.190f}, {.id = 892, .distance = 35.395f}
         }},
         {1573, {
             {.id = 1542, .distance = 21.863f}, {.id = 1572, .distance = 24.636f}, {.id = 1570, .distance = 25.084f}, {.id = 1574, .distance = 25.653f}, {.id = 1543, .distance = 34.005f}, {.id = 1568, .distance = 40.893f}, {.id = 1541, .distance = 43.024f}
         }},
         {1574, {
-            {.id = 115, .distance = 21.954f}, {.id = 1573, .distance = 25.653f}, {.id = 1575, .distance = 26.467f}, {.id = 1572, .distance = 27.526f}, {.id = 114, .distance = 34.480f}, {.id = 117, .distance = 35.009f}, {.id = 1543, .distance = 35.198f}
+            {.id = 892, .distance = 22.020f}, {.id = 1573, .distance = 25.653f}, {.id = 1575, .distance = 26.467f}, {.id = 1572, .distance = 27.526f}, {.id = 894, .distance = 34.913f}, {.id = 891, .distance = 34.985f}, {.id = 1543, .distance = 35.198f}
         }},
         {1575, {
-            {.id = 114, .distance = 22.310f}, {.id = 1574, .distance = 26.467f}, {.id = 1576, .distance = 26.547f}, {.id = 1543, .distance = 31.431f}, {.id = 1544, .distance = 32.153f}, {.id = 113, .distance = 34.558f}, {.id = 115, .distance = 34.609f}
+            {.id = 891, .distance = 22.850f}, {.id = 1574, .distance = 26.467f}, {.id = 1576, .distance = 26.547f}, {.id = 1543, .distance = 31.431f}, {.id = 1544, .distance = 32.153f}, {.id = 892, .distance = 34.251f}, {.id = 890, .distance = 34.323f}
         }},
         {1576, {
-            {.id = 113, .distance = 22.154f}, {.id = 1544, .distance = 25.318f}, {.id = 1575, .distance = 26.547f}, {.id = 1577, .distance = 27.116f}, {.id = 114, .distance = 34.678f}, {.id = 112, .distance = 34.928f}, {.id = 1545, .distance = 36.035f}
+            {.id = 890, .distance = 22.163f}, {.id = 1544, .distance = 25.318f}, {.id = 1575, .distance = 26.547f}, {.id = 1577, .distance = 27.116f}, {.id = 891, .distance = 34.871f}, {.id = 944, .distance = 34.959f}, {.id = 1545, .distance = 36.035f}
         }},
         {1577, {
-            {.id = 112, .distance = 22.003f}, {.id = 1578, .distance = 26.383f}, {.id = 1576, .distance = 27.116f}, {.id = 1545, .distance = 27.523f}, {.id = 111, .distance = 34.325f}, {.id = 113, .distance = 34.988f}, {.id = 1544, .distance = 41.220f}
+            {.id = 944, .distance = 22.497f}, {.id = 1578, .distance = 26.383f}, {.id = 1576, .distance = 27.116f}, {.id = 1545, .distance = 27.523f}, {.id = 943, .distance = 34.412f}, {.id = 890, .distance = 35.235f}, {.id = 1544, .distance = 41.220f}
         }},
         {1578, {
-            {.id = 111, .distance = 21.569f}, {.id = 1579, .distance = 25.498f}, {.id = 1577, .distance = 26.383f}, {.id = 1580, .distance = 26.792f}, {.id = 112, .distance = 34.213f}, {.id = 109, .distance = 34.398f}, {.id = 1546, .distance = 36.749f}
+            {.id = 943, .distance = 21.527f}, {.id = 1579, .distance = 25.498f}, {.id = 1577, .distance = 26.383f}, {.id = 1580, .distance = 26.792f}, {.id = 941, .distance = 33.853f}, {.id = 944, .distance = 34.808f}, {.id = 1546, .distance = 36.749f}
         }},
         {1579, {
-            {.id = 1546, .distance = 21.879f}, {.id = 1580, .distance = 24.550f}, {.id = 1578, .distance = 25.498f}, {.id = 1581, .distance = 25.732f}, {.id = 1547, .distance = 33.585f}, {.id = 1584, .distance = 41.045f}, {.id = 109, .distance = 43.073f}
+            {.id = 1546, .distance = 21.879f}, {.id = 1580, .distance = 24.550f}, {.id = 1578, .distance = 25.498f}, {.id = 1581, .distance = 25.732f}, {.id = 1547, .distance = 33.585f}, {.id = 1584, .distance = 41.045f}, {.id = 941, .distance = 42.522f}
         }},
         {1580, {
-            {.id = 109, .distance = 21.785f}, {.id = 1579, .distance = 24.550f}, {.id = 1581, .distance = 24.859f}, {.id = 1582, .distance = 26.221f}, {.id = 1578, .distance = 26.792f}, {.id = 111, .distance = 34.365f}, {.id = 108, .distance = 37.057f}
+            {.id = 941, .distance = 21.127f}, {.id = 1579, .distance = 24.550f}, {.id = 1581, .distance = 24.859f}, {.id = 1582, .distance = 26.221f}, {.id = 1578, .distance = 26.792f}, {.id = 943, .distance = 34.222f}, {.id = 940, .distance = 36.712f}
         }},
         {1581, {
-            {.id = 1583, .distance = 24.528f}, {.id = 1582, .distance = 24.669f}, {.id = 1580, .distance = 24.859f}, {.id = 1584, .distance = 25.084f}, {.id = 1579, .distance = 25.732f}, {.id = 1547, .distance = 35.615f}, {.id = 376, .distance = 42.785f}
+            {.id = 1583, .distance = 24.528f}, {.id = 1582, .distance = 24.669f}, {.id = 1580, .distance = 24.859f}, {.id = 1584, .distance = 25.084f}, {.id = 1579, .distance = 25.732f}, {.id = 1547, .distance = 35.615f}, {.id = 941, .distance = 42.874f}
         }},
         {1582, {
-            {.id = 378, .distance = 23.450f}, {.id = 108, .distance = 23.478f}, {.id = 1581, .distance = 24.669f}, {.id = 1580, .distance = 26.221f}, {.id = 1583, .distance = 28.881f}, {.id = 109, .distance = 34.270f}, {.id = 376, .distance = 36.962f}
+            {.id = 940, .distance = 23.328f}, {.id = 1031, .distance = 23.747f}, {.id = 1581, .distance = 24.669f}, {.id = 1580, .distance = 26.221f}, {.id = 1583, .distance = 28.881f}, {.id = 941, .distance = 33.983f}, {.id = 1029, .distance = 37.251f}
         }},
         {1583, {
-            {.id = 376, .distance = 21.569f}, {.id = 1584, .distance = 24.210f}, {.id = 1581, .distance = 24.528f}, {.id = 1585, .distance = 26.372f}, {.id = 1582, .distance = 28.881f}, {.id = 378, .distance = 34.183f}, {.id = 374, .distance = 34.264f}
+            {.id = 1029, .distance = 21.962f}, {.id = 1584, .distance = 24.210f}, {.id = 1581, .distance = 24.528f}, {.id = 1585, .distance = 26.372f}, {.id = 1582, .distance = 28.881f}, {.id = 1031, .distance = 34.668f}, {.id = 1027, .distance = 34.862f}
         }},
         {1584, {
-            {.id = 1583, .distance = 24.210f}, {.id = 1547, .distance = 24.618f}, {.id = 1581, .distance = 25.084f}, {.id = 1585, .distance = 25.246f}, {.id = 1548, .distance = 29.298f}, {.id = 1579, .distance = 41.045f}, {.id = 376, .distance = 42.701f}
+            {.id = 1583, .distance = 24.210f}, {.id = 1547, .distance = 24.618f}, {.id = 1581, .distance = 25.084f}, {.id = 1585, .distance = 25.246f}, {.id = 1548, .distance = 29.298f}, {.id = 1579, .distance = 41.045f}, {.id = 1029, .distance = 42.983f}
         }},
         {1585, {
-            {.id = 374, .distance = 21.619f}, {.id = 1584, .distance = 25.246f}, {.id = 1583, .distance = 26.372f}, {.id = 1586, .distance = 27.091f}, {.id = 376, .distance = 34.184f}, {.id = 373, .distance = 34.574f}, {.id = 1548, .distance = 34.857f}
+            {.id = 1027, .distance = 21.814f}, {.id = 1584, .distance = 25.246f}, {.id = 1583, .distance = 26.372f}, {.id = 1586, .distance = 27.091f}, {.id = 1029, .distance = 34.387f}, {.id = 1548, .distance = 34.857f}, {.id = 1026, .distance = 35.229f}
         }},
         {1586, {
-            {.id = 373, .distance = 21.568f}, {.id = 1587, .distance = 26.524f}, {.id = 1585, .distance = 27.091f}, {.id = 1549, .distance = 29.494f}, {.id = 372, .distance = 34.263f}, {.id = 374, .distance = 34.432f}, {.id = 1548, .distance = 35.556f}
+            {.id = 1026, .distance = 22.413f}, {.id = 1587, .distance = 26.524f}, {.id = 1585, .distance = 27.091f}, {.id = 1549, .distance = 29.494f}, {.id = 1025, .distance = 33.945f}, {.id = 1027, .distance = 34.062f}, {.id = 1548, .distance = 35.556f}
         }},
         {1587, {
-            {.id = 372, .distance = 21.440f}, {.id = 1586, .distance = 26.524f}, {.id = 1588, .distance = 26.730f}, {.id = 1549, .distance = 28.584f}, {.id = 1550, .distance = 32.097f}, {.id = 373, .distance = 34.189f}, {.id = 371, .distance = 34.263f}
+            {.id = 1025, .distance = 21.634f}, {.id = 1586, .distance = 26.524f}, {.id = 1588, .distance = 26.730f}, {.id = 1549, .distance = 28.584f}, {.id = 1550, .distance = 32.097f}, {.id = 1079, .distance = 34.543f}, {.id = 1026, .distance = 34.606f}
         }},
         {1588, {
-            {.id = 371, .distance = 21.568f}, {.id = 1587, .distance = 26.730f}, {.id = 1589, .distance = 26.732f}, {.id = 1550, .distance = 28.097f}, {.id = 372, .distance = 34.189f}, {.id = 370, .distance = 34.574f}, {.id = 1551, .distance = 40.135f}
+            {.id = 1079, .distance = 22.075f}, {.id = 1587, .distance = 26.730f}, {.id = 1589, .distance = 26.732f}, {.id = 1550, .distance = 28.097f}, {.id = 1078, .distance = 34.368f}, {.id = 1025, .distance = 34.750f}, {.id = 1551, .distance = 40.135f}
         }},
         {1589, {
-            {.id = 370, .distance = 21.619f}, {.id = 1590, .distance = 24.672f}, {.id = 1588, .distance = 26.732f}, {.id = 1591, .distance = 26.732f}, {.id = 368, .distance = 34.264f}, {.id = 371, .distance = 34.432f}, {.id = 1551, .distance = 35.127f}
+            {.id = 1078, .distance = 21.421f}, {.id = 1590, .distance = 24.672f}, {.id = 1588, .distance = 26.732f}, {.id = 1591, .distance = 26.732f}, {.id = 1076, .distance = 33.735f}, {.id = 1079, .distance = 34.794f}, {.id = 1551, .distance = 35.127f}
         }},
         {1590, {
-            {.id = 1591, .distance = 23.501f}, {.id = 1589, .distance = 24.672f}, {.id = 1592, .distance = 25.068f}, {.id = 1551, .distance = 25.325f}, {.id = 1552, .distance = 29.320f}, {.id = 1595, .distance = 41.461f}, {.id = 368, .distance = 41.811f}
+            {.id = 1591, .distance = 23.501f}, {.id = 1589, .distance = 24.672f}, {.id = 1592, .distance = 25.068f}, {.id = 1551, .distance = 25.325f}, {.id = 1552, .distance = 29.320f}, {.id = 1076, .distance = 41.305f}, {.id = 1595, .distance = 41.461f}
         }},
         {1591, {
-            {.id = 368, .distance = 21.569f}, {.id = 1590, .distance = 23.501f}, {.id = 1592, .distance = 24.580f}, {.id = 1593, .distance = 26.371f}, {.id = 1589, .distance = 26.732f}, {.id = 370, .distance = 34.184f}, {.id = 367, .distance = 36.962f}
+            {.id = 1076, .distance = 20.992f}, {.id = 1590, .distance = 23.501f}, {.id = 1592, .distance = 24.580f}, {.id = 1593, .distance = 26.371f}, {.id = 1589, .distance = 26.732f}, {.id = 1078, .distance = 34.142f}, {.id = 1075, .distance = 36.625f}
         }},
         {1592, {
-            {.id = 1591, .distance = 24.580f}, {.id = 1594, .distance = 24.959f}, {.id = 1593, .distance = 25.010f}, {.id = 1590, .distance = 25.068f}, {.id = 1595, .distance = 25.146f}, {.id = 1552, .distance = 34.248f}, {.id = 368, .distance = 42.922f}
+            {.id = 1591, .distance = 24.580f}, {.id = 1594, .distance = 24.959f}, {.id = 1593, .distance = 25.010f}, {.id = 1590, .distance = 25.068f}, {.id = 1595, .distance = 25.146f}, {.id = 1552, .distance = 34.248f}, {.id = 1076, .distance = 42.548f}
         }},
         {1593, {
-            {.id = 367, .distance = 23.450f}, {.id = 1447, .distance = 23.478f}, {.id = 1592, .distance = 25.010f}, {.id = 1591, .distance = 26.371f}, {.id = 1594, .distance = 29.071f}, {.id = 368, .distance = 34.183f}, {.id = 1445, .distance = 37.057f}
+            {.id = 1075, .distance = 23.130f}, {.id = 1166, .distance = 23.573f}, {.id = 1592, .distance = 25.010f}, {.id = 1591, .distance = 26.371f}, {.id = 1594, .distance = 29.071f}, {.id = 1076, .distance = 33.987f}, {.id = 1164, .distance = 37.257f}
         }},
         {1594, {
-            {.id = 1445, .distance = 21.785f}, {.id = 1595, .distance = 23.829f}, {.id = 1592, .distance = 24.959f}, {.id = 1596, .distance = 26.582f}, {.id = 1593, .distance = 29.071f}, {.id = 1447, .distance = 34.270f}, {.id = 1443, .distance = 34.398f}
+            {.id = 1164, .distance = 22.042f}, {.id = 1595, .distance = 23.829f}, {.id = 1592, .distance = 24.959f}, {.id = 1596, .distance = 26.582f}, {.id = 1593, .distance = 29.071f}, {.id = 1166, .distance = 34.755f}, {.id = 1162, .distance = 34.875f}
         }},
         {1595, {
-            {.id = 1594, .distance = 23.829f}, {.id = 1592, .distance = 25.146f}, {.id = 1553, .distance = 25.156f}, {.id = 1596, .distance = 25.569f}, {.id = 1552, .distance = 28.406f}, {.id = 1590, .distance = 41.461f}, {.id = 1445, .distance = 42.578f}
+            {.id = 1594, .distance = 23.829f}, {.id = 1592, .distance = 25.146f}, {.id = 1553, .distance = 25.156f}, {.id = 1596, .distance = 25.569f}, {.id = 1552, .distance = 28.406f}, {.id = 1590, .distance = 41.461f}, {.id = 1164, .distance = 42.759f}
         }},
         {1596, {
-            {.id = 1443, .distance = 21.569f}, {.id = 1595, .distance = 25.569f}, {.id = 1597, .distance = 26.524f}, {.id = 1594, .distance = 26.582f}, {.id = 1442, .distance = 34.325f}, {.id = 1445, .distance = 34.365f}, {.id = 1553, .distance = 34.565f}
+            {.id = 1162, .distance = 21.649f}, {.id = 1595, .distance = 25.569f}, {.id = 1597, .distance = 26.524f}, {.id = 1594, .distance = 26.582f}, {.id = 1164, .distance = 34.485f}, {.id = 1553, .distance = 34.565f}, {.id = 1161, .distance = 34.934f}
         }},
         {1597, {
-            {.id = 1442, .distance = 22.003f}, {.id = 1596, .distance = 26.524f}, {.id = 1598, .distance = 27.091f}, {.id = 1554, .distance = 28.191f}, {.id = 1443, .distance = 34.213f}, {.id = 1441, .distance = 34.928f}, {.id = 1553, .distance = 39.087f}
+            {.id = 1161, .distance = 22.426f}, {.id = 1596, .distance = 26.524f}, {.id = 1598, .distance = 27.091f}, {.id = 1554, .distance = 28.191f}, {.id = 1162, .distance = 33.829f}, {.id = 1160, .distance = 34.192f}, {.id = 1553, .distance = 39.087f}
         }},
         {1598, {
-            {.id = 1441, .distance = 22.154f}, {.id = 1599, .distance = 26.524f}, {.id = 1597, .distance = 27.091f}, {.id = 1555, .distance = 28.182f}, {.id = 1554, .distance = 31.855f}, {.id = 1440, .distance = 34.558f}, {.id = 1442, .distance = 34.988f}
+            {.id = 1160, .distance = 21.817f}, {.id = 1599, .distance = 26.524f}, {.id = 1597, .distance = 27.091f}, {.id = 1555, .distance = 28.182f}, {.id = 1554, .distance = 31.855f}, {.id = 1214, .distance = 34.460f}, {.id = 1161, .distance = 34.914f}
         }},
         {1599, {
-            {.id = 1440, .distance = 22.310f}, {.id = 1598, .distance = 26.524f}, {.id = 1600, .distance = 26.581f}, {.id = 1555, .distance = 29.755f}, {.id = 1439, .distance = 34.480f}, {.id = 1441, .distance = 34.678f}, {.id = 1556, .distance = 34.998f}
+            {.id = 1214, .distance = 22.369f}, {.id = 1598, .distance = 26.524f}, {.id = 1600, .distance = 26.581f}, {.id = 1555, .distance = 29.755f}, {.id = 1213, .distance = 34.516f}, {.id = 1160, .distance = 34.972f}, {.id = 1556, .distance = 34.998f}
         }},
         {1600, {
-            {.id = 1439, .distance = 21.954f}, {.id = 1601, .distance = 25.497f}, {.id = 1599, .distance = 26.581f}, {.id = 1602, .distance = 27.091f}, {.id = 1556, .distance = 34.425f}, {.id = 1440, .distance = 34.609f}, {.id = 1437, .distance = 34.948f}
+            {.id = 1213, .distance = 21.529f}, {.id = 1601, .distance = 25.497f}, {.id = 1599, .distance = 26.581f}, {.id = 1602, .distance = 27.091f}, {.id = 1211, .distance = 33.883f}, {.id = 1556, .distance = 34.425f}, {.id = 1214, .distance = 34.782f}
         }},
         {1601, {
-            {.id = 1557, .distance = 23.798f}, {.id = 1602, .distance = 24.344f}, {.id = 1603, .distance = 25.237f}, {.id = 1600, .distance = 25.497f}, {.id = 1556, .distance = 29.105f}, {.id = 1606, .distance = 41.369f}, {.id = 1437, .distance = 42.971f}
+            {.id = 1557, .distance = 23.798f}, {.id = 1602, .distance = 24.344f}, {.id = 1603, .distance = 25.237f}, {.id = 1600, .distance = 25.497f}, {.id = 1556, .distance = 29.105f}, {.id = 1606, .distance = 41.369f}, {.id = 1211, .distance = 42.243f}
         }},
         {1602, {
-            {.id = 1437, .distance = 21.762f}, {.id = 1601, .distance = 24.344f}, {.id = 1603, .distance = 24.548f}, {.id = 1604, .distance = 26.371f}, {.id = 1600, .distance = 27.091f}, {.id = 1439, .distance = 35.009f}, {.id = 1436, .distance = 36.374f}
+            {.id = 1211, .distance = 21.144f}, {.id = 1601, .distance = 24.344f}, {.id = 1603, .distance = 24.548f}, {.id = 1604, .distance = 26.371f}, {.id = 1600, .distance = 27.091f}, {.id = 1213, .distance = 34.433f}, {.id = 1210, .distance = 36.516f}
         }},
         {1603, {
-            {.id = 1602, .distance = 24.548f}, {.id = 1605, .distance = 24.694f}, {.id = 1604, .distance = 25.104f}, {.id = 1601, .distance = 25.237f}, {.id = 1606, .distance = 25.654f}, {.id = 1557, .distance = 34.527f}, {.id = 1437, .distance = 42.970f}
+            {.id = 1602, .distance = 24.548f}, {.id = 1605, .distance = 24.694f}, {.id = 1604, .distance = 25.104f}, {.id = 1601, .distance = 25.237f}, {.id = 1606, .distance = 25.654f}, {.id = 1557, .distance = 34.527f}, {.id = 1211, .distance = 42.754f}
         }},
         {1604, {
-            {.id = 1436, .distance = 23.078f}, {.id = 1053, .distance = 23.106f}, {.id = 1603, .distance = 25.104f}, {.id = 1602, .distance = 26.371f}, {.id = 1605, .distance = 29.110f}, {.id = 1437, .distance = 33.932f}, {.id = 1051, .distance = 36.785f}
+            {.id = 1210, .distance = 23.145f}, {.id = 1301, .distance = 23.364f}, {.id = 1603, .distance = 25.104f}, {.id = 1602, .distance = 26.371f}, {.id = 1605, .distance = 29.110f}, {.id = 1211, .distance = 34.212f}, {.id = 1299, .distance = 37.037f}
         }},
         {1605, {
-            {.id = 1051, .distance = 21.788f}, {.id = 1606, .distance = 24.048f}, {.id = 1603, .distance = 24.694f}, {.id = 1607, .distance = 26.547f}, {.id = 1604, .distance = 29.110f}, {.id = 1049, .distance = 34.237f}, {.id = 1053, .distance = 34.484f}
+            {.id = 1299, .distance = 22.141f}, {.id = 1606, .distance = 24.048f}, {.id = 1603, .distance = 24.694f}, {.id = 1607, .distance = 26.547f}, {.id = 1604, .distance = 29.110f}, {.id = 1297, .distance = 34.797f}, {.id = 1301, .distance = 34.955f}
         }},
         {1606, {
-            {.id = 1558, .distance = 21.654f}, {.id = 1605, .distance = 24.048f}, {.id = 1607, .distance = 24.979f}, {.id = 1603, .distance = 25.654f}, {.id = 1557, .distance = 33.270f}, {.id = 1601, .distance = 41.369f}, {.id = 1051, .distance = 42.762f}
+            {.id = 1558, .distance = 21.654f}, {.id = 1605, .distance = 24.048f}, {.id = 1607, .distance = 24.979f}, {.id = 1603, .distance = 25.654f}, {.id = 1557, .distance = 33.270f}, {.id = 1601, .distance = 41.369f}, {.id = 1299, .distance = 43.012f}
         }},
         {1607, {
-            {.id = 1049, .distance = 21.813f}, {.id = 1606, .distance = 24.979f}, {.id = 1605, .distance = 26.547f}, {.id = 1608, .distance = 26.791f}, {.id = 1048, .distance = 34.396f}, {.id = 1051, .distance = 34.608f}, {.id = 1558, .distance = 36.329f}
+            {.id = 1297, .distance = 21.957f}, {.id = 1606, .distance = 24.979f}, {.id = 1605, .distance = 26.547f}, {.id = 1608, .distance = 26.791f}, {.id = 1299, .distance = 34.795f}, {.id = 1296, .distance = 35.021f}, {.id = 1558, .distance = 36.329f}
         }},
         {1608, {
-            {.id = 1048, .distance = 21.772f}, {.id = 1609, .distance = 25.487f}, {.id = 1607, .distance = 26.791f}, {.id = 1559, .distance = 27.232f}, {.id = 1047, .distance = 34.325f}, {.id = 1049, .distance = 34.627f}, {.id = 1560, .distance = 41.139f}
+            {.id = 1296, .distance = 22.576f}, {.id = 1609, .distance = 25.487f}, {.id = 1607, .distance = 26.791f}, {.id = 1559, .distance = 27.232f}, {.id = 1295, .distance = 33.974f}, {.id = 1297, .distance = 34.245f}, {.id = 1560, .distance = 41.139f}
         }},
         {1609, {
-            {.id = 1047, .distance = 21.888f}, {.id = 1608, .distance = 25.487f}, {.id = 1560, .distance = 26.028f}, {.id = 1610, .distance = 27.606f}, {.id = 1048, .distance = 33.726f}, {.id = 1046, .distance = 35.268f}, {.id = 1559, .distance = 35.594f}
+            {.id = 1295, .distance = 22.017f}, {.id = 1608, .distance = 25.487f}, {.id = 1560, .distance = 26.028f}, {.id = 1610, .distance = 27.606f}, {.id = 1296, .distance = 34.146f}, {.id = 1349, .distance = 35.507f}, {.id = 1559, .distance = 35.594f}
         }},
         {1610, {
-            {.id = 1046, .distance = 21.955f}, {.id = 1611, .distance = 26.790f}, {.id = 1609, .distance = 27.606f}, {.id = 1561, .distance = 31.167f}, {.id = 1560, .distance = 32.429f}, {.id = 1047, .distance = 34.376f}, {.id = 1045, .distance = 34.876f}
+            {.id = 1349, .distance = 22.422f}, {.id = 1611, .distance = 26.790f}, {.id = 1609, .distance = 27.606f}, {.id = 1561, .distance = 31.167f}, {.id = 1560, .distance = 32.429f}, {.id = 1348, .distance = 34.634f}, {.id = 1295, .distance = 34.921f}
         }},
         {1611, {
-            {.id = 1045, .distance = 21.967f}, {.id = 1612, .distance = 25.010f}, {.id = 1610, .distance = 26.790f}, {.id = 1613, .distance = 26.792f}, {.id = 1043, .distance = 34.497f}, {.id = 1046, .distance = 34.638f}, {.id = 1561, .distance = 34.856f}
+            {.id = 1348, .distance = 21.731f}, {.id = 1612, .distance = 25.010f}, {.id = 1610, .distance = 26.790f}, {.id = 1613, .distance = 26.792f}, {.id = 1346, .distance = 33.932f}, {.id = 1561, .distance = 34.856f}, {.id = 1349, .distance = 34.987f}
         }},
         {1612, {
-            {.id = 1562, .distance = 21.595f}, {.id = 1613, .distance = 24.103f}, {.id = 1611, .distance = 25.010f}, {.id = 1614, .distance = 25.812f}, {.id = 1561, .distance = 33.491f}, {.id = 1617, .distance = 41.309f}, {.id = 1043, .distance = 42.712f}
+            {.id = 1562, .distance = 21.595f}, {.id = 1613, .distance = 24.103f}, {.id = 1611, .distance = 25.010f}, {.id = 1614, .distance = 25.812f}, {.id = 1561, .distance = 33.491f}, {.id = 1617, .distance = 41.309f}, {.id = 1346, .distance = 42.170f}
         }},
         {1613, {
-            {.id = 1043, .distance = 21.876f}, {.id = 1612, .distance = 24.103f}, {.id = 1614, .distance = 24.732f}, {.id = 1615, .distance = 26.546f}, {.id = 1611, .distance = 26.792f}, {.id = 1045, .distance = 34.412f}, {.id = 1042, .distance = 37.119f}
+            {.id = 1346, .distance = 21.264f}, {.id = 1612, .distance = 24.103f}, {.id = 1614, .distance = 24.732f}, {.id = 1615, .distance = 26.546f}, {.id = 1611, .distance = 26.792f}, {.id = 1348, .distance = 34.357f}, {.id = 1345, .distance = 36.746f}
         }},
         {1614, {
             {.id = 1615, .distance = 24.694f}, {.id = 1613, .distance = 24.732f}, {.id = 1616, .distance = 25.085f}, {.id = 1617, .distance = 25.237f}, {.id = 1612, .distance = 25.812f}, {.id = 1562, .distance = 36.997f}, {.id = 1563, .distance = 39.624f}
         }},
         {1615, {
-            {.id = 1199, .distance = 23.182f}, {.id = 1042, .distance = 23.709f}, {.id = 1614, .distance = 24.694f}, {.id = 1613, .distance = 26.546f}, {.id = 1616, .distance = 28.931f}, {.id = 1043, .distance = 34.534f}, {.id = 1197, .distance = 36.529f}
+            {.id = 1345, .distance = 23.352f}, {.id = 1436, .distance = 23.430f}, {.id = 1614, .distance = 24.694f}, {.id = 1613, .distance = 26.546f}, {.id = 1616, .distance = 28.931f}, {.id = 1346, .distance = 34.325f}, {.id = 1434, .distance = 36.914f}
         }},
         {1616, {
-            {.id = 1197, .distance = 21.183f}, {.id = 1617, .distance = 24.787f}, {.id = 1614, .distance = 25.085f}, {.id = 1618, .distance = 26.270f}, {.id = 1615, .distance = 28.931f}, {.id = 1195, .distance = 33.896f}, {.id = 1199, .distance = 34.248f}
+            {.id = 1434, .distance = 21.388f}, {.id = 1617, .distance = 24.787f}, {.id = 1614, .distance = 25.085f}, {.id = 1618, .distance = 26.270f}, {.id = 1615, .distance = 28.931f}, {.id = 1432, .distance = 34.337f}, {.id = 1436, .distance = 34.473f}
         }},
         {1617, {
             {.id = 1563, .distance = 20.735f}, {.id = 1616, .distance = 24.787f}, {.id = 1614, .distance = 25.237f}, {.id = 1618, .distance = 25.425f}, {.id = 1562, .distance = 38.308f}, {.id = 1564, .distance = 38.379f}, {.id = 1612, .distance = 41.309f}
         }},
         {1618, {
-            {.id = 1195, .distance = 21.567f}, {.id = 1617, .distance = 25.425f}, {.id = 1616, .distance = 26.270f}, {.id = 1619, .distance = 27.049f}, {.id = 1197, .distance = 34.469f}, {.id = 1194, .distance = 34.529f}, {.id = 1564, .distance = 37.159f}
+            {.id = 1432, .distance = 21.613f}, {.id = 1617, .distance = 25.425f}, {.id = 1616, .distance = 26.270f}, {.id = 1619, .distance = 27.049f}, {.id = 1434, .distance = 34.344f}, {.id = 1431, .distance = 35.024f}, {.id = 1564, .distance = 37.159f}
         }},
         {1619, {
-            {.id = 1194, .distance = 22.408f}, {.id = 1565, .distance = 27.042f}, {.id = 1618, .distance = 27.049f}, {.id = 1564, .distance = 28.297f}, {.id = 1193, .distance = 34.474f}, {.id = 1195, .distance = 34.817f}, {.id = 1539, .distance = 35.703f}
+            {.id = 1431, .distance = 22.913f}, {.id = 1565, .distance = 27.042f}, {.id = 1618, .distance = 27.049f}, {.id = 1564, .distance = 28.297f}, {.id = 1430, .distance = 34.231f}, {.id = 1432, .distance = 34.428f}, {.id = 1539, .distance = 35.703f}
         }}
     };
 };
