@@ -1,8 +1,8 @@
 # DodecaRGB V2
 
-Jun 2025: v2.2 includes support for new PCBs with more pixels
+Jun 2025: v2.2 includes support for new PCBs with more pixels (135 per side, 1620 total), using 4 Teensy channels for FastLED (v2 used two channels)
 Apr 2025: V2.1 progresses: current firmware should build and run on teensy41. Native tests, web simulator and docs also updated. New animation: texture map, featuring a rotating globe demo.
-Jan 2025: *V2 in development!* Version two introduces higher density micro-pixels (1248 in total!) and a slightly smaller size overall. Click below to see a teaser video.
+Jan 2025: *V2 in development!* Version two introduces higher density micro-pixels (105 per side, 1248 in total) and a slightly smaller overall. Click below to see a teaser video.
 
 [![DodecaRGB v2 Teaser Video](images/yt-preview-thumb.png)](https://www.youtube.com/watch?v=RErgt5O7D7U)
 
@@ -21,9 +21,9 @@ The firmware, 3d models and tooling are open source and free to use and modify. 
 ## The Reference LED Model
 
 - We have a dodecahedron model with 12 sides.
-- Each side is a pentgon-shaped PCB circuit board that contains 104 RGB leds.
-- Each side connects to the next, in series, for a grand total of 1248 LEDs.
-- The whole thing runs at >50fps, and can be battery powered
+- Each side is a pentgon-shaped PCB circuit board that contains 135 RGB leds.
+- Each side connects to the next, in series, for a grand total of 1620 LEDs.
+- The whole thing runs at up to 80fps, and can be battery powered
 - Portable and interactive: wireless charging, orientation sensor, magnetic closing, 3d printed interior (soon)
 - Other ideas may extend the model (haptic feedback, sound reactive, speaker and sound engine, etc)
 
