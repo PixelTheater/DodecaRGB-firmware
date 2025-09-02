@@ -93,25 +93,21 @@ The project includes unit tests for the cpp classes and python utilities. See [D
   - Evaluating different IMU choices
   - Investigating orientation and sensitivity options
   - Planning gesture support (tap, shake, spin, etc.)
-- 🎨 3D modelling of interior structure
-- 🔌 Motherboard PCB development
-  - Teensy 4.1 mounting
-  - 2x 18650 battery integration
-  - Power and charging circuits
-  - Level shifting
-  - Sensor integration
 
 ### 🎯 Future Plans
 
 - 🔋 Wireless charging (Qi), testing different coils
   - Optimizing PCB placement for production
-- 🖼️ Image loading support (per-side images, mapping projections for globes and spherical photos)
   - Per-side images (for each face, for UI presentation)
 - ⚡ Hardware design improvements for wiring, closure, durability, etc.
   - Step-by-step assembly instructions with photos, or video tutorial
 
 ### ✅ Recently Completed
 
+- 🖼️ Image loading support (per-side images, mapping projections for globes and spherical photos)
+- 🎨 3D modelling of interior structure
+- 🔌 Control Board PCB development
+  - Teensy 4.1 mounting, 2x 18650 battery, Power and charging circuits, Level shifting
 - ✓ Refactoring animations into modules
 - ✓ Updated and expanded documentation
 - ✓ Isolated and standardized interfaces
@@ -130,5 +126,3 @@ The project uses the PixelTheater animation system (part of this project) to man
 Info about doing development with this project is available in [Development.md](docs/Development.md). (pull requests welcome!)
 
 The python utilities are documented in [util/README.md](util/README.md). This includes how to generate the LED coordinates and visualizer from the PCB pick-and-place files, along with unit tests for the utilities.
-
-

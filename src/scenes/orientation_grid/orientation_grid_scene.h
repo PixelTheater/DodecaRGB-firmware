@@ -6,6 +6,10 @@
 // Use shorter Eigen types (Available via ArduinoEigen dependency)
 using Vector3f = Eigen::Vector3f;
 using Matrix3f = Eigen::Matrix3f;
+namespace Eigen {
+template<typename T, int Options> class Quaternion; // Forward declaration
+using Quaternionf = Quaternion<float, 0>;
+}
 
 // No global using directives to avoid name clashes
 
@@ -28,6 +32,13 @@ private:
     CRGB target_line_color_;
     CRGB bg_color_prev_;
     CRGB line_color_prev_;
+
+    // --- IMU / Orientation ---
+    bool imu_enabled_ = false;         // True if IMU control is active
+    Eigen::Quaternionf target_orientation_; // Target orientation from IMU data
+    Eigen::Quaternionf display_orientation_; // Smoothed orientation for display
+    Eigen::Vector3f angular_velocity_;   // For momentum
+    Eigen::Matrix3f rotation_matrix_;     // Combined rotation matrix for rendering
 
     // --- State ---
     bool dark_lines_ = true;

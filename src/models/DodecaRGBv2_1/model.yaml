@@ -43,55 +43,54 @@ face_types:
 #     remap_to: 2    # Use geometric position where face 2 should be
 #     rotation: 1
 faces:
-  - id: 0          # First PCB in series
+  - id: 1          # First PCB in series
     type: pentagon
-    rotation: 3     # 72° clockwise  
-    remap_to: 5
-  - id: 1          # Second PCB
+    rotation: 3    
+    # remap_to: 3
+  - id: 2          # Second PCB
     type: pentagon   
-    rotation: 3
-    remap_to: 2
-  - id: 2          # Third PCB
+    rotation: 3    
+  - id: 3          # Third PCB
     type: pentagon
-    rotation: 3
-    remap_to: 1
-  - id: 3          # Fourth PCB
+    rotation: 3 
+    #remap_to: 1
+  - id: 4          # Fourth PCB
     type: pentagon
     rotation: 3        # 216° clockwise
- #   remap_to: 11
+    # remap_to: 12
   # ... continues clockwise around upper hemisphere
-  - id: 4
-    type: pentagon
-    rotation: 3
- #   remap_to: 8
   - id: 5
     type: pentagon
-    rotation: 0
-    remap_to: 0
-  # ... crosses to lower hemisphere
+    rotation: 3
+    # remap_to: 9
   - id: 6
     type: pentagon
-    rotation: 0
+    rotation: 3
+    #remap_to: 8
+  # ... crosses to lower hemisphere
   - id: 7
     type: pentagon
-    rotation: 0
-#    remap_to: 0
+    rotation: 2
   - id: 8
     type: pentagon
-    rotation: 0
-#    remap_to: 9
+    rotation: 2
+    # remap_to: 11
   - id: 9
     type: pentagon
-    rotation: 0
-#    remap_to: 5
+    rotation: 2
+    # remap_to: 10
   - id: 10
     type: pentagon
-    rotation: 0
-#    remap_to: 4 
-  - id: 11         # Last PCB in series
+    rotation: 2
+    # remap_to: 6
+  - id: 11
+    type: pentagon
+    rotation: 2
+    # remap_to: 5 
+  - id: 12         # Last PCB in series
     type: pentagon
     rotation: 0
-#    remap_to: 3    
+    # remap_to: 4    
 
 # Hardware configuration
 hardware:

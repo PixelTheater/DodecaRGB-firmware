@@ -14,6 +14,23 @@ The web simulator uses a hybrid architecture:
 
 This architecture allows sharing code between the firmware and simulator, ensuring animations behave consistently across platforms.
 
+## Building the Simulator
+
+### Prerequisites
+
+- Emscripten SDK (3.1.0+)
+- Build system (Make)
+
+### Build Commands
+
+```bash
+# Build the simulator
+./build_web.sh
+
+# Start development server
+python -m http.server -d web
+```
+
 ## Code Organization
 
 ### C++ Components
@@ -227,23 +244,6 @@ For more information on scene implementation, see the [Scenes documentation](../
 - **Memory Management**: Proper cleanup of resources when switching scenes
 - **FPS Control**: Monitoring and logging of frame rate
 - **Floating-Point Precision**: Careful handling of decimal values to maintain animation quality
-
-## Building the Simulator
-
-### Prerequisites
-
-- Emscripten SDK (3.1.0+)
-- Build system (Make)
-
-### Build Commands
-
-```bash
-# Build the simulator
-./build_web.sh
-
-# Start development server
-python -m http.server -d web
-```
 
 ## Build Process & Troubleshooting
 

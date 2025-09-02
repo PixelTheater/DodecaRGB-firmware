@@ -78,8 +78,15 @@ class Face:
     leds: List['LED'] = field(default_factory=list)
 
     def get_geometric_id(self) -> int:
-        """Get the geometric ID for this face (uses remap_to if specified, otherwise face ID)"""
-        return self.remap_to if self.remap_to is not None else self.id
+        """Get the geometric ID for this face (uses remap_to if specified, otherwise face ID)
+        
+        Face IDs in YAML are 1-based (1-12), but geometric positions are 0-based (0-11).
+        This method handles the conversion automatically.
+        """
+        if self.remap_to is not None:
+            return self.remap_to - 1  # Convert 1-based remap_to to 0-based geometric position
+        else:
+            return self.id - 1  # Convert 1-based face ID to 0-based geometric position
     
     def is_planar(self, tolerance: float = 5.0) -> bool:
         """Check if all vertices and LEDs of this face are approximately coplanar"""
@@ -182,8 +189,16 @@ class ModelDefinition:
     def _load_faces(self):
         """Load face instances from YAML"""
         for face_data in self.config['faces']:
+            face_id = face_data['id']
+            
+            # Validate that face IDs start from 1 (not 0)
+            if face_id <= 0:
+                raise ValueError(f"Face IDs must start from 1, not {face_id}. "
+                               f"This matches the identify_sides scene numbering where face 1 shows 1 dot, "
+                               f"face 2 shows 2 dots, etc. Please update your YAML to use 1-based face IDs.")
+            
             face = Face(
-                id=face_data['id'],
+                id=face_id,
                 type=face_data['type'],
                 rotation=face_data['rotation'],
                 remap_to=face_data.get('remap_to')  # Load remap_to if present
@@ -201,32 +216,36 @@ class ModelDefinition:
         if not self.faces:
             return
             
-        # Get all face IDs and geometric IDs
+        # Get all face IDs (1-based) and convert to 0-based geometric positions
         all_face_ids = {face.id for face in self.faces}
+        expected_geometric_positions = {face_id - 1 for face_id in all_face_ids}  # Convert to 0-based
         geometric_positions = {}
         
         for face in self.faces:
-            geometric_id = face.get_geometric_id()
+            geometric_id = face.get_geometric_id()  # This is now 0-based
             
-            # Check if geometric ID is a valid face ID
-            if geometric_id not in all_face_ids:
-                raise ValueError(f"Face {face.id} has remap_to={face.remap_to} which is not a valid face ID. "
-                               f"Valid face IDs are: {sorted(all_face_ids)}")
+            # Check if remap_to (if specified) is a valid 1-based face ID
+            if face.remap_to is not None:
+                if face.remap_to not in all_face_ids:
+                    raise ValueError(f"Face {face.id} has remap_to={face.remap_to} which is not a valid face ID. "
+                                   f"Valid face IDs are: {sorted(all_face_ids)}")
             
-            # Check for duplicate geometric positions
+            # Check for duplicate geometric positions (0-based)
             if geometric_id in geometric_positions:
                 other_face = geometric_positions[geometric_id]
-                raise ValueError(f"Multiple faces mapped to same geometric position {geometric_id}: "
-                               f"Face {other_face.id} and Face {face.id}")
+                raise ValueError(f"Multiple faces mapped to same geometric position {geometric_id} "
+                               f"(0-based): Face {other_face.id} and Face {face.id}")
             
             geometric_positions[geometric_id] = face
         
-        # Check that all geometric positions are covered
-        geometric_ids = set(geometric_positions.keys())
-        if geometric_ids != all_face_ids:
-            missing = all_face_ids - geometric_ids
+        # Check that all geometric positions are covered (0-based)
+        actual_geometric_positions = set(geometric_positions.keys())
+        if actual_geometric_positions != expected_geometric_positions:
+            missing = expected_geometric_positions - actual_geometric_positions
             if missing:
-                raise ValueError(f"Missing geometric positions: {sorted(missing)}. "
+                # Convert back to 1-based for user-friendly error message
+                missing_1based = {pos + 1 for pos in missing}
+                raise ValueError(f"Missing geometric positions for face IDs: {sorted(missing_1based)}. "
                                f"All face positions must be covered by the remapping.")
 
 class DodecaModel:
@@ -320,9 +339,9 @@ class DodecaModel:
                 else:
                     m.rotate_z(-zv)
                 
-                # Side rotation - use rotation from YAML config
-                rotation = self._get_rotation_for_geometric_id(geometric_id)
-                m.rotate_z(ro * rotation)
+                # Side rotation - use rotation from the face being positioned (follows remapping)
+                # This ensures that when a face is remapped, its rotation follows it to the new position
+                m.rotate_z(ro * face.rotation)
                 
                 # Add LED-specific rotation to match LED positioning
             #    m.rotate_z(math.pi/10)
@@ -387,9 +406,9 @@ class DodecaModel:
                         else:
                             other_m.rotate_z(-zv)
                         
-                        # Side rotation - use rotation from YAML config
-                        other_rotation = self._get_rotation_for_geometric_id(other_geometric_id)
-                        other_m.rotate_z(ro * other_rotation)
+                        # Side rotation - use rotation from the face being positioned (follows remapping)
+                        # This ensures that when a face is remapped, its rotation follows it to the new position
+                        other_m.rotate_z(ro * other_face.rotation)
                         
                         # Add LED-specific rotation to match LED positioning
                         # other_m.rotate_z(math.pi/10)
@@ -634,9 +653,9 @@ class DodecaModel:
                 else:
                     m.rotate_z(-zv)
                 
-                # Side rotation - use rotation from YAML config
-                rotation = self._get_rotation_for_geometric_id(geometric_id)
-                m.rotate_z(ro * rotation)
+                # Side rotation - use rotation from the face being positioned (follows remapping)
+                # This ensures that when a face is remapped, its rotation follows it to the new position
+                m.rotate_z(ro * face.rotation)
                 
                 # Add LED-specific rotation to match LED positioning  
                 m.rotate_z(math.pi/10)

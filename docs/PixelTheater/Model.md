@@ -252,14 +252,14 @@ face_types:
       smiley: [2,3,4,62,43,13,26,36,46,24,52,63]
 
 faces:
-  - id: 0
-    type: triangle
-    rotation: 0
   - id: 1
     type: triangle
-    rotation: 1
-    remap_to: 3
+    rotation: 0
   - id: 2
+    type: triangle
+    rotation: 1
+    remap_to: 4
+  - id: 3
     type: triangle
     rotation: 2
   # ... additional faces ...
@@ -357,19 +357,21 @@ See the DodecaRGBv2 model for a complete example.
 
 ## Face Configuration
 
+**Important**: Face IDs in YAML configurations start from 1, not 0. This matches the identify_sides scene numbering where face 1 shows 1 dot, face 2 shows 2 dots, etc. This makes configuration much more intuitive during device assembly and calibration.
+
 ### Face Rotation
 
 Each face in the model can be individually rotated to match its physical orientation during assembly. Face rotation is specified using the `rotation` field in the YAML configuration:
 
 ```yaml
 faces:
-  - id: 0
+  - id: 1
     type: pentagon
     rotation: 2     # 144° clockwise rotation (2 × 72°)
-  - id: 1  
+  - id: 2  
     type: pentagon
     rotation: 0     # No rotation (0°)
-  - id: 2
+  - id: 3
     type: pentagon
     rotation: 4     # 288° clockwise rotation (4 × 72°)
 ```
@@ -399,43 +401,44 @@ When `remap_to` is specified in the YAML configuration:
 
 ```yaml
 faces:
-  - id: 0          # Logical face ID (used in scenes)
+  - id: 1          # Logical face ID (used in scenes)
     type: triangle
-    rotation: 0
-    remap_to: 2     # This face is positioned at geometric location 2
-  - id: 1
-    type: triangle  
     rotation: 0
     remap_to: 3     # This face is positioned at geometric location 3
   - id: 2
-    type: triangle
-    rotation: 0  
-    remap_to: 0     # This face is positioned at geometric location 0
+    type: triangle  
+    rotation: 0
+    remap_to: 4     # This face is positioned at geometric location 4
   - id: 3
     type: triangle
-    rotation: 0
+    rotation: 0  
     remap_to: 1     # This face is positioned at geometric location 1
+  - id: 4
+    type: triangle
+    rotation: 0
+    remap_to: 2     # This face is positioned at geometric location 2
 ```
 
 The system creates a mapping where:
-- Scene code: `model().face(0)` → accesses face at geometric position 0 → logical face 2 → LEDs 6-8
-- Scene code: `model().face(1)` → accesses face at geometric position 1 → logical face 3 → LEDs 9-11  
-- Scene code: `model().face(2)` → accesses face at geometric position 2 → logical face 0 → LEDs 0-2
-- Scene code: `model().face(3)` → accesses face at geometric position 3 → logical face 1 → LEDs 3-5
+- Scene code: `model().face(0)` → accesses face at geometric position 0 → logical face 3 → LEDs 6-8
+- Scene code: `model().face(1)` → accesses face at geometric position 1 → logical face 1 → LEDs 0-2  
+- Scene code: `model().face(2)` → accesses face at geometric position 2 → logical face 4 → LEDs 9-11
+- Scene code: `model().face(3)` → accesses face at geometric position 3 → logical face 2 → LEDs 3-5
 
 ### Key Principles
 
-1. **Wiring Stays Consistent**: LEDs are always wired in logical face order (face 0 → LEDs 0-2, face 1 → LEDs 3-5, etc.)
+1. **Wiring Stays Consistent**: LEDs are always wired in logical face order (face 1 → LEDs 0-2, face 2 → LEDs 3-5, etc.)
 2. **Scene Access is Geographic**: `model().face(X)` accesses the face at geometric position X
 3. **Remapping is Transparent**: Scene code doesn't know about remapping - it just works
 4. **3D Positioning Follows Geometry**: LED coordinates are positioned based on geometric location
+5. **Rotation Follows Remapping**: When a face is remapped, its rotation value is applied at the new geometric position
 
 ### Without Remapping
 
 ```cpp
 // No remap_to specified - logical ID matches geometric position
-model().face(0)   // → logical face 0 → LEDs 0-2 → geometric position 0
-model().face(1)   // → logical face 1 → LEDs 3-5 → geometric position 1
+model().face(0)   // → logical face 1 → LEDs 0-2 → geometric position 0
+model().face(1)   // → logical face 2 → LEDs 3-5 → geometric position 1
 ```
 
 Physical LED access and geometric position are identical.
@@ -444,10 +447,10 @@ Physical LED access and geometric position are identical.
 
 ```cpp
 // With remap_to specified - scene accesses by geometric position
-model().face(0)   // → geometric position 0 → logical face 2 → LEDs 6-8
-model().face(1)   // → geometric position 1 → logical face 3 → LEDs 9-11
-model().face(2)   // → geometric position 2 → logical face 0 → LEDs 0-2
-model().face(3)   // → geometric position 3 → logical face 1 → LEDs 3-5
+model().face(0)   // → geometric position 0 → logical face 3 → LEDs 6-8
+model().face(1)   // → geometric position 1 → logical face 1 → LEDs 0-2
+model().face(2)   // → geometric position 2 → logical face 4 → LEDs 9-11
+model().face(3)   // → geometric position 3 → logical face 2 → LEDs 3-5
 ```
 
 Scene code accesses faces by their geometric position, but the LED wiring follows logical face order.
@@ -459,12 +462,12 @@ Scene code accesses faces by their geometric position, but the LED wiring follow
 **Solution**: Use remapping to maintain consistent scene behavior:
 ```yaml
 faces:
-  - id: 0           # First face wired (LEDs 0-103)
+  - id: 1           # First face wired (LEDs 0-103)
     type: pentagon
-    remap_to: 7     # But this face is at geometric position 7
-  - id: 1           # Second face wired (LEDs 104-207)  
+    remap_to: 8     # But this face is at geometric position 8
+  - id: 2           # Second face wired (LEDs 104-207)  
     type: pentagon
-    remap_to: 2     # But this face is at geometric position 2
+    remap_to: 3     # But this face is at geometric position 3
   # ... etc
 ```
 
@@ -475,8 +478,8 @@ model().face(0)  // Bottom face (geometric position 0)
 model().face(7)  // Top face (geometric position 7)
 
 // But LEDs are accessed in wiring order
-// face(0) → logical face 7 → LEDs 728-831
-// face(7) → logical face 0 → LEDs 0-103
+// face(0) → logical face 8 → LEDs 728-831
+// face(7) → logical face 1 → LEDs 0-103
 ```
 
 ### Implementation Details
@@ -496,8 +499,8 @@ To verify remapping works correctly:
 // Test: Setting color through geometric access should light correct physical LEDs
 model().face(0).leds()[0] = CRGB::Red;  // Geometric position 0
 
-// With remapping: face 0 → logical face 2 → LED 6
-// Without remapping: face 0 → logical face 0 → LED 0
+// With remapping: face 0 → logical face 3 → LED 6
+// Without remapping: face 0 → logical face 1 → LED 0
 ```
 
 The physical LED that lights up will change based on remapping configuration.
@@ -508,14 +511,14 @@ Rotation and remapping can be used together for complete control over face posit
 
 ```yaml
 faces:
-  - id: 0          # First PCB in wiring order
+  - id: 1          # First PCB in wiring order
     type: pentagon
     rotation: 2     # Rotate 144° to match physical orientation
-    remap_to: 5     # Position at geometric location 5
-  - id: 1          # Second PCB in wiring order  
+    remap_to: 6     # Position at geometric location 6
+  - id: 2          # Second PCB in wiring order  
     type: pentagon
     rotation: 1     # Rotate 72° to match physical orientation
-    remap_to: 0     # Position at geometric location 0 (bottom)
+    remap_to: 1     # Position at geometric location 1 (bottom)
 ```
 
 **Processing Order:**

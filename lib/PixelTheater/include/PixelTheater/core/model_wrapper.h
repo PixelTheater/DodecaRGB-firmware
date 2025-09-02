@@ -77,7 +77,9 @@ public:
         // Get the actual Face reference from the proxy by accessing the internal Face
         // We need to find the logical face ID that the proxy represents
         uint8_t logical_face_id = face_proxy.id();
-        return concrete_model_->faces[logical_face_id];
+        // Convert 1-based logical face ID to 0-based array index
+        uint8_t array_index = logical_face_id - 1;
+        return concrete_model_->faces[array_index];
     }
 
     size_t faceCount() const noexcept override {

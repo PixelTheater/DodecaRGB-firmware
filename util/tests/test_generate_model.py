@@ -45,10 +45,10 @@ face_types:
       ring1: [6, 7, 8, 9, 10]
 
 faces:
-  - id: 0
+  - id: 1
     type: pentagon
     rotation: 0
-  - id: 1
+  - id: 2
     type: pentagon
     rotation: 3
 
@@ -216,6 +216,207 @@ class TestDodecaModel(unittest.TestCase):
         import shutil
         shutil.rmtree(self.temp_dir)
 
+class TestFaceIdNumberingAndRotation(unittest.TestCase):
+    """Test the new 1-based face ID numbering and rotation+remapping behavior"""
+    
+    def create_test_yaml(self, faces_config):
+        """Helper to create a test YAML file with the given faces configuration"""
+        test_model = {
+            'model': {
+                'name': 'TestModel',
+                'version': '1.0.0',
+                'description': 'Test model for face ID and rotation testing',
+                'author': 'Test'
+            },
+            'geometry': {
+                'shape': 'Dodecahedron',
+                'num_faces': 12,
+                'edge_length_mm': 60.0,
+                'radius_mm': 130.0
+            },
+            'face_types': {
+                'pentagon': {
+                    'num_leds': 10,  # Small number for testing
+                    'num_sides': 5,
+                    'groups': {
+                        'center': [0],
+                        'ring0': [1, 2, 3, 4, 5],
+                    }
+                }
+            },
+            'faces': faces_config,
+            'hardware': {
+                'pcb': {
+                    'pick_and_place_file': 'dummy.csv',
+                    'led_designator_prefix': 'LED'
+                },
+                'led': {
+                    'type': 'WS2812B',
+                    'color_order': 'GRB',
+                    'diameter_mm': 1.6,
+                    'spacing_mm': 4.5
+                },
+                'power': {
+                    'max_current_per_led_ma': 20,
+                    'avg_current_per_led_ma': 10
+                }
+            }
+        }
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+            yaml.dump(test_model, f)
+            return f.name
+    
+    def test_face_id_zero_validation_error(self):
+        """Test that face ID 0 now raises a clear validation error"""
+        faces_config = [
+            {'id': 1, 'type': 'pentagon', 'rotation': 0},  # Should fail
+            {'id': 2, 'type': 'pentagon', 'rotation': 0}
+        ]
+        
+        yaml_path = self.create_test_yaml(faces_config)
+        try:
+            with self.assertRaises(ValueError) as context:
+                ModelDefinition(yaml_path)
+            self.assertIn("Face IDs must start from 1", str(context.exception))
+        finally:
+            os.unlink(yaml_path)
+    
+    def test_one_based_face_numbering(self):
+        """Test that face IDs now start from 1 and work correctly"""
+        faces_config = [
+            {'id': 2, 'type': 'pentagon', 'rotation': 0},
+            {'id': 3, 'type': 'pentagon', 'rotation': 1},
+            {'id': 4, 'type': 'pentagon', 'rotation': 2}
+        ]
+        
+        yaml_path = self.create_test_yaml(faces_config)
+        try:
+            model_def = ModelDefinition(yaml_path)
+            
+            # Should have 3 faces with IDs 1, 2, 3
+            self.assertEqual(len(model_def.faces), 3)
+            face_ids = [face.id for face in model_def.faces]
+            self.assertEqual(sorted(face_ids), [1, 2, 3])
+            
+            # Geometric positions should be 0, 1, 2 (0-based internally)
+            geometric_ids = [face.get_geometric_id() for face in model_def.faces]
+            self.assertEqual(sorted(geometric_ids), [0, 1, 2])  # 0-based internally
+            
+        finally:
+            os.unlink(yaml_path)
+    
+    def test_rotation_follows_remapping_simple_case(self):
+        """Test that rotation follows the face to its new geometric position"""
+        faces_config = [
+            {'id': 2, 'type': 'pentagon', 'rotation': 2, 'remap_to': 3},  # Face 1 rotated, goes to position 2
+            {'id': 3, 'type': 'pentagon', 'rotation': 0, 'remap_to': 2},  # Face 2 no rotation, goes to position 1
+        ]
+        
+        yaml_path = self.create_test_yaml(faces_config)
+        
+        # Create a simple PnP file
+        pnp_path = os.path.join(os.path.dirname(yaml_path), "test_pnp.csv")
+        pnp_content = (
+            "Designator\tMid X\tMid Y\n"
+            "LED1\t0mm\t0mm\n"      # Center LED
+            "LED2\t5mm\t0mm\n"      # Offset LED for rotation detection
+        )
+        with open(pnp_path, "w") as f:
+            f.write(pnp_content)
+        
+        try:
+            # Generate model
+            model_def = ModelDefinition(yaml_path)
+            model = DodecaModel(model_def)
+            model.load_pcb_data(pnp_path)
+            model.generate_model()
+            
+            # Get faces by their logical IDs
+            face_1 = next(f for f in model_def.faces if f.id == 1)
+            face_2 = next(f for f in model_def.faces if f.id == 2)
+            
+            # Check remapping
+            self.assertEqual(face_1.get_geometric_id(), 1)  # Face 1 goes to geometric position 1 (0-based: position 2-1=1)
+            self.assertEqual(face_2.get_geometric_id(), 0)  # Face 2 goes to geometric position 0 (0-based: position 1-1=0)
+            
+            # The key test: when generating vertices for geometric position 1,
+            # it should use rotation 2 (from face 1 that's positioned there)
+            # when generating vertices for geometric position 0,
+            # it should use rotation 0 (from face 2 that's positioned there)
+            
+            # This is hard to test directly, but we can verify through the generated header
+            import tempfile
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.h', delete=False) as f:
+                header_path = f.name
+                model.export_cpp_header(f)
+            
+            # Read and check that vertices are positioned correctly
+            with open(header_path, 'r') as f:
+                header_content = f.read()
+            
+            # Parse face data to verify rotation was applied correctly
+            import re
+            face_data_pattern = r'\{\.id = (\d+), \.type_id = \d+, \.rotation = (\d+), \.geometric_id = (\d+),'
+            
+            face_info = {}
+            for match in re.finditer(face_data_pattern, header_content):
+                face_id = int(match.group(1))
+                rotation = int(match.group(2))
+                geometric_id = int(match.group(3))
+                face_info[face_id] = {'rotation': rotation, 'geometric_id': geometric_id}
+            
+            # Verify the mapping
+            self.assertEqual(face_info[1]['geometric_id'], 1)  # Face 1 at geometric position 1
+            self.assertEqual(face_info[1]['rotation'], 2)      # Face 1 has rotation 2
+            self.assertEqual(face_info[2]['geometric_id'], 0)  # Face 2 at geometric position 0  
+            self.assertEqual(face_info[2]['rotation'], 0)      # Face 2 has rotation 0
+            
+            # Clean up
+            os.unlink(header_path)
+            
+        finally:
+            os.unlink(yaml_path)
+            if os.path.exists(pnp_path):
+                os.unlink(pnp_path)
+    
+    def test_rotation_follows_remapping_complex_case(self):
+        """Test rotation following with a 3-way face swap"""
+        faces_config = [
+            {'id': 2, 'type': 'pentagon', 'rotation': 1, 'remap_to': 4},  # Face 1 (rot 1) -> position 3
+            {'id': 3, 'type': 'pentagon', 'rotation': 2, 'remap_to': 2},  # Face 2 (rot 2) -> position 1  
+            {'id': 4, 'type': 'pentagon', 'rotation': 3, 'remap_to': 3},  # Face 3 (rot 3) -> position 2
+        ]
+        
+        yaml_path = self.create_test_yaml(faces_config)
+        
+        try:
+            model_def = ModelDefinition(yaml_path)
+            
+            # Verify remapping
+            face_by_id = {f.id: f for f in model_def.faces}
+            
+            # Face 1 should be at geometric position 2 (3-1=2 in 0-based)
+            self.assertEqual(face_by_id[1].get_geometric_id(), 2)
+            self.assertEqual(face_by_id[1].rotation, 1)
+            
+            # Face 2 should be at geometric position 0 (1-1=0 in 0-based)
+            self.assertEqual(face_by_id[2].get_geometric_id(), 0)
+            self.assertEqual(face_by_id[2].rotation, 2)
+            
+            # Face 3 should be at geometric position 1 (2-1=1 in 0-based)  
+            self.assertEqual(face_by_id[3].get_geometric_id(), 1)
+            self.assertEqual(face_by_id[3].rotation, 3)
+            
+            # Expected behavior: when vertices are generated for each geometric position,
+            # they should use the rotation of the face that's positioned there:
+            # - Geometric position 0: should use rotation 2 (from face 2)
+            # - Geometric position 1: should use rotation 3 (from face 3)
+            # - Geometric position 2: should use rotation 1 (from face 1)
+            
+        finally:
+            os.unlink(yaml_path)
+
 class TestFaceRemapping(unittest.TestCase):
     
     def create_test_yaml(self, faces_config):
@@ -275,19 +476,19 @@ class TestFaceRemapping(unittest.TestCase):
     def test_face_without_remapping(self):
         """Test that faces without remap_to use their own ID"""
         faces_config = [
-            {'id': 0, 'type': 'pentagon', 'rotation': 1},
-            {'id': 1, 'type': 'pentagon', 'rotation': 2}
+            {'id': 2, 'type': 'pentagon', 'rotation': 1},
+            {'id': 3, 'type': 'pentagon', 'rotation': 2}
         ]
         
         yaml_path = self.create_test_yaml(faces_config)
         try:
             model_def = ModelDefinition(yaml_path)
             
-            # Face without remap_to should use its own ID
-            face_0 = model_def.faces[0]
-            self.assertEqual(face_0.id, 0)
-            self.assertIsNone(face_0.remap_to)
-            self.assertEqual(face_0.get_geometric_id(), 0)
+            # Face without remap_to should use its own ID (converted to 0-based)
+            face_2 = model_def.faces[0]  # First face in list has ID 2
+            self.assertEqual(face_2.id, 2)
+            self.assertIsNone(face_2.remap_to)
+            self.assertEqual(face_2.get_geometric_id(), 1)  # 1-based ID 2 → 0-based position 1
             
         finally:
             os.unlink(yaml_path)
@@ -295,9 +496,9 @@ class TestFaceRemapping(unittest.TestCase):
     def test_face_with_remapping(self):
         """Test that faces with remap_to use the remapped ID for geometry"""
         faces_config = [
-            {'id': 0, 'type': 'pentagon', 'remap_to': 2, 'rotation': 1},
-            {'id': 1, 'type': 'pentagon', 'rotation': 2},
-            {'id': 2, 'type': 'pentagon', 'remap_to': 0, 'rotation': 3}
+            {'id': 1, 'type': 'pentagon', 'remap_to': 3, 'rotation': 1},
+            {'id': 2, 'type': 'pentagon', 'rotation': 2},
+            {'id': 3, 'type': 'pentagon', 'remap_to': 1, 'rotation': 3}
         ]
         
         yaml_path = self.create_test_yaml(faces_config)
@@ -353,7 +554,7 @@ class TestFaceRemapping(unittest.TestCase):
         """Test that invalid remapping configurations are caught"""
         # Test 1: Remapping to non-existent face
         faces_config = [
-            {'id': 0, 'type': 'pentagon', 'remap_to': 99, 'rotation': 1}  # Invalid
+            {'id': 1, 'type': 'pentagon', 'remap_to': 100, 'rotation': 1}  # Invalid
         ]
         
         yaml_path = self.create_test_yaml(faces_config)
@@ -366,9 +567,9 @@ class TestFaceRemapping(unittest.TestCase):
         
         # Test 2: Multiple faces mapped to same position
         faces_config = [
-            {'id': 0, 'type': 'pentagon', 'remap_to': 2, 'rotation': 1},
-            {'id': 1, 'type': 'pentagon', 'remap_to': 2, 'rotation': 1},  # Conflict!
-            {'id': 2, 'type': 'pentagon', 'rotation': 1}
+            {'id': 1, 'type': 'pentagon', 'remap_to': 3, 'rotation': 1},
+            {'id': 2, 'type': 'pentagon', 'remap_to': 3, 'rotation': 1},  # Conflict!
+            {'id': 3, 'type': 'pentagon', 'rotation': 1}
         ]
         
         yaml_path = self.create_test_yaml(faces_config)
@@ -383,8 +584,8 @@ class TestFaceRemapping(unittest.TestCase):
         """Test that model generation correctly uses geometric IDs for LED positioning"""
         # Create a test model with face remapping
         faces_config = [
-            {'id': 0, 'type': 'pentagon', 'remap_to': 1, 'rotation': 0},  # Face 0 at position 1
-            {'id': 1, 'type': 'pentagon', 'remap_to': 0, 'rotation': 0}   # Face 1 at position 0
+            {'id': 1, 'type': 'pentagon', 'remap_to': 2, 'rotation': 0},  # Face 0 at position 1
+            {'id': 2, 'type': 'pentagon', 'remap_to': 1, 'rotation': 0}   # Face 1 at position 0
         ]
         
         yaml_path = self.create_test_yaml(faces_config)
@@ -452,8 +653,8 @@ class TestFaceRemapping(unittest.TestCase):
         import os
         # Create a simple 2-face model with clear remapping
         faces_config = [
-            {'id': 0, 'type': 'pentagon', 'remap_to': 1, 'rotation': 0},  # Face 0 at position 1
-            {'id': 1, 'type': 'pentagon', 'remap_to': 0, 'rotation': 0}   # Face 1 at position 0
+            {'id': 1, 'type': 'pentagon', 'remap_to': 2, 'rotation': 0},  # Face 0 at position 1
+            {'id': 2, 'type': 'pentagon', 'remap_to': 1, 'rotation': 0}   # Face 1 at position 0
         ]
         
         yaml_path = self.create_test_yaml(faces_config)
@@ -528,8 +729,8 @@ class TestFaceRemapping(unittest.TestCase):
         import os
         # Create a test model with face remapping
         faces_config = [
-            {'id': 0, 'type': 'pentagon', 'remap_to': 1, 'rotation': 0},  # Face 0 at position 1
-            {'id': 1, 'type': 'pentagon', 'remap_to': 0, 'rotation': 0}   # Face 1 at position 0
+            {'id': 1, 'type': 'pentagon', 'remap_to': 2, 'rotation': 0},  # Face 0 at position 1
+            {'id': 2, 'type': 'pentagon', 'remap_to': 1, 'rotation': 0}   # Face 1 at position 0
         ]
         
         yaml_path = self.create_test_yaml(faces_config)
@@ -639,8 +840,8 @@ class TestFaceRemapping(unittest.TestCase):
         import os
         # Create test model where face 0 and face 1 are swapped
         faces_config = [
-            {'id': 0, 'type': 'pentagon', 'remap_to': 1, 'rotation': 0},  # Face 0 at position 1
-            {'id': 1, 'type': 'pentagon', 'remap_to': 0, 'rotation': 0}   # Face 1 at position 0
+            {'id': 1, 'type': 'pentagon', 'remap_to': 2, 'rotation': 0},  # Face 0 at position 1
+            {'id': 2, 'type': 'pentagon', 'remap_to': 1, 'rotation': 0}   # Face 1 at position 0
         ]
         
         yaml_path = self.create_test_yaml(faces_config)
@@ -720,8 +921,8 @@ class TestFaceRemapping(unittest.TestCase):
         import os
         # Create a test model with LED groups
         faces_config = [
-            {'id': 0, 'type': 'pentagon', 'rotation': 0},
-            {'id': 1, 'type': 'pentagon', 'rotation': 0}
+            {'id': 1, 'type': 'pentagon', 'rotation': 0},
+            {'id': 2, 'type': 'pentagon', 'rotation': 0}
         ]
         
         yaml_path = self.create_test_yaml(faces_config)
@@ -774,8 +975,8 @@ class TestFaceRemapping(unittest.TestCase):
         import os
         # Create a simple 2-face model to test edge calculation
         faces_config = [
-            {'id': 0, 'type': 'pentagon', 'rotation': 0},
-            {'id': 1, 'type': 'pentagon', 'rotation': 0}
+            {'id': 1, 'type': 'pentagon', 'rotation': 0},
+            {'id': 2, 'type': 'pentagon', 'rotation': 0}
         ]
         
         yaml_path = self.create_test_yaml(faces_config)
@@ -824,7 +1025,7 @@ class TestFaceRemapping(unittest.TestCase):
         import os
         # Create a test model
         faces_config = [
-            {'id': 0, 'type': 'pentagon', 'rotation': 0}
+            {'id': 1, 'type': 'pentagon', 'rotation': 0}
         ]
         
         yaml_path = self.create_test_yaml(faces_config)
@@ -871,8 +1072,8 @@ class TestFaceRemapping(unittest.TestCase):
         import os
         # Create a test model that exercises all features
         faces_config = [
-            {'id': 0, 'type': 'pentagon', 'remap_to': 1, 'rotation': 0},
-            {'id': 1, 'type': 'pentagon', 'remap_to': 0, 'rotation': 0}
+            {'id': 1, 'type': 'pentagon', 'remap_to': 2, 'rotation': 0},
+            {'id': 2, 'type': 'pentagon', 'remap_to': 1, 'rotation': 0}
         ]
         
         yaml_path = self.create_test_yaml(faces_config)

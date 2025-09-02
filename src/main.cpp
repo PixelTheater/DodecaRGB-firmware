@@ -51,9 +51,10 @@
 #define ANALOG_PIN_A 24
 #define ANALOG_PIN_B 25
 #define ON_BOARD_LED 13
+// I2C pins are set to SDA1/SCL1 (pins 17/16) WIRE1
 
 #define BRIGHTNESS  15      // global brightness, should be used by all animations
-#define USE_IMU 1           // enable orientation sensor (currently: LSM9DS1TR)
+#define USE_IMU 0           // enable orientation sensor (currently: LSM9DS1TR)
 
 // model settings (replace with generated model params)
 #define NUM_LEDS 1620
@@ -189,7 +190,7 @@ void setup() {
   random16_add_entropy(seed1);
   random16_add_entropy(seed2);
   Serial.printf("Start: DodecaRGBv2 firmware v%s\n", VERSION);
-  Serial.printf("Teensy version: %d\n", TEENSYDUINO);
+  Serial.printf("Es version: %d\n", TEENSYDUINO);
   // Parse FastLED version
   int major = FASTLED_VERSION / 1000000;
   int minor = (FASTLED_VERSION / 1000) % 1000;
@@ -395,14 +396,15 @@ void setup() {
   
   // Add scenes 
   //theater.addScene<Scenes::TestScene>(); // Add Test Scene first
-  //theater.addScene<Scenes::IdentifySidesScene>(); // ADDED IdentifySidesScene
+  theater.addScene<Scenes::IdentifySidesScene>(); // ADDED IdentifySidesScene
+  theater.addScene<Scenes::OrientationGridScene>(); // ADDED  
   theater.addScene<Scenes::GravityMarblesScene>(); // Add the new scene instance
   theater.addScene<Scenes::BlobScene>(); 
   theater.addScene<Scenes::SparklesScene>(); // UPDATED
   //theater.addScene<Scenes::SatellitesScene>(); // <<< ADDED Satellites Scene
   theater.addScene<Scenes::WanderingParticlesScene>(); // Add Wandering Particles
   theater.addScene<Scenes::TextureMapScene>(); // TextureMapScene moved to Scenes namespace
-  theater.addScene<Scenes::OrientationGridScene>(); // ADDED
+
   theater.addScene<Scenes::XYZScannerScene>(); 
   theater.addScene<Scenes::BoidsScene>(); // Add Boids Scene
   theater.addScene<Scenes::GeographyScene>(); // Add the new scene instance
@@ -525,6 +527,14 @@ void loop() {
               }
           }
       } else if (sensorValue.sensorId == SH2_GAME_ROTATION_VECTOR) {
+        if (auto* current_scene = theater.currentScene()) {
+            if (current_scene->name() == "Orientation Grid") {
+                current_scene->settings["imu_quat_real"] = sensorValue.un.gameRotationVector.real;
+                current_scene->settings["imu_quat_i"] = sensorValue.un.gameRotationVector.i;
+                current_scene->settings["imu_quat_j"] = sensorValue.un.gameRotationVector.j;
+                current_scene->settings["imu_quat_k"] = sensorValue.un.gameRotationVector.k;
+            }
+        }
         // Log quaternion data occasionally or when significantly changed
         /*if (current_time - last_imu_log >= IMU_LOG_INTERVAL || 
             abs(sensorValue.un.gameRotationVector.real - last_quat_real) > 0.1) {
