@@ -14,7 +14,7 @@ geometry:
 # Face definitions
 face_types:
   pentagon:
-    num_leds: 135  # Each pentagon PCB has 104 LEDs
+    num_leds: 135  # Each pentagon PCB has 135 LEDs
     num_sides: 5
     groups:
       # Optional predefined LED groups for animations

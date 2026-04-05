@@ -95,7 +95,7 @@ PixelTheater provides a robust way to work with 16-entry color palettes.
 
 void MyScene::tick() {
     Scene::tick();
-    uint8_t animationIndex = tickCount(); // Simple 0-255 index
+    uint8_t animationIndex = tick_count(); // Simple 0-255 index
 
     // Example 1: Color boids from Ocean palette (from boids_scene.h)
     PixelTheater::CRGB boidColor = PixelTheater::colorFromPalette(
@@ -195,7 +195,7 @@ void MyScene::tick() {
 
     // Fill next 50 with a rainbow (if enough LEDs exist)
     if (ledCount() > 100) {
-       PixelTheater::fill_rainbow(leds.slice(50, 50), tickCount(), 5); // Start hue, delta hue per LED
+       PixelTheater::fill_rainbow(leds.slice(50, 50), tick_count(), 5); // Start hue, delta hue per LED
     }
 }
 ```

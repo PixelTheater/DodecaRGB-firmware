@@ -45,7 +45,7 @@ See [Model Visualization](#model-visualization) section below for detailed usage
 - `Matrix3D`: Python port of Processing transformation matrix
 - `test_transforms.pde`: Original Processing reference code
 - Point data generation matches hardware PCB layout:
-  - 12 pentagon PCBs (104 LEDs each)
+  - 12 pentagon PCBs (135 LEDs each on v2.1, 104 on v2)
   - ~13cm diameter dodecahedron
   - Verified against physical measurements
 

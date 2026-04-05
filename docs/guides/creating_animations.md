@@ -380,7 +380,7 @@ uint8_t brightness = sin8(cycle * 255); // Sine wave brightness
 
 **Relative Time:**
 ```cpp
-size_t frame = tickCount(); // Frames since scene started
+size_t frame = tick_count(); // Frames since scene started
 float dt = deltaTime();     // Seconds since last frame
 
 // Accumulate time
@@ -553,7 +553,7 @@ void MyScene::tick() {
     Scene::tick();
     
     // Only update every 5th frame for expensive calculations
-    if (tickCount() % 5 == 0) {
+    if (tick_count() % 5 == 0) {
         // Expensive noise calculation
         for (size_t i = 0; i < ledCount(); i += 5) { // Sample subset
             noiseValues[i] = inoise8(i * 20, millis() / 50);
@@ -591,7 +591,7 @@ These methods are available within your Scene class:
 - `name()`, `description()`, `version()`, `author()` - Get scene metadata
 
 ### Utilities
-- `millis()`, `deltaTime()`, `tickCount()` - Timing
+- `millis()`, `deltaTime()`, `tick_count()` - Timing
 - `random8()`, `random16()`, `randomFloat()` - Random numbers
 - `logInfo()`, `logWarning()`, `logError()` - Logging
 
