@@ -31,7 +31,8 @@ static constexpr float MIX_FREQ_LERP_RATE = 0.3f;   // Rate per second
 static constexpr float CHAOS_LEVEL_LERP_RATE = 0.1f; // Rate per second (slow drift)
 // Other constants ...
 static constexpr float MIN_RANDOMIZED_DURATION_S = 0.2f; 
-static constexpr uint8_t BASE_FADE = 20;
+static constexpr uint8_t BASE_FADE = 30;
+static constexpr uint8_t MAX_PIXEL_BRIGHTNESS = 230;
 static constexpr float FADE_INTENSITY_SCALE = 15.0f; 
 static constexpr uint8_t BASE_SPARKLE_STRENGTH = 64;
 static constexpr float SPARKLE_INTENSITY_SCALE = 191.0f; 
@@ -150,23 +151,23 @@ void SparklesScene::setup() {
     }
 
     // --- Initialize State ---
-    colorA = CRGB::Black; colorB = CRGB::Black;
+    // Start with actual palette colors so animation is immediately visible
+    colorA = selectNewColorFromPalette(palette1);
+    colorB = selectNewColorFromPalette(palette2);
     targetMixRatio_ = 0.5f;
     currentMixRatio_ = 0.5f;
     targetMixOscillationFreq_ = map(DEFAULT_SPEED, 0.0f, 1.0f, MIN_TARGET_MIX_FREQ, MAX_TARGET_MIX_FREQ);
     mixOscillationFreq_ = targetMixOscillationFreq_;
-    targetChaosLevel_ = DEFAULT_CHAOS; // Start targeting default chaos
-    currentChaosLevel_ = 0.0f; // Start calm
-    is_initial_transition = true;
+    targetChaosLevel_ = DEFAULT_CHAOS;
+    currentChaosLevel_ = 0.0f;
+    is_initial_transition = false;
     mixOscillatorPhase = randomFloat(0.0f, PT_TWO_PI);
 
-    // Call startNewColorTransition to set initial targets and durations
     startNewColorTransition(settings["Speed"], settings["Chaos"]);
-    // Override timer for initial fade-in feel using eased progress
     colorChangeTimer = std::max(colorATransitionDuration, colorBTransitionDuration);
-    // Set previous targets for first interpolation correctly
-    previousColorATarget = CRGB::Black; 
-    previousColorBTarget = CRGB::Black;
+    // First transition goes from initial colors, not from black
+    previousColorATarget = colorA; 
+    previousColorBTarget = colorB;
     
     logInfo("SparklesScene setup complete");
 }
@@ -239,6 +240,16 @@ void SparklesScene::tick() {
         CRGB variedColorB = colorB;
         variedColorB.nscale8(brightnessVariation); // Apply brightness variation first
         leds[px] += variedColorB.nscale8(sparkleStrength); // Add scaled color
+    }
+
+    // 7. Cap brightness to prevent additive blending from saturating to white
+    for(size_t i = 0; i < count; ++i) {
+        uint8_t maxCh = std::max({leds[i].r, leds[i].g, leds[i].b});
+        if (maxCh > MAX_PIXEL_BRIGHTNESS) {
+            leds[i].r = uint8_t((uint16_t(leds[i].r) * MAX_PIXEL_BRIGHTNESS) / maxCh);
+            leds[i].g = uint8_t((uint16_t(leds[i].g) * MAX_PIXEL_BRIGHTNESS) / maxCh);
+            leds[i].b = uint8_t((uint16_t(leds[i].b) * MAX_PIXEL_BRIGHTNESS) / maxCh);
+        }
     }
 }
 

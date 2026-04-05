@@ -19,7 +19,7 @@
 
 // Include Scene implementations 
 // #include "scenes/blob_scene.h" // Temporarily disabled until refactored <-- REMOVE COMMENT
-#include "scenes/identify_sides/identify_sides_scene.h" // ADDED IdentifySidesScene
+//#include "scenes/identify_sides/identify_sides_scene.h" // ADDED IdentifySidesScene
 #include "scenes/satellites/SatellitesScene.h" // <<< ADDED Satellites Scene
 #include "scenes/blobs/blob_scene.h" // Refactored
 #include "scenes/xyz_scanner/xyz_scanner_scene.h" // Refactored
@@ -54,7 +54,7 @@
 // I2C pins are set to SDA1/SCL1 (pins 17/16) WIRE1
 
 #define BRIGHTNESS  15      // global brightness, should be used by all animations
-#define USE_IMU 0           // enable orientation sensor (currently: LSM9DS1TR)
+#define USE_IMU 1           // enable orientation sensor (currently: LSM9DS1TR)
 
 // model settings (replace with generated model params)
 #define NUM_LEDS 1620
@@ -395,18 +395,18 @@ void setup() {
   }
   
   // Add scenes 
-  //theater.addScene<Scenes::TestScene>(); // Add Test Scene first
-  theater.addScene<Scenes::IdentifySidesScene>(); // ADDED IdentifySidesScene
+  // theater.addScene<Scenes::TestScene>(); // Add Test Scene first
+  //theater.addScene<Scenes::IdentifySidesScene>(); // ADDED IdentifySidesScene
+  theater.addScene<Scenes::SparklesScene>(); // First for testing
+  theater.addScene<Scenes::BlobScene>(); 
+  theater.addScene<Scenes::BoidsScene>(); // Add Boids Scene
   theater.addScene<Scenes::OrientationGridScene>(); // ADDED  
   theater.addScene<Scenes::GravityMarblesScene>(); // Add the new scene instance
-  theater.addScene<Scenes::BlobScene>(); 
-  theater.addScene<Scenes::SparklesScene>(); // UPDATED
-  //theater.addScene<Scenes::SatellitesScene>(); // <<< ADDED Satellites Scene
+  theater.addScene<Scenes::SatellitesScene>(); // <<< ADDED Satellites Scene
   theater.addScene<Scenes::WanderingParticlesScene>(); // Add Wandering Particles
   theater.addScene<Scenes::TextureMapScene>(); // TextureMapScene moved to Scenes namespace
 
   theater.addScene<Scenes::XYZScannerScene>(); 
-  theater.addScene<Scenes::BoidsScene>(); // Add Boids Scene
   theater.addScene<Scenes::GeographyScene>(); // Add the new scene instance
   
   // Start the theater 
