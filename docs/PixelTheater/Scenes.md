@@ -8,7 +8,7 @@ version: 2.8.3
 
 This document provides a quick reference to the API available to authors creating custom animations by inheriting from `PixelTheater::Scene`.
 
-- For a tutorial on creating scenes, see the [Creating Animations Guide](../../docs/creating_animations.md).
+- For a tutorial on creating scenes, see the [Creating Animations Guide](../guides/creating_animations.md).
 - For details on Parameters, see the [Parameters Guide](Parameters.md).
 - For Color/Palette details, see [Color System](Color.md) and [Palettes API](Palettes.md).
 - For Model/Geometry details, see [Model System](Model.md).

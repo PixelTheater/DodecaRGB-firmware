@@ -75,7 +75,7 @@ const PixelTheater::CRGBPalette16& customPalette = PixelTheater::Palettes::baseP
 Retrieves a color from a `CRGBPalette16`, handling interpolation and brightness scaling.
 
 ```cpp
-#include "PixelTheater/color_api.h" // Include this header
+#include "PixelTheater/color/palette_api.h" // Include this header
 #include "PixelTheater/palettes.h"  // For palette constants and type
 
 namespace PixelTheater {
@@ -119,7 +119,7 @@ void Scenes::MyScene::tick() {
     Scene::tick(); // Base class tick
 
     uint8_t brightness = 180;
-    uint8_t index = tickCount(); // Simple animation index (0-255 wraps)
+    uint8_t index = tick_count(); // Simple animation index (0-255 wraps)
 
     // Get color from the standard 'Party' palette
     CRGB color1 = PixelTheater::colorFromPalette(

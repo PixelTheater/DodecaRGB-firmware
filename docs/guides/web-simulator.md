@@ -2,7 +2,7 @@
 
 The DodecaRGB Web Simulator provides a browser-based visualization and testing environment for LED animations using WebGL and WebAssembly. This guide explains the architecture, design patterns, and implementation details to help developers understand and modify the codebase.
 
-![web sim](../images/web-simulator.png:600x)
+![web sim](../../images/web-simulator.png)
 
 ## Architecture Overview
 
@@ -35,7 +35,7 @@ python -m http.server -d web
 
 ### C++ Components
 
-- **[`src/web_simulator.cpp`](../src/web_simulator.cpp)**: Main C++ entry point for the simulator
+- **[`src/web_simulator.cpp`](../../src/web_simulator.cpp)**: Main C++ entry point for the simulator
   - Contains the `WebSimulator` class that manages scene execution and parameter handling
   - Implements C functions exposed via `EMSCRIPTEN_KEEPALIVE` for JavaScript interoperability (e.g., `get_scene_parameters_json`, `update_scene_parameter_string`)
   - Parameter data is primarily exchanged with JavaScript using JSON strings.

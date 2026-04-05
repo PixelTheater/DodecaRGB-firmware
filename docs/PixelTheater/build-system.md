@@ -84,7 +84,9 @@ test/
 Pre-build:
 ```
 scripts/
-├── pre_build.py          # Environment setup
+└── pre_build.py          # Environment setup
+
+util/
 └── generate_model.py     # Create model from YAML definition and PNP file
 ```
 
@@ -127,11 +129,12 @@ Options:
 - `-i, --input FILE`: Input PCB pick and place file (overrides YAML definition)
 - `-y, --yes`: Automatically overwrite existing files without confirmation
 
-Run 3D visualizer:
+Run 3D model viewer:
 ```bash
-python util/visualizer.py
+python util/dodeca_viewer.py src/models/DodecaRGBv2_1
 ```
 
-The visualizer provides interactive 3D viewing of PCB and LED arrangements. Mouse controls:
+The viewer provides interactive 3D viewing of the generated model. Mouse controls:
 - Click + drag: rotate view
 - Click face: highlight LEDs
+- Press 'r': reset view

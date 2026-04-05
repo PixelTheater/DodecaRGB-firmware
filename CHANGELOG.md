@@ -108,7 +108,7 @@ v2.0 Dec 8 2024:
 
 ## Version 1 of the project
 
-For more info see the [Version 1 README](../Dodeca-V1-info.md).
+For more info see the [Version 1 README](docs/guides/Dodeca-V1-info.md).
 
 v1.0 Aug 2023:
 

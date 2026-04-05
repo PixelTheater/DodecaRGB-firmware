@@ -5,7 +5,7 @@ title: PixelTheater
 
 ## Vision
 
-To create an awesome open-source animation and interaction platform for running resolution-indpendent apps on portable, interactive 3D physical models. And because we love making things that have lots of LEDs.
+To create an awesome open-source animation and interaction platform for running resolution-independent apps on portable, interactive 3D physical models. And because we love making things that have lots of LEDs.
 
 ## Sections
 
@@ -37,7 +37,7 @@ The [Web Simulator](simulator/index.html) provides a browser-based testing envir
 
 ## Features
 
-- 1,248 individually addressable RGB LEDs
+- 1,620 individually addressable RGB LEDs
 - Web-based simulator for development
 - Flexible parameter system
 - Multiple coordinate systems

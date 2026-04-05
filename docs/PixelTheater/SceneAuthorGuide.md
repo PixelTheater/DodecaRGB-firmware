@@ -160,7 +160,7 @@ These methods are available within your Scene class:
 *   `get_parameter...()`, `has_parameter()`: Introspection methods.
 
 **Utilities:**
-*   `millis()`, `deltaTime()`, `tickCount()`: Timing.
+*   `millis()`, `deltaTime()`, `tick_count()`: Timing.
 *   `random8()`, `random16()`, `random()`, `randomFloat()`: Random numbers.
 *   `logInfo()`, `logWarning()`, `logError()`: Logging (takes `const char*`).
 

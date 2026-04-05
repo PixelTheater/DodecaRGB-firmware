@@ -8,7 +8,7 @@ version: 2.8.2
 
 - There's a guide for developing animations in [creating animations](creating_animations.md).
 - Development standards and best practices documented in [Coding Guidelines](coding_guidelines.md).
-- The project has Python utilities for generating LED coordinates and visualizing the 3D model. For info about using them , please refer to the [Utilities README](util/README.md).
+- The project has Python utilities for generating LED coordinates and visualizing the 3D model. For info about using them, please refer to the [Utilities README](../../util/README.md).
 
 ## C++ Firmware
 
@@ -32,8 +32,8 @@ To configure the animation settings, look at the bottom of the `setup()` functio
 
 The web simulator provides a browser-based environment for testing animations without hardware:
 
-1. Build for web: `pio run -e web_simulator`
-2. Open `web/index.html` in browser
+1. Build for web: `./build_web.sh`
+2. Start a local server: `python -m http.server -d web`
 3. Adjust parameters in real-time
 4. Verify visual effects before hardware deployment
 
@@ -140,11 +140,11 @@ pio test -e native
 python -m util.tests.run_tests
 ```
 
-The [fireworks.yaml](utils/test/fixtures/fireworks.yaml) example file is used to generate a C++ code for scene parameters which should be written to the `test/fixtures/` directory. Running the python tests will generate the files needed for the C++ tests.
+Example YAML files (in `util/examples/`) are used to generate C++ code for scene parameters which should be written to the `test/fixtures/` directory. Running the Python tests will generate the files needed for the C++ tests.
 
 The C++ codebase uses the doctest framework for testing. PlatformIO's toolchains are used for the C++ tests. The native test environment only tests the library code, not the hardware. That means the arduino framework and FastLED are mocked out.
 
-Th Python tests are located in the `util/tests` directory. The `run_tests.py` script runs all the tests and formats the results.
+The Python tests are located in the `util/tests` directory. The `run_tests.py` script runs all the tests and formats the results.
 
 ### Troubleshooting
 
@@ -167,15 +167,8 @@ brew uninstall python-tk@3.12
 brew install python@3.12 --with-tcl-tk
 ```
 
-<<<<<<< HEAD:Development.md
-=======
 ## Further Inspiration
 
 - [What I learned from making a dodecahedron](https://www.youtube.com/watch?v=pcV9YAWSDRE) by the fabulous Dave Darko - honestly the video that got me addicted to this project
 - [Designing a Dodecahedron](https://www.youtube.com/watch?v=vR6oae0s6_M) in OnShape
 - [Geometry - Platonic Solids](https://www.cosmic-core.org/free/article-42-geometry-platonic-solids-part-3-spherical-stereographic-solids/) - great for learning about the geometry of the dodecahedron
--
-<<<<<<< HEAD
->>>>>>> a40f713 (reorganized docs into /docs folder, added build step and python script to compile headers and frontmatter in markdown, added script to update VERSION strings in project and docs):docs/development.md
-=======
->>>>>>> 10248fd (fix doc_builder.py script to take parameters and check file dates against headers (avoiding needless modifications))
