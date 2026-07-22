@@ -18,6 +18,8 @@ sections:
   - title: Main Documentation
     items:
       - file: README.md
+      - file: architecture-assessment.md
+      - file: runtime-config-plan-review.md
   
   - title: PixelTheater API Reference
     items:

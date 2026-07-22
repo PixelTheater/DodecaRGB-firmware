@@ -22,6 +22,8 @@ To create an awesome open-source animation and interaction platform for running 
 ### Main Documentation
 
 - [DodecaRGB and PixelTheater Documentation](README.html)
+- [Firmware Architecture Assessment](architecture-assessment.html) - Runtime configuration, diagnostics, and CI/CD proposal
+- [Runtime Config Plan Review](runtime-config-plan-review.html) - Validation of the runtime-config plan against code, hardware, and history
 
 ### Guides
 

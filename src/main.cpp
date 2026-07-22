@@ -19,7 +19,7 @@
 
 // Include Scene implementations 
 // #include "scenes/blob_scene.h" // Temporarily disabled until refactored <-- REMOVE COMMENT
-//#include "scenes/identify_sides/identify_sides_scene.h" // ADDED IdentifySidesScene
+#include "scenes/identify_sides/identify_sides_scene.h"
 #include "scenes/satellites/SatellitesScene.h" // <<< ADDED Satellites Scene
 #include "scenes/blobs/blob_scene.h" // Refactored
 #include "scenes/xyz_scanner/xyz_scanner_scene.h" // Refactored
@@ -31,7 +31,9 @@
 #include "scenes/sparkles/sparkles_scene.h" // UPDATED
 #include "scenes/texture_map/texture_map_scene.h" // ADDED NEW SCENE
 #include "scenes/gravity_marbles/gravity_marbles_scene.h" // ADDED
-#include "benchmark.h" 
+#include "benchmark.h"
+#include "calibration/calibration_controller.h"
+#include "calibration/serial_protocol.h" 
 
 #ifndef PROJECT_VERSION
 #define PROJECT_VERSION "0.2.2"
@@ -64,6 +66,7 @@
 ::CRGB leds[NUM_LEDS];
 
 PixelTheater::Theater theater; // Global Theater instance
+Calibration::SerialProtocol calibrationProtocol;
 
 long random_seed = 0;
 int seed1,seed2 = 0;
@@ -178,6 +181,9 @@ void fadeInSide(int side, int start_led, int end_led, int duration_ms) {
 void setup() {
   Serial.begin(115200);
   delay(2000); // Give time for serial monitor to connect
+  calibrationProtocol.begin(Serial);
+  Calibration::Controller::instance().resetToFactory();
+  Serial.println("Calibration protocol ready (NDJSON). Send calibration.begin to start walk.");
   
   float temp = InternalTemperature.readTemperatureC();
   random_seed = (temp - int(temp)) * 100000; 
@@ -395,9 +401,9 @@ void setup() {
   }
   
   // Add scenes 
-  // theater.addScene<Scenes::TestScene>(); // Add Test Scene first
-  //theater.addScene<Scenes::IdentifySidesScene>(); // ADDED IdentifySidesScene
-  theater.addScene<Scenes::SparklesScene>(); // First for testing
+  theater.addScene<Scenes::IdentifySidesScene>(); // Config/alignment first
+  // theater.addScene<Scenes::TestScene>();
+  theater.addScene<Scenes::SparklesScene>();
   theater.addScene<Scenes::BlobScene>(); 
   theater.addScene<Scenes::BoidsScene>(); // Add Boids Scene
   theater.addScene<Scenes::OrientationGridScene>(); // ADDED  
@@ -439,12 +445,18 @@ void updateOnboardLED() {
 }
 
 void loop() {  
-  updateOnboardLED();  
+  updateOnboardLED();
+  calibrationProtocol.poll();
   
   // Check interval timer *before* update, but log *after*
   bool log_status_this_frame = (interval != last_interval);
   if (log_status_this_frame) {
     last_interval = interval;
+  }
+
+  // Suppress periodic status spam during interactive calibration (NDJSON session)
+  if (Calibration::Controller::instance().quietSerial()) {
+    log_status_this_frame = false;
   }
   
   // handle button press for mode change
