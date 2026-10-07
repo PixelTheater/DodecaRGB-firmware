@@ -31,26 +31,24 @@ The firmware, 3D models and tooling are open source and free to use and modify. 
 
 ## The Hardware
 
-**Note: These are prototypes, and the final hardware will be a bit more *refined and tested*.**
-
-- 12 pentagon-shaped PCBs, each with 135 WS2812B LEDs (SMD 1615 package)
-- 1620 LEDs total, wired in series across all 12 sides
-- A Teensy 4.1 microcontroller controls everything
+- 12 pentagon LED panels with a 46 mm edge, each with 135 WS2812B LEDs (SMD 1615 package): 1,620 LEDs in total, wired in series across all 12 sides. The current panel is revision v2.2 (July 2025).
+- A Teensy 4.1 on a custom control board: two 18650 cells with charging, power switching, level-shifted LED outputs and a user button. An orientation sensor (BNO085 IMU board) connects over I2C. Control board v1.2 was built in 2025; v1.3 is in design.
 - 4 parallel FastLED output channels (GPIO pins 19, 18, 14, 15) with 405 LEDs per channel
-- Level shifters, power regulation, battery, decoupling capacitors and connectors
-- Portable and interactive: orientation sensor (BNO085 IMU), magnetic closing, 3D printed interior
+- Portable and interactive: magnetic closing, 3D printed interior
+
+Square and triangle panels with the same 46 mm edge have also been produced. They are for other polyhedra on the roadmap, which will need their own models in the firmware.
 
 The combination of a hand-held ball of LEDs with motion sensing opens a lot of interesting possibilities: motion light performances, visualizing data, interactive games, puzzles, etc.
 
-- [v2 - level shifters](images/level-shifter.jpeg)
-- [v2 - teensy 4.1 wiring](images/teensy-41.jpeg)
-- [v2 - prototype internal wiring](images/prototype-internal.jpeg)
+Early v2 prototype, before the control board:
+
+- [level shifters](images/level-shifter.jpeg)
+- [Teensy 4.1 wiring](images/teensy-41.jpeg)
+- [internal wiring](images/prototype-internal.jpeg)
 
 ![wiring diagram](<images/teensy-41-wiring.png>)
 
-In the final design, all of these components will be integrated into stackable PCBs designed to fit together like a puzzle. These would contain sensors, level shifters, power management, dual 18650 battery holders, and wireless charging. The Teensy will be mounted directly to this PCB.
-
-![v2 - PCB design prototype](images/dodeca-interior-design.png)
+![v2 interior design](images/dodeca-interior-design.png)
 
 ## Getting Started
 
@@ -160,4 +158,4 @@ This project is released under the [MIT License](LICENSE).
 
 ## Version 1
 
-For info and assembly instructions for the original version (2023, 312 LEDs), see the [archived V1 readme](docs/guides/Dodeca-V1-info.md).
+For info and assembly instructions for the original version (2023, 312 LEDs), see the [archived V1 readme](docs/guides/Dodeca-V1-info.md). `3d-models/d12-corner.stl` is the v1 corner piece.
